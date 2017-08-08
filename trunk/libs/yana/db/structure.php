@@ -131,7 +131,7 @@ class Structure extends \Yana\Files\SML
             if (is_string($this->content['INCLUDE'])) {
                 $test = $this->includeFile($this->content['INCLUDE']);
                 if ($test === false) {
-                    trigger_error("Error importing file '".$this->content['INCLUDE']."'.", E_USER_WARNING);
+                    \Yana\Log\LogManager::getLogger()->addLog("Error importing file '".$this->content['INCLUDE']."'.", \Yana\Log\TypeEnumeration::WARNING);
                 }
             } elseif (is_array($this->content['INCLUDE'])) {
                 foreach ($this->content['INCLUDE'] as $filename)
@@ -139,18 +139,18 @@ class Structure extends \Yana\Files\SML
                     if (is_string($filename)) {
                         $test = $this->includeFile($filename);
                         if ($test === false) {
-                            trigger_error("Error importing file '{$filename}'.", E_USER_WARNING);
+                            \Yana\Log\LogManager::getLogger()->addLog("Error importing file '{$filename}'.", \Yana\Log\TypeEnumeration::WARNING);
                         }
                     } else {
                         $message = "Invalid field type in ".__METHOD__."().\n\t\tContents of array 'INCLUDE' are " .
                             "supposed to be strings. Found '".gettype($filename)."' instead.";
-                        trigger_error($message, E_USER_NOTICE);
+                        \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::INFO);
                     }
                 } /* end foreach */
             } else {
                 $message = "Invalid field type in ".__METHOD__."().\n\t\tField 'INCLUDE' is supposed to be array " .
                     "or string. Found '".gettype($filename)."' instead." ;
-                trigger_error($message, E_USER_NOTICE);
+                \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::INFO);
             }
         } /* end if*/
         return $this->content;
@@ -260,13 +260,13 @@ class Structure extends \Yana\Files\SML
 
         if (!isset($this->content['TABLES'][$oldTable])) {
             /* error: column not found */
-            trigger_error("Unable to rename table. Old table not found: '$oldTable'", E_USER_NOTICE);
+            \Yana\Log\LogManager::getLogger()->addLog("Unable to rename table. Old table not found: '$oldTable'", \Yana\Log\TypeEnumeration::INFO);
             return false;
         }
 
         if (isset($this->content['TABLES'][$newTable])) {
             /* error: column already exists */
-            trigger_error("Unable to rename table. Table with same name already exists: '$newTable'", E_USER_NOTICE);
+            \Yana\Log\LogManager::getLogger()->addLog("Unable to rename table. Table with same name already exists: '$newTable'", \Yana\Log\TypeEnumeration::INFO);
             return false;
 
         } else {
@@ -302,7 +302,7 @@ class Structure extends \Yana\Files\SML
 
         if (!isset($this->content['TABLES'][$table])) {
             /* error: column not found */
-            trigger_error("Unable to drop table '$table'. The table does not exist", E_USER_NOTICE);
+            \Yana\Log\LogManager::getLogger()->addLog("Unable to drop table '$table'. The table does not exist", \Yana\Log\TypeEnumeration::INFO);
             return false;
 
         } else {
@@ -403,12 +403,12 @@ class Structure extends \Yana\Files\SML
 
         } elseif (!isset($tbl['CONTENT'][$oldColumn])) {
             /* error: column not found */
-            trigger_error("Unable to rename column. Old column not found: '$oldColumn'", E_USER_NOTICE);
+            \Yana\Log\LogManager::getLogger()->addLog("Unable to rename column. Old column not found: '$oldColumn'", \Yana\Log\TypeEnumeration::INFO);
             return false;
 
         } elseif (isset($tbl['CONTENT'][$newColumn])) {
             /* error: column already exists */
-            trigger_error("Unable to rename column. Column with same name already exists: '$newColumn'", E_USER_NOTICE);
+            \Yana\Log\LogManager::getLogger()->addLog("Unable to rename column. Column with same name already exists: '$newColumn'", \Yana\Log\TypeEnumeration::INFO);
             return false;
 
         } else {
@@ -452,7 +452,7 @@ class Structure extends \Yana\Files\SML
 
         } elseif (!isset($tbl['CONTENT'][$column])) {
             /* error: column not found */
-            trigger_error("Unable to drop column '$column'. The column does not exist.", E_USER_NOTICE);
+            \Yana\Log\LogManager::getLogger()->addLog("Unable to drop column '$column'. The column does not exist.", \Yana\Log\TypeEnumeration::INFO);
             return false;
 
         } else {
@@ -962,7 +962,7 @@ class Structure extends \Yana\Files\SML
         } elseif (YANA_DB_STRICT && !$this->isColumn($table, $tbl['PROFILE_KEY'])) {
             $message = "Error in structure file '".$this->getPath()."'.\n\t\tTable '$table' " .
                 "refers to a non-existing column '".$tbl['PROFILE_KEY']."' as profile id.";
-            trigger_error($message, E_USER_WARNING);
+            \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
             return false;
 
         } else {
@@ -1307,7 +1307,7 @@ class Structure extends \Yana\Files\SML
             /* error: not a number */
             $message = "Cannot use flag unsigned on a non-numeric column " .
                 "'$column' of type '{$col['TYPE']}' on table '$table'.";
-            trigger_error($message, E_USER_NOTICE);
+            \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::INFO);
             return false;
 
         } else {
@@ -1411,7 +1411,7 @@ class Structure extends \Yana\Files\SML
 
         } elseif (isset($col['TYPE']) && !$this->isNumber($table, $column)) {
             /* error: not a number */
-            trigger_error("Cannot use flag zerofill on a non-numeric column.", E_USER_NOTICE);
+            \Yana\Log\LogManager::getLogger()->addLog("Cannot use flag zerofill on a non-numeric column.", \Yana\Log\TypeEnumeration::INFO);
             return false;
 
         } else {
@@ -1516,7 +1516,7 @@ class Structure extends \Yana\Files\SML
 
         if (!is_array($tbl)) {
             $message = "Unable to get foreign keys. There is no table '{$table}' in current structure file.";
-            trigger_error($message, E_USER_WARNING);
+            \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
             /* error: table not found */
             return false;
 
@@ -1533,9 +1533,9 @@ class Structure extends \Yana\Files\SML
      *
      * Returns the name of the primary key column of $table as a
      * lower-cased string.
-     * Returns NULL and issues an E_USER_WARNING if $table is not a listed table in the current
+     * Returns NULL and issues a Warning if $table is not a listed table in the current
      * structure file.
-     * Returns NULL and issues an E_USER_WARNING if there is no primary key for $table.
+     * Returns NULL and issues a Warning if there is no primary key for $table.
      *
      * @param   string  $table   name of table
      * @return  string
@@ -1547,12 +1547,12 @@ class Structure extends \Yana\Files\SML
 
         if (!is_array($tbl)) {
             $message = "Unable to get primary key. There is no table '{$table}' in current structure file.";
-            trigger_error($message, E_USER_WARNING);
+            \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
             /* error: table not found */
             return null;
 
         } elseif (!isset($tbl['PRIMARY_KEY'])) {
-            trigger_error("Table '{$table}' has no primary key declaration.", E_USER_WARNING);
+            \Yana\Log\LogManager::getLogger()->addLog("Table '{$table}' has no primary key declaration.", \Yana\Log\TypeEnumeration::WARNING);
             return null;
 
         } else {
@@ -1758,7 +1758,7 @@ class Structure extends \Yana\Files\SML
                 if (!is_numeric($length)) {
                     $message = "Property 'length' has an invalid value '{$length}' in table ".
                         "'{$table}' column '{$column}'.";
-                    trigger_error($message, E_USER_NOTICE);
+                    \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::INFO);
                     $length = 0;
                 } else {
                     /* settype to INTEGER */
@@ -1803,7 +1803,7 @@ class Structure extends \Yana\Files\SML
                 if (!is_numeric($precision)) {
                     $message = "Property 'precision' has an invalid value '{$precision}' in table " .
                         "'{$table}' column '{$column}'.";
-                    trigger_error($message, E_USER_NOTICE);
+                    \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::INFO);
                     return 0;
 
                 } else {
@@ -1876,7 +1876,7 @@ class Structure extends \Yana\Files\SML
             return true;
 
         } else {
-            trigger_error("Invalid length argument '{$length}'. Positive integer expected.", E_USER_WARNING);
+            \Yana\Log\LogManager::getLogger()->addLog("Invalid length argument '{$length}'. Positive integer expected.", \Yana\Log\TypeEnumeration::WARNING);
             /* error: invalid argument */
             return false;
 
@@ -2254,7 +2254,7 @@ class Structure extends \Yana\Files\SML
      * Get the names of all columns in a table.
      *
      * Returns a numeric array of all columns in $table.
-     * Issues an E_USER_NOTICE and returns an empty array, if $table does not exist
+     * Issues a notice and returns an empty array, if $table does not exist
      * in current structure file.
      *
      * @param   string  $table  name of table
@@ -2266,7 +2266,7 @@ class Structure extends \Yana\Files\SML
         $tbl =& $this->_getTable($table);
 
         if (!is_array($tbl)) {
-            trigger_error("The table '{$table}' does not exist.", E_USER_NOTICE);
+            \Yana\Log\LogManager::getLogger()->addLog("The table '{$table}' does not exist.", \Yana\Log\TypeEnumeration::INFO);
             /* error: table not found */
             return array();
         } else {
@@ -2346,7 +2346,7 @@ class Structure extends \Yana\Files\SML
      * Get a list of all tables in the current database.
      *
      * Returns a numeric array of all tables in the current structure file.
-     * Issues an E_USER_NOTICE and returns an empty array, if the list of
+     * Issues a notice and returns an empty array, if the list of
      * tables is empty.
      *
      * @return  array
@@ -2354,7 +2354,7 @@ class Structure extends \Yana\Files\SML
     public function getTables()
     {
         if (!isset($this->content['TABLES'])) {
-            trigger_error("The list of tables is empty.", E_USER_NOTICE);
+            \Yana\Log\LogManager::getLogger()->addLog("The list of tables is empty.", \Yana\Log\TypeEnumeration::INFO);
             return array();
         } else {
             return array_keys(array_change_key_case($this->content['TABLES'], CASE_LOWER));
@@ -2375,11 +2375,11 @@ class Structure extends \Yana\Files\SML
     {
         assert('is_string($table); // Invalid argument $table: String expected');
         if (!isset($this->content['TABLES'])) {
-            trigger_error("The list of tables is empty.", E_USER_NOTICE);
+            \Yana\Log\LogManager::getLogger()->addLog("The list of tables is empty.", \Yana\Log\TypeEnumeration::INFO);
             return array();
         } elseif (!$this->isTable($table)) {
             /* table does not exist */
-            trigger_error("The table '{$table}' does not exist.", E_USER_NOTICE);
+            \Yana\Log\LogManager::getLogger()->addLog("The table '{$table}' does not exist.", \Yana\Log\TypeEnumeration::INFO);
             return array();
         } else {
             $result = array();
@@ -2408,11 +2408,11 @@ class Structure extends \Yana\Files\SML
     {
         assert('is_string($table); // Invalid argument $table: String expected');
         if (!isset($this->content['TABLES'])) {
-            trigger_error("The list of tables is empty.", E_USER_NOTICE);
+            \Yana\Log\LogManager::getLogger()->addLog("The list of tables is empty.", \Yana\Log\TypeEnumeration::INFO);
             return array();
         } elseif (!$this->isTable($table)) {
             /* table does not exist */
-            trigger_error("The table '{$table}' does not exist.", E_USER_NOTICE);
+            \Yana\Log\LogManager::getLogger()->addLog("The table '{$table}' does not exist.", \Yana\Log\TypeEnumeration::INFO);
             return array();
         } else {
             $result = array();
@@ -2608,7 +2608,7 @@ class Structure extends \Yana\Files\SML
         assert('is_null($column) || is_string($column); // Invalid argument $column: string expected');
 
         if (!preg_match(\Yana\Db\Helpers\ConstraintCollection::CONSTRAINT_SYNTAX, $constraint)) {
-            trigger_error("Syntax error in constraint: '".trim($constraint)."'.", E_USER_WARNING);
+            \Yana\Log\LogManager::getLogger()->addLog("Syntax error in constraint: '".trim($constraint)."'.", \Yana\Log\TypeEnumeration::WARNING);
             return false;
         }
 
@@ -2979,7 +2979,7 @@ class Structure extends \Yana\Files\SML
                         $prop[$action] = (int) $isVisible;
                     } else {
                         $message = "Invalid argument 1. Index '{$isVisible}' out of bounds [0,100].";
-                        trigger_error($message, E_USER_WARNING);
+                        \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
                         return false;
                     }
                 } elseif ($isVisible) {
@@ -2998,7 +2998,7 @@ class Structure extends \Yana\Files\SML
                         $prop = (int) $isVisible;
                     } else {
                         $message = "Invalid argument 1. Index '{$isVisible}' out of bounds [0,100].";
-                        trigger_error($message, E_USER_WARNING);
+                        \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
                         return false;
                     }
                 } elseif ($isVisible) {
@@ -3299,7 +3299,7 @@ class Structure extends \Yana\Files\SML
                         $prop[$action] = (int) $isEditable;
                     } else {
                         $message = "Invalid argument 1. Index '{$isEditable}' out of bounds [0,100].";
-                        trigger_error($message, E_USER_WARNING);
+                        \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
                         return false;
                     }
                 } elseif ($isEditable) {
@@ -3318,7 +3318,7 @@ class Structure extends \Yana\Files\SML
                         $prop = (int) $isEditable;
                     } else {
                         $message = "Invalid argument 1. Index '{$isEditable}' out of bounds [0,100].";
-                        trigger_error($message, E_USER_WARNING);
+                        \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
                         return false;
                     }
                 } elseif ($isEditable) {
@@ -3531,7 +3531,7 @@ class Structure extends \Yana\Files\SML
          * 1) error: table or column not found
          */
         if (!is_array($col)) {
-            trigger_error("No such column '$column' in table '$table'.", E_USER_WARNING);
+            \Yana\Log\LogManager::getLogger()->addLog("No such column '$column' in table '$table'.", \Yana\Log\TypeEnumeration::WARNING);
             return false;
         }
         /*
@@ -3758,7 +3758,7 @@ class Structure extends \Yana\Files\SML
             /* 1.2 table-wide definitions */
             if (!$this->isTable($table)) {
                 /* table does not exist */
-                trigger_error("The table '{$table}' does not exist.", E_USER_NOTICE);
+                \Yana\Log\LogManager::getLogger()->addLog("The table '{$table}' does not exist.", \Yana\Log\TypeEnumeration::INFO);
                 return array();
             } else {
                 $db_table_col[1] =& $this->content['TABLES'][$table];
@@ -3776,7 +3776,7 @@ class Structure extends \Yana\Files\SML
                     $column = mb_strtoupper($column);
                     if (!$this->isColumn($table, $column)) {
                         /* column does not exist */
-                        trigger_error("The column '{$column}' does not exist in table '{$table}.'", E_USER_NOTICE);
+                        \Yana\Log\LogManager::getLogger()->addLog("The column '{$column}' does not exist in table '{$table}.'", \Yana\Log\TypeEnumeration::INFO);
                         return array();
                     } else {
                         $db_table_col[$column] =& $this->content['TABLES'][$table]['CONTENT'][$column];
@@ -3849,7 +3849,7 @@ class Structure extends \Yana\Files\SML
             $message = "Unable to import structure file '{$filename}' into structure file '" .
                 $this->getPath()."'.\n\t\tAmbigious table declarations found for: " .
                 implode(', ', $intersection);
-            trigger_error($message, E_USER_WARNING);
+            \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
             return false;
         }
         assert('!isset($table); // cannot redeclare $table');
@@ -3860,7 +3860,7 @@ class Structure extends \Yana\Files\SML
             if ($this->hasAssociation($table)) {
                 $message = "For table '{$table}' replacing illegal table association '" .
                     $this->getAssociation($table)."' with '{$databaseName}'.";
-                trigger_error($message, E_USER_NOTICE);
+                \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::INFO);
             }
             $this->setAssociation($databaseName, $table);
             $this->content['TABLES'][$table] = $file->content['TABLES'][$table];

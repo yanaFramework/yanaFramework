@@ -87,7 +87,7 @@ class Counter extends \Yana\Db\FileDb\Sequence
         parent::__construct($name);
         $row = parent::$db->select("counter.$name");
         if (empty($row)) {
-            throw new \Yana\Core\Exceptions\NotFoundException("No such counter '$name'.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotFoundException("No such counter '$name'.", \Yana\Log\TypeEnumeration::WARNING);
         }
 
         if (isset($row['USEIP'])) {

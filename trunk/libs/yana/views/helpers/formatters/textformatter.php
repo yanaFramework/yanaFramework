@@ -317,7 +317,7 @@ class TextFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
                             } else {
                                 $message = "Ignored an invalid embedded tag. String expected, found '" .
                                     gettype($opt) . "' instead.";
-                                trigger_error($message, E_USER_NOTICE);
+                                \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::INFO);
                                 continue;
 
                             } // end if

@@ -247,7 +247,7 @@ class Change extends \Yana\Db\Ddl\Logs\AbstractLog
             self::$handlers["$functionType"] = $functionName;
         } else {
             $message = "The function name '$functionName' is not callable.";
-            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
     }
 

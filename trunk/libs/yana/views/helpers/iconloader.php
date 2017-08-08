@@ -61,7 +61,7 @@ class IconLoader extends \Yana\Core\Object
 
             if (!is_dir($dir)) {
                 $message = "Unable to load smilies. The directory '" . $dir . "' does not exist.";
-                throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_WARNING);
+                throw new \Yana\Core\Exceptions\NotFoundException($message, \Yana\Log\TypeEnumeration::WARNING);
             }
 
             self::$_icons = array();

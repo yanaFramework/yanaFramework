@@ -86,7 +86,8 @@ class Import extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vie
             break;
 
             default:
-                \trigger_error("Missing argument. You need to provide either the argument 'file' or 'id'.", E_USER_WARNING);
+                $message = "Missing argument. You need to provide either the argument 'file' or 'id'.";
+                \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
                 return "";
         }
 

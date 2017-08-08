@@ -260,7 +260,7 @@ class Implementation extends \Yana\Db\Ddl\DDL
         $name = mb_strtolower($name);
         if (isset($this->parameters[$name])) {
             $message = "Another parameter with the name '$name' is already defined.";
-            $level = E_USER_WARNING;
+            $level = \Yana\Log\TypeEnumeration::WARNING;
             $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
             $exception->setId($name);
             throw $exception;

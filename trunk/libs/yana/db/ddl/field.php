@@ -324,7 +324,7 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
         $name = mb_strtolower($name);
         if (isset($this->events[$name])) {
             $message = "Another action with the name '$name' is already defined.";
-            $level = E_USER_WARNING;
+            $level = \Yana\Log\TypeEnumeration::WARNING;
             $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
             $exception->setId($name);
             throw $exception;
@@ -716,7 +716,9 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
     {
         $attributes = $node->attributes();
         if (!isset($attributes['name'])) {
-            throw new \Yana\Core\Exceptions\InvalidArgumentException("Missing name attribute.", E_USER_WARNING);
+            $message = "Missing name attribute.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
         }
         $ddl = new self((string) $attributes['name']);
         /* @var $child \SimpleXMLElement */

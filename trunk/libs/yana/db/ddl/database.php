@@ -407,7 +407,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
                 if (!is_file($path)) {
                     $message = "Included XDDL file '{$databaseName}' not found. " .
                         "Defined in file '" . $this->getName() . "'.";
-                    throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_ERROR);
+                    throw new \Yana\Core\Exceptions\NotFoundException($message, \Yana\Log\TypeEnumeration::ERROR);
                 }
                 $xddl = new \Yana\Files\XDDL($path);
                 self::$instances[$path] = $xddl->toDatabase();
@@ -730,7 +730,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
         $name = mb_strtolower($name);
         if (isset($this->tables[$name])) {
             $message = "Another table with the name '$name' is already defined.";
-            $level = E_USER_WARNING;
+            $level = \Yana\Log\TypeEnumeration::WARNING;
             $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
             $exception->setId($name);
             throw $exception;
@@ -817,7 +817,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
         $name = mb_strtolower($name);
         if (isset($this->views[$name])) {
             $message = "Another view with the name '$name' is already defined.";
-            $level = E_USER_WARNING;
+            $level = \Yana\Log\TypeEnumeration::WARNING;
             $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
             $exception->setId($name);
             throw $exception;
@@ -901,7 +901,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
         $name = mb_strtolower($name);
         if (isset($this->functions[$name])) {
             $message = "Another function with the name '$name' is already defined.";
-            $level = E_USER_WARNING;
+            $level = \Yana\Log\TypeEnumeration::WARNING;
             $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
             $exception->setId($name);
             throw $exception;
@@ -986,7 +986,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
         $name = mb_strtolower($name);
         if (isset($this->sequences[$name])) {
             $message = "Another sequence with the name '$name' is already defined.";
-            $level = E_USER_WARNING;
+            $level = \Yana\Log\TypeEnumeration::WARNING;
             $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
             $exception->setId($name);
             throw $exception;
@@ -1332,7 +1332,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
         $name = mb_strtolower($name);
         if (isset($this->forms[$name])) {
             $message = "Another form with the name '$name' already exists in database '{$this->getName()}'.";
-            $level = E_USER_WARNING;
+            $level = \Yana\Log\TypeEnumeration::WARNING;
             $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
             $exception->setId($this->getName());
             throw $exception;

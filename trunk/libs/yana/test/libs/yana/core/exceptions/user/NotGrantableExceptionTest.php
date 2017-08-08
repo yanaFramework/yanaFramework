@@ -35,11 +35,11 @@ require_once __DIR__ . '/../../../../../include.php';
 /**
  * @package test
  */
-class NotFoundExceptionTest extends \PHPUnit_Framework_TestCase
+class NotGrantableExceptionTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var NotFoundException
+     * @var \Yana\Core\Exceptions\User\NotGrantableException
      */
     protected $object;
 
@@ -49,7 +49,7 @@ class NotFoundExceptionTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new NotFoundException;
+        $this->object = new \Yana\Core\Exceptions\User\NotGrantableException();
     }
 
     /**

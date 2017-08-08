@@ -83,7 +83,8 @@ class XmlMetaData extends \Yana\Core\MetaData\XmlMetaData
                             if ((string) $item !== '') {
                                 if (!is_file("{$directory}{$item}")) {
                                     $message = "The value '{$item}' is not a valid file resource.";
-                                    trigger_error($message, E_USER_WARNING);
+                                    \Yana\Log\LogManager::getLogger()
+                                        ->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
                                     continue;
                                 }
                                 $item = "{$directory}{$item}";

@@ -71,14 +71,14 @@ class File extends \Yana\Files\Readonly implements \Yana\Files\IsWritable
 
         if (!$this->isWriteable()) {
             $message = "Unable to write to file '".$this->getPath()."'. The file is not writeable.";
-            throw new \Yana\Core\Exceptions\NotWriteableException($message, E_USER_NOTICE);
+            throw new \Yana\Core\Exceptions\NotWriteableException($message, \Yana\Log\TypeEnumeration::INFO);
         }
         clearstatcache(); // clear cache - otherwise we won't recognize if file was modified
         if ($this->getLastModified() != filemtime($this->getPath())) {
-            $message = "Unable to write to file '".$this->getPath()."'.\n\t\t".
+            $message = "Unable to write to file '" . $this->getPath() . "'.\n\t\t".
                 "The file has been changed by some third party recently. " .
                 "Your cached copy is out of date.";
-            trigger_error($message, E_USER_NOTICE);
+            \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::INFO);
             return false;
         }
         $handle = fopen($this->getPath(), "w+");
@@ -102,9 +102,9 @@ class File extends \Yana\Files\Readonly implements \Yana\Files\IsWritable
         if (@unlink($this->getPath())) {
             return true;
         } else {
-            $message = "Unable to delete file '".$this->getPath()."'.".
-                ((!is_writeable($this->getPath()))?"\n\t\tThe file is not writeable.":'');
-            trigger_error($message, E_USER_NOTICE);
+            $message = "Unable to delete file '" . $this->getPath() . "'." .
+                ((!is_writeable($this->getPath())) ? "\n\t\tThe file is not writeable.":'');
+            \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::INFO);
             return false;
         }
     }

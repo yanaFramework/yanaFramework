@@ -513,7 +513,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
 
             } else {
                 $message = "Unable to insert or update row. Invalid query.";
-                throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
+                throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
             }
 
         } else { // input is key address
@@ -824,8 +824,9 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
             return 'NULL';
         }
         if (!is_scalar($value)) {
-            trigger_error("Your SQL statement contains an unexpected non-scalar value: " .
-            "(" . gettype($value) .") " . "'" . print_r($value, true) . "'", E_USER_NOTICE);
+            \Yana\Log\LogManager::getLogger()
+                ->addLog("Your SQL statement contains an unexpected non-scalar value: " .
+            "(" . gettype($value) .") " . "'" . print_r($value, true) . "'", \Yana\Log\TypeEnumeration::INFO);
             $value = (string) $value;
         }
         return $this->_getConnection()->quote($value);

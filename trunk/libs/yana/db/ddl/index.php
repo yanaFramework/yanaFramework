@@ -274,7 +274,7 @@ class Index extends \Yana\Db\Ddl\AbstractObject
 
         if (isset($this->parent) && !$this->parent->isColumn($name)) {
             $message = "No such column '$name' in table '{$this->parent->getName()}'.";
-            throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotFoundException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
 
         $indexColumn = new \Yana\Db\Ddl\IndexColumn($name);
@@ -284,7 +284,7 @@ class Index extends \Yana\Db\Ddl\AbstractObject
 
         if (isset($this->columns[$name])) {
             $message = "Column '$name' already defined in index.";
-            $level = E_USER_WARNING;
+            $level = \Yana\Log\TypeEnumeration::WARNING;
             $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
             $exception->setId($name);
             throw $exception;

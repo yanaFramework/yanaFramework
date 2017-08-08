@@ -59,7 +59,7 @@ class EmbeddedTags extends \Yana\Views\Helpers\AbstractViewHelper implements \Ya
         /* Argument 'show' */
         if (isset($params['show']) && !preg_match('/^(\w+|\||-)(,(\w+|\||-))*$/is', $params['show'])) {
             $message = "Argument 'show' contains illegal characters in function " . __FUNCTION__ . "().";
-            trigger_error($message, E_USER_WARNING);
+            \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
             return "";
         } elseif (!isset($params['show'])) {
             $show =& $listOfTags;
@@ -72,7 +72,7 @@ class EmbeddedTags extends \Yana\Views\Helpers\AbstractViewHelper implements \Ya
         /* Argument 'hide' */
         if (!empty($params['hide']) && !preg_match('/^[\w,]+$/is', $params['hide'])) {
             $message = "Argument 'hide' contains illegal characters for function " . __FUNCTION__ . "().";
-            \Yana\Log\LogManager::getLogger()->addLog($message, E_USER_WARNING);
+            \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
             return "";
         } elseif (empty($params['hide'])) {
             $hide = array();

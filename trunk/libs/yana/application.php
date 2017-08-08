@@ -286,7 +286,7 @@ final class Application extends \Yana\Core\AbstractSingleton
         } catch (\Exception $e) {
             $message = get_class($e) . ': ' . $e->getMessage() . ' Thrown in ' . $e->getFile() .
                 ' on line ' . $e->getLine();
-            trigger_error($message, E_USER_WARNING);
+            $this->getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
 
         }
         return $result !== false;
@@ -583,7 +583,7 @@ final class Application extends \Yana\Core\AbstractSingleton
      * global $YANA;
      *
      * // print an error and go to start page
-     * new Message('Error 404', E_USER_ERROR);
+     * new Message('Error 404', \Yana\Log\TypeEnumeration::ERROR);
      * $YANA->exitTo();
      *
      * // same as:
@@ -593,11 +593,11 @@ final class Application extends \Yana\Core\AbstractSingleton
      * // view the error message and exit the script
      * // without handling another event.
      * // ( You may translate this to: "exit to 'nowhere'" )
-     * new Message('Error 500', E_USER_ERROR);
+     * new Message('Error 500', \Yana\Log\TypeEnumeration::ERROR);
      * $YANA->exitTo('null');
      *
      * // output message and route to 'login' page
-     * new Message('Access denied', E_USER_ERROR);
+     * new Message('Access denied', \Yana\Log\TypeEnumeration::ERROR);
      * $YANA->exitTo('login');
      * </code>
      *

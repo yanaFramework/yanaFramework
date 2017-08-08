@@ -145,7 +145,9 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
     {
         $attributes = $node->attributes();
         if (!isset($attributes['column'])) {
-            throw new \Yana\Core\Exceptions\InvalidArgumentException("Missing column attribute.", E_USER_WARNING);
+            $message = "Missing name attribute.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
         }
         $ddl = new self((string) $attributes['column'], $parent);
         $ddl->_unserializeFromXDDL($node);

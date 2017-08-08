@@ -331,7 +331,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
     public function getTableByForeignKey($columnName)
     {
         if (!$this->isColumn($columnName)) {
-            throw new \Yana\Core\Exceptions\NotFoundException("No such column '$columnName'.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotFoundException("No such column '$columnName'.", \Yana\Log\TypeEnumeration::WARNING);
         }
 
         $columnName = mb_strtolower($columnName);
@@ -360,10 +360,10 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
     public function getColumnByForeignKey($columnName)
     {
         if (!$this->isColumn($columnName)) {
-            throw new \Yana\Core\Exceptions\NotFoundException("No such column '$columnName'.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotFoundException("No such column '$columnName'.", \Yana\Log\TypeEnumeration::WARNING);
         }
         if (! $this->parent instanceof \Yana\Db\Ddl\Database) {
-            throw new \Yana\Core\Exceptions\NotFoundException("Target table is undefined.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotFoundException("Target table is undefined.", \Yana\Log\TypeEnumeration::WARNING);
         }
 
         $columnName = mb_strtolower($columnName);
@@ -422,7 +422,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
         $columnName = mb_strtolower($columnName);
         if (isset($this->columns[$columnName])) {
             $message = "Another column with the name '$columnName' already exists in table '{$this->getName()}'.";
-            $level = E_USER_WARNING;
+            $level = \Yana\Log\TypeEnumeration::WARNING;
             $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
             $exception->setId($columnName);
             throw $exception;
@@ -492,7 +492,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
             unset($this->columns[$columnName]);
         } else {
             $message = "No such column '$columnName' in table '{$this->getName()}'.";
-            throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotFoundException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
     }
 
@@ -698,7 +698,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * Get the primary key of a table.
      *
      * Returns the name of the primary key column of the table as a lower-cased string.
-     * Returns NULL and issues an E_USER_WARNING if there is no primary key for $table.
+     * Returns NULL and issues a Warning if there is no primary key for $table.
      *
      * @return  string
      */
@@ -707,7 +707,8 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
         if (isset($this->primaryKey)) {
             return $this->primaryKey;
         } else {
-            trigger_error("Table '{$this->name}' has no primary key declaration.", E_USER_WARNING);
+            \Yana\Log\LogManager::getLogger()
+                ->addLog("Table '{$this->name}' has no primary key declaration.", \Yana\Log\TypeEnumeration::WARNING);
             return null;
         }
     }
@@ -730,7 +731,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
             $this->primaryKey = $name;
         } else {
             $message = "No such column '$columnName' in table '{$this->getName()}'.";
-            throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotFoundException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
         return $this;
     }
@@ -824,7 +825,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
             $this->indexes[$indexName] = $newIndex;
         } else {
             $message = "Another index by the name '$indexName' already exists.";
-            $level = E_USER_WARNING;
+            $level = \Yana\Log\TypeEnumeration::WARNING;
             $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
             $exception->setId($indexName);
             throw $exception;
@@ -1449,7 +1450,9 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
     {
         $attributes = $node->attributes();
         if (!isset($attributes['name'])) {
-            throw new \Yana\Core\Exceptions\InvalidArgumentException("Missing name attribute.", E_USER_WARNING);
+            $message = "Missing name attribute.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
         }
         $ddl = new self((string) $attributes['name'], $parent);
         $ddl->_unserializeFromXDDL($node);

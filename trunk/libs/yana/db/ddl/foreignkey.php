@@ -264,7 +264,7 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractObject
             {
                 if (!$this->parent->isColumn($column)) {
                     $message = "No such column '$column' in table '{$this->getSourceTable()}'.";
-                    throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_WARNING);
+                    throw new \Yana\Core\Exceptions\NotFoundException($message, \Yana\Log\TypeEnumeration::WARNING);
                 }
             }
         }
@@ -294,28 +294,28 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractObject
         if (isset($this->parent) && (empty($target) || YANA_DB_STRICT)) {
             if (!$this->parent->isColumn($source)) {
                 $message = "No such column '$source' in table '{$this->getSourceTable()}'.";
-                throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_WARNING);
+                throw new \Yana\Core\Exceptions\NotFoundException($message, \Yana\Log\TypeEnumeration::WARNING);
             }
             $database = $this->parent->getParent();
             $targetTable = $this->getTargetTable();
             if (!is_string($targetTable)) {
                 $message = "Target table is undefined.";
-                throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_WARNING);
+                throw new \Yana\Core\Exceptions\NotFoundException($message, \Yana\Log\TypeEnumeration::WARNING);
             }
             $table = $database->getTable($targetTable);
             if (! $table instanceof \Yana\Db\Ddl\Table) {
                 $message = "No such table '$targetTable' in Database.";
-                throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_WARNING);
+                throw new \Yana\Core\Exceptions\NotFoundException($message, \Yana\Log\TypeEnumeration::WARNING);
             }
             if (empty($target)) {
                 $target = $table->getPrimaryKey();
             }
             if (is_null($target)) {
                 $message = "No suitable target column in table '$targetTable'.";
-                throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_WARNING);
+                throw new \Yana\Core\Exceptions\NotFoundException($message, \Yana\Log\TypeEnumeration::WARNING);
             } elseif (YANA_DB_STRICT && !$table->isColumn($target)) {
                 $message = "No such column '$target' in table '$targetTable'.";
-                throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_WARNING);
+                throw new \Yana\Core\Exceptions\NotFoundException($message, \Yana\Log\TypeEnumeration::WARNING);
             }
         }
 

@@ -504,8 +504,8 @@ class Strings extends \Yana\Core\AbstractUtility
             case 'regular expression':
                 return preg_quote($string, '/');
             default:
-                $message = "The value of the \$encoding parameter (argument 1) is invalid: '".$encoding."'.";
-                trigger_error($message, E_USER_WARNING);
+                $message = "The value of the \$encoding parameter (argument 1) is invalid: '" . $encoding . "'.";
+                \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
                 return null;
         }
     }
@@ -564,8 +564,8 @@ class Strings extends \Yana\Core\AbstractUtility
             case 'rot13':
                 return str_rot13($string);
             default:
-                $message = "The value of the \$encoding parameter (argument 1) is invalid: '".$encoding."'.";
-                trigger_error($message, E_USER_WARNING);
+                $message = "The value of the \$encoding parameter (argument 1) is invalid: '" . $encoding . "'.";
+                \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
                 return null;
         }
     }

@@ -66,7 +66,8 @@ class SXML extends \Yana\Core\Object implements \Yana\Files\Decoders\IsDecoder
                 $sxml = simplexml_load_file($input, '\Yana\Util\XmlArray');
 
             } catch (\Exception $e) {
-                trigger_error("XML ERROR in file '{$input}'.", E_USER_WARNING);
+                \Yana\Log\LogManager::getLogger()
+                    ->addLog("XML ERROR in file '{$input}'.", \Yana\Log\TypeEnumeration::WARNING);
                 return array();
             }
         } elseif (is_array($input)) {
@@ -75,7 +76,8 @@ class SXML extends \Yana\Core\Object implements \Yana\Files\Decoders\IsDecoder
                 $sxml = simplexml_load_string(implode("", $input), '\Yana\Util\XmlArray');
 
             } catch (\Exception $e) {
-                trigger_error("XML ERROR in file.", E_USER_WARNING);
+                \Yana\Log\LogManager::getLogger()
+                    ->addLog("XML ERROR in file.", \Yana\Log\TypeEnumeration::WARNING);
                 return array();
             }
         } else {
@@ -86,7 +88,8 @@ class SXML extends \Yana\Core\Object implements \Yana\Files\Decoders\IsDecoder
         }
 
         if (empty($sxml)) {
-            trigger_error("XML ERROR in file '{$input}'.", E_USER_WARNING);
+            \Yana\Log\LogManager::getLogger()
+                ->addLog("XML ERROR in file '{$input}'.", \Yana\Log\TypeEnumeration::WARNING);
             return array();
 
         } else {

@@ -82,11 +82,14 @@ class ConstraintCollection extends \Yana\Core\AbstractCollection
     {
         if (!$item instanceof \Yana\Db\Ddl\Constraint) {
             $message = "Item must be instance of \Yana\Db\Ddl\Constraint.";
-            throw new \Yana\Core\Exceptions\InvalidArgumentException($message. \E_USER_ERROR);
+            $level = \Yana\Log\TypeEnumeration::ERROR;
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
         }
         $code = $item->getConstraint();
         if (!preg_match(self::CONSTRAINT_SYNTAX, $code)) {
-            throw new \Yana\Core\Exceptions\InvalidArgumentException("Syntax error in constraint '$code' .", E_USER_ERROR);
+            $message = "Syntax error in constraint '$code' .";
+            $level = \Yana\Log\TypeEnumeration::ERROR;
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
         }
         return $this->_offsetSet($key, $code);
     }

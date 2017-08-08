@@ -106,7 +106,7 @@ class Sequence extends \Yana\Core\Object
             ->setRow($name);
         $row = $query->getResults();
         if (empty($row)) {
-            throw new \Yana\Db\Queries\Exceptions\NotFoundException("No such sequence '$name'.", E_USER_WARNING);
+            throw new \Yana\Db\Queries\Exceptions\NotFoundException("No such sequence '$name'.", \Yana\Log\TypeEnumeration::WARNING);
         }
 
         $this->name = (string) $name;
@@ -210,7 +210,7 @@ class Sequence extends \Yana\Core\Object
         } else {
             $message = "Maximum value '{$max}' must be bigger then minimum value '{$this->min}' in sequence '".
                 "{$this->name}'.";
-            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
     }
 
@@ -238,7 +238,7 @@ class Sequence extends \Yana\Core\Object
         } else {
             $message = "Minimum value '{$min}' must be smaller then maximum value '{$this->max}' in sequence '".
                 "{$this->name}'.";
-            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
     }
 
@@ -399,7 +399,7 @@ class Sequence extends \Yana\Core\Object
         // outside range for non-cyclic sequence
         } else {
             $message = "Sequence '{$this->name}' has reached it's boundary.";
-            throw new \Yana\Core\Exceptions\OutOfBoundsException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\OutOfBoundsException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
         return $this->value;
     }
@@ -447,7 +447,7 @@ class Sequence extends \Yana\Core\Object
             $this->value = $value;
         } else {
             $message = "Value '{$value}' must be within range [{$this->min},{$this->max}] in sequence '{$this->name}'.";
-            throw new \Yana\Core\Exceptions\OutOfBoundsException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\OutOfBoundsException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
     }
 

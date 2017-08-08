@@ -777,9 +777,11 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
                 return YANA_DB_DELIMITER . "$value" . YANA_DB_DELIMITER;
 
             } else {
-                trigger_error("A value of non-scalar type '" . gettype($value) .
-                    "' has been found in an SQL statement and will be converted to string.", E_USER_NOTICE);
-                return YANA_DB_DELIMITER . \Yana\Files\SML::encode($value) . YANA_DB_DELIMITER;'"NULL"';
+                $message = "A value of non-scalar type '" . gettype($value) .
+                    "' has been found in an SQL statement and will be converted to string.";
+                $level = \Yana\Log\TypeEnumeration::INFO;
+                \Yana\Log\LogManager::getLogger()->addLog($message, $level);
+                return YANA_DB_DELIMITER . \Yana\Files\SML::encode($value) . YANA_DB_DELIMITER;
 
             }
         } /* end if */

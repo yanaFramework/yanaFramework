@@ -73,7 +73,8 @@ class Dat extends \Yana\Files\Text
         if (isset($this->content[$lineNr])) {
             return self::_parseLine($this->content[$lineNr]);
         } else {
-            trigger_error("There is no line '$lineNr' in file '" . $this->getPath() . "'.", E_USER_NOTICE);
+            $message = "There is no line '$lineNr' in file '" . $this->getPath() . "'.";
+            \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::INFO);
             return array();
         }
     }

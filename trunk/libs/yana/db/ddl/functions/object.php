@@ -268,7 +268,7 @@ class Object extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\Is
             return $implementation;
         } else {
             $message = "Implementation for DBMS '$dbms' is already defined.";
-            $level = E_USER_WARNING;
+            $level = \Yana\Log\TypeEnumeration::WARNING;
             $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
             $exception->setId($dbms);
             throw $exception;
@@ -287,7 +287,9 @@ class Object extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\Is
     {
         $attributes = $node->attributes();
         if (!isset($attributes['name'])) {
-            throw new \Yana\Core\Exceptions\InvalidArgumentException("Missing name attribute.", E_USER_WARNING);
+            $message = "Missing name attribute.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
         }
         $ddl = new self((string) $attributes['name'], $parent);
         $ddl->_unserializeFromXDDL($node);

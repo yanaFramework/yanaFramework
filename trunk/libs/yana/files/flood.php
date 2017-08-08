@@ -160,7 +160,7 @@ class Flood extends \Yana\Files\File
             return true;
         } else {
             $message = "Expected maximum number to be a positive integer, found '{$max}' instead.";
-            trigger_error($message, E_USER_NOTICE);
+            \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::INFO);
             return false;
         }
     }

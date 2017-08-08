@@ -205,7 +205,8 @@ class Readonly extends \Yana\Files\AbstractResource implements \Yana\Files\IsRea
 
         if (!empty($filename)) {
             if (!is_file("$filename")) {
-                trigger_error("Unable to calculate checksum. The file '{$filename}' does not exist.", E_USER_NOTICE);
+                $message = "Unable to calculate checksum. The file '{$filename}' does not exist.";
+                \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::INFO);
                 return false;
             }
         } else {
@@ -265,7 +266,7 @@ class Readonly extends \Yana\Files\AbstractResource implements \Yana\Files\IsRea
         if (!empty($filename)) {
             if (!is_file("$filename")) {
                 $message = "Unable to calculate MD5 hash. The file '{$filename}' does not exist.";
-                trigger_error($message, E_USER_NOTICE);
+                \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::INFO);
                 return false;
             }
             return md5_file($filename);

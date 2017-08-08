@@ -184,7 +184,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
             $rawContent = file_get_contents($this->path);
             if (empty($rawContent)) {
                 $message = "VDrive configuration file is empty or not readable: '{$this->getPath()}'.";
-                throw new \Yana\Core\Exceptions\NotReadableException($message, E_USER_WARNING);
+                throw new \Yana\Core\Exceptions\NotReadableException($message, \Yana\Log\TypeEnumeration::WARNING);
             }
             /* apply default settings */
             $content = \Yana\Util\Strings::replaceToken($rawContent, self::$_defaultSettings);
@@ -195,7 +195,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
             /* read XML */
             if (!($this->_configuration instanceOf \Yana\VDrive\Configuration)) {
                 $message = "Not a valid VDrive configuration file: '{$this->getPath()}'";
-                throw new \Yana\Core\Exceptions\InvalidSyntaxException($message, E_USER_WARNING);
+                throw new \Yana\Core\Exceptions\InvalidSyntaxException($message, \Yana\Log\TypeEnumeration::WARNING);
             }
             $this->_readXML($this->_configuration);
         }
@@ -362,10 +362,12 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
                 $file = (string) $node->attributes()->path;
 
                 if (!preg_match('/^[\w\/]*[\w\.]+\.php$/s', $file)) {
-                    trigger_error("Invalid filename to include: '{$this->_baseDir}{$file}'.", E_USER_WARNING);
+                    $message = "Invalid filename to include: '{$this->_baseDir}{$file}'.";
+                    \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
 
                 } elseif (!is_file("{$this->_baseDir}{$file}")) {
-                    trigger_error("No such file to include: '{$this->_baseDir}{$file}'.", E_USER_WARNING);
+                    $message = "No such file to include: '{$this->_baseDir}{$file}'.";
+                    \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
 
                 } else {
                     include_once "{$this->_baseDir}{$file}";
@@ -523,7 +525,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
         $this->read();
         if (!isset($this->_drive[$path])) {
             $message = "No such virtual file or directory '$path'.";
-            throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotFoundException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
         return $this->_drive[$path]->getMountpoint();
     }

@@ -152,7 +152,8 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
             sort($dirlist);
             assert('is_array($dirlist); // Unexpected result: $dirlist is not an array.');
         } else {
-            trigger_error("The directory '{$dir}' does not exist.", E_USER_NOTICE);
+            $message = "The directory '{$dir}' does not exist.";
+            \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::INFO);
         }
         return $dirlist;
     }
@@ -424,13 +425,15 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
             if ($this->exists()) {
                 $dir = $this->getPath();
             } else {
-                trigger_error("The directory '".$this->getPath()."' does not exist.", E_USER_WARNING);
+                $message = "The directory '".$this->getPath()."' does not exist.";
+                \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
                 return false;
             }
 
         /* directory does not exist */
         } elseif (!is_string($directory) || !is_dir($directory)) {
-            trigger_error("Argument 1 '".print_r($directory, true)."' is not a directory.", E_USER_WARNING);
+            $message = "Argument 1 '".print_r($directory, true)."' is not a directory.";
+            \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
             return false;
 
         /* add slash */

@@ -285,7 +285,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
              */
             default:
                 $message = "Invalid or unknown SQL statement: {$query}.";
-                throw new \Yana\Db\Queries\Exceptions\NotSupportedException($message, E_USER_ERROR);
+                throw new \Yana\Db\Queries\Exceptions\NotSupportedException($message, \Yana\Log\TypeEnumeration::ERROR);
         }
 
     }
@@ -388,7 +388,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
                                 "Foreign key constraint mismatch. " .
                                 "The value '{$row[$sourceColumn]}' for attribute '{$sourceColumn}' " .
                                 "refers to a non-existing entry in table '{$targetTable}'. ",
-                                E_USER_ERROR, $row);
+                                \Yana\Log\TypeEnumeration::ERROR, $row);
                             return false;
                         }
                     } elseif ($isFullMatch) {
@@ -684,7 +684,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
                                 "rows with the same name have been found. " .
                                 "This conflict can not be solved automatically. " .
                                 "Please edit and update the affected table.";
-                        \Yana\Log\LogManager::getLogger()->addLog($log, E_USER_WARNING, array('affected rows:' => $tmp));
+                        \Yana\Log\LogManager::getLogger()->addLog($log, \Yana\Log\TypeEnumeration::WARNING, array('affected rows:' => $tmp));
                         unset($log);
                     }
                     /*
@@ -826,7 +826,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
                                 "rows with the same name have been found. " .
                                 "This conflict can not be solved automatically. " .
                                 "Please edit and update the affected table.";
-                        \Yana\Log\LogManager::getLogger()->addLog($log, E_USER_WARNING, array('affected rows:' => $tmp));
+                        \Yana\Log\LogManager::getLogger()->addLog($log, \Yana\Log\TypeEnumeration::WARNING, array('affected rows:' => $tmp));
                         unset($log);
                     }
                     /*
@@ -1821,7 +1821,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
         if (!isset($this->_idx[$this->_getDatabaseName()][$this->_getTableName()])) {
             $message = "Index-file not found for databae " . $this->_getDatabaseName() .
                 " table " . $this->_getTableName() . ". Is the directory writable?";
-            throw new \Yana\Db\DatabaseException($message, E_USER_ERROR);
+            throw new \Yana\Db\DatabaseException($message, \Yana\Log\TypeEnumeration::ERROR);
         }
         return $this->_idx[$this->_getDatabaseName()][$this->_getTableName()];
     }

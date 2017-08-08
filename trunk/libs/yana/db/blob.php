@@ -81,13 +81,13 @@ class Blob extends \Yana\Files\Readonly
 
         if (!is_file($source)) {
             $message = "The file '{$source}' does not exist (database: blob not found).";
-            throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_NOTICE);
+            throw new \Yana\Core\Exceptions\NotFoundException($message, \Yana\Log\TypeEnumeration::INFO);
         }
         $this->content = array();
 
         if (!preg_match('/\.gz$/', $source)) {
             $message = "The source '{$source}' is not a valid database blob.";
-            throw new \Yana\Core\Exceptions\NotReadableException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotReadableException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
         $i = 0;
         $gz = gzopen($source, 'r');
@@ -101,7 +101,8 @@ class Blob extends \Yana\Files\Readonly
                     if (preg_match('/^[\w\.\d\-\_]+$/s', $buffer)) {
                         $this->path = $buffer;
                     } else {
-                        trigger_error("Invalid file path: '{$buffer}'.", E_USER_NOTICE);
+                        \Yana\Log\LogManager::getLogger()
+                            ->addLog("Invalid file path: '{$buffer}'.", \Yana\Log\TypeEnumeration::INFO);
                     }
                 break;
 
@@ -110,7 +111,8 @@ class Blob extends \Yana\Files\Readonly
                     if (is_numeric($buffer)) {
                         $this->_size = $buffer;
                     } else {
-                        trigger_error("Invalid filesize: '{$buffer}'.", E_USER_NOTICE);
+                        \Yana\Log\LogManager::getLogger()
+                            ->addLog("Invalid filesize: '{$buffer}'.", \Yana\Log\TypeEnumeration::INFO);
                     }
                 break;
 
@@ -119,7 +121,8 @@ class Blob extends \Yana\Files\Readonly
                     if (preg_match('/^\w+\/[\w-]+$/s', $buffer)) {
                         $this->_type = $buffer;
                     } else {
-                        trigger_error("Invalid MIME-Type: '{$buffer}'.", E_USER_NOTICE);
+                        \Yana\Log\LogManager::getLogger()
+                            ->addLog("Invalid MIME-Type: '{$buffer}'.", \Yana\Log\TypeEnumeration::INFO);
                     }
                 break;
 
@@ -188,7 +191,7 @@ class Blob extends \Yana\Files\Readonly
         /* check arguments */
         if (!isset($_SESSION[__CLASS__][$id])) {
             $message = "Invalid argument. File '$id' is undefined.";
-            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
 
         $file = $_SESSION[__CLASS__][$id];
@@ -251,7 +254,7 @@ class Blob extends \Yana\Files\Readonly
 
         /* validity checking */
         if (mb_strlen($destFile) > 512 || !preg_match('/^[\w\d-_\.][\w\d-_\/\.]*$/', $destFile)) {
-            throw new \Yana\Core\Exceptions\InvalidArgumentException("Invalid filename '".$destFile."'.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException("Invalid filename '".$destFile."'.", \Yana\Log\TypeEnumeration::WARNING);
         }
 
         if (!$overwrite && file_exists($destFile)) {

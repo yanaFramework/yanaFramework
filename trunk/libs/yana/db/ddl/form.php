@@ -200,7 +200,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
             $this->parent = $parent;
         } else {
             $message = "Wrong argument type argument 1. \Yana\Db\Ddl\Database or \Yana\Db\Ddl\Form expected";
-            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_ERROR);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::ERROR);
         }
     }
 
@@ -571,7 +571,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
             return $this->forms[$name];
         } else {
             $message = "No such sub-form '$name' in form '{$this->getName()}'.";
-            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
     }
 
@@ -590,7 +590,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
         $name = mb_strtolower($name);
         if (isset($this->forms[$name])) {
             $message = "Another form with the name '$name' already exists in form '{$this->getName()}'.";
-            $level = E_USER_WARNING;
+            $level = \Yana\Log\TypeEnumeration::WARNING;
             $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
             $exception->setId($name);
             throw $exception;
@@ -665,7 +665,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
             return $this->fields[$name];
         } else {
             $message = "No such field '$name' in form '{$this->getName()}'.";
-            throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotFoundException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
     }
 
@@ -698,7 +698,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
         assert('is_string($name); // Invalid argument $name: string expected');
         if (isset($this->fields[$name])) {
             $message = "Another field with the name '$name' already exists in form '" . $this->getName() . "'.";
-            $level = E_USER_WARNING;
+            $level = \Yana\Log\TypeEnumeration::WARNING;
             $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
             $exception->setId($name);
             throw $exception;
@@ -723,7 +723,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
         $name = mb_strtolower($name);
         if (!isset($this->fields[$name])) {
             $message = "No such field '$name' in form '" . $this->getName() . "'.";
-            throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotFoundException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
         $this->fields[$name] = null;
     }
@@ -783,7 +783,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
         $name = mb_strtolower($name);
         if (isset($this->events[$name])) {
             $message = "Another action with the name '$name' is already defined.";
-            $level = E_USER_WARNING;
+            $level = \Yana\Log\TypeEnumeration::WARNING;
             $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
             $exception->setId($name);
             throw $exception;
@@ -988,10 +988,14 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
     {
         $attributes = $node->attributes();
         if (!isset($attributes['name'])) {
-            throw new \Yana\Core\Exceptions\InvalidArgumentException("Missing name attribute.", E_USER_WARNING);
+            $message = "Missing name attribute.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
         }
         if (!isset($attributes['table'])) {
-            throw new \Yana\Core\Exceptions\InvalidArgumentException("Missing table attribute.", E_USER_WARNING);
+            $message = "Missing table attribute.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
         }
         $name = (string) $attributes['name'];
         $table = (string) $attributes['table'];

@@ -142,7 +142,7 @@ class SML extends \Yana\Core\Object implements IsDecoder
                             } else {
                                 $message = "SML ERROR on line " . $i . ": " . $message;
                             }
-                            trigger_error($message, E_USER_WARNING);
+                            \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
                             $isValid = false;
                         }
                     }
@@ -166,7 +166,7 @@ class SML extends \Yana\Core\Object implements IsDecoder
             } else {
                 $message = "SML ERROR: " . $message;
             }
-            trigger_error($message, E_USER_WARNING);
+            \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
         }
 
         return $result;
@@ -209,7 +209,7 @@ class SML extends \Yana\Core\Object implements IsDecoder
             $message = "Your untitled scalar value (arg. 1) in ".__METHOD__."() was renamed to '0'.\n\t\t".
                 "You are encouraged to use the \$name argument (arg. 2) to set the variable name ".
                 "to anything you prefer.";
-            trigger_error($message, E_USER_NOTICE);
+            \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::INFO);
             $name = '0';
         } elseif ($caseSensitive === CASE_UPPER) {
             $name = mb_strtoupper($name);

@@ -234,7 +234,7 @@ class Update extends \Yana\Db\Queries\Insert
 
         if ($row === '*') {
             $message = "SQL security restriction. Cannot update a table (only rows and cells).";
-            trigger_error($message, E_USER_WARNING);
+            \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
             return false;
         }
         /*

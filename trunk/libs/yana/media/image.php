@@ -341,7 +341,9 @@ class Image extends \Yana\Core\Object
                 /* error: image type unsupported */
                 } else {
 
-                    trigger_error("The image type '{$imageType}' is not unsupported.", E_USER_WARNING);
+                    \Yana\Log\LogManager::getLogger()->addLog(
+                        "The image type '{$imageType}' is not unsupported.", \Yana\Log\TypeEnumeration::WARNING
+                    );
                     $this->_createErrorImage();
 
                 } /* end if */
@@ -700,7 +702,7 @@ class Image extends \Yana\Core\Object
         /* fall back to text */
         } else {
 
-            trigger_error("Error loading image", E_USER_NOTICE);
+            \Yana\Log\LogManager::getLogger()->addLog("Error loading image", \Yana\Log\TypeEnumeration::INFO);
         }
     }
 
@@ -1928,7 +1930,7 @@ class Image extends \Yana\Core\Object
          *  argument 1 - index out of bounds
          */
         } elseif ($replacedColor < 0 || $replacedColor > imagecolorstotal($this->_image)) {
-            throw new \Yana\Core\Exceptions\OutOfBoundsException("Replaced color is not in image palette.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\OutOfBoundsException("Replaced color is not in image palette.", \Yana\Log\TypeEnumeration::WARNING);
 
         } else {
 
@@ -2440,7 +2442,9 @@ class Image extends \Yana\Core\Object
 
             }
             if ($width < 1) {
-                trigger_error("Invalid value for argument 1. Width cannot be 0 or negative.", E_USER_WARNING);
+                \Yana\Log\LogManager::getLogger()->addLog(
+                    "Invalid value for argument 1. Width cannot be 0 or negative.", \Yana\Log\TypeEnumeration::WARNING
+                );
                 return false;
             }
 
@@ -2453,7 +2457,9 @@ class Image extends \Yana\Core\Object
 
             }
             if ($height < 1) {
-                trigger_error("Invalid value for argument 2. Height cannot be 0 or negative.", E_USER_WARNING);
+                \Yana\Log\LogManager::getLogger()->addLog(
+                    "Invalid value for argument 2. Height cannot be 0 or negative.", \Yana\Log\TypeEnumeration::WARNING
+                );
                 return false;
             }
 
@@ -2468,7 +2474,7 @@ class Image extends \Yana\Core\Object
             if (abs($paddingLeft) >= $width) {
                 $message = "Invalid value for argument 3. Left offset {$paddingLeft}px is bigger than image width ".
                     "{$currentWidth}px.";
-                trigger_error($message, E_USER_WARNING);
+                \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
                 return false;
             }
 
@@ -2483,7 +2489,7 @@ class Image extends \Yana\Core\Object
             if (abs($paddingTop) >= $height) {
                 $message = "Invalid value for argument 4. Top offset {$paddingTop}px is bigger than image height ".
                     "{$currentHeight}px.";
-                trigger_error($message, E_USER_WARNING);
+                \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
                 return false;
             }
 
@@ -2519,7 +2525,7 @@ class Image extends \Yana\Core\Object
             if (is_array($canvasColor)) {
                 if (count($canvasColor) !== 3) {
                     $message = "Invalid value for argument 5. Color needs to have red, green and yellow values.";
-                    trigger_error($message, E_USER_WARNING);
+                    \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
                     return false;
                 } else {
                     $color = $canvasColor;
@@ -2527,7 +2533,8 @@ class Image extends \Yana\Core\Object
                     unset ($color);
                 }
                 if (!is_int($canvasColor)) {
-                    trigger_error("Invalid value for argument 5. The argument is not a color.", E_USER_WARNING);
+                    $message = "Invalid value for argument 5. The argument is not a color.";
+                    \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
                     return false;
                 }
             }
@@ -2617,7 +2624,8 @@ class Image extends \Yana\Core\Object
 
             }
             if ($width < 1) {
-                trigger_error("Invalid value for argument 1. Width cannot be 0 or negative.", E_USER_WARNING);
+                $message = "Invalid value for argument 1. Width cannot be 0 or negative.";
+                \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
                 return false;
             }
 
@@ -2630,7 +2638,8 @@ class Image extends \Yana\Core\Object
 
             }
             if ($height < 1) {
-                trigger_error("Invalid value for argument 2. Height cannot be 0 or negative.", E_USER_WARNING);
+                $message = "Invalid value for argument 2. Height cannot be 0 or negative.";
+                \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
                 return false;
             }
 
@@ -2947,7 +2956,8 @@ class Image extends \Yana\Core\Object
 
         /* argument 1 */
         if (!is_resource($resource)) {
-            trigger_error("Argument 1 is invalid. The source is not a valid image resource.", E_USER_WARNING);
+            $message = "Argument 1 is invalid. The source is not a valid image resource.";
+            \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
             return false;
         }
 
@@ -2986,7 +2996,8 @@ class Image extends \Yana\Core\Object
             if ($opacity >= 0.0 && $opacity <= 1.0) {
                 $opacity = (int) round($opacity * 100);
             } else {
-                trigger_error("Argument 8 is invalid. Opacity needs to be a value between 0 and 1.", E_USER_WARNING);
+                $message = "Argument 8 is invalid. Opacity needs to be a value between 0 and 1.";
+                \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
                 return false;
             }
         }
@@ -3184,7 +3195,8 @@ class Image extends \Yana\Core\Object
 
         /* argument 1 */
         if ($ammount < 0.0 || $ammount > 1.0) {
-            trigger_error("Invalid argument 1. Must be between 0 and 1.", E_USER_WARNING);
+            $message = "Invalid argument 1. Must be between 0 and 1.";
+            \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
             return false;
         }
 
@@ -3229,7 +3241,9 @@ class Image extends \Yana\Core\Object
 
         /* argument 1 */
         if ($ammount < -1.0 || $ammount > 1.0) {
-            trigger_error("Invalid argument 1. Must be between -1 and 1.", E_USER_WARNING);
+            \Yana\Log\LogManager::getLogger()->addLog(
+                "Invalid argument 1. Must be between -1 and 1.", \Yana\Log\TypeEnumeration::WARNING
+            );
             return false;
         }
 
@@ -3509,7 +3523,9 @@ class Image extends \Yana\Core\Object
 
         /* argument 1 */
         if ($ammount < 0.0 || $ammount > 1.0) {
-            trigger_error("Invalid argument 1. Must be between 0 and 1.", E_USER_WARNING);
+            \Yana\Log\LogManager::getLogger()->addLog(
+                "Invalid argument 1. Must be between 0 and 1.", \Yana\Log\TypeEnumeration::WARNING
+            );
             return false;
         } else {
             /* settype to FLOAT */
@@ -3572,7 +3588,9 @@ class Image extends \Yana\Core\Object
 
         /* argument 1 */
         if ($ammount < 0.0 || $ammount > 1.0) {
-            trigger_error("Invalid argument 1. Must be between 0 and 1.", E_USER_WARNING);
+            \Yana\Log\LogManager::getLogger()->addLog(
+                "Invalid argument 1. Must be between 0 and 1.", \Yana\Log\TypeEnumeration::WARNING
+            );
             return false;
         } else {
             /* settype to FLOAT */
@@ -3809,7 +3827,9 @@ class Image extends \Yana\Core\Object
 
         /* argument 1 */
         if (!is_resource($sourceImage)) {
-            trigger_error("Argument 1 is invalid. The source is not a valid image resource.", E_USER_WARNING);
+            \Yana\Log\LogManager::getLogger()->addLog(
+                "Argument 1 is invalid. The source is not a valid image resource.", \Yana\Log\TypeEnumeration::WARNING
+            );
             return false;
         }
 
@@ -3847,11 +3867,15 @@ class Image extends \Yana\Core\Object
                 /* still there? */
                 if (headers_sent()) {
                     print $content;
-                    trigger_error("Unable to output image. Headers already sent.", E_USER_WARNING);
+                    \Yana\Log\LogManager::getLogger()->addLog(
+                        "Unable to output image. Headers already sent.", \Yana\Log\TypeEnumeration::WARNING
+                    );
                     return false;
                 }
             } else {
-                trigger_error("Unable to output image. Headers already sent.", E_USER_WARNING);
+                \Yana\Log\LogManager::getLogger()->addLog(
+                    "Unable to output image. Headers already sent.", \Yana\Log\TypeEnumeration::WARNING
+                );
                 return false;
             }
         }
@@ -3865,7 +3889,9 @@ class Image extends \Yana\Core\Object
         /* prefered image type */
         if (!empty($imageType)) {
             if (!isset($this->_mapping[$imageType])) {
-                trigger_error("The image type '{$imageType}' is not unsupported.", E_USER_WARNING);
+                \Yana\Log\LogManager::getLogger()->addLog(
+                    "The image type '{$imageType}' is not unsupported.", \Yana\Log\TypeEnumeration::WARNING
+                );
                 return false;
             } else {
                 array_unshift($this->_mapping, $this->_mapping[$imageType]);
@@ -3886,7 +3912,9 @@ class Image extends \Yana\Core\Object
         }
 
         /* none of the above worked - so put an error message and return false */
-        trigger_error("Unable to create image. No supported image type found.", E_USER_ERROR);
+        \Yana\Log\LogManager::getLogger()->addLog(
+            "Unable to create image. No supported image type found.", \Yana\Log\TypeEnumeration::ERROR
+        );
         return false;
     }
 
@@ -3929,7 +3957,9 @@ class Image extends \Yana\Core\Object
         /* prefered image type */
         if (!empty($imageType)) {
             if (!isset($this->_mapping[$imageType])) {
-                trigger_error("The image type '{$imageType}' is not unsupported.", E_USER_WARNING);
+                \Yana\Log\LogManager::getLogger()->addLog(
+                    "The image type '{$imageType}' is not unsupported.", \Yana\Log\TypeEnumeration::WARNING
+                );
                 return false;
             } else {
                 array_unshift($this->_mapping, $this->_mapping[$imageType]);
@@ -3956,7 +3986,9 @@ class Image extends \Yana\Core\Object
         }
 
         /* none of the above worked - so put an error message and return false */
-        trigger_error("Unable to create image. No supported image type found.", E_USER_ERROR);
+        \Yana\Log\LogManager::getLogger()->addLog(
+            "Unable to create image. No supported image type found.", \Yana\Log\TypeEnumeration::ERROR
+        );
         return false;
     }
 
@@ -4101,13 +4133,17 @@ class Image extends \Yana\Core\Object
             $otherImage = clone $comparedImage;
         } else {
             /* invalid value */
-            trigger_error("Argument 1 is invalid. The source is not a valid image.", E_USER_WARNING);
+            \Yana\Log\LogManager::getLogger()->addLog(
+                "Argument 1 is invalid. The source is not a valid image.", \Yana\Log\TypeEnumeration::WARNING
+            );
             return false;
         }
 
         if (!is_resource($this->_image)) {
             /* invalid image */
-            trigger_error("Not a valid image.", E_USER_WARNING);
+            \Yana\Log\LogManager::getLogger()->addLog(
+                "Not a valid image.", \Yana\Log\TypeEnumeration::WARNING
+            );
             return false;
         } else {
             /* all fine - proceed */
@@ -4125,7 +4161,7 @@ class Image extends \Yana\Core\Object
         $w = $this->getWidth();
         if ($w == 0 || $h == 0) {
             /* invalid image */
-            trigger_error("Not a valid image.", E_USER_WARNING);
+            \Yana\Log\LogManager::getLogger()->addLog("Not a valid image.", \Yana\Log\TypeEnumeration::WARNING);
             return false;
         } elseif ($h !== $otherImage->getHeight() || $w !== $otherImage->getWidth()) {
             $otherImage->resize($w, $h);

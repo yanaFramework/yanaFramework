@@ -296,8 +296,10 @@ class Index extends \Yana\Core\Object
         assert('!isset($index); // Cannot redeclare var $index');
         $index = $this->getColumnValues($column);
         if (!is_array($index)) {
-            throw new \Yana\Core\Exceptions\NotFoundException("SQL syntax error. ".
-                "No such index '$column' in table '" . $this->_table->getName() . "'.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotFoundException(
+                "SQL syntax error. No such index '$column' in table '" . $this->_table->getName() . "'.",
+                \Yana\Log\TypeEnumeration::WARNING
+            );
         }
         if (is_null($value)) {
             return $index;
@@ -306,8 +308,10 @@ class Index extends \Yana\Core\Object
             if (isset($index[$value])) {
                 return $index[$value];
             } else {
-                throw new \Yana\Core\Exceptions\NotFoundException("SQL syntax error. ".
-                    "No such index '$column' in table '" . $this->_table->getName() . "'.", E_USER_WARNING);
+                throw new \Yana\Core\Exceptions\NotFoundException(
+                    "SQL syntax error. No such index '$column' in table '" . $this->_table->getName() . "'.",
+                    \Yana\Log\TypeEnumeration::WARNING
+                );
             }
         }
     }

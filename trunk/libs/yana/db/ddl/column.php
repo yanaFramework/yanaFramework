@@ -695,7 +695,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
         assert('is_bool($isUnsigned); // Wrong type for argument 1. Boolean expected');
         if (!$this->isNumber()) {
             $message = "Property 'unsigned' not implemented for type '{$this->type}'.";
-            throw new \Yana\Core\Exceptions\NotImplementedException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotImplementedException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
 
         $this->unsigned = (bool) $isUnsigned;
@@ -787,7 +787,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
         assert('is_bool($isAutoIncrement); // Wrong type for argument 1. Boolean expected');
         if (!$this->isNumber()) {
             $message = "Property 'autoincrement' not implemented for type '{$this->type}'.";
-            throw new \Yana\Core\Exceptions\NotImplementedException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotImplementedException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
 
         $this->autoincrement = (bool) $isAutoIncrement;
@@ -881,7 +881,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
 
             default:
                 $message = "Auto-fill is not implemented for columns of type '{$this->type}'.";
-                throw new \Yana\Core\Exceptions\NotImplementedException($message, E_USER_NOTICE);
+                throw new \Yana\Core\Exceptions\NotImplementedException($message, \Yana\Log\TypeEnumeration::INFO);
         } // end switch
         return $this;
     }
@@ -996,7 +996,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
         assert('is_int($precision); // Wrong type for argument 2. Integer expected');
         if ($precision > $length) {
             $message = "The precission '$precision' may not exceed the maximum length of '$length'.";
-            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
 
         $this->setSize($length);
@@ -1436,7 +1436,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
         assert('is_scalar($id); // Wrong type for argument 1. Scalar value expected');
         if (!isset($this->enumerationItems[$id])) {
             $message = "No such option '$id' in Enumeration '{$this->getName()}'.";
-            throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotFoundException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
 
         unset($this->enumerationItems[$id]);
@@ -1951,7 +1951,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
         if ($node->getName() !== 'declaration') {
             $attributes = $node->attributes();
             if (!isset($attributes['name'])) {
-                throw new \Yana\Core\Exceptions\InvalidArgumentException("Missing name attribute.", E_USER_WARNING);
+                throw new \Yana\Core\Exceptions\InvalidArgumentException("Missing name attribute.", \Yana\Log\TypeEnumeration::WARNING);
             }
             $ddl = new self((string) $attributes['name'], $parent);
             $ddl->_unserializeFromXDDL($node);

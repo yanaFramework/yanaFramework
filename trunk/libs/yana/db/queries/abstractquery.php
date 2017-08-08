@@ -1479,7 +1479,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
             } else {
                 $message = "The invalid operator '" . $operator .
                     "' in your where clause has been ignored.";
-                trigger_error($message, E_USER_NOTICE);
+                \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::INFO);
                 return "";
             }
         }

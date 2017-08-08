@@ -57,7 +57,7 @@ class File extends AbstractMountpoint
         if (!class_exists($className)) {
             $message = "Invalid resource-type argument supplied for Mountpoint '" . print_r($path, true) . "'.\n\t" .
                 "No such file wrapper: '$className'.";
-            throw new \Yana\VDrive\ClassNotFoundException($message, E_USER_WARNING);
+            throw new \Yana\VDrive\ClassNotFoundException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
 
         /* all fine - proceed */

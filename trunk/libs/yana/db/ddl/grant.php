@@ -261,7 +261,7 @@ class Grant extends \Yana\Db\Ddl\DDL
             $this->level = null;
         } elseif ($level < 0 || $level > 100) {
             $message = "Security level '$level' outside range [0,100].";
-            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
         } else {
             $this->level = (int) $level;
         }

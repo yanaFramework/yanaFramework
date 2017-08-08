@@ -125,7 +125,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
         if (!\class_exists('\XSLTProcessor')) {
             $message = "The PHP XSL extension was not found. Windows users: add 'extension=php_xsl.dll' to your php.ini file." .
                 " On Linux please use 'apt-get install php5-xsl' on your console.";
-            throw new \Yana\Db\Export\ExportException($message, E_USER_ERROR);
+            throw new \Yana\Db\Export\ExportException($message, \Yana\Log\TypeEnumeration::ERROR);
         }
         $xsltProcessor = new \XSLTProcessor();
         $xsltProcessor->importStyleSheet($xslDocument); // attach the xsl rules

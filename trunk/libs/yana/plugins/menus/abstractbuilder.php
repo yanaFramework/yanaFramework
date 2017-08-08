@@ -163,7 +163,7 @@ abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Plugin
             if (!$menuEntry->getGroup()) {
                 $this->getLogger()
                     ->addLog("Error in plugin configuration '" . $pluginConfiguration->getTitle() . "'. " .
-                        "Menu definition is missing setting 'group'.", E_USER_WARNING);
+                        "Menu definition is missing setting 'group'.", \Yana\Log\TypeEnumeration::WARNING);
                 continue;
             }
             $title = $menuEntry->getTitle();
