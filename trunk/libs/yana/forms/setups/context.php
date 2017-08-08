@@ -140,7 +140,7 @@ class Context extends \Yana\Core\Object
      *
      * @param   string  $key    id of value to set
      * @param   mixed   $value  new value
-     * @return  FormSetup
+     * @return  self
      */
     public function setValue($key, $value)
     {
@@ -153,7 +153,7 @@ class Context extends \Yana\Core\Object
      * Set form values.
      *
      * @param   array  $values  new values
-     * @return  FormSetup
+     * @return  self
      */
     public function setValues(array $values)
     {
@@ -167,7 +167,7 @@ class Context extends \Yana\Core\Object
      * Replaces existing values, adds new values and keeps values that haven't been changed in the request.
      *
      * @param   array  $values  new values
-     * @return  FormSetup
+     * @return  self
      */
     public function addValues(array $values)
     {
@@ -182,7 +182,7 @@ class Context extends \Yana\Core\Object
      * If the row does not exist, it is created.
      *
      * @param   array  $row  new values
-     * @return  FormSetup
+     * @return  self
      */
     public function updateRow($key, array $row)
     {
@@ -196,7 +196,7 @@ class Context extends \Yana\Core\Object
      * Replace form rows.
      *
      * @param   array  $rows  new values
-     * @return  FormSetup
+     * @return  self
      */
     public function setRows(array $rows)
     {
@@ -274,7 +274,7 @@ class Context extends \Yana\Core\Object
      * set export action
      *
      * @param   string  $action action name
-     * @return  FormSetup
+     * @return  self
      */
     public function setAction($action)
     {
@@ -310,7 +310,7 @@ class Context extends \Yana\Core\Object
      * If the list is left empty. The form is meant to auto-detect the abvailable columns.
      *
      * @param   array  $columnNames  list of identifiers
-     * @return  FormSetup
+     * @return  self
      */
     public function setColumnNames(array $columnNames)
     {
