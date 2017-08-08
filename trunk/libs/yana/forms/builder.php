@@ -931,7 +931,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
      * Build FormSetup object.
      *
      * @param   \Yana\Db\Ddl\Form  $form  base form
-     * @return  \Yana\Forms\Setup
+     * @return  \Yana\Forms\IsSetup
      * @throws  \Yana\Core\Exceptions\NotFoundException  when a paraemter is not valid
      */
     private function _buildSetup(\Yana\Db\Ddl\Form $form)
@@ -941,7 +941,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
         $formSetup->setEntriesPerPage($this->getEntries());
         $layout = $this->getLayout();
         if (!is_int($layout)) {
-            $layout = $this->_form->getTemplate();
+            $layout = $form->getTemplate();
         }
         if (is_numeric($layout)) {
             $formSetup->setLayout((int) $layout);
