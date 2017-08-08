@@ -56,7 +56,7 @@ class TextContainer extends \Yana\Core\VarContainer implements \Yana\Translation
     protected function _toArrayOffset($key)
     {
         assert('is_scalar($key); // Invalid argument $key: string expected');
-        return (string) \mb_strtolower($key);;
+        return (string) \mb_strtolower($key);
     }
 
     /**

@@ -185,7 +185,7 @@ class Connection extends \Yana\Db\AbstractConnection
             throw new \Yana\Db\DatabaseException();
         }
 
-        return new \Yana\Db\Mdb2\Result($mdb2Result);;
+        return new \Yana\Db\Mdb2\Result($mdb2Result);
     }
 
     /**
@@ -373,7 +373,7 @@ class Connection extends \Yana\Db\AbstractConnection
         assert('is_string($value); // Wrong argument type for argument 1. String expected.');
 
         if (is_null($this->_reservedSqlKeywords)) {
-            global $YANA;
+            $YANA = \Yana\Application::getInstance();
             /* Load list of reserved SQL keywords (required for smart id quoting) */
             if (isset($YANA)) {
                 $file = $YANA->getResource('system:/config/reserved_sql_keywords.file');

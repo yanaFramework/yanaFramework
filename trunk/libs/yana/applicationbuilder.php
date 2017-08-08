@@ -36,15 +36,9 @@ namespace Yana;
  * This is intended to be used for cronjobs and maintenance.
  *
  * Example of usage (Windows):
- * <pre>php index.php action=test target=detailed >stdout.log</pre>
+ * <pre>php index.php action=test target=detailed > stdout.log</pre>
  *
- * When running PHP from the command line under UNIX, you need to
- * include the following line on top of the "index.php" file:
- * <pre>#!/usr/bin/php</pre>
- * This is to tell where the PHP binaries can be found.
- *
- * The path might be another on your server.
- * If you don't know the path, enter the following on your command line:
+ * If you don't know the path to PHP, enter the following on your command line:
  * <pre>which php</pre>
  * This will output the path where the php binaries are installed.
  *
@@ -64,6 +58,11 @@ class ApplicationBuilder extends \Yana\Core\Object
      * @var \Yana\Log\Errors\Handler
      */
     private $_errorHandler = null;
+
+    /**
+     * @var  \Yana\Application
+     */
+    private static $_application = null;
 
     /**
      * Set error reporting level.
@@ -172,10 +171,9 @@ class ApplicationBuilder extends \Yana\Core\Object
      */
     private function _runOnCommandLine()
     {
-        global $YANA;
-        $YANA = $this->_createApplication();
+        self::$_application = $this->_createApplication();
         // Handle the request
-        $YANA->callAction();
+        self::$_application->callAction();
 
         /* Since this is expected to be used for cronjobs,
          * no (human readable) output is explicitely created here.
@@ -189,8 +187,6 @@ class ApplicationBuilder extends \Yana\Core\Object
      */
     private function _runOnline()
     {
-        global $YANA;
-
         /* session preparation
          *
          * {@internal
@@ -260,9 +256,9 @@ class ApplicationBuilder extends \Yana\Core\Object
                 $outputCompressionActive = true;
             }
         }
-        $YANA = $this->_createApplication();
-        $YANA->callAction();         // Handle the request
-        $YANA->outputResults();      // Create the output
+        self::$_application = $this->_createApplication();
+        self::$_application->callAction();         // Handle the request
+        self::$_application->outputResults();      // Create the output
         // flush the output buffer (GZ-compression)
         if ($outputCompressionActive && ob_get_length() !== false) {
             ob_end_flush();

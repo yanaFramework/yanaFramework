@@ -51,7 +51,7 @@ class UrlFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFo
      */
     public function __construct()
     {
-        global $YANA;
+        $YANA = \Yana\Application::getInstance();
         if (isset($YANA)) {
             self::$_baseUrl = $YANA->getVar('PHP_SELF')  . "?id=" . \Yana\Application::getInstance()->getProfileId();
         } else {

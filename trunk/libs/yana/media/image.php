@@ -678,7 +678,7 @@ class Image extends \Yana\Core\Object
     {
         $this->_isBroken = true;
         /* check if the predefined error image is available */
-        global $YANA;
+        $YANA = \Yana\Application::getInstance();
         if (isset($YANA) && function_exists('imagecreatefromgif')) {
             $errorImage = $YANA->getVar('DATADIR').'icon_x.gif';
             if (!is_readable($errorImage)) {

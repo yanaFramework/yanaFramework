@@ -66,7 +66,7 @@ class SML extends \Yana\Core\Object implements IsDecoder
         $isValid = true;
 
         if (is_string($input) && is_file($input)) {
-            $handle  = fopen("$input", "r");;
+            $handle  = fopen("$input", "r");
             $isFile = true;
         } elseif (is_array($input)) {
             $isFile = false;

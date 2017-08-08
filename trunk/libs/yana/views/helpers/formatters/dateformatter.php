@@ -55,7 +55,7 @@ class DateFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
      */
     public function __construct()
     {
-        global $YANA;
+        $YANA = \Yana\Application::getInstance();
         if (isset($YANA)) {
             $profileTimeFormat = $YANA->getVar("PROFILE.TIMEFORMAT");
             if (!is_numeric($profileTimeFormat)) {

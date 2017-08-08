@@ -261,7 +261,7 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
      */
     public function createDB2($extractStructure = true, $extractData = true)
     {
-        global $YANA;
+        $YANA = \Yana\Application::getInstance();
         if ($extractStructure) {
             $sql = parent::createDB2();
         } else {

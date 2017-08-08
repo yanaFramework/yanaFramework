@@ -154,7 +154,7 @@ class UserBuilder extends \Yana\Core\Object implements \Yana\Security\Data\IsUse
         $adapter = $this->_getUserAdapter();
 
         if (!$this->isExistingUserName($userId)) {
-            throw new \Yana\Core\Exceptions\User\NotFoundException("User '" . $userId . "' not found.");;
+            throw new \Yana\Core\Exceptions\User\NotFoundException("User '" . $userId . "' not found.");
         }
         assert('!isset($userAccount); // Cannot redeclare var $userAccount');
         $userAccount = $adapter[$userId];

@@ -59,7 +59,7 @@ class Captcha extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vi
         }
         $index = rand(1, 9);
 
-        global $YANA;
+        $YANA = \Yana\Application::getInstance();
         $title = "";
         if (isset($YANA)) {
             $title = $YANA->getLanguage()->getVar('SECURITY_IMAGE.DESCRIPTION');

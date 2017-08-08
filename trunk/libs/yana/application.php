@@ -38,7 +38,7 @@ namespace Yana;
  * Example:
  * <code>
  * // get the current instance
- * global $YANA;
+ * $YANA = \Yana\Application::getInstance();
  * // handle request
  * $YANA->callAction($_REQUEST['action']);
  * // output results
@@ -94,7 +94,6 @@ final class Application extends \Yana\Core\AbstractSingleton
      * Example:
      * <code>
      * \Yana\Application::setConfiguration("config/system.config");
-     * global $YANA;
      * $YANA = \Yana\Application::getInstance();
      * </code>
      *
@@ -580,7 +579,7 @@ final class Application extends \Yana\Core\AbstractSingleton
      *
      * Examples:
      * <code>
-     * global $YANA;
+     * $YANA = \Yana\Application::getInstance();
      *
      * // print an error and go to start page
      * new Message('Error 404', \Yana\Log\TypeEnumeration::ERROR);

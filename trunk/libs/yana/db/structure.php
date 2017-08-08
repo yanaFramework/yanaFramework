@@ -496,7 +496,7 @@ class Structure extends \Yana\Files\SML
      * To test the syntax of your statements for a structure file
      * foo.config you may use the following code:
      * <code>
-     * global $YANA;
+     * $YANA = \Yana\Application::getInstance();
      * $parser = new DbQueryParser(\Yana\Application::connect('foo'));
      * foreach ($statements as $statement)
      * {
@@ -3733,7 +3733,7 @@ class Structure extends \Yana\Files\SML
                 if (isset($cache[1])) {
                     $list_of_results[1] =& $cache[1];
                 }
-                $columns = \Yana\Util\Hashtable::changeCase($columns, CASE_UPPER);;
+                $columns = \Yana\Util\Hashtable::changeCase($columns, CASE_UPPER);
                 $match = array_intersect(array_keys($cache), $columns);
 
                 foreach ($match as $key => $definition)

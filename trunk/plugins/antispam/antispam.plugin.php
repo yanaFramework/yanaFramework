@@ -326,7 +326,7 @@ class AntiSpamPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public static function _outputFilter($source)
     {
-        global $YANA;
+        $YANA = $this->_getApplication();
         /* Create form id */
         if ($YANA->getVar('DISABLE_FORM_ID') !== true) {
             $yana_form_id = uniqid();

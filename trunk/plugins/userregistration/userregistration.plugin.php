@@ -137,7 +137,7 @@ class UserRegistrationPlugin extends \Yana\Plugins\AbstractPlugin
             {
                 if ($row['NEWUSER_UTC'] < $limit) {
                     try {
-                        $database->remove("newuser.".$row['NEWUSER_ID']);;
+                        $database->remove("newuser.".$row['NEWUSER_ID']);
                     } catch (\Exception $e) {
                         unset($e); // we can do without this step if necessary
                     }

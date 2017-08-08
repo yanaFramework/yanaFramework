@@ -54,7 +54,7 @@ class IconLoader extends \Yana\Core\Object
     public function getIcons()
     {
         if (empty(self::$_icons)) {
-            global $YANA;
+            $YANA = \Yana\Application::getInstance();
             if (isset($YANA)) {
                 $dir = $YANA->getVar('PROFILE.SMILEYDIR');
             }
