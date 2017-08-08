@@ -237,9 +237,9 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsCon
             $data = $connection->getMessage() . "\nUsing DSN:\n" . print_r($dsn, true);
 
             // add an entry to the logs
-            \Yana\Application::getInstance()->getLogger()->addLog($_message, \E_USER_ERROR, $data);
+            \Yana\Application::getInstance()->getLogger()->addLog($_message, \Yana\Log\TypeEnumeration::ERROR, $data);
 
-            throw new \Yana\Db\ConnectionException($_message . ': ' . $data, \E_USER_ERROR);
+            throw new \Yana\Db\ConnectionException($_message . ': ' . $data, \Yana\Log\TypeEnumeration::ERROR);
         }
         $this->_database = $connection;
     }

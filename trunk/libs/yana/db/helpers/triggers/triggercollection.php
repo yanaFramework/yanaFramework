@@ -68,7 +68,7 @@ class TriggerCollection extends \Yana\Core\AbstractCollection
     {
         if (!$item instanceof \Yana\Db\Helpers\Triggers\IsTrigger) {
             $message = "Item must be instance of \Yana\Db\Helpers\Triggers\IsTrigger.";
-            throw new \Yana\Core\Exceptions\InvalidArgumentException($message. \E_USER_ERROR);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::ERROR);
         }
         return $this->_offsetSet($key, $item);
     }
