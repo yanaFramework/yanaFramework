@@ -47,7 +47,7 @@ namespace Yana\Translations;
  * @package     yana
  * @subpackage  translations
  */
-interface IsTranslationManager
+interface IsTranslationManager extends \Yana\Log\IsLogable
 {
 
     /**
@@ -71,7 +71,7 @@ interface IsTranslationManager
      * If you add multiple, only the first will be used.
      *
      * @param   \Yana\Core\MetaData\IsDataProvider  $provider  to load information about a language pack
-     * @return  \Yana\Translations\IsTranslationManager
+     * @return  self
      */
     public function addMetaDataProvider(\Yana\Core\MetaData\IsDataProvider $provider);
 
@@ -79,7 +79,7 @@ interface IsTranslationManager
      * Adds a class that finds and loads translations.
      *
      * @param  \Yana\Translations\TextData\IsDataProvider  $provider  to load the contents of a language pack
-     * @return  \Yana\Translations\IsTranslationManager
+     * @return  self
      */
     public function addTextDataProvider(\Yana\Translations\TextData\IsDataProvider $provider);
 
@@ -106,7 +106,7 @@ interface IsTranslationManager
      * It returns bool(true) on success and bool(false) on error.
      *
      * @param   string  $id  name of translation package that should be loaded
-     * @return  \Yana\Translations\IsTranslationManager
+     * @return  self
      * @throws  \Yana\Core\Exceptions\Translations\InvalidFileNameException       when the given identifier is invalid
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException                      when the give filename is invalid
      * @throws  \Yana\Core\Exceptions\Translations\LanguageFileNotFoundException  when the language file is not found

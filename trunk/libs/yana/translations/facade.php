@@ -36,29 +36,18 @@ namespace Yana\Translations;
  * @package     yana
  * @subpackage  translations
  */
-class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yana\Log\IsLogable
+class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yana\Translations\IsFacade
 {
 
     /**
-     * @var  \Yana\Translations\Manager
+     * @var  \Yana\Translations\IsTranslationManager
      */
     private $_manager = null;
 
     /**
-     * Call manager method
-     *
-     * @param  string  $name       method name
-     * @param  array   $arguments  list of arguments
-     */
-    public function __call($name, array $arguments)
-    {
-        return \call_user_func_array(array($this->_getManager(), $name), $arguments);
-    }
-
-    /**
      * Lazy-load and return translation-manager.
      *
-     * @return  \Yana\Translations\Manager
+     * @return  \Yana\Translations\IsTranslationManager
      */
     protected function _getManager()
     {
@@ -178,7 +167,7 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
      * It returns bool(true) on success and bool(false) on error.
      *
      * @param   string  $file  name of translation file that should be loaded
-     * @return  \Yana\Translations\Facade
+     * @return  self
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException   when the give filename is invalid
      * @throws  \Yana\Core\Exceptions\Files\NotFoundException  when the language file is not found
      */
@@ -244,7 +233,7 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
      * Add a directory to the list of language directories.
      *
      * @param   string  $directory  base directory
-     * @return  \Yana\Translations\Facade
+     * @return  self
      * @throws  \Yana\Core\Exceptions\NotFoundException   when the chosen directory does not exist
      *
      * @ignore
@@ -265,7 +254,7 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
      * @param   string  $selectedLanguage  current language
      * @param   string  $selectedCountry   current country (optional)
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the provided locale is not valid
-     * @return  \Yana\Translations\Facade
+     * @return  self
      *
      * @ignore
      */
@@ -347,10 +336,70 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
     }
 
     /**
+     * Adds a class that provides meta-information about a language package.
+     *
+     * Note that you can have only one meta-data provider per locale.
+     * If you add multiple, only the first will be used.
+     *
+     * @param   \Yana\Core\MetaData\IsDataProvider  $provider  to load information about a language pack
+     * @return  self
+     */
+    public function addMetaDataProvider(\Yana\Core\MetaData\IsDataProvider $provider)
+    {
+        $this->_getManager()->addMetaDataProvider($provider);
+        return $this;
+    }
+
+    /**
+     * Adds a class that finds and loads translations.
+     *
+     * @param  \Yana\Translations\TextData\IsDataProvider  $provider  to load the contents of a language pack
+     * @return  self
+     */
+    public function addTextDataProvider(TextData\IsDataProvider $provider)
+    {
+        $this->_getManager()->addTextDataProvider($provider);
+        return $this;
+    }
+
+    /**
+     * Returns a container with all known translations.
+     *
+     * @return  \Yana\Translations\TextData\IsTextContainer
+     */
+    public function getTranslations()
+    {
+        return $this->_getManager()->getTranslations();
+    }
+
+    /**
+     * Read language strings.
+     *
+     * You may find valid filenames in the following directory 'languages/<locale>/*.xlf'.
+     * Provide the file without path and file extension.
+     *
+     * You may access the file contents via $language->getVar('some.value')
+     *
+     * This function issues an E_USER_NOTICE if the file does not exist.
+     * It returns bool(true) on success and bool(false) on error.
+     *
+     * @param   string  $id  name of translation package that should be loaded
+     * @return  self
+     * @throws  \Yana\Core\Exceptions\Translations\InvalidFileNameException       when the given identifier is invalid
+     * @throws  \Yana\Core\Exceptions\InvalidSyntaxException                      when the give filename is invalid
+     * @throws  \Yana\Core\Exceptions\Translations\LanguageFileNotFoundException  when the language file is not found
+     */
+    public function loadTranslations($id)
+    {
+        $this->_getManager()->loadTranslations($id);
+        return $this;
+    }
+
+    /**
      * Adds a logger to the class.
      *
      * @param   \Yana\Log\IsLogger  $logger  instance that will handle the logging
-     * @return  \Yana\Translations\Facade
+     * @return  self
      */
     public function attachLogger(\Yana\Log\IsLogger $logger)
     {

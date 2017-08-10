@@ -42,7 +42,7 @@ interface IsLocale
      *
      * @param   string  $selectedLanguage  2 character language code
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the provided language is not valid
-     * @return  \Yana\Translations\IsLocale
+     * @return  self
      */
     public function setLanguage($selectedLanguage);
 
@@ -51,7 +51,7 @@ interface IsLocale
      *
      * @param   string  $selectedCountry   2 character country code
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the provided country is not valid
-     * @return  \Yana\Translations\IsLocale
+     * @return  self
      */
     public function setCountry($selectedCountry);
 

@@ -35,7 +35,7 @@ namespace Yana\Translations;
  * @package     yana
  * @subpackage  translations
  */
-abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Log\IsLogable, \Yana\Translations\IsTranslationManager
+abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Translations\IsTranslationManager
 {
 
     /**
@@ -72,11 +72,6 @@ abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Log\Is
     {
         $this->_textDataProviders = new \Yana\Translations\TextData\DataProviderCollection();
         $this->_metaDataProviders = new \Yana\Core\MetaData\DataProviderCollection();
-    }
-
-    public function getVars()
-    {
-        
     }
 
     /**
