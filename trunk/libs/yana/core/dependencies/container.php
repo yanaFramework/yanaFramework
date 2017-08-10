@@ -415,6 +415,7 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
             $defaultProvider = new \Yana\Translations\TextData\XliffDataProvider(new \Yana\Files\Dir($languageDir));
             $this->_language = \Yana\Translations\Facade::getInstance();
             $this->_language->addTextDataProvider($defaultProvider);
+            $this->_language->attachLogger($this->getLogger());
             unset($defaultProvider);
 
             $this->_language->setLocale((string) $this->_configuration->default->language);
