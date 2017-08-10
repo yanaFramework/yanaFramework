@@ -222,6 +222,13 @@ interface IsApplicationContainer
      */
     public function getLogger();
 
+    /**
+     * Retrieve session wrapper.
+     *
+     * @return  \Yana\Security\Sessions\IsWrapper
+     */
+    public function getSession();
+
 }
 
 ?>

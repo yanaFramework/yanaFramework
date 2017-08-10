@@ -139,6 +139,12 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
     private $_request = null;
 
     /**
+     *
+     * @var  \Yana\Security\Sessions\IsWrapper
+     */
+    private $_session = null;
+
+    /**
      * Creates an instance.
      */
     public function __construct(\Yana\Util\XmlArray $configuration)
@@ -250,6 +256,19 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
     }
 
     /**
+     * Retrieve session wrapper.
+     *
+     * @return  \Yana\Security\Sessions\IsWrapper
+     */
+    public function getSession()
+    {
+        if (!isset($this->_session)) {
+            $this->_session = new \Yana\Security\Sessions\Wrapper();
+        }
+        return $this->_session;
+    }
+
+    /**
      * Get security facade.
      *
      * This facade is used to manage user information and check permissions.
@@ -260,6 +279,7 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
     {
         if (!isset($this->_security)) {
             $container = new \Yana\Security\Dependencies\Container();
+            $container->setSession($this->getSession());
             $this->_security = new \Yana\Security\Facade($container);
         }
         return $this->_security;
@@ -316,9 +336,11 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
             $this->_registry->setAsGlobal();
 
             // set user name
-            if (!empty($_SESSION['user_name'])) {
-                $this->_registry->setVar("SESSION_USER_ID", $_SESSION['user_name']);
+            $session = $this->getSession();
+            if (!empty($session['user_name'])) {
+                $this->_registry->setVar("SESSION_USER_ID", $session['user_name']);
             }
+            unset($session);
 
             // set CD-ROM temp-dir
             if (YANA_CDROM === true) {
@@ -411,37 +433,50 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
     public function getLanguage()
     {
         if (!isset($this->_language)) {
-            $languageDir = $this->getRegistry()->getVar('LANGUAGEDIR');
-            $defaultProvider = new \Yana\Translations\TextData\XliffDataProvider(new \Yana\Files\Dir($languageDir));
-            $this->_language = \Yana\Translations\Facade::getInstance();
-            $this->_language->addTextDataProvider($defaultProvider);
-            $this->_language->attachLogger($this->getLogger());
-            unset($defaultProvider);
-
-            $this->_language->setLocale((string) $this->_configuration->default->language);
-            if (isset($_SESSION['language'])) {
-                try {
-                    $this->_language->setLocale($_SESSION['language']);
-                } catch (\Yana\Core\Exceptions\InvalidArgumentException $e){
-                    unset($_SESSION['language']);
-                }
-            }
-            try {
-                $this->_language->loadTranslations('default');
-            } catch (\Yana\Core\Exceptions\InvalidArgumentException $e){
-                unset($_SESSION['language']);
-            }
-            $array = array();
-            foreach (glob("$languageDir*", GLOB_ONLYDIR) as $dir)
-            {
-                $array[basename($dir)] = 1;
-            }
-            $this->setVar('INSTALLED_LANGUAGES', $array);
-            if (isset($_SESSION['language'])) {
-                $this->setVar('SELECTED_LANGUAGE', $_SESSION['language']);
-            }
+            $this->_language = $this->_buildNewTranslationFacade();
         }
         return $this->_language;
+    }
+
+    /**
+     * Builds and returns a new translation facade.
+     *
+     * @return  \Yana\Translations\IsFacade
+     */
+    protected function _buildNewTranslationFacade()
+    {
+        $languageDir = $this->getRegistry()->getVar('LANGUAGEDIR');
+        $languageDirWrapper = new \Yana\Files\Dir($languageDir);
+        $defaultProvider = new \Yana\Translations\TextData\XliffDataProvider($languageDirWrapper);
+        $translationFacade = \Yana\Translations\Facade::getInstance();
+        $translationFacade->addTextDataProvider($defaultProvider);
+        $translationFacade->attachLogger($this->getLogger());
+        unset($defaultProvider);
+
+        $translationFacade->setLocale((string) $this->_configuration->default->language);
+        $session = $this->getSession();
+        if (isset($session['language'])) {
+            try {
+                $translationFacade->setLocale((string) $session['language']);
+            } catch (\Yana\Core\Exceptions\InvalidArgumentException $e){
+                unset($session['language']);
+            }
+        }
+        try {
+            $translationFacade->loadTranslations('default');
+        } catch (\Yana\Core\Exceptions\InvalidArgumentException $e){
+            unset($session['language']);
+        }
+        $array = array();
+        foreach (glob($languageDir . "*", GLOB_ONLYDIR) as $dir)
+        {
+            $array[basename($dir)] = 1;
+        }
+        $this->setVar('INSTALLED_LANGUAGES', $array);
+        if (isset($session['language'])) {
+            $this->setVar('SELECTED_LANGUAGE', (string) $session['language']);
+        }
+        return $translationFacade;
     }
 
     /**
