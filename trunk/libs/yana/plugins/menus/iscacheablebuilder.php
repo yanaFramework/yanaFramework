@@ -42,7 +42,7 @@ interface IsCacheableBuilder extends \Yana\Plugins\Menus\IsBuilder, \Yana\Data\A
      *
      * After calling this function, calling "buildMenu()" again will give you a fresh instance.
      *
-     * @return \Yana\Plugins\Menus\Builder
+     * @return  self
      */
     public function clearMenuCache();
 

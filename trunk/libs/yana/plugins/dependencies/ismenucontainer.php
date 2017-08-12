@@ -25,17 +25,17 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Plugins\Menus;
+namespace Yana\Plugins\Dependencies;
 
 /**
- * <<interface>> Dependency container.
+ * <<interface>> Dependency container for plugin menus.
  *
  * To collect all the dependencies needed for the menu builder.
  *
  * @package     yana
  * @subpackage  plugins
  */
-interface IsDependencyContainer
+interface IsMenuContainer
 {
 
     /**
@@ -53,13 +53,6 @@ interface IsDependencyContainer
     public function getSecurityFacade();
 
     /**
-     * Returns security facade.
-     *
-     * @return  \Yana\Security\Sessions\IsWrapper
-     */
-    public function getSession();
-
-    /**
      * Returns bool(true) if the currently active profile is the default profile.
      *
      * @return  bool
@@ -69,10 +62,16 @@ interface IsDependencyContainer
     /**
      * Returns a plugin manager.
      *
-     * @return \Yana\Plugins\Manager
+     * @return  \Yana\Plugins\Manager
      */
     public function getPluginManager();
 
+    /**
+     * Returns a formatting helper for menu URLs.
+     *
+     * @return  \Yana\Views\Helpers\Formatters\UrlFormatter
+     */
+    public function getUrlFormatter();
 }
 
 ?>

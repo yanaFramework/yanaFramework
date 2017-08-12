@@ -52,10 +52,13 @@ class Builder extends \Yana\Plugins\Menus\AbstractBuilder implements \Yana\Log\I
     private $_loggers = null;
 
     /**
-     * Initialize instance
+     * <<constructor>> Initializes dependencies
+     *
+     * @param  \Yana\Plugins\Dependencies\IsMenuContainer  $container  containing all dependencies
      */
-    public function __construct()
+    public function __construct(\Yana\Plugins\Dependencies\IsMenuContainer $container)
     {
+        parent::__construct($container);
         $this->_loggers = new \Yana\Log\LoggerCollection();
     }
 
@@ -105,7 +108,7 @@ class Builder extends \Yana\Plugins\Menus\AbstractBuilder implements \Yana\Log\I
      * Note that for Unit tests you may force the class NOT to use a cache by injecting a NullAdapter here.
      *
      * @param   \Yana\Data\Adapters\IsDataAdapter  $cacheAdapter  preferably a SessionAdapter
-     * @return  \Yana\Plugins\Menus\Builder
+     * @return  self
      */
     public function setCache(\Yana\Data\Adapters\IsDataAdapter $cacheAdapter)
     {
@@ -167,7 +170,7 @@ class Builder extends \Yana\Plugins\Menus\AbstractBuilder implements \Yana\Log\I
      *
      * After calling this function, calling "buildMenu()" again will give you a fresh instance.
      *
-     * @return \Yana\Plugins\Menus\Builder
+     * @return  self
      */
     public function clearMenuCache()
     {

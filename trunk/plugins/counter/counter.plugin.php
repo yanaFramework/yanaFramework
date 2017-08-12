@@ -91,7 +91,7 @@ class CounterPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function graphic_counter()
     {
-        $pluginManager = \Yana\Plugins\Manager::getInstance();
+        $pluginManager = $this->_getPluginsFacade();
         $background = $pluginManager->{'counter:/images/background.file'};
         $blank = $pluginManager->{'counter:/images/blank.file'};
         $dir = $pluginManager->{'counter:/images'};

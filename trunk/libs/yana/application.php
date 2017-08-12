@@ -81,6 +81,7 @@ final class Application extends \Yana\Core\AbstractSingleton
      * The dependency container contains code to initialize and return sub-modules.
      *
      * @return  \Yana\Core\Dependencies\IsApplicationContainer
+     * @todo    Application instnance needs a setter for the dependencies - preferably via the constructor
      */
     protected function _getDependencyContainer()
     {
@@ -851,8 +852,8 @@ final class Application extends \Yana\Core\AbstractSingleton
     public function clearCache()
     {
         // clear Menu Cache
-        $builder = new \Yana\Plugins\Menus\Builder();
-        $builder->clearMenuCache(); // uses session cache adapter by default
+        $this->_getDependencyContainer()->getMenuBuilder($this)
+                ->clearMenuCache(); // uses session cache adapter by default
 
         // Clear Template cache
         $this->getView()->clearCache();
@@ -1094,6 +1095,38 @@ final class Application extends \Yana\Core\AbstractSingleton
     public function getLogger()
     {
         return $this->_getDependencyContainer()->getLogger();
+    }
+
+    /**
+     * Refresh application settings.
+     *
+     * Clears the cache, scans the plugin directory for new plugins,
+     * and loads the security settings for the plugins found.
+     *
+     * @return  self
+     * @throws  \Yana\Core\Exceptions\NotReadableException       when the plugin repository source is not readable
+     * @throws  \Yana\Core\Exceptions\NotWriteableException      when the plugin repository target is not writeable
+     * @throws  \Yana\Db\Queries\Exceptions\NotCreatedException  when new security entries could not be inserted
+     * @throws  \Yana\Db\Queries\Exceptions\NotDeletedException  when outdated security entries could not be deleted
+     */
+    public function refreshSettings()
+    {
+        $this->clearCache();
+        $this->getPlugins()->refreshPluginFile();
+        $this->getSecurity()->refreshPluginSecurityRules();
+    }
+
+    /**
+     * Build main application menu.
+     *
+     * Note: there is by definition only one main application menu per language.
+     * Thus calling this builder twice will give you the same instance.
+     *
+     * @return  \Yana\Plugins\Menus\IsMenu
+     */
+    public function buildApplicationMenu()
+    {
+        return $this->_getDependencyContainer()->getMenuBuilder($this)->buildMenu();
     }
 
 }

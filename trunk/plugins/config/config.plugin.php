@@ -297,7 +297,7 @@ class ConfigPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function save_pluginlist(array $pluginlist, array $plugins)
     {
-        $pluginManager = \Yana\Plugins\Manager::getInstance();
+        $pluginManager = $this->_getPluginsFacade();
         foreach($pluginlist as $plugin)
         {
             /* We don't mind, wether $plugin is a plugin or not, since
@@ -331,15 +331,8 @@ class ConfigPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function refresh_pluginlist()
     {
-        $pluginManager = \Yana\Plugins\Manager::getInstance();
-        if ($pluginManager->refreshPluginFile()) {
-            $this->_getSecurityFacade()->refreshPluginSecurityRules();
-            $builder = new \Yana\Plugins\Menus\Builder();
-            $builder->clearMenuCache(); // uses session cache adapter by default
-            return true;
-        } else {
-            return false;
-        }
+        $this->_getApplication()->refreshSettings(); // may throw exceptions
+        return true;
     }
 
     /**

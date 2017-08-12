@@ -229,6 +229,14 @@ interface IsApplicationContainer
      */
     public function getSession();
 
+    /**
+     * Creates and returns an application menu builder.
+     *
+     * @param   \Yana\Application  $application  necessary to initialize dependency container
+     * @return  \Yana\Plugins\Menus\IsCacheableBuilder
+     */
+    public function getMenuBuilder(\Yana\Application $application);
+
 }
 
 ?>

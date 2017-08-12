@@ -52,6 +52,31 @@ abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Plugin
     private static $_menus = null;
 
     /**
+     * @var  \Yana\Plugins\Dependencies\IsMenuContainer
+     */
+    private $_dependencies = null;
+
+    /**
+     * <<constructor>> Initializes dependencies
+     *
+     * @param  \Yana\Plugins\Dependencies\IsMenuContainer  $container  containing all dependencies
+     */
+    public function __construct(\Yana\Plugins\Dependencies\IsMenuContainer $container)
+    {
+        $this->_dependencies = $container;
+    }
+
+    /**
+     * Returns container for all used dependencies.
+     *
+     * @return  \Yana\Plugins\Dependencies\IsMenuContainer
+     */
+    protected function _getDependencies()
+    {
+        return $this->_dependencies;
+    }
+
+    /**
      * Returns the menu collection.
      *
      * @return  \Yana\Plugins\Menus\MenuCollection
@@ -74,7 +99,7 @@ abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Plugin
     public function getLocale()
     {
         if ($this->_locale === "") {
-            $this->_locale = \Yana\Translations\Facade::getInstance()->getLocale();
+            $this->_locale = $this->_getDependencies()->getTranslationFacade()->getLocale();
         }
         return $this->_locale;
     }
@@ -117,7 +142,8 @@ abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Plugin
 
         if (!isset($menus[$locale]) || !$menus[$locale] instanceof \Yana\Plugins\Menus\IsMenu) {
 
-            $textMenuBuilder = new \Yana\Plugins\Menus\TextMenuBuilder();
+            // Create instance and inject dependencies
+            $textMenuBuilder = new \Yana\Plugins\Menus\TextMenuBuilder($this->_getDependencies());
             assert('!isset($menu); // Cannot redeclare var $menu');
             $menu = new \Yana\Plugins\Menus\Menu($textMenuBuilder);
 
@@ -187,10 +213,11 @@ abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Plugin
      */
     protected function _determineMenuEntries(\Yana\Plugins\Menus\IsMenu $menu, \Yana\Plugins\Configs\ClassConfiguration $pluginConfiguration)
     {
+        $security = $this->_getDependencies()->getSecurityFacade();
         /* @var $menuEntry \Yana\Plugins\Menus\IsEntry */
         foreach ($pluginConfiguration->getMenuEntries() as $action => $menuEntry)
         {
-            if (!\Yana\Security\Data\SessionManager::getInstance()->checkPermission(null, $action)) {
+            if (!$security->checkRules(null, $action)) {
                 continue;
             }
             $menu->setMenuEntry($action, $this->_completeMenuEntry($action, $menuEntry, $pluginConfiguration));
@@ -248,7 +275,7 @@ abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Plugin
     protected function _getListOfActivePlugins()
     {
         assert('!isset($pluginManager); // Cannot redeclare var $pluginManager');
-        $pluginManager = \Yana\Plugins\Manager::getInstance();
+        $pluginManager = $this->_getDependencies()->getPluginManager();
         /* @var $pluginManager \Yana\Plugins\Manager */
         assert('!isset($plugins); // Cannot redeclare var $plugins');
         $plugins = $pluginManager->getPluginConfigurations()->toArray();

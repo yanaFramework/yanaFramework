@@ -1,5 +1,4 @@
 <?php
-
 /**
  * YANA library
  *
@@ -51,52 +50,28 @@ class TextMenuBuilder extends \Yana\Core\Object implements \Yana\Plugins\Menus\I
     private $_hasGroup = array();
 
     /**
-     * @var  \Yana\Plugins\Manager
+     * @var  \Yana\Plugins\Dependencies\IsMenuContainer
      */
-    private $_pluginManager = null;
+    private $_dependencies = null;
 
     /**
-     * @var  \Yana\Translations\Facade
+     * <<constructor>> Initializes dependencies
+     *
+     * @param  \Yana\Plugins\Dependencies\IsMenuContainer  $container  containing all dependencies
      */
-    private $_translationManager = null;
-
-    /**
-     * @return  \Yana\Plugins\Manager
-     */
-    public function getPluginManager()
+    public function __construct(\Yana\Plugins\Dependencies\IsMenuContainer $container)
     {
-        if (!isset($this->_pluginManager)) {
-            $this->_pluginManager = \Yana\Plugins\Manager::getInstance();
-        }
-        return $this->_pluginManager;
+        $this->_dependencies = $container;
     }
 
     /**
-     * @return  \Yana\Translations\Facade
+     * Returns container for all used dependencies.
+     *
+     * @return  \Yana\Plugins\Dependencies\IsMenuContainer
      */
-    public function getTranslationManager()
+    protected function _getDependencies()
     {
-        if (!isset($this->_translationManager)) {
-            $this->_translationManager = \Yana\Translations\Facade::getInstance();
-        }
-        return $this->_translationManager;
-    }
-
-    /**
-     * 
-     * @param   \Yana\Plugins\Manager  $pluginManager  instance to inject
-     * @return  \Yana\Plugins\Menus\TextMenuBuilder
-     */
-    public function setPluginManager(\Yana\Plugins\Manager $pluginManager)
-    {
-        $this->_pluginManager = $pluginManager;
-        return $this;
-    }
-
-    public function setTranslationManager(\Yana\Translations\Facade $translationManager)
-    {
-        $this->_translationManager = $translationManager;
-        return $this;
+        return $this->_dependencies;
     }
 
     /**
@@ -110,8 +85,9 @@ class TextMenuBuilder extends \Yana\Core\Object implements \Yana\Plugins\Menus\I
         assert('is_string($pluginName); // Invalid argument $pluginName: string expected');
         if (empty($this->_hasGroup)) {
 
+            $plugins = $this->_getDependencies()->getPluginManager();
             /* @var $pluginConfiguration PluginConfigurationClass */
-            foreach ($this->getPluginManager()->getPluginConfigurations()->toArray() as $pluginName => $pluginConfiguration)
+            foreach ($plugins->getPluginConfigurations()->toArray() as $pluginName => $pluginConfiguration)
             {
                 if ($pluginConfiguration->getGroup()) {
                     $this->_hasGroup[$pluginName] = true;
@@ -132,7 +108,7 @@ class TextMenuBuilder extends \Yana\Core\Object implements \Yana\Plugins\Menus\I
     {
         assert('is_string($menuId); // Invalid argument $menuId: string expected');
         if (empty($this->_pluginsWithGroups)) {
-            $plugins = $this->getPluginManager()->getPluginConfigurations()->toArray();
+            $plugins = $this->_getDependencies()->getPluginManager()->getPluginConfigurations()->toArray();
 
             /* @var $pluginConfiguration PluginConfigurationClass */
             assert('!isset($pluginName); // Cannot redeclare var $pluginName');
@@ -167,11 +143,11 @@ class TextMenuBuilder extends \Yana\Core\Object implements \Yana\Plugins\Menus\I
     public function translateMenuName($menuNameToken)
     {
         assert('is_string($menuNameToken); // Invalid argument $menuNameToken: string expected');
-        return $this->getTranslationManager()->replaceToken($menuNameToken);
+        return $this->_getDependencies()->getTranslationFacade()->replaceToken($menuNameToken);
     }
 
     /**
-     * return menu as associative array
+     * Returns menu as associative array.
      *
      * Extracts all menus and items.
      * Array Keys are menu names.
@@ -182,17 +158,17 @@ class TextMenuBuilder extends \Yana\Core\Object implements \Yana\Plugins\Menus\I
      */
     public function getTextMenu(\Yana\Plugins\Menus\IsMenu $menuConfiguration)
     {
-        $pluginManager = \Yana\Plugins\Manager::getInstance();
-        $isSafemode = \Yana\Application::getInstance()->getProfileId() === \Yana\Application::getInstance()->getDefault('profile');
+        $plugins = $this->_getDependencies()->getPluginManager();
+        $useDefaultProfile = $this->_getDependencies()->isDefaultProfile();
         $textMenu = array();
 
         foreach ($menuConfiguration->getMenuEntries() as $menuId => $menuEntries)
         {
             $pluginId = $this->_getPluginNameByGroupId($menuId);
-            if ($pluginId && $this->_hasGroup($pluginId) && !$pluginManager->isLoaded($pluginId)) {
+            if ($pluginId && $this->_hasGroup($pluginId) && !$plugins->isLoaded($pluginId)) {
                 continue;
             }
-            $this->_getMenu($menuConfiguration, $textMenu, $menuId, $menuEntries, $isSafemode);
+            $this->_getMenu($menuConfiguration, $textMenu, $menuId, $menuEntries, $useDefaultProfile);
         }
         unset($menuId, $menuEntries);
 
@@ -212,7 +188,7 @@ class TextMenuBuilder extends \Yana\Core\Object implements \Yana\Plugins\Menus\I
     {
         assert('is_string($menuId); // Invalid argument $menuId: string expected');
         $name = $menuConfiguration->getMenuName($menuId);
-        $urlFormatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
+        $urlFormatter = $this->_getDependencies()->getUrlFormatter();
 
         foreach ($menuEntries as $action => $entry)
         {

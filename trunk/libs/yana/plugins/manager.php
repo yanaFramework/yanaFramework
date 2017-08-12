@@ -139,7 +139,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     private $_repository = null;
 
     /**
-     * @var \Yana\Plugins\DependencyContainer
+     * @var \Yana\Plugins\Dependencies\Container
      */
     private $_dependencies = null;
 
@@ -148,7 +148,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      *
      * Defaults to NULL.
      *
-     * @return  \Yana\Plugins\DependencyContainer
+     * @return  \Yana\Plugins\Dependencies\Container
      */
     public function getDependencies()
     {
@@ -160,10 +160,10 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      *
      * The container and its dependencies will be passed on to any plugins the manager loads.
      *
-     * @param   \Yana\Plugins\DependencyContainer  $dependencies  to inject
+     * @param   \Yana\Plugins\Dependencies\Container  $dependencies  to inject
      * @return  \Yana\Plugins\Manager
      */
-    public function attachDependencies(\Yana\Plugins\DependencyContainer $dependencies)
+    public function attachDependencies(\Yana\Plugins\Dependencies\Container $dependencies)
     {
         $this->_dependencies = $dependencies;
         return $this;
@@ -387,8 +387,9 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      *
      * Returns bool(true) on sucess and bool(false) on error.
      *
-     * @return  bool
-     * @throws  \Yana\Core\Exceptions\NotReadableException  when an existing VDrive definition is not readable
+     * @return  self
+     * @throws  \Yana\Core\Exceptions\NotReadableException   when an existing VDrive definition is not readable
+     * @throws  \Yana\Core\Exceptions\NotWriteableException  when the repository file can't be written
      *
      * @ignore
      */
@@ -401,15 +402,15 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
 
         // create repository cache
         if (file_put_contents(self::$_path, serialize($repository))) {
-            // cache has been written and is not empty
-
-            // actuate current config setting
-            $this->_repository = $repository;
-            return true;
-        } else {
             // an error occured - unable to write cache file
-            return false;
+            $message = "Repository file " . self::$_path . " not writeable";
+            $code = \Yana\Log\TypeEnumeration::ERROR;
+            throw new \Yana\Core\Exceptions\NotWriteableException($message, $code);
         }
+        // cache has been written and is not empty
+        // actuate current config setting
+        $this->_repository = $repository;
+        return $this;
     }
 
     /**
@@ -656,7 +657,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
             /* String */ $type = $methodsConfig[$eventName]->getType();
         } else {
             assert('!isset($defaultEvent); // Cannot redeclare var $defaultEvent');
-            /* array */ $defaultEvent = \Yana\Application::getInstance()->getDefault("EVENT");
+            /* array */ $defaultEvent = $this->getDependencies()->getApplication()->getDefault("EVENT");
             assert('is_array($defaultEvent);');
             if (is_array($defaultEvent) && isset($defaultEvent[\Yana\Plugins\Annotations\Enumeration::TYPE])) {
                 /* string */ $type = $defaultEvent[\Yana\Plugins\Annotations\Enumeration::TYPE];

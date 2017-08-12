@@ -126,23 +126,26 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
      * safe-mode settings
      *
      * false = default-mode (use profile settings)
-       true  = safe-mode    (use default profile)
+     * true  = safe-mode    (use default profile)
      *
      * @var  bool
      */
     private $_isSafeMode = null;
 
     /**
-     *
      * @var  \Yana\Http\Facade
      */
     private $_request = null;
 
     /**
-     *
      * @var  \Yana\Security\Sessions\IsWrapper
      */
     private $_session = null;
+
+    /**
+     * @var  \Yana\Plugins\Menus\Builder
+     */
+    private $_menuBuilder = null;
 
     /**
      * Creates an instance.
@@ -394,7 +397,7 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
 
             } else {
                 $this->_plugins = \Yana\Plugins\Manager::getInstance();
-                $factory = new \Yana\Plugins\DependencyContainerFactory($application);
+                $factory = new \Yana\Plugins\Dependencies\ContainerFactory($application);
                 $this->_plugins->attachDependencies($factory->createDependencies());
                 if (!is_file(\Yana\Plugins\Manager::getConfigFilePath())) {
                     $this->_plugins->refreshPluginFile();
@@ -617,6 +620,24 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
             $result = $result->toArray();
         }
         return $result;
+    }
+
+    /**
+     * Creates and returns an application menu builder.
+     *
+     * @param   \Yana\Application  $application  necessary to initialize dependency container
+     * @return  \Yana\Plugins\Menus\IsCacheableBuilder
+     */
+    public function getMenuBuilder(\Yana\Application $application)
+    {
+        if (!isset($this->_menuBuilder)) {
+            $dependencyFactory = new \Yana\Plugins\Dependencies\ContainerFactory($application);
+            $container = $dependencyFactory->createMenuDependencies();
+            $this->_menuBuilder = new \Yana\Plugins\Menus\Builder($container);
+            $this->_menuBuilder->attachLogger($this->getLogger());
+            $this->_menuBuilder->setLocale($this->getLanguage()->getLocale());
+        }
+        return $this->_menuBuilder;
     }
 
 }

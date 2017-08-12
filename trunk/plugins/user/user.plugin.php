@@ -134,8 +134,7 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
         $menuEntry->setTitle($title);
         // Add entry to menu
 
-        $builder = new \Yana\Plugins\Menus\Builder();
-        $builder->buildMenu() // using default settings
+        $this->_getApplication()->buildApplicationMenu() // using default settings
             ->setMenuEntry($action, $menuEntry);
     }
 
@@ -181,7 +180,7 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
     {
         $YANA = $this->_getApplication();
         // check captcha field
-        if (\Yana\Plugins\Manager::getInstance()->isActive('antispam') && $YANA->getVar("PROFILE.SPAM.CAPTCHA")) {
+        if ($this->_getPluginsFacade()->isActive('antispam') && $YANA->getVar("PROFILE.SPAM.CAPTCHA")) {
             if ($YANA->callAction("security_check_image", $ARGS) === false) {
                 \Yana\Log\LogManager::getLogger()->addLog('SPAM: CAPTCHA not solved, entry has not been created.');
                 return false;

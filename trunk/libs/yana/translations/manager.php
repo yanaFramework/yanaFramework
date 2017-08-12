@@ -59,13 +59,9 @@ class Manager extends \Yana\Translations\AbstractManager
      * @return  \Yana\Core\MetaData\IsPackageMetaData
      * @throws  \Yana\Core\Exceptions\NotFoundException  if the requested language pack is not found
      */
-    public function getMetaData($locale = "")
+    public function getMetaData($locale)
     {
         assert('is_string($locale); // Invalid argument $locale: string expected');
-    
-        if (empty($locale)) {
-            $locale = $this->getLocale()->__toString();
-        }
 
         return parent::getMetaData($locale);
     }

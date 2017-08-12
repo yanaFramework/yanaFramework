@@ -150,7 +150,7 @@ class ApplicationBuilder extends \Yana\Core\Object
     /**
      * This builds and runs a Yana application.
      *
-     * @return ApplicationBuilder
+     * @return self
      */
     public function execute()
     {
@@ -269,6 +269,8 @@ class ApplicationBuilder extends \Yana\Core\Object
      * Build and return the application object.
      *
      * @return  \Yana\Application
+     *
+     * @todo the dependency container actually needs to be passed to the application, which requires the application to not be a singleton
      */
     private function _createApplication()
     {

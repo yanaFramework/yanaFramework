@@ -57,7 +57,7 @@ interface IsBuilder
      * Thus the "locale" is required to identify the language that should be used to create it.
      *
      * @param   string  $locale  LOCALE consisting of Language and (optional) country code
-     * @return  \Yana\Plugins\Menus\Builder
+     * @return  self
      */
     public function setLocale($locale);
 

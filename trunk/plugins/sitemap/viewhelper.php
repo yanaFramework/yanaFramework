@@ -78,8 +78,7 @@ class ViewHelper extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFunc
         $dir = $this->_getPluginDir();
         $formatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
 
-        $builder = new \Yana\Plugins\Menus\Builder();
-        $pluginMenu = $builder->buildMenu(); // using default settings
+        $pluginMenu = \Yana\Application::getInstance()->buildApplicationMenu(); // using default settings
         unset($builder);
 
         /* @var $entry PluginMenuEntry */

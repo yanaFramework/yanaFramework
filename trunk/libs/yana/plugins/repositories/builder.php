@@ -104,9 +104,6 @@ class Builder extends \Yana\Plugins\Repositories\AbstractBuilder
         // initialize list for later use (see step 3)
         $pluginsWithDefaultMethods = array();
 
-        // clear cache
-        \Yana\Application::getInstance()->clearCache();
-
         // list of subscribing methods
         $subscribers = array();
         $builder = new \Yana\Plugins\Configs\Builder();

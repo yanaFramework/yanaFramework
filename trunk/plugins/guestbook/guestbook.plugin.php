@@ -181,7 +181,7 @@ class GuestbookPlugin extends \Yana\Plugins\AbstractPlugin
         $permission = $YANA->getVar("PERMISSION");
         /* avoid spamming */
         if (!is_int($permission) || $permission < 1) {
-            if (\Yana\Plugins\Manager::getInstance()->isActive('antispam') && $YANA->getVar("PROFILE.SPAM.CAPTCHA")) {
+            if ($this->_getPluginsFacade()->isActive('antispam') && $YANA->getVar("PROFILE.SPAM.CAPTCHA")) {
                 if ($YANA->callAction("security_check_image", \Yana\Http\Requests\Builder::buildFromSuperGlobals()->post()->asArrayOfStrings()) === false) {
                     $message = 'CAPTCHA not solved, entry has not been created.';
                     $level = \Yana\Log\TypeEnumeration::DEBUG;
@@ -385,7 +385,7 @@ class GuestbookPlugin extends \Yana\Plugins\AbstractPlugin
         $permission = $YANA->getVar("PERMISSION");
         /* avoid spamming */
         if (!is_int($permission) || $permission < 1) {
-            if (\Yana\Plugins\Manager::getInstance()->isActive('antispam') && $YANA->getVar("PROFILE.SPAM.CAPTCHA")) {
+            if ($this->_getPluginsFacade()->isActive('antispam') && $YANA->getVar("PROFILE.SPAM.CAPTCHA")) {
                 if ($YANA->callAction("security_check_image", \Yana\Http\Requests\Builder::buildFromSuperGlobals()->post()->asArrayOfStrings()) === false) {
                     $message = 'CAPTCHA not solved, entry has not been created.';
                     $level = \Yana\Log\TypeEnumeration::DEBUG;
@@ -535,7 +535,7 @@ class GuestbookPlugin extends \Yana\Plugins\AbstractPlugin
         }
         $YANA->setVar('ROWS', $rows);
         $YANA->setVar('DESCRIPTION', $YANA->getLanguage()->getVar('descr_show'));
-        $useCaptcha = \Yana\Plugins\Manager::getInstance()->isActive('antispam') && $YANA->getVar("PROFILE.SPAM.CAPTCHA") &&
+        $useCaptcha = $this->_getPluginsFacade()->isActive('antispam') && $YANA->getVar("PROFILE.SPAM.CAPTCHA") &&
             !$this->_getSecurityFacade()->loadUser()->isLoggedIn();
         $YANA->setVar('USE_CAPTCHA', $useCaptcha);
     }

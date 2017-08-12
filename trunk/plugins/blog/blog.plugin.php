@@ -211,7 +211,7 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
         /* avoid spamming */
         $permission = $YANA->getVar("PERMISSION");
         if (!is_int($permission) || $permission < 1) {
-            if (\Yana\Plugins\Manager::getInstance()->isActive('antispam') && $YANA->getVar("PROFILE.SPAM.CAPTCHA")) {
+            if ($this->_getPluginsFacade()->isActive('antispam') && $YANA->getVar("PROFILE.SPAM.CAPTCHA")) {
                 if ($YANA->callAction("security_check_image", $ARGS) === false) {
                     $message = 'CAPTCHA not solved, entry has not been created.';
                     $level = \Yana\Log\TypeEnumeration::DEBUG;

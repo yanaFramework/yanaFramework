@@ -68,8 +68,7 @@ class IpBlockAdminPlugin extends \Yana\Plugins\AbstractPlugin
     private static function _getWhitelist()
     {
         if (!isset(self::$_whitelist)) {
-            $pluginManager = \Yana\Plugins\Manager::getInstance();
-            self::$_whitelist = $pluginManager->ipblock_admin->getContent("ipblock:/dir/whitelist.block");
+            self::$_whitelist = $this->_getPluginsFacade()->ipblock_admin->getContent("ipblock:/dir/whitelist.block");
         }
         return self::$_whitelist;
     }
@@ -84,8 +83,7 @@ class IpBlockAdminPlugin extends \Yana\Plugins\AbstractPlugin
     private static function _getBlacklist()
     {
         if (!isset(self::$_blacklist)) {
-            $pluginManager = \Yana\Plugins\Manager::getInstance();
-            self::$_blacklist = $pluginManager->ipblock_admin->getContent("ipblock:/dir/blacklist.block");
+            self::$_blacklist = $this->_getPluginsFacade()->ipblock_admin->getContent("ipblock:/dir/blacklist.block");
         }
         return self::$_blacklist;
     }

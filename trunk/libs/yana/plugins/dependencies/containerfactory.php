@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Plugins;
+namespace Yana\Plugins\Dependencies;
 
 /**
  * <<factory>> Creates dependency ccntainers.
@@ -35,7 +35,7 @@ namespace Yana\Plugins;
  * @package     yana
  * @subpackage  plugins
  */
-class DependencyContainerFactory extends \Yana\Plugins\AbstractDependencyContainer
+class ContainerFactory extends \Yana\Plugins\Dependencies\AbstractContainer
 {
 
     /**
@@ -51,15 +51,27 @@ class DependencyContainerFactory extends \Yana\Plugins\AbstractDependencyContain
     /**
      * Creates a dependency-container and returns it.
      *
-     * @return  \Yana\Plugins\DependencyContainer
+     * @return  \Yana\Plugins\Dependencies\Container
      */
     public function createDependencies()
     {
-        $container = new \Yana\Plugins\DependencyContainer();
+        $container = new \Yana\Plugins\Dependencies\Container();
         $container
             ->_setApplication($this->_getApplication())
             ->_setConnectionFactory($this->_getConnectionFactory());
         return $container;
+    }
+
+    /**
+     * Creates a menu-dependency-container and returns it.
+     *
+     * @return \Yana\Plugins\Dependencies\IsMenuContainer
+     */
+    public function createMenuDependencies()
+    {
+        // Yes, this looks like the laziest way to do it, because it is the laziest way to do it.
+        // However: we need the application instance anyway, so we might as well use it.
+        return new \Yana\Plugins\Dependencies\MenuContainer($this->_getApplication());
     }
 
     /**

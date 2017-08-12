@@ -92,7 +92,7 @@ interface IsTranslationManager extends \Yana\Log\IsLogable
      * @return  \Yana\Core\MetaData\IsPackageMetaData
      * @throws  \Yana\Core\Exceptions\NotFoundException  if the requested language pack is not found
      */
-    public function getMetaData($locale = "");
+    public function getMetaData($locale);
 
     /**
      * Read language strings.

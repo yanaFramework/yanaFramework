@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Plugins;
+namespace Yana\Plugins\Dependencies;
 
 /**
  * <<factory>> Plugin.
@@ -38,12 +38,14 @@ namespace Yana\Plugins;
  *
  * @package     yana
  * @subpackage  plugins
+ *
+ * @todo apparently never used. Something is off here. Need to investigate!
  */
-abstract class AbstractDependencyWrapper extends \Yana\Core\Object implements \Yana\IsPlugin
+abstract class AbstractWrapper extends \Yana\Core\Object implements \Yana\IsPlugin
 {
 
     /**
-     * @var  \Yana\Plugins\DependencyContainer
+     * @var  \Yana\Plugins\Dependencies\Container
      */
     private $_dependencyContainer = null;
 
@@ -53,12 +55,12 @@ abstract class AbstractDependencyWrapper extends \Yana\Core\Object implements \Y
      * Creates an instance of the desired plugin and creates and injects a dependency injection container,
      * if the plugins base-class was also derived from an AbstractPlugin.
      *
-     * @param   string  $name           Must be valid identifier. Consists of chars, numbers and underscores.
-     * @param   string  $fromDirectory  where plugin files reside
-     * @param   \Yana\Plugins\AbstractDependencyContainer  $container  To be injected into the plugin
+     * @param   string                                        $name           must be valid identifier. Consists of chars, numbers and underscores.
+     * @param   string                                        $fromDirectory  where plugin files reside
+     * @param   \Yana\Plugins\Dependencies\AbstractContainer  $container      to be injected into the plugin
      * @throws  \Yana\Core\Exceptions\NotFoundException  when the plugin or its base-class was not found
      */
-    public static function loadPlugin($name, $fromDirectory, \Yana\Plugins\AbstractDependencyContainer $container)
+    public static function loadPlugin($name, $fromDirectory, \Yana\Plugins\Dependencies\AbstractContainer $container)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
         assert('is_string($fromDirectory); // Invalid argument $fromDirectory: string expected');

@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Plugins;
+namespace Yana\Plugins\Dependencies;
 
 /**
  * <<abstract>> Dependency ccntainer.
@@ -42,7 +42,7 @@ namespace Yana\Plugins;
  * @package     yana
  * @subpackage  plugins
  */
-abstract class AbstractDependencyContainer extends \Yana\Core\Object
+abstract class AbstractContainer extends \Yana\Core\Object
 {
 
     /**
@@ -61,15 +61,10 @@ abstract class AbstractDependencyContainer extends \Yana\Core\Object
     private $_session = null;
 
     /**
-     * @var  \Yana\Security\Facade
-     */
-    private $_securityFacade = null;
-
-    /**
      * Add application settings to the container.
      *
      * @param   \Yana\Application  $application  representing the currently running application and its settings
-     * @return  \Yana\Plugins\AbstractDependencyContainer
+     * @return  self
      */
     protected function _setApplication(\Yana\Application $application)
     {
@@ -81,7 +76,7 @@ abstract class AbstractDependencyContainer extends \Yana\Core\Object
      * Add a connection factory to the container.
      *
      * @param   \Yana\Db\IsConnectionFactory  $connectionFactory  aids in creating and (re-)using database connections
-     * @return  \Yana\Plugins\AbstractDependencyContainer
+     * @return  self
      */
     protected function _setConnectionFactory(\Yana\Db\IsConnectionFactory $connectionFactory)
     {
@@ -93,23 +88,11 @@ abstract class AbstractDependencyContainer extends \Yana\Core\Object
      * Add session object.
      *
      * @param   \Yana\Security\Sessions\IsWrapper  $session  to access session data
-     * @return  \Yana\Plugins\AbstractDependencyContainer
+     * @return  self
      */
     protected function _setSessionWrapper(\Yana\Security\Sessions\IsWrapper $session)
     {
         $this->_session = $session;
-        return $this;
-    }
-
-    /**
-     * Add security facade.
-     *
-     * @param   \Yana\Security\IsFacade  $facade  to access user data
-     * @return  \Yana\Plugins\AbstractDependencyContainer
-     */
-    protected function _setSecurityFacade(\Yana\Security\IsFacade $facade)
-    {
-        $this->_securityFacade = $facade;
         return $this;
     }
 
@@ -158,19 +141,6 @@ abstract class AbstractDependencyContainer extends \Yana\Core\Object
             $this->_session = new \Yana\Security\Sessions\Wrapper();
         }
         return $this->_session;
-    }
-
-    /**
-     * Get security facade.
-     *
-     * @return  \Yana\Security\Facade
-     */
-    protected function _getSecurityFacade()
-    {
-        if (!isset($this->_securityFacade)) {
-            $this->_securityFacade = $this->_getApplication()->getSecurity();
-        }
-        return $this->_securityFacade;
     }
 
 }

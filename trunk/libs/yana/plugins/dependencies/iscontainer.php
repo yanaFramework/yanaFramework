@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Plugins;
+namespace Yana\Plugins\Dependencies;
 
 /**
  * Dependency ccntainer.
@@ -35,7 +35,7 @@ namespace Yana\Plugins;
  * @package     yana
  * @subpackage  plugins
  */
-class DependencyContainer extends \Yana\Plugins\AbstractDependencyContainer
+interface IsContainer
 {
 
     /**
@@ -43,40 +43,28 @@ class DependencyContainer extends \Yana\Plugins\AbstractDependencyContainer
      *
      * @return  \Yana\Application
      */
-    public function getApplication()
-    {
-        return $this->_getApplication();
-    }
+    public function getApplication();
 
     /**
      * Get a connection factory.
      *
      * @return  \Yana\Db\IsConnectionFactory
      */
-    public function getConnectionFactory()
-    {
-        return $this->_getConnectionFactory();
-    }
+    public function getConnectionFactory();
 
     /**
      * Get session data.
      *
      * @return  \Yana\Security\Sessions\IsWrapper
      */
-    public function getSession()
-    {
-        return $this->_getSessionWrapper();
-    }
+    public function getSession();
 
     /**
      * Get security facade.
      *
      * @return  \Yana\Security\Facade
      */
-    public function getSecurityFacade()
-    {
-        return $this->_getSecurityFacade();
-    }
+    public function getSecurityFacade();
 
 }
 

@@ -51,9 +51,7 @@ class ApplicationBar extends \Yana\Views\Helpers\AbstractViewHelper implements \
     {
         $result = "";
 
-        $builder = new \Yana\Plugins\Menus\Builder();
-        $pluginMenu = $builder->buildMenu(); // using default settings
-        unset($builder);
+        $pluginMenu = \Yana\Application::getInstance()->buildApplicationMenu(); // using default settings
 
         $formatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
         $template = '<a class="applicationBar" href="' . $formatter("action=", false, false) . '%s">' .
