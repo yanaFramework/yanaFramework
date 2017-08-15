@@ -372,7 +372,7 @@ class Builder extends \Yana\Core\Object
             $exportAction = $this->_resolveAction('export');
             $downloadAction = $this->_resolveAction('download');
             if (empty($downloadAction)) {
-                if (\Yana\Security\Data\SessionManager::getInstance()->checkPermission(null, "download_file")) {
+                if (\Yana\Application::getInstance()->getSecurity()->checkRules(null, "download_file")) {
                     $downloadAction = "download_file";
                 }
             }
@@ -417,7 +417,7 @@ class Builder extends \Yana\Core\Object
                 $action = $event->getAction();
             }
         }
-        if (!empty($action) && !\Yana\Security\Data\SessionManager::getInstance()->checkPermission(null, $action)) {
+        if (!empty($action) && !\Yana\Application::getInstance()->getSecurity()->checkRules(null, $action)) {
             $action = "";
         }
         return $action;

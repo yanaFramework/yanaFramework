@@ -233,8 +233,11 @@ class Update extends \Yana\Db\Queries\Insert
         $row = $this->getRow();
 
         if ($row === '*') {
+            assert('!isset($message); // Cannot redeclare $message');
+            assert('!isset($level); // Cannot redeclare $level');
             $message = "SQL security restriction. Cannot update a table (only rows and cells).";
-            \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            \Yana\Log\LogManager::getLogger()->addLog($message, $level);
             return false;
         }
         /*
@@ -256,26 +259,34 @@ class Update extends \Yana\Db\Queries\Insert
         $resultRow = $result->fetchRow(0);
         assert('is_array($resultRow); // unexpected result: $resultRow');
         $profileId = array_pop($resultRow);
-        $session = \Yana\Security\Data\SessionManager::getInstance();
-        if ($session->checkPermission($profileId) !== true) {
+        $security = \Yana\Application::getInstance()->getSecurity();
+        if ($security->checkRules($profileId) !== true) {
+            assert('!isset($message); // Cannot redeclare $message');
+            assert('!isset($level); // Cannot redeclare $level');
             $message = "The login is valid, but the access rights are not enough to access the function.";
-            $level = \E_USER_WARNING;
+            $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Core\Exceptions\Security\InsufficientRightsException($message, $level);
         }
         switch ($this->getExpectedResult())
         {
             case \Yana\Db\ResultEnumeration::ROW:
                 if (isset($value['profile_id']) && $value['profile_id'] != $profileId) {
-                    \Yana\Log\LogManager::getLogger()->addLog("Security restriction. " .
-                        "The profile id of an entry may not be changed.", E_USER_WARNING);
+                    assert('!isset($message); // Cannot redeclare $message');
+                    assert('!isset($level); // Cannot redeclare $level');
+                    $message = "Security restriction. The profile id of an entry may not be changed.";
+                    $level = \Yana\Log\TypeEnumeration::WARNING;
+                    \Yana\Log\LogManager::getLogger()->addLog($message, $level);
                     return false;
                 }
                 return true;
 
             case \Yana\Db\ResultEnumeration::CELL:
                 if (strcasecmp($this->getColumn(), 'profile_id') === 0) {
-                    \Yana\Log\LogManager::getLogger()->addLog("Security restriction. " .
-                        "The profile id of an entry may not be changed.", E_USER_WARNING);
+                    assert('!isset($message); // Cannot redeclare $message');
+                    assert('!isset($level); // Cannot redeclare $level');
+                    $message = "Security restriction. The profile id of an entry may not be changed.";
+                    $level = \Yana\Log\TypeEnumeration::WARNING;
+                    \Yana\Log\LogManager::getLogger()->addLog($message, $level);
                     return false;
                 }
                 return true;
@@ -306,8 +317,11 @@ class Update extends \Yana\Db\Queries\Insert
      */
     public function sendQuery()
     {
+        assert('!isset($message); // Cannot redeclare $message');
+        assert('!isset($level); // Cannot redeclare $level');
         $message = "Updating entry '{$this->tableName}.{$this->row}'.";
-        \Yana\Log\LogManager::getLogger()->addLog($message, E_USER_NOTICE, $this->getOldValues());
+        $level = \Yana\Log\TypeEnumeration::INFO;
+        \Yana\Log\LogManager::getLogger()->addLog($message, $level, $this->getOldValues());
 
         // send query
         return parent::sendQuery();
@@ -351,9 +365,11 @@ class Update extends \Yana\Db\Queries\Insert
                     }
                     unset($column, $value);
                 } else {
-                    throw new \Yana\Core\Exceptions\InvalidArgumentException(
-                        "No valid values provided in statement: " . $stmt, E_USER_WARNING
-                    );
+                    assert('!isset($message); // Cannot redeclare $message');
+                    assert('!isset($level); // Cannot redeclare $level');
+                    $message = "No valid values provided in statement: " . $stmt;
+                    $level = \Yana\Log\TypeEnumeration::WARNING;
+                    throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
                 }
             } elseif ($this->expectedResult === \Yana\Db\ResultEnumeration::CELL) {
                 if (is_array($this->values)) {
@@ -362,9 +378,11 @@ class Update extends \Yana\Db\Queries\Insert
                     $set = $this->getColumn() . ' = ' . $this->db->quote($this->values);
                 }
             } else {
-                throw new \Yana\Core\Exceptions\InvalidArgumentException(
-                    "No row or cell selected for update in statement: " . $stmt, E_USER_WARNING
-                );
+                assert('!isset($message); // Cannot redeclare $message');
+                assert('!isset($level); // Cannot redeclare $level');
+                $message = "No row or cell selected for update in statement: " . $stmt;
+                $level = \Yana\Log\TypeEnumeration::WARNING;
+                throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
             }
             $stmt = str_replace('%SET%', $set, $stmt);
             unset($set);

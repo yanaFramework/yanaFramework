@@ -446,21 +446,17 @@ class Grant extends \Yana\Db\Ddl\DDL
             case $grant && !$this->isGrantable():
                 return false;
             default:
-                $user = $this->getUser();
-                $role = $this->getRole();
-                $level = $this->getLevel();
+                $user = (string) $this->getUser();
+                $role = (string) $this->getRole();
+                $level = (int) $this->getLevel();
                 if (empty($user) && empty($role) && empty($level)) {
                     return true;
                 }
-                $required = array(
-                    \Yana\Plugins\Annotations\Enumeration::GROUP => $user,
-                    \Yana\Plugins\Annotations\Enumeration::ROLE => $role,
-                    \Yana\Plugins\Annotations\Enumeration::LEVEL => $level
-                );
+                $required = new \Yana\Security\Rules\Requirements\Requirement($user, $role, $level);
                 $profileId = \Yana\Application::getInstance()->getProfileId();
                 $action = \Yana\Plugins\Manager::getLastEvent();
                 $userName = (string) \Yana\User::getUserName();
-                return (bool) \Yana\Security\Data\SessionManager::checkRule($required, $profileId, $action, $userName);
+                return (bool) \Yana\Application::getInstance()->getSecurity()->checkByRequirement($required, $profileId, $action, $userName);
         }
     }
 

@@ -258,12 +258,15 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
                     throw new \Yana\Db\Queries\Exceptions\InvalidPrimaryKeyException($message);
                 }
             } elseif ($this->row !== '*' && strcasecmp($this->row, $values[$primaryKey]) !== 0) {
+                assert('!isset($message); // Cannot redeclare $message');
+                assert('!isset($level); // Cannot redeclare $level');
                 $message = "Cannot set values. The primary key is ambigious.\n\t\t" .
                     "The primary key has been set via " . __CLASS__ . "->setRow() or " .
                     __CLASS__ . "->setKey() to '" . $this->row . "'.\n\t\t" .
                     "However, the primary key provided with " . __CLASS__ . "->setValues() is '" .
                     $values[$primaryKey] . "'.";
-                throw new \Yana\Db\Queries\Exceptions\ConstraintException($message, E_USER_WARNING);
+                $level = \Yana\Log\TypeEnumeration::WARNING;
+                throw new \Yana\Db\Queries\Exceptions\ConstraintException($message, $level);
             }
 
         } // end INSERT-statement
@@ -309,8 +312,11 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
          * 3) error - access denied
          */
         if (!$this->checkProfile($values)) {
+            assert('!isset($message); // Cannot redeclare $message');
+            assert('!isset($level); // Cannot redeclare $level');
             $message = "Cannot set values. Profile constraint mismatch.";
-            throw new \Yana\Db\Queries\Exceptions\ConstraintException($message, E_USER_WARNING);
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Db\Queries\Exceptions\ConstraintException($message, $level);
         }
 
         /*
@@ -352,7 +358,9 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
 
         // error - duplicate value
         if (isset($this->queue[$table][$column])) {
-            throw new \Yana\Db\Queries\Exceptions\DuplicateValueException($column, \E_USER_WARNING);
+            assert('!isset($level); // Cannot redeclare $level');
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Db\Queries\Exceptions\DuplicateValueException($column, $level);
         }
         // append value to queue
         $this->queue[$table][$column] = $value;
@@ -373,11 +381,11 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
             return true;
         }
 
-        $session = \Yana\Security\Data\SessionManager::getInstance();
+        $security = \Yana\Application::getInstance()->getSecurity();
         switch (true)
         {
-            case isset($value['profile_id']) && $session->checkPermission($value['profile_id']) !== true:
-            case $session->checkPermission() !== true:
+            case isset($value['profile_id']) && $security->checkRules($value['profile_id']) !== true:
+            case $security->checkRules() !== true:
                 return false;
             default:
                 return true;

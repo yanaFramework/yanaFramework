@@ -70,13 +70,11 @@ interface IsFacade
      *
      * Example implementation for a custom rule:
      * <code>
-     * class MyCheck implements IsRule
+     * class MyCheck implements \Yana\Security\Rules\IsRule
      * {
-     *   public function __invoke(\Yana\Security\Rules\Requirements\IsRequirement $required, $profileId, $action, $userName)
+     *   public function __invoke(IsRequirement $required, $profileId, $action, IsBehavior $user)
      *   {
-     *     $manager = SessionManager::getInstance();
-     *     $level = $manager->getSecurityLevel($userName, $profileId);
-     *     return $required[PluginAnnotationEnumeration::LEVEL] <= $level;
+     *     return $required->getLevel() &lgt;= $user->getSecurityLevel();
      *   }
      * }
      * </code>

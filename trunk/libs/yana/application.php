@@ -307,10 +307,10 @@ final class Application extends \Yana\Core\AbstractSingleton
     }
 
     /**
-     * Get session manager instance.
+     * Access security sub-system.
      *
-     * The SessionManager class is used to manage user information
-     * and resolve permissions.
+     * This facade is a front that provides simplified access to the various security features
+     * the framework supports out-of-the-box.
      * 
      * @return \Yana\Security\IsFacade
      */
