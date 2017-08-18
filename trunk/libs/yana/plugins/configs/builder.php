@@ -215,7 +215,8 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder
             {
                 if (!is_string($script)) {
                     $message = 'Syntax error in @script: ' . $this->className . '::' . $this->methodName . '()';
-                    \Yana\Log\LogManager::getLogger()->addLog($message, E_USER_ERROR, $param);
+                    $level = \Yana\Log\TypeEnumeration::ERROR;
+                    \Yana\Log\LogManager::getLogger()->addLog($message, $level, $param);
                     continue;
                 }
                 $scripts[] = $classPath . "/" . $script;
@@ -230,7 +231,8 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder
             {
                 if (!is_string($style)) {
                     $message = 'Syntax error in @style: ' .$this->className . '::' . $this->methodName . '()';
-                    \Yana\Log\LogManager::getLogger()->addLog($message, E_USER_ERROR, $param);
+                    $level = \Yana\Log\TypeEnumeration::ERROR;
+                    \Yana\Log\LogManager::getLogger()->addLog($message, $level, $param);
                     continue;
                 }
                 $styles[] = $classPath . "/" . $style;
@@ -255,7 +257,8 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder
             {
                 if (!is_string($param)) {
                     $message = 'Syntax error in @param: ' .$this->className . '::' . $this->methodName . '()';
-                    \Yana\Log\LogManager::getLogger()->addLog($message, E_USER_ERROR, $param);
+                    $level = \Yana\Log\TypeEnumeration::ERROR;
+                    \Yana\Log\LogManager::getLogger()->addLog($message, $level, $param);
                     continue;
                 }
                 if (preg_match('/^(\w+)\s+\$(\w+)/', $param, $match)) {

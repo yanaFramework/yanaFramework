@@ -113,10 +113,13 @@ class MessageCollection extends \Yana\Core\AbstractCollection
 
         switch ($errorCode)
         {
+            case \Yana\Log\TypeEnumeration::ERROR:
             case \E_USER_ERROR:
             case \E_ERROR:
+            case \E_RECOVERABLE_ERROR: // An error that caused PHP to throw an exception
                 $level = \Yana\Log\ViewHelpers\MessageLevelEnumeration::ERROR;
                 break;
+            case \Yana\Log\TypeEnumeration::WARNING:
             case \E_USER_WARNING:
             case \E_WARNING:
                 $level = \Yana\Log\ViewHelpers\MessageLevelEnumeration::WARNING;

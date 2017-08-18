@@ -190,7 +190,8 @@ class Delete extends \Yana\Db\Queries\AbstractQuery
     {
         // logging: backup entry before deleting it
         $message = "Deleting entry '{$this->tableName}.{$this->row}'.";
-        \Yana\Log\LogManager::getLogger()->addLog($message, E_USER_NOTICE, $this->getOldValues());
+        $level = \Yana\Log\TypeEnumeration::INFO;
+        \Yana\Log\LogManager::getLogger()->addLog($message, $level, $this->getOldValues());
 
         // send query
         $result = parent::sendQuery();

@@ -82,13 +82,11 @@ interface IsFacade extends \Yana\Translations\IsTranslationManager
      *
      * You may access the file contents via $language->getVar('some.value')
      *
-     * This function issues an E_USER_NOTICE if the file does not exist.
-     * It returns bool(true) on success and bool(false) on error.
-     *
      * @param   string  $file  name of translation file that should be loaded
      * @return  self
-     * @throws  \Yana\Core\Exceptions\InvalidSyntaxException   when the give filename is invalid
-     * @throws  \Yana\Core\Exceptions\Files\NotFoundException  when the language file is not found
+     * @throws  \Yana\Core\Exceptions\Translations\InvalidFileNameException       when the given identifier is invalid
+     * @throws  \Yana\Core\Exceptions\InvalidSyntaxException                      when the give filename is invalid
+     * @throws  \Yana\Core\Exceptions\Translations\LanguageFileNotFoundException  when the language file is not found
      */
     public function readFile($file);
 

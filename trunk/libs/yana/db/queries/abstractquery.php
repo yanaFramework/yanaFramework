@@ -325,8 +325,9 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
 
             case \Yana\Db\Queries\TypeEnumeration::COUNT:
                 if (is_array($this->column) && count($this->column) > 1) {
-                    throw new \Yana\Core\Exceptions\InvalidArgumentException("Cannot use query type 'length' " .
-                        "with multiple columns.", E_USER_WARNING);
+                    $message = "Cannot use query type 'length' with multiple columns.";
+                    $level = \Yana\Log\TypeEnumeration::WARNING;
+                    throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
                 }
             case \Yana\Db\Queries\TypeEnumeration::UNKNOWN:
             case \Yana\Db\Queries\TypeEnumeration::SELECT:
@@ -341,8 +342,9 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
             break;
 
             default:
-                throw new \Yana\Core\Exceptions\InvalidArgumentException("Argument 1 is invalid. " .
-                    "The selected statement type is unknown.", E_USER_WARNING);
+                $message = "Argument 1 is invalid. The selected statement type is unknown.";
+                $level = \Yana\Log\TypeEnumeration::WARNING;
+                throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
         }
         return $this;
     }
@@ -542,7 +544,9 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
         }
 
         if (! $table instanceof \Yana\Db\Ddl\Table) {
-            throw new \Yana\Db\Queries\Exceptions\ColumnNotFoundException("Column '$columnName' is undefined.", E_USER_WARNING);
+            $message = "Column '$columnName' is undefined.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Db\Queries\Exceptions\ColumnNotFoundException($message, $level);
         } else {
             return $table;
         }
@@ -803,7 +807,9 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
         $table = $this->db->getSchema()->getTable($tableName);
 
         if (!($table instanceof \Yana\Db\Ddl\Table)) {
-            throw new \Yana\Db\Exceptions\TableNotFoundException("The table '$tableName' is unknown.", E_USER_WARNING);
+            $message = "The table '$tableName' is unknown.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Db\Exceptions\TableNotFoundException($message, $level);
         }
 
         // Auto-attach profile check to where clause if profile constraint is present.
@@ -931,7 +937,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
              */
             if (YANA_DB_STRICT && !$this->currentTable()->isColumn($column)) {
                 throw new \Yana\Db\Queries\Exceptions\ColumnNotFoundException("The column '$column' is not found in table " .
-                    "'{$this->tableName}'.", E_USER_WARNING);
+                    "'{$this->tableName}'.", \Yana\Log\TypeEnumeration::WARNING);
             }
 
             /*
@@ -980,7 +986,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
             if ($this->expectedResult !== \Yana\Db\ResultEnumeration::CELL &&
                 $this->expectedResult !== \Yana\Db\ResultEnumeration::COLUMN) {
                 $message = "Array address may only be used on cells, not rows or tables.";
-                throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
+                throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
             }
             /*
              * error - not a column of type array
@@ -990,7 +996,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
             if ($column->getType() !== 'array') {
                 throw new \Yana\Core\Exceptions\InvalidArgumentException("Array address can only be used on columns " .
                     "of type array. Found column of type '" . $column->getType() .
-                    "' instead.", E_USER_WARNING);
+                    "' instead.", \Yana\Log\TypeEnumeration::WARNING);
             }
             unset($column, $columnName);
         }
@@ -1215,7 +1221,8 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
         $table = $dbSchema->getTable($array[0]);
         if (! $table instanceof \Yana\Db\Ddl\Table) {
             $message = "Table not found '{$array[0]}' in schema '{$dbSchema->getName()}'.";
-            throw new \Yana\Db\Queries\Exceptions\TableNotFoundException($message, E_USER_WARNING);
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Db\Queries\Exceptions\TableNotFoundException($message, $level);
         }
 
         /*
@@ -1227,7 +1234,9 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
             assert('!isset($column); // cannot redeclare variable $column');
             $column = $table->getColumn($array[2]);
             if (! $column instanceof \Yana\Db\Ddl\Column) {
-                throw new \Yana\Db\Queries\Exceptions\ColumnNotFoundException("Column not found '{$array[2]}'", E_USER_WARNING);
+                $message = "Column not found '{$array[2]}'";
+                $level = \Yana\Log\TypeEnumeration::WARNING;
+                throw new \Yana\Db\Queries\Exceptions\ColumnNotFoundException($message, $level);
             }
             assert('!isset($isArray); // cannot redeclare variable $isArray');
             $isArray = ($column->getType() === 'array');
@@ -1328,7 +1337,9 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
         }
         $table = $this->db->getSchema()->getTable($tableName);
         if (!($table instanceof \Yana\Db\Ddl\Table)) {
-            throw new \Yana\Db\Queries\Exceptions\TableNotFoundException("No such table '" . $tableName . "'.", E_USER_WARNING);
+            $message = "No such table '" . $tableName . "'.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Db\Queries\Exceptions\TableNotFoundException($message, $level);
         }
 
         /*
@@ -1336,7 +1347,8 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
          */
         if (!$table->isColumn($column)) {
             $message = "Column '$column' not found in table '" . $tableName . "'.";
-            throw new \Yana\Db\Queries\Exceptions\ColumnNotFoundException($message, E_USER_WARNING);
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Db\Queries\Exceptions\ColumnNotFoundException($message, $level);
         }
         $this->orderBy[] = array($tableName, mb_strtolower($column));
         $this->desc[] = $desc;
@@ -1505,8 +1517,9 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
             return array();
         }
         if (count($where) !== 3) {
-            throw new \Yana\Core\Exceptions\InvalidArgumentException("Invalid where clause.\n\t\t" .
-                "Malformed argument '" . print_r($where, true) . "'.", E_USER_WARNING);
+            $message = "Invalid where clause.\n\t\tMalformed argument '" . print_r($where, true) . "'.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
         }
         $leftOperand = $where[0];
         $operator = strtolower($where[1]);
@@ -1539,7 +1552,9 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
             $column = mb_strtolower($leftOperand);
 
         } else {
-            throw new \Yana\Core\Exceptions\InvalidArgumentException("Missing column name in where clause.", E_USER_WARNING);
+            $message = "Missing column name in where clause.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
         }
 
         /**
@@ -1550,14 +1565,15 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
             assert('is_string($column); // Unexpected result: $column. String expected.');
 
             if (! $table instanceof \Yana\Db\Ddl\Table) {
-                throw new \Yana\Db\Queries\Exceptions\TableNotFoundException("Invalid where clause. " .
-                    "The name '{$tableName}' is not a table.", E_USER_WARNING);
+                $message = "Invalid where clause. The name '{$tableName}' is not a table.";
+                $level = \Yana\Log\TypeEnumeration::WARNING;
+                throw new \Yana\Db\Queries\Exceptions\TableNotFoundException($message, $level);
 
             }
             if (!$table->isColumn($column)) {
-                throw new \Yana\Db\Queries\Exceptions\ColumnNotFoundException("Invalid where clause. " .
-                    "The name '{$column}' is not a column in table '{$tableName}'.",
-                    E_USER_WARNING);
+                $message = "Invalid where clause. The name '{$column}' is not a column in table '{$tableName}'.";
+                $level = \Yana\Log\TypeEnumeration::WARNING;
+                throw new \Yana\Db\Queries\Exceptions\ColumnNotFoundException($message, $level);
             }
             /**
              * check if the request is a table scan
@@ -1567,10 +1583,12 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
              */
             $isTableScan = ($this->row === '*' || is_null($this->row) || $this->row === '?');
             if (!$isTableScan && $table->getColumn($column)->isPrimaryKey()) {
-                throw new \Yana\Core\Exceptions\InvalidArgumentException("Invalid where clause. " .
+                $message = "Invalid where clause. " .
                     "You are trying to search for a primary key.\n\t\t" .
                     "This is not allowed, since it might cause results wether to be ambigious or empty.\n\t\t" .
-                    "Turn strict checks off if you wish to continue without checking.", E_USER_WARNING);
+                    "Turn strict checks off if you wish to continue without checking.";
+                $level = \Yana\Log\TypeEnumeration::WARNING;
+                throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
 
             }
         }
@@ -1605,12 +1623,12 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
                     $table = $this->db->getSchema()->getTable($tableName);
                     if (! $table instanceof \Yana\Db\Ddl\Table) {
                         throw new \Yana\Db\Queries\Exceptions\TableNotFoundException("Invalid where clause. " .
-                            "The name '{$tableName}' is not a table.", E_USER_WARNING);
+                            "The name '{$tableName}' is not a table.", \Yana\Log\TypeEnumeration::WARNING);
 
                     } elseif (!$table->isColumn($column)) {
                         throw new \Yana\Db\Queries\Exceptions\ColumnNotFoundException("Invalid where clause. " .
                             "The name '{$column}' is not a column in table '{$tableName}'.",
-                            E_USER_WARNING);
+                            \Yana\Log\TypeEnumeration::WARNING);
                     }
                 } // end if (strict)
                 $rightOperand = array($tableName, $column);
@@ -1643,18 +1661,21 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
             case 'exists':
             case 'not exists':
                 if (!($rightOperand instanceof \Yana\Db\Queries\SelectExist)) {
-                    throw new \Yana\Core\Exceptions\InvalidArgumentException("Invalid where clause.\n\t\t" .
+                    $message = "Invalid where clause.\n\t\t" .
                         "The operator '{$operator}' requires the right operand " .
-                        "to be an instance of \Yana\Db\Queries\SelectExist.", E_USER_WARNING);
+                        "to be an instance of \Yana\Db\Queries\SelectExist.";
+                    $level = \Yana\Log\TypeEnumeration::WARNING;
+                    throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
                 }
             break;
             case 'in':
             case 'not in':
                 if (!is_array($rightOperand)) {
                     if (!($rightOperand instanceof \Yana\Db\Queries\Select)) {
-                        throw new \Yana\Core\Exceptions\InvalidArgumentException("Invalid where clause.\n\t\t" .
-                            "The operator '{$operator}' requires the right operand " .
-                            "to be an array.", E_USER_WARNING);
+                        $message = "Invalid where clause.\n\t\t" .
+                            "The operator '{$operator}' requires the right operand to be an array.";
+                        $level = \Yana\Log\TypeEnumeration::WARNING;
+                        throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
                     }
                 }
             break;
@@ -1665,14 +1686,16 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
             case '<=':
             case '>=':
                 if (is_null($rightOperand)) {
-                    throw new \Yana\Core\Exceptions\InvalidArgumentException("Invalid where clause.\n\t\t" .
-                        "The operator '{$operator}' is not supported " .
-                        "when comparing a column with NULL.", E_USER_WARNING);
+                    $message = "Invalid where clause.\n\t\t" .
+                        "The operator '{$operator}' is not supported when comparing a column with NULL.";
+                    $level = \Yana\Log\TypeEnumeration::WARNING;
+                    throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
                 }
             break;
             default:
-                throw new \Yana\Core\Exceptions\InvalidArgumentException("Invalid where clause.\n\t\t" .
-                    "The operator '{$operator}' is not supported.", E_USER_WARNING);
+                $message = "Invalid where clause.\n\t\tThe operator '{$operator}' is not supported.";
+                $level = \Yana\Log\TypeEnumeration::WARNING;
+                throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
             break;
         }
         if ($rightOperand instanceof self)
@@ -1851,7 +1874,8 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
         $this->id = null;
         if ($limit < 0) {
             $message = "Limit must not be negative: '$limit'";
-            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
         }
         $this->limit = (int) $limit;
         return $this;

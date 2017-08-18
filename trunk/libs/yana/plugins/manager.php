@@ -192,7 +192,9 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
         assert('is_dir($pluginDirectory); // Invalid argument 2. Directory expected');
 
         if (!is_dir($pluginDirectory)) {
-            throw new \Yana\Core\Exceptions\NotFoundException("No such directory: '$pluginDirectory'.", E_USER_ERROR);
+            $message = "No such directory: '$pluginDirectory'.";
+            $level = \Yana\Log\TypeEnumeration::ERROR;
+            throw new \Yana\Core\Exceptions\NotFoundException($message, $level);
         }
 
         self::$_path = $configurationFile;
@@ -511,7 +513,8 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
             return $this->_drive[$pluginName]->getResource($key);
         } else {
             $message = "There is no plugin named '" . $pluginName . "'.";
-            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
         }
     }
 

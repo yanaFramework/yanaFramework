@@ -233,13 +233,13 @@ class Connection extends \Yana\Db\AbstractConnection
      * Note that the statements are executed within a transaction.
      * If the function fails,
      *
-     * An error is encountered and an E_USER_NOTICE is issued, if:
+     * An error is encountered and a notice is issued, if:
      * <ul>
      * <li> the file does not exist or is not readable </li>
      * <li> the $sqlFile parameter is empty </li>
      * <li> the database connection is not available </li>
      * <li> the parameter "readonly" on the database structure file is set to "true" </li>
-     * <li> at least one database statement failed (does not issue an E_USER_NOTICE) </li>
+     * <li> at least one database statement failed (does not issue a notice) </li>
      * <li> there are uncommited statements in the queue </li>
      * </ul>
      *
@@ -257,21 +257,21 @@ class Connection extends \Yana\Db\AbstractConnection
         if (!empty($this->_queue)) {
             $message = "Cannot import SQL statements.\n\t\tThere is a pending transaction that needs to be committed " .
                 "before proceeding.";
-            throw new \Yana\Db\DatabaseException($message, E_USER_NOTICE);
+            throw new \Yana\Db\DatabaseException($message, \Yana\Log\TypeEnumeration::INFO);
         }
         if ($this->_isWriteable() !== true) {
             $message = "Database connection is not available. Check your connection settings.";
-            throw new \Yana\Core\Exceptions\NotWriteableException($message, E_USER_NOTICE);
+            throw new \Yana\Core\Exceptions\NotWriteableException($message, \Yana\Log\TypeEnumeration::INFO);
         }
         if ($this->getSchema()->isReadonly()) {
-            throw new \Yana\Core\Exceptions\NotWriteableException("Database is readonly. SQL import aborted.", E_USER_NOTICE);
+            throw new \Yana\Core\Exceptions\NotWriteableException("Database is readonly. SQL import aborted.", \Yana\Log\TypeEnumeration::INFO);
         }
 
         $success = true;
         if (!is_array($sqlFile)) { // input is string
 
             if (!is_readable("$sqlFile")) {
-                throw new \Yana\Core\Exceptions\NotReadableException("The file '{$sqlFile}' is not readable.", E_USER_NOTICE);
+                throw new \Yana\Core\Exceptions\NotReadableException("The file '{$sqlFile}' is not readable.", \Yana\Log\TypeEnumeration::INFO);
             }
             $rawData = file_get_contents($sqlFile);
             // remove comments and line breaks
@@ -280,7 +280,7 @@ class Connection extends \Yana\Db\AbstractConnection
             $rawData = preg_replace("/;\s*\n\s*/i", "[NEXT_COMMAND]", $rawData);
             $rawData = preg_replace("/\s/", " ", $rawData);
             if (empty($rawData)) {
-                \Yana\Log\LogManager::getLogger()->addLog("SQL import canceled. File is empty.", E_USER_NOTICE, $sqlFile);
+                \Yana\Log\LogManager::getLogger()->addLog("SQL import canceled. File is empty.", \Yana\Log\TypeEnumeration::INFO, $sqlFile);
                 return false;
             }
             // add items

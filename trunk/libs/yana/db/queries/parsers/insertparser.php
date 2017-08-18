@@ -70,7 +70,8 @@ class InsertParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
         if ($query->getExpectedResult() !== \Yana\Db\ResultEnumeration::ROW) {
             if (!$query->table->getColumn($query->table->getPrimaryKey())->isAutoFill()) {
                 $message = "SQL security restriction. Cannot insert a table (only rows).";
-                throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
+                $level = \Yana\Log\TypeEnumeration::WARNING;
+                throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
             }
         }
         return $query;
@@ -111,8 +112,9 @@ class InsertParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
         {
             $column = $table->getColumn($keys[$i]);
             if (! $column instanceof \Yana\Db\Ddl\Column) {
-                throw new \Yana\Core\Exceptions\InvalidArgumentException("Column '" . $keys[$i] . "' does not exist " .
-                    "in table '" . $query->getTable() . "'.", E_USER_WARNING);
+                $message = "Column '" . $keys[$i] . "' does not exist in table '" . $query->getTable() . "'.";
+                $level = \Yana\Log\TypeEnumeration::WARNING;
+                throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
             }
             if ($column->getType() === 'array') {
                 $set[mb_strtoupper($keys[$i])] = json_decode($values[$i]);

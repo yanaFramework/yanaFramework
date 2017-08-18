@@ -163,13 +163,11 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
      *
      * You may access the file contents via $language->getVar('some.value')
      *
-     * This function issues an E_USER_NOTICE if the file does not exist.
-     * It returns bool(true) on success and bool(false) on error.
-     *
      * @param   string  $file  name of translation file that should be loaded
      * @return  self
-     * @throws  \Yana\Core\Exceptions\InvalidSyntaxException   when the give filename is invalid
-     * @throws  \Yana\Core\Exceptions\Files\NotFoundException  when the language file is not found
+     * @throws  \Yana\Core\Exceptions\Translations\InvalidFileNameException       when the given identifier is invalid
+     * @throws  \Yana\Core\Exceptions\InvalidSyntaxException                      when the give filename is invalid
+     * @throws  \Yana\Core\Exceptions\Translations\LanguageFileNotFoundException  when the language file is not found
      */
     public function readFile($file)
     {
@@ -378,10 +376,7 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
      * You may find valid filenames in the following directory 'languages/<locale>/*.xlf'.
      * Provide the file without path and file extension.
      *
-     * You may access the file contents via $language->getVar('some.value')
-     *
-     * This function issues an E_USER_NOTICE if the file does not exist.
-     * It returns bool(true) on success and bool(false) on error.
+     * You may access the file contents via $language->getVar('some.value').
      *
      * @param   string  $id  name of translation package that should be loaded
      * @return  self

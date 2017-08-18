@@ -187,13 +187,12 @@ class Strings extends \Yana\Core\AbstractUtility
      * OO-Alias of: $string[$index]
      *
      * Returns bool(false) on error.
-     * Issues an E_USER_ERROR if $index is of wrong type.
-     * Issues an E_USER_NOTICE if $index is out of bounds.
      *
      * Note that indices are numbered starting with '0'.
      *
      * @param   string  $string string
      * @param   int     $index  position of the character (starting with 0)
+     * @throws  \Yana\Core\Exceptions\OutOfBoundsException  if $index is out of bounds
      *
      * @name    Strings::charAt()
      *
@@ -205,7 +204,7 @@ class Strings extends \Yana\Core\AbstractUtility
         assert('is_string($string); // Wrong argument type for argument 1. String expected.');
         assert('is_int($index); // Wrong argument type for argument 2. Integer expected.');
         /* check if $index is in bounds */
-        /* If the input is no integer at all, issue an E_USER_ERROR and abort. */
+        /* If the input is no integer at all, throw an exception. */
         if ($index < 0 || $index >= mb_strlen($string)) {
             throw new \Yana\Core\Exceptions\OutOfBoundsException("String index '".$index."' out of bounds.");
         } else {
