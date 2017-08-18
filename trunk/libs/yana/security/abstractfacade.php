@@ -51,7 +51,7 @@ abstract class AbstractFacade extends \Yana\Core\Object implements \Yana\Securit
      *
      * @param   \Yana\Security\Dependencies\IsFacadeContainer  $container  dependency container
      */
-    public function __construct(\Yana\Security\Dependencies\IsFacadeContainer $container = null)
+    public function __construct(\Yana\Security\Dependencies\IsFacadeContainer $container)
     {
         $this->_container = $container;
     }
@@ -63,9 +63,6 @@ abstract class AbstractFacade extends \Yana\Core\Object implements \Yana\Securit
      */
     protected function _getContainer()
     {
-        if (!isset($this->_container)) {
-            $this->_container = new \Yana\Security\Dependencies\Container();
-        }
         return $this->_container;
     }
 

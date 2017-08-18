@@ -59,10 +59,7 @@ class Flood extends \Yana\Files\File
             $this->create();
         }
         if (empty($ip) || !is_string($ip)) {
-            $YANA = \Yana\Application::getInstance();
-            if (isset($YANA)) {
-                $REMOTE_ADDR = $YANA->getVar('REMOTE_ADDR');
-            } elseif (isset($_SERVER['REMOTE_ADDR'])) {
+            if (isset($_SERVER['REMOTE_ADDR'])) {
                 $REMOTE_ADDR = $_SERVER['REMOTE_ADDR'];
             } else {
                 $REMOTE_ADDR = '0.0.0.0';

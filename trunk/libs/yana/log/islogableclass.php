@@ -39,6 +39,13 @@ interface IsLogableClass
 {
 
     /**
+     * Overwrite all loggers.
+     *
+     * @param  \Yana\Log\IsLoggerCollection  $collection  containing loggers
+     */
+    public static function setLoggers(\Yana\Log\IsLoggerCollection $collection);
+
+    /**
      * Adds a logger to the class.
      *
      * @param  \Yana\Log\IsLogger  $logger  instance that will handle the logging

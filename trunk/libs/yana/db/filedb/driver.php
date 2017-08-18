@@ -69,7 +69,8 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
     public function __construct(\Yana\Db\Ddl\Database $schema)
     {
         if (!isset(self::$_baseDir)) {
-            self::setBaseDirectory();
+            // if no directory given load default directory from config
+            self::setBaseDirectory(\Yana\Db\Ddl\DDL::getDirectory());
         }
 
         $this->_setSchema($schema);
@@ -92,12 +93,8 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
      * @param  string  $directory  new base directory
      * @ignore
      */
-    public static function setBaseDirectory($directory = null)
+    public static function setBaseDirectory($directory)
     {
-        // if no directory given load default directory from config
-        if (empty($directory)) {
-            $directory = \Yana\Db\Ddl\DDL::getDirectory();
-        }
         assert('is_dir($directory); // Wrong type for argument 1. Directory expected');
         self::$_baseDir = "$directory";
     }

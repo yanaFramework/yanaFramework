@@ -37,16 +37,8 @@ namespace Yana;
  * @package     yana
  * @subpackage  core
  */
-class ConfigurationFactory extends \Yana\Core\Object
+class ConfigurationFactory extends \Yana\Core\Object implements \Yana\IsConfigurationFactory
 {
-
-    /**
-     * System configuration file
-     *
-     * @var  \Yana\Util\XmlArray
-     */
-    private $_configuration = array();
-
 
     /**
      * Load a system configuration file and return it as an object.
@@ -55,7 +47,7 @@ class ConfigurationFactory extends \Yana\Core\Object
      * to initialize this class.
      *
      * @param   string  $filename  path to system.config
-     * @return  \Yana\Util\XmlArray
+     * @return  \Yana\Util\IsXmlArray
      */
     public function loadConfiguration($filename)
     {
@@ -63,28 +55,29 @@ class ConfigurationFactory extends \Yana\Core\Object
         assert('is_file($filename); // Invalid argument 1. Input is not a file.');
         assert('is_readable($filename); // Invalid argument 1. Configuration file is not readable.');
         // get System Config file
-        $this->_configuration = simplexml_load_file($filename, '\Yana\Util\XmlArray');
+        $configuration = simplexml_load_file($filename, '\Yana\Util\XmlArray');
         // load CD-ROM application settings on demand
         if (YANA_CDROM === true) {
-            $this->_activateCDApplication();
+            $this->_activateCDApplication($configuration);
         } else {
-            $this->_setRealPaths(getcwd());
+            $this->_setRealPaths($configuration, getcwd());
         }
-        return $this->_configuration;
+        return $configuration;
     }
 
     /**
      * Set directory references to real paths.
      *
-     * @param  string  $cwd  current working directory
+     * @param  \Yana\Util\IsXmlArray  $configuration  base configuration
+     * @param  string                 $cwd            current working directory
      */
-    private function _setRealPaths($cwd)
+    private function _setRealPaths(\Yana\Util\IsXmlArray $configuration, $cwd)
     {
         $cwd .= '/';
-        $this->_configuration->tempdir = $cwd . (string) $this->_configuration->tempdir;
-        $this->_configuration->configdir = $cwd . (string) $this->_configuration->configdir;
-        $this->_configuration->configdrive = $cwd . (string) $this->_configuration->configdrive;
-        $this->_configuration->pluginfile = $cwd . (string) $this->_configuration->pluginfile;
+        $configuration->tempdir = $cwd . (string) $configuration->tempdir;
+        $configuration->configdir = $cwd . (string) $configuration->configdir;
+        $configuration->configdrive = $cwd . (string) $configuration->configdrive;
+        $configuration->pluginfile = $cwd . (string) $configuration->pluginfile;
     }
 
     /**
@@ -92,17 +85,19 @@ class ConfigurationFactory extends \Yana\Core\Object
      *
      * Sets the configuration to CD-ROM settings.
      * Configuration is expected to be loaded prior to calling this function.
+     *
+     * @param  \Yana\Util\IsXmlArray  $configuration  base configuration
      */
-    private function _activateCDApplication()
+    private function _activateCDApplication(\Yana\Util\IsXmlArray $configuration)
     {
         assert('isset($this->_configuration); // Configuration must be loaded first');
         if (!file_exists(YANA_CDROM_DIR)) {
             mkdir(YANA_CDROM_DIR);
             chmod(YANA_CDROM_DIR, 0777);
         }
-        $configDir = (string) $this->_configuration->configdir;
+        $configDir = (string) $configuration->configdir;
         $this->_setRealPaths(YANA_CDROM_DIR);
-        $tempDir = (string) $this->_configuration->tempdir;
+        $tempDir = (string) $configuration->tempdir;
         if (!file_exists($tempDir)) {
             mkdir($tempDir);
             chmod($tempDir, 0777);

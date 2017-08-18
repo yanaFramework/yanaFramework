@@ -111,7 +111,7 @@ interface IsFacade
      * @param   string                                           $userName     user name
      * @return  bool
      */
-    public function checkByRequirement(\Yana\Security\Rules\Requirements\IsRequirement $requirement, $profileId, $action, $userName);
+    public function checkByRequirement(\Yana\Security\Rules\Requirements\IsRequirement $requirement, $profileId, $action, $userName = "");
 
     /**
      * Get user groups.

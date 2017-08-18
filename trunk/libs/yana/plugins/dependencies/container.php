@@ -35,27 +35,38 @@ namespace Yana\Plugins\Dependencies;
  * @package     yana
  * @subpackage  plugins
  */
-class Container extends \Yana\Plugins\Dependencies\AbstractContainer implements \Yana\Plugins\Dependencies\IsContainer
+class Container extends \Yana\Core\Object implements \Yana\Plugins\Dependencies\IsContainer
 {
 
     /**
-     * Get application settings.
-     *
-     * @return  \Yana\Application
+     * @var  \Yana\Security\Sessions\IsWrapper
      */
-    public function getApplication()
+    private $_session = null;
+
+    /**
+     * @var  array
+     */
+    private $_defaultEvent = array();
+
+    /**
+     * 
+     * @param  \Yana\Security\Sessions\IsWrapper  $session       bound to current environment parameters
+     * @param  array                              $defaultEvent  tells us what to do as fallback and comes from application configuration file
+     */
+    public function __construct(\Yana\Security\Sessions\IsWrapper $session, array $defaultEvent)
     {
-        return $this->_getApplication();
+        $this->_session = $session;
+        $this->_defaultEvent = $defaultEvent;
     }
 
     /**
-     * Get a connection factory.
+     * Get default event settings.
      *
-     * @return  \Yana\Db\IsConnectionFactory
+     * @return  array
      */
-    public function getConnectionFactory()
+    public function getDefaultEvent()
     {
-        return $this->_getConnectionFactory();
+        return $this->_defaultEvent;
     }
 
     /**
@@ -65,27 +76,7 @@ class Container extends \Yana\Plugins\Dependencies\AbstractContainer implements 
      */
     public function getSession()
     {
-        return $this->_getSessionWrapper();
-    }
-
-    /**
-     * Get security facade.
-     *
-     * @return  \Yana\Security\Facade
-     */
-    public function getSecurityFacade()
-    {
-        return $this->_getApplication()->getSecurity();
-    }
-
-    /**
-     * Get plugin facade.
-     *
-     * @return  \Yana\Plugins\Manager
-     */
-    public function getPluginsFacade()
-    {
-        return $this->_getApplication()->getPlugins();
+        return $this->_session;
     }
 
 }

@@ -85,7 +85,7 @@ namespace Yana\VDrive;
  *
  * @ignore
  */
-class Configuration extends \Yana\Util\XmlArray
+class Configuration extends \Yana\Util\XmlArray implements \Yana\VDrive\IsConfiguration
 {
 
     /**
@@ -94,7 +94,7 @@ class Configuration extends \Yana\Util\XmlArray
      * Returns the file identified by $path as a Configuration object.
      *
      * @param   string  $path  file path
-     * @return  \Yana\VDrive\Configuration
+     * @return  self
      */
     public static function loadFile($path)
     {
@@ -108,7 +108,7 @@ class Configuration extends \Yana\Util\XmlArray
      * Returns $string as a Configuration object.
      *
      * @param   string  $string     string
-     * @return  \Yana\VDrive\Configuration
+     * @return  self
      */
     public static function loadString($string)
     {
@@ -121,7 +121,7 @@ class Configuration extends \Yana\Util\XmlArray
      *
      * Returns the an empty file identified by $path as a Configuration object.
      *
-     * @return  \Yana\VDrive\Configuration
+     * @return  self
      */
     public static function createDrive()
     {
@@ -132,7 +132,7 @@ class Configuration extends \Yana\Util\XmlArray
      * Sets the name of this mountpoint.
      *
      * @param   string  $name  mountpoint-name
-     * @return  \Yana\VDrive\Configuration
+     * @return  self
      */
     public function setNodeName($name)
     {
@@ -216,7 +216,7 @@ class Configuration extends \Yana\Util\XmlArray
      * Sets the filter of this mountpoint.
      *
      * @param   string  $filter  mountpoint-filter
-     * @return  \Yana\VDrive\Configuration
+     * @return  self
      */
     public function setNodeFilter($filter)
     {
@@ -250,7 +250,7 @@ class Configuration extends \Yana\Util\XmlArray
      * Sets the auto-mount attribute of this mountpoint.
      *
      * @param   string  $isAutomount  mountpoint-auto-mount setting
-     * @return  \Yana\VDrive\Configuration
+     * @return  self
      */
     public function setNodeAutomount($isAutomount)
     {
@@ -288,7 +288,7 @@ class Configuration extends \Yana\Util\XmlArray
      *
      * @param   string  $name   name of var
      * @param   string  $value  value of var
-     * @return  \Yana\VDrive\Configuration
+     * @return  self
      */
     public function addNodeVar($name, $value)
     {
@@ -323,7 +323,7 @@ class Configuration extends \Yana\Util\XmlArray
      *
      * @param   string  $name         name of file
      * @param   bool    $isAutomount  auto-mount setting
-     * @return  \Yana\VDrive\Configuration
+     * @return  self
      */
     public function addNodeFile($name, $isAutomount = false)
     {
@@ -359,7 +359,7 @@ class Configuration extends \Yana\Util\XmlArray
      * @param   string  $name       name of directory
      * @param   bool    $automount  auto-mount setting
      * @param   string  $filter     (optional)
-     * @return  \Yana\VDrive\Configuration
+     * @return  self
      */
     public function addNodeDir($name, $automount = false, $filter = "")
     {
@@ -395,7 +395,7 @@ class Configuration extends \Yana\Util\XmlArray
      * Adds an include path definition to the drive.
      *
      * @param   string  $path   path
-     * @return  \Yana\VDrive\Configuration
+     * @return  self
      */
     public function addNodeInclude($path)
     {
@@ -433,7 +433,7 @@ class Configuration extends \Yana\Util\XmlArray
      * New values are always added to the end of the list.
      *
      * @param   string  $path  source path to add
-     * @return  \Yana\VDrive\Configuration
+     * @return  self
      */
     public function addNodeSource($path)
     {
@@ -449,7 +449,7 @@ class Configuration extends \Yana\Util\XmlArray
     /**
      * Returns a list of sources for the mountpoint, sorted by priority.
      *
-     * @return  \Yana\VDrive\Configuration
+     * @return  self
      */
     public function getNodeSources()
     {
@@ -468,7 +468,7 @@ class Configuration extends \Yana\Util\XmlArray
      * @param   string  $readable    (true = is redable , false otherweise)
      * @param   string  $writeable   (true = is writeable , false otherweise)
      * @param   string  $executable  (true = is executable , false otherweise)
-     * @return  \Yana\VDrive\Configuration
+     * @return  self
      */
     public function setNodeRequirements($readable = false, $writeable = false, $executable = false)
     {

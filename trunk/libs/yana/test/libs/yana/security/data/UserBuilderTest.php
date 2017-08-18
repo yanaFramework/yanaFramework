@@ -128,16 +128,6 @@ class UserBuilderTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \Yana\Core\Exceptions\User\AlreadyExistsException
-     */
-    public function testBuildNewUserAlreadyExistsException()
-    {
-        $this->adapter['test'] = new \Yana\Security\Data\Users\Entity('test');
-        $this->object->buildNewUser('test', 'mail');
-    }
-
-    /**
-     * @test
      */
     public function testBuildNewUser()
     {

@@ -30,43 +30,25 @@
 namespace Yana;
 
 /**
- * <<Facade>> <<Singleton>> Yana
+ * <<Facade>> Application.
  *
  * This is a primary controller and application loader for the Yana Framework.
  * It implements the "facade" pattern and thus delegates calls to underlying classes and methods.
  *
  * Example:
  * <code>
- * // get the current instance
- * $YANA = \Yana\Application::getInstance();
  * // handle request
- * $YANA->callAction($_REQUEST['action']);
+ * $application->callAction($_REQUEST['action']);
  * // output results
- * $YANA->outputResults();
+ * $application->outputResults();
  * </code>
  *
  * @package     yana
  * @subpackage  core
- * @method \Yana\Application getInstance() Returns the only instance of this class
  * @todo        Add Dependency container from Yana\Core\Dependencies\Container
  */
-final class Application extends \Yana\Core\AbstractSingleton
-    implements \Yana\Report\IsReportable, \Yana\Core\IsVarContainer
+final class Application extends \Yana\Core\Object implements \Yana\Report\IsReportable, \Yana\Core\IsVarContainer
 {
-
-    /**
-     * System configuration file
-     *
-     * @var  \Yana\Util\XmlArray
-     */
-    private static $_config = null;
-
-    /**
-     * caches database connections
-     *
-     * @var  \Yana\Db\IsConnection[]
-     */
-    private static $_connections = array();
 
     /**
      * Contains code to initialize and return sub-modules.
@@ -74,6 +56,23 @@ final class Application extends \Yana\Core\AbstractSingleton
      * @var  \Yana\Core\Dependencies\IsApplicationContainer
      */
     private $_dependencyContainer = null;
+
+    /**
+     * Caches database connections.
+     *
+     * @var  \Yana\Db\IsConnectionFactory
+     */
+    private $_connectionFactory = null;
+
+    /**
+     * <<constructor>> Inject dependencies.
+     *
+     * @param  \Yana\Core\Dependencies\IsApplicationContainer  $container  injected dependencies
+     */
+    public function __construct(\Yana\Core\Dependencies\IsApplicationContainer $container)
+    {
+        $this->_dependencyContainer = $container;
+    }
 
     /**
      * Returns the container.
@@ -86,43 +85,6 @@ final class Application extends \Yana\Core\AbstractSingleton
     protected function _getDependencyContainer()
     {
         return $this->_dependencyContainer;
-    }
-
-    /**
-     * Creates an instance if there is none.
-     * Then it returns a reference to this (single) instance.
-     *
-     * Example:
-     * <code>
-     * \Yana\Application::setConfiguration("config/system.config");
-     * $YANA = \Yana\Application::getInstance();
-     * </code>
-     *
-     * @return  \Yana\Application
-     */
-    protected static function _createNewInstance()
-    {
-        /* auto-load configuration file */
-        if (empty(self::$_config)) {
-            $configurationFactory = new \Yana\ConfigurationFactory();
-            $configuration = $configurationFactory->loadConfiguration(__DIR__ . "/../../config/system.config.xml");
-
-            \Yana\Db\AbstractConnection::setTempDir((string) $configuration->tempdir);
-
-            // initialize directories
-            if (!empty($configuration->skindir) && is_dir($configuration->skindir)) {
-                \Yana\Views\Skins\Skin::setBaseDirectory((string) $configuration->skindir);
-            }
-            if (isset($configuration->pluginfile)) {
-                \Yana\Plugins\Manager::setPath((string) $configuration->pluginfile, (string) $configuration->plugindir);
-            }
-            if (!empty($configuration->blobdir)) {
-                \Yana\Db\Blob::setDirectory((string) $configuration->blobdir);
-            }
-
-            self::$_config = $configuration;
-        }
-        return new static();
     }
 
     /**
@@ -145,16 +107,6 @@ final class Application extends \Yana\Core\AbstractSingleton
     public function getCache()
     {
         return $this->_getDependencyContainer()->getCache();
-    }
-
-    /**
-     * Set up application configuration.
-     *
-     * @param  \Yana\Util\XmlArray  $configuration  use ConfigurationFactory to create this
-     */
-    public static function setConfiguration(\Yana\Util\XmlArray $configuration)
-    {
-        self::$_config = $configuration;
     }
 
     /**
@@ -274,7 +226,7 @@ final class Application extends \Yana\Core\AbstractSingleton
         $result = false;
         try {
 
-            $result = $plugins->broadcastEvent($action, $args);
+            $result = $plugins->broadcastEvent($action, $args, $this);
             if ($result !== false) {
                 /* Create timestamp to provide information for read-stability isolation level */
                 $_SESSION['transaction_isolation_created'] = time();
@@ -580,10 +532,8 @@ final class Application extends \Yana\Core\AbstractSingleton
      *
      * Examples:
      * <code>
-     * $YANA = \Yana\Application::getInstance();
-     *
      * // print an error and go to start page
-     * new Message('Error 404', \Yana\Log\TypeEnumeration::ERROR);
+     * new \Yana\Core\Exceptions\InvalidValueException('Error', \Yana\Log\TypeEnumeration::ERROR);
      * $YANA->exitTo();
      *
      * // same as:
@@ -593,11 +543,11 @@ final class Application extends \Yana\Core\AbstractSingleton
      * // view the error message and exit the script
      * // without handling another event.
      * // ( You may translate this to: "exit to 'nowhere'" )
-     * new Message('Error 500', \Yana\Log\TypeEnumeration::ERROR);
+     * new \Yana\Core\Exceptions\InvalidValueException('Error', \Yana\Log\TypeEnumeration::ERROR);
      * $YANA->exitTo('null');
      *
      * // output message and route to 'login' page
-     * new Message('Access denied', \Yana\Log\TypeEnumeration::ERROR);
+     * new \Yana\Core\Exceptions\InvalidValueException('Error', \Yana\Log\TypeEnumeration::ERROR);
      * $YANA->exitTo('login');
      * </code>
      *
@@ -611,7 +561,8 @@ final class Application extends \Yana\Core\AbstractSingleton
     public function exitTo($event = 'null', array $args = array())
     {
         assert('is_string($event); // Invalid argument $event: string expected');
-        $event = mb_strtolower("$event");
+        $eventLowerCase = mb_strtolower((string) $event);
+        unset($event);
 
         /**
          * save log-files (if any)
@@ -627,7 +578,7 @@ final class Application extends \Yana\Core\AbstractSingleton
          * is an AJAX request
          */
         if ($this->_getDependencyContainer()->getRequest()->isAjaxRequest()) {
-            $event = 'null';
+            $eventLowerCase = 'null';
             $templateName = 'id:STDOUT';
         }
 
@@ -637,10 +588,10 @@ final class Application extends \Yana\Core\AbstractSingleton
          *   2) the template explicitely requests a message, OR
          *   3) the special 'NULL-event' (no event) is requested.
          */
-        if ($event === 'null' || $this->getDefault('MESSAGE') === true || headers_sent() === true) {
+        if ($eventLowerCase === 'null' || $this->getDefault('MESSAGE') === true || headers_sent() === true) {
 
             $template = $view->createLayoutTemplate($templateName, '', $this->getVars());
-            $template->setVar('ACTION', mb_strtolower("$event"));
+            $template->setVar('ACTION', mb_strtolower("$eventLowerCase"));
 
             exit((string) $template);
         }
@@ -655,7 +606,7 @@ final class Application extends \Yana\Core\AbstractSingleton
         }
 
         $urlFormatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
-        $args["action"] = $event;
+        $args["action"] = $eventLowerCase;
         header("Location: " . $urlFormatter(http_build_query($args), true));
         exit(0);
     }
@@ -789,12 +740,15 @@ final class Application extends \Yana\Core\AbstractSingleton
         assert('is_string($template); // Invalid argument $template: string expected');
         $view = $this->getView();
 
+        // Find base template
         $baseTemplate = 'id:INDEX';
-
         $_template = mb_strtoupper(\Yana\Plugins\Annotations\Enumeration::TEMPLATE);
-        if (!empty(self::$_config->default->event->$_template)) {
-            $baseTemplate = (string) self::$_config->default->event->$_template;
+        $defaultEvent = $this->_getDependencyContainer()->getDefault('event');
+        if ($defaultEvent instanceof \Yana\Util\IsXmlArray && !empty($defaultEvent->$_template)) {
+            $baseTemplate = (string) $defaultEvent->$_template;
         }
+        unset($defaultEvent);
+
         if (!is_file($template) && !\Yana\Util\Strings::startsWith($template, 'id:')) {
             $template = "id:{$template}";
         }
@@ -858,27 +812,12 @@ final class Application extends \Yana\Core\AbstractSingleton
         // Clear Template cache
         $this->getView()->clearCache();
 
-        // Get name of cache directory
-        $dir = YANA_INSTALL_DIR . '/cache/';
-        $registry = $this->getRegistry();
-
-        if (isset($registry)) {
-            $dir = $registry->getVar('TEMPDIR');
-        }
-
-        // Clear application cache
-        foreach (glob($dir . '/*.tmp') as $filePath)
+        // Clear Application cache
+        $cache = $this->getCache();
+        foreach ($cache->getIds() as $id)
         {
-            /* If file can't be deleted due to active write-protection
-              (e.g. when running under Windows), check wether this can be fixed. */
-            if (!is_writeable($filePath)) {
-                chmod($filePath, 0666);
-            }
-            // If the file writeable now: try again to delete it
-            if (is_writeable($filePath)) {
-                unlink($filePath);
-            }
-        } // end foreach
+            $cache->offsetUnset($id);
+        }
     }
 
     /**
@@ -898,35 +837,10 @@ final class Application extends \Yana\Core\AbstractSingleton
      */
     public static function connect($schema)
     {
-        $connection = null;
-
-        $schemaName = "";
-        if (is_string($schema)) {
-            $schemaName = strtolower($schema);
-            if (isset(self::$_connections[$schemaName])) {
-                return self::$_connections[$schemaName];
-            }
-            $tempDir = __DIR__ . '/../../cache/';
-            if (isset(self::$_config) && isset(self::$_config->tempdir)) {
-                $tempDir = (string) self::$_config->tempdir;
-            }
-            $cacheFile = $tempDir . 'ddl_' . $schemaName . '.tmp';
-            if (YANA_CACHE_ACTIVE === true && is_file($cacheFile)) {
-                $schema = unserialize(file_get_contents($cacheFile));
-            } else {
-                $schema = \Yana\Files\XDDL::getDatabase($schema);
-                file_put_contents($cacheFile, serialize($schema));
-            }
+        if (!isset($this->_connectionFactory)) {
+            $this->_connectionFactory = new \Yana\Db\ConnectionFactory(new \Yana\Db\SchemaFactory($this->getCache()));
         }
-        if (YANA_DATABASE_ACTIVE) {
-            $connection = new \Yana\Db\Mdb2\Connection($schema);
-        } else {
-            $connection = new \Yana\Db\FileDb\Connection($schema);
-        }
-        if (!empty($schemaName)) {
-            self::$_connections[$schemaName] = $connection;
-        }
-        return $connection;
+        return $this->_connectionFactory->createConnection($schema);
     }
 
     /**

@@ -317,6 +317,7 @@ abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Transl
 
         return $this->getTranslations()->replaceToken($string);
     }
+
 }
 
 ?>

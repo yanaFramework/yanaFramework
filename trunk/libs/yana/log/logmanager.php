@@ -33,7 +33,7 @@ namespace Yana\Log;
  * @package    yana
  * @subpackage log
  */
-class LogManager extends \Yana\Core\AbstractUtility implements IsLogableClass
+class LogManager extends \Yana\Core\AbstractUtility implements \Yana\Log\IsLogableClass
 {
 
     /**
@@ -53,6 +53,16 @@ class LogManager extends \Yana\Core\AbstractUtility implements IsLogableClass
     }
 
     /**
+     * Overwrite all loggers.
+     *
+     * @param  \Yana\Log\IsLoggerCollection  $collection  containing loggers
+     */
+    public static function setLoggers(\Yana\Log\IsLoggerCollection $collection)
+    {
+        self::$_loggers = $collection;
+    }
+
+    /**
      * Returns the attached loggers.
      *
      * @return  \Yana\Log\IsLogHandler
@@ -60,7 +70,7 @@ class LogManager extends \Yana\Core\AbstractUtility implements IsLogableClass
     public static function getLogger()
     {
         if (!isset(self::$_loggers)) {
-            self::$_loggers = new LoggerCollection();
+            self::$_loggers = new \Yana\Log\LoggerCollection();
         }
         return self::$_loggers;
     }

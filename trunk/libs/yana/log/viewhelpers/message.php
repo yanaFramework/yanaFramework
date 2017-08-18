@@ -28,7 +28,7 @@
 namespace Yana\Log\ViewHelpers;
 
 /**
- * <<resultobject>> Stores information about message.
+ * <<resultobject>> Stores information about a message.
  *
  * @package    yana
  * @subpackage log

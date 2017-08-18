@@ -38,53 +38,13 @@ namespace Yana\Plugins\Menus;
  * @package     yana
  * @subpackage  plugins
  */
-class Builder extends \Yana\Plugins\Menus\AbstractBuilder implements \Yana\Log\IsLogable, \Yana\Plugins\Menus\IsCacheableBuilder
+class Builder extends \Yana\Plugins\Menus\AbstractBuilder implements \Yana\Plugins\Menus\IsCacheableBuilder
 {
 
     /**
      * @var  \Yana\Data\Adapters\IsDataAdapter
      */
     private $_cache = null;
-
-    /**
-     * @var  \Yana\Log\LoggerCollection
-     */
-    private $_loggers = null;
-
-    /**
-     * <<constructor>> Initializes dependencies
-     *
-     * @param  \Yana\Plugins\Dependencies\IsMenuContainer  $container  containing all dependencies
-     */
-    public function __construct(\Yana\Plugins\Dependencies\IsMenuContainer $container)
-    {
-        parent::__construct($container);
-        $this->_loggers = new \Yana\Log\LoggerCollection();
-    }
-
-    /**
-     * Adds a logger to the class.
-     *
-     * @param  \Yana\Log\IsLogger  $logger  instance that will handle the logging
-     */
-    public function attachLogger(\Yana\Log\IsLogger $logger)
-    {
-        $collection = $this->getLogger();
-        $collection[] = $logger;
-    }
-
-    /**
-     * Returns the attached loggers.
-     *
-     * @return  \Yana\Log\IsLogHandler
-     */
-    public function getLogger()
-    {
-        if ($this->_loggers->count() === 0) {
-            $this->_loggers = \Yana\Log\LogManager::getLogger();
-        }
-        return $this->_logger;
-    }
 
     /**
      * Returns the cache adapter used by this class.

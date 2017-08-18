@@ -1660,7 +1660,8 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
                         return \Yana\Application::getInstance()->getProfileId();
                     case 'user_created':
                     case 'user_modified':
-                        return \Yana\User::getUserName();
+                        $session = new \Yana\Security\Sessions\Wrapper();
+                        return $session->getCurrentUserName();
                 }
                 return $default;
             // any other

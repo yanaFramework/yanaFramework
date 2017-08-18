@@ -28,19 +28,12 @@
 namespace Yana\Util;
 
 /**
- * SimpleXML implementation with array conversion
- *
- * To create an instance of this class use:
- * <code>
- * $xml = simplexml_load_file('foo.xml', 'XmlArray');
- * $array = $xml->toArray();
- * </code>
+ * <<interface>> Adds toArray() function to SimpleXmlElement.
  *
  * @package    yana
  * @subpackage core
- * @name       XmlArray
  */
-class XmlArray extends \SimpleXMLElement implements \Yana\Util\IsXmlArray
+interface IsXmlArray extends \Traversable
 {
 
     /**
@@ -113,79 +106,7 @@ class XmlArray extends \SimpleXMLElement implements \Yana\Util\IsXmlArray
      * @param   bool   $asNumericArray  return result either as numeric (true) or associative array (false)
      * @return  mixed
      */
-    public function toArray($asNumericArray = false)
-    {
-        $attributes = $this->attributes();
-        $children = $this->children();
-
-        if (empty($attributes) && empty($children)) {
-            return (string) $this;
-
-        } else {
-            $array = array();
-            if ($asNumericArray) {
-                $array['#tag'] = $this->getName();
-            }
-
-            if (!empty($attributes)) {
-                foreach ($attributes as $name => $value)
-                {
-                    $array["@$name"] = (string) $value;
-                }
-                unset($name, $value);
-            }
-
-            if (count($children) > 0) {
-                foreach ($children as $name => $node)
-                {
-                    $value = null;
-                    if (!$node->children()) {
-                        if ($asNumericArray) {
-                            $value = array(
-                                '#tag' => $name,
-                                '#pcdata' => (string) $node
-                            );
-                        } else {
-                            $value = (string) $node;
-                        }
-                    } else {
-                        $value = $node->toArray($asNumericArray);
-                    }
-                    // numeric mode
-                    if ($asNumericArray) {
-                        $array[] = $value;
-
-                    // new node
-                    } elseif (!isset($array[$name])) {
-                        $array[$name] = $value;
-
-                    // node is already a list
-                    } elseif (is_array($array[$name]) && isset($array[$name][0])) {
-                        $array[$name][] = $value;
-
-                    // convert node to list
-                    } else {
-                        $array[$name] = array($array[$name]);
-                        $array[$name][] = $value;
-
-                    }
-                } // end foreach
-                unset($name, $node);
-
-                // has no children (is text-node)
-            } else {
-                $textNode = trim((string) $this);
-                // non-empty text node
-                if ($textNode !== '') {
-                    $array['#pcdata'] = $textNode;
-
-                } else { // empty text-node
-                    // ignore
-                }
-            } // end if
-            return $array;
-        }
-    }
+    public function toArray($asNumericArray = false);
 
 }
 

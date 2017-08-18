@@ -86,7 +86,7 @@ abstract class AbstractException extends \Exception implements \Yana\Core\Except
      *
      * @var \Yana\Translations\IsTranslationManager
      */
-    private static $_translationManager = null;
+    private static $_dependencyContainer = null;
 
     /**
      * Create a new instance, representing a system message.
@@ -109,29 +109,29 @@ abstract class AbstractException extends \Exception implements \Yana\Core\Except
     }
 
     /**
-     * Get translation manager for exception messages.
+     * Get dependencies for exception messages.
      *
-     * @return \Yana\Translations\IsTranslationManager
+     * @return  \Yana\Core\Dependencies\IsExceptionContainer
      */
-    protected static function getTranslationManager()
+    protected static function getDependencyContainer()
     {
-        if (!isset(self::$_translationManager)) {
-            self::$_translationManager = \Yana\Application::getInstance()->getLanguage();
+        if (!isset(self::$_dependencyContainer)) {
+            self::$_dependencyContainer = new \Yana\Core\Dependencies\ExceptionContainer(new \Yana\Translations\NullFacade());
         }
-        self::$_translationManager->loadTranslations("message"); // may throw TranslationException
-        return self::$_translationManager;
+        self::$_dependencyContainer->loadTranslations("message"); // may throw TranslationException
+        return self::$_dependencyContainer;
     }
 
     /**
-     * Add a translation manager for exception messages.
+     * Set dependencies for exception messages.
      *
-     * The manager will be asked to provide translations from the generic translation package "message".
+     * The translation manager is needed to provide translations from the generic translation package "message".
      *
-     * @param  \Yana\Translations\IsTranslationManager  $translationManager  provide translations for messages
+     * @param  \Yana\Core\Dependencies\IsExceptionContainer  $container  wraps dependencies for this class
      */
-    public static function setTranslationManager(\Yana\Translations\IsTranslationManager $translationManager)
+    public static function setDependencyContainer(\Yana\Core\Dependencies\IsExceptionContainer $container)
     {
-        self::$_translationManager = $translationManager;
+        self::$_dependencies = $container;
     }
 
     /**
@@ -255,7 +255,7 @@ abstract class AbstractException extends \Exception implements \Yana\Core\Except
             $this->header = "";
 
             try {
-                $language = self::getTranslationManager(); // may throw TranslationException
+                $language = self::getDependencyContainer()->getLanguage(); // may throw TranslationException
 
                 $id = get_class($this);
                 if ($language->isVar($id . ".h")) {
@@ -286,7 +286,7 @@ abstract class AbstractException extends \Exception implements \Yana\Core\Except
             $this->text = "";
 
             try {
-                $language = self::getTranslationManager(); // may throw TranslationException
+                $language = self::getDependencyContainer()->getLanguage(); // may throw TranslationException
 
                 $id = get_class($this);
                 if ($language->isVar($id . ".p")) {

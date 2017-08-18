@@ -113,6 +113,7 @@ class SdkPlugin extends \Yana\Plugins\AbstractPlugin
     public function sdk_write_plugin(array $ARGS)
     {
         $pluginBuilder = new \Plugins\SDK\ConfigurationBuilder();
+        $pluginBuilder->setApplication($this->_getApplication());
         $pluginBuilder->createNewConfiguration();
         $pluginBuilder->setSdkConfiguration($ARGS);
         /* @var $plugin \Yana\Plugins\Configs\ClassConfiguration */
@@ -146,7 +147,8 @@ class SdkPlugin extends \Yana\Plugins\AbstractPlugin
             if (!isset($node['name'])) {
                 $node->addAttribute('name', $plugin->getId());
             }
-            $pluginBuilder->setSchemaXml($node);
+            $databaseDirectory = $this->_getApplication()->getVar('DBDIR');
+            $pluginBuilder->setSchemaXml($node, $databaseDirectory);
             unset($node);
         }
 

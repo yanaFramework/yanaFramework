@@ -11,7 +11,6 @@
     <configdir>config/</configdir>
     <configdrive>config/system.drive.xml</configdrive>
     <tempdir>cache/</tempdir>
-    <plugincache>cache/pluginmanager.tmp</plugincache>
     <plugindir>plugins/</plugindir>
     <skindir>skins/</skindir>
     <blobdir>config/db/.blob/</blobdir>

@@ -98,7 +98,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
     private $_files = array();
 
     /**
-     * @var  \Yana\VDrive\Configuration
+     * @var  \Yana\VDrive\IsConfiguration
      */
     private $_configuration = null;
 
@@ -175,7 +175,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
     /**
      * Returns the contents of the virtual drive configuration file.
      *
-     * @return  \Yana\VDrive\Configuration
+     * @return  \Yana\VDrive\IsConfiguration
      */
     protected function _getConfiguration()
     {
@@ -193,7 +193,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
             /* create configuration */
             $this->_configuration = \Yana\VDrive\Configuration::loadString($content);
             /* read XML */
-            if (!($this->_configuration instanceOf \Yana\VDrive\Configuration)) {
+            if (!($this->_configuration instanceOf \Yana\VDrive\IsConfiguration)) {
                 $message = "Not a valid VDrive configuration file: '{$this->getPath()}'";
                 throw new \Yana\Core\Exceptions\InvalidSyntaxException($message, \Yana\Log\TypeEnumeration::WARNING);
             }
@@ -322,10 +322,10 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
      * This iterates through the XML file and builds the virtual drive
      * as definded.
      *
-     * @param   \Yana\VDrive\Configuration  $content  current xml node
-     * @param   string                      $path     current virtual path
+     * @param   \Yana\VDrive\IsConfiguration  $content  current xml node
+     * @param   string                        $path     current virtual path
      */
-    private function _readXML(\Yana\VDrive\Configuration $content, $path = "")
+    private function _readXML(\Yana\VDrive\IsConfiguration $content, $path = "")
     {
         assert('is_string($path); // Wrong type for argument 2. String expected');
 
@@ -444,10 +444,10 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
      * Interates through sources and returns the first existing file or directory in the list.
      * If none exists, it returns the last element in the list.
      *
-     * @param   \Yana\VDrive\Configuration  $content  Virtual Drive configuration settings
+     * @param   \Yana\VDrive\IsConfiguration  $content  Virtual Drive configuration settings
      * @return  string
      */
-    private function _getSource(\Yana\VDrive\Configuration $content)
+    private function _getSource(\Yana\VDrive\IsConfiguration $content)
     {
         $sources = (array) $content->getNodeSources();
 

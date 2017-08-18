@@ -50,6 +50,11 @@ class ConfigurationBuilder extends \Yana\Plugins\Configs\AbstractBuilder
     protected $object = null;
 
     /**
+     * @var  \Yana\Application
+     */
+    private $_application = null;
+
+    /**
      * directory
      *
      * @var  \Yana\Files\Dir
@@ -105,6 +110,28 @@ class ConfigurationBuilder extends \Yana\Plugins\Configs\AbstractBuilder
     private $_methodConfiguration = array();
 
     /**
+     * Injects application facade.
+     *
+     * @param   \Yana\Application  $application  facade
+     * @return  self
+     */
+    public function setApplication(\Yana\Application $application)
+    {
+        $this->_application = $application;
+        return $this;
+    }
+
+    /**
+     * Returns application facade
+     *
+     * @return \Yana\Application
+     */
+    protected function _getApplication()
+    {
+        return $this->_application;
+    }
+
+    /**
      * get plugin directory
      *
      * @return  \Yana\Files\Dir
@@ -123,7 +150,7 @@ class ConfigurationBuilder extends \Yana\Plugins\Configs\AbstractBuilder
      * set image
      *
      * @param   string  $image  image path
-     * @return  \Plugins\SDK\ConfigurationBuilder
+     * @return  self
      * @throws  \Yana\Core\Exceptions\Files\InvalidImageException  when the image has no valid type
      */
     public function setImage($image)
@@ -166,10 +193,12 @@ class ConfigurationBuilder extends \Yana\Plugins\Configs\AbstractBuilder
      *
      * @param   string  $dbms  name of dbms
      * @param   string  $file  sql file
-     * @return  \Plugins\SDK\ConfigurationBuilder
+     * @return  self
      */
     public function addSqlFile($dbms, $file)
     {
+        assert('is_string($dbms); // Wrong argument type argument 1. String expected');
+        assert('is_string($file); // Wrong argument type argument 2. String expected');
         $yana = $this->_getApplication();
         $installDirectory = $yana->getResource('system:/dbinstall/' . mb_strtolower($dbms));
         if (!is_object($installDirectory)) {
@@ -203,7 +232,7 @@ class ConfigurationBuilder extends \Yana\Plugins\Configs\AbstractBuilder
      * Add a HTML template file.
      *
      * @param   \Yana\Db\Ddl\Form $form  form object the template is based on
-     * @return  \Plugins\SDK\ConfigurationBuilder
+     * @return  self
      */
     protected function addTemplate(\Yana\Db\Ddl\Form $form)
     {
@@ -224,20 +253,21 @@ class ConfigurationBuilder extends \Yana\Plugins\Configs\AbstractBuilder
      * Set schema from XML.
      *
      * @param   \SimpleXMLElement  $node  database root node
-     * @return  \Plugins\SDK\ConfigurationBuilder
+     * @param   string             $path  where the resulting file should be stored
+     * @return  self
      */
-    public function setSchemaXml(\SimpleXMLElement $node)
+    public function setSchemaXml(\SimpleXMLElement $node, $path)
     {
+        assert('is_string($path); // Wrong argument type argument 2. String expected');
         $this->_schema = \Yana\Db\Ddl\Database::unserializeFromXDDL($node);
         $this->findTranslations($this->_schema);
         $this->buildForms($this->_schema);
 
-        $directory = \Yana\Db\Ddl\DDL::getDirectory() . '/';
         $dom = \dom_import_simplexml($this->_schema->serializeToXDDL())->ownerDocument;
         $dom->formatOutput = true;
         $this->_filesToCopy[] = array(
             'content' => $dom->saveXML(),
-            'dest' => $directory . strtolower($this->object->getId()) . '.db.xml'
+            'dest' => $path . '/' . strtolower($this->object->getId()) . '.db.xml'
         );
         return $this;
     }
@@ -352,7 +382,7 @@ class ConfigurationBuilder extends \Yana\Plugins\Configs\AbstractBuilder
      */
     public function buildPlugin($overwrite = false)
     {
-        assert('is_bool($overwrite); // Invalid argument $overwrite: bool expected');
+        assert('is_bool($overwrite); // Wrong argument type argument 1. Bool expected');
 
         $pluginId = strtolower($this->object->getId());
 
@@ -789,7 +819,7 @@ class ConfigurationBuilder extends \Yana\Plugins\Configs\AbstractBuilder
      * Set SDK configuration form values.
      *
      * @param   array  $sdkConfiguration  user input taken from HTML form
-     * @return  \Plugins\SDK\ConfigurationBuilder
+     * @return  self
      */
     public function setSdkConfiguration(array $sdkConfiguration)
     {

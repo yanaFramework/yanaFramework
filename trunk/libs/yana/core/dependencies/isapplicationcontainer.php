@@ -30,12 +30,12 @@
 namespace Yana\Core\Dependencies;
 
 /**
- * Dependency container for the application class.
+ * <<interface>> Dependency container for the application class.
  *
  * @package     yana
  * @subpackage  core
  */
-interface IsApplicationContainer
+interface IsApplicationContainer extends \Yana\Core\Dependencies\IsExceptionContainer
 {
 
     /**
@@ -153,7 +153,6 @@ interface IsApplicationContainer
      * This returns the plugin manager. If none exists, a new instance is created.
      * The pluginManager holds repositories for interfaces and implementations of plugins.
      *
-     * @param   \Yana\Application  $application  necessary to initialize dependency container
      * @return  \Yana\Plugins\Manager
      */
     public function getPlugins();
@@ -173,7 +172,7 @@ interface IsApplicationContainer
      *
      * This returns the language component. If none exists, a new instance is created.
      *
-     * @return  \Yana\Translations\Facade
+     * @return  \Yana\Translations\IsFacade
      */
     public function getLanguage();
 
@@ -218,7 +217,7 @@ interface IsApplicationContainer
     /**
      * Returns the attached loggers.
      *
-     * @return  \Yana\Log\IsLogHandler
+     * @return  \Yana\Log\LoggerCollection
      */
     public function getLogger();
 

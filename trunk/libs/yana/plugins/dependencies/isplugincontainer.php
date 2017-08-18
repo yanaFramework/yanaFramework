@@ -25,29 +25,32 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Data\Adapters;
+namespace Yana\Plugins\Dependencies;
 
 /**
- * <<Interface>> Cacheable object.
+ * Dependency ccntainer.
  *
- * This identifies classes that may use caching.
- * Note: it is recommended to set the ArrayAdapter in the constructor as default if no other cache is provided.
+ * Used to inject class dependencies into plugins.
  *
  * @package     yana
- * @subpackage  core
+ * @subpackage  plugins
  */
-interface IsCacheable
+interface IsPluginContainer
 {
 
     /**
-     * Replace the cache adapter.
+     * Get application settings.
      *
-     * Note that this may also replace the cache contents.
-     *
-     * @param   \Yana\Data\Adapters\IsDataAdapter  $cache  new cache adapter
-     * @return  self
+     * @return  \Yana\Application
      */
-    public function setCache(\Yana\Data\Adapters\IsDataAdapter $cache);
+    public function getApplication();
+
+    /**
+     * Get session data.
+     *
+     * @return  \Yana\Security\Sessions\IsWrapper
+     */
+    public function getSession();
 
 }
 

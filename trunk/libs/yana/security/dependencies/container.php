@@ -67,7 +67,7 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
     /**
      * @var  array
      */
-    private $_defaultEventUser = null;
+    private $_defaultEventUser = array();
 
     /**
      * @var  \Yana\Security\Rules\Requirements\IsDataReader
@@ -124,19 +124,34 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
     private $_eventConfigurationsForPlugins = null;
 
     /**
-     * @var  \Yana\Log\IsLogHandler 
-     */
-    private $_logger = null;
-
-    /**
      * @var  string
      */
     private $_profileId = "";
 
     /**
-     * @var  string
+     * @var  \Yana\Plugins\Manager
      */
-    private $_action = "";
+    private $_pluginManager;
+
+    /**
+     * <<constructor>> Initializes dependencies.
+     *
+     * @param  \Yana\Plugins\Manager  $manager  dependent resource
+     */
+    public function __construct(\Yana\Plugins\Manager $manager)
+    {
+        $this->_pluginManager = $manager;
+    }
+
+    /**
+     * Return plugin manager instance.
+     *
+     * @return  \Yana\Plugins\Manager
+     */
+    protected function _getPluginManager()
+    {
+        return $this->_pluginManager;
+    }
 
     /**
      * Replace the cache adapter.
@@ -182,7 +197,8 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
     public function getDataConnection()
     {
         if (!isset($this->_dataConnection)) {
-            $this->_dataConnection = \Yana\Application::connect('user');
+            $connectionFactory = new \Yana\Db\ConnectionFactory(new \Yana\Db\SchemaFactory($this->getCache()));
+            $this->_dataConnection = $connectionFactory->createConnection('user');
         }
         return $this->_dataConnection;
     }
@@ -206,14 +222,6 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
      */
     public function getDefaultEventUser()
     {
-        if (!isset($this->_defaultEventUser)) {
-            $default = \Yana\Application::getInstance()->getDefault('event.user');
-            if (!is_array($default)) {
-                $default = array();
-            }
-            $this->_defaultEventUser = $default;
-            unset($default);
-        }
         return $this->_defaultEventUser;
     }
 
@@ -469,21 +477,9 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
     public function getEventConfigurationsForPlugins()
     {
         if (!isset($this->_eventConfigurationsForPlugins)) {
-            $this->_eventConfigurationsForPlugins = \Yana\Plugins\Manager::getInstance()->getEventConfigurations();
+            $this->_eventConfigurationsForPlugins = $this->_getPluginManager()->getEventConfigurations();
         }
         return $this->_eventConfigurationsForPlugins;
-    }
-
-    /**
-     * Set event logger.
-     *
-     * @param   \Yana\Log\IsLogHandler  $logger  usually provided by the application
-     * @return  self
-     */
-    public function setLogger(\Yana\Log\IsLogHandler $logger)
-    {
-        $this->_logger = $logger;
-        return $this;
     }
 
     /**
@@ -495,10 +491,7 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
      */
     public function getLogger()
     {
-        if (!isset($this->_logger)) {
-            $this->_logger = \Yana\Log\LogManager::getLogger();
-        }
-        return $this->_logger;
+        return \Yana\Log\LogManager::getLogger();
     }
 
     /**
@@ -508,9 +501,6 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
      */
     public function getProfileId()
     {
-        if ($this->_profileId === "") {
-            $this->_profileId = \Yana\Application::getInstance()->getProfileId();
-        }
         return $this->_profileId;
     }
 
@@ -521,10 +511,7 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
      */
     public function getLastPluginAction()
     {
-        if ($this->_action === "") {
-            $this->_action = \Yana\Plugins\Manager::getLastEvent();
-        }
-        return (string) $this->_action;
+        return (string) $this->_getPluginManager()->getLastEvent();
     }
 
     /**
@@ -537,19 +524,6 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
     {
         assert('is_string($profileId); // $profileId expected to be String');
         $this->_profileId = (string) $profileId;
-        return $this;
-    }
-
-    /**
-     * Set action for current request.
-     *
-     * @param   string  $action  from request to application
-     * @return  self
-     */
-    public function setAction($action)
-    {
-        assert('is_string($action); // $action expected to be String');
-        $this->_action = (string) $action;
         return $this;
     }
 

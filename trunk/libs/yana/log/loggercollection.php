@@ -33,7 +33,7 @@ namespace Yana\Log;
  * @package    yana
  * @subpackage log
  */
-class LoggerCollection extends \Yana\Core\AbstractCollection implements IsLogHandler
+class LoggerCollection extends \Yana\Core\AbstractCollection implements \Yana\Log\IsLoggerCollection
 {
 
     /**

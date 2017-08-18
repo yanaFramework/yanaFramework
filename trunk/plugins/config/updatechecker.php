@@ -25,35 +25,39 @@ class UpdateChecker extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
 {
 
     /**
-     *
-     * @var \Yana\Data\Adapters\IsDataAdapter
+     * @var  \Yana\Data\Adapters\IsDataAdapter
      */
     private $_cacheAdapter = null;
 
     /**
-     *
-     * @var \Yana\Translations\Facade
+     * @var  \Yana\Translations\Facade
      */
     private $_language = null;
 
     /**
-     *
-     * @var resource
+     * @var  resource
      */
     private $_socket = null;
 
     /**
-     * Create a new instance.
+     * @var  string
+     */
+    private $_updateServer = "";
+
+    /**
+     * <<constructor>> Create a new instance.
      *
      * This also loads the configuration.
      *
-     * @param \Yana\Translations\Facade $language
+     * @param  \Yana\Translations\Facade  $language      facade
+     * @param  string                     $updateServer  URL
      */
-    public function __construct(\Yana\Translations\Facade $language)
+    public function __construct(\Yana\Translations\Facade $language, $updateServer)
     {
         $cache = new \Yana\Data\Adapters\ArrayAdapter();
         $this->setCache($cache);
         $this->_language = $language;
+        $this->_updateServer = (string) $updateServers;
     }
 
     /**
@@ -89,6 +93,16 @@ class UpdateChecker extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
     }
 
     /**
+     * Returns URL to update server.
+     *
+     * @return  string
+     */
+    protected function _getUpdateServer()
+    {
+        return $this->_updateServer;
+    }
+
+    /**
      * <<smarty function>> updateCheck
      *
      * This checks for updates and returns the result.
@@ -119,7 +133,7 @@ class UpdateChecker extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
         }
 
         /* create link to check for new version */
-        $url = \Yana\Application::getInstance()->getDefault('UPDATE_SERVER');
+        $url = $this->_getUpdateServer();
         $url = str_replace(YANA_LEFT_DELIMITER . '$VERSION' . YANA_RIGHT_DELIMITER, YANA_VERSION, $url);
         $url = str_replace(YANA_LEFT_DELIMITER . '$IS_STABLE' . YANA_RIGHT_DELIMITER, YANA_IS_STABLE, $url);
         $url = str_replace(YANA_LEFT_DELIMITER . '$LANG' . YANA_RIGHT_DELIMITER, @$_SESSION['language'], $url);

@@ -27,18 +27,25 @@ class ViewHelper extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFunc
     /**
      * @var \Yana\Translations\Facade
      */
-    private $_translations = "";
+    private $_translations = null;
+
+    /**
+     * @var \Yana\Plugins\Menus\IsMenu
+     */
+    private $_menu = null;
 
     /**
      * Initialize the view helper
      *
-     * @param  string                    $pluginDir     required to determine the URL for plugin-icons that are used in the menu
-     * @param  \Yana\Translations\Facade $translations  provides translations for text parts of the menu
+     * @param  string                      $pluginDir     required to determine the URL for plugin-icons that are used in the menu
+     * @param  \Yana\Plugins\Menus\IsMenu  $menu          application menu
+     * @param  \Yana\Translations\Facade   $translations  provides translations for text parts of the menu
      */
-    public function __construct($pluginDir, \Yana\Translations\Facade $translations)
+    public function __construct($pluginDir, \Yana\Plugins\Menus\IsMenu $menu, \Yana\Translations\Facade $translations)
     {
         assert('is_string($pluginDir); // Invalid argument type $pluginDir: string expected.');
         $this->_pluginDir = (string) $pluginDir;
+        $this->_menu = $menu;
         $this->_translations = $translations;
     }
 
@@ -64,6 +71,16 @@ class ViewHelper extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFunc
     }
 
     /**
+     * Returns application menu.
+     *
+     * @return  \Yana\Plugins\Menus\IsMenu
+     */
+    protected function _getMenu()
+    {
+        return $this->_menu;
+    }
+
+    /**
      * <<smarty function>> sitemap
      *
      * @param   array                      $params  any list of arguments
@@ -78,8 +95,7 @@ class ViewHelper extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFunc
         $dir = $this->_getPluginDir();
         $formatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
 
-        $pluginMenu = \Yana\Application::getInstance()->buildApplicationMenu(); // using default settings
-        unset($builder);
+        $pluginMenu = $this->_getMenu();
 
         /* @var $entry PluginMenuEntry */
         foreach ($pluginMenu->getMenuEntries('start') as $action => $entry)

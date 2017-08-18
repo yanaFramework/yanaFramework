@@ -41,6 +41,16 @@ interface IsFacadeContainer extends \Yana\Security\Dependencies\IsContainer
 {
 
     /**
+     * Get cache-adapter.
+     *
+     * Uses an ArrayAdapter by default.
+     * The cache-adapter is passed on to the security rule manager.
+     *
+     * @return  \Yana\Data\Adapters\IsDataAdapter
+     */
+    public function getCache();
+
+    /**
      * Retrieve session wrapper.
      *
      * @return  \Yana\Security\Sessions\IsWrapper

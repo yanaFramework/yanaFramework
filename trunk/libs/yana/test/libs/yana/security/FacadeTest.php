@@ -75,7 +75,7 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
         \Yana\Db\Ddl\DDL::setDirectory(CWD. 'resources/');
         $this->schema = \Yana\Files\XDDL::getDatabase('user');
         restore_error_handler();
-        $this->container = new \Yana\Security\Dependencies\Container();
+        $this->container = new \Yana\Security\Dependencies\Container(\Yana\Plugins\Manager::getInstance());
         $this->container->setDataConnection(new \Yana\Db\FileDb\NullConnection($this->schema))
                 ->setEventConfigurationsForPlugins(new \Yana\Plugins\Configs\MethodCollection());
         $this->object = new \Yana\Security\Facade($this->container);

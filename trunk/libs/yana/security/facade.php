@@ -173,7 +173,7 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      * @param   string                                           $userName     user name
      * @return  bool
      */
-    public function checkByRequirement(\Yana\Security\Rules\Requirements\IsRequirement $requirement, $profileId, $action, $userName)
+    public function checkByRequirement(\Yana\Security\Rules\Requirements\IsRequirement $requirement, $profileId, $action, $userName = "")
     {
         assert('is_string($profileId); // Wrong type for argument $profileId. String expected');
         assert('is_string($action); // Wrong type for argument $action. String expected');

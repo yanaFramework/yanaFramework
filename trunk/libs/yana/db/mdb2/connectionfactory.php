@@ -125,8 +125,8 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsCon
         if (!class_exists('\MDB2')) {
             /* error handling */
             $message = "Unable to open connection to database using PEAR-DB. Might not be installed.";
-            \Yana\Application::getInstance()->getLogger()->addLog($message);
-            throw new \Yana\Db\Mdb2\PearDbException();
+            $level = \Yana\Log\TypeEnumeration::ERROR;
+            throw new \Yana\Db\Mdb2\PearDbException($message, $level);
         }
 
         /*

@@ -35,22 +35,50 @@ namespace Yana\Plugins\Dependencies;
  * @package     yana
  * @subpackage  plugins
  */
-interface IsContainer
+class PluginContainer extends \Yana\Core\Object implements \Yana\Plugins\Dependencies\IsPluginContainer
 {
 
     /**
-     * Get default event settings.
-     *
-     * @return  array
+     * @var  \Yana\Application
      */
-    public function getDefaultEvent();
+    private $_application;
+
+    /**
+     * @var  \Yana\Security\Sessions\IsWrapper
+     */
+    private $_session;
+
+    /**
+     * <<constructor>> Initialize dependencies.
+     *
+     * @param  \Yana\Application                  $application  to bind plugin to
+     * @param  \Yana\Security\Sessions\IsWrapper  $session      wrapper
+     */
+    public function __construct(\Yana\Application $application, \Yana\Security\Sessions\IsWrapper $session)
+    {
+        $this->_application = $application;
+        $this->_session = $session;
+    }
+
+    /**
+     * Get application settings.
+     *
+     * @return  \Yana\Application
+     */
+    public function getApplication()
+    {
+        return $this->_application;
+    }
 
     /**
      * Get session data.
      *
      * @return  \Yana\Security\Sessions\IsWrapper
      */
-    public function getSession();
+    public function getSession()
+    {
+        return $this->_session;
+    }
 
 }
 

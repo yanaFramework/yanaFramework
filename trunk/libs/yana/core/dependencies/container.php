@@ -41,7 +41,7 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
     /**
      * System configuration file
      *
-     * @var  \Yana\Util\XmlArray
+     * @var  \Yana\Util\IsXmlArray
      */
     private $_configuration = null;
 
@@ -102,13 +102,6 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
     private $_view = null;
 
     /**
-     * Collection of logger classes.
-     *
-     * @var  \Yana\Log\LoggerCollection
-     */
-    private $_loggers = null;
-
-    /**
      * Tracks and prepares output messages.
      *
      * @var  \Yana\Log\ExceptionLogger
@@ -148,9 +141,11 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
     private $_menuBuilder = null;
 
     /**
-     * Creates an instance.
+     * <<constructor>> Creates an instance.
+     *
+     * @param  \Yana\Util\IsXmlArray  $configuration  loaded from XML file in config-directory
      */
-    public function __construct(\Yana\Util\XmlArray $configuration)
+    public function __construct(\Yana\Util\IsXmlArray $configuration)
     {
         $this->_configuration = $configuration;
     }
@@ -180,8 +175,9 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
     public function getCache()
     {
         if (!isset($this->_cache)) {
-            if (!empty($this->_configuration->tempdir) && is_dir((string) $this->_configuration->tempdir)) {
-                $temporaryDirectory = new \Yana\Files\Dir((string) $this->_configuration->tempdir);
+            $tempDir = $this->_getPathToCacheDirectory();
+            if (YANA_CACHE_ACTIVE === true && is_dir($tempDir)) {
+                $temporaryDirectory = new \Yana\Files\Dir($tempDir);
                 $this->_cache = new \Yana\Data\Adapters\FileCacheAdapter($temporaryDirectory);
             } else {
                 $this->_cache = new \Yana\Data\Adapters\ArrayAdapter();
@@ -281,8 +277,12 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
     public function getSecurity()
     {
         if (!isset($this->_security)) {
-            $container = new \Yana\Security\Dependencies\Container();
-            $container->setSession($this->getSession());
+            $container = new \Yana\Security\Dependencies\Container($this->getPlugins());
+            $container
+                    ->setCache($this->getCache())
+                    ->setSession($this->getSession())
+                    ->setDefaultEventUser($this->getDefault('event.user'))
+                    ->setProfileId($this->getProfileId());
             $this->_security = new \Yana\Security\Facade($container);
         }
         return $this->_security;
@@ -321,17 +321,18 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
     {
         if (!isset($this->_registry)) {
             // path to cache file
-            $cacheFile = (string) $this->_configuration->tempdir . 'registry_' . $this->getProfileId() . '.tmp';
+            $cacheId = (string) 'registry_' . $this->getProfileId();
 
             // get configuration mode
             \Yana\VDrive\Registry::useDefaults($this->isSafemode());
+            $cache = $this->getCache();
 
-            if (YANA_CACHE_ACTIVE === true && file_exists($cacheFile)) {
-                $this->_registry = unserialize(file_get_contents($cacheFile));
+            if (isset($cache[$cacheId])) {
+                $this->_registry = $cache[$cacheId];
                 assert($this->_registry instanceof \Yana\VDrive\IsRegistry);
             } else {
                 $this->_registry = new \Yana\VDrive\Registry((string) $this->_configuration->configdrive, "");
-                $this->_registry->setVar("ID", self::getId());
+                $this->_registry->setVar("ID", $this->getProfileId());
                 $this->_registry->mergeVars('*', \Yana\Util\Hashtable::changeCase($this->_configuration->toArray(), \CASE_UPPER));
             }
             $request = $this->getRequest();
@@ -353,9 +354,7 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
             $this->_registry->read();
 
             // create cache file
-            if (YANA_CACHE_ACTIVE === true && !file_exists($cacheFile)) {
-                file_put_contents($cacheFile, serialize($this->_registry));
-            }
+            $cache[$cacheId] = $this->_registry;
 
             if (!$request->all()->isEmpty('page')) {
                 $this->_registry->setVar('PAGE', $request->all()->value('page')->asInt());
@@ -382,30 +381,46 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
      * This returns the plugin manager. If none exists, a new instance is created.
      * The pluginManager holds repositories for interfaces and implementations of plugins.
      *
-     * @param   \Yana\Application  $application  necessary to initialize dependency container
      * @return  \Yana\Plugins\Manager
      */
-    public function getPlugins(\Yana\Application $application)
+    public function getPlugins()
     {
         if (!isset($this->_plugins)) {
-//            $cacheFile = (string) self::$_config->plugincache;
-            $cacheFile = YANA_INSTALL_DIR . (string) $this->_configuration->plugincache;
+            $cacheId = 'pluginmanager';
+            $cache = $this->getCache();
 
-            if (YANA_CACHE_ACTIVE === true && file_exists($cacheFile)) {
-                $this->_plugins = unserialize(file_get_contents($cacheFile));
+            if (isset($cache[$cacheId])) {
+                $this->_plugins = $cache[$cacheId];
                 assert($this->_plugins instanceof \Yana\Plugins\Manager);
 
             } else {
                 $this->_plugins = \Yana\Plugins\Manager::getInstance();
-                $factory = new \Yana\Plugins\Dependencies\ContainerFactory($application);
-                $this->_plugins->attachDependencies($factory->createDependencies());
+                $container = new \Yana\Plugins\Dependencies\Container($this->getSession(), $this->_getDefaultEvent());
+                $this->_plugins->attachDependencies($container);
                 if (!is_file(\Yana\Plugins\Manager::getConfigFilePath())) {
                     $this->_plugins->refreshPluginFile();
                 }
-                file_put_contents($cacheFile, serialize($this->_plugins));
+                $cache[$cacheId] = $this->_plugins;
             }
         }
         return $this->_plugins;
+    }
+
+    /**
+     * Gets settings for default event configuration and converts them to an array.
+     *
+     * @return  array
+     */
+    private function _getDefaultEvent()
+    {
+        $defaultEvent = $this->getDefault('EVENT');
+        if ($defaultEvent instanceof \Yana\Util\IsXmlArray) {
+            $defaultEvent = $defaultEvent->toArray();
+        }
+        if (!\is_array($defaultEvent)) {
+            $defaultEvent = array();
+        }
+        return $defaultEvent;
     }
 
     /**
@@ -431,7 +446,7 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
      *
      * This returns the language component. If none exists, a new instance is created.
      *
-     * @return  \Yana\Translations\Facade
+     * @return  \Yana\Translations\IsFacade
      */
     public function getLanguage()
     {
@@ -448,9 +463,11 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
      */
     protected function _buildNewTranslationFacade()
     {
-        $languageDir = $this->getRegistry()->getVar('LANGUAGEDIR');
+        $registry = $this->getRegistry();
+        $languageDir = $registry->getVar('LANGUAGEDIR');
         $languageDirWrapper = new \Yana\Files\Dir($languageDir);
         $defaultProvider = new \Yana\Translations\TextData\XliffDataProvider($languageDirWrapper);
+        /* @var $translationFacade \Yana\Translations\Facade */
         $translationFacade = \Yana\Translations\Facade::getInstance();
         $translationFacade->addTextDataProvider($defaultProvider);
         $translationFacade->attachLogger($this->getLogger());
@@ -475,9 +492,9 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
         {
             $array[basename($dir)] = 1;
         }
-        $this->setVar('INSTALLED_LANGUAGES', $array);
+        $registry->setVar('INSTALLED_LANGUAGES', $array);
         if (isset($session['language'])) {
-            $this->setVar('SELECTED_LANGUAGE', (string) $session['language']);
+            $registry->setVar('SELECTED_LANGUAGE', (string) $session['language']);
         }
         return $translationFacade;
     }
@@ -492,23 +509,20 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
     public function getSkin()
     {
         if (!isset($this->_skin)) {
+            assert('!isset($registry); // Cannot redeclare var $registry');
             $registry = $this->getRegistry();
-            $registry->mount('system:/skincache.text');
-            $cacheFile = $registry->getResource('system:/skincache.text');
+            assert('!isset($cache); // Cannot redeclare var $cache');
+            $cache = $this->getCache();
+            assert('!isset($cacheId); // Cannot redeclare var $cacheId');
+            $cacheId = 'skin_' . $registry->getVar('PROFILE.SKIN');
 
-            if (YANA_CACHE_ACTIVE === true && $cacheFile->exists()) {
-                assert('!isset($skin); // Cannot redeclare var $skin');
-                $this->_skin = unserialize(file_get_contents($cacheFile->getPath()));
+            if (isset($cache[$cacheId])) {
+                $this->_skin = $cache[$cacheId];
                 assert($this->_skin instanceof \Yana\Views\Skins\IsSkin);
 
             } else {
-                $this->_skin = new \Yana\Views\Skins\Skin($this->getVar('PROFILE.SKIN'));
-
-                if (YANA_CACHE_ACTIVE === true) {
-                    $cacheFile->create();
-                    $cacheFile->setContent(serialize($this->_skin));
-                    $cacheFile->write();
-                }
+                $this->_skin = new \Yana\Views\Skins\Skin($registry->getVar('PROFILE.SKIN'));
+                $cache[$cacheId] = $this->_skin;
             }
         }
         return $this->_skin;
@@ -559,16 +573,13 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
     }
 
     /**
-     * Returns the attached loggers.
+     * Returns the attached logger.
      *
      * @return  \Yana\Log\IsLogHandler
      */
     public function getLogger()
     {
-        if (!isset($this->_loggers)) {
-            $this->_loggers = new \Yana\Log\LoggerCollection();
-        }
-        return $this->_loggers;
+        return \Yana\Log\LogManager::getLogger();
     }
 
     /**
@@ -616,7 +627,7 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
                 $result = $values;
             }
         }
-        if ($result instanceof \Yana\Util\XmlArray) {
+        if ($result instanceof \Yana\Util\IsXmlArray) {
             $result = $result->toArray();
         }
         return $result;
@@ -631,13 +642,35 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
     public function getMenuBuilder(\Yana\Application $application)
     {
         if (!isset($this->_menuBuilder)) {
-            $dependencyFactory = new \Yana\Plugins\Dependencies\ContainerFactory($application);
-            $container = $dependencyFactory->createMenuDependencies();
+            $container = new \Yana\Plugins\Dependencies\MenuContainer($application);
             $this->_menuBuilder = new \Yana\Plugins\Menus\Builder($container);
             $this->_menuBuilder->attachLogger($this->getLogger());
             $this->_menuBuilder->setLocale($this->getLanguage()->getLocale());
         }
         return $this->_menuBuilder;
+    }
+
+    /**
+     * Returns ... well, the path to the cache directory.
+     *
+     * The cache directory is defined in the application configuration.
+     * If it is not, this will assume that there is a directory called "cache" in the application root.
+     *
+     * This function will always add a "/" path delimiter to make sure the returned path has one.
+     * Note! This doesn't check if that directoy actually exists.
+     *
+     * @return  string
+     */
+    protected function _getPathToCacheDirectory()
+    {
+        $tempDir = 'cache';
+        if (isset($this->_configuration->tempdir)) {
+            $tempDir = (string) $this->_configuration->tempdir;
+        }
+        if ($tempDir !== '/' and \strlen($tempDir) > 1) {
+            $tempDir .= '/';
+        }
+        return $tempDir;
     }
 
 }

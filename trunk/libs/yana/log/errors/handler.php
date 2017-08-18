@@ -115,12 +115,12 @@ class Handler extends \Yana\Log\Errors\AbstractHandler
     /**
      * Handles uncaught exceptions.
      *
-     * @param  \Exception  $e  some unhandled exception
+     * @param  \Throwable  $e  some unhandled exception
      * @ignore
      *
      * @internal NOTE: this function is public for technical reasons. Don't call it yourself.
      */
-    public function handleException(\Exception $e)
+    public function handleException(\Throwable $e)
     {
         // Can't throw exceptions here. This would risk an infinite loop.
 

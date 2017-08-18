@@ -34,7 +34,7 @@ namespace Yana\Core\Exceptions;
  * @package     yana
  * @subpackage  core
  */
-interface IsException
+interface IsException extends \Throwable
 {
 
     /**

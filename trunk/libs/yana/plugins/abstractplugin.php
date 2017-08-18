@@ -43,12 +43,12 @@ abstract class AbstractPlugin extends \Yana\Core\Object implements \Yana\IsPlugi
 {
 
     /**
-     * @var  \Yana\Plugins\Dependencies\Container
+     * @var  \Yana\Plugins\Dependencies\IsPluginContainer
      */
     private static $_fallbackDependencyContainer = null;
 
     /**
-     * @var  \Yana\Plugins\Dependencies\Container
+     * @var  \Yana\Plugins\Dependencies\IsPluginContainer
      */
     private $_dependencyContainer = null;
 
@@ -65,7 +65,7 @@ abstract class AbstractPlugin extends \Yana\Core\Object implements \Yana\IsPlugi
     /**
      * Hack to ensure there will always be a depdency container, even before the constructor is called for the first time.
      *
-     * @return  \Yana\Plugins\Dependencies\Container
+     * @return  \Yana\Plugins\Dependencies\IsPluginContainer
      */
     private function _getDependencyContainer()
     {
@@ -83,10 +83,10 @@ abstract class AbstractPlugin extends \Yana\Core\Object implements \Yana\IsPlugi
      *
      * @param   string                                        $name           must be valid identifier. Consists of chars, numbers and underscores.
      * @param   string                                        $fromDirectory  where plugin files reside
-     * @param   \Yana\Plugins\Dependencies\AbstractContainer  $container      to be injected into the plugin
+     * @param   \Yana\Plugins\Dependencies\IsPluginContainer  $container      to be injected into the plugin
      * @throws  \Yana\Core\Exceptions\NotFoundException  when the plugin or its base-class was not found
      */
-    public static function loadPlugin($name, $fromDirectory, \Yana\Plugins\Dependencies\AbstractContainer $container)
+    public static function loadPlugin($name, $fromDirectory, \Yana\Plugins\Dependencies\IsPluginContainer $container)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
         assert('is_string($fromDirectory); // Invalid argument $fromDirectory: string expected');
@@ -144,7 +144,7 @@ abstract class AbstractPlugin extends \Yana\Core\Object implements \Yana\IsPlugi
      */
     protected function _getSecurityFacade()
     {
-        return $this->_getDependencyContainer()->getSecurityFacade();
+        return $this->_getApplication()->getSecurity();
     }
 
     /**
@@ -152,7 +152,7 @@ abstract class AbstractPlugin extends \Yana\Core\Object implements \Yana\IsPlugi
      */
     protected function _getPluginsFacade()
     {
-        return $this->_getDependencyContainer()->getPluginsFacade();
+        return $this->_getApplication()->getPlugins();
     }
 
     /**
@@ -172,7 +172,7 @@ abstract class AbstractPlugin extends \Yana\Core\Object implements \Yana\IsPlugi
     {
         assert('is_string($schema); // Invalid argument $schema: string expected');
 
-        return $this->_getDependencyContainer()->getConnectionFactory()->createConnection((string) $schema);
+        return $this->_getApplication()->connect($schema);
     }
 
     /**

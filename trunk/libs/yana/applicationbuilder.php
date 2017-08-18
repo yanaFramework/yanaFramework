@@ -55,9 +55,14 @@ class ApplicationBuilder extends \Yana\Core\Object
 {
 
     /**
-     * @var \Yana\Log\Errors\Handler
+     * @var \Yana\Log\Errors\IsHandler
      */
     private $_errorHandler = null;
+
+    /**
+     * @var \Yana\Log\IsLogger
+     */
+    private $_errorLogger = null;
 
     /**
      * @var  \Yana\Application
@@ -99,7 +104,6 @@ class ApplicationBuilder extends \Yana\Core\Object
              */
             define('YANA_ERROR_REPORTING', $logging);
         }
-        $logger = null;
         $formatter = null;
         switch ($logging)
         {
@@ -110,15 +114,15 @@ class ApplicationBuilder extends \Yana\Core\Object
                 } else {
                     $formatter = new \Yana\Log\Formatter\HtmlFormatter();
                 }
-                $logger = new \Yana\Log\ScreenLogger();
-                $logger->setLogLevel(E_ALL);
+                $this->_errorLogger = new \Yana\Log\ScreenLogger();
+                $this->_errorLogger->setLogLevel(E_ALL);
                 $isActive = true;
                 break;
             case YANA_ERROR_LOG:
                 error_reporting(E_ALL);
                 $formatter = new \Yana\Log\Formatter\TextFormatter();
-                $logger = new \Yana\Log\FileLogger(new \Yana\Files\Text('cache/error.log'));
-                $logger->setLogLevel(E_ALL & ~E_STRICT);
+                $this->_errorLogger = new \Yana\Log\FileLogger(new \Yana\Files\Text('cache/error.log'));
+                $this->_errorLogger->setLogLevel(E_ALL & ~E_STRICT);
                 $isActive = true;
                 break;
             /**
@@ -128,11 +132,11 @@ class ApplicationBuilder extends \Yana\Core\Object
             default:
                 error_reporting(0);
                 $formatter = new \Yana\Log\Formatter\NullFormatter();
-                $logger = new \Yana\Log\NullLogger();
+                $this->_errorLogger = new \Yana\Log\NullLogger();
                 $isActive = false;
                 break;
         }
-        $this->_errorHandler = new \Yana\Log\Errors\Handler($formatter, $logger);
+        $this->_errorHandler = new \Yana\Log\Errors\Handler($formatter, $this->_errorLogger);
         $this->_errorHandler->setActivate($isActive);
         return $this;
     }
@@ -145,6 +149,21 @@ class ApplicationBuilder extends \Yana\Core\Object
     private function _isCommandLineCall()
     {
         return defined('STDIN') && !isset($_SERVER['REQUEST_METHOD']);
+    }
+
+    /**
+     * Returns default error logger.
+     *
+     * Defaults to NullLogger.
+     *
+     * @return  \Yana\Log\IsLogger
+     */
+    private function _getErrorLogger()
+    {
+        if (!isset($$this->_errorLogger)) {
+            $this->_errorLogger = new \Yana\Log\NullLogger();
+        }
+        return $this->_errorLogger;
     }
 
     /**
@@ -171,9 +190,8 @@ class ApplicationBuilder extends \Yana\Core\Object
      */
     private function _runOnCommandLine()
     {
-        self::$_application = $this->_createApplication();
         // Handle the request
-        self::$_application->callAction();
+        $this->buildApplication()->callAction();
 
         /* Since this is expected to be used for cronjobs,
          * no (human readable) output is explicitely created here.
@@ -256,9 +274,9 @@ class ApplicationBuilder extends \Yana\Core\Object
                 $outputCompressionActive = true;
             }
         }
-        self::$_application = $this->_createApplication();
-        self::$_application->callAction();         // Handle the request
-        self::$_application->outputResults();      // Create the output
+        $application = $this->buildApplication();
+        $application->callAction();         // Handle the request
+        $application->outputResults();      // Create the output
         // flush the output buffer (GZ-compression)
         if ($outputCompressionActive && ob_get_length() !== false) {
             ob_end_flush();
@@ -266,19 +284,44 @@ class ApplicationBuilder extends \Yana\Core\Object
     }
 
     /**
+     * Builds and returns an application instance.
+     *
+     * The created instance is cached. So even if called more than once, this always returns the same instance.
+     *
+     * @return  \Yana\Application
+     */
+    public function buildApplication()
+    {
+        if (!isset(self::$_application)) {
+            self::$_application = $this->_createApplication();
+        }
+        return self::$_application;
+    }
+
+    /**
      * Build and return the application object.
      *
      * @return  \Yana\Application
-     *
-     * @todo the dependency container actually needs to be passed to the application, which requires the application to not be a singleton
      */
     private function _createApplication()
     {
+        $application = new \Yana\Application($this->_createApplicationDependencyContainer());
+        return $application;
+    }
+
+    /**
+     * Build and return the application dependencies.
+     *
+     * @return  \Yana\Core\Dependencies\IsApplicationContainer
+     */
+    private function _createApplicationDependencyContainer()
+    {
         $configuration = $this->_loadConfiguration();
         $dependencyContainer = new \Yana\Core\Dependencies\Container($configuration);
-        \Yana\Application::setConfiguration($configuration);
-        $application = \Yana\Application::getInstance(); // Get a yana-instance
-        return $application;
+        \Yana\Log\LogManager::setLoggers(new \Yana\Log\LoggerCollection()); // reset
+        \Yana\Log\LogManager::attachLogger($this->_getErrorLogger()); // add default logger
+        \Yana\Core\Exceptions\AbstractException::setDependencyContainer($dependencyContainer);
+        return $dependencyContainer;
     }
 
     /**

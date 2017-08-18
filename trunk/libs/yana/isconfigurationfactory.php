@@ -2,6 +2,8 @@
 /**
  * YANA library
  *
+ * Primary controller class
+ *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
  * License:   GNU GPL  http://www.gnu.org/licenses/
@@ -25,29 +27,29 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Data\Adapters;
+namespace Yana;
 
 /**
- * <<Interface>> Cacheable object.
+ * <<interface>> Configuration loader.
  *
- * This identifies classes that may use caching.
- * Note: it is recommended to set the ArrayAdapter in the constructor as default if no other cache is provided.
+ * Loads the system configuration from a file and returns it as an instance of XmlArray.
  *
  * @package     yana
  * @subpackage  core
  */
-interface IsCacheable
+interface IsConfigurationFactory
 {
 
     /**
-     * Replace the cache adapter.
+     * Load a system configuration file and return it as an object.
      *
-     * Note that this may also replace the cache contents.
+     * The system config file contains default- and startup-settings
+     * to initialize this class.
      *
-     * @param   \Yana\Data\Adapters\IsDataAdapter  $cache  new cache adapter
-     * @return  self
+     * @param   string  $filename  path to system.config
+     * @return  \Yana\Util\IsXmlArray
      */
-    public function setCache(\Yana\Data\Adapters\IsDataAdapter $cache);
+    public function loadConfiguration($filename);
 
 }
 

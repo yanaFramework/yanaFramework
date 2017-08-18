@@ -268,13 +268,14 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      * the argument $ARGUMENTS, which is supposed to be
      * an associative array.
      *
-     * @param   string  $event  identifier of the occured event
-     * @param   array   $args   list of arguments
+     * @param   string             $event        identifier of the occured event
+     * @param   array              $args         list of arguments
+     * @param   \Yana\Application  $application  facade
      * @return  mixed
      * @throws  \Yana\Core\Exceptions\NotReadableException    when an existing VDrive definition is not readable
      * @throws  \Yana\Core\Exceptions\InvalidActionException  when the event is undefined
      */
-    public function broadcastEvent($event, array $args)
+    public function broadcastEvent($event, array $args, \Yana\Application $application)
     {
         assert('is_string($event); // Invalid argument $event: string expected');
 
@@ -291,7 +292,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
         }
         self::$_lastEvent = $event;
         $eventSubscribers = $this->_getEventSubscribers($event);
-        $this->_loadPlugins(array_keys($eventSubscribers));
+        $this->_loadPlugins(array_keys($eventSubscribers), $application);
         self::$_lastResult = true;
 
         $config->setEventArguments($args);
@@ -657,7 +658,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
             /* String */ $type = $methodsConfig[$eventName]->getType();
         } else {
             assert('!isset($defaultEvent); // Cannot redeclare var $defaultEvent');
-            /* array */ $defaultEvent = $this->getDependencies()->getApplication()->getDefault("EVENT");
+            /* array */ $defaultEvent = $this->getDependencies()->getDefaultEvent();
             assert('is_array($defaultEvent);');
             if (is_array($defaultEvent) && isset($defaultEvent[\Yana\Plugins\Annotations\Enumeration::TYPE])) {
                 /* string */ $type = $defaultEvent[\Yana\Plugins\Annotations\Enumeration::TYPE];
@@ -667,7 +668,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
             unset($defaultEvent);
         }
         assert('is_scalar($type); // Postcondition mismatch. Return type is supposed to be a string.');
-        return "$type";
+        return (string) $type;
     }
 
     /**
@@ -747,15 +748,16 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      *
      * If no list is provided, all known plugins are loaded.
      *
-     * @param   array  $plugins list of plugin names
+     * @param   array              $plugins      list of plugin names
+     * @param   \Yana\Application  $application  facade to bind plugins to
      * @throws  \Yana\Core\Exceptions\NotReadableException  when an existing VDrive definition is not readable
      * @ignore
      */
-    private function _loadPlugins(array $plugins)
+    private function _loadPlugins(array $plugins, \Yana\Application $application)
     {
         foreach ($plugins as $name)
         {
-            $this->_loadPlugin($name);
+            $this->_loadPlugin($name, $application);
         }
         $this->_isLoaded = true;
     }
@@ -763,11 +765,12 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     /**
      * Load a plugin.
      *
-     * @param   string  $name  Must be valid identifier. Consists of chars, numbers and underscores.
+     * @param   string             $name         Must be valid identifier. Consists of chars, numbers and underscores.
+     * @param   \Yana\Application  $application  facade to bind plugin to
      * @throws  \Yana\Core\Exceptions\NotReadableException  when an existing VDrive definition is not readable
      * @ignore
      */
-    private function _loadPlugin($name)
+    private function _loadPlugin($name, \Yana\Application $application)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
         if (!isset($this->_plugins[$name])) {
@@ -784,8 +787,9 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
             unset($driveFile);
             // load base class, if it exists
             try {
+                $container = new \Yana\Plugins\Dependencies\PluginContainer($application, $this->getDependencies()->getSession());
                 $this->_plugins[$name] =
-                    \Yana\Plugins\AbstractPlugin::loadPlugin($name, $this->getPluginDir(), $this->getDependencies());
+                    \Yana\Plugins\AbstractPlugin::loadPlugin($name, $this->getPluginDir(), $container);
 
             } catch (\Yana\Core\Exceptions\NotFoundException $e) {
                 unset($e); // ignore plugins that are not found

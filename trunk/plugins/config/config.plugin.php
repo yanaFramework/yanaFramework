@@ -97,7 +97,7 @@ class ConfigPlugin extends \Yana\Plugins\AbstractPlugin
 
         $YANA->setVar('USER_IS_EXPERT', $this->_getIsExpert());
         $language = $YANA->getLanguage();
-        $updateChecker = new \Plugins\Config\UpdateChecker($language);
+        $updateChecker = new \Plugins\Config\UpdateChecker($language, $YANA->getDefault('UPDATE_SERVER'));
         $cacheDirPath = $YANA->getVar('TEMPDIR') . '/pluginConfig/';
         $cacheDir = new \Yana\Files\Dir($cacheDirPath);
         $cacheLifetime = 28800; // 8 hours

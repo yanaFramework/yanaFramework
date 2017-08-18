@@ -61,7 +61,7 @@ class ArrayAdapter extends \Yana\Data\Adapters\ArrayAdapter implements \Yana\Sec
 
         $message = "No user found with mail: " . \htmlentities($mail);
         $level = \Yana\Log\TypeEnumeration::ERROR;
-        throw new \Yana\Core\Exceptions\User\MailNotFoundException($message, $level, $e);
+        throw new \Yana\Core\Exceptions\User\MailNotFoundException($message, $level);
     }
 
     /**
@@ -76,14 +76,29 @@ class ArrayAdapter extends \Yana\Data\Adapters\ArrayAdapter implements \Yana\Sec
         foreach ($this->_getItems() as $item)
         {
             /* @var $item \Yana\Security\Data\Users\IsEntity */
-            if (\strcasecmp($item->getPasswordRecoveryId(), $recoveryId) === 0) {
+            if ($item->getPasswordRecoveryId() === $recoveryId) {
                 return $item;
             }
         }
 
         $message = "No user found with recovery id: " . \htmlentities($recoveryId);
         $level = \Yana\Log\TypeEnumeration::ERROR;
-        throw new \Yana\Core\Exceptions\User\MailNotFoundException($message, $level);
+        throw new \Yana\Core\Exceptions\User\NotFoundException($message, $level);
+    }
+
+    /**
+     * Removes the given entity from the database.
+     *
+     * @param  \Yana\Data\Adapters\IsEntity  $entity  compose the where clause based on this object
+     */
+    public function delete(\Yana\Data\Adapters\IsEntity $entity)
+    {
+        foreach ($this->_getItems() as $offset => $item)
+        {
+            if ($item === $entity) {
+                $this->offsetUnset($offset);
+            }
+        }
     }
 
 }

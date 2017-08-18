@@ -2,6 +2,8 @@
 /**
  * YANA library
  *
+ * Primary controller class
+ *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
  * License:   GNU GPL  http://www.gnu.org/licenses/
@@ -25,29 +27,45 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Data\Adapters;
+namespace Yana\Core\Dependencies;
 
 /**
- * <<Interface>> Cacheable object.
- *
- * This identifies classes that may use caching.
- * Note: it is recommended to set the ArrayAdapter in the constructor as default if no other cache is provided.
+ * Dependency container for the exception base class.
  *
  * @package     yana
  * @subpackage  core
  */
-interface IsCacheable
+class ExceptionContainer extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsExceptionContainer
 {
 
     /**
-     * Replace the cache adapter.
+     * To load language strings.
      *
-     * Note that this may also replace the cache contents.
-     *
-     * @param   \Yana\Data\Adapters\IsDataAdapter  $cache  new cache adapter
-     * @return  self
+     * @var  \Yana\Translations\IsFacade
      */
-    public function setCache(\Yana\Data\Adapters\IsDataAdapter $cache);
+    private $_language = null;
+
+    /**
+     * <<constructor>> Creates an instance.
+     *
+     * @param  \Yana\Translations\IsFacade  $facade  to be injected
+     */
+    public function __construct(\Yana\Translations\IsFacade $facade)
+    {
+        $this->_language = $facade;
+    }
+
+    /**
+     * Get language translation-repository.
+     *
+     * This returns the language component. If none exists, a new instance is created.
+     *
+     * @return  \Yana\Translations\IsFacade
+     */
+    public function getLanguage()
+    {
+        return $this->_language;
+    }
 
 }
 

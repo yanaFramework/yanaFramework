@@ -1,9 +1,8 @@
 <!-- auto-generated DTD -->
-<!ELEMENT system (date|default|templates|php_self|pluginfile|skindir|blobdir|plugindir|plugincache|tempdir|configdrive|configdir)*>
+<!ELEMENT system (date|default|templates|php_self|pluginfile|skindir|blobdir|plugindir|tempdir|configdrive|configdir)*>
 <!ELEMENT configdir (#PCDATA)>
 <!ELEMENT configdrive (#PCDATA)>
 <!ELEMENT tempdir (#PCDATA)>
-<!ELEMENT plugincache (#PCDATA)>
 <!ELEMENT plugindir (#PCDATA)>
 <!ELEMENT skindir (#PCDATA)>
 <!ELEMENT blobdir (#PCDATA)>

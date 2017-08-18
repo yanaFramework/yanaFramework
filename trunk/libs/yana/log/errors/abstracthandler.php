@@ -83,12 +83,12 @@ abstract class AbstractHandler extends \Yana\Core\Object implements \Yana\Log\Er
     /**
      * Handles uncaught exceptions.
      *
-     * @param  \Exception  $e  some unhandled exception
+     * @param  \Throwable  $e  some unhandled exception
      * @ignore
      *
      * @internal NOTE: this function is public for technical reasons. Don't call it yourself.
      */
-    abstract public function handleException(\Exception $e);
+    abstract public function handleException(\Throwable $e);
 
     /**
      * Activate or deactive error handler.

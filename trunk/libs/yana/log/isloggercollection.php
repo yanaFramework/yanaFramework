@@ -25,30 +25,17 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Data\Adapters;
+namespace Yana\Log;
 
 /**
- * <<Interface>> Cacheable object.
+ * <<interface>> Stores loggers and allows to call them all at once.
  *
- * This identifies classes that may use caching.
- * Note: it is recommended to set the ArrayAdapter in the constructor as default if no other cache is provided.
- *
- * @package     yana
- * @subpackage  core
+ * @package    yana
+ * @subpackage log
  */
-interface IsCacheable
+interface IsLoggerCollection extends \Yana\Log\IsLogHandler, \Yana\Core\IsCollection
 {
 
-    /**
-     * Replace the cache adapter.
-     *
-     * Note that this may also replace the cache contents.
-     *
-     * @param   \Yana\Data\Adapters\IsDataAdapter  $cache  new cache adapter
-     * @return  self
-     */
-    public function setCache(\Yana\Data\Adapters\IsDataAdapter $cache);
+    // intentionally left blank
 
 }
-
-?>

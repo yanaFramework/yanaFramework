@@ -28,7 +28,7 @@
 namespace Yana\Db;
 
 /**
- * Aids in loading and caching schema information.
+ * <<factory>> Loads schema information and caches the results.
  *
  * @package     yana
  * @subpackage  db
@@ -44,11 +44,15 @@ class SchemaFactory extends \Yana\Core\Object implements \Yana\Db\IsSchemaFactor
     private $_cache = null;
 
     /**
-     * Initialize instance with default values
+     * <<constructor>> Initialize instance.
+     *
+     * If none is provided, this will use an array adapter for caching by default.
+     *
+     * @param   \Yana\Data\Adapters\IsDataAdapter  $cache  ooptional cache adapter
      */
-    public function __construct()
+    public function __construct(\Yana\Data\Adapters\IsDataAdapter $cache = null)
     {
-        $this->_cache = new \Yana\Data\Adapters\ArrayAdapter();
+        $this->_cache = $cache;
     }
 
     /**
@@ -57,7 +61,7 @@ class SchemaFactory extends \Yana\Core\Object implements \Yana\Db\IsSchemaFactor
      * Note that this may also replace the cache contents.
      *
      * @param   \Yana\Data\Adapters\IsDataAdapter  $cache  new cache adapter
-     * @return  \Yana\Db\ConnectionFactory
+     * @return  self
      */
     public function setCache(\Yana\Data\Adapters\IsDataAdapter $cache)
     {
@@ -71,6 +75,9 @@ class SchemaFactory extends \Yana\Core\Object implements \Yana\Db\IsSchemaFactor
      */
     protected function _getCache()
     {
+        if (!isset($this->_cache)) {
+            $this->_cache = new \Yana\Data\Adapters\ArrayAdapter();
+        }
         return $this->_cache;
     }
 
@@ -90,15 +97,15 @@ class SchemaFactory extends \Yana\Core\Object implements \Yana\Db\IsSchemaFactor
         assert('is_string($schemaName); // Wrong type for argument 1. String expected');
         $schema = null;
 
-        $schemaName = strtolower($schemaName);
-        $cacheId = 'ddl_' . $schemaName;
+        $lowerCaseSchemaName = strtolower($schemaName);
+        $cacheId = 'ddl_' . $lowerCaseSchemaName;
 
         $cache = $this->_getCache();
 
         if (isset($cache[$cacheId])) {
             $schema = $cache[$cacheId];
         } else {
-            $schema = \Yana\Files\XDDL::getDatabase($schemaName); // may throw exception
+            $schema = \Yana\Files\XDDL::getDatabase($lowerCaseSchemaName); // may throw exception
             $cache[$cacheId] = $schema;
         }
 
