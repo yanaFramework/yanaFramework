@@ -55,17 +55,19 @@ class DateFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
      */
     public function __construct()
     {
-        $YANA = \Yana\Application::getInstance();
-        if (isset($YANA)) {
-            $profileTimeFormat = $YANA->getVar("PROFILE.TIMEFORMAT");
-            if (!is_numeric($profileTimeFormat)) {
-                $profileTimeFormat = 0;
-            }
-            $timeformat = $YANA->getVar("DATE." . $profileTimeFormat);
-            assert('is_array($timeformat); // Time-format is expected to be an array.');
-            unset($profileTimeFormat);
-            self::setFormat($timeformat['PHP'], $timeformat['JS']);
+        assert('!isset($builder); // Cannot redeclare var $builder');
+        assert('!isset($application); // Cannot redeclare var $application');
+        $builder = new \Yana\ApplicationBuilder();
+        $application = $builder->buildApplication();
+        unset($builder);
+        $profileTimeFormat = $application->getVar("PROFILE.TIMEFORMAT");
+        if (!is_numeric($profileTimeFormat)) {
+            $profileTimeFormat = 0;
         }
+        $timeformat = $application->getVar("DATE." . $profileTimeFormat);
+        assert('is_array($timeformat); // Time-format is expected to be an array.');
+        unset($profileTimeFormat);
+        self::setFormat($timeformat['PHP'], $timeformat['JS']);
     }
 
     /**

@@ -63,8 +63,7 @@ class FeedTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         chdir(CWD . '/../../..');
-        \Yana\Application::getInstance();
-        $this->_rss = new Feed('description');
+        $this->_rss = new \Yana\RSS\Feed('description');
     }
 
     /**

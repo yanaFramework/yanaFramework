@@ -173,7 +173,7 @@ class NullFacade extends \Yana\Core\Object implements \Yana\Translations\IsFacad
      * @param  \Yana\Translations\TextData\IsDataProvider  $provider  to load the contents of a language pack
      * @return  self
      */
-    public function addTextDataProvider(TextData\IsDataProvider $provider)
+    public function addTextDataProvider(\Yana\Translations\TextData\IsDataProvider $provider)
     {
         return $this;
     }

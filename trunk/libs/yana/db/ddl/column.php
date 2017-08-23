@@ -1657,7 +1657,9 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
                 switch ($this->name)
                 {
                     case 'profile_id':
-                        return \Yana\Application::getInstance()->getProfileId();
+                        $builder = new \Yana\ApplicationBuilder();
+                        $application = $builder->buildApplication();
+                        return $application->getProfileId();
                     case 'user_created':
                     case 'user_modified':
                         $session = new \Yana\Security\Sessions\Wrapper();

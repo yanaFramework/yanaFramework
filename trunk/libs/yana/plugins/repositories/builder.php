@@ -106,7 +106,7 @@ class Builder extends \Yana\Plugins\Repositories\AbstractBuilder
 
         // list of subscribing methods
         $subscribers = array();
-        $builder = new \Yana\Plugins\Configs\Builder();
+        $configBuilder = new \Yana\Plugins\Configs\Builder();
 
         /**
          * 1) build plugin repository
@@ -117,10 +117,10 @@ class Builder extends \Yana\Plugins\Repositories\AbstractBuilder
         assert('!isset($id); // Cannot redeclare var $id');
         foreach ($this->_plugins as $id => $className)
         {
-            $builder->createNewConfiguration();
-            $builder->setReflection(new \Yana\Plugins\Annotations\ReflectionClass($className));
+            $configBuilder->createNewConfiguration();
+            $configBuilder->setReflection(new \Yana\Plugins\Annotations\ReflectionClass($className));
             $pluginId = preg_replace('/^plugin_/', '', strtolower($className));
-            $config = $builder->getPluginConfigurationClass();
+            $config = $configBuilder->getPluginConfigurationClass();
             $config->setId($id);
             $this->object->addPlugin($config);
 
@@ -177,7 +177,7 @@ class Builder extends \Yana\Plugins\Repositories\AbstractBuilder
             } // end foreach method
             unset($isOverwrite, $isSubscriber, $methodName, $method);
         } // end foreach plugin
-        unset($id, $name, $parent);
+        unset($id, $parent, $configBuilder);
 
         /**
          * 3) join default event handlers to event implementations
@@ -191,7 +191,12 @@ class Builder extends \Yana\Plugins\Repositories\AbstractBuilder
         /**
          * plugin multicast-groups configuration
          */
-        $mulitcastGroups = \Yana\Application::getInstance()->getDefault("multicast_groups");
+        assert('!isset($builder); // Cannot redeclare var $builder');
+        assert('!isset($application); // Cannot redeclare var $application');
+        $builder = new \Yana\ApplicationBuilder();
+        $application = $builder->buildApplication();
+        $mulitcastGroups = $application->getDefault("multicast_groups");
+        unset($builder, $application);
         assert('is_array($mulitcastGroups);');
         // default value
         if (empty($mulitcastGroups)) {

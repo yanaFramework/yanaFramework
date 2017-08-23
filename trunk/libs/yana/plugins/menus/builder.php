@@ -111,6 +111,7 @@ class Builder extends \Yana\Plugins\Menus\AbstractBuilder implements \Yana\Plugi
 
             $menu = parent::buildMenu();
         }
+        assert($menu instanceof \Yana\Plugins\Menus\IsMenu);
 
         // If the instance is not yet in cache, put it there for later use
         if (!isset($menus[$locale])) {
@@ -119,7 +120,7 @@ class Builder extends \Yana\Plugins\Menus\AbstractBuilder implements \Yana\Plugi
         }
         if (!isset($cache[$locale])) {
 
-            $cache[$locale] = serialize($menu);
+            $cache[$locale] = $menu;
         }
 
         return $menu;

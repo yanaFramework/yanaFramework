@@ -261,20 +261,17 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
      */
     public function createDB2($extractStructure = true, $extractData = true)
     {
-        $YANA = \Yana\Application::getInstance();
+        $builder = new \Yana\ApplicationBuilder();
+        $application = $builder->buildApplication();
         if ($extractStructure) {
             $sql = parent::createDB2();
         } else {
             $sql = array();
         }
 
-        if (isset($YANA)) {
-            $file = $YANA->getResource('system:/config/reserved_sql_keywords.file');
-            $sqlKeywords = file($file->getPath());
-            unset($file);
-        } else {
-            $sqlKeywords = array();
-        }
+        $file = $application->getResource('system:/config/reserved_sql_keywords.file');
+        $sqlKeywords = file($file->getPath());
+        unset($file);
 
         if ($extractData) {
             @set_time_limit(500);

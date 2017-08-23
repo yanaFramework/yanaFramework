@@ -453,9 +453,11 @@ class Grant extends \Yana\Db\Ddl\DDL
                     return true;
                 }
                 $required = new \Yana\Security\Rules\Requirements\Requirement($user, $role, $level);
-                $profileId = \Yana\Application::getInstance()->getProfileId();
+                $builder = new \Yana\ApplicationBuilder();
+                $application = $builder->buildApplication();
+                $profileId = $application->getProfileId();
                 $action = \Yana\Plugins\Manager::getLastEvent();
-                return (bool) \Yana\Application::getInstance()->getSecurity()->checkByRequirement($required, $profileId, $action);
+                return (bool) $application->getSecurity()->checkByRequirement($required, $profileId, $action);
         }
     }
 

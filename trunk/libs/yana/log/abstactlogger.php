@@ -35,55 +35,7 @@ namespace Yana\Log;
  */
 abstract class AbstactLogger extends \Yana\Core\Object implements \Yana\Log\IsLogger
 {
-
-    /**
-     * @var int
-     */
-    private $_logLevel = 0;
-
-    /**
-     * Get current logging level.
-     *
-     * @return  int
-     */
-    public function getLogLevel()
-    {
-        return $this->_logLevel;
-    }
-
-    /**
-     * Set new logging level.
-     *
-     * The logger will only react if the given log-level matches.
-     * The log-level is a bitmask, that follows the PHP-rules for error-messages.
-     * Example:
-     * <code>
-     * // React on anything but 
-     * $logger->setLogLevel(IsLogger::ALL & ~IsLogger::DEBUG)
-     * </code>
-     *
-     * @param  int  $level  logging level, following the PHP error bitmask
-     */
-    public function setLogLevel($level)
-    {
-        assert('is_int($level); // Invalid argument $level: int expected');
-        $this->_logLevel = (int) $level;
-    }
-
-    /**
-     * Returns TRUE if the logger should react on the given error level.
-     *
-     * @param  int  $level  logging level, following the PHP error bitmask
-     * @return bool
-     */
-    protected function _isAcceptable($level)
-    {
-        assert('is_int($level); // Invalid argument $level: int expected');
-
-        $reportingLevel = $this->getLogLevel();
-        return $reportingLevel <= 0 || (($reportingLevel & ~$level) !== $reportingLevel);
-    }
-
+    use \Yana\Log\HasLogLevel;
 }
 
 ?>

@@ -281,7 +281,7 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
             $container
                     ->setCache($this->getCache())
                     ->setSession($this->getSession())
-                    ->setDefaultEventUser($this->getDefault('event.user'))
+                    ->setDefaultUser($this->getDefault('user'))
                     ->setProfileId($this->getProfileId());
             $this->_security = new \Yana\Security\Facade($container);
         }
@@ -465,13 +465,10 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
     {
         $registry = $this->getRegistry();
         $languageDir = $registry->getVar('LANGUAGEDIR');
-        $languageDirWrapper = new \Yana\Files\Dir($languageDir);
-        $defaultProvider = new \Yana\Translations\TextData\XliffDataProvider($languageDirWrapper);
         /* @var $translationFacade \Yana\Translations\Facade */
         $translationFacade = \Yana\Translations\Facade::getInstance();
-        $translationFacade->addTextDataProvider($defaultProvider);
+        $translationFacade->addDirectory($languageDir);
         $translationFacade->attachLogger($this->getLogger());
-        unset($defaultProvider);
 
         $translationFacade->setLocale((string) $this->_configuration->default->language);
         $session = $this->getSession();

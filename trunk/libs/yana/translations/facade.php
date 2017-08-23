@@ -241,8 +241,9 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
         assert('is_string($directory); // Wrong type for argument 1. String expected');
 
         $dir = new \Yana\Files\Dir($directory);
-        $provider = new \Yana\Translations\TextData\XliffDataProvider($dir);
-        $this->_getManager()->addTextDataProvider($provider);
+        $textProvider = new \Yana\Translations\TextData\XliffDataProvider($dir);
+        $metaProvider = new \Yana\Translations\MetaData\XmlDataProvider($directory);
+        $this->_getManager()->addTextDataProvider($textProvider)->addMetaDataProvider($metaProvider);        
         return $this;
     }
 

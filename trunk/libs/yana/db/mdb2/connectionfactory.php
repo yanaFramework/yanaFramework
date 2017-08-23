@@ -134,14 +134,16 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsCon
          */
 
         // get list of ODBC-settings
-        $requireOdbc = \Yana\Application::getInstance()->getDefault('database.require_odbc');
+        $builder = new \Yana\ApplicationBuilder();
+        $application = $builder->buildApplication();
+        $requireOdbc = $application->getDefault('database.require_odbc');
         if (!is_array($requireOdbc)) {
             // no ODBC-settings available
             $requireOdbc = array();
         }
 
         // get list of default connection options
-        $this->_options = \Yana\Application::getInstance()->getDefault('database.options');
+        $this->_options = $application->getDefault('database.options');
         if (!is_array($this->_options)) {
             // no default options available
             $this->_options = array();
@@ -237,9 +239,11 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsCon
             $data = $connection->getMessage() . "\nUsing DSN:\n" . print_r($dsn, true);
 
             // add an entry to the logs
-            \Yana\Application::getInstance()->getLogger()->addLog($_message, \Yana\Log\TypeEnumeration::ERROR, $data);
+            $application->getLogger()->addLog($_message, \Yana\Log\TypeEnumeration::ERROR, $data);
 
-            throw new \Yana\Db\ConnectionException($_message . ': ' . $data, \Yana\Log\TypeEnumeration::ERROR);
+            $exception = new \Yana\Db\ConnectionException($_message . ': ' . $data, \Yana\Log\TypeEnumeration::ERROR);
+            $exception->setData($data);
+            throw $exception;
         }
         $this->_database = $connection;
     }

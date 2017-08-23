@@ -67,7 +67,7 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
     /**
      * @var  array
      */
-    private $_defaultEventUser = array();
+    private $_defaultUser = array();
 
     /**
      * @var  \Yana\Security\Rules\Requirements\IsDataReader
@@ -220,9 +220,9 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
      *
      * @return  array
      */
-    public function getDefaultEventUser()
+    public function getDefaultUser()
     {
-        return $this->_defaultEventUser;
+        return $this->_defaultUser;
     }
 
     /**
@@ -231,9 +231,9 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
      * @param   array  $defaultUser  settings
      * @return  self
      */
-    public function setDefaultEventUser(array $defaultUser)
+    public function setDefaultUser(array $defaultUser)
     {
-        $this->_defaultEventUser = $defaultUser;
+        $this->_defaultUser = $defaultUser;
         return $this;
     }
 
@@ -263,7 +263,7 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
     {
         if (!isset($this->_requirementsDataReader)) {
             $this->_requirementsDataReader = new \Yana\Security\Rules\Requirements\DefaultableDataReader(
-                $this->getDataConnection(), $this->getDefaultEventUser());
+                $this->getDataConnection(), $this->getDefaultUser());
         }
         return $this->_requirementsDataReader;
     }

@@ -496,7 +496,6 @@ class Structure extends \Yana\Files\SML
      * To test the syntax of your statements for a structure file
      * foo.config you may use the following code:
      * <code>
-     * $YANA = \Yana\Application::getInstance();
      * $parser = new DbQueryParser(\Yana\Application::connect('foo'));
      * foreach ($statements as $statement)
      * {

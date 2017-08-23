@@ -57,7 +57,7 @@ class UpdateChecker extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
         $cache = new \Yana\Data\Adapters\ArrayAdapter();
         $this->setCache($cache);
         $this->_language = $language;
-        $this->_updateServer = (string) $updateServers;
+        $this->_updateServer = (string) $updateServer;
     }
 
     /**

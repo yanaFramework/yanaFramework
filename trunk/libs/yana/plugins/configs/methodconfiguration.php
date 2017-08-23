@@ -935,8 +935,11 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Report\IsRe
             assert('!isset($filename); // Cannot redeclare var $filename');
             try {
 
-                $filename = file_exists($filename) ? $filename :
-                    \Yana\Application::getInstance()->getSkin()->getTemplateData($template)->getFile();
+                assert('!isset($builder); // Cannot redeclare var $builder');
+                assert('!isset($skin); // Cannot redeclare var $skin');
+                $builder = new \Yana\ApplicationBuilder();
+                $skin = $builder->buildApplication()->getSkin();
+                $filename = file_exists($filename) ? $filename : $skin->getTemplateData($template)->getFile();
             } catch (\Yana\Core\Exceptions\NotFoundException $e) {
                 $report->addError("The definition of template '" . $template . "' contains errors: " .
                     $e->getMessage());

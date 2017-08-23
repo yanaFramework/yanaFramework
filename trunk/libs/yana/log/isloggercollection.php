@@ -33,7 +33,7 @@ namespace Yana\Log;
  * @package    yana
  * @subpackage log
  */
-interface IsLoggerCollection extends \Yana\Log\IsLogHandler, \Yana\Core\IsCollection
+interface IsLoggerCollection extends \Yana\Log\IsLogger, \Yana\Core\IsCollection
 {
 
     // intentionally left blank

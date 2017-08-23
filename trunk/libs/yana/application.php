@@ -903,16 +903,7 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
         }
 
         /**
-         * 3) Check if primary controller is registered under the expected name
-         */
-        if (!isset($GLOBALS['YANA'])) {
-            $message = "Unable to access Yana instance under global name 'YANA'. " .
-                "The framework will not run properly. Please reinstall the application.";
-            $subreport->addError($message);
-        }
-
-        /**
-         * 4) Check availability of configuration file and configuration directory
+         * 3) Check availability of configuration file and configuration directory
          */
         if (YANA_CDROM === true) {
             if (!is_writeable(YANA_CDROM_DIR)) {

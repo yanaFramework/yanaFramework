@@ -490,8 +490,9 @@ abstract class DDL extends \Yana\Core\Object
     public static function getDirectory()
     {
         if (!isset(self::$databaseDirectory)) {
-            $Yana = \Yana\Application::getInstance();
-            self::$databaseDirectory = getcwd() . '/' . $Yana->getVar('DBDIR');
+            $builder = new \Yana\ApplicationBuilder();
+            $application = $builder->buildApplication();
+            self::$databaseDirectory = getcwd() . '/' . $application->getVar('DBDIR');
         }
         return self::$databaseDirectory;
     }

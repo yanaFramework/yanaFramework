@@ -259,7 +259,8 @@ class Update extends \Yana\Db\Queries\Insert
         $resultRow = $result->fetchRow(0);
         assert('is_array($resultRow); // unexpected result: $resultRow');
         $profileId = array_pop($resultRow);
-        $security = \Yana\Application::getInstance()->getSecurity();
+        $builder = new \Yana\ApplicationBuilder();
+        $security = $builder->buildApplication()->getSecurity();
         if ($security->checkRules($profileId) !== true) {
             assert('!isset($message); // Cannot redeclare $message');
             assert('!isset($level); // Cannot redeclare $level');

@@ -371,8 +371,11 @@ class Builder extends \Yana\Core\Object
             $searchAction = $this->_resolveAction('search');
             $exportAction = $this->_resolveAction('export');
             $downloadAction = $this->_resolveAction('download');
+            $builder = new \Yana\ApplicationBuilder();
+            $application = $builder->buildApplication();
+            unset($builder);
             if (empty($downloadAction)) {
-                if (\Yana\Application::getInstance()->getSecurity()->checkRules(null, "download_file")) {
+                if ($application->getSecurity()->checkRules(null, "download_file")) {
                     $downloadAction = "download_file";
                 }
             }
@@ -417,7 +420,10 @@ class Builder extends \Yana\Core\Object
                 $action = $event->getAction();
             }
         }
-        if (!empty($action) && !\Yana\Application::getInstance()->getSecurity()->checkRules(null, $action)) {
+        $builder = new \Yana\ApplicationBuilder();
+        $security = $builder->buildApplication()->getSecurity();
+        unset($builder);
+        if (!empty($action) && !$security->checkRules(null, $action)) {
             $action = "";
         }
         return $action;

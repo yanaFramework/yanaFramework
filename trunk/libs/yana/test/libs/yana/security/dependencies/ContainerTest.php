@@ -64,7 +64,8 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         \Yana\Db\FileDb\Driver::setBaseDirectory(CWD. 'resources/db/');
         \Yana\Db\Ddl\DDL::setDirectory(CWD. 'resources/');
         restore_error_handler();
-        $this->object = new \Yana\Security\Dependencies\Container();
+        $manager = \Yana\Plugins\Manager::getInstance();
+        $this->object = new \Yana\Security\Dependencies\Container($manager);
     }
 
     /**
@@ -114,18 +115,18 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testGetDefaultEventUser()
+    public function testGetDefaultUser()
     {
-        $this->assertInternalType('array', $this->object->getDefaultEventUser());
+        $this->assertInternalType('array', $this->object->getDefaultUser());
     }
 
     /**
      * @test
      */
-    public function testSetDefaultEventUser()
+    public function testSetDefaultUser()
     {
         $array = array('test');
-        $this->assertSame($array, $this->object->setDefaultEventUser($array)->getDefaultEventUser());
+        $this->assertSame($array, $this->object->setDefaultUser($array)->getDefaultUser());
     }
 
     /**

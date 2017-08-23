@@ -507,14 +507,11 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
         /* this is for statements, which have to come last */
         $lastSQL = array();
 
-        $YANA = \Yana\Application::getInstance();
-        if (isset($YANA)) {
-            $file = $YANA->getResource('system:/config/reserved_sql_keywords.file');
-            $sql_keywords = file($file->getPath());
-            unset($file);
-        } else {
-            $sql_keywords = array();
-        }
+        $builder = new \Yana\ApplicationBuilder();
+        $application = $builder->buildApplication();
+        $file = $application->getResource('system:/config/reserved_sql_keywords.file');
+        $sql_keywords = file($file->getPath());
+        unset($file);
 
         /*
          *  Create Table

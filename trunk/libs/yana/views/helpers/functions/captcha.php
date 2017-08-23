@@ -59,11 +59,12 @@ class Captcha extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vi
         }
         $index = rand(1, 9);
 
-        $YANA = \Yana\Application::getInstance();
-        $title = "";
-        if (isset($YANA)) {
-            $title = $YANA->getLanguage()->getVar('SECURITY_IMAGE.DESCRIPTION');
-        }
+        assert('!isset($builder); // Cannot redeclare var $builder');
+        assert('!isset($application); // Cannot redeclare var $application');
+        $builder = new \Yana\ApplicationBuilder();
+        $application = $builder->buildApplication();
+        unset($builder);
+        $title = (string) $application->getLanguage()->getVar('SECURITY_IMAGE.DESCRIPTION');
         $formatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
 
         return '<input type="hidden" name="security_image_index" value="' . $index . '"/>' .

@@ -111,9 +111,18 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testCheckRules()
+    public function testCheckRulesNoAction()
     {
         $this->assertFalse($this->object->checkRules(null, ""), 'Must return false if provided action is empty');
+    }
+
+    /**
+     * @test
+     */
+    public function testCheckRules()
+    {
+        $this->assertTrue($this->object->checkRules("default", "SITEMAP"), 'action sitemap has no requirements');
+        $this->assertFalse($this->object->checkRules("default", "INDEX"), 'action index requires logged in user');
     }
 
     /**

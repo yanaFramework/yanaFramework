@@ -54,10 +54,12 @@ class IconLoader extends \Yana\Core\Object
     public function getIcons()
     {
         if (empty(self::$_icons)) {
-            $YANA = \Yana\Application::getInstance();
-            if (isset($YANA)) {
-                $dir = $YANA->getVar('PROFILE.SMILEYDIR');
-            }
+            assert('!isset($builder); // Cannot redeclare var $builder');
+            assert('!isset($application); // Cannot redeclare var $application');
+            $builder = new \Yana\ApplicationBuilder();
+            $application = $builder->buildApplication();
+            unset($builder);
+            $dir = $application->getVar('PROFILE.SMILEYDIR');
 
             if (!is_dir($dir)) {
                 $message = "Unable to load smilies. The directory '" . $dir . "' does not exist.";

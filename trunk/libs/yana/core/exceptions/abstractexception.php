@@ -84,7 +84,7 @@ abstract class AbstractException extends \Exception implements \Yana\Core\Except
     /**
      * Used to translate error messages where needed.
      *
-     * @var \Yana\Translations\IsTranslationManager
+     * @var \Yana\Core\Dependencies\IsExceptionContainer
      */
     private static $_dependencyContainer = null;
 
@@ -118,7 +118,7 @@ abstract class AbstractException extends \Exception implements \Yana\Core\Except
         if (!isset(self::$_dependencyContainer)) {
             self::$_dependencyContainer = new \Yana\Core\Dependencies\ExceptionContainer(new \Yana\Translations\NullFacade());
         }
-        self::$_dependencyContainer->loadTranslations("message"); // may throw TranslationException
+        self::$_dependencyContainer->getLanguage()->loadTranslations("message"); // may throw TranslationException
         return self::$_dependencyContainer;
     }
 
@@ -131,7 +131,7 @@ abstract class AbstractException extends \Exception implements \Yana\Core\Except
      */
     public static function setDependencyContainer(\Yana\Core\Dependencies\IsExceptionContainer $container)
     {
-        self::$_dependencies = $container;
+        self::$_dependencyContainer = $container;
     }
 
     /**

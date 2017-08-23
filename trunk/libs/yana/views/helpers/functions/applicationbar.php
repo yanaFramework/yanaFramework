@@ -51,7 +51,12 @@ class ApplicationBar extends \Yana\Views\Helpers\AbstractViewHelper implements \
     {
         $result = "";
 
-        $pluginMenu = \Yana\Application::getInstance()->buildApplicationMenu(); // using default settings
+        assert('!isset($builder); // Cannot redeclare var $builder');
+        assert('!isset($application); // Cannot redeclare var $application');
+        $builder = new \Yana\ApplicationBuilder();
+        $application = $builder->buildApplication();
+        unset($builder);
+        $pluginMenu = $application->buildApplicationMenu(); // using default settings
 
         $formatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
         $template = '<a class="applicationBar" href="' . $formatter("action=", false, false) . '%s">' .
@@ -69,7 +74,7 @@ class ApplicationBar extends \Yana\Views\Helpers\AbstractViewHelper implements \
             $result .= sprintf($template, $action, $icon, $title, $title);
         } // end foreach
 
-        $language = \Yana\Application::getInstance()->getLanguage();
+        $language = $application->getLanguage();
         return $language->replaceToken($result);
     }
 

@@ -54,7 +54,13 @@ class Toolbar extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vi
         $menuHelper->setAllowHtml(true)
             ->setUseKeys(\Yana\Views\Helpers\Html\MenuLayouts\KeyEnumeration::CONVERT_HREF);
 
-        $contents = \Yana\Application::getInstance()->buildApplicationMenu()->getTextMenu(); // using default settings
+        assert('!isset($builder); // Cannot redeclare var $builder');
+        assert('!isset($application); // Cannot redeclare var $application');
+        $builder = new \Yana\ApplicationBuilder();
+        $application = $builder->buildApplication();
+        unset($builder);
+
+        $contents = $application->buildApplicationMenu()->getTextMenu(); // using default settings
 
         return $menuHelper($contents);
     }

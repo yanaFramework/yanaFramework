@@ -55,11 +55,13 @@ class TextFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
      */
     public function __construct()
     {
-        $YANA = \Yana\Application::getInstance();
-        if (isset($YANA)) {
-            self::$_datadir = $YANA->getVar('DATADIR');
-            self::$_userDefinedTags = $YANA->getVar('PROFILE.EMBTAG');
-        }
+        assert('!isset($builder); // Cannot redeclare var $builder');
+        assert('!isset($application); // Cannot redeclare var $application');
+        $builder = new \Yana\ApplicationBuilder();
+        $application = $builder->buildApplication();
+        unset($builder);
+        self::$_datadir = $application->getVar('DATADIR');
+        self::$_userDefinedTags = $application->getVar('PROFILE.EMBTAG');
     }
 
     /**

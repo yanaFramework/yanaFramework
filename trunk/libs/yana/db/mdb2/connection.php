@@ -373,10 +373,12 @@ class Connection extends \Yana\Db\AbstractConnection
         assert('is_string($value); // Wrong argument type for argument 1. String expected.');
 
         if (is_null($this->_reservedSqlKeywords)) {
-            $YANA = \Yana\Application::getInstance();
+
+            $builder = new \Yana\ApplicationBuilder();
+            $application = $builder->buildApplication();
             /* Load list of reserved SQL keywords (required for smart id quoting) */
-            if (isset($YANA)) {
-                $file = $YANA->getResource('system:/config/reserved_sql_keywords.file');
+            if (isset($application)) {
+                $file = $application->getResource('system:/config/reserved_sql_keywords.file');
                 $this->_reservedSqlKeywords = file($file->getPath());
             } else {
                 $this->_reservedSqlKeywords = array();
@@ -388,8 +390,8 @@ class Connection extends \Yana\Db\AbstractConnection
             return false;
         }
 
-        $name = mb_strtoupper($name);
-        return (bool) (\Yana\Util\Hashtable::quickSearch($this->_reservedSqlKeywords, $name) !== false);
+        $nameUpperCase = mb_strtoupper($name);
+        return (bool) (\Yana\Util\Hashtable::quickSearch($this->_reservedSqlKeywords, $nameUpperCase) !== false);
     }
 
     /**

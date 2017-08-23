@@ -60,7 +60,7 @@ class Loader extends \Yana\Core\Autoloaders\AbstractLoader
             // If the mapper delivers absolute paths we check if the file exists.
             // If the path is relative we just rely on PHP include-path to find it.
             if (!$mapper->getBaseDirectory() || \file_exists($fileName)) {
-                include_once $fileName;
+                @include_once $fileName;
                 return true;
             }
         }

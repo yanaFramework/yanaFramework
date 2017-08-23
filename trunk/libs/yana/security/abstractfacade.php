@@ -72,7 +72,7 @@ abstract class AbstractFacade extends \Yana\Core\Object implements \Yana\Securit
     protected function _createDataReader()
     {
         $container = $this->_getContainer();
-        return new \Yana\Security\Rules\Requirements\DefaultableDataReader($container->getDataConnection(), $container->getDefaultEventUser());
+        return new \Yana\Security\Rules\Requirements\DefaultableDataReader($container->getDataConnection(), $container->getDefaultUser());
     }
 
     /**

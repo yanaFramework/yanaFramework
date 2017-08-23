@@ -381,7 +381,9 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
             return true;
         }
 
-        $security = \Yana\Application::getInstance()->getSecurity();
+        $builder = new \Yana\ApplicationBuilder();
+        $application = $builder->buildApplication();
+        $security = $application->getSecurity();
         switch (true)
         {
             case isset($value['profile_id']) && $security->checkRules($value['profile_id']) !== true:

@@ -146,7 +146,7 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
         }
 
         assert('!isset($user); // Cannot redeclare $user');
-        $user = empty($userName) ? new \Yana\Security\Data\Users\Guest() : $this->_buildUserEntity((string) $userName);
+        $user = $this->_buildUserEntity((string) $userName);
 
         assert('!isset($e); // Cannot redeclare $e');
         try {

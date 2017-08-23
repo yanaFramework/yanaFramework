@@ -78,7 +78,7 @@ interface IsFacadeContainer extends \Yana\Security\Dependencies\IsContainer
      *
      * @return  array
      */
-    public function getDefaultEventUser();
+    public function getDefaultUser();
 
     /**
      * Get event logger.

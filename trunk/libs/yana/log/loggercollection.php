@@ -36,6 +36,8 @@ namespace Yana\Log;
 class LoggerCollection extends \Yana\Core\AbstractCollection implements \Yana\Log\IsLoggerCollection
 {
 
+    use \Yana\Log\HasLogLevel;
+
     /**
      * Store new value in database.
      *
@@ -63,10 +65,12 @@ class LoggerCollection extends \Yana\Core\AbstractCollection implements \Yana\Lo
      */
     public function addLog($message, $level = \Yana\Log\TypeEnumeration::INFO, $data = array())
     {
-        foreach ($this as $logger)
-        {
-            /* @var $logger \Yana\Log\IsLogger */
-            $logger->addLog($message, $level, $data);
+        if ($this->_isAcceptable($level)) {
+            foreach ($this as $logger)
+            {
+                /* @var $logger \Yana\Log\IsLogger */
+                $logger->addLog($message, $level, $data);
+            }
         }
     }
 
