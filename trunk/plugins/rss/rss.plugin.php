@@ -136,11 +136,11 @@ class RssPlugin extends \Yana\Plugins\AbstractPlugin
             $YANA->setVar("FILE", $this->file);
 
             /* Microsummaries */
-            \Yana\Util\Microsummary::publishSummary(__CLASS__);
+            $this->_getMicrosummary()->publishSummary(__CLASS__);
 
             if (count($this->_rss) > 0) {
                 $latest = array_shift($this->_rss);
-                \Yana\Util\Microsummary::setText(__CLASS__, 'RSS latest: '.$latest['TITLE'].
+                $this->_getMicrosummary()->setText(__CLASS__, 'RSS latest: '.$latest['TITLE'].
                     ' ('.$latest['PUBDATE'].')');
             }
 

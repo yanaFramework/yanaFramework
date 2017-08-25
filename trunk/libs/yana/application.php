@@ -835,7 +835,7 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
      *                                                 or instance of \Yana\Db\Ddl\Database
      * @return  \Yana\Db\IsConnection
      */
-    public static function connect($schema)
+    public function connect($schema)
     {
         if (!isset($this->_connectionFactory)) {
             $this->_connectionFactory = new \Yana\Db\ConnectionFactory(new \Yana\Db\SchemaFactory($this->getCache()));

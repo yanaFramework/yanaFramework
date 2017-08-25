@@ -56,7 +56,10 @@ class MicrosummaryFilter extends \Yana\Views\Helpers\AbstractViewHelper implemen
 
             $htmlHead = "";
 
-            foreach (\Yana\Util\Microsummary::getSummaries() as $summary)
+            $factory = new \Yana\Db\ConnectionFactory(new \Yana\Db\SchemaFactory());
+            $connection = $factory->createConnection('microsummary');
+            $microsummary = new \Yana\Util\Microsummary($connection);
+            foreach ($microsummary->getSummaries() as $summary)
             {
                 $htmlHead .= "        " . $this->_microsummary($summary) . "\n";
             }

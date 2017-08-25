@@ -74,6 +74,7 @@ class Blob extends \Yana\Files\Readonly
      *
      * @throws  \Yana\Core\Exceptions\NotReadableException  if the blob is not valid
      * @throws  \Yana\Core\Exceptions\NotFoundException     if the blob does not exist
+     * @return  self
      */
     public function read()
     {
@@ -134,6 +135,7 @@ class Blob extends \Yana\Files\Readonly
             $i++;
         }
         gzclose($gz);
+        return $this;
     }
 
     /**

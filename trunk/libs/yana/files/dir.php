@@ -45,7 +45,6 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
      */
     /** @var array  */ protected $content = array();
     /** @var string */ protected $filter = "";
-    /** @var array  */ protected static $size = null;
     /**#@-*/
 
     /**
@@ -67,95 +66,17 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
     /**
      * read contents and put results in cache (filter settings will be applied)
      *
-     * @return  \Yana\Files\Dir
+     * @return  self
      * @throws  \Yana\Core\Exceptions\NotFoundException  when directory is not found
      */
     public function read()
     {
         if (!$this->exists()) {
-            throw new \Yana\Core\Exceptions\NotFoundException("No such directory: '{$this->getPath()}'.", E_USER_WARNING);
+            $message = "The directory '" . $this->getPath() . "' does not exist.";
+            throw new \Yana\Core\Exceptions\NotFoundException($message, \Yana\Log\TypeEnumeration::INFO);
         }
-        $this->content = $this->_dirlist();
-        sort($this->content);
+        $this->content = \Yana\Util\Dir::listFiles($this->getPath(), $this->getFilter());
         return $this;
-    }
-
-    /**
-     * list contents of a directory
-     *
-     * The argument $filter may contain multiple file extension,
-     * use a pipe '|' sign to seperate them.
-     * Example: "*.xml|*.html" will find all xml- and html-files
-     *
-     * The argument $switch may be used to get only subdirectories (YANA_GET_DIRS),
-     * or only files (YANA_GET_FILES), or all contents (YANA_GET_ALL), which is the default.
-     *
-     * @return array
-     */
-    private function _dirlist()
-    {
-        $dir = $this->getPath();
-        $filter = $this->getFilter();
-        $switch = null;
-
-        /* Input handling */
-        if ($filter == "") {
-            $filter = false;
-        } elseif (strpos($filter, '|') !== false) {
-            $filter = preg_replace("/[^\.\-\_\w\d\|]/", "", $filter);
-            assert('!isset($tok); // cannot redeclare variable $tok');
-            $tok = strtok($filter, "|");
-            $filter = "";
-            while ($tok !== false)
-            {
-                $filter .= preg_quote($tok, '/');
-                $tok = strtok("|");
-                if ($tok !== false) {
-                    $filter .= "|";
-                }
-            }
-            unset($tok);
-        } else {
-            $filter = preg_replace("/[^\.\-\_\w\d]/", "", $filter);
-            $filter = preg_quote($filter, '/');
-        }
-
-        /* read contents from directory */
-        $dirlist = array();
-        if (is_dir($dir)) {
-            $dirHandle = dir($dir);
-            while($entry = $dirHandle->read())
-            {
-                if ($entry[0] !== '.' && ($filter === false || preg_match("/(?:{$filter})$/i", $entry))) {
-                    assert('is_array($dirlist); // Invariant condition failed: $dirlist is not an array.');
-                    switch ($switch)
-                    {
-                        case YANA_GET_ALL:
-                            $dirlist[] = $entry;
-                        break;
-                        case YANA_GET_DIRS:
-                            if (is_dir($dir.$entry)) {
-                                $dirlist[] = $entry;
-                            }
-                        break;
-                        case YANA_GET_FILES:
-                        default:
-                            if (is_file($dir.$entry)) {
-                                $dirlist[] = $entry;
-                            }
-                        break;
-                    }
-                }
-            } // end while
-            unset($entry);
-            $dirHandle->close();
-            sort($dirlist);
-            assert('is_array($dirlist); // Unexpected result: $dirlist is not an array.');
-        } else {
-            $message = "The directory '{$dir}' does not exist.";
-            \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::INFO);
-        }
-        return $dirlist;
     }
 
     /**
@@ -220,7 +141,7 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
      * To reset the filter, leave the setting empty.
      *
      * @param   string  $filter   current file filter
-     * @return  \Yana\Files\Dir
+     * @return  self
      * @since   3.1.0
      */
     public function setFilter($filter = "")
@@ -239,7 +160,7 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
      * parameter.
      *
      * @param   int  $mode  access mode, an octal number of 1 through 0777.
-     * @return  \Yana\Files\Dir
+     * @return  self
      * @name    Dir::create()
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when argument $mode is not an integer or out of range
      * @throws  \Yana\Core\Exceptions\AlreadyExistsException    when the directory already exists
@@ -251,13 +172,14 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
 
         if ($mode > 0777 || $mode < 1) {
             $message = "Argument mode must be an octal number in range: [1,0777].";
-            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
         }
 
         if ($this->exists()) {
             $message = "Unable to create directory '{$this->getPath()}'. " .
                 "Another directory with the same name already exists.";
-            $level = \E_USER_NOTICE;
+            $level = \Yana\Log\TypeEnumeration::INFO;
             $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
             $exception->setId($this->getPath());
             throw $exception;
@@ -266,7 +188,8 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
         $path = $this->getPath();
         if (empty($path) || !@mkdir($path)) {
             $message = "Unable to create directory '$path'. Target not writeable.";
-            throw new \Yana\Core\Exceptions\NotWriteableException($message, E_USER_WARNING);
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\NotWriteableException($message, $level);
         }
 
         chmod($path, $mode);
@@ -283,7 +206,7 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
      * Returns bool(true) on success and bool(false) on error.
      *
      * @param   bool  $isRecursive  triggers wether to remove directories even if they are not empty, default = false
-     * @return  \Yana\Files\Dir
+     * @return  self
      * @throws  \Yana\Core\Exceptions\NotWriteableException  when directory cannot be deleted
      * @throws  \Yana\Core\Exceptions\NotFoundException      when directory is not found
      */
@@ -296,9 +219,8 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
                 $this->setFilter(); // removes any previously set file-filter
                 $this->read(); // reloads the directory contents, may throw \Yana\Core\Exceptions\NotFoundException
             }
-            $content = $this->getContent();
             assert('!isset($element); // cannot redeclare variable $element');
-            foreach ($content as $element)
+            foreach ($this->listFiles() as $element)
             {
                 $element = '/'.$element;
                 if (is_file($this->getPath() . $element)) {
@@ -318,7 +240,7 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
         }
         if (@rmdir($this->getPath()) === false) {
             $message = "Unable to delete directory '" . $this->getPath() . "'.";
-                        $level = \Yana\Log\TypeEnumeration::ERROR;
+            $level = \Yana\Log\TypeEnumeration::ERROR;
             throw new \Yana\Core\Exceptions\NotWriteableException($message, $level);
         }
         return $this;
@@ -373,23 +295,54 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
     }
 
     /**
-     * List contents of a directory.
+     * List all sub-directories of a directory.
+     *
+     * @return  array
+     * @throws  \Yana\Core\Exceptions\Files\NotFoundException  when directory doesn't exist
+     */
+    public function listDirectories()
+    {
+        $this->content = \Yana\Util\Dir::listDirectories($this->getPath(), "");
+        return $this->content;
+    }
+
+    /**
+     * List all files of a directory.
      *
      * The argument $filter may contain multiple file extension,
      * use a pipe '|' sign to seperate them.
      * Example: "*.xml|*.html" will find all xml- and html-files
      *
-     * @param   string  $filter  filter
+     * @param   string  $filter  only return files like ...
      * @return  array
+     * @throws  \Yana\Core\Exceptions\Files\NotFoundException  when directory doesn't exist
      */
-    public function dirlist($filter = null)
+    public function listFiles($filter = "")
     {
-        assert('is_null($filter) || is_string($filter); // Wrong type for argument 1. String expected');
+        assert('is_string($filter); // Wrong type for argument 1. String expected');
 
-        if (empty($this->content) || $this->getFilter() !== $filter) {
-            $this->filter = (string) $filter;
-            $this->read();
-        }
+        $this->setFilter($filter);
+        $this->content = \Yana\Util\Dir::listFiles($this->getPath(), $this->getFilter());
+        return $this->content;
+    }
+
+    /**
+     * List all contents of a directory.
+     *
+     * The argument $filter may contain multiple file extension,
+     * use a pipe '|' sign to seperate them.
+     * Example: "*.xml|*.html" will find all xml- and html-files
+     *
+     * @param   string  $filter  only return files like ...
+     * @return  array
+     * @throws  \Yana\Core\Exceptions\Files\NotFoundException  when directory doesn't exist
+     */
+    public function listFilesAndDirectories($filter = "")
+    {
+        assert('is_string($filter); // Wrong type for argument 1. String expected');
+
+        $this->setFilter($filter);
+        $this->content = \Yana\Util\Dir::listFilesAndDirectories($this->getPath(), $this->getFilter());
         return $this->content;
     }
 
@@ -399,79 +352,18 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
      * This function gets the sum of the sizes of all files in
      * a directory.
      *
-     * If $directory is not provided or NULL, the current directory is used.
      * If $countSubDirs is not provided or true, the result will
      * include all subdirectories.
      *
-     * If $useCache is not provided or true, the result is cached for
-     * the current directory.
-     *
-     * Returns bool(false) if the directory does not exist and issues an E_USER_WARNING.
-     *
-     * @param   string    $directory      directory name
-     * @param   bool      $countSubDirs   on / off
-     * @param   bool      $useCache       on / off
-     * @return  int|bool
-     * @since   2.8.8
+     * @param   bool  $countSubDirs   on / off
+     * @return  int
+     * @throws  \Yana\Core\Exceptions\Files\NotFoundException  when directory doesn't exist
      */
-    public function getSize($directory = null, $countSubDirs = true, $useCache = true)
+    public function getSize($countSubDirs = true)
     {
-        assert('is_null($directory) || is_string($directory); // Wrong argument type for argument 1. String expected.');
-        assert('is_bool($countSubDirs); // Wrong argument type for argument 2. Boolean expected.');
-        assert('is_bool($useCache); // Wrong argument type for argument 3. Boolean expected.');
+        assert('is_bool($countSubDirs); // Wrong argument type $countSubDirs: Boolean expected.');
 
-        /* use default value */
-        if (is_null($directory)) {
-            if ($this->exists()) {
-                $dir = $this->getPath();
-            } else {
-                $message = "The directory '".$this->getPath()."' does not exist.";
-                \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
-                return false;
-            }
-
-        /* directory does not exist */
-        } elseif (!is_string($directory) || !is_dir($directory)) {
-            $message = "Argument 1 '".print_r($directory, true)."' is not a directory.";
-            \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
-            return false;
-
-        /* add slash */
-        } else {
-            $dir = $directory . DIRECTORY_SEPARATOR;
-        }
-
-        /* if value is already cached, return the cached size */
-        if ($useCache === true && isset(self::$size[$dir])) {
-            return self::$size[$dir];
-        }
-
-        /* else determine the size */
-        $d = dir($dir);
-        $dirsize = 0;
-        while (false !== ($filename = $d->read()))
-        {
-            if ($filename == '.' || $filename == '..') {
-                continue;
-
-            /* accumulate file sizes */
-            } elseif (is_file($dir.$filename)) {
-                $dirsize += filesize($dir.$filename);
-
-            /* only recurse if subdirs are to be included */
-            } elseif ($countSubDirs === true) {
-                $dirsize += $this->getSize($dir.$filename, true, false);
-            }
-        }
-        $d->close();
-
-        /* cache result for later requests */
-        if ($useCache === true) {
-            self::$size[$dir] = $dirsize;
-        }
-
-        /* return result */
-        return $dirsize;
+        return \Yana\Util\Dir::getSize($this->getPath(), $countSubDirs);
     }
 
     /**
@@ -479,13 +371,11 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
      *
      * Reset directory stats, e.g. after creating a file that did not exist.
      *
-     * @return  \Yana\Files\Dir
-     * @ignore
+     * @return  self
      */
     protected function resetStats()
     {
         parent::resetStats();
-        self::$size = null;
         return $this;
     }
 

@@ -472,6 +472,7 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
         }
         unset($ddlFile);
 
+        $factory = new \Yana\Db\ConnectionFactory(new \Yana\Db\SchemaFactory());
         /*
          * loop through files
          */
@@ -479,7 +480,7 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
         /* @var $ddlFile string */
         foreach ($ddlFiles as $ddlFile)
         {
-            $db = \Yana\Application::connect($ddlFile);
+            $db = $factory->createConnection($ddlFile);
             $dbSchema = $db->getSchema();
             $nodes = array();
 

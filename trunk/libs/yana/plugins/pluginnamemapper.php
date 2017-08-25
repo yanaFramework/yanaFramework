@@ -103,14 +103,13 @@ class PluginNameMapper extends \Yana\Core\AbstractUtility
     /**
      * Map plugin id to filename with directory.
      *
-     * @param   string  $id             Must be valid identifier. Consists of chars, numbers and underscores.
-     * @param   string  $baseDirectory  where plugins are stored
+     * @param   string             $id             Must be valid identifier. Consists of chars, numbers and underscores.
+     * @param   \Yana\Files\IsDir  $baseDirectory  where plugins are stored
      * @return  string
      */
-    public static function toClassFilenameWithDirectory($id, $baseDirectory)
+    public static function toClassFilenameWithDirectory($id, \Yana\Files\IsDir $baseDirectory)
     {
         assert('is_string($id); // Invalid argument $id: string expected');
-        assert('is_string($baseDirectory); // Invalid argument $baseDirectory: string expected');
         return self::toDirectory($id, $baseDirectory) . self::toClassFilename($id);
     }
 
@@ -129,29 +128,27 @@ class PluginNameMapper extends \Yana\Core\AbstractUtility
     /**
      * Map plugin id to filename with directory.
      *
-     * @param   string  $id             Must be valid identifier. Consists of chars, numbers and underscores.
-     * @param   string  $baseDirectory  where plugins are stored
+     * @param   string             $id             Must be valid identifier. Consists of chars, numbers and underscores.
+     * @param   \Yana\Files\IsDir  $baseDirectory  where plugins are stored
      * @return  string
      */
-    public static function toVDriveFilenameWithDirectory($id, $baseDirectory)
+    public static function toVDriveFilenameWithDirectory($id, \Yana\Files\IsDir $baseDirectory)
     {
         assert('is_string($id); // Invalid argument $id: string expected');
-        assert('is_string($baseDirectory); // Invalid argument $baseDirectory: string expected');
         return self::toDirectory($id, $baseDirectory) . self::toVDriveFilename($id);
     }
 
     /**
      * Map plugin id to directory with trailing '/'.
      *
-     * @param   string  $id             Must be valid identifier. Consists of chars, numbers and underscores.
-     * @param   string  $baseDirectory  where plugins are stored
+     * @param   string  $id                        Must be valid identifier. Consists of chars, numbers and underscores.
+     * @param   \Yana\Files\IsDir  $baseDirectory  where plugins are stored
      * @return  string
      */
-    public static function toDirectory($id, $baseDirectory)
+    public static function toDirectory($id, \Yana\Files\IsDir $baseDirectory)
     {
         assert('is_string($id); // Invalid argument $id: string expected');
-        assert('is_string($baseDirectory); // Invalid argument $baseDirectory: string expected');
-        return $baseDirectory . '/' . $id .  '/';
+        return $baseDirectory->getPath() . '/' . $id .  '/';
     }
 
 }

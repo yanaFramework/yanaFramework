@@ -53,6 +53,11 @@ abstract class AbstractPlugin extends \Yana\Core\Object implements \Yana\IsPlugi
     private $_dependencyContainer = null;
 
     /**
+     * @var  \Yana\Util\Microsummary
+     */
+    private $_microsummary;
+
+    /**
      * <<construct>> Empty constructor.
      *
      * This is only here so that derived classes get a warning when they overwrite this and introduce new mandatory parameters.
@@ -82,14 +87,13 @@ abstract class AbstractPlugin extends \Yana\Core\Object implements \Yana\IsPlugi
      * if the plugins base-class was also derived from an AbstractPlugin.
      *
      * @param   string                                        $name           must be valid identifier. Consists of chars, numbers and underscores.
-     * @param   string                                        $fromDirectory  where plugin files reside
+     * @param   \Yana\Files\IsDir                             $fromDirectory  where plugin files reside
      * @param   \Yana\Plugins\Dependencies\IsPluginContainer  $container      to be injected into the plugin
      * @throws  \Yana\Core\Exceptions\NotFoundException  when the plugin or its base-class was not found
      */
-    public static function loadPlugin($name, $fromDirectory, \Yana\Plugins\Dependencies\IsPluginContainer $container)
+    public static function loadPlugin($name, \Yana\Files\IsDir $fromDirectory, \Yana\Plugins\Dependencies\IsPluginContainer $container)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
-        assert('is_string($fromDirectory); // Invalid argument $fromDirectory: string expected');
 
         // load base class, if it exists
         assert('!isset($classFile); // Cannot redeclare var $classFile');
@@ -153,6 +157,20 @@ abstract class AbstractPlugin extends \Yana\Core\Object implements \Yana\IsPlugi
     protected function _getPluginsFacade()
     {
         return $this->_getApplication()->getPlugins();
+    }
+
+    /**
+     * Create and return microsummary.
+     *
+     * @return \Yana\Util\Microsummary
+     */
+    protected function _getMicrosummary()
+    {
+        if (!isset($this->_microsummary)) {
+            $connection = $this->_connectToDatabase('microsummary');
+            $this->_microsummary = new \Yana\Util\Microsummary($connection);
+        }
+        return $this->_microsummary;
     }
 
     /**

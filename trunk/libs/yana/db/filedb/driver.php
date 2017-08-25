@@ -43,19 +43,24 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
 {
 
     /**
-     * @var \Yana\Files\SML[][]
+     * @var  \Yana\Files\SML[][]
      */
     private $_src = array();
 
     /**
-     * @var array
+     * @var  array
      */
     private $_idx = array();
 
-    /** @var array
+    /** @var  array
      */
     private $_cache = array();
 
+    /**
+     * @var  \Yana\Db\Queries\IsParser
+     */
+    private $_sqlParser = null;
+ 
     /**
      * @var string
      */
@@ -64,14 +69,16 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
     /**
      * constructor
      *
-     * @param  \Yana\Db\Ddl\Database  $schema  database schema
+     * @param  \Yana\Db\Ddl\Database      $schema  database schema
+     * @param  \Yana\Db\Queries\IsParser  $parser  to handle SQL statements
      */
-    public function __construct(\Yana\Db\Ddl\Database $schema)
+    public function __construct(\Yana\Db\Ddl\Database $schema, \Yana\Db\Queries\IsParser $parser)
     {
         if (!isset(self::$_baseDir)) {
             // if no directory given load default directory from config
             self::setBaseDirectory(\Yana\Db\Ddl\DDL::getDirectory());
         }
+        $this->_setSqlParser($parser);
 
         $this->_setSchema($schema);
         $databaseName = $schema->getName();
@@ -86,6 +93,28 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
     }
 
     /**
+     * Returns SQL parser.
+     *
+     * @return  \Yana\Db\Queries\IsParser
+     */
+    protected function _getSqlParser()
+    {
+        return $this->_sqlParser;
+    }
+
+    /**
+     * Inject SQL parser.
+     *
+     * @param   \Yana\Db\Queries\IsParser  $parser  to handle SQL statements
+     * @return  self
+     */
+    protected function _setSqlParser(\Yana\Db\Queries\IsParser $parser)
+    {
+        $this->_sqlParser = $parser;
+        return $this;
+    }
+
+    /**
      * Set directory where database files are to be stored.
      *
      * Note: the directory must be read- and writeable.
@@ -97,14 +126,6 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
     {
         assert('is_dir($directory); // Wrong type for argument 1. Directory expected');
         self::$_baseDir = "$directory";
-    }
-
-    /**
-     * @return \Yana\Db\Queries\IsParser
-     */
-    protected function _newSqlParser()
-    {
-        return \Yana\Db\Queries\Parser(\Yana\Application::connect($this->_getDatabaseName()));
     }
 
     /**
@@ -922,8 +943,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
     public function limitQuery($sqlStmt, $offset = 0, $limit = 0)
     {
         // parse SQL
-        $queryParser = $this->_newSqlParser();
-        $dbQuery = $queryParser->parseSQL((string) $sqlStmt); // throws exception
+        $dbQuery = $this->_getSqlParser()->parseSQL((string) $sqlStmt); // throws exception
 
         // route to query handling
         $dbQuery->setOffset((int) $offset);
@@ -948,8 +968,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
         $this->_resetOffsetAndLimit();
 
         // parse SQL
-        $queryParser = $this->_newSqlParser();
-        $dbQuery = $queryParser->parseSQL($sqlStmt); // throws exception
+        $dbQuery = $this->_getSqlParser()->parseSQL($sqlStmt); // throws exception
 
         // route to query handling
         $dbQuery->setOffset($offset);

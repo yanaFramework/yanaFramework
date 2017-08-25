@@ -61,7 +61,7 @@ class SitemapPlugin extends \Yana\Plugins\AbstractPlugin
     {
         $application = $this->_getApplication();
         $viewHelper = new \Plugins\Sitemap\ViewHelper(
-            $application->getPlugins()->getPluginDir(),
+            $application->getPlugins()->getPluginDir()->getPath(),
             $application->buildApplicationMenu(),
             $application->getLanguage()
         );

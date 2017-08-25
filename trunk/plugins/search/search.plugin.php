@@ -76,7 +76,7 @@ class SearchPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function search_stats()
     {
-        \Yana\Util\Microsummary::publishSummary(__CLASS__);
+        $this->_getMicrosummary()->publishSummary(__CLASS__);
         $numbers = $this->_connectToDatabase('search')->select('searchstats');
         if (!empty($numbers)) {
             uasort($numbers, array($this, "_sortStatistics"));
@@ -134,7 +134,7 @@ class SearchPlugin extends \Yana\Plugins\AbstractPlugin
                 assert('!isset($mostWanted);');
                 $mostWanted = $db->select("searchstats", array(), 'searchcount', 0, 1, true);
                 if ($mostWanted <= $counterValue) {
-                    \Yana\Util\Microsummary::setText(__CLASS__,
+                    $this->_getMicrosummary()->setText(__CLASS__,
                         'Search most wanted: '.$counterInfo.'('.$counterValue.')');
                 }
                 unset($mostWanted);

@@ -332,6 +332,7 @@ abstract class AbstractVarContainer extends \Yana\Files\File implements \Yana\Co
      *
      * @throws  \Yana\Core\Exceptions\NotReadableException  if the file is not readable
      * @throws  \Yana\Core\Exceptions\NotFoundException     if the file does not exist
+     * @return  self
      *
      * @name    SML::read()
      */
@@ -346,6 +347,7 @@ abstract class AbstractVarContainer extends \Yana\Files\File implements \Yana\Co
 
             $this->_isReady = true; // setting $this->ready state
         }
+        return $this;
     }
 
     /**

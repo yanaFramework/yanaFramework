@@ -51,6 +51,9 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     {
         $configurationFactory = new \Yana\ConfigurationFactory();
         $configuration = $configurationFactory->loadConfiguration(YANA_INSTALL_DIR . 'config/system.config.xml');
+        $pluginConfigurationFile = new \Yana\Files\Text(CWD . '/resources/plugins.cfg');
+        $pluginsDirectory = new \Yana\Files\Dir(CWD . '/../../../plugins/');
+        \Yana\Plugins\Manager::setPath($pluginConfigurationFile, $pluginsDirectory);
         $this->object = new \Yana\Core\Dependencies\Container($configuration);
     }
 

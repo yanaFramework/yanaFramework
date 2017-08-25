@@ -108,6 +108,8 @@ class Structure extends \Yana\Files\SML
      *
      * Always call this first before anything else.
      * Returns the file content on success and bool(false) on error.
+     *
+     * @return  self
      */
     public function read()
     {
@@ -153,7 +155,7 @@ class Structure extends \Yana\Files\SML
                 \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::INFO);
             }
         } /* end if*/
-        return $this->content;
+        return $this;
     }
 
     /**
@@ -4240,11 +4242,9 @@ class Structure extends \Yana\Files\SML
     {
         assert('is_bool($fullFilename); // Invalid argument $fullFilename: Boolean expected');
         $directory = self::getDirectory();
-        $dir = new \Yana\Files\Dir($directory);
         $list = array();
-        $dirList = $dir->dirlist('*' . self::$_extension);
-        if (is_array($dirList)) {
-            foreach ($dirList as $filename)
+        try {
+            foreach (\Yana\Util\Dir::listFiles($directory, self::$_extension) as $filename)
             {
                 /* prepend path */
                 if ($fullFilename) {
@@ -4255,6 +4255,9 @@ class Structure extends \Yana\Files\SML
                     $list[] = basename($filename, self::$_extension);
                 }
             }
+        } catch (\Yana\Core\Exceptions\Files\NotFoundException $e) {
+            // ignore
+            unset($e);
         }
         return $list;
     }

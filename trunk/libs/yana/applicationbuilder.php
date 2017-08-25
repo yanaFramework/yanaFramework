@@ -342,10 +342,12 @@ class ApplicationBuilder extends \Yana\Core\Object
         if (!empty($configuration->skindir) && is_dir($configuration->skindir)) {
             \Yana\Views\Skins\Skin::setBaseDirectory((string) $configuration->skindir);
         }
-        if (isset($configuration->pluginfile)) {
-            \Yana\Plugins\Manager::setPath((string) $configuration->pluginfile, (string) $configuration->plugindir);
+        if (isset($configuration->pluginfile) && isset($configuration->plugindir)) {
+            $pluginConfigurationFile = new \Yana\Files\Text((string) $configuration->pluginfile);
+            $pluginsDirectory = new \Yana\Files\Dir((string) $configuration->plugindir);
+            \Yana\Plugins\Manager::setPath($pluginConfigurationFile, $pluginsDirectory);
         }
-        if (!empty($configuration->blobdir)) {
+        if (!empty($configuration->blobdir) && is_dir($configuration->blobdir)) {
             \Yana\Db\Blob::setDirectory((string) $configuration->blobdir);
         }
 

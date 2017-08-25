@@ -138,8 +138,10 @@ class Sequence extends \Yana\Core\Object
         if (!is_null($db)) {
             self::$db = $db;
         } else {
-            self::$db = \Yana\Application::connect('sequences');
+            $builder = new \Yana\ApplicationBuilder();
+            self::$db = $builder->buildApplication()->connect("sequences");
         }
+        return self::$db;
     }
 
     /**

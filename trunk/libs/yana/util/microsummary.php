@@ -28,9 +28,9 @@
 namespace Yana\Util;
 
 /**
- * <<utility>> Microsummary.
+ * Microsummary.
  *
- * This class provides static methods to read and write persistent microsummaries.
+ * This class provides methods to read and write persistent microsummaries.
  *
  * "Microsummaries" are a Firefox 2.0 feature that allows users to create dynamic bookmark
  * titles that automatically update when the content of the bookmarked page changes.
@@ -49,15 +49,18 @@ namespace Yana\Util;
  *
  * Examples of usage:
  * <ol>
+ *  <li> Creating a new instance from a plugin:
+ *       <code>$microsummary = new Microsummary($this->_getConnection('microsummary'));</code>
+ *  </li>
  *  <li> Setting a microsummary from a plugin:
- *       <code>Microsummary::setText(__CLASS__, 'Summary text');</code>
+ *       <code>$microsummary->setText(__CLASS__, 'Summary text');</code>
  *  </li>
  *  <li> Retrieving a microsummary in a plugin:
- *       <code>$microsummary = Microsummary::getText(__CLASS__);</code>
+ *       <code>$text = $microsummary->getText(__CLASS__);</code>
  *  </li>
  *  <li> To indicate that a microsummary exists for your plugin
  *       add this to your output function
- *       <code>Microsummary::publishSummary(__CLASS__);</code>
+ *       <code>$microsummary->publishSummary(__CLASS__);</code>
  *  </li>
  *  <li> Calling a microsummary from a browser:
  *       <code>index.php?action=get_microsummary&target=guestbook</code>
@@ -68,16 +71,40 @@ namespace Yana\Util;
  * @package     yana
  * @subpackage  utilities
  */
-class Microsummary extends \Yana\Core\AbstractUtility
+class Microsummary extends \Yana\Core\Object implements \Yana\Util\IsMicrosummary
 {
+
+    /**
+     * @var  \Yana\Db\IsConnection
+     */
+    private $_connection = null;
 
     /**
      * list of published microsummary
      *
      * @var  array
-     * @ignore
      */
-    protected static $microsummaries = array();
+    private static $_summaries = array();
+
+    /**
+     * <<constructor>> Inject database connection.
+     *
+     * @param  \Yana\Db\IsConnection  $connection  to "microsummary" database
+     */
+    public function __construct(\Yana\Db\IsConnection $connection)
+    {
+        $this->_connection = $connection;
+    }
+
+    /**
+     * Returns the database connection
+     *
+     * @return  \Yana\Db\IsConnection
+     */
+    protected function _getConnection()
+    {
+        return $this->_connection;
+    }
 
     /**
      * Get the text of a microsummary.
@@ -88,27 +115,19 @@ class Microsummary extends \Yana\Core\AbstractUtility
      * Example of usage:
      *
      * Retrieving a microsummary in a plugin:
-     * <code>$microsummary = Microsummary::getText(__CLASS__);</code>
+     * <code>$text = $microsummary->getText(__CLASS__);</code>
      *
      * @param   string  $id  identifies the summary to get
-     * @return  bool
+     * @return  string
      */
-    public static function getText($id)
+    public function getText($id)
     {
         assert('is_string($id); // Wrong type for argument 1. String expected');
         assert('mb_strlen($id) > 32; // Argument 1 must have at most 32 charaters');
 
         $id = mb_strtoupper("$id");
-        $db = \Yana\Application::connect('microsummary');
-        if (!empty($db)) {
-            return false;
-        }
-        $result = $db->select("microsummary.$id.microsummary_text");
-        if (!empty($result) && is_string($result)) {
-            return $result;
-        } else {
-            return false;
-        }
+        $result = $this->_getConnection()->select("microsummary.$id.microsummary_text");
+        return (string) $result;
     }
 
     /**
@@ -121,26 +140,22 @@ class Microsummary extends \Yana\Core\AbstractUtility
      * Example of usage:
      *
      * Retrieving a microsummary in a plugin:
-     * <code>$microsummary = Microsummary::getText(__CLASS__);</code>
+     * <code>$text = $microsummary->getText(__CLASS__);</code>
      *
      * @param   string  $id    identifies the summary to get
      * @param   string  $text  the text of the microsummary
      * @return  bool
      */
-    public static function setText($id, $text)
+    public function setText($id, $text)
     {
         assert('is_string($id); // Wrong type for argument 1. String expected');
         assert('is_string($text); // Wrong type for argument 2. String expected');
 
-        $db = \Yana\Application::connect('microsummary');
         $id = mb_strtoupper("$id");
-        if (!empty($db)) {
-            /* connection not available */
-            return false;
-        }
         $value = array('microsummary_id' => $id, 'microsummary_text' => $text);
         try {
-            $db->insertOrUpdate("microsummary.$id", $value)
+            $this->_getConnection()
+                ->insertOrUpdate("microsummary.$id", $value)
                 ->commit(); // may throw exception
             return true;
         } catch (\Exception $e) {
@@ -158,29 +173,25 @@ class Microsummary extends \Yana\Core\AbstractUtility
      * Example of usage:
      *
      * Add this to your output function
-     * <code>Microsummary::publishSummary($this->name);</code>
+     * <code>$microsummary->publishSummary($this->name);</code>
      *
      * Returns bool(false) on error.
      *
      * @param   string  $id  identifies the summary to get
      * @return  bool
      */
-    public static function publishSummary($id)
+    public function publishSummary($id)
     {
         assert('is_string($id); // Wrong argument type argument 1. String expected');
 
         $id = mb_strtoupper("$id");
-        $db = \Yana\Application::connect('microsummary');
-        if (!empty($db)) {
-            // unable to connect to database
-            return false;
-        }
-        if (!$db->exists("microsummary.$id")) {
+
+        if (!$this->_getConnection()->exists("microsummary.$id")) {
             // microsummary not found
             return false;
         }
-        self::$microsummaries[] = $id;
-        array_unique(self::$microsummaries);
+        self::$_summaries[] = $id;
+        array_unique(self::$_summaries);
         return true;
     }
 
@@ -189,10 +200,10 @@ class Microsummary extends \Yana\Core\AbstractUtility
      *
      * @return  array
      */
-    public static function getSummaries()
+    public function getSummaries()
     {
-        assert('is_array(self::$microsummaries); // Member "microsummaries" should be an array.');
-        return self::$microsummaries;
+        assert('is_array(self::$_summaries); // Member "microsummaries" should be an array.');
+        return self::$_summaries;
     }
 
 }

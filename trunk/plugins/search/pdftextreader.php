@@ -43,6 +43,7 @@ class PdfTextReader extends \Plugins\Search\BufferedReader
      *
      * @access  public
      * @throws  \Yana\Core\Exceptions\NotFoundException  if the file does not exist
+     * @return  self
      */
     public function read()
     {
@@ -85,6 +86,7 @@ class PdfTextReader extends \Plugins\Search\BufferedReader
         }
         // the result should be a list of words separated by spaces
         $this->content = explode("\n", $content);
+        return $this;
     }
 
 }

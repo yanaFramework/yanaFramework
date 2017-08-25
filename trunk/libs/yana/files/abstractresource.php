@@ -245,7 +245,7 @@ abstract class AbstractResource extends \Yana\Core\Object implements \Yana\Files
     protected function getFilesize()
     {
         if (!isset($this->fileSize)) {
-            $this->fileSize = false;
+            $this->fileSize = 0;
             if ($this->exists()) {
                 $this->fileSize = filesize($this->path);
             }

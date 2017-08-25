@@ -85,25 +85,47 @@ interface IsDir extends \Yana\Files\IsReadable
     public function length();
 
     /**
-     * List contents of a directory.
+     * List all sub-directories of a directory.
+     *
+     * @return  array
+     * @throws  \Yana\Core\Exceptions\Files\NotFoundException  when directory doesn't exist
+     */
+    public function listDirectories();
+
+    /**
+     * List all files of a directory.
      *
      * The argument $filter may contain multiple file extension,
      * use a pipe '|' sign to seperate them.
      * Example: "*.xml|*.html" will find all xml- and html-files
      *
-     * @param   string  $filter  filter
+     * @param   string  $filter  only return files like ...
      * @return  array
+     * @throws  \Yana\Core\Exceptions\Files\NotFoundException  when directory doesn't exist
      */
-    public function dirlist($filter = null);
+    public function listFiles($filter = "");
+
+    /**
+     * List all contents of a directory.
+     *
+     * The argument $filter may contain multiple file extension,
+     * use a pipe '|' sign to seperate them.
+     * Example: "*.xml|*.html" will find all xml- and html-files
+     *
+     * @param   string  $filter  only return files like ...
+     * @return  array
+     * @throws  \Yana\Core\Exceptions\Files\NotFoundException  when directory doesn't exist
+     */
+    public function listFilesAndDirectories($filter = "");
 
     /**
      * Returns the size of $directory in bytes.
      *
-     * @param   string    $directory      directory name
-     * @param   bool      $countSubDirs   on / off
+     * @param   bool  $countSubDirs   on / off
      * @return  int
+     * @throws  \Yana\Core\Exceptions\Files\NotFoundException  when directory doesn't exist
      */
-    public function getSize($directory = null, $countSubDirs = true);
+    public function getSize($countSubDirs = true);
 
     /**
      * Copy the directory to some destination.

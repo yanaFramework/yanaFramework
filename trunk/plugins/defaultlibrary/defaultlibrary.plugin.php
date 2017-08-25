@@ -311,7 +311,7 @@ class DefaultLibraryPlugin extends \Yana\Plugins\AbstractPlugin
         if (empty($target)) {
             exit('Error: illegal request');
         }
-        $microsummary = \Yana\Util\Microsummary::getText($target);
+        $microsummary = $this->_getMicrosummary()->getText($target);
         if (empty($microsummary)) {
             exit('No summary available');
         }

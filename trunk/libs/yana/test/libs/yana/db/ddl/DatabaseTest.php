@@ -3386,11 +3386,10 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
      * Primary-key
      *
      * @test
-     * @expectedException PHPUnit_Framework_Error
      */
-    public function testPrimaryKey()
+    public function testGetPrimaryKey()
     {
-        $get = $this->table->getPrimaryKey();
+        $this->assertNull($this->table->getPrimaryKey());
     }
 
     /**

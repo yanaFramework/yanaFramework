@@ -100,7 +100,7 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
     public function blog()
     {
         \Yana\RSS\Publisher::publishFeed('blog_rss');
-        \Yana\Util\Microsummary::publishSummary(__CLASS__);
+        $this->_getMicrosummary()->publishSummary(__CLASS__);
     }
 
     /**
@@ -184,7 +184,7 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
         $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
         $success = (bool) $worker->create();
         if ($success) {
-            \Yana\Util\Microsummary::setText(__CLASS__, 'Blog, update '.date('d M y G:s', time()));
+            $this->_getMicrosummary()->setText(__CLASS__, 'Blog, update '.date('d M y G:s', time()));
         }
         return $success;
     }

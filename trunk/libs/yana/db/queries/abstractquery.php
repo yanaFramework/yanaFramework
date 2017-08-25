@@ -2105,7 +2105,8 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
             $this->$key = $value;
         }
         if (is_string($this->db)) {
-            $this->db = \Yana\Application::connect($this->db);
+            $builder = new \Yana\ApplicationBuilder();
+            $this->db = $builder->buildApplication()->connect($this->db);
         }
     }
 

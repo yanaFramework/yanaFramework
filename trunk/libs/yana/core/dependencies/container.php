@@ -397,7 +397,7 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
                 $this->_plugins = \Yana\Plugins\Manager::getInstance();
                 $container = new \Yana\Plugins\Dependencies\Container($this->getSession(), $this->_getDefaultEvent());
                 $this->_plugins->attachDependencies($container);
-                if (!is_file(\Yana\Plugins\Manager::getConfigFilePath())) {
+                if (!\Yana\Plugins\Manager::getConfigFilePath()->exists()) {
                     $this->_plugins->refreshPluginFile();
                 }
                 $cache[$cacheId] = $this->_plugins;

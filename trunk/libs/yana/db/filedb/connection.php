@@ -144,7 +144,7 @@ class Connection extends \Yana\Db\AbstractConnection
     protected function _getConnection()
     {
         if (!isset($this->_database)) {
-            $this->_database = new \Yana\Db\FileDb\Driver($this->getSchema());
+            $this->_database = new \Yana\Db\FileDb\Driver($this->getSchema(), new \Yana\Db\Queries\Parser($this));
         }
         return $this->_database;
     }

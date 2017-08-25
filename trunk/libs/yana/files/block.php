@@ -69,7 +69,7 @@ class Block extends \Yana\Files\File
     /**
      * Read the file contents to buffer.
      *
-     * @return  bool
+     * @return  self
      * @throws  \Yana\Core\Exceptions\NotReadableException  if the file is not readable
      * @throws  \Yana\Core\Exceptions\NotFoundException     if the file does not exist
      */
@@ -89,6 +89,7 @@ class Block extends \Yana\Files\File
         $content = preg_replace("/[;,\s]+/", "\n", $content); // map all delimiters to "\n"
         $this->content = explode("\n", $content); // explode by delimiter
         assert('is_array($this->content);');
+        return $this;
     }
 
     /**

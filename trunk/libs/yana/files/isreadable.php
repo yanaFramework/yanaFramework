@@ -45,13 +45,14 @@ interface IsReadable extends \Yana\Files\IsResource
      *
      * @throws  \Yana\Core\Exceptions\NotFoundException     when the file is not found
      * @throws  \Yana\Core\Exceptions\NotReadableException  when the file is not readable
+     * @return  self
      */
     public function read();
 
     /**
-     * Returns the file contents as string.
+     * Returns the contents.
      *
-     * @return  string
+     * @return  string|array
      */
     public function getContent();
 

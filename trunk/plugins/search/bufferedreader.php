@@ -48,23 +48,20 @@ class BufferedReader extends \Yana\Files\Readonly
     /**
      * File pointer
      *
-     * @access  private
-     * @var     resource
+     * @var  resource
      */
     private $_file = null;
 
     /**
      * Buffer size in byte
      *
-     * @access  private
-     * @var     int
+     * @var  int
      */
     private $_bufferSize = 8192;
 
     /**
      * Create a new instance of this class.
      *
-     * @access  public
      * @param   string  $filename     absolute or relative path to file
      * @param   int     $bufferSize   buffer size in byte
      * @throws  \Yana\Core\Exceptions\NotReadableException  when the file cannot be opened
@@ -84,7 +81,6 @@ class BufferedReader extends \Yana\Files\Readonly
     /**
      * Returns TRUE if the file pointer is not yet at the end of the file.
      *
-     * @access  public
      * @return  bool
      */
     public function hasMoreContent()
@@ -95,8 +91,8 @@ class BufferedReader extends \Yana\Files\Readonly
     /**
      * Tries to read the file contents and throws an exception on error.
      *
-     * @access  public
      * @throws  \Yana\Core\Exceptions\NotFoundException  if the file does not exist
+     * @return  self
      */
     public function read()
     {
@@ -107,6 +103,7 @@ class BufferedReader extends \Yana\Files\Readonly
         if ($this->hasMoreContent()) {
             $this->content = array(fread($this->_file, $this->_bufferSize));
         }
+        return $this;
     }
 
     /**

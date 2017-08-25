@@ -458,7 +458,7 @@ class GuestbookPlugin extends \Yana\Plugins\AbstractPlugin
             $template = $YANA->getView()->createContentTemplate($templateFile->getPath());
             $this->_sendMail($template, $entry);
         }
-        \Yana\Util\Microsummary::setText(__CLASS__, 'Guestbook, update ' . date('d M y G:s', time()));
+        $this->_getMicrosummary()->setText(__CLASS__, 'Guestbook, update ' . date('d M y G:s', time()));
     }
 
     /**
@@ -519,7 +519,7 @@ class GuestbookPlugin extends \Yana\Plugins\AbstractPlugin
         $YANA = $this->_getApplication();
         $this->_securityCheck(); // throws \Yana\Core\Exceptions\Files\NotFoundException
 
-        \Yana\Util\Microsummary::publishSummary(__CLASS__);
+        $this->_getMicrosummary()->publishSummary(__CLASS__);
         \Yana\RSS\Publisher::publishFeed('guestbook_read_rss');
 
         /* get entries */

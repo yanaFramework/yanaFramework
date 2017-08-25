@@ -47,12 +47,14 @@ class File extends \Yana\Files\Readonly implements \Yana\Files\IsWritable
      *
      * @throws  \Yana\Core\Exceptions\NotReadableException  if the file is not readable
      * @throws  \Yana\Core\Exceptions\NotFoundException     if the file does not exist
+     * @return  self
      */
     public function read()
     {
         parent::read();
         // init cache so we are able to check later, if the file was modified
         $this->getLastModified();
+        return $this;
     }
 
     /**

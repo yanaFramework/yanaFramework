@@ -64,6 +64,7 @@ class Readonly extends \Yana\Files\AbstractResource implements \Yana\Files\IsRea
      *
      * @throws  \Yana\Core\Exceptions\NotReadableException  if the file is not readable
      * @throws  \Yana\Core\Exceptions\NotFoundException     if the file does not exist
+     * @return  self
      */
     public function read()
     {
@@ -83,6 +84,7 @@ class Readonly extends \Yana\Files\AbstractResource implements \Yana\Files\IsRea
             throw new \Yana\Core\Exceptions\NotReadableException($message, E_USER_NOTICE);
         }
         $this->content = explode("\n", $content);
+        return $this;
     }
 
     /**

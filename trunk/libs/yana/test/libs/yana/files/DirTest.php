@@ -66,8 +66,8 @@ class DirTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {        
-        $this->existingDir = new Dir(CWD . $this->existingPath);
-        $this->nonExistingDir = new Dir(CWD . $this->nonExistingPath);
+        $this->existingDir = new \Yana\Files\Dir(CWD . $this->existingPath);
+        $this->nonExistingDir = new \Yana\Files\Dir(CWD . $this->nonExistingPath);
     }
 
     /**
@@ -94,7 +94,6 @@ class DirTest extends \PHPUnit_Framework_TestCase
             $this->fail("Unable to read directory: " . $e->getMessage());
         }
     }
-
 
     /**
      * read from path that does'nt exist
@@ -288,7 +287,7 @@ class DirTest extends \PHPUnit_Framework_TestCase
     public function testDirlist()
     {
         // read all txt entries
-        $dirList = $this->existingDir->dirlist('*.txt');
+        $dirList = $this->existingDir->listFiles('*.txt');
         $expected = array();
         foreach (glob($this->existingDir->getPath() . '/*.txt') as $path)
         {
@@ -299,11 +298,11 @@ class DirTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $dirList, 'directory listing with filter *.txt should match directory contents');
 
         // read without set a filter
-        $dirList = $this->existingDir->setFilter()->dirlist();
+        $dirList = $this->existingDir->setFilter()->listFiles();
         $expected = array();
         foreach (scandir($this->existingDir->getPath()) as $path)
         {
-            if (!is_dir($path)) {
+            if (!is_dir($this->existingDir->getPath() . '/' . $path)) {
                 $expected[] = $path;
             }
         }
@@ -312,7 +311,7 @@ class DirTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $dirList, 'directory listing should match directory contents');
 
         // choose more file types
-        $dirList = $this->existingDir->dirlist('*.txt|*.xml|*.dat');
+        $dirList = $this->existingDir->listFiles('*.txt|*.xml|*.dat');
         $expected = array();
         foreach (glob($this->existingDir->getPath() . '/*.{txt,xml,dat}', GLOB_BRACE) as $path)
         {
@@ -332,7 +331,7 @@ class DirTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetSize()
     {
-        $size = $this->existingDir->getSize(null, false);
+        $size = $this->existingDir->getSize(false);
         $scanDirSize = 0;
         // reduce by 2 for bogus-entries '.' and '..'
         foreach (scandir(CWD . $this->existingPath) as $file)
@@ -345,31 +344,18 @@ class DirTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('int', $size, 'expecting getSize() to return result of type integer');
         $this->assertEquals($size, $scanDirSize, "Size does not match the size of the files in the directory");
     }
-
-    /**
-     * GetSize Invalid Argument
-     *
-     * @expectedException PHPUnit_Framework_Error
-     * @test
-     */
-    function testGetSizeInvalidArgument()
-    {
-        $get = $this->existingDir->getSize(CWD . 'test');
-        $this->assertFalse($get, 'First argument is not a directory.');
-    }
     
     /**
      * GetSize Invalid Argument1
      *
-     * @expectedException PHPUnit_Framework_Error
      * @test
+     * @expectedException \Yana\Core\Exceptions\Files\NotFoundException
      */
-    function testGetSizeInvalidArgument1()
+    function testGetSizeNotFoundException()
     {
         // try with non exist Dir
-        $newDir = new Dir('nonexistDir');
-        $get = $newDir->getSize();
-        $this->assertFalse($get, 'Directory does not exist.');
+        $newDir = new \Yana\Files\Dir('nonexistDir');
+        $newDir->getSize();
     }
 
     /**

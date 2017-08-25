@@ -64,16 +64,13 @@ class Builder extends \Yana\Plugins\Repositories\AbstractBuilder
     /**
      * Scan a directory for plugins.
      *
-     * @param  string  $directory  path to scan
+     * @param  \Yana\Files\IsDir  $directory  path to scan
      */
-    public function addDirectory($directory)
+    public function addDirectory(\Yana\Files\IsDir $directory)
     {
-        if (is_dir($directory)) {
-            foreach (scandir($directory) as $plugin)
+        if ($directory->exists()) {
+            foreach ($directory->listDirectories() as $plugin)
             {
-                if ($plugin[0] === '.' || !is_dir($directory . '/' . $plugin)) {
-                    continue;
-                }
                 $classFile = \Yana\Plugins\PluginNameMapper::toClassFilenameWithDirectory($plugin, $directory);
                 if (is_file($classFile)) {
                     $this->_plugins[$plugin] = \Yana\Plugins\PluginNameMapper::toClassNameWithNamespace($plugin);
