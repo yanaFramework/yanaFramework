@@ -203,7 +203,6 @@ final class Request extends \Yana\Core\AbstractUtility
      *
      * @param   string  $key  adress of data in memory (case insensitive)
      * @return  mixed
-     * @see     Request::getVars()
      */
     public static function getGet($key = '*')
     {
@@ -221,7 +220,6 @@ final class Request extends \Yana\Core\AbstractUtility
      *
      * @param   string  $key  adress of data in memory (case insensitive)
      * @return  mixed
-     * @see     Request::getVars()
      */
     public static function getPost($key = '*')
     {
@@ -240,7 +238,6 @@ final class Request extends \Yana\Core\AbstractUtility
      *
      * @param   string  $key  adress of data in memory (case insensitive)
      * @return  mixed
-     * @see     Request::getVars()
      */
     public static function getCookie($key = '*')
     {

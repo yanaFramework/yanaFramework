@@ -34,6 +34,7 @@ require_once __DIR__ . '/../../../include.php';
 
 /**
  * @ignore
+ * @package test
  */
 class TestSingleton extends \Yana\Core\AbstractSingleton
 {
