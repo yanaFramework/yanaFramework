@@ -200,20 +200,19 @@ class Readonly extends \Yana\Files\AbstractResource implements \Yana\Files\IsRea
      * @return  int
      * @name    FileReadonly::getCrc32()
      * @see     FileReadonly::getMd5()
+     * @throws  \Yana\Core\Exceptions\Files\NotFoundException  when the given file does not exist
      */
     public function getCrc32($filename = "")
     {
         assert('is_string($filename); // Wrong type for argument 1. String expected');
 
-        if (!empty($filename)) {
-            if (!is_file("$filename")) {
-                $message = "Unable to calculate checksum. The file '{$filename}' does not exist.";
-                \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::INFO);
-                return false;
-            }
-        } else {
+        if (empty($filename)) {
             $filename = $this->getPath();
             assert('is_file($filename); // Expected $filename to be a file, but it does not exist.');
+        }
+        if (!is_file("$filename")) {
+            $message = "Unable to calculate checksum. The file '{$filename}' does not exist.";
+            throw new \Yana\Core\Exceptions\Files\NotFoundException($message, \Yana\Log\TypeEnumeration::INFO);
         }
 
         $source = file_get_contents($filename);
@@ -259,26 +258,28 @@ class Readonly extends \Yana\Files\AbstractResource implements \Yana\Files\IsRea
      * @since   2.8.5
      * @name    FileReadonly::getMd5()
      * @see     FileReadonly::getCrc32()
+     * @throws  \Yana\Core\Exceptions\Files\NotFoundException  when the given file does not exist
      */
     public function getMd5($filename = "")
     {
         assert('is_string($filename); // Wrong type for argument 1. String expected');
 
         // for static calls
-        if (!empty($filename)) {
+        if ($filename > "") {
             if (!is_file("$filename")) {
                 $message = "Unable to calculate MD5 hash. The file '{$filename}' does not exist.";
-                \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::INFO);
-                return false;
+                throw new \Yana\Core\Exceptions\Files\NotFoundException($message, \Yana\Log\TypeEnumeration::INFO);
             }
             return md5_file($filename);
         }
 
         if (!isset($this->checkSum)) {
+            $filename = $this->getPath();
             if (!$this->exists()) {
-                return false;
+                $message = "Unable to calculate MD5 hash. The file '{$filename}' does not exist.";
+                throw new \Yana\Core\Exceptions\Files\NotFoundException($message, \Yana\Log\TypeEnumeration::INFO);
             }
-            $this->checkSum = md5_file($this->getPath());
+            $this->checkSum = md5_file($filename);
         }
 
         assert('is_string($this->checkSum); // Unexpected member type for "checkSum". String expected.');

@@ -195,14 +195,12 @@ class ReadonlyTest extends \PHPUnit_Framework_TestCase
      /**
      * GetCrc32 Invalid Argument
      *
-     * @expectedException  PHPUnit_Framework_Error
+     * @expectedException  \Yana\Core\Exceptions\Files\NotFoundException
      * @test
      */
-    function testGetCrc32InvalidArgument()
-
+    public function testGetCrc32InvalidArgument()
     {
-        $crc = $this->object->getCrc32('readonly.txt');
-        $this->assertFalse($crc, 'assert failed, first argument must be a string, and a filename');
+        $this->object->getCrc32('readonly.txt');
     }
 
     /**
@@ -224,26 +222,25 @@ class ReadonlyTest extends \PHPUnit_Framework_TestCase
      * Get MD5 Invalid file object
      *
      * @test
+     * @expectedException  \Yana\Core\Exceptions\Files\NotFoundException
      */
     public function testGetMd5NonExistingfile()
     {
         $nonExistFile = new Readonly('resources/nonExistfile.txt');
-        $md5 = $nonExistFile->getMd5();
-        $this->assertFalse($md5, 'assert failed, source is empty');
-        unset($nonExistFile);
+        $nonExistFile->getMd5();
     }
 
     /**
      * Get MD5 Invalid Argument
      *
-     * @expectedException  PHPUnit_Framework_Error
      * @test
+     * @expectedException  \Yana\Core\Exceptions\Files\NotFoundException
      */
-    function testGetMd5InvalidArgument()
-
+    public function testGetMd5InvalidArgument()
     {
-        $md5 = $this->object->getMd5('readonly.txt');
-        $this->assertFalse($md5, 'assert failed, first argument must be a string, and a filename');
+        $this->object->getMd5('readonly.txt');
     }
+
 }
+
 ?>
