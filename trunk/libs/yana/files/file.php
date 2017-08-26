@@ -64,7 +64,8 @@ class File extends \Yana\Files\Readonly implements \Yana\Files\IsWritable
      * It issues an E_USER_NOTICE and returns bool(false) on error.
      *
      * @return  bool
-     * @throws  \Yana\Core\Exceptions\NotWriteableException  when file does not exist or is not writeable
+     * @throws  \Yana\Core\Exceptions\Files\NotWriteableException  when file does not exist or is not writeable
+     * @throws  \Yana\Core\Exceptions\Files\UncleanWriteException  when the file was changed by a third party
      */
     public function write()
     {
@@ -72,16 +73,19 @@ class File extends \Yana\Files\Readonly implements \Yana\Files\IsWritable
         $this->content = (array) $this->content;
 
         if (!$this->isWriteable()) {
-            $message = "Unable to write to file '".$this->getPath()."'. The file is not writeable.";
-            throw new \Yana\Core\Exceptions\NotWriteableException($message, \Yana\Log\TypeEnumeration::INFO);
+            $message = "Unable to write to file '" . $this->getPath() . "'. The file is not writeable.";
+            $e = new \Yana\Core\Exceptions\Files\NotWriteableException($message, \Yana\Log\TypeEnumeration::INFO);
+            $e->setFilename($this->getPath());
+            throw $e;
         }
         clearstatcache(); // clear cache - otherwise we won't recognize if file was modified
         if ($this->getLastModified() != filemtime($this->getPath())) {
             $message = "Unable to write to file '" . $this->getPath() . "'.\n\t\t".
                 "The file has been changed by some third party recently. " .
                 "Your cached copy is out of date.";
-            \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::INFO);
-            return false;
+            $e = new \Yana\Core\Exceptions\Files\UncleanWriteException($message, \Yana\Log\TypeEnumeration::INFO);
+            $e->setFilename($this->getPath());
+            throw $e;
         }
         $handle = fopen($this->getPath(), "w+");
         flock($handle, LOCK_EX);
@@ -98,17 +102,21 @@ class File extends \Yana\Files\Readonly implements \Yana\Files\IsWritable
      * Returns bool(true) on success and bool(false) on error.
      *
      * @return  bool
+     * @throws  \Yana\Core\Exceptions\Files\NotWriteableException  when the file is not writeable
      */
     public function delete()
     {
-        if (@unlink($this->getPath())) {
-            return true;
-        } else {
-            $message = "Unable to delete file '" . $this->getPath() . "'." .
-                ((!is_writeable($this->getPath())) ? "\n\t\tThe file is not writeable.":'');
-            \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::INFO);
-            return false;
+        if (!$this->exists()) {
+            return true; // By definition, a non-existing file is deleted.
         }
+        if (!$this->isWriteable()) {
+            $message = "Unable to delete file '" . $this->getPath() . "' becasue it is not writeable.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            $e = new \Yana\Core\Exceptions\Files\NotWriteableException($message, $level);
+            $e->setFilename($this->getPath());
+            throw $e;
+        }
+        return (bool) @unlink($this->getPath());
     }
 
     /**

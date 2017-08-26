@@ -53,6 +53,8 @@ interface IsWritable extends \Yana\Files\IsReadable
      * Returns bool(true) on success and bool(false) on error.
      *
      * @return  bool
+     * @throws  \Yana\Core\Exceptions\Files\NotWriteableException  when file does not exist or is not writeable
+     * @throws  \Yana\Core\Exceptions\Files\UncleanWriteException  when the file was changed by a third party
      */
     public function write();
 
@@ -62,6 +64,7 @@ interface IsWritable extends \Yana\Files\IsReadable
      * Returns bool(true) on success and bool(false) on error.
      *
      * @return  bool
+     * @throws  \Yana\Core\Exceptions\Files\NotWriteableException  when the file is not writeable
      */
     public function delete();
 

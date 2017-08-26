@@ -79,13 +79,13 @@ class FileTest extends \PHPUnit_Framework_TestCase
     /**
      * Write Invalid Argument
      *
-     * @expectedException \Yana\Core\Exceptions\NotWriteableException
+     * @expectedException \Yana\Core\Exceptions\Files\NotWriteableException
      * @test
      */
-    function testWriteNotWriteableException()
+    public function testWriteNotWriteableException()
     {
         // try with non existing path
-        $newFile = new File(CWD . 'resources/nonExistfile.txt');
+        $newFile = new \Yana\Files\File(CWD . 'resources/nonExistfile.txt');
         $newFile->write();
     }
 
@@ -95,10 +95,10 @@ class FileTest extends \PHPUnit_Framework_TestCase
      * Function write() should prevent you from overwriting a file which has recently
      * been modified by some third-party.
      *
-     * @expectedException  PHPUnit_Framework_Error
+     * @expectedException  \Yana\Core\Exceptions\Files\UncleanWriteException
      * @test
      */
-    function testWriteModifiedFile()
+    public function testWriteModifiedFile()
     {
         touch(CWD . $this->source);
         $this->object->write();
@@ -115,10 +115,9 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('integer', $filesize, 'not valid type for "$filesize" expecting "integer"');
 
         // try with non existing path
-        $newFile = new File('resources/nonExistfile.txt');
+        $newFile = new \Yana\Files\File('resources/nonExistfile.txt');
         $getFileSize = $newFile->getFilesize();
-        $this->assertFalse($getFileSize, 'assert failed, source doesnt exist');
-        unset($newFile);
+        $this->assertSame(0, $getFileSize, 'assert failed, source doesnt exist');
     }
 
     /**
@@ -150,7 +149,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
      * @expectedException  \Yana\Core\Exceptions\InvalidArgumentException
      * @test
      */
-    function testCopyEmptyArgument()
+    public function testCopyEmptyArgument()
     {
         $this->object->copy('', true, false, 0777);
     }
@@ -161,7 +160,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
      * @expectedException  \Yana\Core\Exceptions\InvalidArgumentException
      * @test
      */
-    function testCopyInvalidArgumentUpper()
+    public function testCopyInvalidArgumentUpper()
     {
         $this->object->copy(CWD . $this->file, true, false, 01000);
         $this->fail('Must not accept argument mode with value > 0777');
@@ -173,7 +172,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
      * @expectedException  \Yana\Core\Exceptions\InvalidArgumentException
      * @test
      */
-    function testCopyInvalidArgumentLower()
+    public function testCopyInvalidArgumentLower()
     {
         $this->object->copy(CWD . $this->file, true, false, 0);
         $this->fail('Must not accept argument mode with value < 1');
@@ -186,23 +185,22 @@ class FileTest extends \PHPUnit_Framework_TestCase
      */
     public function testDelete()
     {
-        $delete = $this->object->delete(CWD . $this->file);
-        $this->assertTrue($delete, 'delete faild or file not exist');
+        $delete = $this->object->delete();
+        $this->assertTrue($delete, 'delete failed');
+        $this->assertTrue(!\file_exists($this->object->getPath()));
     }
 
     /**
      * Delete Invalid Argument
      *
-     * @expectedException  PHPUnit_Framework_Error
      * @test
      */
-    function testDeleteInvalidArgument()
+    public function testDeleteInvalidArgument()
     {
         // try with non existing path
         $newFile = new File('resources/nonExistfile.txt');
         $delete = $newFile->delete();
-        $this->assertFalse($delete, 'assert failed, source doesnt exist');
-        unset($newFile);
+        $this->assertTrue($delete, 'assert failed, source doesnt exist');
     }
 
     /**
@@ -217,5 +215,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
         }
         $this->object->create(CWD . $this->file);
     }
+
 }
+
 ?>
