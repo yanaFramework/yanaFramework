@@ -362,6 +362,16 @@
                     <source/>
                  </trans-unit>
             </group>
+            <group id="Yana\Core\Exceptions\Files\UncleanWriteException">
+                 <trans-unit id="Yana\Core\Exceptions\Files\UncleanWriteException.h">
+                    <source/>
+                    <target>Data could not be saved</target>
+                 </trans-unit>
+                 <trans-unit id="Yana\Core\Exceptions\Files\UncleanWriteException.p">
+                    <source/>
+                    <target>While editing the file <bpt id="b1">&lt;b&gt;</bpt>{$FILE}<ept id="b1">&lt;/b&gt;</ept> it has been changed by a third party. To prevent loss of data from conflicting changes, the file was not written. Please repeat your previous action to merge the changes.</target>
+                 </trans-unit>
+            </group>
             <group id="Yana\Core\Exceptions\Files\NotReadableException">
                  <trans-unit id="Yana\Core\Exceptions\Files\NotReadableException.h">
                     <target>Data could not be read</target>

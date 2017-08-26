@@ -362,6 +362,16 @@
                     <target>Der Schreibzugriff auf die Ressource <bpt id="b1">&lt;b&gt;</bpt>{$FILE}<ept id="b1">&lt;/b&gt;</ept> ist gescheitert. Möglicherweise ist die Ressource gerade durch einen anderen Nutzer zur Bearbeitung gesperrt, oder es sind unzureichende Rechte gesetzt oder die Ressource ist schreibgeschützt. Bitte informieren Sie den Webmaster dieser Seite.</target>
                  </trans-unit>
             </group>
+            <group id="Yana\Core\Exceptions\Files\UncleanWriteException">
+                 <trans-unit id="Yana\Core\Exceptions\Files\UncleanWriteException.h">
+                    <source>Data could not be saved</source>
+                    <target>Daten konnten nicht gespeichert werden</target>
+                 </trans-unit>
+                 <trans-unit id="Yana\Core\Exceptions\Files\UncleanWriteException.p">
+                    <source>While editing the file <bpt id="b1">&lt;b&gt;</bpt>{$FILE}<ept id="b1">&lt;/b&gt;</ept> it has been changed by a third party. To prevent loss of data from conflicting changes, the file was not written. Please repeat your previous action to merge the changes.</source>
+                    <target>Während des Editierens der Datei <bpt id="b1">&lt;b&gt;</bpt>{$FILE}<ept id="b1">&lt;/b&gt;</ept> wurde diese durch Dritte geändert. Um Datenverlust zu vermeiden, wurden die widersprüchlichen Änderungen daher verworfen. Bitte die letzte Eingabe wiederholen, um die Änderungen zusammenzuführen.</target>
+                 </trans-unit>
+            </group>
             <group id="Yana\Core\Exceptions\Files\NotReadableException">
                  <trans-unit id="Yana\Core\Exceptions\Files\NotReadableException.h">
                     <source>Data could not be read</source>
