@@ -83,12 +83,12 @@ abstract class AbstractHandler extends \Yana\Core\Object implements \Yana\Log\Er
     /**
      * Handles uncaught exceptions.
      *
-     * @param  \Throwable  $e  some unhandled exception
+     * @param  \Throwable|\Exception  $e  some unhandled exception: PHP 7 implements Throwable, PHP 5 does not
      * @ignore
      *
      * @internal NOTE: this function is public for technical reasons. Don't call it yourself.
      */
-    abstract public function handleException(\Throwable $e);
+    abstract public function handleException($e);
 
     /**
      * Activate or deactive error handler.

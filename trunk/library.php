@@ -343,6 +343,12 @@ require_once 'config/dbconfig.php';
 
 require_once 'libs/yana/core/autoloadbuilder.php';
 
+/* [fallbacks] */
+
+if (!\class_exists('Throwable')) {
+    require_once 'libs/yana/core/exceptions/throwable.php';
+}
+
 /**#@-*/
 
 $builder = new \Yana\Core\AutoLoadBuilder();

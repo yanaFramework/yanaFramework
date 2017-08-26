@@ -115,12 +115,12 @@ class Handler extends \Yana\Log\Errors\AbstractHandler
     /**
      * Handles uncaught exceptions.
      *
-     * @param  \Throwable  $e  some unhandled exception
+     * @param  \Throwable|\Exception  $e  some unhandled exception: PHP 7 implements Throwable, PHP 5 does not
      * @ignore
      *
      * @internal NOTE: this function is public for technical reasons. Don't call it yourself.
      */
-    public function handleException(\Throwable $e)
+    public function handleException($e)
     {
         // Can't throw exceptions here. This would risk an infinite loop.
 
