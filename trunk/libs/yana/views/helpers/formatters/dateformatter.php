@@ -52,6 +52,7 @@ class DateFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
      * Load and return configuration.
      *
      * @return  \Yana\Core\IsVarContainer
+     * @codeCoverageIgnore
      */
     protected function _getConfiguration()
     {
@@ -66,6 +67,7 @@ class DateFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
      * Sets self::$_phpFormat with "r" as default.
      *
      * @return  array
+     * @codeCoverageIgnore
      */
     protected function _loadDefaultDateFormat()
     {
