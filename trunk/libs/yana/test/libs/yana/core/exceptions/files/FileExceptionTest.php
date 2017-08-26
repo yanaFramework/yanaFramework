@@ -39,7 +39,7 @@ class FileExceptionTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var FileException
+     * @var \Yana\Core\Exceptions\Files\FileException
      */
     protected $object;
 
