@@ -43,6 +43,7 @@ class DateFormatterTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvoke()
     {
+        \Yana\Views\Helpers\Formatters\DateFormatter::setFormat('r', 'date.toLocaleString()');
         $time = strtotime('2000-01-01 0:0:0');
         $dateFormatter = new \Yana\Views\Helpers\Formatters\DateFormatter();
         $string = $dateFormatter($time);

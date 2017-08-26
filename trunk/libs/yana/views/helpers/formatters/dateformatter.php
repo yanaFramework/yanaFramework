@@ -39,35 +39,50 @@ class DateFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
 {
 
     /**
-     * @var string
+     * @var  string
      */
-    private static $_phpFormat = 'r';
+    private static $_phpFormat = '';
 
     /**
-     * @var string
+     * @var  string
      */
-    private static $_javaScriptFormat = 'date.toLocaleString()';
+    private static $_javaScriptFormat = '';
 
     /**
-     * Create a new instance.
+     * Load and return configuration.
      *
-     * This also loads the configuration.
+     * @return  \Yana\Core\IsVarContainer
      */
-    public function __construct()
+    protected function _getConfiguration()
     {
-        assert('!isset($builder); // Cannot redeclare var $builder');
-        assert('!isset($application); // Cannot redeclare var $application');
         $builder = new \Yana\ApplicationBuilder();
-        $application = $builder->buildApplication();
-        unset($builder);
-        $profileTimeFormat = $application->getVar("PROFILE.TIMEFORMAT");
-        if (!is_numeric($profileTimeFormat)) {
-            $profileTimeFormat = 0;
-        }
-        $timeformat = $application->getVar("DATE." . $profileTimeFormat);
+        return $builder->buildApplication();
+    }
+
+    /**
+     * Loads and sets the selected timeformat from the application profile.
+     *
+     * Sets self::$_javaScriptFormat with "date.toLocaleString()" as default.
+     * Sets self::$_phpFormat with "r" as default.
+     *
+     * @return  array
+     */
+    protected function _loadDefaultDateFormat()
+    {
+        $varContainer = $this->_getConfiguration();
+        $profileTimeFormat = (int) $varContainer->getVar("PROFILE.TIMEFORMAT");
+        $timeformat = $varContainer->getVar("DATE." . $profileTimeFormat);
         assert('is_array($timeformat); // Time-format is expected to be an array.');
-        unset($profileTimeFormat);
-        self::setFormat($timeformat['PHP'], $timeformat['JS']);
+
+        self::$_javaScriptFormat = "date.toLocaleString()";
+        if (isset($timeformat["JS"]) && is_string($timeformat["JS"])) {
+            self::$_javaScriptFormat = (string) $timeformat["JS"];
+        }
+
+        self::$_phpFormat = "r";
+        if (isset($timeformat["PHP"]) && is_string($timeformat["PHP"])) {
+            self::$_phpFormat = (string) $timeformat["PHP"];
+        }
     }
 
     /**
@@ -85,20 +100,26 @@ class DateFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
     /**
      * Get default formatting string for date() function.
      *
-     * @return string
+     * @return  string
      */
     protected function _getPhpFormat()
     {
+        if (self::$_phpFormat === "") {
+            $this->_loadDefaultDateFormat();
+        }
         return self::$_phpFormat;
     }
 
     /**
      * Get default formatting string for JavaScript Date() object.
      *
-     * @return string
+     * @return  string
      */
     protected function _getJavaScriptFormat()
     {
+        if (self::$_javaScriptFormat === "") {
+            $this->_loadDefaultDateFormat();
+        }
         return self::$_javaScriptFormat;
     }
 
