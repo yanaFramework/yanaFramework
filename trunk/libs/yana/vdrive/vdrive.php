@@ -176,8 +176,9 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
      * Returns the contents of the virtual drive configuration file.
      *
      * @return  \Yana\VDrive\IsConfiguration
-     * @throws  \Yana\Core\Exceptions\NotFoundException     when configuration file doesn't exist
-     * @throws  \Yana\Core\Exceptions\NotReadableException  when configuration file is not readable
+     * @throws  \Yana\Core\Exceptions\NotFoundException       when configuration file doesn't exist
+     * @throws  \Yana\Core\Exceptions\NotReadableException    when configuration file is not readable
+     * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when the file could not be read or contains invalid syntax
      */
     protected function _getConfiguration()
     {
@@ -314,7 +315,8 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
      * If the file does not exist or is not readable, the function throws an exception.
      *
      * @name    VDrive::read()
-     * @throws  \Yana\Core\Exceptions\NotReadableException    when source file is not readable
+     * @throws  \Yana\Core\Exceptions\NotFoundException       when configuration file doesn't exist
+     * @throws  \Yana\Core\Exceptions\NotReadableException    when configuration file is not readable
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when the file could not be read or contains invalid syntax
      */
     public function read()
@@ -505,6 +507,9 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
      * Return file contents as string.
      *
      * @return  string
+     * @throws  \Yana\Core\Exceptions\NotFoundException       when configuration file doesn't exist
+     * @throws  \Yana\Core\Exceptions\NotReadableException    when configuration file is not readable
+     * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when the file could not be read or contains invalid syntax
      */
     public function getContent()
     {
