@@ -83,10 +83,6 @@ class CounterTest extends \PHPUnit_Framework_TestCase
     {
         \Yana\Db\Ddl\DDL::setDirectory(CWD . '/resources/db/');
 
-        $pluginConfigurationFile = new \Yana\Files\Text(CWD . '/resources/plugins.cfg');
-        $pluginsDirectory = new \Yana\Files\Dir(CWD . '/../../../plugins/');
-        \Yana\Plugins\Manager::setPath($pluginConfigurationFile, $pluginsDirectory);
-
         try {
             \Yana\Db\FileDb\Counter::create($this->_counterId, 1, null, null, null, true);
             \Yana\Db\FileDb\Counter::create($this->_counterNoIPId, 1, null, null, null, true, false);
