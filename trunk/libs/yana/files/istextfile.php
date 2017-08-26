@@ -55,6 +55,7 @@ interface IsTextFile extends \Yana\Files\IsWritable
      *
      * @param   int  $lineNr  starting with 0 for first line
      * @return  string
+     * @throws  \Yana\Core\Exceptions\OutOfBoundsException  when the line is not found
      */
     public function getLine($lineNr);
 

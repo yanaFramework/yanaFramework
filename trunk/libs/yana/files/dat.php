@@ -66,17 +66,16 @@ class Dat extends \Yana\Files\Text
      *
      * @param   int  $lineNr  line to retrieve
      * @return  array
+     * @throws  \Yana\Core\Exceptions\OutOfBoundsException  when the line is not found
      */
     public function getLine($lineNr)
     {
         assert('is_int($lineNr); // Invalid argument type argument 1. Integer expected.');
-        if (isset($this->content[$lineNr])) {
-            return self::_parseLine($this->content[$lineNr]);
-        } else {
+        if (!isset($this->content[$lineNr])) {
             $message = "There is no line '$lineNr' in file '" . $this->getPath() . "'.";
-            \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::INFO);
-            return array();
+            throw new \Yana\Core\Exceptions\OutOfBoundsException($message, \Yana\Log\TypeEnumeration::INFO);
         }
+        return self::_parseLine($this->content[$lineNr]);
     }
 
     /**

@@ -102,14 +102,25 @@ class TextTest extends \PHPUnit_Framework_TestCase
         $get = $this->_object->getLine(1);
         $valid = 'the second entry.';
         $this->assertEquals($get, $valid, 'assert failed, the two variables are equal');
+    }
 
-        $get = $this->_object->getLine(3);
-        $this->assertFalse($get, 'assert failed, no entry for expected line');
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\OutOfBoundsException
+     */
+    public function testGetLineOutOfBoundsException()
+    {
+        $this->_object->getLine(3);
+    }
 
-        $nonExistFile = new Text('resources/nonExistfile.txt');
-        $get = $nonExistFile->getLine(1);
-        $this->assertEquals(mb_strlen($get), 0, 'assert failed , expected result is 0');
-        unset($nonExistFile);
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\OutOfBoundsException
+     */
+    public function testGetLineFileDoesNotExist()
+    {
+        $nonExistFile = new \Yana\Files\Text('resources/nonExistfile.txt');
+        $nonExistFile->getLine(1);
     }
 
     /**

@@ -106,26 +106,23 @@ class DatTest extends \PHPUnit_Framework_TestCase
     /**
      * Get Invalid Argument
      *
-     * @expectedException  \PHPUnit_Framework_Error
+     * @expectedException  \Yana\Core\Exceptions\OutOfBoundsException
      * @test
      */
-    function testGetLineInvalidArgument()
+    function testGetLineOutOfBoundsException()
     {
-        $selectrow = $this->object->getLine(10);
-        $this->assertInternalType('array', $selectrow, 'assert failed, value is not from type array');
-        $this->assertEquals(count($selectrow), 0, 'assert failed, there is no line 10 in file');
+        $this->object->getLine(10);
     }
 
     /**
      * Get Invalid Argument1
      *
-     * @expectedException  \PHPUnit_Framework_Error
+     * @expectedException  \Yana\Core\Exceptions\OutOfBoundsException
      * @test
      */
-    function testGetLineInvalidArgument1()
+    function testGetLineNegativeIndex()
     {
-        $selectrow = $this->object->getLine(-10);
-        $this->assertFalse($selectrow, 'assert failed, first argument must be a possitive integer');
+        $this->object->getLine(-10);
     }
     
     /**

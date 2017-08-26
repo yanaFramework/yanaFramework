@@ -368,8 +368,14 @@ class AntiSpamPlugin extends \Yana\Plugins\AbstractPlugin
             $file->create();
         }
         $file->read();
+        $contents = array();
         if (!$file->isEmpty()) {
-            $contents = $file->getLine(0);
+            try {
+                $contents = $file->getLine(0);
+            } catch (\Yana\Core\Exceptions\OutOfBoundsException $e) {
+                // Since we just checked that the file is not empty, we should never be able to get here.
+                unset($e);
+            }
         }
 
         if (!isset($contents['TIME']) || $contents['TIME'] < time() || $contents['MAX_TIME'] < time()) {
@@ -460,10 +466,15 @@ class AntiSpamPlugin extends \Yana\Plugins\AbstractPlugin
 
         $file = $YANA->getPlugins()->default_library->getResource('antispam:/security.dat');
         $file->read();
+
+        $contents = array();
         if (!$file->isEmpty()) {
-            $contents = $file->getLine(0);
-        } else {
-            $contents = array();
+            try {
+                $contents = $file->getLine(0);
+            } catch (\Yana\Core\Exceptions\OutOfBoundsException $e) {
+                // Since we just checked that the file is not empty, we should never be able to get here.
+                unset($e);
+            }
         }
 
         if ($contents['MAX_TIME'] < time()) {

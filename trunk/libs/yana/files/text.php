@@ -61,14 +61,16 @@ class Text extends \Yana\Files\File implements \Yana\Files\IsTextFile
      *
      * @param   int  $lineNr  line number
      * @return  string
+     * @throws  \Yana\Core\Exceptions\OutOfBoundsException  when the line is not found
      */
     public function getLine($lineNr)
     {
-        $line = false;
-        if (isset($this->content[$lineNr])) {
-            $line = $this->content[$lineNr];
+        assert('is_int($lineNr); // Invalid argument type argument 1. Integer expected.');
+        if (!isset($this->content[$lineNr])) {
+            $message = "There is no line '$lineNr' in file '" . $this->getPath() . "'.";
+            throw new \Yana\Core\Exceptions\OutOfBoundsException($message, \Yana\Log\TypeEnumeration::INFO);
         }
-        return $line;
+        return $this->content[$lineNr];
     }
 
     /**
