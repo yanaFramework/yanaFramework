@@ -176,15 +176,21 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
      * Returns the contents of the virtual drive configuration file.
      *
      * @return  \Yana\VDrive\IsConfiguration
+     * @throws  \Yana\Core\Exceptions\NotFoundException     when configuration file doesn't exist
+     * @throws  \Yana\Core\Exceptions\NotReadableException  when configuration file is not readable
      */
     protected function _getConfiguration()
     {
         if (!isset($this->_configuration)) {
             /* get file content */
+            if (!is_file($this->path)) {
+                $message = "VDrive configuration file not found: '{$this->getPath()}'.";
+                throw new \Yana\Core\Exceptions\NotFoundException($message, \Yana\Log\TypeEnumeration::ERROR);
+            }
             $rawContent = file_get_contents($this->path);
             if (empty($rawContent)) {
                 $message = "VDrive configuration file is empty or not readable: '{$this->getPath()}'.";
-                throw new \Yana\Core\Exceptions\NotReadableException($message, \Yana\Log\TypeEnumeration::WARNING);
+                throw new \Yana\Core\Exceptions\NotReadableException($message, \Yana\Log\TypeEnumeration::ERROR);
             }
             /* apply default settings */
             $content = \Yana\Util\Strings::replaceToken($rawContent, self::$_defaultSettings);
