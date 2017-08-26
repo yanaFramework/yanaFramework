@@ -76,7 +76,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
     public function test__invoke()
     {
         $entity = new \Yana\Security\Data\Users\Entity('test');
-        $container = new \Yana\Security\Dependencies\Container();
+        $container = new \Yana\Security\Dependencies\Container(\Yana\Plugins\Manager::getInstance());
         $expected = new \Yana\Security\Data\Behaviors\Standard($container, $entity);
         $this->assertEquals($expected, $this->object->__invoke($entity));
     }
@@ -86,7 +86,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetDependencyContainer()
     {
-        $container = new \Yana\Security\Dependencies\Container();
+        $container = new \Yana\Security\Dependencies\Container(\Yana\Plugins\Manager::getInstance());
         $this->assertEquals($container, $this->object->getDependencyContainer());
     }
 
@@ -95,7 +95,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetDependencyContainer()
     {
-        $container = new \Yana\Security\Dependencies\Container();
+        $container = new \Yana\Security\Dependencies\Container(\Yana\Plugins\Manager::getInstance());
         $this->assertSame($container, $this->object->setDependencyContainer($container)->getDependencyContainer());
     }
 
@@ -104,7 +104,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testBuildFromSessionGuest()
     {
-        $container = new \Yana\Security\Dependencies\Container();
+        $container = new \Yana\Security\Dependencies\Container(\Yana\Plugins\Manager::getInstance());
         $expected = new \Yana\Security\Data\Behaviors\Standard($container, new \Yana\Security\Data\Users\Guest());
         $this->assertEquals($expected, $this->object->buildFromSession());
     }
@@ -115,7 +115,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
     public function testBuildFromSession()
     {
         $this->adapter['test'] = new \Yana\Security\Data\Users\Entity('test');
-        $container = new \Yana\Security\Dependencies\Container();
+        $container = new \Yana\Security\Dependencies\Container(\Yana\Plugins\Manager::getInstance());
         $expected = new \Yana\Security\Data\Behaviors\Standard($container, $this->adapter['test']);
 
         $session = new \Yana\Security\Sessions\NullWrapper(array('user_name' => 'test'));
@@ -137,7 +137,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
     public function testBuildFromUserName()
     {
         $this->adapter['test'] = new \Yana\Security\Data\Users\Entity('test');
-        $container = new \Yana\Security\Dependencies\Container();
+        $container = new \Yana\Security\Dependencies\Container(\Yana\Plugins\Manager::getInstance());
         $expected = new \Yana\Security\Data\Behaviors\Standard($container, $this->adapter['test']);
         $this->assertEquals($expected, $this->object->buildFromUserName('test'));
     }
@@ -161,7 +161,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         $entity = new \Yana\Security\Data\Users\Entity('test');
         $entity->setMail('test@domain.tld');
         $this->adapter['test'] = $entity;
-        $container = new \Yana\Security\Dependencies\Container();
+        $container = new \Yana\Security\Dependencies\Container(\Yana\Plugins\Manager::getInstance());
         $expected = new \Yana\Security\Data\Behaviors\Standard($container, $entity);
         $this->assertEquals($expected, $this->object->buildFromUserMail('test@domain.tld'));
     }

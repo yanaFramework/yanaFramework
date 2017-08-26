@@ -39,5 +39,9 @@ if (empty($_SERVER['DOCUMENT_ROOT']) && isset($_SERVER['OS']) && preg_match('/wi
     $_SERVER['DOCUMENT_ROOT'] =  realpath(CWD . "../../../../../") . '/htdocs/';
     $path = dirname($_SERVER["DOCUMENT_ROOT"]); // Will be used by importing test-case
 }
+\Yana\Plugins\Manager::setPath(
+    new \Yana\Files\Text(CWD . '/resources/plugins.cfg'),
+    new \Yana\Files\Dir(CWD . '/../../../plugins/')
+);
 
 ?>

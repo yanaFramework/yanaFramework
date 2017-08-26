@@ -45,7 +45,7 @@ class NullConnection extends \Yana\Db\FileDb\Connection
     public function __construct(\Yana\Db\Ddl\Database $schema)
     {
         parent::__construct($schema);
-        $this->_setConnection(new \Yana\Db\FileDb\NullDriver($schema));
+        $this->_setConnection(new \Yana\Db\FileDb\NullDriver($schema, new \Yana\Db\Queries\Parser($this)));
     }
 
 }

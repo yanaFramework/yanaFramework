@@ -49,9 +49,6 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $pluginConfigurationFile = new \Yana\Files\Text(CWD . '/resources/plugins.cfg');
-        $pluginsDirectory = new \Yana\Files\Dir(CWD . '/../../../plugins/');
-        \Yana\Plugins\Manager::setPath($pluginConfigurationFile, $pluginsDirectory);
         $this->object = \Yana\Plugins\Manager::getInstance();
     }
 
