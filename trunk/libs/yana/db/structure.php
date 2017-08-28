@@ -2675,7 +2675,7 @@ class Structure extends \Yana\Files\SML
      */
     public function setTrigger($trigger, $operation, $table, $column = null)
     {
-        assert('is_string($name); // Invalid argument $name: String expected');
+        assert('is_string($trigger); // Invalid argument $trigger: String expected');
         assert('is_string($operation); // Invalid argument $operation: String expected');
         assert('is_string($table); // Invalid argument $table: String expected');
         assert('is_string($column); // Invalid argument $column: String expected');

@@ -87,7 +87,7 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        
+        $this->connection->getSchema()->setReadonly(false); // all schema instances are cached. So this needs to be reset
     }
 
     /**

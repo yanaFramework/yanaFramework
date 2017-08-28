@@ -61,7 +61,6 @@ class StructureTest extends \PHPUnit_Framework_TestCase
         $this->databaseName = 'check';
         try {
             $this->object = new \Yana\Db\Structure($this->databaseName);
-            $this->object->read();
 
         } catch (\Exception $e) {
             $this->markTestSkipped("Unable to load structure file");
@@ -85,7 +84,7 @@ class StructureTest extends \PHPUnit_Framework_TestCase
     public function testGetDatabaseName()
     {
         $dbName = $this->object->getDatabaseName();
-        $this->assertFalse(empty($dbName), 'could not retreive a valid databasename');
+        $this->assertNotEmpty($dbName, 'could not retreive a valid databasename');
         $this->assertEquals($dbName, $this->databaseName, 'the databasename does not corresponds to the given database');
     }
 
@@ -96,6 +95,7 @@ class StructureTest extends \PHPUnit_Framework_TestCase
      */
     public function testRead()
     {
+        $this->object->read();
         $test = $this->object->getStructure();
         $testKeys0 = array_keys($test);
         $this->assertContains('USE_STRICT', $testKeys0, 'USE_STRICT Tag is missing');
@@ -619,5 +619,7 @@ class StructureTest extends \PHPUnit_Framework_TestCase
         $result = $db->getLinkText('test', 'id');
         $this->assertEquals('foo', $result, 'assert failed,  given linktext must be equal');
     }
+
 }
+
 ?>

@@ -345,7 +345,7 @@ require_once 'libs/yana/core/autoloadbuilder.php';
 
 /* [fallbacks] */
 
-if (!\class_exists('Throwable')) {
+if (!\interface_exists('Throwable')) {
     require_once 'libs/yana/core/exceptions/throwable.php';
 }
 

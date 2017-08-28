@@ -61,10 +61,10 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
+        if (!\class_exists('\SQL_Parser')) {
+            $this->markTestSkipped("SQL parser class not found");
+        }
         try {
-            if (!\class_exists('\SQL_Parser')) {
-                $this->markTestSkipped("SQL parser class not found");
-            }
             \Yana\Db\FileDb\Driver::setBaseDirectory(CWD . 'resources/');
             chdir(CWD . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
             if (!isset($this->db)) {

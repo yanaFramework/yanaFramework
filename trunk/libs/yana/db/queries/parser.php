@@ -69,7 +69,7 @@ class Parser extends \Yana\Core\Object implements \Yana\Db\Queries\IsParser
     }
 
     /**
-     * parse SQL query into query object
+     * Parse SQL query into query object.
      *
      * This is the opposite of __toString().
      * It takes a SQL query string as input and returns
@@ -78,26 +78,33 @@ class Parser extends \Yana\Core\Object implements \Yana\Db\Queries\IsParser
      *
      * The result object is always a subclass of {@see \Yana\Db\Queries\AbstractQuery}.
      *
-     * @param   string     $sqlStmt   SQL statement
+     * @param   string     $sqlStatement   SQL statement
      * @return  \Yana\Db\Queries\AbstractQuery
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if the query is invalid or could not be parsed
      */
-    public function parseSQL($sqlStmt)
+    public function parseSQL($sqlStatement)
     {
-        assert('is_string($sqlStmt); // Wrong argument type argument 1. String expected');
-        $sqlStmt = trim($sqlStmt);
+        assert('is_string($sqlStatement); // Wrong argument type argument 1. String expected');
+        $trimmedStatement = trim($sqlStatement);
         $sqlParser = new \SQL_Parser();
-        $syntaxTree = $sqlParser->parse($sqlStmt); // get abstract syntax tree (AST)
+        $syntaxTree = $sqlParser->parse($trimmedStatement); // get abstract syntax tree (AST)
         unset($sqlParser);
+        // Since version 0.7 the function SQL_Parser::parse() may return multiple statements.
+        // However, we do know that there can be only one, because we had only one statement as input.
+        // So we take the first (and only) statement and continue as usual.
+        if (is_array($syntaxTree) && isset($syntaxTree[0]) && is_array($syntaxTree[0])) {
+            assert('count($syntaxTree) === 1; // Must not contain more than one statement');
+            $syntaxTree = $syntaxTree[0];
+        }
 
         /* @var $parser \Yana\Db\Queries\Parsers\IsParser */
         $parser = null;
         if (is_array($syntaxTree) && !empty($syntaxTree['command'])) {
-            $parser = $this->_selectParser($syntaxTree['command'], $sqlStmt);
+            $parser = $this->_selectParser($syntaxTree['command'], $trimmedStatement);
         } // else this is no valid SQL
 
         if (!$parser) {
-            $message = "Invalid or unknown SQL statement: $sqlStmt.";
+            $message = "Invalid or unknown SQL statement: $trimmedStatement.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
         }

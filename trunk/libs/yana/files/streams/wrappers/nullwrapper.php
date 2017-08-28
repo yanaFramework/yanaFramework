@@ -248,7 +248,7 @@ class NullWrapper extends \Yana\Files\Streams\Wrappers\AbstractWrapper
      */
     public function getUrlStats($path, $flags)
     {
-        $path = preg_replace('/\/$/', '', $path);
+        $path = preg_replace('/\/+$/', '', $path);
         $isDirectory = isset(self::$_directories[$path]);
         $mode = ($isDirectory) ? 0040000 : 0100000;
         $mode = $mode | 0000400 | 0000200 | 0000100;
@@ -291,7 +291,7 @@ class NullWrapper extends \Yana\Files\Streams\Wrappers\AbstractWrapper
      */
     public function openDirectory($path , $options)
     {
-        $path = preg_replace('/\/$/', '', $path);
+        $path = preg_replace('/\/+$/', '', $path);
         $isDirectory = isset(self::$_directories[$path]);
         if ($isDirectory) {
             self::$_directoryName = $path;
@@ -339,7 +339,7 @@ class NullWrapper extends \Yana\Files\Streams\Wrappers\AbstractWrapper
      */
     public function makeDirectory($path, $mode, $options)
     {
-        $path = preg_replace('/\/$/', '', $path);
+        $path = preg_replace('/\/+$/', '', $path);
         $isNoDirectory = !isset(self::$_directories[$path]);
         if ($isNoDirectory) {
             self::$_directories[$path] = array();
@@ -357,7 +357,7 @@ class NullWrapper extends \Yana\Files\Streams\Wrappers\AbstractWrapper
      */
     public function removeDirectory($path , $options)
     {
-        $path = preg_replace('/\/$/', '', $path);
+        $path = preg_replace('/\/+$/', '', $path);
         $isDirectory = isset(self::$_directories[$path]);
         if ($isDirectory) {
             unset(self::$_directories[$path]);
