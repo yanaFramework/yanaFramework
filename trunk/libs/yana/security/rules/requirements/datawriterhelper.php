@@ -75,7 +75,7 @@ class DataWriterHelper extends \Yana\Core\Object
     public function getActionTitles()
     {
         $actions = array();
-        /* @var $configuration \Yana\Plugins\Configs\MethodConfiguration */
+        /* @var $configuration \Yana\Plugins\Configs\IsMethodConfiguration */
         foreach ($this->_getMethodCollection() as $configuration)
         {
             $name = $configuration->getMethodName();
@@ -102,7 +102,7 @@ class DataWriterHelper extends \Yana\Core\Object
     public function getRoleNames()
     {
         $roles = array();
-        /* @var $configuration \Yana\Plugins\Configs\MethodConfiguration */
+        /* @var $configuration \Yana\Plugins\Configs\IsMethodConfiguration */
         foreach ($this->_getMethodCollection() as $configuration)
         {
             foreach ($configuration->getUserLevels() as $level)
@@ -127,7 +127,7 @@ class DataWriterHelper extends \Yana\Core\Object
     public function getGroupNames()
     {
         $roles = array();
-        /* @var $configuration \Yana\Plugins\Configs\MethodConfiguration */
+        /* @var $configuration \Yana\Plugins\Configs\IsMethodConfiguration */
         foreach ($this->_getMethodCollection() as $configuration)
         {
             foreach ($configuration->getUserLevels() as $level)
@@ -152,7 +152,7 @@ class DataWriterHelper extends \Yana\Core\Object
     public function getRequirements()
     {
         $rows = array();
-        /* @var $configuration \Yana\Plugins\Configs\MethodConfiguration */
+        /* @var $configuration \Yana\Plugins\Configs\IsMethodConfiguration */
         foreach ($this->_getMethodCollection() as $configuration)
         {
             assert('!isset($row); // Cannot redeclare var $row');
@@ -175,11 +175,11 @@ class DataWriterHelper extends \Yana\Core\Object
     /**
      * Map information of given requirement to an array.
      *
-     * @param   \Yana\Plugins\Configs\UserPermissionRule  $rule  contains information about requirements
-     * @param   string                                    $name   
+     * @param   \Yana\Plugins\Configs\IsUserPermissionRule  $rule  contains information about requirements
+     * @param   string                                      $name  unique identifier
      * @return  array
      */
-    private function _mapRequirement(\Yana\Plugins\Configs\UserPermissionRule $rule, $name)
+    private function _mapRequirement(\Yana\Plugins\Configs\IsUserPermissionRule $rule, $name)
     {
         assert('is_string($name); // Invalid argument type: $name. String expected');
 

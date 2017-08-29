@@ -69,7 +69,7 @@ class EventRouteTest extends \PHPUnit_Framework_TestCase
      */
     public function testType()
     {
-        $this->assertEquals(\Yana\Plugins\Configs\EventRoute::CODE_SUCCESS, $this->object->getCode());
+        $this->assertEquals(\Yana\Plugins\Configs\ReturnCodeEnumeration::SUCCESS, $this->object->getCode());
     }
 
     /**
@@ -111,8 +111,8 @@ class EventRouteTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetMessage()
     {
-        $this->object->setMessage(\Yana\Plugins\Configs\EventRoute::MSG_SUCCESS);
-        $this->assertEquals(\Yana\Plugins\Configs\EventRoute::MSG_SUCCESS, $this->object->getMessage());
+        $this->object->setMessage(\Yana\Plugins\Configs\ReturnClassEnumeration::SUCCESS);
+        $this->assertEquals(\Yana\Plugins\Configs\ReturnClassEnumeration::SUCCESS, $this->object->getMessage());
     }
 
 }

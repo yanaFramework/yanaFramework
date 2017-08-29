@@ -77,21 +77,21 @@ class MethodCollection extends \Yana\Core\AbstractCollection implements \Yana\Re
     /**
      * Insert or replace item.
      *
-     * @param   string                                     $offset  ignored
-     * @param   \Yana\Plugins\Configs\MethodConfiguration  $value   newly added instance
+     * @param   string                                       $offset  ignored
+     * @param   \Yana\Plugins\Configs\IsMethodConfiguration  $value   newly added instance
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the value is not a valid item of the collection
-     * @return  \Yana\Plugins\Configs\MethodConfiguration
+     * @return  \Yana\Plugins\Configs\IsMethodConfiguration
      */
     public function offsetSet($offset, $value)
     {
-        if ($value instanceof \Yana\Plugins\Configs\MethodConfiguration) {
+        if ($value instanceof \Yana\Plugins\Configs\IsMethodConfiguration) {
             if (!is_string($offset)) {
                 $offset = $value->getMethodName();
             }
             assert('is_string($offset); // Invalid argument $offset: string expected');
             return $this->_offsetSet(mb_strtolower($offset), $value);
         } else {
-            $message = "Instance of MethodConfiguration expected. " .
+            $message = "Instance of IsMethodConfiguration expected. " .
                 "Found " . gettype($value) . "(" . ((is_object($value)) ? get_class($value) : $value) . ") instead.";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
         }
@@ -116,7 +116,7 @@ class MethodCollection extends \Yana\Core\AbstractCollection implements \Yana\Re
         assert('!isset($element); // Cannot redeclare var $element.');
         foreach ($this->toArray() as $key => $element)
         {
-            assert($element instanceof \Yana\Plugins\Configs\MethodConfiguration);
+            assert($element instanceof \Yana\Plugins\Configs\IsMethodConfiguration);
             $element->getReport($report->addReport("$key"));
         } // end foreach
 

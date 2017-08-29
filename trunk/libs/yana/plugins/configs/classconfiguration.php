@@ -39,7 +39,7 @@ namespace Yana\Plugins\Configs;
  *
  * @ignore
  */
-class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\MetaData\IsPackageMetaData
+class ClassConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Configs\IsClassConfiguration
 {
 
     /**
@@ -191,16 +191,15 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\MetaDat
     /**
      * Public methods that this plugin offers.
      *
-     * @var  array
-     * @ignore
+     * @var  \Yana\Plugins\Configs\MethodCollection
      */
-    protected $methods = array();
+    protected $methods = null;
 
     /**
      * Set plug-in's id.
      *
      * @param   string  $id  plugin unique identifier
-     * @return  \Yana\Plugins\Configs\ClassConfiguration
+     * @return  self
      */
     public function setId($id)
     {
@@ -223,7 +222,7 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\MetaDat
      * Set class namespace name.
      *
      * @param   string  $namespace  as declared for this class
-     * @return  \Yana\Plugins\Configs\ClassConfiguration
+     * @return  self
      */
     public function setNamespace($namespace)
     {
@@ -236,7 +235,7 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\MetaDat
      * Set class name.
      *
      * @param   string  $className  plugin's class name
-     * @return  \Yana\Plugins\Configs\ClassConfiguration
+     * @return  self
      */
     public function setClassName($className)
     {
@@ -249,7 +248,7 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\MetaDat
      * Set path to source file.
      *
      * @param   string  $directory  absolute path
-     * @return  \Yana\Plugins\Configs\ClassConfiguration
+     * @return  self
      */
     public function setDirectory($directory)
     {
@@ -264,7 +263,7 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\MetaDat
      * Keys are locales, values are texts.
      *
      * @param   array  $titles  list of titles
-     * @return  \Yana\Plugins\Configs\ClassConfiguration
+     * @return  self
      */
     public function setTitles(array $titles)
     {
@@ -276,7 +275,7 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\MetaDat
      * Set default title.
      *
      * @param   string  $defaultTitle  title using default locale.
-     * @return  \Yana\Plugins\Configs\ClassConfiguration
+     * @return  self
      */
     public function setDefaultTitle($defaultTitle)
     {
@@ -289,7 +288,7 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\MetaDat
      * Set translated plugin descriptions.
      *
      * @param   array  $texts  Keys are locales, values are texts.
-     * @return  \Yana\Plugins\Configs\ClassConfiguration
+     * @return  self
      */
     public function setTexts(array $texts)
     {
@@ -301,7 +300,7 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\MetaDat
      * Set plugin description in default language.
      *
      * @param   string  $defaultText  some user-defined text
-     * @return  \Yana\Plugins\Configs\ClassConfiguration
+     * @return  self
      */
     public function setDefaultText($defaultText)
     {
@@ -316,7 +315,7 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\MetaDat
      * Valid types are: primary, default, config, read, write, security, library.
      *
      * @param   string  $type  valid type identifier
-     * @return  \Yana\Plugins\Configs\ClassConfiguration
+     * @return  self
      */
     public function setType($type)
     {
@@ -329,7 +328,7 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\MetaDat
      * Set authors.
      *
      * @param   array  $authors  list of author names and/or e-mails.
-     * @return  \Yana\Plugins\Configs\ClassConfiguration
+     * @return  self
      */
     public function setAuthors(array $authors)
     {
@@ -341,7 +340,7 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\MetaDat
      * Set priority level.
      *
      * @param   int  $priority  element of PluginPriorityEnumeration
-     * @return  \Yana\Plugins\Configs\ClassConfiguration
+     * @return  self
      */
     public function setPriority($priority)
     {
@@ -363,7 +362,7 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\MetaDat
      * Set plugin application group.
      *
      * @param   string  $group  unique identifier
-     * @return  \Yana\Plugins\Configs\ClassConfiguration
+     * @return  self
      */
     public function setGroup($group)
     {
@@ -376,7 +375,7 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\MetaDat
      * Set name of parent plugin, if inherited.
      *
      * @param   string  $parent  class name
-     * @return  \Yana\Plugins\Configs\ClassConfiguration
+     * @return  self
      */
     public function setParent($parent)
     {
@@ -389,7 +388,7 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\MetaDat
      * List of plugin names, that this plugin depends on.
      *
      * @param   array  $dependencies  class names
-     * @return  \Yana\Plugins\Configs\ClassConfiguration
+     * @return  self
      */
     public function setDependencies(array $dependencies)
     {
@@ -401,7 +400,7 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\MetaDat
      * Set license string.
      *
      * @param   string  $license  some text
-     * @return  \Yana\Plugins\Configs\ClassConfiguration
+     * @return  self
      */
     public function setLicense($license)
     {
@@ -414,7 +413,7 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\MetaDat
      * Set URL.
      *
      * @param   string  $url  URL of plugin maker's website
-     * @return  \Yana\Plugins\Configs\ClassConfiguration
+     * @return  self
      */
     public function setUrl($url)
     {
@@ -427,7 +426,7 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\MetaDat
      * Set version.
      *
      * @param   string  $version  some information - e.g. a date string.
-     * @return  \Yana\Plugins\Configs\ClassConfiguration
+     * @return  self
      */
     public function setVersion($version)
     {
@@ -440,7 +439,7 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\MetaDat
      * Set timestamp of when the source file was last modified.
      *
      * @param   int  $lastModified
-     * @return  \Yana\Plugins\Configs\ClassConfiguration
+     * @return  self
      */
     public function setLastModified($lastModified)
     {
@@ -453,6 +452,7 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\MetaDat
      * Add menu definition.
      *
      * @param  \Yana\Plugins\Menus\IsEntry  $menu  Keys are menu ids and values are descriptions or language tokens.
+     * @return  self
      */
     public function addMenu(\Yana\Plugins\Menus\IsEntry $menu)
     {
@@ -464,7 +464,7 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\MetaDat
      * List of menu definitions.
      *
      * @param   array  $menus  Keys are menu ids and values are descriptions or language tokens.
-     * @return  \Yana\Plugins\Configs\ClassConfiguration
+     * @return  self
      */
     public function setMenus(array $menus)
     {
@@ -478,8 +478,8 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\MetaDat
     /**
      * Set activity state.
      *
-     * @param   int  $active  element of PluginActivityEnumeration
-     * @return  \Yana\Plugins\Configs\ClassConfiguration
+     * @param   int  $active  element of \Yana\Plugins\ActivityEnumeration
+     * @return  self
      */
     public function setActive($active)
     {
@@ -491,7 +491,9 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\MetaDat
     /**
      * Get time when file was last modified.
      *
-     * @return  int
+     * May return NULL!
+     *
+     * @return  int|NULL
      */
     public function getLastModified()
     {
@@ -729,14 +731,12 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\MetaDat
     {
         assert('is_null($group) || is_string($group); // Wrong type for argument 1. String expected');
         $menuEntries = array();
-        /* @var $method \Yana\Plugins\Configs\MethodConfiguration */
-        foreach ($this->methods as $name => $method)
+        /* @var $method \Yana\Plugins\Configs\IsMethodConfiguration */
+        foreach ($this->getMethods() as $name => $method)
         {
             $menu = $method->getMenu();
-            if (!empty($menu)) {
-                if (is_null($group) || $group == $menu->getGroup()) {
-                    $menuEntries[$name] = $menu;
-                }
+            if ($menu instanceof \Yana\Plugins\Menus\IsEntry && (is_null($group) || $group == $menu->getGroup())) {
+                $menuEntries[$name] = $menu;
             }
         }
         return $menuEntries;
@@ -761,6 +761,7 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\MetaDat
      * active state. Default is 'inactive'.
      *
      * @return  int
+     * @see     \Yana\Plugins\ActivityEnumeration
      */
     public function getActive()
     {
@@ -814,13 +815,15 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\MetaDat
      * or NULL if there is none.
      *
      * @param   string  $methodName  name of method
-     * @return  \Yana\Plugins\Configs\MethodConfiguration
+     * @return  \Yana\Plugins\Configs\IsMethodConfiguration
      */
     public function getMethod($methodName)
     {
         assert('is_string($methodName); // Wrong argument type for argument 1. String expected.');
-        if (isset($this->methods[$methodName])) {
-            return $this->methods[$methodName];
+
+        $methods = $this->getMethods();
+        if (isset($methods[(string) $methodName])) {
+            return $methods[(string) $methodName];
         } else {
             return null;
         }
@@ -829,34 +832,27 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\MetaDat
     /**
      * Get method configurations.
      *
-     * @return  array
+     * @return  \Yana\Plugins\Configs\MethodCollection
      */
     public function getMethods()
     {
+        if (!isset($this->methods)) {
+            $this->methods = new \Yana\Plugins\Configs\MethodCollection();
+        }
         return $this->methods;
     }
 
     /**
      * Add a method configuration.
      *
-     * @param   \Yana\Plugins\Configs\MethodConfiguration  $method  configuration data
+     * @param   \Yana\Plugins\Configs\IsMethodConfiguration  $method  configuration data
+     * @return  self
      */
-    public function addMethod(\Yana\Plugins\Configs\MethodConfiguration $method)
+    public function addMethod(\Yana\Plugins\Configs\IsMethodConfiguration $method)
     {
-        $this->methods[$method->getMethodName()] = $method;
-    }
-
-    /**
-     * Unset method configuration.
-     *
-     * @param   string  $methodName  name of method
-     * @ignore
-     */
-    protected function unsetMethod($methodName)
-    {
-        if (isset($this->methods[$methodName])) {
-            unset($this->methods[$methodName]);
-        }
+        $methods = $this->getMethods();
+        $methods[$method->getMethodName()] = $method;
+        return $this;
     }
 
 }

@@ -297,7 +297,7 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
     {
         if (!isset($this->_isSafemode)) {
             $eventConfiguration = $this->getPlugins()->getEventConfiguration($this->getAction());
-            if ($eventConfiguration instanceof \Yana\Plugins\Configs\MethodConfiguration) {
+            if ($eventConfiguration instanceof \Yana\Plugins\Configs\IsMethodConfiguration) {
                 $this->_isSafeMode = ($eventConfiguration->getSafemode() === true);
             } else {
                 $this->_isSafeMode =

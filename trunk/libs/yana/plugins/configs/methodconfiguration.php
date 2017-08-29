@@ -39,7 +39,7 @@ namespace Yana\Plugins\Configs;
  *
  * @ignore
  */
-class MethodConfiguration extends \Yana\Core\Object implements \Yana\Report\IsReportable
+class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Configs\IsMethodConfiguration, \Yana\Report\IsReportable
 {
 
     /**
@@ -176,7 +176,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Report\IsRe
      * Valid types are: default, config, read, write, security, library.
      *
      * @param   string  $type  valid method type
-     * @return  \Yana\Plugins\Configs\MethodConfiguration
+     * @return  self
      */
     public function setType($type)
     {
@@ -189,11 +189,13 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Report\IsRe
      * Add directory.
      *
      * @param   string  $path  absolute path to plugin class file
+     * @return  self
      */
     public function addPath($path)
     {
         assert('is_string($path); // Invalid argument $path: string expected');
         $this->_paths[] = $path;
+        return $this;
     }
 
     /**
@@ -225,11 +227,11 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Report\IsRe
     /**
      * Add Configuration.
      *
-     * @param   \Yana\Plugins\Configs\MethodConfiguration $subscriberConfig  configuration of subscribing method
-     * @return  \Yana\Plugins\Configs\MethodConfiguration
+     * @param   \Yana\Plugins\Configs\IsMethodConfiguration $subscriberConfig  configuration of subscribing method
+     * @return  self
      * @ignore
      */
-    public function addSubscription(\Yana\Plugins\Configs\MethodConfiguration $subscriberConfig)
+    public function addSubscription(\Yana\Plugins\Configs\IsMethodConfiguration $subscriberConfig)
     {
         $this->addPath($subscriberConfig->getPath());
         $this->setScripts(array_merge($this->getScripts(), $subscriberConfig->getScripts()));
@@ -255,7 +257,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Report\IsRe
      * Set Javascript files.
      *
      * @param   array  $scripts  list of paths to javascript files.
-     * @return  \Yana\Plugins\Configs\MethodConfiguration
+     * @return  self
      */
     public function setScripts(array $scripts)
     {
@@ -280,7 +282,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Report\IsRe
      * Set CSS styles.
      *
      * @param   array  $styles  list of paths to CSS files.
-     * @return  \Yana\Plugins\Configs\MethodConfiguration
+     * @return  self
      */
     public function setStyles(array $styles)
     {
@@ -305,7 +307,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Report\IsRe
      * Set language files.
      *
      * @param   array  $languages  list of names of XLIFF files.
-     * @return  \Yana\Plugins\Configs\MethodConfiguration
+     * @return  self
      */
     public function setLanguages(array $languages)
     {
@@ -346,11 +348,28 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Report\IsRe
      * </code>
      *
      * @param   array  $params  keys are the param-names and the values are the param-types
-     * @return  \Yana\Plugins\Configs\MethodConfiguration
+     * @return  self
      */
     public function setParams(array $params)
     {
         $this->_params = $params;
+        return $this;
+    }
+
+    /**
+     * Add method parameter.
+     * 
+     * @param   string  $name     identifier
+     * @param   string  $type     data type (string, int, bool, array, float)
+     * @param   mixed   $default  value
+     * @return  self
+     */
+    public function addParam($name, $type, $default = null)
+    {
+        assert('is_string($name); // Invalid argument $name: string expected');
+        assert('is_string($type); // Invalid argument $type: string expected');
+        $this->_params[(string) $name] = (string) $type;
+        $this->_defaults[] = $default;
         return $this;
     }
 
@@ -370,7 +389,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Report\IsRe
      * Set return value.
      *
      * @param   string  $return  valid PHP type - or empty string, if the function doesn't return a value
-     * @return  \Yana\Plugins\Configs\MethodConfiguration
+     * @return  self
      */
     public function setReturn($return)
     {
@@ -400,7 +419,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Report\IsRe
      * A group may have multiple plugins, but a plugin may only be a member of one group.
      *
      * @param   string  $group  unique name
-     * @return  \Yana\Plugins\Configs\MethodConfiguration
+     * @return  self
      */
     public function setGroup($group)
     {
@@ -429,7 +448,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Report\IsRe
      * Set menu entry.
      *
      * @param   \Yana\Plugins\Menus\IsEntry  $menu  menu configuration
-     * @return  \Yana\Plugins\Configs\MethodConfiguration
+     * @return  self
      */
     public function setMenu(\Yana\Plugins\Menus\IsEntry $menu)
     {
@@ -451,11 +470,11 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Report\IsRe
      * Set settings on how to react on success.
      *
      * @param   \Yana\Plugins\Configs\EventRoute  $onSuccess  event configuration
-     * @return  \Yana\Plugins\Configs\MethodConfiguration
+     * @return  self
      */
     public function setOnSuccess(\Yana\Plugins\Configs\EventRoute $onSuccess)
     {
-        $onSuccess->setCode(\Yana\Plugins\Configs\EventRoute::CODE_SUCCESS);
+        $onSuccess->setCode(\Yana\Plugins\Configs\ReturnCodeEnumeration::SUCCESS);
         $this->_onSuccess = $onSuccess;
         return $this;
     }
@@ -474,11 +493,11 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Report\IsRe
      * Set settings on how to react on error.
      *
      * @param   \Yana\Plugins\Configs\EventRoute  $onError  event configuration
-     * @return  \Yana\Plugins\Configs\MethodConfiguration
+     * @return  self
      */
     public function setOnError(\Yana\Plugins\Configs\EventRoute $onError)
     {
-        $onError->setCode(\Yana\Plugins\Configs\EventRoute::CODE_ERROR);
+        $onError->setCode(\Yana\Plugins\Configs\ReturnCodeEnumeration::ERROR);
         $this->_onError = $onError;
         return $this;
     }
@@ -499,7 +518,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Report\IsRe
      * Set title.
      *
      * @param   string  $title  human readable name
-     * @return  \Yana\Plugins\Configs\MethodConfiguration
+     * @return  self
      */
     public function setTitle($title)
     {
@@ -535,7 +554,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Report\IsRe
      * Any other value will reset the setting to NULL.
      *
      * @param   bool  $safeMode  true = requires safe-mode, false = disallows safe-mode, null = don't care
-     * @return  \Yana\Plugins\Configs\MethodConfiguration
+     * @return  self
      */
     public function setSafeMode($safeMode = null)
     {
@@ -574,7 +593,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Report\IsRe
      * Set template path.
      *
      * @param   string  $template  relative path to template file
-     * @return  \Yana\Plugins\Configs\MethodConfiguration
+     * @return  self
      */
     public function setTemplate($template)
     {
@@ -588,7 +607,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Report\IsRe
      *
      * Returns a list of instances of PluginUserLevel.
      *
-     * @return  \Yana\Plugins\Configs\UserPermissionRule[]
+     * @return  \Yana\Plugins\Configs\IsUserPermissionRule[]
      */
     public function getUserLevels()
     {
@@ -600,8 +619,8 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Report\IsRe
      *
      * All elements must be instances of PluginUserLevel.
      *
-     * @param   \Yana\Plugins\Configs\UserPermissionRule[]  $users  list of user level definitions
-     * @return  \Yana\Plugins\Configs\MethodConfiguration
+     * @param   \Yana\Plugins\Configs\IsUserPermissionRule[]  $users  list of user level definitions
+     * @return  self
      */
     public function setUserLevels(array $users)
     {
@@ -616,10 +635,10 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Report\IsRe
     /**
      * Add user user level rule.
      *
-     * @param   \Yana\Plugins\Configs\UserPermissionRule  $user  user level definition
-     * @return  \Yana\Plugins\Configs\MethodConfiguration
+     * @param   \Yana\Plugins\Configs\IsUserPermissionRule  $user  user level definition
+     * @return  self
      */
-    public function addUserLevel(\Yana\Plugins\Configs\UserPermissionRule $user)
+    public function addUserLevel(\Yana\Plugins\Configs\IsUserPermissionRule $user)
     {
         $this->_users[] = $user;
         return $this;
@@ -647,7 +666,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Report\IsRe
      * Set overwrite setting of method.
      *
      * @param   bool  $overwrite  true = overwrite parent declaration, false = default
-     * @return  \Yana\Plugins\Configs\MethodConfiguration
+     * @return  self
      */
     public function setOverwrite($overwrite)
     {
@@ -679,7 +698,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Report\IsRe
      * Set subscribe setting of method.
      *
      * @param   bool  $subscribe  true = extend parent, false = implement yourself
-     * @return  \Yana\Plugins\Configs\MethodConfiguration
+     * @return  self
      */
     public function setSubscribe($subscribe)
     {
@@ -702,7 +721,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Report\IsRe
      * Set class name
      *
      * @param   string  $className  case-sensitive identifier
-     * @return  \Yana\Plugins\Configs\MethodConfiguration
+     * @return  self
      */
     public function setClassName($className)
     {
@@ -725,7 +744,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Report\IsRe
      * Set method name.
      *
      * @param   string  $methodName  case-sensitive text
-     * @return  \Yana\Plugins\Configs\MethodConfiguration
+     * @return  self
      */
     public function setMethodName($methodName)
     {
@@ -737,9 +756,12 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Report\IsRe
     /**
      * Set event arguments.
      *
+     * Returns arguments with added default values.
+     *
      * @param   array  $args  list of arguments
-     * @return  \Yana\Plugins\Configs\MethodConfiguration
-     * @throws  Warning       when a provided argument is missing or not valid
+     * @return  array
+     * @throws  \Yana\Core\Exceptions\Forms\MissingFieldException  when a provided argument is missing or not valid
+     * @throws  \Yana\Core\Exceptions\Forms\InvalidValueException  when a provided argument is missing or not valid
      */
     public function setEventArguments(array $args)
     {
@@ -809,14 +831,14 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Report\IsRe
             }
             $i++;
         } // end foreach
-        return $this;
+        return $this->_args;
     }
 
     /**
      * Set default values for method params.
      *
      * @param   array  $defaults  list of default arguments
-     * @return  \Yana\Plugins\Configs\MethodConfiguration
+     * @return  self
      */
     public function setDefaults(array $defaults)
     {
@@ -838,7 +860,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Report\IsRe
      * Set if the function uses a generic, unchecked parameter list.
      *
      * @param   bool  $hasGenericParams  true = parameter list is generic, false = parameter list explicitely given
-     * @return  \Yana\Plugins\Configs\MethodConfiguration
+     * @return  self
      */
     public function setHasGenericParams($hasGenericParams)
     {

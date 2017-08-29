@@ -256,7 +256,7 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder
             foreach ($parser->getTags(\Yana\Plugins\Annotations\Enumeration::PARAM, array()) as $param)
             {
                 if (!is_string($param)) {
-                    $message = 'Syntax error in @param: ' .$this->className . '::' . $this->methodName . '()';
+                    $message = 'Syntax error in @param: ' . $this->className . '::' . $this->methodName . '()';
                     $level = \Yana\Log\TypeEnumeration::ERROR;
                     \Yana\Log\LogManager::getLogger()->addLog($message, $level, $param);
                     continue;

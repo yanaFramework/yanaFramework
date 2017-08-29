@@ -72,7 +72,7 @@ class MethodCollectionTest extends \PHPUnit_Framework_TestCase
         $o = new \Yana\Plugins\Configs\MethodConfiguration();
         $o->setMethodName('methodName');
         $this->object['test'] = $o;
-        $this->assertTrue($this->object['test'] instanceof \Yana\Plugins\Configs\MethodConfiguration, 'Instance was not added.');
+        $this->assertTrue($this->object['test'] instanceof \Yana\Plugins\Configs\IsMethodConfiguration, 'Instance was not added.');
         $this->assertEquals($this->object['test']->getMethodName(), $o->getMethodName());
     }
 
@@ -84,7 +84,7 @@ class MethodCollectionTest extends \PHPUnit_Framework_TestCase
         $o = new \Yana\Plugins\Configs\MethodConfiguration();
         $o->setMethodName('methodName');
         $this->object['test'] = $o;
-        $this->assertTrue($this->object['test'] instanceof \Yana\Plugins\Configs\MethodConfiguration, 'Instance was not added.');
+        $this->assertTrue($this->object['test'] instanceof \Yana\Plugins\Configs\IsMethodConfiguration, 'Instance was not added.');
         unset($this->object['test']);
         $this->assertTrue($this->object['test'] === null, 'Instance was not unset.');
     }
@@ -97,7 +97,7 @@ class MethodCollectionTest extends \PHPUnit_Framework_TestCase
         $o = new \Yana\Plugins\Configs\MethodConfiguration();
         $o->setMethodName('methodName');
         $this->object[] = $o;
-        $this->assertTrue($this->object['methodname'] instanceof \Yana\Plugins\Configs\MethodConfiguration, 'Instance was not added.');
+        $this->assertTrue($this->object['methodname'] instanceof \Yana\Plugins\Configs\IsMethodConfiguration, 'Instance was not added.');
         $this->assertEquals($this->object['methodname']->getMethodName(), $o->getMethodName());
     }
 

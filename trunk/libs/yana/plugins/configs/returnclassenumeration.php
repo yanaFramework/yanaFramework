@@ -23,43 +23,28 @@
  *
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
- *
- * @ignore
  */
 
-namespace Yana\Security\Rules\Requirements;
+namespace Yana\Plugins\Configs;
 
 /**
- * <<interface>> Security requirement.
- *
- * The security rules are checked against these.
+ * <<enumeration>> Plugin event return default classes.
  *
  * @package     yana
- * @subpackage  security
+ * @subpackage  plugins
  */
-interface IsRequirement
+class ReturnClassEnumeration extends \Yana\Core\AbstractEnumeration
 {
 
     /**
-     * Returns the required group the user must be a member of.
-     *
-     * @return  string
+     * Predefined event message.
      */
-    public function getGroup();
+    const SUCCESS = '\Yana\Core\Exceptions\Messages\SuccessMessage';
 
     /**
-     * Returns the required role the user must have.
-     *
-     * @return  string
+     * Predefined event message.
      */
-    public function getRole();
-
-    /**
-     * Returns the required minimum security level the user must have.
-     *
-     * @return  int
-     */
-    public function getLevel();
+    const ERROR = '\Yana\Core\Exceptions\LogicException';
 
 }
 

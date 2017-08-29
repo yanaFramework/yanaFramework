@@ -1,6 +1,6 @@
 <?php
 /**
- * YANA library
+ * PHPUnit test-case
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -21,46 +21,30 @@
  *
  * This notice MAY NOT be removed.
  *
- * @package  yana
+ * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
- *
- * @ignore
  */
 
-namespace Yana\Security\Rules\Requirements;
+namespace Yana\Plugins\Configs;
 
 /**
- * <<interface>> Security requirement.
- *
- * The security rules are checked against these.
- *
- * @package     yana
- * @subpackage  security
+ * @ignore
  */
-interface IsRequirement
+require_once __DIR__ . '/../../../../include.php';
+
+/**
+ * @package test
+ */
+class ReturnCodeEnumerationTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * Returns the required group the user must be a member of.
-     *
-     * @return  string
+     * @test
      */
-    public function getGroup();
-
-    /**
-     * Returns the required role the user must have.
-     *
-     * @return  string
-     */
-    public function getRole();
-
-    /**
-     * Returns the required minimum security level the user must have.
-     *
-     * @return  int
-     */
-    public function getLevel();
+    public function test()
+    {
+        $this->assertSame(0, \Yana\Plugins\Configs\ReturnCodeEnumeration::SUCCESS);
+        $this->assertSame(1, \Yana\Plugins\Configs\ReturnCodeEnumeration::ERROR);
+    }
 
 }
-
-?>

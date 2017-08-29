@@ -677,34 +677,11 @@ class Image extends \Yana\Core\Object
     private function _createErrorImage()
     {
         $this->_isBroken = true;
-        /* check if the predefined error image is available */
-        $builder = new \Yana\ApplicationBuilder();
-        $application = $builder->buildApplication();
-        unset($builder);
-        if (function_exists('imagecreatefromgif')) {
-            $errorImage = $application->getVar('DATADIR').'icon_x.gif';
-            if (!is_readable($errorImage)) {
-                $errorImage = null;
-            }
-        } else {
-            $errorImage = null;
-        }
-
-        /* if it is there, then simply load it */
-        if (!is_null($errorImage) && is_readable($errorImage)) {
-            $this->_image  = imagecreatefromgif($errorImage);
-
-        /* otherwise produce a simple text image as a fall back */
-        } elseif (function_exists('imagefilledrectangle')) {
+        if (function_exists('imagefilledrectangle')) {
 
             $this->_createImage(100, 30);
             imagefilledrectangle($this->_image, 0, 0, 150, 30, $this->white);
             imagestring($this->_image, 1, 5, 5, "Error loading image", $this->black);
-
-        /* fall back to text */
-        } else {
-
-            \Yana\Log\LogManager::getLogger()->addLog("Error loading image", \Yana\Log\TypeEnumeration::INFO);
         }
     }
 

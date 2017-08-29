@@ -176,7 +176,7 @@ abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Plugin
             assert('!isset($menu); // Cannot redeclare var $menu');
             $menu = new \Yana\Plugins\Menus\Menu($textMenuBuilder);
 
-            /* @var $pluginConfiguration \Yana\Plugins\Configs\ClassConfiguration */
+            /* @var $pluginConfiguration \Yana\Plugins\Configs\IsClassConfiguration */
             assert('!isset($pluginConfiguration); // Cannot redeclare var $pluginConfiguration');
             foreach ($this->_getListOfActivePlugins() as $pluginConfiguration)
             {
@@ -206,11 +206,11 @@ abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Plugin
      *
      * Meaning: that there may be a group with a name. However, there must not be a name without a group.
      *
-     * @param   \Yana\Plugins\Menus\IsMenu                $menu
-     * @param   \Yana\Plugins\Configs\ClassConfiguration  $pluginConfiguration
+     * @param   \Yana\Plugins\Menus\IsMenu                  $menu
+     * @param   \Yana\Plugins\Configs\IsClassConfiguration  $pluginConfiguration
      * @return  \Yana\Plugins\Menus\IsMenu
      */
-    protected function _determineMenuNames(\Yana\Plugins\Menus\IsMenu $menu,\Yana\Plugins\Configs\ClassConfiguration $pluginConfiguration)
+    protected function _determineMenuNames(\Yana\Plugins\Menus\IsMenu $menu,\Yana\Plugins\Configs\IsClassConfiguration $pluginConfiguration)
     {
         /* @var $menuEntry \Yana\Plugins\Menus\IsEntry */
         foreach ($pluginConfiguration->getMenuNames() as $menuEntry)
@@ -236,11 +236,11 @@ abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Plugin
      *
      * If the user doesn't have the required permissions to click the entry, it will be discarded.
      * 
-     * @param   \Yana\Plugins\Menus\IsMenu                $menu
-     * @param   \Yana\Plugins\Configs\ClassConfiguration  $pluginConfiguration
+     * @param   \Yana\Plugins\Menus\IsMenu                  $menu                 parent menu entry to add new entries to
+     * @param   \Yana\Plugins\Configs\IsClassConfiguration  $pluginConfiguration  containing the menu entries
      * @return  \Yana\Plugins\Menus\IsMenu
      */
-    protected function _determineMenuEntries(\Yana\Plugins\Menus\IsMenu $menu, \Yana\Plugins\Configs\ClassConfiguration $pluginConfiguration)
+    protected function _determineMenuEntries(\Yana\Plugins\Menus\IsMenu $menu, \Yana\Plugins\Configs\IsClassConfiguration $pluginConfiguration)
     {
         $security = $this->_getDependencies()->getSecurityFacade();
         /* @var $menuEntry \Yana\Plugins\Menus\IsEntry */
@@ -260,12 +260,12 @@ abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Plugin
      * Missing information would be (for example) a title.
      * Also checks if the given icon exists aso.
      *
-     * @param   string                                    $action               value to send as "action" parameter when the item is clicked
-     * @param   \Yana\Plugins\Menus\IsEntry               $menuEntry            the basic item configuration
-     * @param   \Yana\Plugins\Configs\ClassConfiguration  $pluginConfiguration  the plugin configuration used to complete missing item-properties
+     * @param   string                                      $action               value to send as "action" parameter when the item is clicked
+     * @param   \Yana\Plugins\Menus\IsEntry                 $menuEntry            the basic item configuration
+     * @param   \Yana\Plugins\Configs\IsClassConfiguration  $pluginConfiguration  the plugin configuration used to complete missing item-properties
      * @return  \Yana\Plugins\Menus\IsEntry
      */
-    protected function _completeMenuEntry($action, \Yana\Plugins\Menus\IsEntry $menuEntry, \Yana\Plugins\Configs\ClassConfiguration $pluginConfiguration)
+    protected function _completeMenuEntry($action, \Yana\Plugins\Menus\IsEntry $menuEntry, \Yana\Plugins\Configs\IsClassConfiguration $pluginConfiguration)
     {
         // check if title is set
         if (!$menuEntry->getTitle()) {
@@ -299,7 +299,7 @@ abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Plugin
     /**
      * Load list of active plugin settings using the plugin manager.
      *
-     * @return  \Yana\Plugins\Configs\ClassConfiguration[]
+     * @return  \Yana\Plugins\Configs\IsClassConfiguration[]
      */
     protected function _getListOfActivePlugins()
     {

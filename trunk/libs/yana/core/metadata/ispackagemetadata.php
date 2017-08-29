@@ -55,7 +55,9 @@ interface IsPackageMetaData
     /**
      * Get time when package was last modified.
      *
-     * @return  int
+     * May return NULL!
+     *
+     * @return  int|NULL
      */
     public function getLastModified();
 

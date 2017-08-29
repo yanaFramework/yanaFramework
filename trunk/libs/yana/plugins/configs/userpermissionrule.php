@@ -28,7 +28,7 @@
 namespace Yana\Plugins\Configs;
 
 /**
- * <<entity>> User permission management information.
+ * User permission management information.
  *
  * Rights management comes in 3-layer, each of which is optional in this document.
  * <ul>
@@ -41,7 +41,7 @@ namespace Yana\Plugins\Configs;
  * @subpackage  plugins
  * @ignore
  */
-class UserPermissionRule extends \Yana\Core\Object
+class UserPermissionRule extends \Yana\Core\Object implements \Yana\Plugins\Configs\IsUserPermissionRule
 {
 
     /**
@@ -82,7 +82,7 @@ class UserPermissionRule extends \Yana\Core\Object
      *
      * @param   string  $role  new value of this property, allowed characters: 0-9, a-z, -, _
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when parameter is not alpha-numeric
-     * @return  \Yana\Plugins\Configs\UserPermissionRule
+     * @return  self
      */
     public function setRole($role)
     {
@@ -123,7 +123,7 @@ class UserPermissionRule extends \Yana\Core\Object
      *
      * @param   string  $group  new value of this property, allowed characters: 0-9, a-z, -, _
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when parameter is not alpha-numeric
-     * @return  \Yana\Plugins\Configs\UserPermissionRule
+     * @return  self
      */
     public function setGroup($group)
     {
@@ -159,7 +159,7 @@ class UserPermissionRule extends \Yana\Core\Object
      * highest.
      *
      * @param   int  $level  new value of this property
-     * @return  \Yana\Plugins\Configs\UserPermissionRule
+     * @return  self
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the given security level is outside range [0,100]
      */
     public function setLevel($level)

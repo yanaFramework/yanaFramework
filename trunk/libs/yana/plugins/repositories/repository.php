@@ -119,10 +119,10 @@ class Repository extends \Yana\Core\Object
     /**
      * Add plugin-method configuration.
      *
-     * @param   \Yana\Plugins\Configs\MethodConfiguration  $method  configuration to add
+     * @param   \Yana\Plugins\Configs\IsMethodConfiguration  $method  configuration to add
      * @return  \Yana\Plugins\Repositories\Repository
      */
-    public function addMethod($method)
+    public function addMethod(\Yana\Plugins\Configs\IsMethodConfiguration $method)
     {
         $this->_methods[] = $method;
         return $this;
@@ -158,11 +158,11 @@ class Repository extends \Yana\Core\Object
     /**
      * Register that the given class implements the given method.
      * 
-     * @param   \Yana\Plugins\Configs\ClassConfiguration  $class    implements the given method
-     * @param   \Yana\Plugins\Configs\MethodConfiguration $method   implemented by the given class
+     * @param   \Yana\Plugins\Configs\IsClassConfiguration  $class    implements the given method
+     * @param   \Yana\Plugins\Configs\IsMethodConfiguration $method   implemented by the given class
      * @return  \Yana\Plugins\Repositories\Repository 
      */
-    public function setImplementation(Configs\MethodConfiguration $method, Configs\ClassConfiguration $class)
+    public function setImplementation(\Yana\Plugins\Configs\IsMethodConfiguration $method, \Yana\Plugins\Configs\IsClassConfiguration $class)
     {
         $methodName = mb_strtolower($method->getMethodName());
         $this->_implementations[$methodName][$class->getId()] = $class->getPriority();
@@ -172,11 +172,11 @@ class Repository extends \Yana\Core\Object
     /**
      * Unregister an implementing class for a method.
      * 
-     * @param   \Yana\Plugins\Configs\MethodConfiguration $method   remove the implementation of this function
+     * @param   \Yana\Plugins\Configs\IsMethodConfiguration $method   remove the implementation of this function
      * @param   string                    $classId  plugin identifier
      * @return  \Yana\Plugins\Repositories\Repository 
      */
-    public function unsetImplementation(Configs\MethodConfiguration $method, $classId)
+    public function unsetImplementation(\Yana\Plugins\Configs\IsMethodConfiguration $method, $classId)
     {
         $methodName = mb_strtolower($method->getMethodName());
         if (isset($this->_implementations[$methodName][$classId])) {

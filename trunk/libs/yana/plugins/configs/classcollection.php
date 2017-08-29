@@ -55,7 +55,7 @@ class ClassCollection extends \Yana\Core\AbstractCollection
      * Get item.
      *
      * @param   string  $offset  lower-cased method-name
-     * @return  \Yana\Plugins\Configs\ClassConfiguration
+     * @return  \Yana\Plugins\Configs\IsClassConfiguration
      */
     public function offsetGet($offset)
     {
@@ -78,20 +78,20 @@ class ClassCollection extends \Yana\Core\AbstractCollection
     /**
      * Insert or replace item.
      *
-     * @param   string                                    $offset  ignored
-     * @param   \Yana\Plugins\Configs\ClassConfiguration  $value   newly added instance
+     * @param   string                                      $offset  ignored
+     * @param   \Yana\Plugins\Configs\IsClassConfiguration  $value   newly added instance
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException
-     * @return  \Yana\Plugins\Configs\ClassConfiguration
+     * @return  \Yana\Plugins\Configs\IsClassConfiguration
      */
     public function offsetSet($offset, $value)
     {
-        if ($value instanceof \Yana\Plugins\Configs\ClassConfiguration) {
+        if ($value instanceof \Yana\Plugins\Configs\IsClassConfiguration) {
             if (!is_string($offset)) {
                 $offset = \Yana\Plugins\PluginNameMapper::fromClassname($value->getClassName());
             }
             return $this->_offsetSet(mb_strtolower($offset), $value);
         } else {
-            $message = "Instance of \Yana\Plugins\Configs\ClassConfiguration expected. " .
+            $message = "Instance of \Yana\Plugins\Configs\IsClassConfiguration expected. " .
                 "Found " . gettype($value) . "(" . ((is_object($value)) ? get_class($value) : $value) . ") instead.";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
         }

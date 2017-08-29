@@ -23,44 +23,41 @@
  *
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
- *
- * @ignore
  */
 
-namespace Yana\Security\Rules\Requirements;
+namespace Yana\Plugins\Configs;
 
 /**
- * <<interface>> Security requirement.
+ * <<interface>> Plugin event routing configuration.
  *
- * The security rules are checked against these.
+ * Informs the framework what to do, if a plugin triggers a certain event.
  *
  * @package     yana
- * @subpackage  security
+ * @subpackage  plugins
  */
-interface IsRequirement
+interface IsEventRoute
 {
 
     /**
-     * Returns the required group the user must be a member of.
-     *
-     * @return  string
-     */
-    public function getGroup();
-
-    /**
-     * Returns the required role the user must have.
-     *
-     * @return  string
-     */
-    public function getRole();
-
-    /**
-     * Returns the required minimum security level the user must have.
+     * Get type of event triggered.
      *
      * @return  int
      */
-    public function getLevel();
+    public function getCode();
 
+    /**
+     * Get name of plugin-method to route to.
+     *
+     * @return  string
+     */
+    public function getTarget();
+
+    /**
+     * Get message to display in GUI.
+     *
+     * @return  string
+     */
+    public function getMessage();
 }
 
 ?>

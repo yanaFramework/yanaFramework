@@ -156,7 +156,7 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
         assert('!isset($plugins); // Cannot redeclare var $plugins');
         $plugins = $this->getPlugins();
         $eventConfiguration = $plugins->getEventConfiguration($action);
-        if (!($eventConfiguration instanceof \Yana\Plugins\Configs\MethodConfiguration)) {
+        if (!($eventConfiguration instanceof \Yana\Plugins\Configs\IsMethodConfiguration)) {
             $error = new \Yana\Core\Exceptions\InvalidActionException();
             $error->setAction($action);
             return false;
@@ -621,7 +621,7 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
         $event = $pluginManager->getFirstEvent();
         $result = $pluginManager->getLastResult();
         $eventConfiguration = $pluginManager->getEventConfiguration($event);
-        if (! $eventConfiguration instanceof \Yana\Plugins\Configs\MethodConfiguration) {
+        if (! $eventConfiguration instanceof \Yana\Plugins\Configs\IsMethodConfiguration) {
             return; // error - unable to continue
         }
         $template = $eventConfiguration->getTemplate();
@@ -704,7 +704,7 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
 
                 $level = \Yana\Log\TypeEnumeration::ERROR;
                 $message = 'Action was not successfully';
-                if ($route->getCode() === \Yana\Plugins\Configs\EventRoute::CODE_SUCCESS) {
+                if ($route->getCode() === \Yana\Plugins\Configs\ReturnCodeEnumeration::SUCCESS) {
                     $level = \Yana\Log\TypeEnumeration::SUCCESS;
                     $message = 'Action carried out successfully';
                 }

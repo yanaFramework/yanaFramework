@@ -30,7 +30,7 @@ namespace Yana\Media;
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/include.php';
+require_once dirname(__FILE__) . '/../../../include.php';
 
 /**
  * Test class for Image
@@ -96,8 +96,8 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->markTestIncomplete('Binaries are broken. Test needs refactoring');
-        return;
+//        $this->markTestSkipped('Binaries are broken. Test needs refactoring');
+//        return;
         $this->_image = new Image(CWD . $this->_imageSource);
         $this->_emptyImage = new Image();
         $this->_dummyImage = new Image(CWD . $this->_dummySource);
@@ -399,7 +399,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     /**
      * Draw Formatted String Invalid Argument
      *
-     * @expectedException PHPUnit_Framework_Error
+     * @expectedException \PHPUnit_Framework_Error
      * @test
      */
     public function testDrawFormattedStringInvalidArgument()
@@ -578,7 +578,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     /**
      * Get Color Values Invalid Argument
      *
-     * @expectedException PHPUnit_Framework_Error
+     * @expectedException \PHPUnit_Framework_Error
      * @test
      */
     public function testGetColorValuesInvalidArgument()
@@ -630,7 +630,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     /**
      * Get Size Invalid Argument
      *
-     * @expectedException PHPUnit_Framework_Error
+     * @expectedException \PHPUnit_Framework_Error
      * @test
      */
     public function testGetSizeInvalidArgument()
@@ -769,7 +769,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     /**
      * Replace Index Color Invalid Argument
      *
-     * @expectedException PHPUnit_Framework_Error
+     * @expectedException \PHPUnit_Framework_Error
      * @test
      */
     public function testReplaceIndexColorInvalidArgument2()
@@ -841,7 +841,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     /**
      * Set Background Color Invalid Argument
      *
-     * @expectedException PHPUnit_Framework_Error
+     * @expectedException \PHPUnit_Framework_Error
      * @test
      */
     public function testSetBackgroundColorInvalidArgument()
@@ -969,7 +969,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     /**
      * Rotate Invalid Argument
      *
-     * @expectedException PHPUnit_Framework_Error
+     * @expectedException \PHPUnit_Framework_Error
      * @test
      */
     public function testRotateInvalidArgument()
@@ -1009,7 +1009,6 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     /**
      * ResizeCanvas Invalid Argument
      *
-     * @expectedException PHPUnit_Framework_Error
      * @test
      */
     public function testResizeCanvasInvalidArgument()
@@ -1021,7 +1020,6 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     /**
      * ResizeCanvas Invalid Argument 2
      *
-     * @expectedException PHPUnit_Framework_Error
      * @test
      */
     public function testResizeCanvasInvalidArgument2()
@@ -1033,7 +1031,6 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     /**
      * ResizeCanvas Invalid Argument 3
      *
-     * @expectedException PHPUnit_Framework_Error
      * @test
      */
     public function testResizeCanvasInvalidArgument3()
@@ -1045,7 +1042,6 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     /**
      * ResizeCanvas Invalid Argument 4
      *
-     * @expectedException PHPUnit_Framework_Error
      * @test
      */
     public function testResizeCanvasInvalidArgument4()
@@ -1057,7 +1053,6 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     /**
      * ResizeCanvas Invalid Argument 5
      *
-     * @expectedException PHPUnit_Framework_Error
      * @test
      */
     public function testResizeCanvasInvalidArgument5()
@@ -1255,7 +1250,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     /**
      * Monochromatic Invalid Argument
      *
-     * @expectedException PHPUnit_Framework_Error
+     * @expectedException \PHPUnit_Framework_Error
      * @test
      */
     public function testMonochromaticInvalidArgument()
@@ -1266,7 +1261,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     /**
      * Monochromatic Invalid Argument1
      *
-     * @expectedException PHPUnit_Framework_Error
+     * @expectedException \PHPUnit_Framework_Error
      * @test
      */
     public function testMonochromaticInvalidArgument1()
@@ -1297,23 +1292,21 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     /**
      * Brightness Invalid Argument
      *
-     * @expectedException PHPUnit_Framework_Error
      * @test
      */
     public function testBrightnessInvalidArgument()
     {
-        $this->_image->brightness(-1);
+        $this->assertFalse($this->_image->brightness(-1));
     }
 
     /**
      * Brightness Invalid Argument1
      *
-     * @expectedException PHPUnit_Framework_Error
      * @test
      */
     public function testBrightnessInvalidArgument1()
     {
-        $this->_image->brightness(5);
+        $this->assertFalse($this->_image->brightness(5));
     }
 
 
@@ -1340,23 +1333,21 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     /**
      * Contrast Invalid Argument
      *
-     * @expectedException PHPUnit_Framework_Error
      * @test
      */
     public function testContrastInvalidArgument()
     {
-        $this->_image->contrast(-3);
+        $this->assertFalse($this->_image->contrast(-3));
     }
 
     /**
      * Contrast Invalid Argument1
      *
-     * @expectedException PHPUnit_Framework_Error
      * @test
      */
     public function testContrastInvalidArgument1()
     {
-        $this->_image->contrast(2);
+        $this->assertFalse($this->_image->contrast(2));
     }
 
 
@@ -1425,7 +1416,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     /**
      * Colorize Invalid Argument
      *
-     * @expectedException PHPUnit_Framework_Error
+     * @expectedException \PHPUnit_Framework_Error
      * @test
      */
     public function testColorizeInvalidArgument()
@@ -1453,7 +1444,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     /**
      * Multiply Invalid Argument
      *
-     * @expectedException PHPUnit_Framework_Error
+     * @expectedException \PHPUnit_Framework_Error
      * @test
      */
     public function testMultiplyInvalidArgument()
@@ -1464,7 +1455,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     /**
      * Multiply Invalid Argument1
      *
-     * @expectedException PHPUnit_Framework_Error
+     * @expectedException \PHPUnit_Framework_Error
      * @test
      */
     public function testMultiplyInvalidArgument1()
@@ -1492,23 +1483,21 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     /**
      * Blur Invalid Argument
      *
-     * @expectedException PHPUnit_Framework_Error
      * @test
      */
     public function testBlurInvalidArgument()
     {
-        $this->_image->blur(2.0);
+        $this->assertFalse($this->_image->blur(2.0));
     }
 
     /**
      * Blur Invalid Argument1
      *
-     * @expectedException PHPUnit_Framework_Error
      * @test
      */
     public function testBlurInvalidArgument1()
     {
-        $this->_image->blur(-1);
+        $this->assertFalse($this->_image->blur(-1));
     }
 
     /**
@@ -1535,7 +1524,6 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     /**
      * Sharpen Invalid Argument
      *
-     * @expectedException PHPUnit_Framework_Error
      * @test
      */
     public function testSharpenInvalidArgument()
@@ -1608,7 +1596,6 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     /**
      * Output To Screen Invalid Argument
      *
-     * @expectedException PHPUnit_Framework_Error
      * @test
      */
     public function testOutputToScreenInvalidArgument()
@@ -1651,7 +1638,6 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     /**
      * Compare Image Invalid Argument
      *
-     * @expectedException PHPUnit_Framework_Error
      * @test
      */
     public function testCompareImageInvalidArgument()
@@ -1860,7 +1846,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
          * Compare resulting image of test with expected result.
          * We grant a 5% tolerance.
          */
-        $expectedResult = new Image(CWD . 'resources/image/test2.png');
+        $expectedResult = new \Yana\Media\Image(CWD . 'resources/image/test2.png');
         $difference = $expectedResult->compareImage($this->_emptyImage);
         $this->assertLessThan(0.05, $difference, 'assert failed, image does not match expected result');
     }
@@ -1874,38 +1860,38 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function test3()
     {
-          // set brush
-          $brush = new Brush('small star');
+        // set brush
+        $brush = new Brush('small star');
 
-          $brush->setColor(128, 128, 128)->setSize(8);
+        $brush->setColor(128, 128, 128)->setSize(8);
 
-          $setBackgroundColor = $this->_emptyImage->setBackgroundColor($this->_emptyImage->yellow);
-          $this->assertTrue($setBackgroundColor, 'unable to set background color');
+        $setBackgroundColor = $this->_emptyImage->setBackgroundColor($this->_emptyImage->yellow);
+        $this->assertTrue($setBackgroundColor, 'unable to set background color');
 
-          $setBrush0 = $this->_emptyImage->setBrush($brush);
-          $this->assertTrue($setBrush0, 'unable to select new brush for image');
+        $setBrush0 = $this->_emptyImage->setBrush($brush);
+        $this->assertTrue($setBrush0, 'unable to select new brush for image');
 
-          $drawPoint = $this->_emptyImage->drawPoint(150, 100, IMG_COLOR_BRUSHED);
-          $this->assertTrue($drawPoint, 'unable to draw Point');
+        $drawPoint = $this->_emptyImage->drawPoint(150, 100, IMG_COLOR_BRUSHED);
+        $this->assertTrue($drawPoint, 'unable to draw Point');
 
-          $drawLine = $this->_emptyImage->drawLine(150, 100, 154, 104, IMG_COLOR_BRUSHED);
-          $this->assertTrue($drawLine, 'unable to draw line');
+        $drawLine = $this->_emptyImage->drawLine(150, 100, 154, 104, IMG_COLOR_BRUSHED);
+        $this->assertTrue($drawLine, 'unable to draw line');
 
-          $drawRectangle3 = $this->_emptyImage->drawRectangle(10, 10, 60, 60, $this->_emptyImage->black, $this->_emptyImage->blue);
-          $this->assertTrue($drawRectangle3, 'assert failed "$drawRectangle3" is false');
+        $drawRectangle3 = $this->_emptyImage->drawRectangle(10, 10, 60, 60, $this->_emptyImage->black, $this->_emptyImage->blue);
+        $this->assertTrue($drawRectangle3, 'assert failed "$drawRectangle3" is false');
 
-          $drawEllipse5 = $this->_emptyImage->drawEllipse(155, 65, 100, 50, $this->_emptyImage->black, $this->_emptyImage->fuchsia);
-          $this->assertTrue($drawEllipse5, 'assert failed "$drawEllipse5" is false');
+        $drawEllipse5 = $this->_emptyImage->drawEllipse(155, 65, 100, 50, $this->_emptyImage->black, $this->_emptyImage->fuchsia);
+        $this->assertTrue($drawEllipse5, 'assert failed "$drawEllipse5" is false');
 
-          /**
-           * compare test results
-           *
-           * Compare resulting image of test with expected result.
-           * We grant a 5% tolerance.
-           */
-          $expectedResult = new Image(CWD . 'resources/image/test3.png');
-          $difference = $expectedResult->compareImage($this->_emptyImage);
-          $this->assertLessThan(0.05, $difference, 'assert failed, image does not match expected result');
+        /**
+         * compare test results
+         *
+         * Compare resulting image of test with expected result.
+         * We grant a 5% tolerance.
+         */
+        $expectedResult = new Image(CWD . 'resources/image/test3.png');
+        $difference = $expectedResult->compareImage($this->_emptyImage);
+        $this->assertLessThan(0.05, $difference, 'assert failed, image does not match expected result');
     }
 
     /**

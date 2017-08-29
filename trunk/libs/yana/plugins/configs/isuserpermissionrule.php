@@ -23,44 +23,26 @@
  *
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
- *
- * @ignore
  */
 
-namespace Yana\Security\Rules\Requirements;
+namespace Yana\Plugins\Configs;
 
 /**
- * <<interface>> Security requirement.
+ * <<interface>> User permission management information.
  *
- * The security rules are checked against these.
+ * Access management comes in 3-layers, each of which is optional.
+ * <ul>
+ *  <li> User groups: like "Sales", "Human_Ressources" </li>
+ *  <li> User role: like "Project_Manager" </li>
+ *  <li> Security level: an integer of 0 through 100 </li>
+ * </ul>
  *
  * @package     yana
- * @subpackage  security
+ * @subpackage  plugins
  */
-interface IsRequirement
+interface IsUserPermissionRule extends \Yana\Security\Rules\Requirements\IsRequirement
 {
-
-    /**
-     * Returns the required group the user must be a member of.
-     *
-     * @return  string
-     */
-    public function getGroup();
-
-    /**
-     * Returns the required role the user must have.
-     *
-     * @return  string
-     */
-    public function getRole();
-
-    /**
-     * Returns the required minimum security level the user must have.
-     *
-     * @return  int
-     */
-    public function getLevel();
-
+    // intentionally left blank
 }
 
 ?>

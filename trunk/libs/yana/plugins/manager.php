@@ -270,7 +270,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
 
         // event must be defined
         $config = $this->getEventConfiguration($event);
-        if (!($config instanceof \Yana\Plugins\Configs\MethodConfiguration)) {
+        if (!($config instanceof \Yana\Plugins\Configs\IsMethodConfiguration)) {
             $error = new \Yana\Core\Exceptions\InvalidActionException();
             $error->setAction($event);
             throw $error;
@@ -361,7 +361,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
             $event = $this->getFirstEvent();
             $result = self::getLastResult();
             $methods = $this->getEventConfigurations();
-            /* @var $method \Yana\Plugins\Configs\MethodConfiguration */
+            /* @var $method \Yana\Plugins\Configs\IsMethodConfiguration */
             $method = $methods[$event];
             if ($result !== false) {
                 self::$_nextEvent = $method->getOnSuccess();
@@ -595,7 +595,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      * reflecting the implementing plugin class.
      *
      * @param   string  $pluginName   plugin name
-     * @return  \Yana\Plugins\Configs\ClassConfiguration
+     * @return  \Yana\Plugins\Configs\IsClassConfiguration
      * @since   3.1.0
      * @throws  \Yana\Core\Exceptions\NotReadableException  when an existing VDrive definition is not readable
      */
@@ -670,7 +670,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      * Get the event configuration.
      *
      * @param   string  $eventName  identifier of the wanted event
-     * @return  \Yana\Plugins\Configs\MethodConfiguration
+     * @return  \Yana\Plugins\Configs\IsMethodConfiguration
      */
     public function getEventConfiguration($eventName)
     {

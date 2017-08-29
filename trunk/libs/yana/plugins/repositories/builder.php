@@ -143,7 +143,7 @@ class Builder extends \Yana\Plugins\Repositories\AbstractBuilder
              */
             foreach ($config->getMethods() as $methodName => $method)
             {
-                /* @var $method \Yana\Plugins\Configs\MethodConfiguration */
+                /* @var $method \Yana\Plugins\Configs\IsMethodConfiguration */
                 // skip default event handlers (will be handled in step 3)
                 if ($methodName == 'catchAll') {
                     $pluginsWithDefaultMethods[$id] = $config;

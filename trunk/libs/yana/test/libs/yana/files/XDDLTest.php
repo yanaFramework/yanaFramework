@@ -140,14 +140,27 @@ class XDDLTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testIncludeFile().
+     * @test
      */
-    public function testIncludeFile()
+    public function testLoadIncludes()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $object = new \Yana\Db\Ddl\Database('test', CWD . $this->_path);
+        $object->addInclude('test2');
+        $this->assertFalse($object->isTable('Foo'));
+        $object->loadIncludes();
+        $this->assertTrue($object->isTable('Foo'));
+    }
+
+    /**
+     * @test
+     */
+    public function testLoadIncludesWithoutPath()
+    {
+        $object = new \Yana\Db\Ddl\Database('test');
+        $object->addInclude('test2');
+        $this->assertFalse($object->isTable('Foo'));
+        $object->loadIncludes();
+        $this->assertFalse($object->isTable('Foo'));
     }
 
     /**

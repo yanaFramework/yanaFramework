@@ -69,7 +69,7 @@ abstract class AbstractBuilder extends \Yana\Core\Object
     /**
      * Returns the built object.
      *
-     * @return  \Yana\Plugins\Configs\ClassConfiguration
+     * @return  \Yana\Plugins\Configs\IsClassConfiguration
      */
     public function getRepository()
     {

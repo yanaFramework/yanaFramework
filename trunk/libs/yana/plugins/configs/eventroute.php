@@ -36,26 +36,8 @@ namespace Yana\Plugins\Configs;
  * @subpackage  plugins
  * @ignore
  */
-class EventRoute extends \Yana\Core\Object
+class EventRoute extends \Yana\Core\Object implements \Yana\Plugins\Configs\IsEventRoute
 {
-
-    /**
-     * Predefined event code.
-     */
-    const CODE_SUCCESS = 0;
-    /**
-     * Predefined event code.
-     */
-    const CODE_ERROR = 1;
-
-    /**
-     * Predefined event message.
-     */
-    const MSG_SUCCESS = '\Yana\Core\Exceptions\Messages\SuccessMessage';
-    /**
-     * Predefined event message.
-     */
-    const MSG_ERROR = '\Yana\Core\Exceptions\LogicException';
 
     /**
      * Type of event triggered.
@@ -64,7 +46,7 @@ class EventRoute extends \Yana\Core\Object
      *
      * @var  string
      */
-    private $_code = self::CODE_SUCCESS;
+    private $_code = \Yana\Plugins\Configs\ReturnCodeEnumeration::SUCCESS;
 
     /**
      * Name of plugin-method to route to.
