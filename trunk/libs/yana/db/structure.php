@@ -86,7 +86,7 @@ class Structure extends \Yana\Files\SML
         $filename = \Yana\Db\Structure::_getFilename($filename);
         parent::__construct($filename, CASE_UPPER);
 
-        $this->resetStats();
+        $this->_resetStats();
     }
 
     /**

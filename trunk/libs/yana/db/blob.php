@@ -54,17 +54,38 @@ class Blob extends \Yana\Files\Readonly
     /**
      * @var int
      */
-    private $_size = 0;
+    private $_fileSize = 0;
     /**
      * @var string
      */
     private $_type = 'application/unknown';
+    /**
+     * @var string
+     */
+    private $_path = '';
 
     /**
      * @var  string
      * @ignore
      */
     protected static $blobDir = 'config/db/.blob/';
+
+    /**
+     * Get path to the resource.
+     *
+     * Returns the name of the extracted file.
+     * If the file has not been extracted, returns the name and path of the archive instead.
+     *
+     * @return  string
+     */
+    public function getPath()
+    {
+        $path = (string) $this->_path;
+        if ($path === "") {
+            $path = parent::getPath();
+        }
+        return $path;
+    }
 
     /**
      * Read file contents.
@@ -100,7 +121,7 @@ class Blob extends \Yana\Files\Readonly
                 case 0:
                     $buffer = trim($buffer);
                     if (preg_match('/^[\w\.\d\-\_]+$/s', $buffer)) {
-                        $this->path = $buffer;
+                        $this->_path = (string) $buffer;
                     } else {
                         \Yana\Log\LogManager::getLogger()
                             ->addLog("Invalid file path: '{$buffer}'.", \Yana\Log\TypeEnumeration::INFO);
@@ -110,7 +131,7 @@ class Blob extends \Yana\Files\Readonly
                 case 1:
                     $buffer = trim($buffer);
                     if (is_numeric($buffer)) {
-                        $this->_size = $buffer;
+                        $this->_fileSize = (int) $buffer;
                     } else {
                         \Yana\Log\LogManager::getLogger()
                             ->addLog("Invalid filesize: '{$buffer}'.", \Yana\Log\TypeEnumeration::INFO);
@@ -120,7 +141,7 @@ class Blob extends \Yana\Files\Readonly
                 case 2:
                     $buffer = trim($buffer);
                     if (preg_match('/^\w+\/[\w-]+$/s', $buffer)) {
-                        $this->_type = $buffer;
+                        $this->_type = (string) $buffer;
                     } else {
                         \Yana\Log\LogManager::getLogger()
                             ->addLog("Invalid MIME-Type: '{$buffer}'.", \Yana\Log\TypeEnumeration::INFO);
@@ -147,28 +168,19 @@ class Blob extends \Yana\Files\Readonly
      */
     public function getMimeType()
     {
-        if (isset($this->_type)) {
-            return $this->_type;
-        } else {
-            return false;
-        }
+        return (string) $this->_type;
     }
 
     /**
      * Get size of this file in bytes.
      *
      * Note: this function may return a cached value.
-     * If an error occurs, bool(false) is returned.
      *
      * @return  int
      */
-    public function getFilesize()
+    public function _getFilesize()
     {
-        if (isset($this->_size)) {
-            return $this->_size;
-        } else {
-            return false;
-        }
+        return (int) $this->_fileSize;
     }
 
     /**
