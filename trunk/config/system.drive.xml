@@ -11,7 +11,7 @@
     <!--
         The var YANA_CDROM_DIR is overwritten for CD/DVD-ROM applications.
         This will relocate all files and directories to a temp folder on the
-        host systems hard disc.
+        host system's hard drive.
 
         If so, the following declaration is ignored.
         Otherwise it will make sure the value is initialized properly.
