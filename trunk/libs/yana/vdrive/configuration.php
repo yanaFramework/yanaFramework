@@ -95,10 +95,17 @@ class Configuration extends \Yana\Util\XmlArray implements \Yana\VDrive\IsConfig
      *
      * @param   string  $path  file path
      * @return  self
+     * @throws  \Yana\Core\Exceptions\Files\NotFoundException  when the given path is invalid
      */
     public static function loadFile($path)
     {
         assert('is_string($path); // Wrong type for argument 1. String expected');
+        assert('$path > ""; // Argument 1 must not be empty');
+        if (!is_file($path)) {
+            $message = 'VDrive configuration file not found: "' . $path . '"';
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\Files\NotFoundException($message, $level);
+        }
         return new self($path, 0, true);
     }
 
