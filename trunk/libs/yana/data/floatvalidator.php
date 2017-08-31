@@ -89,7 +89,10 @@ class FloatValidator extends NumberValidator
     {
         assert('is_int($maxFloat) || is_float($maxFloat); // $maxFloat expected to be Float or Integer');
         assert('is_bool($isUnsigned); // $isUnsigned expected to be Boolean');
-        return filter_var($float, FILTER_VALIDATE_FLOAT) !== false &&
+        // Note! Function filter_var() casts input to string and evaluates the string based on the selected system locale.
+        // It will thuse reject valid float values due to invalid decimal separator if the system locale doesn't use a point
+        // as decimal separator. It is thus necessary to handle this case separately.
+        return (is_float($float) || filter_var($float, FILTER_VALIDATE_FLOAT) !== false) &&
             !self::_exceedsMaxLength($float, $maxFloat) && (!$isUnsigned || $float >= 0);
     }
 
