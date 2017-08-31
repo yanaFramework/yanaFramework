@@ -155,7 +155,7 @@ class DbDesigner4 extends \Yana\Files\File implements \Plugins\DbTools\IsImport
     public function &getStructure($filename = "")
     {
         if (empty($filename)) {
-            $filename = $this->path . ".config";
+            $filename = $this->getPath() . ".config";
         }
         $structure = new \Yana\Db\Structure($filename);
         foreach ($this->getTableInfo() as $tableInfo)
