@@ -50,7 +50,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $configurationFactory = new \Yana\ConfigurationFactory();
-        $configuration = $configurationFactory->loadConfiguration(YANA_INSTALL_DIR . 'config/system.config.xml');
+        $configuration = $configurationFactory->loadConfiguration(CWD . 'resources/system.config.xml');
         $configuration->configdrive = YANA_INSTALL_DIR . 'config/system.drive.xml';
         $this->object = new \Yana\Core\Dependencies\Container($configuration);
     }
@@ -82,14 +82,10 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @todo   Implement testGetExceptionLogger().
      */
     public function testGetExceptionLogger()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->object->getRegistry()->setVar('LANGUAGEDIR', \YANA_INSTALL_DIR . $this->object->getRegistry()->getVar('LANGUAGEDIR'));
         $this->assertTrue($this->object->getExceptionLogger() instanceof \Yana\Log\IsLogger);
     }
 
@@ -119,14 +115,9 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @todo   Implement testGetView().
      */
     public function testGetView()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
         $this->assertTrue($this->object->getView() instanceof \Yana\Views\Managers\IsManager);
     }
 
@@ -135,10 +126,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetLanguage()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->object->getRegistry()->setVar('LANGUAGEDIR', \YANA_INSTALL_DIR . $this->object->getRegistry()->getVar('LANGUAGEDIR'));
         $this->assertTrue($this->object->getLanguage() instanceof \Yana\Translations\Facade);
     }
 
@@ -147,10 +135,6 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetSkin()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
         $this->assertTrue($this->object->getSkin() instanceof \Yana\Views\Skins\IsSkin);
     }
 

@@ -51,18 +51,6 @@ class DataReaderTest extends \PHPUnit_Framework_TestCase
     protected $emptyReader;
 
     /**
-     * Constructor
-     *
-     * @ignore
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        \Yana\Db\Ddl\DDL::setDirectory(CWD . '/../../../config/db/');
-        \Yana\Db\FileDb\Driver::setBaseDirectory(CWD . '/resources/db/');
-    }
-
-    /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */

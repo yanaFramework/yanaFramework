@@ -32,13 +32,18 @@ date_default_timezone_set('Europe/Paris');
  * @ignore
  */
 require_once dirname(__FILE__) . '/../../../library.php';
+
 if (!defined('CWD')) {
     define('CWD', dirname(__FILE__) . DIRECTORY_SEPARATOR);
 }
 if (empty($_SERVER['DOCUMENT_ROOT']) && isset($_SERVER['OS']) && preg_match('/windows/i', $_SERVER['OS'])) {
     $_SERVER['DOCUMENT_ROOT'] =  realpath(CWD . "../../../../../") . '/htdocs/';
-    $path = dirname($_SERVER["DOCUMENT_ROOT"]); // Will be used by importing test-case
+    $path = dirname($_SERVER["DOCUMENT_ROOT"]); // Will be used when importing test-case
 }
+
+\Yana\Db\Ddl\DDL::setDirectory(CWD . '/resources/');
+\Yana\Db\FileDb\Driver::setBaseDirectory(CWD . 'resources/db/');
+
 \Yana\Plugins\Manager::setPath(
     new \Yana\Files\Text(CWD . '/resources/plugins.cfg'),
     new \Yana\Files\Dir(CWD . '/../../../plugins/')

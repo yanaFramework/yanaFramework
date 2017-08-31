@@ -111,12 +111,12 @@ class FileTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetFilesize()
     {
-        $filesize = $this->object->getFilesize();
+        $filesize = $this->object->_getFilesize();
         $this->assertInternalType('integer', $filesize, 'not valid type for "$filesize" expecting "integer"');
 
         // try with non existing path
         $newFile = new \Yana\Files\File('resources/nonExistfile.txt');
-        $getFileSize = $newFile->getFilesize();
+        $getFileSize = $newFile->_getFilesize();
         $this->assertSame(0, $getFileSize, 'assert failed, source doesnt exist');
     }
 

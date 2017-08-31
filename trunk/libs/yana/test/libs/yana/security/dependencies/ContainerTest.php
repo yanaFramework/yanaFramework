@@ -46,23 +46,11 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     protected $object;
 
     /**
-     * Constructor
-     *
-     * @ignore
-     */
-    public function __construct()
-    {
-        \Yana\Db\Ddl\DDL::setDirectory(CWD. 'resources/');
-    }
-
-    /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
     protected function setUp()
     {
-        \Yana\Db\FileDb\Driver::setBaseDirectory(CWD. 'resources/db/');
-        \Yana\Db\Ddl\DDL::setDirectory(CWD. 'resources/');
         restore_error_handler();
         $manager = \Yana\Plugins\Manager::getInstance();
         $this->object = new \Yana\Security\Dependencies\Container($manager);

@@ -56,23 +56,11 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
     protected $schema;
 
     /**
-     * Constructor
-     *
-     * @ignore
-     */
-    public function __construct()
-    {
-        \Yana\Db\Ddl\DDL::setDirectory(CWD. 'resources/');
-    }
-
-    /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
     protected function setUp()
     {
-        \Yana\Db\FileDb\Driver::setBaseDirectory(CWD. 'resources/db/');
-        \Yana\Db\Ddl\DDL::setDirectory(CWD. 'resources/');
         $this->schema = \Yana\Files\XDDL::getDatabase('user');
         restore_error_handler();
         $this->container = new \Yana\Security\Dependencies\Container(\Yana\Plugins\Manager::getInstance());

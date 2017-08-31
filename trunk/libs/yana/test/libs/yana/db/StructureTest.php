@@ -57,7 +57,6 @@ class StructureTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        \Yana\Db\Ddl\DDL::setDirectory(CWD . '/resources/');
         $this->databaseName = 'check';
         try {
             $this->object = new \Yana\Db\Structure($this->databaseName);

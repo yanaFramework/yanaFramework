@@ -52,18 +52,6 @@ class StandardTest extends \PHPUnit_Framework_TestCase
     protected $entity;
 
     /**
-     * Constructor
-     *
-     * @ignore
-     */
-    public function __construct()
-    {
-        \Yana\Db\Ddl\DDL::setDirectory(CWD. 'resources/');
-        \Yana\Db\FileDb\Driver::setBaseDirectory(CWD. 'resources/db/');
-        \Yana\Db\Ddl\DDL::setDirectory(CWD. 'resources/');
-    }
-
-    /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */

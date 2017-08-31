@@ -32,11 +32,6 @@ namespace Yana\Db\Mdb2;
  */
 require_once __DIR__ . '/../../../../include.php';
 
-// load PEAR-DB class
-error_reporting(0);
-include_once 'MDB2.php';
-error_reporting(E_ALL);
-
 /**
  * Connection test-case
  *
@@ -57,11 +52,18 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
+        if (\version_compare(\phpversion(), '7.0.0') >= 0 && \version_compare(\MDB2::apiVersion(), '2.5.0b5') < 0) {
+            $this->markTestSkipped('MDB2 version not compatible with PHP7.');
+        }
         try {
             chdir(CWD . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
             $schema = \Yana\Files\XDDL::getDatabase('check');
             $this->dbsobj = new \Yana\Db\Mdb2\Connection($schema);
-        } catch (\Exception $e) {
+
+        } catch (\Yana\Db\Mdb2\PearDbException $e) {
+            $this->markTestSkipped("MDB2 extension not available");
+
+        } catch (\Yana\Db\ConnectionException $e) {
             $this->markTestSkipped("Unable to connect to database");
         }
     }

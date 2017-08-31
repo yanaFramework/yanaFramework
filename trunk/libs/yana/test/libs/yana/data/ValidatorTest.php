@@ -55,14 +55,31 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        // intentionally left blank
+        \setlocale(\LC_ALL, 'en');
+    }
+
+    /**
+     * Because it wouldn't make sense to test this only in English now, would it?
+     *
+     * @return  array
+     */
+    public function provider()
+    {
+        return array(
+            array('de'),
+            array('fr'),
+            array('en')
+        );
     }
 
     /**
      * @test
+     * @dataProvider  provider
+     * @param  string  $locale
      */
-    public function testIntegerValidatorLength()
+    public function testIntegerValidatorLength($locale)
     {
+        \setlocale(LC_ALL, $locale);
         // use an integer
         $untaintInput = IntegerValidator::sanitize(60, 1);
         $this->assertInternalType('int', $untaintInput);
@@ -75,9 +92,12 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @dataProvider  provider
+     * @param  string  $locale
      */
-    public function testIntegerValidatorValidate()
+    public function testIntegerValidatorValidate($locale)
     {
+        \setlocale(LC_ALL, $locale);
         $this->assertTrue(IntegerValidator::validate(100));
         $this->assertTrue(IntegerValidator::validate("100"));
         $this->assertFalse(IntegerValidator::validate(100.05));
@@ -88,9 +108,12 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @dataProvider  provider
+     * @param  string  $locale
      */
-    public function testFloatValidatorValidate()
+    public function testFloatValidatorValidate($locale)
     {
+        \setlocale(LC_ALL, $locale);
         $this->assertTrue(FloatValidator::validate(100));
         $this->assertTrue(FloatValidator::validate(100.05));
         $this->assertTrue(FloatValidator::validate("100.05"));
@@ -103,9 +126,12 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @dataProvider  provider
+     * @param  string  $locale
      */
-    public function testIntegerValidatorToInteger()
+    public function testIntegerValidatorToInteger($locale)
     {
+        \setlocale(LC_ALL, $locale);
         $untaintInput = IntegerValidator::sanitize(100.05, 2);
         $this->assertInternalType('int', $untaintInput);
         $this->assertEquals($untaintInput, 99, 'the integer value must have 2 digits');
@@ -117,9 +143,12 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @dataProvider  provider
+     * @param  string  $locale
      */
-    public function testFloatValidatorFixedPrecission()
+    public function testFloatValidatorFixedPrecission($locale)
     {
+        \setlocale(LC_ALL, $locale);
         // use float
         $untaintInput = FloatValidator::sanitize(-3.1, 1, 0);
         $this->assertEquals(-3.0, $untaintInput, 'the integer value must have 1 digit');
@@ -145,9 +174,12 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @dataProvider  provider
+     * @param  string  $locale
      */
-    public function testArrayValidatorToSml()
+    public function testArrayValidatorToSml($locale)
     {
+        \setlocale(LC_ALL, $locale);
         $array = array('abc', 'def', 'ghi');
         $untaintInput = ArrayValidator::sanitize($array, 0, ArrayValidator::TO_SML);
         $validate = "<0>abc</0>\n<1>def</1>\n<2>ghi</2>\n";
@@ -156,9 +188,12 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @dataProvider  provider
+     * @param  string  $locale
      */
-    public function testArrayValidatorToXml()
+    public function testArrayValidatorToXml($locale)
     {
+        \setlocale(LC_ALL, $locale);
         $array = array('abc', 'def', 'ghi');
         $untaintInput = ArrayValidator::sanitize($array, 0, ArrayValidator::TO_XML);
         $validate = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" .
@@ -170,9 +205,12 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @dataProvider  provider
+     * @param  string  $locale
      */
-    public function testArrayValidatorSanitize()
+    public function testArrayValidatorSanitize($locale)
     {
+        \setlocale(LC_ALL, $locale);
         $array = array('abc', 'def', 'ghi');
         $untaintInput = ArrayValidator::sanitize($array, 1, ArrayValidator::TO_SML);
         $validate = "<0>abc</0>\n";
@@ -182,9 +220,12 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @dataProvider  provider
+     * @param  string  $locale
      */
-    public function testArrayValidatorValidate()
+    public function testArrayValidatorValidate($locale)
     {
+        \setlocale(LC_ALL, $locale);
         $array = array('abc', 'def', 'ghi');
         $this->assertTrue(ArrayValidator::validate($array));
         $this->assertFalse(ArrayValidator::validate($array, 2));
@@ -193,9 +234,12 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @dataProvider  provider
+     * @param  string  $locale
      */
-    public function testObjectValidatorSanitize()
+    public function testObjectValidatorSanitize($locale)
     {
+        \setlocale(LC_ALL, $locale);
         $object = new self();
         $this->assertEquals($object, ObjectValidator::sanitize($object));
         $this->assertNull(ObjectValidator::sanitize('invalid'));
@@ -203,9 +247,12 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @dataProvider  provider
+     * @param  string  $locale
      */
-    public function testObjectValidatorValidate()
+    public function testObjectValidatorValidate($locale)
     {
+        \setlocale(LC_ALL, $locale);
         $object = new self();
         $this->assertTrue(ObjectValidator::validate($object));
         $this->assertFalse(ObjectValidator::validate('invalid'));
@@ -213,9 +260,12 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @dataProvider  provider
+     * @param  string  $locale
      */
-    public function testBooleanValidatorValidate()
+    public function testBooleanValidatorValidate($locale)
     {
+        \setlocale(LC_ALL, $locale);
         // use a bool as data
         $this->assertTrue(BooleanValidator::validate(true));
         $this->assertTrue(BooleanValidator::validate(false));
@@ -226,9 +276,12 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @dataProvider  provider
+     * @param  string  $locale
      */
-    public function testBooleanValidatorSanitize()
+    public function testBooleanValidatorSanitize($locale)
     {
+        \setlocale(LC_ALL, $locale);
         // use a bool as data
         $this->assertTrue(BooleanValidator::sanitize(true));
         $this->assertTrue(BooleanValidator::sanitize("1"));
@@ -239,9 +292,12 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @dataProvider  provider
+     * @param  string  $locale
      */
-    public function testMailValidatorSanitize()
+    public function testMailValidatorSanitize($locale)
     {
+        \setlocale(LC_ALL, $locale);
         $email = 'mail@domain.tld';
         $this->assertEquals($email, MailValidator::sanitize($email));
         $this->assertEquals($email, MailValidator::sanitize($email), 15);
@@ -253,8 +309,10 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @dataProvider  provider
+     * @param  string  $locale
      */
-    public function testMailValidatorValidate()
+    public function testMailValidatorValidate($locale)
     {
         // use an mail as data
         $email = 'mail@domain.tld';
@@ -266,9 +324,12 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @dataProvider  provider
+     * @param  string  $locale
      */
-    public function testStringValidatorText()
+    public function testStringValidatorText($locale)
     {
+        \setlocale(LC_ALL, $locale);
         $text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n" .
                 "   Nullam placerat, leo sit amet volutpat ullamcorper,\n" .
                 "   sem tellus pellentesque leo, ac tempus massa nulla in ligula.\n" .
@@ -294,9 +355,12 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @dataProvider  provider
+     * @param  string  $locale
      */
-    public function testStringValidatorSanitize()
+    public function testStringValidatorSanitize($locale)
     {
+        \setlocale(LC_ALL, $locale);
         // use a string as data
         $string = 'Integer $placerat egestas cursus.';
         $untaintInput = StringValidator::sanitize($string, 40, StringValidator::TOKEN);
@@ -329,9 +393,12 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @dataProvider  provider
+     * @param  string  $locale
      */
-    public function testStringValidatorValidate()
+    public function testStringValidatorValidate($locale)
     {
+        \setlocale(LC_ALL, $locale);
         $this->assertFalse(StringValidator::validate(123));
         $this->assertTrue(StringValidator::validate("123"));
         $this->assertTrue(StringValidator::validate("123", 3));
@@ -340,9 +407,12 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @dataProvider  provider
+     * @param  string  $locale
      */
-    public function testIpValidatorSanitize()
+    public function testIpValidatorSanitize($locale)
     {
+        \setlocale(LC_ALL, $locale);
         // use an ip for data
         $ip = '127.0.0.1';
         $untaintInput = IpValidator::sanitize($ip);
@@ -361,9 +431,12 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @dataProvider  provider
+     * @param  string  $locale
      */
-    public function testIpValidatorValidate()
+    public function testIpValidatorValidate($locale)
     {
+        \setlocale(LC_ALL, $locale);
         $this->assertTrue(IpValidator::validate('1.2.3.4'));
         $this->assertFalse(IpValidator::validate("1.2.\n3.4"));
         $this->assertFalse(IpValidator::validate('1.2.3.4.5'));
@@ -372,9 +445,12 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @dataProvider  provider
+     * @param  string  $locale
      */
-    public function testUrlValidatorSanitize()
+    public function testUrlValidatorSanitize($locale)
     {
+        \setlocale(LC_ALL, $locale);
         // use an url for data
         $url = 'http://www.test.de?&%20=0#x';
         $this->assertEquals($url, UrlValidator::sanitize($url));
@@ -392,9 +468,12 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @dataProvider  provider
+     * @param  string  $locale
      */
-    public function testNumberValidator()
+    public function testNumberValidator($locale)
     {
+        \setlocale(LC_ALL, $locale);
         $this->assertEquals(-3, IntegerValidator::sanitize(-3, 1));
         $this->assertEquals(+3, IntegerValidator::sanitize(3.2, 1));
         $this->assertEquals(+3, IntegerValidator::sanitize(3.4, 1));

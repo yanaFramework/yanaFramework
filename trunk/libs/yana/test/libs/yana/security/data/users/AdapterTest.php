@@ -52,25 +52,12 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
     protected $object;
 
     /**
-     * Constructor
-     *
-     * @ignore
-     */
-    public function __construct()
-    {
-        \Yana\Db\Ddl\DDL::setDirectory(CWD. 'resources/');
-    }
-
-    /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
     protected function setUp()
     {
         try {
-
-            \Yana\Db\FileDb\Driver::setBaseDirectory(CWD. 'resources/db/');
-            \Yana\Db\Ddl\DDL::setDirectory(CWD. 'resources/');
             $schema = \Yana\Files\XDDL::getDatabase('user');
             restore_error_handler();
             $this->connection = new \Yana\Db\FileDb\NullConnection($schema);

@@ -65,10 +65,8 @@ class ParserTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped("SQL parser class not found");
         }
         try {
-            \Yana\Db\FileDb\Driver::setBaseDirectory(CWD . 'resources/');
             chdir(CWD . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
             if (!isset($this->db)) {
-                \Yana\Db\Ddl\DDL::setDirectory(CWD . 'resources/');
                 $schema = \Yana\Files\XDDL::getDatabase('check');
                 $this->db = new \Yana\Db\FileDb\Connection($schema);
             }

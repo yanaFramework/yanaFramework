@@ -57,9 +57,6 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         try {
-
-            \Yana\Db\FileDb\Driver::setBaseDirectory(CWD . 'resources/db/');
-            \Yana\Db\Ddl\DDL::setDirectory(CWD . 'resources/');
             $schema = \Yana\Files\XDDL::getDatabase('user');
             $this->connection = new \Yana\Db\FileDb\NullConnection($schema);
             restore_error_handler();

@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE system SYSTEM "dtd/system.config.dtd">
+<system>
+    <!--
+        Diese Datei enthält Pfadangaben zu Konfigurationsdateien!
+        Die enthaltenen Einträge dürfen auf keinen Fall geändert werden.
+
+        This file contains information about paths to configuration files!
+        The contained entries may not be changed at any case.
+    -->
+    <configdir>config/</configdir>
+    <configdrive>config/system.drive.xml</configdrive>
+    <tempdir>cache/</tempdir>
+    <plugindir>plugins/</plugindir>
+    <skindir>skins/</skindir>
+    <blobdir>config/db/.blob/</blobdir>
+    <pluginfile>config/plugins.cfg</pluginfile>
+    <php_self>index.php</php_self>
+    <templates>
+        <leftdelimiter>{</leftdelimiter>
+        <!-- Smarty template right delimiter. -->
+        <rightdelimiter>}</rightdelimiter>
+        <!--
+            The template base-dir.
+
+            All template paths are calculated relative to that directory.
+        -->
+        <templatedir>skins/</templatedir>
+        <templatedir>plugins/</templatedir>
+        <!--
+            This is the name of the directory where template caches are stored.
+        -->
+        <cachedir>cache/</cachedir>
+        <!--
+            Set this to true to deactivate HTML-caching (requires you to implement an active caching strategy).
+        -->
+        <caching>false</caching>
+        <!--
+            This is the length of time in seconds that a template cache is valid.
+            Once this time has expired, the cache will be regenerated.
+            -1 = never expire
+            0 = no cache
+        -->
+        <cachelifetime></cachelifetime>
+        <!--
+            Name of the used caching handler.
+        -->
+        <cachingtype>file</cachingtype>
+        <!--
+            Setting this to 'true' will recompile the template when it has changed.
+            Setting this to 'false' will only recompile when there is no
+        -->
+        <compilecheck>true</compilecheck>
+        <!--
+            Where compiled templates are stored
+        -->
+        <compiledir>cache/</compiledir>
+        <!--
+            Where Smarty will find configuration files that can be loaded in templates.
+        -->
+        <configdir>skins/.config/</configdir>
+        <!--
+            Enables the debugging console.
+        -->
+        <debugging>false</debugging>
+        <!--
+            A list of modifiers that will be applied to all vars.
+        -->
+        <defaultmodifier>replaceToken</defaultmodifier>
+        <!--
+            A list of classes to be used for resource loading.
+            They must implement \Yana\Views\Resources\IsResource.
+            You may use resources like "protocols" when calling a template.
+            E.g. "template:path/to/template".
+            If no resource is specified, the default resource will be used.
+        -->
+        <resourcetype name="id">\Yana\Views\Resources\IdResource</resourcetype>
+        <resourcetype name="template">\Yana\Views\Resources\FileResource</resourcetype>
+        <resourcetype name="string">\Yana\Views\Resources\StringResource</resourcetype>
+        <!--
+            The default resource type to use.
+        -->
+        <defaultresourcetype>template</defaultresourcetype>
+        <!--
+            Allows Smarty to create directories in the cache-dir.
+            This may improve performance.
+        -->
+        <usesubdirs>true</usesubdirs>
+        <security>
+            <!--
+                Tells smarty what to do with PHP-code found in a template.
+                This does not affect {php}{/php} tags.
+
+                PASSTHRU - Smarty echos tags as-is.
+                QUOTE - Smarty quotes the tags as html entities.
+                REMOVE - Smarty removes the tags from the templates.
+                ALLOW - Smarty will execute the tags as PHP code.
+
+                It is highly recommended NOT to use \Smarty::PHP_ALLOW.
+            -->
+            <phphandling>remove</phphandling>
+            <!--
+                Template directories that are considered secure.
+
+            <securedir></securedir>
+
+            -->
+            <!--
+                 Trusted directories are where you keep php scripts that are
+                 executed directly from the templates with {includephp}.
+
+            <trusteddir></trusteddir>
+
+            -->
+            <!--
+                Trusted PHP-classes that may be called from within templates.
+            -->
+            <staticclass>false</staticclass>
+            <!--
+                Trusted PHP-functions that may be called from within templates as a function.
+            -->
+            <phpfunction>isset</phpfunction>
+            <phpfunction>empty</phpfunction>
+            <phpfunction>count</phpfunction>
+            <phpfunction>sizeof</phpfunction>
+            <phpfunction>in_array</phpfunction>
+            <phpfunction>is_array</phpfunction>
+            <phpfunction>time</phpfunction>
+            <phpfunction>nl2br</phpfunction>
+            <phpfunction>max</phpfunction>
+            <phpfunction>min</phpfunction>
+            <!--
+                Trusted PHP-functions that may be called from within templates as a modifier
+            -->
+            <phpmodifier>escape</phpmodifier>
+            <phpmodifier>count</phpmodifier>
+            <!--
+                streams that are considered trusted and can be used from within templates.
+            -->
+            <stream>file</stream>
+            <stream>id</stream>
+            <!--
+                white-list of modifiers that are allowed in a template (disallows any other).
+
+            <allowedmodifier></allowedmodifier>
+
+            -->
+            <!--
+                black-list of modifiers that are not allowed in a template (allows any other).
+
+            <disabledmodifier></disabledmodifier>
+
+            -->
+            <!--
+                white-list of functions that are allowed in a template (disallows any other).
+
+            <allowedtag></allowedtag>
+
+            -->
+            <!--
+                black-list of functions that are not allowed in a template (allows any other).
+            -->
+            <disabledtag>php</disabledtag>
+            <disabledtag>include_php</disabledtag>
+            <!--
+                controls if PHP constants can be accessed by the template.
+            -->
+            <allowconstants>false</allowconstants>
+            <!--
+                controls if the PHP super globals can be accessed by the template.
+            -->
+            <allowsuperglobals>false</allowsuperglobals>
+        </security>
+    </templates>
+    <!-- DON'T change the default settings! -->
+    <default>
+        <!-- The name of the default profile id -->
+    	<profile>default</profile>
+        <!-- Default value of the "action" parameter -->
+    	<homepage>sitemap</homepage>
+        <!-- Always show Message screens (true/false) -->
+    	<message>false</message>
+        <!-- Default for new or undefined events -->
+    	<event>
+    		<type>default</type>
+    		<safemode>0</safemode>
+    		<template>index</template>
+    	</event>
+        <!-- Directory of the default skin -->
+    	<skin>
+    		<directory>default/</directory>
+    	</skin>
+        <!-- Default locale -->
+    	<language>en</language>
+        <!-- Database driver information -->
+    	<database>
+    		<options>
+    			<autofree>true</autofree>
+    			<persistent>true</persistent>
+    			<ssl>false</ssl>
+    		</options>
+    		<require_odbc>db2</require_odbc>
+    		<require_odbc>access</require_odbc>
+    	</database>
+        <!-- Default for newly created users -->
+    	<user>
+    		<group>REGISTERED</group>
+    		<role>DEFAULT</role>
+    		<level>0</level>
+    		<user_active>true</user_active>
+    	</user>
+        <!-- Information for the Dispatcher on what groups to inform on updates -->
+    	<multicast_groups>
+    		<read>
+    			<security>true</security>
+    			<library>true</library>
+    			<read>true</read>
+    			<primary>true</primary>
+    			<default>true</default>
+            </read>
+    		<write>
+    			<security>true</security>
+    			<library>true</library>
+    			<write>true</write>
+    			<primary>true</primary>
+    			<default>true</default>
+            </write>
+    		<security>
+    			<security>true</security>
+    			<library>true</library>
+            </security>
+    		<config>
+    			<security>true</security>
+    			<library>true</library>
+    			<config>true</config>
+            </config>
+    		<primary>
+    			<security>true</security>
+    			<library>true</library>
+    			<primary>true</primary>
+            </primary>
+    		<default>
+    			<security>true</security>
+    			<library>true</library>
+    			<default>true</default>
+            </default>
+    	</multicast_groups>
+        <!-- URL to the framework's update server -->
+    	<update_server>http://yanaframework.net/pages/update.php?version={$VERSION}&#38;amp;stable={$IS_STABLE}&#38;amp;lang={$LANG}&#38;amp;asnumber={$AS_NUMBER}</update_server>
+    </default>
+    <!--
+        A list of formats that can be used for date formatting.
+    -->
+    <date>
+        <!-- 01-10-2020 -->
+		<js>date.getDate() +'-'+ (date.getMonth()+1) +'-'+ date.getFullYear()</js>
+		<php>j-n-Y</php>
+    </date>
+    <date>
+        <!-- 19:12:34 -->
+		<js>date.toLocaleTimeString()</js>
+		<php>G:i:s</php>
+    </date>
+    <date>
+        <!-- 01-10-2020 07:12:34 PM -->
+		<js>date.getDate() +'-'+ (date.getMonth()+1) +'-'+ date.getFullYear() +' '+ date.toLocaleTimeString()</js>
+		<php>j-n-Y G:i:s</php>
+    </date>
+    <date>
+        <!-- 01-10-2020 19:12:34 -->
+		<js>date.getDate() +'-'+ (date.getMonth()+1) +'-'+ date.getFullYear() +' '+ date.toTimeString()</js>
+		<php>j-n-Y G:i:s O</php>
+    </date>
+    <date>
+        <!-- Ask user's operating system for best format -->
+		<js>date.toLocaleDateString()</js>
+        <!-- Thursday, 01 October 2020 -->
+		<php>l, j F Y</php>
+    </date>
+    <date>
+        <!-- Ask user's operating system for best format -->
+		<js>date.toLocaleString()</js>
+        <!-- or use an international standard that should work on every locale -->
+		<php>r</php>
+    </date>
+</system>

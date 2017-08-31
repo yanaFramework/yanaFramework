@@ -204,9 +204,9 @@ class AbstractMountpointTest extends \PHPUnit_Framework_TestCase
      */
     public function test()
     {
-        $vDrive = new MountpointImplementationTest('');
+        $vDrive = new MountpointImplementationTest('test');
         $result = $vDrive->getPath();
-        $this->assertFalse($result, 'asset failed the path is empty.');
+        $this->assertSame('test', $result, 'asset failed the path is empty.');
         $vDrive->setRequirements(true, true, true);
         $report = $vDrive->getReport();
         unset($vDrive);
