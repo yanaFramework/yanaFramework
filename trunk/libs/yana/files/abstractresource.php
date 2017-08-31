@@ -43,15 +43,21 @@ namespace Yana\Files;
 abstract class AbstractResource extends \Yana\Core\Object implements \Yana\Files\IsResource
 {
 
-    /**#@+
+    /**
+     * @var  string
+     */
+    private $_path = "";
+
+    /**
+     * @var  int
+     */
+    private $_fileSize = null;
+
+    /**
+     * @var  int
      * @ignore
      */
-
-    /** @var  string */ protected $path = "";
-    /** @var  int    */ protected $lastModified = null;
-    /** @var  int    */ protected $fileSize = null;
-
-    /**#@-*/
+    private $_lastModified = null;
 
     /**
      * Create a new instance of this class.
@@ -61,8 +67,8 @@ abstract class AbstractResource extends \Yana\Core\Object implements \Yana\Files
     public function __construct($filename)
     {
         assert('is_string($filename); // Wrong argument type for argument 1. String expected.');
-        $this->path = (string) $filename;
-        $this->resetStats();
+        $this->_setPath((string) $filename);
+        $this->_resetStats();
     }
 
     /**
@@ -80,7 +86,7 @@ abstract class AbstractResource extends \Yana\Core\Object implements \Yana\Files
     }
 
     /**
-     * get path to the resource
+     * Get path to the resource.
      *
      * Returns a string with the path and name of the currently open resource
      * (directory or file).
@@ -97,12 +103,26 @@ abstract class AbstractResource extends \Yana\Core\Object implements \Yana\Files
      * }}
      *
      * @return  string
-     * @name    FileSystemResource::getPath()
      */
     public function getPath()
     {
-        assert('is_string($this->path); // Unexpected result: $this->path is not a string');
-        return $this->path;
+        assert('is_string($this->_path); // Unexpected result: $this->_path is not a string');
+        return $this->_path;
+    }
+
+    /**
+     * Set path to the resource.
+     *
+     * @param   string  $path  to resource
+     * @return  self
+     * @ignore
+     */
+    protected function _setPath($path)
+    {
+        assert('is_string($path); // Wrong argument type for argument 1. String expected.');
+        assert('$path > ""; // Argument 1 must not be empty.');
+        $this->_path = (string) $path;
+        return $this;
     }
 
     /**
@@ -203,10 +223,10 @@ abstract class AbstractResource extends \Yana\Core\Object implements \Yana\Files
      *
      * @ignore
      */
-    protected function resetStats()
+    protected function _resetStats()
     {
-        $this->fileSize = null;
-        $this->lastModified = null;
+        $this->_fileSize = null;
+        $this->_lastModified = null;
         clearstatcache();
     }
 
@@ -220,14 +240,14 @@ abstract class AbstractResource extends \Yana\Core\Object implements \Yana\Files
      */
     public function getLastModified()
     {
-        if (!isset($this->lastModified)) {
+        if (!isset($this->_lastModified)) {
             if ($this->exists()) {
-                $this->lastModified = filemtime($this->getPath());
+                $this->_lastModified = filemtime($this->getPath());
             } else {
-                $this->lastModified = false;
+                $this->_lastModified = false;
             }
         }
-        return $this->lastModified;
+        return $this->_lastModified;
     }
 
     /**
@@ -237,20 +257,20 @@ abstract class AbstractResource extends \Yana\Core\Object implements \Yana\Files
      * Note! This is the value of the original file WITHOUT the changes you possibly made to
      * the file since then.
      *
-     * If the file is new, it returns bool(false).
+     * If the file is new, this returns 0.
      *
      * @return  int
      * @ignore
      */
-    protected function getFilesize()
+    protected function _getFilesize()
     {
-        if (!isset($this->fileSize)) {
-            $this->fileSize = 0;
+        if (!isset($this->_fileSize)) {
+            $this->_fileSize = 0;
             if ($this->exists()) {
-                $this->fileSize = filesize($this->path);
+                $this->_fileSize = filesize($this->getPath());
             }
         }
-        return $this->fileSize;
+        return $this->_fileSize;
     }
 
     /**

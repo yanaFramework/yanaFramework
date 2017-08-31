@@ -373,9 +373,9 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
      *
      * @return  self
      */
-    protected function resetStats()
+    protected function _resetStats()
     {
-        parent::resetStats();
+        parent::_resetStats();
         return $this;
     }
 
@@ -548,23 +548,25 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
         } /* end if */
 
         /* copy directory */
+        assert('!isset($path); // cannot redeclare variable $path');
         assert('!isset($dir); // cannot redeclare variable $dir');
         assert('!isset($item); // cannot redeclare variable $item');
         assert('!isset($handle); // cannot redeclare variable $handle');
-        $handle = opendir($this->path);
+        $path = $this->getPath();
+        $handle = opendir($this->getPath());
         while ($item = readdir($handle))
         {
             /*
              * recurse sub-directories
              */
-            if (is_dir($this->path . $item)) {
+            if (is_dir($path . $item)) {
                 /* if sub-dirs are to be handled recursively ... */
                 if (!$copySubDirs || $item === '.' || $item === '..') {
                     continue;
                 }
                 /* if sub-dir matches the directory pattern ... */
                 if (is_null($dirFilter) || preg_match($dirFilter, $item)) {
-                    $dir = new \Yana\Files\Dir($this->path . $item);
+                    $dir = new \Yana\Files\Dir($path . $item);
                     assert('!isset($copySucceeded); // Cannot redeclare var $copySucceeded');
                     $dir->copy($destDir . $item . '/', $overwrite, $mode, $copySubDirs, $fileFilter, $dirFilter, true);
                     if (chmod($destDir . $item, decoct($mode)) === false) {
@@ -577,9 +579,9 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
             /*
              * handle files
              */
-            } elseif (is_file($this->path . $item)) {
+            } elseif (is_file($path . $item)) {
                 if (is_null($fileFilter) || preg_match($fileFilter, $item)) {
-                    if (copy($this->path . $item, $destDir . $item) === false) {
+                    if (copy($path . $item, $destDir . $item) === false) {
                         $message = "Unable to copy file.";
                         $level = \Yana\Log\TypeEnumeration::WARNING;
                         $error = new \Yana\Core\Exceptions\Files\NotCreatedException($message, $level);

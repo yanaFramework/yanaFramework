@@ -92,7 +92,7 @@ class File extends \Yana\Files\Readonly implements \Yana\Files\IsWritable
         fwrite($handle, $this->getContent());
         flock($handle, LOCK_UN);
         fclose($handle);
-        $this->resetStats();
+        $this->_resetStats();
         return true;
     }
 
@@ -151,19 +151,21 @@ class File extends \Yana\Files\Readonly implements \Yana\Files\IsWritable
      */
     public function create()
     {
+        assert('!isset($path); // cannot redeclare variable $path');
+        $path = $this->getPath();
         if ($this->exists()) {
-            $message = "Unable to create directory '{$this->getPath()}'. " .
+            $message = "Unable to create directory '{$path}'. " .
                 "Another directory with the same name already exists.";
-            $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, E_USER_NOTICE);
-            $exception->setId($this->getPath());
+            $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, \Yana\Log\TypeEnumeration::INFO);
+            $exception->setId($path);
             throw $exception;
         }
-        if (!touch($this->getPath())) {
-            $message = "Unable to create file '{$this->getPath()}'. Target not writeable.";
-            throw new \Yana\Core\Exceptions\NotWriteableException($message, E_USER_WARNING);
+        if (!touch($path)) {
+            $message = "Unable to create file '{$path}'. Target not writeable.";
+            throw new \Yana\Core\Exceptions\NotWriteableException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
-        chmod($this->path, 0777);
-        $this->resetStats();
+        chmod($path, 0777);
+        $this->_resetStats();
     }
 
     /**

@@ -79,7 +79,7 @@ class Readonly extends \Yana\Files\AbstractResource implements \Yana\Files\IsRea
          * Note that checking for $content === false is not enough, since
          * file_get_contents() does not  report this failure.
          */
-        if ($content === false || $this->getFilesize() !== strlen($content)) {
+        if ($content === false || $this->_getFilesize() !== strlen($content)) {
             $message = "File '{$this->getPath()}' is currently not readable.";
             throw new \Yana\Core\Exceptions\NotReadableException($message, E_USER_NOTICE);
         }
@@ -122,9 +122,9 @@ class Readonly extends \Yana\Files\AbstractResource implements \Yana\Files\IsRea
      * @return  int
      * @since   2.8.5
      */
-    public function getFilesize()
+    public function _getFilesize()
     {
-        return parent::getFilesize();
+        return parent::_getFilesize();
     }
 
     /**
@@ -293,9 +293,9 @@ class Readonly extends \Yana\Files\AbstractResource implements \Yana\Files\IsRea
      *
      * @ignore
      */
-    protected function resetStats()
+    protected function _resetStats()
     {
-        parent::resetStats();
+        parent::_resetStats();
         $this->checkSum = null;
     }
 
