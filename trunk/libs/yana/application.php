@@ -277,7 +277,7 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
      * This returns the registry. If none exists, a new instance is created.
      * These settings may be read later by using \Yana\Application::getVar().
      *
-     * @return  \Yana\VDrive\Registry
+     * @return  \Yana\VDrive\IsRegistry
      * @throws  \Yana\Core\Exceptions\NotReadableException    when Registry file is not readable
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when Registry file could not be read or contains invalid syntax
      */
