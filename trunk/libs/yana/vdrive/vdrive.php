@@ -90,7 +90,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
     /**
      * @var  string
      */
-    private $_baseDir = "";
+    private $_baseDirectory = "";
 
     /**
      * @var  array
@@ -145,7 +145,19 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
         assert('is_string($path); // Wrong type for argument 1. String expected');
         assert('is_string($baseDir); // Wrong type for argument 2. String expected');
         parent::__construct($path);
-        $this->_baseDir = (string) $baseDir;
+        $this->_baseDirectory = (string) $baseDir;
+    }
+
+    /**
+     * Get base directory.
+     *
+     * Where all the files are stored.
+     *
+     * @return  string
+     */
+    protected function _getBaseDirectory()
+    {
+        return $this->_baseDirectory;
     }
 
     /**
@@ -164,7 +176,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
 
     /**
      * Returns the default namespace as prefix for class-names of file wrappers.
-     * 
+     *
      * @return  string
      */
     protected function _getDefaultNamespaceForFileWrappers()
@@ -183,14 +195,16 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
     protected function _getConfiguration()
     {
         if (!isset($this->_configuration)) {
+            assert('!isset($path); // cannot redeclare variable $path');
+            $path = $this->getPath();
             /* get file content */
-            if (!is_file($this->path)) {
-                $message = "VDrive configuration file not found: '{$this->getPath()}'.";
+            if (!is_file($path)) {
+                $message = "VDrive configuration file not found: '{$path}'.";
                 throw new \Yana\Core\Exceptions\NotFoundException($message, \Yana\Log\TypeEnumeration::ERROR);
             }
-            $rawContent = file_get_contents($this->path);
+            $rawContent = file_get_contents($path);
             if (empty($rawContent)) {
-                $message = "VDrive configuration file is empty or not readable: '{$this->getPath()}'.";
+                $message = "VDrive configuration file is empty or not readable: '{$path}'.";
                 throw new \Yana\Core\Exceptions\NotReadableException($message, \Yana\Log\TypeEnumeration::ERROR);
             }
             /* apply default settings */
@@ -201,7 +215,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
             $this->_configuration = \Yana\VDrive\Configuration::loadString($content);
             /* read XML */
             if (!($this->_configuration instanceOf \Yana\VDrive\IsConfiguration)) {
-                $message = "Not a valid VDrive configuration file: '{$this->getPath()}'";
+                $message = "Not a valid VDrive configuration file: '{$path}'";
                 throw new \Yana\Core\Exceptions\InvalidSyntaxException($message, \Yana\Log\TypeEnumeration::WARNING);
             }
             $this->_readXML($this->_configuration);
@@ -365,20 +379,23 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
 
             /* 2) handle includes */
             assert('!isset($node); // Cannot redeclare var $node');
+            assert('!isset($file); // Cannot redeclare var $file');
+            assert('!isset($node); // Cannot redeclare var $node');
             foreach ($content->getNodeIncludes() as $node)
             {
                 $file = (string) $node->attributes()->path;
+                $filePath = (string) $this->_getBaseDirectory() . $file;
 
                 if (!preg_match('/^[\w\/]*[\w\.]+\.php$/s', $file)) {
-                    $message = "Invalid filename to include: '{$this->_baseDir}{$file}'.";
+                    $message = "Invalid filename to include: '" . $filePath . "'.";
                     \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
 
-                } elseif (!is_file("{$this->_baseDir}{$file}")) {
-                    $message = "No such file to include: '{$this->_baseDir}{$file}'.";
+                } elseif (!is_file($filePath)) {
+                    $message = "No such file to include: '" . $filePath . "'.";
                     \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
 
                 } else {
-                    include_once "{$this->_baseDir}{$file}";
+                    include_once $filePath;
                 }
             }
             unset($node);
@@ -479,7 +496,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
                 /* intentionally left blank */
             }
             if (!preg_match('/^(\w:|\/)/', $source)) {
-                $source = $this->_baseDir . $source;
+                $source = $this->_getBaseDirectory() . $source;
             }
             if (file_exists($source)) {
                 return $source;
@@ -581,7 +598,9 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
      */
     public function isEmpty()
     {
-        return (bool) (!is_readable($this->path) || !is_file($this->path) || !filesize($this->path));
+        assert('!isset($path); // cannot redeclare variable $path');
+        $path = $this->getPath();
+        return (bool) (!is_readable($path) || !is_file($path) || !filesize($path));
     }
 
     /**
@@ -620,7 +639,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
         if (is_null($report)) {
             $report = \Yana\Report\Xml::createReport(__CLASS__);
         }
-        $report->addText("Base directory: {$this->_baseDir}");
+        $report->addText("Base directory: " . $this->_getBaseDirectory());
 
         if (!isset($this->_configuration)) {
             $report->addWarning("Cannot perform check! Drive is not mounted.");
@@ -644,7 +663,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
         // returns a list of key => value pairs
         $properties = get_object_vars($this);
         // remove the \SimpleXML object (throws an exception when trying to serialize)
-        unset($properties['_configuration']);
+        $properties['_configuration'] = $this->getPath();
         return serialize($properties);
     }
 
@@ -659,7 +678,8 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
         {
             $this->$key = $value;
         }
-        $this->_configuration = \Yana\VDrive\Configuration::loadFile($this->path);
+        $this->_setPath($this->_configuration);
+        $this->_configuration = \Yana\VDrive\Configuration::loadFile($this->_configuration);
     }
 
 }

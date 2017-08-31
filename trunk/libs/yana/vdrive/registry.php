@@ -64,7 +64,7 @@ class Registry extends \Yana\VDrive\VDrive implements \Yana\VDrive\IsRegistry
     /**
      * This is a place-holder for the singleton's instance
      *
-     * @var  \Yana\VDrive\Registry
+     * @var  \Yana\VDrive\IsRegistry
      */
     private static $instance = null;
 
@@ -114,7 +114,7 @@ class Registry extends \Yana\VDrive\VDrive implements \Yana\VDrive\IsRegistry
      * $myRegistry = Registry::getGlobalInstance();
      * </code>
      *
-     * @return  \Yana\VDrive\Registry
+     * @return  self
      */
     public static function &getGlobalInstance()
     {
@@ -222,7 +222,7 @@ class Registry extends \Yana\VDrive\VDrive implements \Yana\VDrive\IsRegistry
      *
      * @param   string  $key        key of updated element
      * @param   mixed   &$value     new value
-     * @return  \Yana\VDrive\Registry
+     * @return  self
      */
     public function setVarByReference($key, &$value)
     {
@@ -244,7 +244,7 @@ class Registry extends \Yana\VDrive\VDrive implements \Yana\VDrive\IsRegistry
      * Replace all vars on registry.
      *
      * @param   array  &$value  new set of values
-     * @return  \Yana\VDrive\Registry
+     * @return  self
      */
     public function setVarsByReference(array &$value)
     {
@@ -261,7 +261,7 @@ class Registry extends \Yana\VDrive\VDrive implements \Yana\VDrive\IsRegistry
      *
      * @param   string  $key        key of updated element
      * @param   mixed   $value      new value
-     * @return  \Yana\VDrive\Registry
+     * @return  self
      */
     public function setVar($key, $value)
     {
@@ -274,7 +274,7 @@ class Registry extends \Yana\VDrive\VDrive implements \Yana\VDrive\IsRegistry
      * Replace all vars in the registry.
      *
      * @param   array  $value  new set of values
-     * @return  \Yana\VDrive\Registry
+     * @return  self
      */
     public function setVars(array $value)
     {
@@ -291,7 +291,7 @@ class Registry extends \Yana\VDrive\VDrive implements \Yana\VDrive\IsRegistry
      * @param   string  $key        key of updated element
      * @param   array   $array      new value
      * @param   bool    $overwrite  true = update, false = ignore
-     * @return  \Yana\VDrive\Registry
+     * @return  self
      */
     public function mergeVars($key, array $array, $overwrite = true)
     {
@@ -326,7 +326,7 @@ class Registry extends \Yana\VDrive\VDrive implements \Yana\VDrive\IsRegistry
     /**
      * Removes all vars from registry.
      *
-     * @return  \Yana\VDrive\Registry
+     * @return  self
      */
     public function unsetVars()
     {
@@ -343,7 +343,7 @@ class Registry extends \Yana\VDrive\VDrive implements \Yana\VDrive\IsRegistry
      * Returns bool(true) otherwise.
      *
      * @param   string  $key  key of element for delete
-     * @return  \Yana\VDrive\Registry
+     * @return  self
      */
     public function unsetVar($key)
     {
@@ -365,7 +365,7 @@ class Registry extends \Yana\VDrive\VDrive implements \Yana\VDrive\IsRegistry
      *
      * @param   string  $key   target index
      * @param   string  $type  name of scalar data type
-     * @return  \Yana\VDrive\Registry
+     * @return  self
      */
     public function setType($key, $type)
     {
