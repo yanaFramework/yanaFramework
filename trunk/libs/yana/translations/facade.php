@@ -65,7 +65,7 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
      * @param  string  $locale  new system locale
      * @return  \Yana\Translations\Manager
      */
-    private function _setSystemLocale($locale)
+    protected function _setSystemLocale($locale)
     {
         assert('is_string($locale); // Invalid argument $locale: string expected');
 
@@ -264,7 +264,7 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
 
         $locale = $this->_getManager()->getLocale();
         $locale->setLanguage($selectedLanguage)->setCountry($selectedCountry);
-        $this->_setSystemLocale($locale->toString());
+         $this->_setSystemLocale($locale->toString());
         return $this;
     }
 
