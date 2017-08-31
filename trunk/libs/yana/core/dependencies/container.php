@@ -83,7 +83,7 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
     /**
      * to read and write data to the global registry
      *
-     * @var  \Yana\VDrive\Registry
+     * @var  \Yana\VDrive\IsRegistry
      */
     private $_registry = null;
 
@@ -331,7 +331,7 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
                 $this->_registry = $cache[$cacheId];
                 assert($this->_registry instanceof \Yana\VDrive\IsRegistry);
             } else {
-                $this->_registry = new \Yana\VDrive\Registry((string) $this->_configuration->configdrive, "");
+                $this->_registry = new \Yana\VDrive\Registry((string) $this->_configuration->configdrive, YANA_INSTALL_DIR);
                 $this->_registry->setVar("ID", $this->getProfileId());
                 $this->_registry->mergeVars('*', \Yana\Util\Hashtable::changeCase($this->_configuration->toArray(), \CASE_UPPER));
             }
@@ -464,7 +464,7 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
     protected function _buildNewTranslationFacade()
     {
         $registry = $this->getRegistry();
-        $languageDir = $registry->getVar('LANGUAGEDIR');
+        $languageDir = (string) $registry->getVar('LANGUAGEDIR');
         /* @var $translationFacade \Yana\Translations\Facade */
         $translationFacade = \Yana\Translations\Facade::getInstance();
         $translationFacade->addDirectory($languageDir);
@@ -511,14 +511,14 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
             assert('!isset($cache); // Cannot redeclare var $cache');
             $cache = $this->getCache();
             assert('!isset($cacheId); // Cannot redeclare var $cacheId');
-            $cacheId = 'skin_' . $registry->getVar('PROFILE.SKIN');
+            $cacheId = 'skin_' . (string) $registry->getVar('PROFILE.SKIN');
 
             if (isset($cache[$cacheId])) {
                 $this->_skin = $cache[$cacheId];
                 assert($this->_skin instanceof \Yana\Views\Skins\IsSkin);
 
             } else {
-                $this->_skin = new \Yana\Views\Skins\Skin($registry->getVar('PROFILE.SKIN'));
+                $this->_skin = new \Yana\Views\Skins\Skin((string) $registry->getVar('PROFILE.SKIN'));
                 $cache[$cacheId] = $this->_skin;
             }
         }
