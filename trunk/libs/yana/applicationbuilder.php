@@ -160,7 +160,7 @@ class ApplicationBuilder extends \Yana\Core\Object
      */
     private function _getErrorLogger()
     {
-        if (!isset($$this->_errorLogger)) {
+        if (!isset($this->_errorLogger)) {
             $this->_errorLogger = new \Yana\Log\NullLogger();
         }
         return $this->_errorLogger;

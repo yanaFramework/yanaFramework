@@ -2857,6 +2857,9 @@ class Structure extends \Yana\Files\SML
 
         $col =& $this->_getColumn($table, $column);
 
+        $builder = new \Yana\ApplicationBuilder();
+        $application = $builder->buildApplication();
+        unset($builder);
         /*
          * 1) error - table / column do not exist
          */
@@ -2869,7 +2872,7 @@ class Structure extends \Yana\Files\SML
         } elseif (!empty($action) && isset($col['DISPLAY']['HIDDEN'][$action])) {
             /* 2.1) decide by permission */
             if (is_numeric($col['DISPLAY']['HIDDEN'][$action])) {
-                return ($GLOBALS['YANA']->getVar('PERMISSION') >= $col['DISPLAY']['HIDDEN'][$action]);
+                return ($application->getVar('PERMISSION') >= $col['DISPLAY']['HIDDEN'][$action]);
             /* 2.2) decide by structure */
             } elseif ($col['DISPLAY']['HIDDEN'][$action] === false) {
                 return true;
@@ -2883,7 +2886,7 @@ class Structure extends \Yana\Files\SML
         } elseif (isset($col['DISPLAY']['HIDDEN']) && is_scalar($col['DISPLAY']['HIDDEN'])) {
             /* 3.1) decide by permission */
             if (is_numeric($col['DISPLAY']['HIDDEN'])) {
-                return ($GLOBALS['YANA']->getVar('PERMISSION') >= $col['DISPLAY']['HIDDEN']);
+                return ($application->getVar('PERMISSION') >= $col['DISPLAY']['HIDDEN']);
             /* 3.2) decide by structure */
             } elseif ($col['DISPLAY']['HIDDEN'] === false) {
                 return true;
@@ -3179,6 +3182,9 @@ class Structure extends \Yana\Files\SML
 
         $col =& $this->_getColumn($table, $column);
 
+        $builder = new \Yana\ApplicationBuilder();
+        $application = $builder->buildApplication();
+        unset($builder);
         /*
          * 1) error - table / column do not exist
          */
@@ -3203,7 +3209,7 @@ class Structure extends \Yana\Files\SML
         } elseif (!empty($action) && isset($col['DISPLAY']['READONLY'][$action])) {
             /* 4.1) decide by permission */
             if (is_numeric($col['DISPLAY']['READONLY'][$action])) {
-                return ($GLOBALS['YANA']->getVar('PERMISSION') >= $col['DISPLAY']['READONLY'][$action]);
+                return ($application->getVar('PERMISSION') >= $col['DISPLAY']['READONLY'][$action]);
             /* 4.2) decide by structure */
             } elseif ($col['DISPLAY']['READONLY'][$action] === false) {
                 return true;
@@ -3217,7 +3223,7 @@ class Structure extends \Yana\Files\SML
         } elseif (isset($col['DISPLAY']['READONLY']) && is_scalar($col['DISPLAY']['READONLY'])) {
             /* 5.1) decide by permission */
             if (is_numeric($col['DISPLAY']['READONLY'])) {
-                return ($GLOBALS['YANA']->getVar('PERMISSION') >= $col['DISPLAY']['READONLY']);
+                return ($application->getVar('PERMISSION') >= $col['DISPLAY']['READONLY']);
             /* 5.2) decide by structure */
             } elseif ($col['DISPLAY']['READONLY'] === false) {
                 return true;

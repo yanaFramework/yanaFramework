@@ -51,6 +51,31 @@ class Manager extends \Yana\Translations\AbstractManager
 {
 
     /**
+     * Add a directory to the collection of accepted locales.
+     *
+     * @param  \Yana\Translations\IsLocale  $locale  must correspond to existing translation directory
+     * @return  self
+     */
+    public function addAcceptedLocale(\Yana\Translations\IsLocale $locale)
+    {
+        $locales = $this->_getAcceptedLocales();
+
+        // Check if the locale already exists, to avoid duplicate values
+        assert('!isset($id); // Cannot redeclare var $id');
+        assert('!isset($acceptedLocale); // Cannot redeclare var $acceptedLocale');
+        foreach ($locales as $id => $acceptedLocale)
+        {
+            if ($acceptedLocale->equals($locale)) {
+                $locales->offsetUnset($id);
+            }
+        }
+        unset($acceptedLocale);
+
+        $locales[] = $locale;
+        return $this;
+    }
+
+    /**
      * Returns the language pack's meta information.
      *
      * Use this to get more info on the language pack's author, title or description.
@@ -103,29 +128,34 @@ class Manager extends \Yana\Translations\AbstractManager
             assert('!isset($provider); // Cannot redeclare var $provider');
             foreach ($this->_getTextDataProviders() as $provider)
             {
-                /* @var $provider \Yana\Translations\TextData\IsDataProvider */
-                assert($provider instanceof \Yana\Translations\TextData\IsDataProvider);
-                /* Try to read a given language pack.
-                 * If the id is not valid, write warnings to the logs.
-                 */
-                try {
-                    // The following loads and copies the translations to the container
-                    $knownTranslations = $provider->loadOject($id, $this->getLocale(), $knownTranslations); // may throw exception
+                assert('!isset($locale); // Cannot redeclare var $locale');
+                foreach ($this->_getAcceptedLocales() as $locale)
+                {
+                    /* @var $provider \Yana\Translations\TextData\IsDataProvider */
+                    assert($provider instanceof \Yana\Translations\TextData\IsDataProvider);
+                    /* Try to read a given language pack.
+                     * If the id is not valid, write warnings to the logs.
+                     */
+                    try {
+                        // The following loads and copies the translations to the container
+                        $knownTranslations = $provider->loadOject($id, $locale, $knownTranslations); // may throw exception
 
-                } catch (\Yana\Core\Exceptions\Translations\LanguageFileNotFoundException $e) {
-                    // Not all sources will have the requested pack.
-                    // This is normal as long as at least one has it.
-                    unset($e);
+                    } catch (\Yana\Core\Exceptions\Translations\LanguageFileNotFoundException $e) {
+                        // Not all sources will have the requested pack.
+                        // This is normal as long as at least one has it.
+                        unset($e);
 
-                } catch (\Yana\Core\Exceptions\Translations\InvalidSyntaxException $e) {
-                    // When a source has been found, but the contents retrieved were invalid.
-                    assert('!isset($message); // Cannot redeclare var $message');
-                    $message = "Error in language source: '" . $id . "'.";
-                    assert('!isset($level); // Cannot redeclare variable $level');
-                    $level = \Yana\Log\TypeEnumeration::WARNING;
-                    $this->getLogger()->addLog($message, $level, $e->getMessage());
-                    unset($e, $message, $level);
+                    } catch (\Yana\Core\Exceptions\Translations\InvalidSyntaxException $e) {
+                        // When a source has been found, but the contents retrieved were invalid.
+                        assert('!isset($message); // Cannot redeclare var $message');
+                        $message = "Error in language source: '" . $id . "'.";
+                        assert('!isset($level); // Cannot redeclare variable $level');
+                        $level = \Yana\Log\TypeEnumeration::WARNING;
+                        $this->getLogger()->addLog($message, $level, $e->getMessage());
+                        unset($e, $message, $level);
+                    }
                 }
+                unset($locale);
             }
             unset($provider);
 

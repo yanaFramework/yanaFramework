@@ -28,32 +28,32 @@
 namespace Yana\Translations;
 
 /**
- * <<interface>> Classes having a translation manager.
- *
- * Use this interface to indicate that a class has getter/setter functions for a translation manager.
+ * <<collection>> Locale collection.
  *
  * @package     yana
  * @subpackage  translations
  */
-interface IsTranslatable
+class LocaleCollection extends \Yana\Core\AbstractCollection
 {
 
     /**
-     * Attach a translation manager.
+     * Add a new locale to the collection.
      *
-     * @param   \Yana\Translations\IsFacade  $manager  loads and provides translation strings
-     * @return  self
+     * @param   numeric                      $offset  number (use 0 for default)
+     * @param   \Yana\Translations\IsLocale  $value   locale that shoud be added
+     * @return  \Yana\Translations\IsLocale
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the value is not a locale
      */
-    public function setTranslation(\Yana\Translations\IsFacade $manager);
-
-    /**
-     * Returns a translation manager instance.
-     *
-     * If none was given, an empty instance is provided.
-     *
-     * @return  \Yana\Translations\IsFacade
-     */
-    public function getTranslation();
+    public function offsetSet($offset, $value)
+    {
+        assert('is_null($offset) || is_scalar($offset); // $offset expected to be Scalar');
+        if (!$value instanceof \Yana\Translations\IsLocale) {
+            $message = "Instance of \Yana\Translations\IsLocale expected. " .
+                "Found " . gettype($value) . "(" . get_class($value) . ") instead.";
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
+        }
+        return $this->_offsetSet($offset, $value);
+    }
 
 }
 

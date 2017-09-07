@@ -317,7 +317,7 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
      *
      * This returns the language component. If none exists, a new instance is created.
      *
-     * @return  \Yana\Translations\Facade
+     * @return  \Yana\Translations\IsFacade
      */
     public function getLanguage()
     {
@@ -329,7 +329,7 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
      *
      * This returns the skin component. If none exists, a new instance is created.
      *
-     * @return  \Yana\Views\Skins\Skin
+     * @return  \Yana\Views\Skins\IsSkin
      */
     public function getSkin()
     {
@@ -956,10 +956,6 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
                 $systemIntegrityReport->addText("{$root} = " . md5_file($root));
             }
         } // end foreach
-        foreach (glob(dirname(__FILE__) . '/*.php') as $root)
-        {
-            $systemIntegrityReport->addText("{$root} = " . md5_file($root));
-        }
 
         /**
          *  5) Add subreports
@@ -972,13 +968,17 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
             }
         }
         unset($memberReport);
+        $this->getPlugins()->getReport($report->addReport("Plugins"));
+        $this->getSkin()->getReport($report->addReport("Skins"));
+        $this->getRegistry()->getReport($report->addReport("Virtual files"));
 
         $iconIntegrityReport = $report->addReport('Searching for icon images');
         $registry = $this->getRegistry();
         /* @var $dir \Dir */
         assert('!isset($dir); // Cannot redeclare var $dir');
         $dir = $registry->getResource('system:/smile');
-        $smilies = $dir->dirlist();
+        /* @var $dir \Yana\Files\Dir */
+        $smilies = $dir->listFiles();
         if (count($smilies)==0) {
             $message = "No Icons found. Please check if the given directory is correct: '" .
                 $dir->getPath() . "'.";

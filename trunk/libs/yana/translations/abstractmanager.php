@@ -61,9 +61,9 @@ abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Transl
     private $_loggers = null;
 
     /**
-     * @var  \Yana\Translations\IsLocale
+     * @var  \Yana\Translations\LocaleCollection
      */
-    private $_locale = null;
+    private $_acceptedLocales = null;
 
     /**
      * Initializes collections
@@ -72,20 +72,17 @@ abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Transl
     {
         $this->_textDataProviders = new \Yana\Translations\TextData\DataProviderCollection();
         $this->_metaDataProviders = new \Yana\Core\MetaData\DataProviderCollection();
+        $this->_acceptedLocales = new \Yana\Translations\LocaleCollection();
     }
 
     /**
-     * Returns locale settings.
+     * Get collection of accepted locales.
      *
-     * @return  \Yana\Translations\IsLocale
+     * @return  \Yana\Translations\LocaleCollection
      */
-    public function getLocale()
+    protected function _getAcceptedLocales()
     {
-        if (!isset($this->_locale)) {
-            $this->_locale = new \Yana\Translations\Locale();
-        }
-
-        return $this->_locale;
+        return $this->_acceptedLocales;
     }
 
     /**

@@ -79,7 +79,7 @@ namespace Yana\VDrive;
  * @subpackage vdrive
  * @name       VDrive
  */
-class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDrive, \Yana\Report\IsReportable, \Serializable
+class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDrive, \Serializable
 {
 
     /**

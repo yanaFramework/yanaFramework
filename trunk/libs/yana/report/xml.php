@@ -91,34 +91,29 @@ class Xml extends \SimpleXMLElement implements IsReport
      * It may have a title, contain more sub-reports or messages.
      *
      * @param   string  $title  report title
-     * @return  \Yana\Report\Xml
+     * @return  self
      */
     public function addReport($title = "")
     {
         assert('is_string($title); // Wrong type for argument 1. String expected');
+        $report = null;
         if ($this->getName() === 'report') {
             $report = $this->addChild("report");
             if (!empty($title)) {
                 $report->addChild("title", (string) $title);
             }
-            return $report;
-        } else {
-            return null;
         }
+        return $report;
     }
 
     /**
-     * Returns a list of reports.
+     * Returns an array of all child tags that are report tags.
      *
      * @return  array
      */
     public function getReports()
     {
-        if (isset($this->report)) {
-            return $this->report;
-        } else {
-            return array();
-        }
+        return $this->_getChildrenByName('report');
     }
 
     /**
@@ -128,18 +123,14 @@ class Xml extends \SimpleXMLElement implements IsReport
      */
     public function getTitle()
     {
-        if (isset($this->title)) {
-            return $this->title;
-        } else {
-            return "";
-        }
+        return $this->_getNodeAsText('title');
     }
 
     /**
      * Adds a neutral text to the report.
      *
      * @param   string  $message  text of message
-     * @return  \Yana\Report\Xml
+     * @return  self
      */
     public function addText($message)
     {
@@ -158,13 +149,65 @@ class Xml extends \SimpleXMLElement implements IsReport
      */
     public function getTexts()
     {
-        if (isset($this->text)) {
-            return $this->text;
-        } else {
-            return array();
-        }
+        return $this->_getChildrenByName('text');
     }
 
+    /**
+     * Finds and returns a list of all child-nodes with the given name.
+     *
+     * If there are none, the list is empty.
+     *
+     * @param   string  $name  tag name to match
+     * @return  array
+     */
+    protected function _getChildrenByName($name)
+    {
+        assert('is_string($name); // Wrong type for argument 1. String expected');
+
+        $nodes = array();
+
+        foreach ($this->children() as $node)
+        {
+            if ($node->getName() === $name) {
+                $nodes[] = $node;
+            }
+        }
+        unset($node);
+
+        return $nodes;
+    }
+
+    /**
+     * Return inner text of node.
+     *
+     * If the node is empty, the returned text is empty.
+     *
+     * @return  string
+     */
+    protected function _asText()
+    {
+        return (string) parent::__toString();
+    }
+
+    /**
+     * Return inner text of node.
+     *
+     * If the node is empty, the returned text is empty.
+     *
+     * @param   string  $name  of tag
+     * @return  string
+     */
+    protected function _getNodeAsText($name)
+    {
+        $text = "";
+        if (isset($this->$name) && $this->$name instanceof \Yana\Report\Xml) {
+            /* @var $node \Yana\Report\Xml */
+            $node = $this->$name;
+            $text = $node->_asText();
+        }
+        return $text;
+    }
+    
     /**
      * Adds a notice to the report.
      *
@@ -177,7 +220,7 @@ class Xml extends \SimpleXMLElement implements IsReport
      * So this notice is meant to remind you - just in case.
      *
      * @param   string  $message  text of message
-     * @return  \Yana\Report\Xml
+     * @return  self
      */
     public function addNotice($message)
     {
@@ -196,11 +239,7 @@ class Xml extends \SimpleXMLElement implements IsReport
      */
     public function getNotices()
     {
-        if (isset($this->notice)) {
-            return $this->notice;
-        } else {
-            return array();
-        }
+        return $this->_getChildrenByName('notice');
     }
 
     /**
@@ -213,7 +252,7 @@ class Xml extends \SimpleXMLElement implements IsReport
      * the software may not react as expected.
      *
      * @param   string  $message  text of message
-     * @return  \Yana\Report\Xml
+     * @return  self
      */
     public function addWarning($message)
     {
@@ -232,11 +271,7 @@ class Xml extends \SimpleXMLElement implements IsReport
      */
     public function getWarnings()
     {
-        if (isset($this->warning)) {
-            return $this->warning;
-        } else {
-            return array();
-        }
+        return $this->_getChildrenByName('warning');
     }
 
     /**
@@ -251,7 +286,7 @@ class Xml extends \SimpleXMLElement implements IsReport
      * a software crash, e.g. possible loss of data.
      *
      * @param   string  $message  text of message
-     * @return  \Yana\Report\Xml
+     * @return  self
      */
     public function addError($message)
     {
@@ -270,11 +305,7 @@ class Xml extends \SimpleXMLElement implements IsReport
      */
     public function getErrors()
     {
-        if (isset($this->error)) {
-            return $this->error;
-        } else {
-            return array();
-        }
+        return $this->_getChildrenByName('error');
     }
 
     /**

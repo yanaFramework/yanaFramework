@@ -50,6 +50,25 @@ class Locale extends \Yana\Core\Object implements \Yana\Translations\IsLocale
     private $_country = "";
 
     /**
+     * <<constructor>> Initialize settings.
+     *
+     * @param  string  $language  2 character language code
+     * @param  string  $country   2 character country code
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when either language or country are invalid
+     */
+    public function __construct($language = "", $country = "")
+    {
+        assert('is_string($language); // Invalid argument $language: string expected');
+        assert('is_string($country); // Invalid argument $country: string expected');
+        if ($language > "") {
+            $this->setLanguage($language);
+        }
+        if ($country > "") {
+            $this->setCountry($country);
+        }
+    }
+
+    /**
      * Set the language part of the locale.
      *
      * @param   string  $selectedLanguage  2 character language code
@@ -108,17 +127,7 @@ class Locale extends \Yana\Core\Object implements \Yana\Translations\IsLocale
      */
     public function __toString()
     {
-        assert('!isset($locale); // Cannot redeclare var $locale');
-        $locale = $this->_getLanguage();
-
-        assert('!isset($country); // Cannot redeclare var $country');
-        $country = $this->_getCountry();
-        if (!empty($country)) {
-            $locale .= '-' . $country;
-
-        }
-
-        return $locale;
+        return $this->toString();
     }
 
     /**

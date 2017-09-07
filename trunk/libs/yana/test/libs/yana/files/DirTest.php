@@ -175,7 +175,7 @@ class DirTest extends \PHPUnit_Framework_TestCase
      * @expectedException  \Yana\Core\Exceptions\InvalidArgumentException
      * @test
      */
-    function testCreateInvalidArgumentLowerBounds()
+    public function testCreateInvalidArgumentLowerBounds()
     {
         $this->nonExistingDir->create(0);
         $this->fail('Function create must not accept int < 1 as argument');
@@ -187,9 +187,9 @@ class DirTest extends \PHPUnit_Framework_TestCase
      * @expectedException  \Yana\Core\Exceptions\InvalidArgumentException
      * @test
      */
-    function testCreateInvalidArgumentUpperBounds()
+    public function testCreateInvalidArgumentUpperBounds()
     {
-        $this->nonExistingDir->create(01000);exit('2');
+        $this->nonExistingDir->create(01000);
         $this->fail('Function create must not accept int < 0777 as argument');
     }
 
@@ -212,7 +212,7 @@ class DirTest extends \PHPUnit_Framework_TestCase
      * @expectedException  PHPUnit_Framework_Error
      * @test
      */
-    function testDeleteInvalidArgument()
+    public function testDeleteInvalidArgument()
     {
         $delete = $this->nonExistingDir->delete('false');
         $this->assertFalse($delete, 'assert failed, first argument must be a bool');
@@ -321,7 +321,6 @@ class DirTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('array', $dirList);
         $this->assertGreaterThanOrEqual(1, count($dirList));
         $this->assertEquals($expected, $dirList, 'directory listing with filter *.txt, *.xml, *.dat should match directory contents');
-
     }
 
     /**
@@ -344,14 +343,14 @@ class DirTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('int', $size, 'expecting getSize() to return result of type integer');
         $this->assertEquals($size, $scanDirSize, "Size does not match the size of the files in the directory");
     }
-    
+
     /**
      * GetSize Invalid Argument1
      *
      * @test
      * @expectedException \Yana\Core\Exceptions\Files\NotFoundException
      */
-    function testGetSizeNotFoundException()
+    public function testGetSizeNotFoundException()
     {
         // try with non exist Dir
         $newDir = new \Yana\Files\Dir('nonexistDir');
@@ -391,7 +390,7 @@ class DirTest extends \PHPUnit_Framework_TestCase
      * @expectedException  \Yana\Core\Exceptions\InvalidArgumentException
      * @test
      */
-    function testCopyInvalidArgumentUpper()
+    public function testCopyInvalidArgumentUpper()
     {
         $this->nonExistingDir->copy($this->nonExistingDir->getPath(), true, 01000);
         $this->fail('Third argument must not be bigger than 0777.');
@@ -403,7 +402,7 @@ class DirTest extends \PHPUnit_Framework_TestCase
      * @expectedException  \Yana\Core\Exceptions\InvalidArgumentException
      * @test
      */
-    function testCopyInvalidArgumentLower()
+    public function testCopyInvalidArgumentLower()
     {
         $this->nonExistingDir->copy($this->nonExistingDir->getPath(), true, 0);
         $this->fail('Third argument must not be smaller than 1.');
@@ -415,10 +414,12 @@ class DirTest extends \PHPUnit_Framework_TestCase
      * @expectedException \Yana\Core\Exceptions\AlreadyExistsException
      * @test
      */
-    function testCopyAlreadyExists()
+    public function testCopyAlreadyExists()
     {
         $this->existingDir->copy($this->existingDir->getPath(), false);
         $this->fail('May not overwrite an existing directory.');
     }
+
 }
+
 ?>

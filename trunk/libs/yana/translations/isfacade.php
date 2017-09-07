@@ -36,7 +36,7 @@ namespace Yana\Translations;
  * @package     yana
  * @subpackage  translations
  */
-interface IsFacade extends \Yana\Translations\IsTranslationManager
+interface IsFacade extends \Yana\Translations\IsTranslation
 {
 
     /**
@@ -73,6 +73,13 @@ interface IsFacade extends \Yana\Translations\IsTranslationManager
      * @return  string
      */
     public function getCountry();
+
+    /**
+     * Returns locale settings.
+     *
+     * @return  string
+     */
+    public function getLocale();
 
     /**
      * Read language strings from a file.

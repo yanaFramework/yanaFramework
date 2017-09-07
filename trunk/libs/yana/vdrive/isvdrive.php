@@ -36,7 +36,7 @@ namespace Yana\VDrive;
  * @package    yana
  * @subpackage vdrive
  */
-interface IsVDrive extends \Yana\Files\IsResource
+interface IsVDrive extends \Yana\Files\IsResource, \Yana\Report\IsReportable
 {
 
     /**

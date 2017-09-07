@@ -953,8 +953,8 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
         $tplMessage = strcasecmp($template, "message");
         if (!empty($template) && strcasecmp($template, "null") !== 0 && $tplMessage !== 0) {
 
-            $filename = $template;
             assert('!isset($filename); // Cannot redeclare var $filename');
+            $filename = $template;
             try {
 
                 assert('!isset($builder); // Cannot redeclare var $builder');

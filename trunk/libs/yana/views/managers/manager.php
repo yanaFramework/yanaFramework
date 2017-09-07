@@ -66,7 +66,7 @@ class Manager extends \Yana\Views\Managers\AbstractManager
      *
      * @var  string
      */
-    private static $_cacheId = "";
+    private static $_templateId = "";
 
     /**
      * Initializes the manager class
@@ -151,13 +151,8 @@ class Manager extends \Yana\Views\Managers\AbstractManager
      */
     private function _createTemplate($filename, \Smarty_Internal_Template $parent = null)
     {
-        $cacheId = null;
-        $compileId = null;
-        if ($this->_smarty->caching) {
-            $cacheId = $this->_getCacheId();
-            $compileId = $cacheId;
-        }
-        return $this->_smarty->createTemplate($filename, $cacheId, $compileId, $parent);
+        $compileId = $this->_getTemplateId();
+        return $this->_smarty->createTemplate($filename, $compileId, $compileId, $parent);
     }
 
     /**
@@ -173,16 +168,16 @@ class Manager extends \Yana\Views\Managers\AbstractManager
     }
 
     /**
-     * Calculate cache id.
+     * Calculate template id.
      *
      * This helps the Smarty template engine to identify when to invalidate the cache,
      * when it is active.
      *
      * @return  string
      */
-    private function _getCacheId()
+    private function _getTemplateId()
     {
-        if (empty(self::$_cacheId)) {
+        if (self::$_templateId === "") {
 
             // get query string (with session-id stripped)
             $queryString = "";
@@ -199,14 +194,9 @@ class Manager extends \Yana\Views\Managers\AbstractManager
             $id = "";
             if (!empty($queryString)) {
                 // get language
-                $language = "";
-                if (isset($GLOBALS['YANA'])) {
-                    $language = $GLOBALS['YANA']->getLanguage()->getLocale();
-                } else {
-                    $language = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
-                }
-                $id = $language . '/' . $queryString;
-                unset($language);
+                $builder = new \Yana\ApplicationBuilder();
+                $id = (string) $builder->buildApplication()->getLanguage()->getLocale() . '/' . $queryString;
+                unset($builder);
 
             } else {
                 $id = $_SERVER['PHP_SELF'];
@@ -214,10 +204,10 @@ class Manager extends \Yana\Views\Managers\AbstractManager
             unset($queryString);
 
             // move id to cache;
-            self::$_cacheId = md5($id);
-            assert('is_string(self::$_cacheId) && !empty(self::$_cacheId); // failure calculating cache id');
+            self::$_templateId = md5($id);
+            assert('is_string(self::$_templateId) && self::$_templateId > ""; // failure calculating cache id');
         }
-        return self::$_cacheId;
+        return self::$_templateId;
     }
 
     /**

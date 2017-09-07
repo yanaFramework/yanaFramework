@@ -47,22 +47,16 @@ namespace Yana\Translations;
  * @package     yana
  * @subpackage  translations
  */
-interface IsTranslationManager extends \Yana\Log\IsLogable
+interface IsTranslationManager extends \Yana\Translations\IsTranslation
 {
 
     /**
-     * Returns locale settings.
+     * Add a directory to the collection of accepted locales.
      *
-     * @return  \Yana\Translations\IsLocale
+     * @param  \Yana\Translations\IsLocale  $locale  must correspond to existing translation directory
+     * @return  self
      */
-    public function getLocale();
-
-    /**
-     * Returns a container with all known translations.
-     *
-     * @return  \Yana\Translations\TextData\IsTextContainer
-     */
-    public function getTranslations();
+    public function addAcceptedLocale(\Yana\Translations\IsLocale $locale);
 
     /**
      * Adds a class that provides meta-information about a language package.
@@ -82,82 +76,6 @@ interface IsTranslationManager extends \Yana\Log\IsLogable
      * @return  self
      */
     public function addTextDataProvider(\Yana\Translations\TextData\IsDataProvider $provider);
-
-    /**
-     * Returns the language pack's meta information.
-     *
-     * Use this to get more info on the language pack's author, title or description.
-     *
-     * @param   string  $locale  name of language pack
-     * @return  \Yana\Core\MetaData\IsPackageMetaData
-     * @throws  \Yana\Core\Exceptions\NotFoundException  if the requested language pack is not found
-     */
-    public function getMetaData($locale);
-
-    /**
-     * Read language strings.
-     *
-     * You may find valid filenames in the following directory 'languages/<locale>/*.xlf'.
-     * Provide the file without path and file extension.
-     *
-     * You may access the file contents via $language->getVar('some.value').
-     *
-     * @param   string  $id  name of translation package that should be loaded
-     * @return  self
-     * @throws  \Yana\Core\Exceptions\Translations\InvalidFileNameException       when the given identifier is invalid
-     * @throws  \Yana\Core\Exceptions\InvalidSyntaxException                      when the give filename is invalid
-     * @throws  \Yana\Core\Exceptions\Translations\LanguageFileNotFoundException  when the language file is not found
-     */
-    public function loadTranslations($id);
-
-    /**
-     * Returns a list of all languages.
-     *
-     * Returns an associative array where the keys are the ids
-     * and the values are the names for all installed languages.
-     *
-     * @return  array
-     */
-    public function getLanguages();
-
-    /**
-     * Alias of getVar().
-     *
-     * @param   string  $key  translation key (case insensitive)
-     * @return  string|array
-     */
-    public function __get($id);
-
-    /**
-     * Get language string.
-     *
-     * Note: the key may also refer to a group id. If so the function returns
-     * all members of the group as an array.
-     *
-     * @param   string  $key  translation key (case insensitive)
-     * @return  string|array
-     */
-    public function getVar($key);
-
-    /**
-     * Check if a translation exists.
-     *
-     * Returns bool(true) if the key can be translated and bool(false) otherwise.
-     *
-     * @param   string  $key  translation key (case insensitive)
-     * @return  bool
-     */
-    public function isVar($key);
-
-    /**
-     * Replace a token within a provided text.
-     *
-     * If a token refers to a non-existing value it is removed.
-     *
-     * @param   string  $string  text including language ids
-     * @return  string
-     */
-    public function replaceToken($string);
 
 }
 

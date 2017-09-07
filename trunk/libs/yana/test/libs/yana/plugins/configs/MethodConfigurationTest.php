@@ -509,6 +509,15 @@ class MethodConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->object->hasMethod($instance));
     }
 
+    /**
+     * @test
+     */
+    public function testGetReport()
+    {
+        $report = $this->object->getReport();
+        $this->assertTrue($report instanceof \Yana\Report\IsReport);
+    }
+
 }
 
 ?>
