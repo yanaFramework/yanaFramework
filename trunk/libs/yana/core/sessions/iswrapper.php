@@ -68,7 +68,7 @@ interface IsWrapper extends \Yana\Core\IsCountableArray
      * @param   bool  $deleteOldSession  Whether to delete the old associated session file or not.
      * @return  \Yana\Core\Sessions\IsWrapper
      */
-    public function regeneratId($deleteOldSession = false);
+    public function regenerateId($deleteOldSession = false);
 
     /**
      * Returns the name of the session-id variable.

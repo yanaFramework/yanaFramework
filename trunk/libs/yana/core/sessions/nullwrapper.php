@@ -91,7 +91,11 @@ class NullWrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWra
     public function offsetGet($offset)
     {
         assert('is_scalar($offset); // Invalid argument $offset: scalar expected');
-        return $this->_data[$offset];
+        $value = null;
+        if ($this->offsetExists($offset)) {
+            $value = $this->_data[$offset];
+        }
+        return $value;
     }
 
     /**
@@ -175,11 +179,14 @@ class NullWrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWra
      * @param   bool  $deleteOldSession  Whether to delete the old associated session file or not.
      * @return  \Yana\Core\Sessions\NullWrapper
      */
-    public function regeneratId($deleteOldSession = false)
+    public function regenerateId($deleteOldSession = false)
     {
         assert('is_bool($deleteOldSession); // Invalid argument $deleteOldSession: bool expected');
 
         $this->_id = "";
+        if ($deleteOldSession) {
+            $this->unsetAll();
+        }
         return $this;
     }
 

@@ -150,7 +150,7 @@ class Wrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWrapper
      * @param   bool  $deleteOldSession  Whether to delete the old associated session file or not.
      * @return  \Yana\Core\Sessions\IsWrapper
      */
-    public function regeneratId($deleteOldSession = false)
+    public function regenerateId($deleteOldSession = false)
     {
         assert('is_bool($deleteOldSession); // Invalid argument $deleteOldSession: bool expected');
 

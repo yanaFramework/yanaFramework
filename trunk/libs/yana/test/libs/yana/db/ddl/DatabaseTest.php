@@ -1979,25 +1979,29 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * getListOfFiles
-     *
      * @test
      */
     public function testGetListOfFiles()
     {
         $get = \Yana\Db\Ddl\DDL::getListOfFiles();
-        $this->assertFalse(in_array('config/db/user.db.xml', $get), 'assert failed, the value can not be exist in array');
-        $this->assertTrue(in_array('user', $get), 'assert failed, the value must be exist in array');
+        $this->assertNotContains('config/db/user.db.xml', $get);
+        $this->assertContains('user', $get);
         $this->assertInternalType('array', $get, 'assert failed, the value should be from type array');
+    }
 
+    /**
+     * @test
+     */
+    public function testGetListOfFilesFullFilenames()
+    {
         $get = \Yana\Db\Ddl\DDL::getListOfFiles(true);
-        $this->assertTrue(count($get) > 0, 'assert failed, the value must be exist in array');
+        $this->assertCount(6, $get);
         foreach ($get as $file)
         {
-            $this->assertTrue(is_file($file));
+            $this->assertFileExists($file);
         }
-        $this->assertFalse(in_array('user', $get), 'assert failed, the value can not be exist in array');
-        $this->assertInternalType('array', $get, 'assert failed, the value should be from type array');
+        $this->assertInternalType('array', $get);
+        $this->assertNotContains('user', $get);
     }
 
     /**

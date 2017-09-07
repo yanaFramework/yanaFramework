@@ -202,7 +202,7 @@ class StandardBehavior extends \Yana\Security\Logins\AbstractBehavior
         // kill session
         @$session->destroy();
         // get rid of the old sesion id - just in case
-        @$session->regeneratId();
+        @$session->regenerateId();
 
         // reset session-checksum to mark user as logged-out in database
         $user->setSessionCheckSum("")->saveEntity();

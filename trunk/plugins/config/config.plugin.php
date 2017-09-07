@@ -82,16 +82,19 @@ class ConfigPlugin extends \Yana\Plugins\AbstractPlugin
         $YANA->setVar('LANGUAGEFILES', $YANA->getLanguage()->getLanguages());
         $YANA->setVar('SKINFILES', $YANA->getSkin()->getSkins());
         // create a list of profiles
+        /* @var $profileDirectory \Yana\Files\Dir */
+        assert('!isset($profileDirectory); // Cannot redeclare var $profileDirectory');
+        $profileDirectory = $YANA->getResource('system:/config/profiledir');
         assert('!isset($profiles); // Cannot redeclare var $profiles');
         $profiles = array();
         assert('!isset($profile); // Cannot redeclare var $profile');
-        foreach ($YANA->getResource('system:/config/profiledir')->dirlist('*.cfg') as $profile)
+        foreach ($profileDirectory->listFiles('*.cfg') as $profile)
         {
             $profiles[$profile] = mb_substr($profile, 0, mb_strrpos($profile, "."));
         }
         // store list
         $YANA->setVar('PROFILES', $profiles);
-        unset($profile, $profiles);
+        unset($profileDirectory, $profile, $profiles);
 
         $this->index_plugins();
 

@@ -564,8 +564,7 @@ abstract class DDL extends \Yana\Core\Object
     public static function getListOfFiles($useFullFilename = false)
     {
         assert('is_bool($useFullFilename); // Wrong type for argument 1. Boolean expected');
-        $builder = new \Yana\ApplicationBuilder();
-        $dbDir = (string) $builder->buildApplication()->getVar('DBDIR');
+        $dbDir = self::getDirectory();
         $list = array();
         $dirList = glob($dbDir . "/*" . \Yana\Db\Ddl\DDL::$extension);
         if (is_array($dirList)) {
