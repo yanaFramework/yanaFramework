@@ -41,27 +41,49 @@ class TextFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
     /**
      * @var string
      */
-    private static $_datadir = 'common_files/';
+    private static $_dataDir = null;
 
     /**
      * @var array
      */
-    private static $_userDefinedTags = array();
+    private static $_userDefinedTags = null;
 
     /**
-     * Create a new instance.
+     * Get directory where icon files are stored.
      *
-     * This also loads the configuration.
+     * @return  string
+     * @codeCoverageIgnore
      */
-    public function __construct()
+    protected function _getDataDir()
     {
-        assert('!isset($builder); // Cannot redeclare var $builder');
-        assert('!isset($application); // Cannot redeclare var $application');
-        $builder = new \Yana\ApplicationBuilder();
-        $application = $builder->buildApplication();
-        unset($builder);
-        self::$_datadir = $application->getVar('DATADIR');
-        self::$_userDefinedTags = $application->getVar('PROFILE.EMBTAG');
+        if (!isset(self::$_dataDir)) {
+            assert('!isset($builder); // Cannot redeclare var $builder');
+            assert('!isset($application); // Cannot redeclare var $application');
+            $builder = new \Yana\ApplicationBuilder();
+            $application = $builder->buildApplication();
+            unset($builder);
+            self::$_dataDir = $application->getVar('DATADIR');
+        }
+        return self::$_dataDir;
+    }
+
+    /**
+     * Get list of embedded tags.
+     *
+     * @return  array
+     * @codeCoverageIgnore
+     */
+    protected function _getUserDefinedTags()
+    {
+        if (!isset(self::$_userDefinedTags)) {
+            assert('!isset($builder); // Cannot redeclare var $builder');
+            assert('!isset($application); // Cannot redeclare var $application');
+            $builder = new \Yana\ApplicationBuilder();
+            $application = $builder->buildApplication();
+            unset($builder);
+            self::$_userDefinedTags = $application->getVar('PROFILE.EMBTAG');
+        }
+        return self::$_userDefinedTags;
     }
 
     /**
@@ -86,7 +108,7 @@ class TextFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
             $machtedTags = array_unique($machtedTags[0]);
 
             $invalidResource = '<img title="the resource {$RESOURCE} was blocked because it contained illegal '.
-                'characters" alt="invalid {$RESOURCE}" border="0" src="' . self::$_datadir . 'icon_x.gif"/>';
+                'characters" alt="invalid {$RESOURCE}" border="0" src="' . $this->_getDataDir() . 'icon_x.gif"/>';
 
             foreach ($machtedTags as $tag)
             {
@@ -300,7 +322,7 @@ class TextFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
                         assert('!isset($opt); // Cannot redeclare var $opt');
                         assert('!isset($regExp); // Cannot redeclare var $regExp');
                         assert('!isset($replace); // Cannot redeclare var $replace');
-                        foreach ((array) self::$_userDefinedTags as $tagName => $opt)
+                        foreach ((array) $this->_getUserDefinedTags() as $tagName => $opt)
                         {
                             $tagName = mb_strtolower($tagName);
                             if (is_array($opt)) {

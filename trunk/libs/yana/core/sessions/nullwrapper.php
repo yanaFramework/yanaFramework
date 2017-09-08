@@ -184,9 +184,7 @@ class NullWrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWra
         assert('is_bool($deleteOldSession); // Invalid argument $deleteOldSession: bool expected');
 
         $this->_id = "";
-        if ($deleteOldSession) {
-            $this->unsetAll();
-        }
+        $this->unsetAll();
         return $this;
     }
 
@@ -239,11 +237,11 @@ class NullWrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWra
      *
      * Note! This does not remove the session cookie or terminate the session.
      *
-     * @return  string
+     * @return  bool
      */
     public function destroy()
     {
-        return "";
+        return true;
     }
 
     /**

@@ -66,7 +66,11 @@ class Wrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWrapper
     public function offsetGet($offset)
     {
         assert('is_scalar($offset); // Invalid argument $offset: scalar expected');
-        return $_SESSION[$offset];
+        $value = null;
+        if ($this->offsetExists($offset)) {
+            $value = $_SESSION[$offset];
+        }
+        return $value;
     }
 
     /**
@@ -141,6 +145,7 @@ class Wrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWrapper
     public function unsetAll()
     {
         \session_unset();
+        $_SESSION = array();
         return $this;
     }
 
@@ -154,6 +159,12 @@ class Wrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWrapper
     {
         assert('is_bool($deleteOldSession); // Invalid argument $deleteOldSession: bool expected');
 
+        /* regenerate_id() will issue a warning if it is called while the session is not in an active state.
+         * To avoid that, we will auto-activate the session if none is there.
+         *
+         * While in theory "session-autostart" should do that for us, it is best not to rely on that setting.
+         */
+        $this->start();
         \session_regenerate_id($deleteOldSession);
         return $this;
     }
@@ -192,7 +203,23 @@ class Wrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWrapper
      */
     public function start()
     {
-        return \session_start();
+        $result = false;
+        /* Check the state of the session and only call start() if the session is not active (yet).
+         * Just to avoid the warning "session already started" if start is called on an active session.
+         */
+        switch (\session_status())
+        {
+            case \PHP_SESSION_ACTIVE:
+                $result = true;
+            break;
+            case \PHP_SESSION_NONE:
+                $result = \session_start();
+                assert('\session_status() === \PHP_SESSION_ACTIVE');
+            break;
+            // Session-handling may also be disabled (PHP_SESSION_DISABLED).
+            // In which case we always return bool(false).
+        }
+        return $result;
     }
 
     /**
@@ -208,7 +235,7 @@ class Wrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWrapper
      *
      * Note! This does not remove the session cookie or terminate the session.
      *
-     * @return  string
+     * @return  bool
      */
     public function destroy()
     {
@@ -220,12 +247,12 @@ class Wrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWrapper
      *
      * Returns an associative array containing the following information:
      * <ul>
-     * <li>int "lifetime" of the cookie in seconds</li>
-     * <li>string "path" of the application it corresponds to</li>
-     * <li>string "domain" that the cookie is valid for (your domain or your wouldn't be seeing this)</li>
-     * <li>bool "secure" if TRUE, then the cookie contents are only sent via SSL
+     * <li>int "lifetime" of the cookie in seconds, default is 0</li>
+     * <li>string "path" of the application it corresponds to, default is "/".</li>
+     * <li>string "domain" that the cookie is valid for, default is "" (if this isn't your domain, something is seriously wrong)</li>
+     * <li>bool "secure" if TRUE, then the cookie contents are only sent via SSL, default is FALSE.
      *    (if this is TRUE then the request was made using SSL or you wouldn't be seeing the cookie)</li>
-     * <li>"httponly" if TRUE, the cookie will not be sent using JavaScript
+     * <li>"httponly" if TRUE, the cookie will not be sent using JavaScript, default is FALSE.
      *    (if this is TRUE, you have not been contacted using a script, or you wouldn't have gotten the cookie)</li>
      * </ul>
      *

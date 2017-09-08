@@ -105,7 +105,7 @@ interface IsWrapper extends \Yana\Core\IsCountableArray
      *
      * Note! This does not remove the session cookie or terminate the session.
      *
-     * @return  string
+     * @return  bool
      */
     public function destroy();
 

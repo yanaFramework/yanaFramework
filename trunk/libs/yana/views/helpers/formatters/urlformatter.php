@@ -41,26 +41,7 @@ class UrlFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFo
     /**
      * @var string
      */
-    private static $_baseUrl = '';
-
-    /**
-     * Create a new instance.
-     *
-     * This also loads the base URL configuration.
-     * Adds the script name, current session id and current profile id to base URL.
-     */
-    public function __construct()
-    {
-        assert('!isset($builder); // Cannot redeclare var $builder');
-        assert('!isset($application); // Cannot redeclare var $application');
-        $builder = new \Yana\ApplicationBuilder();
-        $application = $builder->buildApplication();
-        unset($builder);
-        self::$_baseUrl = $application->getVar('PHP_SELF')  . "?id=" . $application->getProfileId();
-        if (empty($_COOKIE) && @session_id() != "") {
-            self::$_baseUrl .= "&" . session_name() . "=" . session_id();
-        }
-    }
+    private static $_baseUrl = null;
 
     /**
      * Sets the prefix for the generated URL.
@@ -76,9 +57,21 @@ class UrlFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFo
      * Returns the prefix for the generated URL.
      *
      * @return string
+     * @codeCoverageIgnore
      */
     protected function _getBaseUrl()
     {
+        if (!isset(self::$_baseUrl)) {
+            assert('!isset($builder); // Cannot redeclare var $builder');
+            $builder = new \Yana\ApplicationBuilder();
+            assert('!isset($application); // Cannot redeclare var $application');
+            $application = $builder->buildApplication();
+            unset($builder);
+            self::$_baseUrl = $application->getVar('PHP_SELF')  . "?id=" . $application->getProfileId();
+            if (empty($_COOKIE) && @session_id() != "") {
+                self::$_baseUrl .= "&" . session_name() . "=" . session_id();
+            }
+        }
         return self::$_baseUrl;
     }
 
@@ -157,15 +150,15 @@ class UrlFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFo
             }
             if (isset($_SERVER['HTTP_HOST'])) {
                 $url .= $_SERVER['HTTP_HOST'];
-            } else {
+            } elseif (isset($_SERVER['SERVER_NAME'])) {
                 $url .= $_SERVER['SERVER_NAME'];
             }
             assert('!isset($dirname); // Cannot redeclare var $dirname');
             $dirname = dirname($_SERVER['PHP_SELF']);
-            if ($dirname !== DIRECTORY_SEPARATOR) {
-                $url .= $dirname . '/';
-            } else {
+            if ($dirname === DIRECTORY_SEPARATOR || $dirname === "/") {
                 $url .= '/';
+            } elseif ($dirname !== '.' && $dirname !== "") {
+                $url .= $dirname . '/';
             }
             unset($dirname);
         }
@@ -177,7 +170,11 @@ class UrlFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFo
          * depending on the $asString argument.
          */
         assert('!isset($urlPath); // Cannot redeclare var $urlPath');
-        $urlPath = $this->_getBaseUrl() . '&' . $this->_encodeParameters($string);
+        $baseUrl = $this->_getBaseUrl();
+        if (\strpos($baseUrl, '?') === false) {
+            $baseUrl .= '?';
+        }
+        $urlPath = $baseUrl . '&' . $this->_encodeParameters($string);
         if ($asString === false) {
             $urlPath = \Yana\Util\Strings::htmlSpecialChars($urlPath);
         }

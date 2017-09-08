@@ -353,33 +353,6 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
     }
 
     /**
-     * Adds a class that provides meta-information about a language package.
-     *
-     * Note that you can have only one meta-data provider per locale.
-     * If you add multiple, only the first will be used.
-     *
-     * @param   \Yana\Core\MetaData\IsDataProvider  $provider  to load information about a language pack
-     * @return  self
-     */
-    public function addMetaDataProvider(\Yana\Core\MetaData\IsDataProvider $provider)
-    {
-        $this->_getManager()->addMetaDataProvider($provider);
-        return $this;
-    }
-
-    /**
-     * Adds a class that finds and loads translations.
-     *
-     * @param  \Yana\Translations\TextData\IsDataProvider  $provider  to load the contents of a language pack
-     * @return  self
-     */
-    public function addTextDataProvider(TextData\IsDataProvider $provider)
-    {
-        $this->_getManager()->addTextDataProvider($provider);
-        return $this;
-    }
-
-    /**
      * Returns a container with all known translations.
      *
      * @return  \Yana\Translations\TextData\IsTextContainer

@@ -35,11 +35,11 @@ require_once __DIR__ . '/../../../../include.php';
 /**
  * @package  test
  */
-class NullWrapperTest extends \PHPUnit_Framework_TestCase
+class WrapperTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Core\Sessions\NullWrapper
+     * @var \Yana\Core\Sessions\Wrapper
      */
     protected $object;
 
@@ -49,7 +49,13 @@ class NullWrapperTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Core\Sessions\NullWrapper();
+        // We will need the @runInSeparateProcess annotation or else PHPUnit will complain
+        // that cookies can't be modified because headers have already been sent: by PHPUnit itself!
+        // @runInSeparateProcess makes sure, that the test runs on its ow
+        // and may thus modify headers to its heart's content!
+        $_SESSION = array();
+        $this->object = new \Yana\Core\Sessions\Wrapper();
+        $this->object->stop();
     }
 
     /**
@@ -58,7 +64,6 @@ class NullWrapperTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        
     }
 
     /**
@@ -161,30 +166,33 @@ class NullWrapperTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @runInSeparateProcess
      */
     public function testRegenerateId()
     {
         $this->object->offsetSet(null, 1);
         $this->object->offsetSet(null, 'a');
         $this->object->offsetSet(12, 3.5);
-        $this->assertSame("", $this->object->setId('Test')->regenerateId()->getId());
-        $this->assertCount(0, $this->object);
-        $this->object->offsetSet(null, 1);
-        $this->object->offsetSet(null, 'a');
-        $this->object->offsetSet(12, 3.5);
-        $this->assertSame("", $this->object->regenerateId(true)->getId());
-        $this->assertCount(0, $this->object);
+        $sessionId = $this->object->setId('Test')->regenerateId()->getId();
+        $this->assertNotEquals('', $sessionId);
+        $this->assertNotEquals('Test', $sessionId);
+        $this->assertGreaterThan('', $sessionId);
+        $this->assertCount(0, $this->object); // because we lost the association to the session file
     }
 
     /**
      * @test
+     * @runInSeparateProcess
      */
     public function testRegenerateIdDeleteFile()
     {
         $this->object->offsetSet(null, 1);
         $this->object->offsetSet(null, 'a');
         $this->object->offsetSet(12, 3.5);
-        $this->assertSame("", $this->object->regenerateId(true)->getId());
+        $sessionId = $this->object->setId('Test')->regenerateId()->getId();
+        $this->assertNotEquals('', $sessionId);
+        $this->assertNotEquals('Test', $sessionId);
+        $this->assertGreaterThan('', $sessionId);
         $this->assertCount(0, $this->object);
     }
 
@@ -193,7 +201,7 @@ class NullWrapperTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetName()
     {
-        $this->assertSame("", $this->object->getName());
+        $this->assertSame("Test", $this->object->setName("Test")->getName());
     }
 
     /**
@@ -206,6 +214,7 @@ class NullWrapperTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @runInSeparateProcess
      */
     public function testStart()
     {
@@ -223,10 +232,14 @@ class NullWrapperTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @runInSeparateProcess
      */
     public function testDestroy()
     {
+        $this->object->start();
+        $this->object->offsetSet('test', 'test');
         $this->assertTrue($this->object->destroy());
+        $this->assertSame("", $this->object->getId());
     }
 
     /**
@@ -234,8 +247,17 @@ class NullWrapperTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetCookieParameters()
     {
-        $expected = array("lifetime" => "0", "path" => "", "domain" => "", "secure" => "0", "httponly" => "1");
-        $this->assertEquals($expected, $this->object->getCookieParameters());
+        $param = $this->object->getCookieParameters();
+        $this->assertArrayHasKey("lifetime", $param);
+        $this->assertArrayHasKey("path", $param);
+        $this->assertArrayHasKey("domain", $param);
+        $this->assertArrayHasKey("secure", $param);
+        $this->assertArrayHasKey("httponly", $param);
+        $this->assertSame(0, $param["lifetime"]);
+        $this->assertSame("/", $param["path"]);
+        $this->assertSame("", $param["domain"]);
+        $this->assertSame(false, $param["secure"]);
+        $this->assertSame(false, $param["httponly"]);
     }
 
     /**

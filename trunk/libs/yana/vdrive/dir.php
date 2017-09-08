@@ -63,12 +63,14 @@ class Dir extends AbstractMountpoint
     /**
      * Set directory's file filter.
      *
-     * @param  string  $filter   directory's file filter
+     * @param   string  $filter   directory's file filter
+     * @return  self
      */
     public function setFilter($filter = "")
     {
         assert('is_string($filter); // Invalid argument $filter: string expected');
         $this->mountpoint->setFilter($filter);
+        return $this;
     }
 
     /**

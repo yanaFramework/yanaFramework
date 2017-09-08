@@ -51,9 +51,8 @@ class IconFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
 
         /* if not necessary -> skip the whole section for better performance */
         if (mb_strpos($string, ':') !== false) {
-            $iconLoader = new \Yana\Views\Helpers\IconLoader();
             /* Emot-Codes */
-            foreach ($iconLoader->getIcons() as $fileName => $regEx)
+            foreach ($this->_buildListOfIcons() as $fileName => $regEx)
             {
                 $pattern = "/:(" . $regEx . "):(\s|\[wbr\]|\[br\]|<br \/>)*:(" . $regEx . "):/i";
                 $string = preg_replace($pattern, ':' . $regEx . ':', $string);
@@ -64,6 +63,20 @@ class IconFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
         }
 
         return $string;
+    }
+
+    /**
+     * Returns a list of available icon files.
+     *
+     * The list is build from the profile configuration on demand.
+     *
+     * @return  array
+     * @codeCoverageIgnore
+     */
+    protected function _buildListOfIcons()
+    {
+        $iconLoader = new \Yana\Views\Helpers\IconLoader();
+        return (array) $iconLoader->getIcons();
     }
 
 }

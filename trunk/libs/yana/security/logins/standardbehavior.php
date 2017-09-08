@@ -195,7 +195,10 @@ class StandardBehavior extends \Yana\Security\Logins\AbstractBehavior
         }
         // make session cookie expire (get's deleted)
         if (\filter_has_var(\INPUT_COOKIE, $session->getName())) {
-            setcookie($session->getName(), '', time() - 42000, '/');
+            $params = $session->getCookieParameters();
+            setcookie($session->getName(), '', time() - 42000, $params["path"],
+                $params["domain"], $params["secure"], $params["httponly"]
+            );
         }
         // unset session data
         $session->unsetAll();

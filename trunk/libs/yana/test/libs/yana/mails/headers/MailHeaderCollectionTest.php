@@ -122,6 +122,7 @@ class MailHeaderCollectionTest extends \PHPUnit_Framework_TestCase
     public function testIsHighPriority()
     {
         $this->assertFalse($this->object->isHighPriority());
+        $this->assertTrue($this->object->setHighPriority()->isHighPriority());
     }
 
     /**
@@ -138,6 +139,7 @@ class MailHeaderCollectionTest extends \PHPUnit_Framework_TestCase
     public function testIsLowPriority()
     {
         $this->assertFalse($this->object->isLowPriority());
+        $this->assertTrue($this->object->setLowPriority()->isLowPriority());
     }
 
     /**

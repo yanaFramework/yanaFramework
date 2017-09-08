@@ -39,7 +39,7 @@ class File extends AbstractMountpoint
 {
 
     /**
-     * Constructor.
+     * <<constructor>> Initialize wrapped object.
      *
      * @param   string  $path       path to existing file
      * @param   string  $className  class name including namespace, defaults to \Yana\Files\Readonly
@@ -48,22 +48,25 @@ class File extends AbstractMountpoint
     public function __construct($path, $className = '')
     {
         assert('is_string($path); // Wrong type for argument 1. String expected');
+        assert('$path > ""; // Argument 1 must not be empty');
         assert('is_string($className); // Wrong type for argument 2. String expected');
 
-        $this->type = (!$className) ? '\Yana\Files\Readonly' : (string) $className;
         $this->path = (string) $path;
 
         /* error: class does not exist */
-        if (!class_exists($className)) {
+        if ($className !== "" && !class_exists($className)) {
             $message = "Invalid resource-type argument supplied for Mountpoint '" . print_r($path, true) . "'.\n\t" .
-                "No such file wrapper: '$className'.";
+                "No such file wrapper: '" . $className . "'.";
             throw new \Yana\VDrive\ClassNotFoundException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
 
         /* all fine - proceed */
-        $this->type = $className;
-        assert('class_exists($this->type); // The value $this->type is expected to be a valid class name.');
-        $this->mountpoint = new $this->type($this->path);
+        if ($className === "") {
+            $this->mountpoint = new \Yana\Files\Readonly($path);
+        } else {
+            $this->mountpoint = new $className($path);
+        }
+        $this->type = '\\' . \get_class($this->mountpoint);
     }
 
 }

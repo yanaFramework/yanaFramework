@@ -745,7 +745,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
         }
 
         $request = (array) \Yana\Http\Requests\Builder::buildFromSuperGlobals()->all()->value($form->getName())->all()->asArrayOfStrings();
-        $files = (array) \Yana\Core\Request::getFiles($form->getName());
+        $files = (array) \Yana\Http\Uploads\Builder::buildFromSuperGlobals()->all($form->getName());
         if (!empty($files)) {
             $request = \Yana\Util\Hashtable::merge($request, $files);
         }

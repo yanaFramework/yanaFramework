@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Http;
+namespace Yana\Core;
 
 /**
  * @ignore
@@ -33,13 +33,43 @@ namespace Yana\Http;
 require_once __DIR__ . '/../../../include.php';
 
 /**
+ * Test implementation
+ *
+ * @package  test
+ * @ignore
+ */
+class MyDecorator extends \Yana\Core\AbstractDecorator
+{
+    public function __construct($decoratedObject)
+    {
+        $this->_setDecoratedObject($decoratedObject);
+    }
+}
+
+/**
+ * Test implementation
+ *
+ * @package  test
+ * @ignore
+ */
+class MyObject extends \Yana\Core\Object
+{
+
+    public $a = "b";
+    public function c($d)
+    {
+        return "e";
+    }
+}
+
+/**
  * @package  test
  */
-class FacadeTest extends \PHPUnit_Framework_TestCase
+class AbstractDecoratorTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Http\Facade
+     * @var \Yana\Core\MyDecorator
      */
     protected $object;
 
@@ -49,7 +79,7 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Http\Facade();
+        $this->object = new \Yana\Core\MyDecorator(new \Yana\Core\MyObject());
     }
 
     /**
@@ -64,81 +94,53 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testFiles()
+    public function test__call()
     {
-        $this->assertTrue($this->object->files() instanceof \Yana\Http\Uploads\IsUploadWrapper);
+        $this->assertSame("e", $this->object->c("d"));
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\UndefinedMethodException
+     */
+    public function test__callUndefinedMethodException()
+    {
+        $this->object->other();
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\UndefinedPropertyException
+     */
+    public function test__getUndefinedPropertyException()
+    {
+        $this->object->other;
     }
 
     /**
      * @test
      */
-    public function testAll()
+    public function test__get()
     {
-        $this->assertTrue($this->object->all() instanceof \Yana\Http\Requests\ValueWrapper);
+        $this->assertSame("b", $this->object->a);
     }
 
     /**
      * @test
      */
-    public function testArgs()
+    public function test__set()
     {
-        $this->assertTrue($this->object->args() instanceof \Yana\Http\Requests\ValueWrapper);
+        $this->object->a = "f";
+        $this->assertSame("f", $this->object->a);
     }
 
     /**
      * @test
+     * @expectedException \Yana\Core\Exceptions\UndefinedPropertyException
      */
-    public function testGet()
+    public function test__setUndefinedPropertyException()
     {
-        $this->assertTrue($this->object->get() instanceof \Yana\Http\Requests\ValueWrapper);
-    }
-
-    /**
-     * @test
-     */
-    public function testPost()
-    {
-        $this->assertTrue($this->object->post() instanceof \Yana\Http\Requests\ValueWrapper);
-    }
-
-    /**
-     * @test
-     */
-    public function testCookie()
-    {
-        $this->assertTrue($this->object->cookie() instanceof \Yana\Http\Requests\ValueWrapper);
-    }
-
-    /**
-     * @test
-     */
-    public function testRequest()
-    {
-        $this->assertTrue($this->object->request() instanceof \Yana\Http\Requests\ValueWrapper);
-    }
-
-    /**
-     * @test
-     */
-    public function testMethod()
-    {
-        $this->assertTrue($this->object->method() instanceof \Yana\Http\Requests\Method);
-    }
-
-    /**
-     * @test
-     */
-    public function testIsAjaxRequest()
-    {
-        $this->assertFalse($this->object->isAjaxRequest());
-    }
-
-    /**
-     * @test
-     */
-    public function testUri()
-    {
-        $this->assertTrue(is_string($this->object->uri()));
+        $this->object->other;
     }
 
 }
