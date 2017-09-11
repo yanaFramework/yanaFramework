@@ -59,16 +59,20 @@ class FormatterCollection extends \Yana\Core\AbstractCollection implements \Yana
     /**
      * Add or replace item at the given offset
      *
-     * @param  scalar                               $offset  valid array key
-     * @param  \Yana\Views\Helpers\IsFormatter  $value   new item to add to the collection
-     * @throws \Yana\Core\Exceptions\InvalidArgumentException  when the value is not of the expected type
+     * @param   scalar                           $offset  valid array key
+     * @param   \Yana\Views\Helpers\IsFormatter  $value   new item to add to the collection
+     * @return  \Yana\Views\Helpers\IsFormatter
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the value is not of the expected type
      */
     public function offsetSet($offset, $value)
     {
         if (!($value instanceof \Yana\Views\Helpers\IsFormatter)) {
-            throw new \Yana\Core\Exceptions\InvalidArgumentException($value);
+            $message = "Instance of \Yana\Views\Helpers\IsFormatter expected.";
+            $e = new \Yana\Core\Exceptions\InvalidArgumentException($message);
+            $e->setData($value);
+            throw $e;
         }
-        parent::_offsetSet($offset, $value);
+        return parent::_offsetSet($offset, $value);
     }
 
 }

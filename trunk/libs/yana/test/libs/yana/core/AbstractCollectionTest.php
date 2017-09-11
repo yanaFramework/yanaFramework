@@ -48,7 +48,7 @@ class MyCollection extends \Yana\Core\AbstractCollection
      */
     public function offsetSet($offset, $value)
     {
-        parent::_offsetSet($offset, $value);
+        return parent::_offsetSet($offset, $value);
     }
 
 }

@@ -65,7 +65,12 @@ interface IsBlockFunction
 {
 
     /**
-     * Function.
+     * Block function.
+     *
+     * Smarty calls block functions twice. Once for the opening tag, and once for the closing tag.
+     * On the first call, $repeat is TRUE and $content is NULL, because Smarty hasn't seen the body of the block yet.
+     * Also, Smarty doesn't expect any output on the first call, so this function is expected to return NULL.
+     * On the second call, $repeat is FALSE and $content is the block body.
      *
      * @param   array                      $params   any list of arguments
      * @param   mixed                      $content  the looped content

@@ -37,7 +37,7 @@ namespace Yana\Views\Helpers\Blockfunctions;
  * @package     yana
  * @subpackage  views
  */
-class LoopBlock extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Views\Helpers\IsBlockFunction
+class LoopBlock extends \Yana\Core\Object implements \Yana\Views\Helpers\IsBlockFunction
 {
 
     /**
@@ -50,9 +50,9 @@ class LoopBlock extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\
      *
      * Example:
      * <code>
-     * $array = array('a' = 1, 'b' => array('foo', 'bar'), 'c' = 2);
+     * $array = array('a' => 1, 'b' => array('foo', 'bar'), 'c' => 2);
      *
-     * {foreach from=$array item="key" key="element"}
+     * {foreach from=$array key="key" item="element"}
      * {$key} = {$element}
      * {/foreach}
      *
@@ -89,12 +89,16 @@ class LoopBlock extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\
      */
     public function __invoke(array $params, $content, \Smarty_Internal_Template $smarty, &$repeat)
     {
-        if (!is_array($params['from'])) {
+        if (!isset($params['from']) || !is_array($params['from'])) {
             return "";
         }
 
+        /* Smarty will call this function multiple times:
+         * once for the opening tag, once for the closing tag.
+         * For the last call, the $repeat parameter is false. Only for this call Smarty actually expects an output.
+         */
         if (!$repeat) {
-            return self::_loop(@$params['key'], @$params['item'], $params['from'], $content);
+            return $this->_loop(@$params['key'], @$params['item'], $params['from'], $content);
         }
     }
 
@@ -105,9 +109,10 @@ class LoopBlock extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\
      * @param   string  $item        array item string
      * @param   array   &$array      source array
      * @param   string  &$template   template HTML content
+     * @param   string  $prefix      placed in front of key
      * @return  string
      */
-    private function _loop($key, $item, array &$array, &$template)
+    private function _loop($key, $item, array &$array, &$template, $prefix = "")
     {
         $list = '';
         assert('!isset($id); // Cannot redeclare $id');
@@ -115,10 +120,10 @@ class LoopBlock extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\
         foreach ($array as $id => $element)
         {
             if (is_array($element)) {
-                $list .= self::_loop($key, $item, $element, $template, $id . '.');
+                $list .= $this->_loop($key, $item, $element, $template, $id . '.');
             } elseif (is_scalar($element)) {
                 $li = $template;
-                $li = str_replace('$' . $key, htmlspecialchars($id, ENT_COMPAT, 'UTF-8'), $li);
+                $li = str_replace('$' . $key, htmlspecialchars($prefix . $id, ENT_COMPAT, 'UTF-8'), $li);
                 if ($element === true) {
                     $li = str_replace('$' . $item, 'true', $li);
                 } elseif ($element === false) {

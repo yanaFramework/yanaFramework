@@ -50,8 +50,10 @@ class FieldCollection extends \Yana\Core\AbstractCollection
     public function offsetSet($offset, $value)
     {
         if (!$value instanceof \Yana\Db\Ddl\Field) {
-            $message = "Instance of \Yana\Db\Ddl\Field expected. Found " . gettype($value) . "(" . get_class($value) . ") instead.";
-            throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
+            $message = "Instance of \Yana\Db\Ddl\Field expected.";
+            $e = new \Yana\Core\Exceptions\InvalidArgumentException($message);
+            $e->setData($value);
+            throw $e;
         }
         if (!is_string($offset)) {
             $offset = $value->getName();

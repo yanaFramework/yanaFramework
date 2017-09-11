@@ -87,10 +87,38 @@ class TextFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
     }
 
     /**
+     * Creates and images tag linking to "icon_x.gif".
+     *
+     * @return  string
+     * @codeCoverageIgnore
+     */
+    protected function _buildTagForInvalidResource()
+    {
+        return '<img title="the resource {$RESOURCE} was blocked because it contained illegal ' .
+                'characters" alt="invalid {$RESOURCE}" border="0" src="' . $this->_getDataDir() . 'icon_x.gif"/>';
+    }
+
+    /**
      * Converts emb.-tags
      *
      * @param   string  $string  HTML text
      * @return  string
+     * @assert ('a[br]b') == 'a<br />b'
+     * @assert ('a[wbr]b') == 'a&shy;b'
+     * @assert ('a[i]bc') == 'a<span class="embtag_tag_i">bc</span>'
+     * @assert ('a[i]b[/i]c') == 'a<span class="embtag_tag_i">b</span>c'
+     * @assert ('a[u]b[/u]c') == 'a<span class="embtag_tag_u">b</span>c'
+     * @assert ('a[emp]b[/emp]c') == 'a<span class="embtag_tag_emp">b</span>c'
+     * @assert ('a[h]b[/h]c') == 'a<span class="embtag_tag_h">b</span>c'
+     * @assert ('a[c]b[/c]c') == 'a<span class="embtag_tag_c">b</span>c'
+     * @assert ('a[small]b[/small]c') == 'a<span class="embtag_tag_small">b</span>c'
+     * @assert ('a[big]b[/big]c') == 'a<span class="embtag_tag_big">b</span>c'
+     * @assert ('a[code]b[/code]c') == 'a<span class="embtag_tag_code">b</span>c'
+     * @assert ('a[hide]b[/hide]c') == 'a<span class="embtag_tag_hide">b</span>c'
+     * @assert ('a[mark=a]b[/mark]c') == 'a<span class="embtag_tag_mark" style="background-color:a">b</span>c'
+     * @assert ('a[color=a]b[/color]c') == 'a<span class="embtag_tag_color" style="color:a">b</span>c'
+     * @assert ('a[mail=mailto:a[wbr]@b.c]b[/mail]c') == 'a<a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;a@b.c" target="_blank">b</a>c'
+     * @assert ('a[url]b[/url]c') == 'a<a href="http://b" target="_blank">b</a>c'
      */
     public function __invoke($string)
     {
@@ -106,9 +134,6 @@ class TextFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
 
             /* remove duplicates */
             $machtedTags = array_unique($machtedTags[0]);
-
-            $invalidResource = '<img title="the resource {$RESOURCE} was blocked because it contained illegal '.
-                'characters" alt="invalid {$RESOURCE}" border="0" src="' . $this->_getDataDir() . 'icon_x.gif"/>';
 
             foreach ($machtedTags as $tag)
             {
@@ -233,8 +258,14 @@ class TextFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
                                         '" target="_blank">' . $mailText . '</a>',
                                     $string);
                             } else {
-                                $replace = str_replace('{$RESOURCE}', 'mail', $invalidResource);
+                                /**
+                                 * @codeCoverageIgnoreStart
+                                 */
+                                $replace = str_replace('{$RESOURCE}', 'mail', $this->_buildTagForInvalidResource());
                                 $string = str_replace($mailMatch, $replace, $string);
+                                /**
+                                 * @codeCoverageIgnoreEnd
+                                 */
                             }
                         } // end while
                     break;
@@ -254,8 +285,14 @@ class TextFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
                                     '"/>';
                                 $string = str_replace($matches[0], $replace, $string);
                             } else {
-                                $replace = str_replace('{$RESOURCE}', 'image', $invalidResource);
+                                /**
+                                 * @codeCoverageIgnoreStart
+                                 */
+                                $replace = str_replace('{$RESOURCE}', 'image', $this->_buildTagForInvalidResource());
                                 $string = str_replace($matches[0], $replace, $string);
+                                /**
+                                 * @codeCoverageIgnoreEnd
+                                 */
                             }
                         } // end foreach
                     break;
@@ -307,8 +344,14 @@ class TextFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
                                 $replace = '<a href="' . $uriHref . '" target="_blank">' . $uriText . '</a>';
                                 $string = str_replace($uriMatch, $replace, $string);
                             } else {
-                                $replace = str_replace('{$RESOURCE}', 'uri', $invalidResource);
+                                /**
+                                 * @codeCoverageIgnoreStart
+                                 */
+                                $replace = str_replace('{$RESOURCE}', 'uri', $this->_buildTagForInvalidResource());
                                 $string = str_replace($uriMatch, $replace, $string);
+                                /**
+                                 * @codeCoverageIgnoreEnd
+                                 */
                             }
                             unset($uriMatch, $uriHref, $uriText);
                         } // end while
@@ -316,6 +359,8 @@ class TextFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
 
                     /*
                      * load and apply embedded tags from system configuration
+                     *
+                     * @codeCoverageIgnoreStart
                      */
                     default:
                         assert('!isset($userTag); // Cannot redeclare var $userTag');
@@ -348,6 +393,9 @@ class TextFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
                         } // end foreach
                         unset($opt, $tagName, $regExp, $replace);
                     break;
+                    /**
+                     * @codeCoverageIgnoreEnd
+                     */
                 } // end switch
             } // end foreach
             unset($tag);
