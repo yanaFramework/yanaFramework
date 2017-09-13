@@ -937,6 +937,16 @@ class StringsTest extends \PHPUnit_Framework_TestCase
             \Yana\Util\Strings::contains("abc", "d")
         );
     }
+    /**
+     * Generated from @assert ("abc", "a") == true.
+     */
+    public function testReplaceToken()
+    {
+        $this->assertSame("abc", \Yana\Util\Strings::replaceToken("abc", array()));
+        $this->assertSame("adc", \Yana\Util\Strings::replaceToken('a{B}c', array('B' => 'd'), '{', '}'));
+        $this->assertSame("adc", \Yana\Util\Strings::replaceToken('a{b}c', array('B' => 'd'), '{', '}'));
+        $this->assertSame("adc", \Yana\Util\Strings::replaceToken('a{B}c', array('b' => 'd'), '{', '}'));
+    }
 
 }
 

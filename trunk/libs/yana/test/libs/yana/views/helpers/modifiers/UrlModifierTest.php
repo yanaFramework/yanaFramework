@@ -1,6 +1,6 @@
 <?php
 /**
- * YANA library
+ * PHPUnit test-case
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -25,21 +25,21 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Core\MetaData;
+namespace Yana\Views\Helpers\Modifiers;
 
 /**
  * @ignore
  */
-require_once __DIR__ . '/../../../../include.php';
+require_once dirname(__FILE__) . '/../../../../../include.php';
 
 /**
- * @package  test
+ * @package test
  */
-class XmlDataProviderTest extends \PHPUnit_Framework_TestCase
+class UrlModifierTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Core\MetaData\XmlDataProvider
+     * @var \Yana\Views\Helpers\Modifiers\UrlModifier
      */
     protected $object;
 
@@ -49,8 +49,7 @@ class XmlDataProviderTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $directory = CWD . '/resources/skin/';
-        $this->object = new \Yana\Core\MetaData\XmlDataProvider($directory);
+        $this->object = new \Yana\Views\Helpers\Modifiers\UrlModifier();
     }
 
     /**
@@ -65,31 +64,11 @@ class XmlDataProviderTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testLoadOject()
+    public function test__invoke()
     {
-        $object = $this->object->loadOject('default.skin');
-        $this->assertTrue($object instanceof \Yana\Core\MetaData\IsPackageMetaData);
-        $this->assertTrue($object instanceof \Yana\Core\MetaData\PackageMetaData);
-        $this->assertSame('Default', $object->getTitle());
-    }
-
-    /**
-     * @test
-     * @expectedException \Yana\Core\Exceptions\NotFoundException
-     */
-    public function testLoadOjectNotFoundException()
-    {
-        $this->object->loadOject('no such object');
-    }
-
-    /**
-     * @test
-     */
-    public function testGetListOfValidIds()
-    {
-        $list = $this->object->getListOfValidIds();
-        $expected = array("default.skin", "test.skin");
-        $this->assertEquals($expected, $list);
+        \Yana\Views\Helpers\Formatters\UrlFormatter::setBaseUrl('test');
+        $_SERVER['PHP_SELF'] = "";
+        $this->assertSame('http://test?&amp;a=1&amp;b=2', $this->object->__invoke('a=1&b=2'));
     }
 
 }

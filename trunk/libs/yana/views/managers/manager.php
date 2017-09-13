@@ -86,7 +86,7 @@ class Manager extends \Yana\Views\Managers\AbstractManager
      * @param   string  $filename                 path to template file that hold the page layout (usually: index.tpl)
      * @param   string  $mainContentTemplateName  path to another template file that renders the page content
      * @param   array   $templateVars             possibly multi-dimensional, associative array of template variables
-     * @return  \Yana\Views\Templates\Template
+     * @return  \Yana\Views\Templates\IsTemplate
      */
     public function createLayoutTemplate($filename, $mainContentTemplateName, array $templateVars)
     {
@@ -132,7 +132,7 @@ class Manager extends \Yana\Views\Managers\AbstractManager
      * If a base-layout is defined already, it will be set up as the parent template.
      *
      * @param   string  $filename  path to template file
-     * @return  \Yana\Views\Templates\Template 
+     * @return  \Yana\Views\Templates\IsTemplate 
      */
     public function createContentTemplate($filename)
     {
@@ -256,7 +256,7 @@ class Manager extends \Yana\Views\Managers\AbstractManager
      *
      * @param   string  $name  name of the function
      * @param   mixed   $code  a callable resource
-     * @return  \Yana\Views\Managers\Manager
+     * @return  self
      */
     public function setFunction($name, $code)
     {
@@ -279,7 +279,7 @@ class Manager extends \Yana\Views\Managers\AbstractManager
      *
      * @param   string  $name  name of the function
      * @param   mixed   $code  a callable resource
-     * @return  \Yana\Views\Managers\Manager
+     * @return  self
      */
     public function setModifier($name, $code)
     {
@@ -302,7 +302,7 @@ class Manager extends \Yana\Views\Managers\AbstractManager
      *
      * @param   string  $name  name of the function
      * @param   mixed   $code  a callable resource
-     * @return  \Yana\Views\Managers\Manager
+     * @return  self
      */
     public function setBlockFunction($name, $code)
     {
@@ -322,7 +322,7 @@ class Manager extends \Yana\Views\Managers\AbstractManager
      * and possibly cause your application to exit.
      *
      * @param   string  $name  name of the function
-     * @return  \Yana\Views\Managers\Manager
+     * @return  self
      */
     public function unsetFunction($name)
     {
@@ -342,7 +342,7 @@ class Manager extends \Yana\Views\Managers\AbstractManager
      * and possibly cause your application to exit.
      *
      * @param   string  $name  name of the function
-     * @return  \Yana\Views\Managers\Manager
+     * @return  self
      */
     public function unsetModifier($name)
     {
@@ -362,7 +362,7 @@ class Manager extends \Yana\Views\Managers\AbstractManager
      * and possibly cause your application to exit.
      *
      * @param   string  $name  name of the function
-     * @return  \Yana\Views\Managers\Manager
+     * @return  self
      */
     public function unsetBlockFunction($name)
     {

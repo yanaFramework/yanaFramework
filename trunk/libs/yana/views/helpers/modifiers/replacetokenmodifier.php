@@ -50,9 +50,15 @@ class ReplaceTokenModifier extends \Yana\Views\Helpers\AbstractViewHelper implem
      */
     public function __invoke($string, array $array = array())
     {
+        /**
+         * @codeCoverageIgnoreStart
+         */
         if (empty($array)) {
             $array = $this->_getViewManager()->getSmarty()->getTemplateVars();
         }
+        /**
+         * @codeCoverageIgnoreEnd
+         */
         if (\is_string($string)) {
             $string = \Yana\Util\Strings::replaceToken($string, $array);
         }

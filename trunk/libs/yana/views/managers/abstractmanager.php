@@ -61,7 +61,9 @@ abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Views\
     public function addStyle($file)
     {
         assert('is_string($file); // Wrong argument type argument 1. String expected');
-        $this->_styles[] = "$file";
+        if (!\in_array($file, $this->_styles)) {
+            $this->_styles[] = "$file";
+        }
         return $this;
     }
 
@@ -74,7 +76,9 @@ abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Views\
     public function addScript($file)
     {
         assert('is_string($file); // Wrong argument type argument 1. String expected');
-        $this->_scripts[] = "$file";
+        if (!\in_array($file, $this->_scripts)) {
+            $this->_scripts[] = "$file";
+        }
         return $this;
     }
 
@@ -86,8 +90,10 @@ abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Views\
      */
     public function addStyles(array $files)
     {
-        $this->_styles = array_merge($this->_styles, $files);
-        $this->_styles = array_unique($this->_styles);
+        foreach ($files as $file)
+        {
+            $this->addStyle($file);
+        }
         return $this;
     }
 
@@ -99,8 +105,10 @@ abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Views\
      */
     public function addScripts(array $files)
     {
-        $this->_scripts = array_merge($files, $this->_scripts);
-        $this->_scripts = array_unique($this->_scripts);
+        foreach ($files as $file)
+        {
+            $this->addScript($file);
+        }
         return $this;
     }
 

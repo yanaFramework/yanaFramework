@@ -45,8 +45,8 @@ interface IsManager
      *
      * @param   string  $filename             path to template file that hold the page layout (usually: index.tpl)
      * @param   string  $mainContentTemplate  path to another template file that renders the page content
-     * @param   string  $mainContentTemplate  path to another template file that renders the page content
-     * @return  \Yana\Views\Templates\Template
+     * @param   array   $templateVars         possibly multi-dimensional, associative array of template variables
+     * @return  \Yana\Views\Templates\IsTemplate
      */
     public function createLayoutTemplate($filename, $mainContentTemplate, array $templateVars);
 
@@ -57,7 +57,7 @@ interface IsManager
      * If a base-layout is defined already, it will be set up as the parent template.
      *
      * @param   string  $filename  path to template file
-     * @return  \Yana\Views\Templates\Template 
+     * @return  \Yana\Views\Templates\IsTemplate 
      */
     public function createContentTemplate($filename);
 
@@ -150,7 +150,7 @@ interface IsManager
      *
      * @param   string  $name  name of the function
      * @param   mixed   $code  a callable resource
-     * @return  \Yana\Views\Managers\IsManager
+     * @return  self
      */
     public function setFunction($name, $code);
 
@@ -166,7 +166,7 @@ interface IsManager
      *
      * @param   string  $name  name of the function
      * @param   mixed   $code  a callable resource
-     * @return  \Yana\Views\Managers\IsManager
+     * @return  self
      */
     public function setModifier($name, $code);
 
@@ -182,7 +182,7 @@ interface IsManager
      *
      * @param   string  $name  name of the function
      * @param   mixed   $code  a callable resource
-     * @return  \Yana\Views\Managers\IsManager
+     * @return  self
      */
     public function setBlockFunction($name, $code);
 
@@ -195,7 +195,7 @@ interface IsManager
      * and possibly cause your application to exit.
      *
      * @param   string  $name  name of the function
-     * @return  \Yana\Views\Managers\IsManager
+     * @return  self
      */
     public function unsetFunction($name);
 
@@ -208,7 +208,7 @@ interface IsManager
      * and possibly cause your application to exit.
      *
      * @param   string  $name  name of the function
-     * @return  \Yana\Views\Managers\IsManager
+     * @return  self
      */
     public function unsetModifier($name);
 
@@ -221,7 +221,7 @@ interface IsManager
      * and possibly cause your application to exit.
      *
      * @param   string  $name  name of the function
-     * @return  \Yana\Views\Managers\IsManager
+     * @return  self
      */
     public function unsetBlockFunction($name);
 

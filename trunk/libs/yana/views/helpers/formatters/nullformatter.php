@@ -49,7 +49,6 @@ class NullFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
      */
     public function __invoke($string)
     {
-        assert('is_string($string); // Invalid argument type $string: String expected.');
         return (string) $string;
     }
 

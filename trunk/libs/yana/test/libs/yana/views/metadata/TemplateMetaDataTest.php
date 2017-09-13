@@ -21,7 +21,7 @@
  *
  * This notice MAY NOT be removed.
  *
- * @package  yana
+ * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
@@ -33,7 +33,7 @@ namespace Yana\Views\MetaData;
 require_once __DIR__ . '/../../../../include.php';
 
 /**
- * Test class for TemplateMetaData.
+ * @package  test
  */
 class TemplateMetaDataTest extends \PHPUnit_Framework_TestCase
 {

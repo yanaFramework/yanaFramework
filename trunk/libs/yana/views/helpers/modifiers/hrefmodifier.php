@@ -48,7 +48,8 @@ class HrefModifier extends \Yana\Views\Helpers\AbstractViewHelper implements \Ya
     /**
      * Lazy loading for formatter class.
      *
-     * @return \Yana\Views\Helpers\Formatters\UrlFormatter 
+     * @return \Yana\Views\Helpers\Formatters\UrlFormatter
+     * @codeCoverageIgnore
      */
     protected function _getFormatter()
     {

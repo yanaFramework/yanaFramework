@@ -48,7 +48,8 @@ class DateModifier extends \Yana\Views\Helpers\AbstractViewHelper implements \Ya
     /**
      * Lazy loading for formatter class.
      *
-     * @return \Yana\Views\Helpers\Formatters\DateFormatter 
+     * @return  \Yana\Views\Helpers\Formatters\DateFormatter
+     * @codeCoverageIgnore
      */
     protected function _getFormatter()
     {

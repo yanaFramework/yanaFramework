@@ -21,7 +21,7 @@
  *
  * This notice MAY NOT be removed.
  *
- * @package  yana
+ * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 

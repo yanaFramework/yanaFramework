@@ -1099,7 +1099,7 @@ class Strings extends \Yana\Core\AbstractUtility
     /**
      * Replace each token within a text/template.
      *
-     * NOTE: this method is case-sensitive.
+     * NOTE: this method is not case-sensitive.
      *
      * @param   string  $string  haystack
      * @param   array   $array   values to replace
@@ -1122,9 +1122,10 @@ class Strings extends \Yana\Core\AbstractUtility
 
         $match = array();
         if (preg_match_all("/$ldimRegExp([\w_\.]+?)$rdimRegExp/", $string, $match) > 0) {
+            $array = \Yana\Util\Hashtable::changeCase($array, \CASE_UPPER);
             foreach ($match[1] as $currentMatch)
             {
-                $tmp =& \Yana\Util\Hashtable::get($array, mb_strtoupper($currentMatch));
+                $tmp = \Yana\Util\Hashtable::get($array, mb_strtoupper($currentMatch));
                 /* if $tmp is NULL, the reference $match is pointing to a non-existing value */
                 if (is_null($tmp) || !is_scalar($tmp)) {
                     continue;
