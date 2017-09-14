@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: XmlArray
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -34,8 +34,6 @@ require_once __Dir__ . '/../../../include.php';
 
 
 /**
- * Test class for XmlArray
- *
  * @package  test
  */
 class XmlArrayTest extends \PHPUnit_Framework_TestCase
@@ -109,5 +107,5 @@ class XmlArrayTest extends \PHPUnit_Framework_TestCase
         $expected = array("child1" => "1");
         $this->assertEquals($expected, $array);
     }
+
 }
-?>

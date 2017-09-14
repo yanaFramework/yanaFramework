@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: DbInfoTable
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -28,11 +28,9 @@
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/include.php';
+require_once __DIR__ . '/include.php';
 
 /**
- * DbInfoTable test-case
- *
  * @package  test
  */
 class DbInfoTableTest extends PHPUnit_Framework_TestCase
@@ -346,5 +344,3 @@ class DbInfoTableTest extends PHPUnit_Framework_TestCase
     }
 
 }
-
-?>

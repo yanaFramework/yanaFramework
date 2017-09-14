@@ -43,7 +43,7 @@ require_once __DIR__ . '/autoloaders/isloader.php';
 require_once __DIR__ . '/autoloaders/abstractloader.php';
 require_once __DIR__ . '/autoloaders/loader.php';
 require_once __DIR__ . '/autoloaders/wrapper.php';
-require_once __DIR__ . '/autoloaders/classnotfoundexception.php';
+require_once __DIR__ . '/exceptions/classnotfoundexception.php';
 require_once __DIR__ . '/../log/formatter/message.php';
 
 /**
@@ -105,6 +105,7 @@ class AutoLoadBuilder extends \Yana\Core\Object
 
     /**
      * Register the created auto-loader.
+     * @codeCoverageIgnore
      */
     public function registerLoader()
     {

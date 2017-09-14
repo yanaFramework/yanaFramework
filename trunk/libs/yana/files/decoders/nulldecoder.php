@@ -38,11 +38,11 @@ class NullDecoder extends \Yana\Core\Object implements IsDecoder
 {
 
     /**
-     * Read a file in SML syntax and return its contents.
+     * Read an encoded file and return its contents.
      *
      * {@inheritdoc}
      *
-     * @param   array|string  $input          filename or file content
+     * @param   array|string  $input          filename as string, or file content as array of lines
      * @param   int           $caseSensitive  CASE_UPPER|CASE_LOWER|CASE_MIXED
      * @return  array
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the input is not a filename or content-array
@@ -50,17 +50,20 @@ class NullDecoder extends \Yana\Core\Object implements IsDecoder
     public function getFile($input, $caseSensitive = CASE_MIXED)
     {
         if (is_string($input) && is_file($input)) {
-            $result = file($input);
+            $result = (array) \unserialize(\file($input));
         } elseif (is_array($input)) {
-            $result = $input;
+            $result = unserialize(implode("", $input));
         } else {
             $message = "Argument 1 is expected to be a filename or an array " .
                 "created with file().\n\t\tInstead found " . gettype($input) .
                 " '" . print_r($input, true) . "'.";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
         }
+        if ($caseSensitive != CASE_MIXED) {
+            $result = \Yana\Util\Hashtable::changeCase($result, $caseSensitive);
+        }
 
-        return \unserialize($result);
+        return $result;
     }
 
     /**
@@ -76,6 +79,12 @@ class NullDecoder extends \Yana\Core\Object implements IsDecoder
      */
     public function encode($data, $name = null, $caseSensitive = CASE_MIXED, $indent = 0)
     {
+        if (!is_null($name)) {
+            $data = array($name => $data);
+        }
+        if ($caseSensitive != CASE_MIXED && is_array($data)) {
+            $data = \Yana\Util\Hashtable::changeCase($data, $caseSensitive);
+        }
         return \serialize($data);
     }
 
@@ -90,8 +99,7 @@ class NullDecoder extends \Yana\Core\Object implements IsDecoder
      */
     public function decode($input, $caseSensitive = CASE_MIXED)
     {
-        $input = explode("\n", "$input");
-        return $this->getFile($input, $caseSensitive);
+        return $this->getFile(explode("\n", "$input"), $caseSensitive);
     }
 
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: SML
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -33,8 +33,6 @@ namespace Yana\Files;
 require_once __Dir__ . '/../../../include.php';
 
 /**
- * Test class for SXML
- *
  * @package  test
  */
 class SXMLTest extends \PHPUnit_Framework_TestCase
@@ -159,5 +157,5 @@ class SXMLTest extends \PHPUnit_Framework_TestCase
         $actual = $decoder->encode($array);
         $this->assertEquals($expected, $actual, 'Calling encode(decode($xml)) must not change the input.');
     }
+
 }
-?>

@@ -39,37 +39,6 @@ class SecurityLevelRule extends \Yana\Security\Rules\AbstractRule
 {
 
     /**
-     * @var  \Yana\Security\Sessions\IsWrapper
-     */
-    private $_session = null;
-
-    /**
-     * Initialize session wraper.
-     *
-     * @param  \Yana\Security\Sessions\IsWrapper  $session  a session wrapper
-     */
-    public function __construct(\Yana\Security\Sessions\IsWrapper $session)
-    {
-        $this->_session = $session;
-    }
-
-    /**
-     * Returns a session wrapper.
-     *
-     * If none is set, a default wrapper is created.
-     *
-     * @return  \Yana\Security\Sessions\IsWrapper
-     */
-    protected function _getSession()
-    {
-        if (!isset($this->_session)) {
-            $this->_session = new \Yana\Security\Logins\StandardBehavior();
-            new \Yana\Security\Logins\StandardBehavior();
-        }
-        return $this->_session;
-    }
-
-    /**
      * Check security level.
      *
      * @param   \Yana\Security\Rules\Requirements\IsRequirement  $required   list of required permissions
@@ -80,9 +49,15 @@ class SecurityLevelRule extends \Yana\Security\Rules\AbstractRule
      */
     public function __invoke(\Yana\Security\Rules\Requirements\IsRequirement $required, $profileId, $action, \Yana\Security\Data\Behaviors\IsBehavior $user)
     {
+        /**
+         * @codeCoverageIgnoreStart
+         */
         if ($required->getLevel() < 0) {
-            return null;
+            return null; // should be unreachable
         }
+        /**
+         * @codeCoverageIgnoreEnd
+         */
         if ($required->getLevel() === 0) {
             return true;
         }

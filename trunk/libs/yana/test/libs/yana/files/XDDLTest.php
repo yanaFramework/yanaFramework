@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: DDL
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -33,8 +33,6 @@ namespace Yana\Files;
 require_once __Dir__ . '/../../../include.php';
 
 /**
- * Test class for DDL
- *
  * @package  test
  */
 class XDDLTest extends \PHPUnit_Framework_TestCase
@@ -949,11 +947,17 @@ class XDDLTest extends \PHPUnit_Framework_TestCase
                     $this->assertEquals($grant->$grantFunction(), $expectedValue, "In Column ". $nameOfColumn ." " . $grantFunction . " does not match.");
                 }
             }
-            $this->assertEquals($column->getLength(), $columnLength[$key], "In Column ". $nameOfColumn ." columnlength does not match expected Value");
-            $this->assertEquals($column->isAutoIncrement(), $columnAutoInc[$key], "In Column ". $nameOfColumn ." autoincrement does not match expected Value");
+            $this->assertEquals(
+                $column->getLength(), $columnLength[$key], "In Column " . $nameOfColumn . " columnlength does not match expected Value"
+            );
+            $this->assertEquals(
+                $column->isAutoIncrement(), $columnAutoInc[$key], "In Column " . $nameOfColumn . " autoincrement does not match expected Value"
+            );
 
-            $this->assertEquals($column->isPrimaryKey(), $columnPrimKey[$key], "In Column ". $nameOfColumn ." primary Key does not match expected Value");
+            $this->assertEquals(
+                $column->isPrimaryKey(), $columnPrimKey[$key], "In Column " . $nameOfColumn . " primary Key does not match expected Value"
+            );
         }
     }
+
 }
-?>

@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: FileDbIndex
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -33,14 +33,12 @@ namespace Yana\Db\FileDb;
 require_once __DIR__ . '/../../../../include.php';
 
 /**
- * Test class for FileDbIndex
- *
  * @package  test
  */
 class IndexTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var FileDbIndex
+     * @var \Yana\Db\FileDb\Index
      */
     private $_object;
 
@@ -228,4 +226,3 @@ class IndexTest extends \PHPUnit_Framework_TestCase
     }
 
 }
-?>

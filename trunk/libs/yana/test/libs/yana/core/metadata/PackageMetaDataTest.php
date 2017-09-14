@@ -33,15 +33,13 @@ namespace Yana\Core\MetaData;
 require_once __DIR__ . '/../../../../include.php';
 
 /**
- * Test class for MetaData.
- *
  * @package  test
  */
 class PackageMetaDataTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var MetaData
+     * @var \Yana\Core\MetaData\PackageMetaData
      */
     protected $_object = null;
 
@@ -51,7 +49,7 @@ class PackageMetaDataTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->_object = new PackageMetaData();
+        $this->_object = new \Yana\Core\MetaData\PackageMetaData();
     }
 
     /**
@@ -166,5 +164,3 @@ class PackageMetaDataTest extends \PHPUnit_Framework_TestCase
     }
 
 }
-
-?>

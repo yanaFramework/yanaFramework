@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: Object
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -95,8 +95,6 @@ class TestSingletonB extends \Yana\Core\AbstractSingleton
 }
 
 /**
- * Test class for Object
- *
  * @package  test
  */
 class AbstractSingletonTest extends \PHPUnit_Framework_TestCase
@@ -125,5 +123,3 @@ class AbstractSingletonTest extends \PHPUnit_Framework_TestCase
     }
 
 }
-
-?>

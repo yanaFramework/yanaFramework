@@ -29,7 +29,6 @@
 
 namespace Yana\Views\Resources\Helpers;
 
-
 /**
  * Helper for file resource.
  *

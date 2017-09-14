@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: FileDb
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -33,8 +33,6 @@ namespace Yana\Db\FileDb;
 require_once __DIR__ . '/../../../../include.php';
 
 /**
- * DbStream test-case
- *
  * @package  test
  */
 class ConnectionTest extends \PHPUnit_Framework_TestCase
@@ -324,5 +322,3 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
     }
 
 }
-
-?>

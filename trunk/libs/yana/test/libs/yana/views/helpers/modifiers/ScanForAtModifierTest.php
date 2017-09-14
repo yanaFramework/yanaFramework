@@ -72,7 +72,7 @@ class ScanForAtModifierTest extends \PHPUnit_Framework_TestCase
         $this->assertSame("&#97;&#64;&#98;&#46;&#99;", $this->object->__invoke("a@b.c"));
         $this->assertSame("a &#97;&#64;&#98;&#46;&#99; c", $this->object->__invoke("a a@b.c c"));
         $this->assertSame("a &#97;&#49;&#64;&#98;&#46;&#99; c", $this->object->__invoke("a a1@b.c c"));
-        $this->assertSame("aä&#97;&#49;&#64;&#98;&#46;&#99;Äc", $this->object->__invoke("aäa1@b.cÄc"));
+        $this->assertSame("a?&#97;&#49;&#64;&#98;&#46;&#99;?c", $this->object->__invoke("a?a1@b.c?c"));
         $this->assertSame('<input value="a@b.c">', $this->object->__invoke('<input value="a@b.c">'));
     }
 

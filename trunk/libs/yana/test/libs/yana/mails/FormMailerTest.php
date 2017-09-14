@@ -1,7 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: Formmailer
- *
+ * PHPUnit test-case. *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
  * License:   GNU GPL  http://www.gnu.org/licenses/
@@ -33,8 +32,6 @@ namespace Yana\Mails;
 require_once __DIR__ . '/../../../include.php';
 
 /**
- * Test class for Formmailer
- *
  * @package  test
  */
 class FormMailerTest extends \PHPUnit_Framework_TestCase
@@ -90,5 +87,3 @@ class FormMailerTest extends \PHPUnit_Framework_TestCase
     }
 
 }
-
-?>

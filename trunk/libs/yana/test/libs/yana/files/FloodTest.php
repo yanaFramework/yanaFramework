@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: Flood-File
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -33,12 +33,11 @@ namespace Yana\Files;
 require_once __Dir__ . '/../../../include.php';
 
 /**
- * Test class for Flood
- *
  * @package  test
  */
 class FloodTest extends \PHPUnit_Framework_TestCase
 {
+
     /**
      * @var     string
      */
@@ -179,7 +178,7 @@ class FloodTest extends \PHPUnit_Framework_TestCase
      * @expectedException PHPUnit_Framework_Error
      * @test
      */
-    function testSetMaxInvalidArgument()
+    public function testSetMaxInvalidArgument()
     {
         $this->object->setMax('0');
     }
@@ -192,6 +191,7 @@ class FloodTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetMax()
     {
+        
     }
+
 }
-?>

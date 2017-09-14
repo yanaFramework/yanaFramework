@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: Mountpoint
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -33,9 +33,7 @@ namespace Yana\VDrive;
 require_once __DIR__ . '/../../../include.php';
 
 /**
- * Test implementation for abstract class Mountpoint
- *
- * @package test
+ * @package  test
  * @ignore
  */
 class MountpointImplementationTest extends AbstractMountpoint
@@ -55,8 +53,6 @@ class MountpointImplementationTest extends AbstractMountpoint
 }
 
 /**
- * Test class for AbstractResource
- *
  * @package  test
  */
 class AbstractMountpointTest extends \PHPUnit_Framework_TestCase
@@ -213,5 +209,3 @@ class AbstractMountpointTest extends \PHPUnit_Framework_TestCase
     }
 
 }
-
-?>

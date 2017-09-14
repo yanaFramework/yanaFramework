@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: Skin
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -33,8 +33,6 @@ namespace Yana\Views\Skins;
 require_once __DIR__ . '/../../../../include.php';
 
 /**
- * Test class for Skin
- *
  * @package  test
  */
 class SkinTest extends \PHPUnit_Framework_TestCase
@@ -127,5 +125,3 @@ class SkinTest extends \PHPUnit_Framework_TestCase
     }
 
 }
-
-?>

@@ -32,6 +32,7 @@ namespace Yana\Core\Autoloaders;
  *
  * @package     yana
  * @subpackage  core
+ * @codeCoverageIgnore
  */
 class Wrapper extends \Yana\Core\Object
 {
@@ -76,7 +77,7 @@ class Wrapper extends \Yana\Core\Object
      * Try to load a class file.
      *
      * @param   string  $className  name of class you are trying to load.
-     * @throws  \Yana\Core\Autoloaders\ClassNotFoundException  only if activated!
+     * @throws  \Yana\Core\Exceptions\ClassNotFoundException  only if activated!
      */
     public function loadClass($className)
     {

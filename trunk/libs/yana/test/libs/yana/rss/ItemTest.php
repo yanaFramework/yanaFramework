@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: RSS
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -33,15 +33,13 @@ namespace Yana\RSS;
 require_once __DIR__ . '/../../../include.php';
 
 /**
- * Test class for RSSitem
- *
  * @package  test
  */
 class ItemTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var Item
+     * @var \Yana\RSS\Item
      */
     protected $item;
 
@@ -183,5 +181,3 @@ class ItemTest extends \PHPUnit_Framework_TestCase
     }
 
 }
-
-?>

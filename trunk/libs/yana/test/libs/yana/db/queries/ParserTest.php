@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: DbQueryParser
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -33,8 +33,6 @@ namespace Yana\Db\Queries;
 require_once __DIR__ . '/../../../../include.php';
 
 /**
- * Test class for DbQueryParser
- *
  * @package  test
  */
 class ParserTest extends \PHPUnit_Framework_TestCase
@@ -542,5 +540,3 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     }
 
 }
-
-?>

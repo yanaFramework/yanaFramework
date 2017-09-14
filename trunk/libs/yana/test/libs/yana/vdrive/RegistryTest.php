@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: Registry
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -33,8 +33,6 @@ namespace Yana\VDrive;
 require_once __DIR__ . '/../../../include.php';
 
 /**
- * Test implementation for class Registry
- *
  * @package test
  */
 class RegistryTest extends \PHPUnit_Framework_TestCase
@@ -250,5 +248,3 @@ class RegistryTest extends \PHPUnit_Framework_TestCase
     }
 
 }
-
-?>

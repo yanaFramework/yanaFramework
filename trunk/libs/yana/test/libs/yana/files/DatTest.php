@@ -33,8 +33,6 @@ namespace Yana\Files;
 require_once __Dir__ . '/../../../include.php';
 
 /**
- * Test class for Dat
- * 
  * @package  test
  */
 class DatTest extends \PHPUnit_Framework_TestCase
@@ -231,5 +229,3 @@ class DatTest extends \PHPUnit_Framework_TestCase
     }
 
 }
-
-?>

@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: RSS
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -34,8 +34,6 @@ require_once __DIR__ . '/../../../include.php';
 
 
 /**
- * Test class for RSS
- *
  * @package  test
  */
 class FeedTest extends \PHPUnit_Framework_TestCase

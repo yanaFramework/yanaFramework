@@ -1,7 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: Mailer
- *
+ * PHPUnit test-case. *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
  * License:   GNU GPL  http://www.gnu.org/licenses/
@@ -33,8 +32,6 @@ namespace Yana\Mails;
 require_once __DIR__ . '/../../../include.php';
 
 /**
- * Test class for Mailer
- *
  * @package  test
  */
 class TemplateMailerTest extends \PHPUnit_Framework_TestCase
@@ -104,5 +101,3 @@ class TemplateMailerTest extends \PHPUnit_Framework_TestCase
     }
 
 }
-
-?>

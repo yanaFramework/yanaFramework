@@ -64,7 +64,7 @@ interface IsLoader
      * Try to load a file associated with a class.
      *
      * @param   string  $className  name of class you are trying to load
-     * @throws  \Yana\Core\Autoloaders\ClassNotFoundException  when the class was not found (needs to be activated)
+     * @throws  \Yana\Core\Exceptions\ClassNotFoundException  when the class was not found (needs to be activated)
      */
     public function loadClassFile($className);
 

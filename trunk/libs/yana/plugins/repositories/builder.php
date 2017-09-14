@@ -117,6 +117,7 @@ class Builder extends \Yana\Plugins\Repositories\AbstractBuilder
             $configBuilder->createNewConfiguration();
             $configBuilder->setReflection(new \Yana\Plugins\Annotations\ReflectionClass($className));
             $pluginId = preg_replace('/^plugin_/', '', strtolower($className));
+            /* @var $config \Yana\Plugins\Configs\ClassConfiguration */
             $config = $configBuilder->getPluginConfigurationClass();
             $config->setId($id);
             $this->object->addPlugin($config);

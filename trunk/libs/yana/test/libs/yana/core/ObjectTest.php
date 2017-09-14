@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: Object
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -34,8 +34,6 @@ require_once __DIR__ . '/../../../include.php';
 
 
 /**
- * Test class for Object
- *
  * @package  test
  */
 class ObjectTest extends \PHPUnit_Framework_TestCase
@@ -141,5 +139,3 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
     }
 
 }
-
-?>

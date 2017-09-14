@@ -40,7 +40,7 @@ class Loader extends \Yana\Core\Autoloaders\AbstractLoader
      * Try to load a file associated with a class.
      *
      * @param   string  $className  name of class you are trying to load
-     * @throws  \Yana\Core\Autoloaders\ClassNotFoundException  when the class was not found (needs to be activated)
+     * @throws  \Yana\Core\Exceptions\ClassNotFoundException  when the class was not found (needs to be activated)
      */
     public function loadClassFile($className)
     {
@@ -65,11 +65,17 @@ class Loader extends \Yana\Core\Autoloaders\AbstractLoader
             }
         }
         unset($mapper);
+        /**
+         * @codeCoverageIgnoreStart
+         */
         if ($this->doesThrowExceptionWhenClassIsNotFound()) {
             // The exception is only thrown when the loader is told to do so. By default this is: false
             $message = "No such class: '" . $className . "'.";
-            throw new \Yana\Core\Autoloaders\ClassNotFoundException($message);
+            throw new \Yana\Core\Exceptions\ClassNotFoundException($message);
         }
+        /**
+         * @codeCoverageIgnoreEnd
+         */
     }
 
 }

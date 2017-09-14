@@ -35,19 +35,7 @@ namespace Yana\Core\Exceptions\Mails;
  */
 class MailException extends \Yana\Core\Exceptions\AbstractException
 {
-
-    /**
-     * Set id of duplicate entry.
-     *
-     * @param   scalar  $id  identifier of duplicate entry
-     * @return  \Yana\Core\Exceptions\AlreadyExistsException
-     */
-    public function setId($id)
-    {
-        $this->data = array('ID' => $id);
-        return $this;
-    }
-
+    // intentionally left blank
 }
 
 ?>

@@ -81,7 +81,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \Yana\VDrive\ClassNotFoundException
+     * @expectedException \Yana\Core\Exceptions\ClassNotFoundException
      */
     public function testConstructorClassNotFoundException()
     {

@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: File
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -33,16 +33,25 @@ namespace Yana\Files;
 require_once __Dir__ . '/../../../include.php';
 
 /**
- * Test class for File
- *
  * @package  test
- *
  */
 class FileTest extends \PHPUnit_Framework_TestCase
 {
-    /** @var    File */ protected $object;
-    /** @var  string */ protected $source = 'resources/file.txt';
-    /** @var  string */ protected $file = 'resources/file_copy.txt';
+
+    /**
+     * @var  File
+     */
+    protected $object;
+
+    /**
+     * @var  string
+     */
+    protected $source = 'resources/file.txt';
+
+    /**
+     * @var  string
+     */
+    protected $file = 'resources/file_copy.txt';
 
     /**
      * Constructor
@@ -217,5 +226,3 @@ class FileTest extends \PHPUnit_Framework_TestCase
     }
 
 }
-
-?>

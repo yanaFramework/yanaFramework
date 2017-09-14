@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: DbInfoColumn
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -28,12 +28,9 @@
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/include.php';
+require_once __DIR__ . '/include.php';
 
 /**
- * DbInfoColumn test-case
- *
- * @covers \Plugins\DbTools\InfoColumn
  * @package  test
  */
 class DbInfoColumnTest extends PHPUnit_Framework_TestCase
@@ -593,5 +590,5 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
         $this->assertInternalType('array', $toArray, 'assert failed, the value is not of type array');
         $this->assertArrayHasKey('table', $toArray, 'assert failed, the array value should be have the "table" as a key');
     }
+
 }
-?>

@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: Dir
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -33,8 +33,6 @@ namespace Yana\Files;
 require_once __Dir__ . '/../../../include.php';
 
 /**
- * Test class for Dir
- *
  * @package  test
  */
 class DirTest extends \PHPUnit_Framework_TestCase
@@ -421,5 +419,3 @@ class DirTest extends \PHPUnit_Framework_TestCase
     }
 
 }
-
-?>

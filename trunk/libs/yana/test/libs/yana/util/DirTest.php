@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: Hashtable
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -33,8 +33,6 @@ namespace Yana\Util;
 require_once __Dir__ . '/../../../include.php';
 
 /**
- * Test class for Hashtable
- *
  * @package  test
  */
 class DirTest extends \PHPUnit_Framework_TestCase

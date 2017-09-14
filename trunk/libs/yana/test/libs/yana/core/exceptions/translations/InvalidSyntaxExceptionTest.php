@@ -1,6 +1,6 @@
 <?php
 /**
- * YANA library
+ * PHPUnit test-case
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -21,21 +21,43 @@
  *
  * This notice MAY NOT be removed.
  *
- * @package  yana
+ * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\VDrive;
+namespace Yana\Core\Exceptions\Translations;
 
 /**
- * <<exception>> Thrown when a defined wrapper class is not found.
- *
- * @package    yana
- * @subpackage vdrive
+ * @ignore
  */
-class ClassNotFoundException extends \Yana\Core\Exceptions\NotFoundException
-{
-    // intentionally left blank
-}
+require_once __DIR__ . '/../../../../../include.php';
 
-?>
+/**
+ * @package  test
+ */
+class InvalidSyntaxExceptionTest extends \PHPUnit_Framework_TestCase
+{
+
+    /**
+     * @var \Yana\Core\Exceptions\Translations\InvalidSyntaxException
+     */
+    protected $object;
+
+    /**
+     * Sets up the fixture, for example, opens a network connection.
+     * This method is called before a test is executed.
+     */
+    protected function setUp()
+    {
+        $this->object = new \Yana\Core\Exceptions\Translations\InvalidSyntaxException();
+    }
+
+    /**
+     * @test
+     */
+    public function testSetFilename()
+    {
+        $this->assertEquals(array('FILE' => 'Test'), $this->object->setFilename('Test')->getData());
+    }
+
+}

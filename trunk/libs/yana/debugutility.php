@@ -31,6 +31,7 @@ namespace Yana;
  * <<Utility>> Encapsulated very basic debugging functions.
  *
  * @package    yana
+ * @codeCoverageIgnore
  */
 class DebugUtility extends \Yana\Core\AbstractUtility
 {

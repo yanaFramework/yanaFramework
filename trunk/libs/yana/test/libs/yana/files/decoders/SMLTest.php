@@ -33,8 +33,6 @@ namespace Yana\Files\Decoders;
 require_once __Dir__ . '/../../../../include.php';
 
 /**
- *  SML test-case
- *
  * @package  test
  */
 class SMLTest extends \PHPUnit_Framework_TestCase
@@ -116,5 +114,3 @@ class SMLTest extends \PHPUnit_Framework_TestCase
     }
 
 }
-
-?>

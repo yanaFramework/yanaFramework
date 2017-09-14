@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: Counter
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -33,8 +33,6 @@ namespace Yana\Db\FileDb;
 require_once __DIR__ . '/../../../../include.php';
 
 /**
- * Counter test-case
- *
  * @package  test
  */
 class CounterTest extends \PHPUnit_Framework_TestCase
@@ -187,5 +185,3 @@ class CounterTest extends \PHPUnit_Framework_TestCase
     }
 
 }
-
-?>

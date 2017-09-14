@@ -129,8 +129,7 @@ class Json extends \Yana\Core\Object implements IsDecoder
     public function decode($input, $caseSensitive = CASE_MIXED)
     {
         assert('is_string($input); // Wrong argument type $input. String expected.');
-        $input = explode("\n", "$input");
-        return $this->getFile($input, $caseSensitive);
+        return $this->getFile(explode("\n", (string) $input), $caseSensitive);
     }
 
 }

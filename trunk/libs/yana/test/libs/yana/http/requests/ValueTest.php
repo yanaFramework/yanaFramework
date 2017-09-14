@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: DbInfoColumn
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}

@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: Image
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -33,8 +33,6 @@ namespace Yana\Media;
 require_once dirname(__FILE__) . '/../../../include.php';
 
 /**
- * Test class for Image
- *
  * @package  test
  */
 class ImageTest extends \PHPUnit_Framework_TestCase
@@ -1920,5 +1918,3 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     }
 
 }
-
-?>

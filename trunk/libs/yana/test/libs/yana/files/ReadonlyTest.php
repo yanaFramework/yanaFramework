@@ -33,12 +33,11 @@ namespace Yana\Files;
 require_once __Dir__ . '/../../../include.php';
 
 /**
- * Test class for Readonly
- *
  * @package  test
  */
 class ReadonlyTest extends \PHPUnit_Framework_TestCase
 {
+
     /**
      * @var    Readonly
      */
@@ -242,5 +241,3 @@ class ReadonlyTest extends \PHPUnit_Framework_TestCase
     }
 
 }
-
-?>

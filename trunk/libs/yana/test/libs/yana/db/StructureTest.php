@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: FileDb
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -33,8 +33,6 @@ namespace Yana\Db;
 require_once __Dir__ . '/../../../include.php';
 
 /**
- * Test class for Structure
- *
  * @package  test
  * @deprecated since version 4.0
  */
@@ -620,5 +618,3 @@ class StructureTest extends \PHPUnit_Framework_TestCase
     }
 
 }
-
-?>

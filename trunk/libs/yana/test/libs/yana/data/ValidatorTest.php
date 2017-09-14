@@ -33,8 +33,6 @@ namespace Yana\Data;
 require_once __DIR__ . '/../../../include.php';
 
 /**
- * Test class for Toolbox
- *
  * @package  test
  */
 class ValidatorTest extends \PHPUnit_Framework_TestCase
@@ -499,5 +497,3 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
     }
 
 }
-
-?>

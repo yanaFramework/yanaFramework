@@ -85,6 +85,9 @@ class SecurityGroupRule extends \Yana\Security\Rules\AbstractRule
         if ($required->getGroup() === "" && $required->getRole() === "") {
             return null;
         }
+        if (!$user->isLoggedIn()) {
+            return false;
+        }
 
         $requiredRole = $required->getRole();
         $requiredGroup = $required->getGroup();
@@ -93,7 +96,7 @@ class SecurityGroupRule extends \Yana\Security\Rules\AbstractRule
         {
             case $required->getGroup() === "" && $collection->hasRole($requiredRole):
             case $required->getRole() === "" && $collection->hasGroup($requiredGroup):
-            case $collection->hasGroupAndRole($action, $profileId):
+            case $collection->hasGroupAndRole($requiredGroup, $requiredRole):
                 return true;
         }
         unset($collection);
@@ -103,7 +106,7 @@ class SecurityGroupRule extends \Yana\Security\Rules\AbstractRule
         {
             case $required->getGroup() === "" && $defaultCollection->hasRole($requiredRole):
             case $required->getRole() === "" && $defaultCollection->hasGroup($requiredGroup):
-            case $defaultCollection->hasGroupAndRole($action, $profileId):
+            case $defaultCollection->hasGroupAndRole($requiredGroup, $requiredRole):
                 return true;
         }
         unset($defaultCollection);

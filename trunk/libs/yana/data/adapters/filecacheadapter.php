@@ -107,7 +107,7 @@ class FileCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yan
     {
         $items = array();
         $file = $this->_toFile("");
-        if ($file->exists()) {
+        if ($file->exists() && !$file->isEmpty()) {
             $file->read();
             $contents = $file->getContent();
             $items = \unserialize($contents);

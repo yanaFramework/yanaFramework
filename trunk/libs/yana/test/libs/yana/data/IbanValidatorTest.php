@@ -33,8 +33,6 @@ namespace Yana\Data;
 require_once __DIR__ . '/../../../include.php';
 
 /**
- * Test class for IBAN
- *
  * @package  test
  */
 class IbanValidatorTest extends \PHPUnit_Framework_TestCase
@@ -239,5 +237,3 @@ class IbanValidatorTest extends \PHPUnit_Framework_TestCase
     }
 
 }
-
-?>

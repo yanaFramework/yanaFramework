@@ -33,7 +33,7 @@ namespace Yana\Files\Streams\Wrappers;
 require_once __Dir__ . '/../../../../../include.php';
 
 /**
- * Test class for NullWrapper.
+ * @package  test
  */
 class NullWrapperTest extends \PHPUnit_Framework_TestCase
 {
@@ -82,5 +82,3 @@ class NullWrapperTest extends \PHPUnit_Framework_TestCase
     }
 
 }
-
-?>

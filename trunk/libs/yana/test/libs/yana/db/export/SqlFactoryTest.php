@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: \Yana\Db\Export\SqlFactory
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -33,8 +33,6 @@ namespace Yana\Db\Export;
 require_once __DIR__ . '/../../../../include.php';
 
 /**
- * \Yana\Db\Export\SqlFactory test-case
- *
  * @package  test
  */
 class SqlFactoryTest extends \PHPUnit_Framework_TestCase
@@ -318,5 +316,3 @@ class SqlFactoryTest extends \PHPUnit_Framework_TestCase
     }
 
 }
-
-?>

@@ -33,8 +33,6 @@ namespace Yana\Data;
 require_once __DIR__ . '/../../../include.php';
 
 /**
- * Test class for BIC
- *
  * @package  test
  */
 class BicValidatorTest extends \PHPUnit_Framework_TestCase

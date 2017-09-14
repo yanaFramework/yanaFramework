@@ -43,9 +43,9 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
     public function __construct()
     {
         $security = $this->_getSecurityFacade();
-        $session = $this->_getSession();
-        $security->addSecurityRule(new \Yana\Security\Rules\SecurityLevelRule($session));
+        $security->addSecurityRule(new \Yana\Security\Rules\SecurityLevelRule());
 
+        $session = $this->_getSession();
         $YANA = $this->_getApplication();
         if (isset($YANA)) {
             $userName = $session->getCurrentUserName();

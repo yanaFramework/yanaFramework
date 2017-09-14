@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: DbStructureGenerics
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -33,8 +33,6 @@ namespace Yana\Db\Helpers;
 require_once __DIR__ . '/../../../../include.php';
 
 /**
- * Test class for DbStructureGenerics
- *
  * @package  test
  */
 class ConstraintCollectionTest extends \PHPUnit_Framework_TestCase
@@ -130,6 +128,7 @@ class ConstraintCollectionTest extends \PHPUnit_Framework_TestCase
  */
 class checktrigger
 {
+
     protected static $value = 0;
 
     public static function write()
@@ -143,5 +142,5 @@ class checktrigger
         checktrigger::$value = 0;
         return $result;
     }
+
 }
-?>

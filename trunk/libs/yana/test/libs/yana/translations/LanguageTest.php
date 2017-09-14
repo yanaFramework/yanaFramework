@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: RSS
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -223,5 +223,3 @@ class LanguageTest extends \PHPUnit_Framework_TestCase
     }
 
 }
-
-?>

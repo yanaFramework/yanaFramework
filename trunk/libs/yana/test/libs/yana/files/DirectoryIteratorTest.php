@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: Dir
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -127,5 +127,3 @@ class DirectoryIteratorTest extends \PHPUnit_Framework_TestCase
     }
 
 }
-
-?>

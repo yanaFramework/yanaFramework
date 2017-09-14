@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: Configuration
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -33,8 +33,6 @@ namespace Yana\VDrive;
 require_once __DIR__ . '/../../../include.php';
 
 /**
- * Test class for Configuration
- *
  * @package  test
  */
 class ConfigurationTest extends \PHPUnit_Framework_TestCase
@@ -150,5 +148,5 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $file = $dir->addNodeFile("bar");
         $this->assertEquals($file->getNodeName(), "bar", '"add file" test failed');
     }
+
 }
-?>

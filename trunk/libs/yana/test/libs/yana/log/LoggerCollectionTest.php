@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: Formmailer
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -96,5 +96,3 @@ class LoggerCollectionTest extends \PHPUnit_Framework_TestCase
     }
 
 }
-
-?>

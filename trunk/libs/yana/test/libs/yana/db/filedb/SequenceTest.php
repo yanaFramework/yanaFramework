@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: Sequence
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -33,8 +33,6 @@ namespace Yana\Db\FileDb;
 require_once __DIR__ . '/../../../../include.php';
 
 /**
- * Test class for Sequence
- *
  * @package  test
  */
 class SequenceTest extends \PHPUnit_Framework_TestCase
@@ -289,5 +287,3 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
     }
 
 }
-
-?>

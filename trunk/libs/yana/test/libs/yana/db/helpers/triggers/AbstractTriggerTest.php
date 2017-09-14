@@ -1,7 +1,6 @@
 <?php
-
 /**
- * PHPUnit test-case: DbStructureGenerics
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -34,8 +33,6 @@ namespace Yana\Db\Helpers\Triggers;
 require_once __DIR__ . '/../../../../../include.php';
 
 /**
- * Test class for database triggers
- *
  * @package  test
  */
 class AbstractTriggerTest extends \PHPUnit_Framework_TestCase
@@ -181,5 +178,3 @@ class Checktrigger
     }
 
 }
-
-?>
