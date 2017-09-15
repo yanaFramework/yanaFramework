@@ -27,46 +27,26 @@
  * @ignore
  */
 
-namespace Yana\Data\Adapters;
+namespace Yana\Views\Icons;
 
 /**
- * <<Interface>> Data Entity
- *
- * Base class for plain entities.
+ * <<interface>> Loads and provides informations about registered, usable icons.
  *
  * @package     yana
- * @subpackage  io
+ * @subpackage  views
  */
-interface IsEntity extends \Yana\Core\IsObject
+interface IsLoader
 {
 
     /**
-     * Returns a unique identifier.
+     * Returns a list of available icon files.
      *
-     * @return  scalar
-     */
-    public function getId();
-
-    /**
-     * Set the identifying value for this entity.
+     * The list is build from the profile configuration on demand.
      *
-     * @param   scalar  $id  unique identier
-     * @return  self
+     * @return  \Yana\Views\Icons\Collection
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when the file is not found or empty
      */
-    public function setId($id);
-
-    /**
-     * This sets the data adapter used to persist the entity
-     *
-     * @param   \Yana\Data\Adapters\IsDataAdapter  $adapter  object that should be used
-     * @return  self
-     */
-    public function setDataAdapter(\Yana\Data\Adapters\IsDataAdapter $adapter);
-
-    /**
-     * Calls the assigned data adapter to persist the entity.
-     */
-    public function saveEntity();
+    public function getIcons();
 
 }
 

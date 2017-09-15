@@ -27,46 +27,23 @@
  * @ignore
  */
 
-namespace Yana\Data\Adapters;
+namespace Yana\Views\Icons;
 
 /**
- * <<Interface>> Data Entity
- *
- * Base class for plain entities.
+ * <<interface>> Data adapter to load file entities.
  *
  * @package     yana
- * @subpackage  io
+ * @subpackage  views
  */
-interface IsEntity extends \Yana\Core\IsObject
+interface IsDataAdapter extends \Yana\Data\Adapters\IsDataAdapter
 {
 
     /**
-     * Returns a unique identifier.
+     * Get collection of file entities.
      *
-     * @return  scalar
+     * @return  \Yana\Views\Icons\Collection
      */
-    public function getId();
-
-    /**
-     * Set the identifying value for this entity.
-     *
-     * @param   scalar  $id  unique identier
-     * @return  self
-     */
-    public function setId($id);
-
-    /**
-     * This sets the data adapter used to persist the entity
-     *
-     * @param   \Yana\Data\Adapters\IsDataAdapter  $adapter  object that should be used
-     * @return  self
-     */
-    public function setDataAdapter(\Yana\Data\Adapters\IsDataAdapter $adapter);
-
-    /**
-     * Calls the assigned data adapter to persist the entity.
-     */
-    public function saveEntity();
+    public function getAll();
 
 }
 

@@ -25,36 +25,21 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Views\Helpers\Formatters;
+namespace Yana\Views\Icons;
 
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/../../../../../include.php';
+require_once dirname(__FILE__) . '/../../../../include.php';
 
 /**
- * @package  test
- * @ignore
+ * @package test
  */
-class MyIconFormatter extends \Yana\Views\Helpers\Formatters\IconFormatter
-{
-    protected function _buildListOfIcons()
-    {
-        $collection = new \Yana\Views\Icons\Collection();
-        $entity = new \Yana\Views\Icons\File();
-        $collection[] = $entity->setId('smile')->setPath('smile.gif')->setRegularExpression('smile');
-        return $collection;
-    }
-}
-
-/**
- * @package  test
- */
-class IconFormatterTest extends \PHPUnit_Framework_TestCase
+class FileTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Views\Helpers\Formatters\MyIconFormatter
+     * @var \Yana\Views\Icons\File
      */
     protected $object;
 
@@ -64,7 +49,7 @@ class IconFormatterTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Views\Helpers\Formatters\MyIconFormatter();
+        $this->object = new \Yana\Views\Icons\File();
     }
 
     /**
@@ -79,9 +64,49 @@ class IconFormatterTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testInvoke()
+    public function testGetId()
     {
-        $this->assertSame('A<img alt="" border="0" hspace="2" src="smile.gif"/>b', $this->object->__invoke('A:smile:b'));
+        $this->assertSame("", $this->object->getId());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetId()
+    {
+        $this->assertSame("Test", $this->object->setId("Test")->getId());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetPath()
+    {
+        $this->assertSame("", $this->object->getPath());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetPath()
+    {
+        $this->assertSame("Test", $this->object->setPath("Test")->getPath());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetRegularExpression()
+    {
+        $this->assertSame("", $this->object->getRegularExpression());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetRegularExpression()
+    {
+        $this->assertSame("Test", $this->object->setRegularExpression("Test")->getRegularExpression());
     }
 
 }

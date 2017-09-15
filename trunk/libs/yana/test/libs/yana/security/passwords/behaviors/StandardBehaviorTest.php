@@ -104,9 +104,10 @@ class StandardBehaviorTest extends \PHPUnit_Framework_TestCase
     public function testChangePassword()
     {
         $password = "12345678";
+        $this->object->getUser()->setRecentPasswords(array('1', '2', '3', '4', '5', '6', '7', '8', '9', '10'));
         $this->object->getUser()->setPasswordRecoveryId("test");
         $this->assertEquals($password, $this->object->changePassword($password)->getUser()->getPassword());
-        $this->assertEquals(array($password), $this->object->getUser()->getRecentPasswords());
+        $this->assertEquals(array('2', '3', '4', '5', '6', '7', '8', '9', '10', '12345678'), $this->object->getUser()->getRecentPasswords());
         $this->assertEquals("", $this->object->getUser()->getPasswordRecoveryId());
     }
 

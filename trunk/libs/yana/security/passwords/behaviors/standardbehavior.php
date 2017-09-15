@@ -164,7 +164,7 @@ class StandardBehavior extends \Yana\Security\Passwords\Behaviors\AbstractBehavi
         $recentPasswords[] = $newPassword;
         // cut the list back to 10 passwords if necessary
         if (count($recentPasswords) > 10) {
-            $recentPasswords = \array_slice($recentPasswords, 0, 10);
+            $recentPasswords = \array_slice($recentPasswords, 1, 10);
         }
 
         // update the user entity

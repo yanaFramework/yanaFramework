@@ -75,21 +75,35 @@ class Smilies extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vi
         $lDelim = $smarty->smarty->left_delimiter;
         $rDelim = $smarty->smarty->right_delimiter;
 
-        $iconLoader = new \Yana\Views\Helpers\IconLoader();
         $count = 0;
-        foreach ($iconLoader->getIcons() as $text => $icon)
+        foreach ($this->_buildListOfIcons() as $icon)
         {
-            $text = \Yana\Util\Strings::htmlSpecialChars($text);
+            /* @var $icon \Yana\Views\Icons\IsFile */
+            $text = \Yana\Util\Strings::htmlSpecialChars($icon->getId());
             if ($count % $width == 0 && $count > 0) {
                 $table .= '</tr><tr>';
             }
             $table .= '<td title="' . $lDelim . "lang id='TITLE_SMILIES'" . $rDelim . '" ' .
-                'style="cursor: pointer"><img alt="' . $text . '" src="' . $icon .
+                'style="cursor: pointer"><img alt="' . $text . '" src="' . $icon->getPath() .
                 '" onmousedown="yanaAddIcon(\':' . $text . ':\',event)"/></td>' . "\n";
             $count++;
         }
 
         return $table . "</tr></table>";
+    }
+
+    /**
+     * Returns a list of available icon files.
+     *
+     * The list is build from the profile configuration on demand.
+     *
+     * @return  \Yana\Views\Icons\Collection
+     * @codeCoverageIgnore
+     */
+    protected function _buildListOfIcons()
+    {
+        $iconLoader = new \Yana\Views\Icons\Loader();
+        return $iconLoader->getIcons();
     }
 
 }

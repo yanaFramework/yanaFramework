@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE files SYSTEM "config.dtd">
 <files>
-    <file name="smile.gif" regex=":[\-oO]?\)|smile"/>
-    <file name="boese.gif" regex=":[\-oO]?\(|boese|angry"/>
-    <file name="bigsmile.gif" regex="bigsmile"/>
-    <file name="chinesisch.gif" regex="chines(isch|e)"/>
-    <file name="cool.gif" regex="8[\-oO]\)"/>
-    <file name="engel.gif" regex="engel|angel|good"/>
-    <file name="frage.gif" regex="frage|\?"/>
-    <file name="grinsen.gif" regex=";[\-oO]\)|grin|grinsen"/>
-    <file name="haus.gif" regex="haus|house|home"/>
-    <file name="herz.gif" regex="herz|heart"/>
-    <file name="hut.gif" regex="h[ua]t"/>
-    <file name="idee.gif" regex="ide[ea]"/>
-    <file name="ironie.gif" regex="iron(y|ie)"/>
-    <file name="keinemeinung.gif" regex=":[\-oO]?\|"/>
-    <file name="king.gif" regex="king"/>
-    <file name="lachen.gif" regex=":[\-oO]?D|lol|rofl|lachen"/>
-    <file name="problem.gif" regex="problem|\?\?"/>
-    <file name="schlafen.gif" regex="schlafen|sleep"/>
-    <file name="skeptisch.gif" regex="skeptisch|sceptical|skeptical"/>
-    <file name="stopp.gif" regex="stopp?"/>
-    <file name="teufelchen.gif" regex="&gt;:[\-oO]?\)|teufelchen|devil|evil"/>
-    <file name="traurig.gif" regex=":[\'\*]\(|traurig|sad"/>
-    <file name="upsidedown.gif" regex="upsidedown|downunder"/>
-    <file name="verliebt.gif" regex="verliebt|(in)?love"/>
-    <file name="zunge.gif" regex=":[\-oO]?P|zunge|tongue"/>
+    <file id="smile" path="smile.gif" regex=":[\-oO]?\)|smile"/>
+    <file id="boese" path="boese.gif" regex=":[\-oO]?\(|boese|angry"/>
+    <file id="bigsmile" path="bigsmile.gif" regex="bigsmile"/>
+    <file id="chinesisch" path="chinesisch.gif" regex="chines(isch|e)"/>
+    <file id="cool" path="cool.gif" regex="8[\-oO]\)"/>
+    <file id="engel" path="engel.gif" regex="engel|angel|good"/>
+    <file id="frage" path="frage.gif" regex="frage|\?"/>
+    <file id="grinsen" path="grinsen.gif" regex=";[\-oO]\)|grin|grinsen"/>
+    <file id="haus" path="haus.gif" regex="haus|house|home"/>
+    <file id="herz" path="herz.gif" regex="herz|heart"/>
+    <file id="hut" path="hut.gif" regex="h[ua]t"/>
+    <file id="idee" path="idee.gif" regex="ide[ea]"/>
+    <file id="ironie" path="ironie.gif" regex="iron(y|ie)"/>
+    <file id="keinemeinung" path="keinemeinung.gif" regex=":[\-oO]?\|"/>
+    <file id="king" path="king.gif" regex="king"/>
+    <file id="lachen" path="lachen.gif" regex=":[\-oO]?D|lol|rofl|lachen"/>
+    <file id="problem" path="problem.gif" regex="problem|\?\?"/>
+    <file id="schlafen" path="schlafen.gif" regex="schlafen|sleep"/>
+    <file id="skeptisch" path="skeptisch.gif" regex="skeptisch|sceptical|skeptical"/>
+    <file id="stopp" path="stopp.gif" regex="stopp?"/>
+    <file id="teufelchen" path="teufelchen.gif" regex="&gt;:[\-oO]?\)|teufelchen|devil|evil"/>
+    <file id="traurig" path="traurig.gif" regex=":[\'\*]\(|traurig|sad"/>
+    <file id="upsidedown" path="upsidedown.gif" regex="upsidedown|downunder"/>
+    <file id="verliebt" path="verliebt.gif" regex="verliebt|(in)?love"/>
+    <file id="zunge" path="zunge.gif" regex=":[\-oO]?P|zunge|tongue"/>
 </files>

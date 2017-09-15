@@ -53,7 +53,7 @@ abstract class AbstractCollection extends \Yana\Core\Object implements \Yana\Cor
         $this->_items = array();
         foreach ($items as $offset => $value)
         {
-            $this->_offsetSet($offset, $value);
+            $this->offsetSet($offset, $value);
         }
     }
 

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * YANA library
  *
@@ -93,13 +92,13 @@ class MenuHelper extends \Yana\Core\Object
     {
         switch ($layoutNumber)
         {
-            case 2:
+            case \Yana\Views\Helpers\Html\MenuLayouts\LayoutEnumeration::VERTICAL:
                 $layout = new \Yana\Views\Helpers\Html\MenuLayouts\VerticalLayout();
                 break;
-            case 3:
+            case \Yana\Views\Helpers\Html\MenuLayouts\LayoutEnumeration::HORIZONTAL:
                 $layout = new \Yana\Views\Helpers\Html\MenuLayouts\HorizontalLayout();
                 break;
-            case 1:
+            case \Yana\Views\Helpers\Html\MenuLayouts\LayoutEnumeration::SIMPLE:
             default:
                 $layout = new \Yana\Views\Helpers\Html\MenuLayouts\SimpleLayout();
                 break;
@@ -124,7 +123,7 @@ class MenuHelper extends \Yana\Core\Object
      *
      * @return  int
      */
-    protected function _getUseKeys()
+    public function useKeys()
     {
         return $this->_useKeys;
     }
@@ -154,9 +153,9 @@ class MenuHelper extends \Yana\Core\Object
      * false = escape HTML special chars,
      * true = don't escape HTML special chars
      *
-     * @return bool
+     * @return  bool
      */
-    protected function _getAllowHtml()
+    public function allowHtml()
     {
         return $this->_allowHtml;
     }
@@ -206,7 +205,7 @@ class MenuHelper extends \Yana\Core\Object
      */
     public function __invoke(array $array)
     {
-        return $this->_getLayout()->__invoke($array, $this->_getUseKeys(), $this->_getAllowHtml());
+        return $this->_getLayout()->__invoke($array, $this->useKeys(), $this->allowHtml());
     }
 
 }

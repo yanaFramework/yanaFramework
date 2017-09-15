@@ -25,36 +25,21 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Views\Helpers\Formatters;
+namespace Yana\Views\Icons;
 
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/../../../../../include.php';
+require_once dirname(__FILE__) . '/../../../../include.php';
 
 /**
- * @package  test
- * @ignore
+ * @package test
  */
-class MyIconFormatter extends \Yana\Views\Helpers\Formatters\IconFormatter
-{
-    protected function _buildListOfIcons()
-    {
-        $collection = new \Yana\Views\Icons\Collection();
-        $entity = new \Yana\Views\Icons\File();
-        $collection[] = $entity->setId('smile')->setPath('smile.gif')->setRegularExpression('smile');
-        return $collection;
-    }
-}
-
-/**
- * @package  test
- */
-class IconFormatterTest extends \PHPUnit_Framework_TestCase
+class LoaderTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Views\Helpers\Formatters\MyIconFormatter
+     * @var \Yana\Views\Icons\Loader
      */
     protected $object;
 
@@ -64,24 +49,36 @@ class IconFormatterTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Views\Helpers\Formatters\MyIconFormatter();
+        $file = new \Yana\Files\Text(\CWD . '/resources/icons.xml');
+        $adapter = new \Yana\Views\Icons\XmlAdapter($file);
+        $this->object = new \Yana\Views\Icons\Loader($adapter);
     }
 
     /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
+     * @test
+     * @expectedException \Yana\Core\Exceptions\NotFoundException
      */
-    protected function tearDown()
+    public function testGetIconsNotFoundException()
     {
-        
+        $file = new \Yana\Files\Text('no such file');
+        $adapter = new \Yana\Views\Icons\XmlAdapter($file);
+        $loader = new \Yana\Views\Icons\Loader($adapter);
+        $loader->getIcons();
     }
 
     /**
      * @test
      */
-    public function testInvoke()
+    public function testGetIcons()
     {
-        $this->assertSame('A<img alt="" border="0" hspace="2" src="smile.gif"/>b', $this->object->__invoke('A:smile:b'));
+        $list = $this->object->getIcons();
+        $this->assertCount(2, $list);
+        /* @var $entity1 \Yana\Views\Icons\IsFile */
+        $entity1 = $list['1'];
+        /* @var $entity2 \Yana\Views\Icons\IsFile */
+        $entity2 = $list['2'];
+        $this->assertSame('<3', $entity1->getRegularExpression());
+        $this->assertSame('\(\?\)', $entity2->getRegularExpression());
     }
 
 }

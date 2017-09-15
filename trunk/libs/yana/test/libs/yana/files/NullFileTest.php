@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -25,36 +25,21 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Views\Helpers\Formatters;
+namespace Yana\Files;
 
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/../../../../../include.php';
-
-/**
- * @package  test
- * @ignore
- */
-class MyIconFormatter extends \Yana\Views\Helpers\Formatters\IconFormatter
-{
-    protected function _buildListOfIcons()
-    {
-        $collection = new \Yana\Views\Icons\Collection();
-        $entity = new \Yana\Views\Icons\File();
-        $collection[] = $entity->setId('smile')->setPath('smile.gif')->setRegularExpression('smile');
-        return $collection;
-    }
-}
+require_once __Dir__ . '/../../../include.php';
 
 /**
  * @package  test
  */
-class IconFormatterTest extends \PHPUnit_Framework_TestCase
+class NullFileTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Views\Helpers\Formatters\MyIconFormatter
+     * @var \Yana\Files\NullFile
      */
     protected $object;
 
@@ -64,7 +49,7 @@ class IconFormatterTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Views\Helpers\Formatters\MyIconFormatter();
+        $this->object = new \Yana\Files\NullFile('no such file');
     }
 
     /**
@@ -79,9 +64,33 @@ class IconFormatterTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testInvoke()
+    public function testWrite()
     {
-        $this->assertSame('A<img alt="" border="0" hspace="2" src="smile.gif"/>b', $this->object->__invoke('A:smile:b'));
+        $this->assertTrue($this->object->write());
+    }
+
+    /**
+     * @test
+     */
+    public function testDelete()
+    {
+        $this->assertTrue($this->object->delete());
+    }
+
+    /**
+     * @test
+     */
+    public function testCreate()
+    {
+        $this->assertNull($this->object->create());
+    }
+
+    /**
+     * @test
+     */
+    public function testCopy()
+    {
+        $this->assertNull($this->object->copy('test'));
     }
 
 }

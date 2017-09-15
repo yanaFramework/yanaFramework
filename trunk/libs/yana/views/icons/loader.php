@@ -1,5 +1,4 @@
 <?php
-
 /**
  * YANA library
  *
@@ -28,7 +27,7 @@
  * @ignore
  */
 
-namespace Yana\Views\Helpers;
+namespace Yana\Views\Icons;
 
 /**
  * Loads and provides informations about registered, usable icons.
@@ -36,7 +35,7 @@ namespace Yana\Views\Helpers;
  * @package     yana
  * @subpackage  views
  */
-class IconLoader extends \Yana\Core\Object
+class Loader extends \Yana\Views\Icons\AbstractLoader
 {
 
     /**
@@ -49,39 +48,21 @@ class IconLoader extends \Yana\Core\Object
      *
      * The list is build from the profile configuration on demand.
      *
-     * @return array
+     * @return  \Yana\Views\Icons\Collection
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when the file is not found or empty
      */
     public function getIcons()
     {
         if (empty(self::$_icons)) {
-            assert('!isset($builder); // Cannot redeclare var $builder');
-            assert('!isset($application); // Cannot redeclare var $application');
-            $builder = new \Yana\ApplicationBuilder();
-            $application = $builder->buildApplication();
-            unset($builder);
-            $dir = $application->getVar('PROFILE.SMILEYDIR');
 
-            if (!is_dir($dir)) {
-                $message = "Unable to load smilies. The directory '" . $dir . "' does not exist.";
+            assert('!isset($collection); // Cannot redeclare var $collection');
+            $collection = $this->_getCollectionOfFiles();
+            if ($collection->count() === 0) {
+                $message = "Unable to load icons. Invalid configuration.";
                 throw new \Yana\Core\Exceptions\NotFoundException($message, \Yana\Log\TypeEnumeration::WARNING);
             }
 
-            self::$_icons = array();
-            foreach (glob($dir . '/*.gif') as $file)
-            {
-                self::$_icons[$file] = basename($file, '.gif');
-            }
-            unset($file);
-
-            $configFile = $dir . '/config.xml';
-            if (is_file($configFile)) {
-                foreach (simplexml_load_file($configFile) as $file)
-                {
-                    self::$_icons[$dir . (string) $file['name']] = (string) $file['regex'];
-                }
-            }
-
-            asort(self::$_icons);
+            self::$_icons = $collection;
         }
         return self::$_icons;
     }

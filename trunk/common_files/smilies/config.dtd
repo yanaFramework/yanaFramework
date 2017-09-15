@@ -2,6 +2,7 @@
 <!ELEMENT files (file)*>
 <!ELEMENT file EMPTY>
 <!ATTLIST file
+    id CDATA #IMPLIED
     regex CDATA #IMPLIED
-    name CDATA #IMPLIED
+    path CDATA #IMPLIED
   >

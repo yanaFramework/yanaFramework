@@ -27,46 +27,22 @@
  * @ignore
  */
 
-namespace Yana\Data\Adapters;
+namespace Yana\Views\Helpers\Html\MenuLayouts;
 
 /**
- * <<Interface>> Data Entity
- *
- * Base class for plain entities.
+ * <<enumeration>> Contains all layouts for factory.
  *
  * @package     yana
- * @subpackage  io
+ * @subpackage  views
  */
-interface IsEntity extends \Yana\Core\IsObject
+class LayoutEnumeration extends \Yana\Core\AbstractEnumeration
 {
 
-    /**
-     * Returns a unique identifier.
-     *
-     * @return  scalar
-     */
-    public function getId();
+    const SIMPLE = 1;
 
-    /**
-     * Set the identifying value for this entity.
-     *
-     * @param   scalar  $id  unique identier
-     * @return  self
-     */
-    public function setId($id);
+    const VERTICAL = 2;
 
-    /**
-     * This sets the data adapter used to persist the entity
-     *
-     * @param   \Yana\Data\Adapters\IsDataAdapter  $adapter  object that should be used
-     * @return  self
-     */
-    public function setDataAdapter(\Yana\Data\Adapters\IsDataAdapter $adapter);
-
-    /**
-     * Calls the assigned data adapter to persist the entity.
-     */
-    public function saveEntity();
+    const HORIZONTAL = 3;
 
 }
 

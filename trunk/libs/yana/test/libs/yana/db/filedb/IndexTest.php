@@ -163,8 +163,6 @@ class IndexTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * get
-     *
      * @test
      * @expectedException \Yana\Core\Exceptions\NotFoundException
      */
@@ -174,8 +172,6 @@ class IndexTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * get
-     *
      * @test
      */
     public function testGet()
@@ -185,8 +181,6 @@ class IndexTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * get
-     *
      * @test
      * @expectedException \Yana\Core\Exceptions\NotFoundException
      */
@@ -197,8 +191,6 @@ class IndexTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * get
-     *
      * @test
      * @expectedException \Yana\Core\Exceptions\NotFoundException
      */
@@ -213,7 +205,7 @@ class IndexTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetValueNotFoundException()
     {
-        $get = $this->_object->getVar('FVALUE', 325);
+        $this->_object->getVar('FVALUE', 325);
     }
 
     /**
@@ -222,7 +214,7 @@ class IndexTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetIndexNotFoundException()
     {
-        $get = $this->_object->getVar('FVALUES', 325);
+        $this->_object->getVar('FVALUES', 325);
     }
 
 }

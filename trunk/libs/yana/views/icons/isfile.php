@@ -27,46 +27,46 @@
  * @ignore
  */
 
-namespace Yana\Data\Adapters;
+namespace Yana\Views\Icons;
 
 /**
- * <<Interface>> Data Entity
- *
- * Base class for plain entities.
+ * <<interface>> Contains information about an icon file.
  *
  * @package     yana
- * @subpackage  io
+ * @subpackage  views
  */
-interface IsEntity extends \Yana\Core\IsObject
+interface IsFile extends \Yana\Data\Adapters\IsEntity
 {
 
     /**
-     * Returns a unique identifier.
+     * Returns path to file.
      *
-     * @return  scalar
+     * @return  string
      */
-    public function getId();
+    public function getPath();
 
     /**
-     * Set the identifying value for this entity.
+     * Set the path to file.
      *
-     * @param   scalar  $id  unique identier
+     * @param   string  $path  file path or URL
      * @return  self
      */
-    public function setId($id);
+    public function setPath($path);
 
     /**
-     * This sets the data adapter used to persist the entity
+     * Returns regex to find matching icon reference in text.
      *
-     * @param   \Yana\Data\Adapters\IsDataAdapter  $adapter  object that should be used
+     * @return  string
+     */
+    public function getRegularExpression();
+
+    /**
+     * Returns regex to find matching icon reference in text.
+     *
+     * @param   string  $regex  Perl-compatible regular expression
      * @return  self
      */
-    public function setDataAdapter(\Yana\Data\Adapters\IsDataAdapter $adapter);
-
-    /**
-     * Calls the assigned data adapter to persist the entity.
-     */
-    public function saveEntity();
+    public function setRegularExpression($regex);
 
 }
 

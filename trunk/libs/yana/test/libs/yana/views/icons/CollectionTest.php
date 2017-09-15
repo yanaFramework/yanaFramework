@@ -25,36 +25,21 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Views\Helpers\Formatters;
+namespace Yana\Views\Icons;
 
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/../../../../../include.php';
+require_once dirname(__FILE__) . '/../../../../include.php';
 
 /**
- * @package  test
- * @ignore
+ * @package test
  */
-class MyIconFormatter extends \Yana\Views\Helpers\Formatters\IconFormatter
-{
-    protected function _buildListOfIcons()
-    {
-        $collection = new \Yana\Views\Icons\Collection();
-        $entity = new \Yana\Views\Icons\File();
-        $collection[] = $entity->setId('smile')->setPath('smile.gif')->setRegularExpression('smile');
-        return $collection;
-    }
-}
-
-/**
- * @package  test
- */
-class IconFormatterTest extends \PHPUnit_Framework_TestCase
+class CollectionTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Views\Helpers\Formatters\MyIconFormatter
+     * @var \Yana\Views\Icons\Collection
      */
     protected $object;
 
@@ -64,7 +49,7 @@ class IconFormatterTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Views\Helpers\Formatters\MyIconFormatter();
+        $this->object = new \Yana\Views\Icons\Collection();
     }
 
     /**
@@ -79,9 +64,24 @@ class IconFormatterTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testInvoke()
+    public function testOffsetSet()
     {
-        $this->assertSame('A<img alt="" border="0" hspace="2" src="smile.gif"/>b', $this->object->__invoke('A:smile:b'));
+        $file = new \Yana\Views\Icons\File();
+        $file->setId('1');
+        $this->object->offsetSet(null, $file);
+        $this->assertSame($file, $this->object['1']);
+        $this->assertEquals(1, count($this->object));
+        $this->object->offsetSet(null, $file);
+        $this->assertEquals(1, count($this->object));
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
+     */
+    public function testOffsetSetInvalidArgumentException()
+    {
+        $this->object->offsetSet(null, new \Yana\Core\Object());
     }
 
 }

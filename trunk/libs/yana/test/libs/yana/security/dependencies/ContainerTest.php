@@ -279,4 +279,12 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($object, $this->object->setEventConfigurationsForPlugins($object)->getEventConfigurationsForPlugins());
     }
 
+    /**
+     * @test
+     */
+    public function testGetLogger()
+    {
+        $this->assertSame(\Yana\Log\LogManager::getLogger(), $this->object->getLogger());
+    }
+
 }

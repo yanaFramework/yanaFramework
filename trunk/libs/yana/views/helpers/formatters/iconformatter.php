@@ -51,12 +51,14 @@ class IconFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
         /* if not necessary -> skip the whole section for better performance */
         if (mb_strpos($string, ':') !== false) {
             /* Emot-Codes */
-            foreach ($this->_buildListOfIcons() as $fileName => $regEx)
+            foreach ($this->_buildListOfIcons() as $icon)
             {
+                /* @var $icon \Yana\Views\Icons\IsFile */
+                $regEx = $icon->getRegularExpression();
                 $pattern = "/:(" . $regEx . "):(\s|\[wbr\]|\[br\]|<br \/>)*:(" . $regEx . "):/i";
                 $string = preg_replace($pattern, ':' . $regEx . ':', $string);
                 $pattern = "/:(" . addcslashes($regEx, "+()[]{}.?*/\\$^") . "):/";
-                $replacement = '<img alt="" border="0" hspace="2" src="' . $fileName . '"/>';
+                $replacement = '<img alt="" border="0" hspace="2" src="' . $icon->getPath() . '"/>';
                 $string = preg_replace($pattern, $replacement, $string);
             }
         }
@@ -69,13 +71,13 @@ class IconFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
      *
      * The list is build from the profile configuration on demand.
      *
-     * @return  array
+     * @return  \Yana\Views\Icons\Collection
      * @codeCoverageIgnore
      */
     protected function _buildListOfIcons()
     {
-        $iconLoader = new \Yana\Views\Helpers\IconLoader();
-        return (array) $iconLoader->getIcons();
+        $iconLoader = new \Yana\Views\Icons\Loader();
+        return $iconLoader->getIcons();
     }
 
 }
