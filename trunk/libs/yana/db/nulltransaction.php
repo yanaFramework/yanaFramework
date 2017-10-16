@@ -44,7 +44,7 @@ class NullTransaction extends \Yana\Core\Object implements \Yana\Db\IsTransactio
      */
     public function commit(\Yana\Db\IsDriver $driver)
     {
-        return true;
+        return $this;
     }
 
     /**

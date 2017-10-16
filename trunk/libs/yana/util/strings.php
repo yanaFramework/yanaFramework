@@ -323,12 +323,18 @@ class Strings extends \Yana\Core\AbstractUtility
         switch (mb_strtolower($encryption))
         {
             case 'crc32':
+                /**
+                 * @codeCoverageIgnoreStart
+                 */
                 if (function_exists('crc32')) {
                     return crc32($string);
                 } else {
                     $message = "Unsupported encryption method: '$encryption'.";
                     throw new \Yana\Core\Exceptions\NotImplementedException($message);
                 }
+                /**
+                 * @codeCoverageIgnoreEnd
+                 */
             break;
             case 'md5':
                 if (mb_strlen($salt) > 8 && CRYPT_MD5 == 1) {
@@ -339,12 +345,18 @@ class Strings extends \Yana\Core\AbstractUtility
             break;
             case 'sha':
             case 'sha1':
+                /**
+                 * @codeCoverageIgnoreStart
+                 */
                 if (function_exists('sha1')) {
                     return sha1($string);
                 } else {
                     $message = "Unsupported encryption method: '$encryption'.";
                     throw new \Yana\Core\Exceptions\NotImplementedException($message);
                 }
+                /**
+                 * @codeCoverageIgnoreEnd
+                 */
             break;
             case 'crypt':
                 if (mb_strlen($salt) > 0) {
@@ -384,8 +396,14 @@ class Strings extends \Yana\Core\AbstractUtility
                     return soundex($string);
 
                 } else {
+                    /**
+                     * @codeCoverageIgnoreStart
+                     */
                     $message = "Unsupported encryption method: '$encryption'.";
                     throw new \Yana\Core\Exceptions\NotImplementedException($message);
+                    /**
+                     * @codeCoverageIgnoreEnd
+                     */
                 }
             break;
             case 'metaphone':
@@ -398,8 +416,14 @@ class Strings extends \Yana\Core\AbstractUtility
                         return metaphone($string);
                     }
                 } else {
+                    /**
+                     * @codeCoverageIgnoreStart
+                     */
                     $message = "Unsupported encryption method: '$encryption'.";
                     throw new \Yana\Core\Exceptions\NotImplementedException($message);
+                    /**
+                     * @codeCoverageIgnoreEnd
+                     */
                 }
             break;
             case 'xor':
@@ -458,6 +482,7 @@ class Strings extends \Yana\Core\AbstractUtility
      * @param   int     $style     used for entity conversion
      * @param   string  $charset   used for entity conversion
      * @return  string
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the selected encoding is not valid
      *
      * @name    Strings::encode()
      * @see     Strings::encrypt()
@@ -504,8 +529,7 @@ class Strings extends \Yana\Core\AbstractUtility
                 return preg_quote($string, '/');
             default:
                 $message = "The value of the \$encoding parameter (argument 1) is invalid: '" . $encoding . "'.";
-                \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
-                return null;
+                throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
     }
 
@@ -523,6 +547,7 @@ class Strings extends \Yana\Core\AbstractUtility
      * @param   int     $style     (optional)
      * @param   string  $charset   (optional)
      * @return  string
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the selected encoding is not valid
      *
      * @name    Strings::decode()
      * @see     Strings::encrypt()
@@ -550,22 +575,22 @@ class Strings extends \Yana\Core\AbstractUtility
             case 'rot13':
                 return str_rot13($string);
             case 'entities':
-                if (($style == ENT_COMPAT || $style == ENT_QUOTES || $style == ENT_NOQUOTES)) {
+                /**
+                 * @codeCoverageIgnoreStart
+                 */
+                if ($style == ENT_COMPAT || $style == ENT_QUOTES || $style == ENT_NOQUOTES) {
                     if ($charset != "") {
                         return html_entity_decode($string, $style, $charset);
-                    } else {
-                        return html_entity_decode($string, $style);
                     }
-                } else {
-                    return html_entity_decode($string);
+                    return html_entity_decode($string, $style);
                 }
-            break;
-            case 'rot13':
-                return str_rot13($string);
+                return html_entity_decode($string);
+                /**
+                 * @codeCoverageIgnoreEnd
+                 */
             default:
                 $message = "The value of the \$encoding parameter (argument 1) is invalid: '" . $encoding . "'.";
-                \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
-                return null;
+                throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
     }
 
@@ -982,12 +1007,14 @@ class Strings extends \Yana\Core\AbstractUtility
     public static function shuffle($string)
     {
         assert('is_string($string); // Wrong argument type for argument 1. String expected.');
-        if (!empty($string)) {
+        $shuffle = (string) $string;
+        if (strlen($shuffle) > 1) {
             $array = array();
-            preg_match_all('/./us', $string, $array);
+            preg_match_all('/./us', $shuffle, $array);
             shuffle($array[0]);
-            return join('', $array[0]);
+            $shuffle = join('', $array[0]);
         }
+        return $shuffle;
     }
 
     /**
@@ -1005,11 +1032,13 @@ class Strings extends \Yana\Core\AbstractUtility
     public static function reverse($string)
     {
         assert('is_string($string); // Wrong argument type for argument 1. String expected.');
-        if (!empty($string)) {
+        $reverse = (string) $string;
+        if (strlen($reverse) > 1) {
             $array = array();
-            preg_match_all('/./us', $string, $array);
-            return join('', array_reverse($array[0]));
+            preg_match_all('/./us', $reverse, $array);
+            $reverse = join('', array_reverse($array[0]));
         }
+        return $reverse;
     }
 
     /**

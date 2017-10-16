@@ -51,6 +51,7 @@ class IdGeneratorTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
+        $_SERVER['REMOTE_ADDR'] = 'localhost';
         $this->_object = new \Yana\Security\Sessions\IdGenerator();
     }
 
@@ -60,8 +61,8 @@ class IdGeneratorTest extends \PHPUnit_Framework_TestCase
     public function testCreateApplicationUserId()
     {
         $this->assertGreaterThan("", $this->_object->createApplicationUserId());
-        $this->assertStringStartsWith("127.0.0.1@", $this->_object->createApplicationUserId());
-        $this->assertEquals(1, preg_match('/^127\.0\.0\.1\@[\w \:\\\\\/]+$/s', $this->_object->createApplicationUserId()));
+        $this->assertStringStartsWith("localhost@", $this->_object->createApplicationUserId());
+        $this->assertEquals(1, preg_match('/^localhost\@[\w \:\\\\\/]+$/s', $this->_object->createApplicationUserId()));
     }
 
     /**

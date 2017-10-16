@@ -82,11 +82,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     protected $functionparameter;
 
     /**
-     * @var \Yana\Db\Ddl\Index
-     */
-    protected $index;
-
-    /**
      * @var \Yana\Db\Ddl\Logs\Create
      */
     protected $logcreate;
@@ -188,7 +183,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $this->function = new \Yana\Db\Ddl\Functions\Object('function');
         $this->functionimplementation = new \Yana\Db\Ddl\Functions\Implementation;
         $this->functionparameter = new \Yana\Db\Ddl\Functions\Parameter('param');
-        $this->index = new \Yana\Db\Ddl\Index('index', $this->table);
         $this->logcreate = new \Yana\Db\Ddl\Logs\Create('logcreate');
         $this->logdrop = new \Yana\Db\Ddl\Logs\Drop('logdrop');
         $this->logrename = new \Yana\Db\Ddl\Logs\Rename('logrename');
@@ -221,7 +215,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         unset($this->function);
         unset($this->functionimplementation);
         unset($this->functionparameter);
-        unset($this->index);
         unset($this->logcreate);
         unset($this->logdrop);
         unset($this->logrename);
@@ -250,7 +243,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
             array('database'),
             array('form'),
             array('function'),
-            array('index'),
             array('table'),
             array('view'),
             array('event')
@@ -452,7 +444,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
             array('table'),
             array('sequence'),
             array('logcreate'),
-            array('index'),
             array('logchange'),
             array('logsql')
         );
@@ -652,23 +643,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Clustered
-     *
-     * @test
-     */
-    public function testClustered()
-    {
-       // DDL Index
-       $this->index->setClustered(true);
-       $result = $this->index->isClustered();
-       $this->assertTrue($result, 'assert failed, \Yana\Db\Ddl\Index : expected true - setClustered was set with true');
-
-       $this->index->setClustered(false);
-       $result = $this->index->isClustered();
-       $this->assertFalse($result, 'assert failed, \Yana\Db\Ddl\Index : expected false - setClustered was set with false');
-    }
-
-    /**
      * Cycle
      *
      * @test
@@ -735,15 +709,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
        $this->column->setUnique(false);
        $result = $this->column->isUnique();
        $this->assertFalse($result, 'assert failed, \Yana\Db\Ddl\Column : expected false - setUnique was set with false');
-
-       // DDL Index
-       $this->index->setUnique(true);
-       $result = $this->index->isUnique();
-       $this->assertTrue($result, 'assert failed, \Yana\Db\Ddl\Index : expected true - setUnique was set with true');
-
-       $this->index->setUnique(false);
-       $result = $this->index->isUnique();
-       $this->assertFalse($result, 'assert failed, \Yana\Db\Ddl\Index : expected false - setUnique was set with false');
     }
 
     /**
@@ -2117,46 +2082,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         } catch (\Exception $e) {
             //success
         }
-
-        // DDL Index
-        try {
-            $this->index->addColumn("noColumn");
-            $this->fail("\Yana\Db\Ddl\Index::not existing column should raise an exception");
-        } catch (\Exception $e) {
-            // success
-        }
-
-        $someNames = array("someName_1", "someName_2", "someName_3");
-        $this->table->addColumn($someNames[0], 'integer');
-        $this->table->addColumn($someNames[1], 'integer');
-        $this->table->addColumn($someNames[2], 'integer');
-
-        $result = $this->index->addColumn($someNames[0]);
-        $this->assertInstanceOf('\Yana\Db\Ddl\IndexColumn', $result, "unexpectet Returntype from addcolumn");
-
-        $result = $this->index->addColumn($someNames[1]);
-        $result = $this->index->addColumn($someNames[2]);
-        try {
-            $this->index->addColumn($someNames[0]);
-            $this->fail("\Yana\Db\Ddl\Index::redefining column should rise an exception");
-        } catch (\Exception $e) {
-            // success
-        }
-
-        $this->index->dropColumn($someNames[1]);
-        $columns = $this->index->getColumns();
-        $this->assertEquals(count($columns), 2, '\Yana\Db\Ddl\Index: either the Dropping of a column or the getting has failed');
-    }
-
-    /**
-     * Column
-     *
-     * @expectedException \Yana\Core\Exceptions\NotFoundException
-     * @test
-     */
-    function testSetColumnNotFoundException()
-    {
-         $this->index->addColumn('');
     }
 
     /**
@@ -2187,15 +2112,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $this->logcreate->setName('name');
         $get = $this->logcreate->getName();
         $this->assertEquals('name', $get, 'assert failed, the values should be equal, "\Yana\Db\Ddl\Logs\Create" :expected "name" as value, the values should be equal');
-
-        // DDL Index
-        $this->index->setName('name');
-        $get = $this->index->getName();
-        $this->assertEquals('name', $get, 'assert failed, the values should be equal, "\Yana\Db\Ddl\Index" :expected "name" as value, the values should be equal');
-
-        $this->index->setName('');
-        $get = $this->index->getName();
-        $this->assertNull($get, 'assert failed, the values should be equal, "\Yana\Db\Ddl\Index" :expected null, the name is not set');
     }
 
     /**
@@ -2204,7 +2120,7 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
      * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      * @test
      */
-    function testSetNameInvalidArgument()
+    public function testSetNameInvalidArgument()
     {
         // DDL Object exception
         $new = new \Yana\Db\Ddl\Index(' 123df');
@@ -2216,7 +2132,7 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
      * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      * @test
      */
-    function testSetNameInvalidArgument1()
+    public function testSetNameInvalidArgument1()
     {
         $this->logcreate->setName('');
     }

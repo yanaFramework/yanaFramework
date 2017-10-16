@@ -257,6 +257,24 @@ class StringsTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\OutOfBoundsException
+     */
+    public function testCharAtOutOfBoundsException()
+    {
+        \Yana\Util\Strings::charAt("t", 1);
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\OutOfBoundsException
+     */
+    public function testCharAtOutOfBoundsException2()
+    {
+        \Yana\Util\Strings::charAt("t", -1);
+    }
+
+    /**
      * Generated from @assert (" test ") == "test".
      */
     public function testTrim()
@@ -847,10 +865,6 @@ class StringsTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * testEncode().
-     * @covers \Yana\Util\Strings::encode
-     * @covers \Yana\Util\Strings::decode
-     *
      * @test
      */
     public function testEncode()
@@ -867,12 +881,38 @@ class StringsTest extends \PHPUnit_Framework_TestCase
         foreach($encoding as $code)
         {  
             $encode = \Yana\Util\Strings::encode('this is a test string äöü', $code, ENT_COMPAT, 'UTF-8');
-            $this->assertNotEquals('this is a test string äöü', $code, 'assert failed, expected two different strings for encoding '.$code.', result can not be equal');
-            if($code != 'quote') {
+            $this->assertNotEquals('this is a test string äöü', $code);
+            if ($code != 'quote') {
                 $decode = \Yana\Util\Strings::decode($encode, $code, ENT_COMPAT, 'UTF-8');
-                $this->assertEquals('this is a test string äöü', $decode, 'assert failed, the expected result must be equal for decoding '.$code);
+                $this->assertEquals('this is a test string äöü', $decode, 'assert failed, the expected result must be equal for decoding ' . $code);
             }
         }
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
+     */
+    public function testEncodeInvalidArgumentException()
+    {
+        \Yana\Util\Strings::encode('test', 'invalid');
+    }
+
+    /**
+     * @test
+     */
+    public function testEncodeRegExp()
+    {
+        $this->assertSame('test\\/test', \Yana\Util\Strings::encode('test/test', 'regexp'));
+        $this->assertSame('test\\/test', \Yana\Util\Strings::encode('test/test', 'regular expression'));
+    }
+
+    /**
+     * @test
+     */
+    public function testEncodeHtmlEntities()
+    {
+        $this->assertSame('&auml;', \Yana\Util\Strings::encode('ä', 'entities', 1));
     }
 
     /**
@@ -883,6 +923,23 @@ class StringsTest extends \PHPUnit_Framework_TestCase
     public function testDecode()
     {
         // intentionally left blank
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
+     */
+    public function testDecodeInvalidArgumentException()
+    {
+        \Yana\Util\Strings::decode('test', 'invalid');
+    }
+
+    /**
+     * @test
+     */
+    public function testDecodeHtmlEntities()
+    {
+        $this->assertSame('ä', \Yana\Util\Strings::decode('&auml;', 'entities', 1));
     }
 
     /**

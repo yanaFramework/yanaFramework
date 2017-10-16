@@ -298,6 +298,7 @@ class Index extends \Yana\Db\Ddl\AbstractObject
      * Removes the column from the index, if it is defined.
      *
      * @param   string  $name name of indexed column
+     * @return  self
      */
     public function dropColumn($name)
     {
@@ -307,6 +308,7 @@ class Index extends \Yana\Db\Ddl\AbstractObject
         if (isset($this->columns[$name])) {
             unset($this->columns[$name]);
         }
+        return $this;
     }
 
     /**
