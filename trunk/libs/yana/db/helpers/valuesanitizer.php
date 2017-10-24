@@ -249,7 +249,8 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
                             $alert = new \Yana\Core\Exceptions\Files\SizeException($message, UPLOAD_ERR_SIZE);
                             throw $alert->setFilename($value['name'])->setMaxSize($maxSize);
                         }
-                        $id = \Yana\Db\Blob::getNewFileId($column);
+                        $idGenerator = new \Yana\Db\Helpers\IdGenerator();
+                        $id = $idGenerator($column);
                         $value['column'] = $column;
                         $files[] = $value;
                         return $id;
@@ -261,7 +262,8 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
                     $files[] = array('column' => $column);
                     return "";
                 } else {
-                    return \Yana\Db\Blob::getFileIdFromFilename($value);
+                    $mapper = new \Yana\Db\Binaries\FileMapper();
+                    return $mapper->toFileId($value);
                 }
             break;
             case 'range':

@@ -23,29 +23,33 @@
  *
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
- * @ignore
  */
 
-namespace Yana\Db\Helpers\Triggers;
+namespace Yana\Db\Binaries;
 
 /**
- * Internal class meant to help evaluate triggers.
+ * <<interface>> Configuration.
  *
  * @package     yana
  * @subpackage  db
  */
-class BeforeUpdate extends \Yana\Db\Helpers\Triggers\AbstractTrigger
+interface IsConfiguration
 {
 
     /**
-     * Returns the name of the function to call to evaluate the trigger.
+     * Returns path to directory where blob-files are stored.
      *
-     * @return  callable
+     * @return  string
      */
-    protected function _getTriggerFunction()
-    {
-        return $this->_container->table->getTriggerBeforeUpdate();
-    }
+    public function getDirectory();
+
+    /**
+     * Set path to directory where blob-files are stored.
+     * 
+     * @param   string  $directory
+     * @return  self
+     */
+    public function setDirectory($directory);
 
 }
 

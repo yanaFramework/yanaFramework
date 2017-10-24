@@ -348,7 +348,7 @@ class ApplicationBuilder extends \Yana\Core\Object
             \Yana\Plugins\Manager::setPath($pluginConfigurationFile, $pluginsDirectory);
         }
         if (!empty($configuration->blobdir) && is_dir($configuration->blobdir)) {
-            \Yana\Db\Blob::setDirectory((string) $configuration->blobdir);
+            \Yana\Db\Binaries\ConfigurationSingleton::getInstance()->setDirectory((string) $configuration->blobdir);
         }
 
         return $configuration;

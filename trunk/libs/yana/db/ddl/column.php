@@ -1780,7 +1780,12 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
                 if (empty($value)) {
                     return null;
                 }
-                return \Yana\Db\Blob::getFilenameFromFileId($value, $type);
+                try {
+                    $mapper = new \Yana\Db\Binaries\FileMapper();
+                    return $mapper->toFileName($value, $type);
+                } catch (\Exception $e) {
+                    return null;
+                }
             break;
             case 'range':
             case 'float':

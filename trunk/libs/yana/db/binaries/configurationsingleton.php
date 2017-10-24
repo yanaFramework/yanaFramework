@@ -23,47 +23,56 @@
  *
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
- *
- * @ignore
  */
 
-namespace Yana\Db\Mdb2;
+namespace Yana\Db\Binaries;
 
 /**
- * <<wrapper>> Represents a FileDB resultset.
+ * <<singleton>> Holds the configuration for the file pool.
  *
  * @package     yana
  * @subpackage  db
- *
- * @ignore
- * @codeCoverageIgnore
  */
-class Result extends \Yana\Db\Mdb2\AbstractResult
+class ConfigurationSingleton extends \Yana\Core\AbstractSingleton implements \Yana\Db\Binaries\IsConfiguration
 {
 
     /**
-     * @var \MDB2_Result_Common
+     * @var  string
      */
-    private $_result = null;
+    private  $_directory = 'config/db/.blob/';
 
     /**
-     * Creates a new resultset.
+     * Returns the class name of the called class.
      *
-     * @param  \MDB2_Result_Common  $result  resultset
+     * @return string
      */
-    public function __construct(\MDB2_Result_Common $result)
+    protected static function _getClassName()
     {
-        $this->_result = $result;
+        return __CLASS__;
     }
 
     /**
-     * Returns resultset.
+     * Returns path to directory where blob-files are stored.
      *
-     * @return  \MDB2_Result_Common
+     * @return  string
      */
-    protected function _getResult()
+    public function getDirectory()
     {
-        return $this->_result;
+        assert('is_dir($this->_directory); // Blob-dir does not exist');
+        return $this->_directory;
+    }
+
+    /**
+     * Set path to directory where blob-files are stored.
+     * 
+     * @param   string  $directory
+     * @return  self
+     */
+    public function setDirectory($directory)
+    {
+        assert('is_dir($directory); // Directory does not exist');
+        $this->_directory = realpath($directory) . '/';
+        return $this;
     }
 
 }

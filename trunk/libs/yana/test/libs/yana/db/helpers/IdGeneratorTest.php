@@ -1,6 +1,6 @@
 <?php
 /**
- * YANA library
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -21,51 +21,52 @@
  *
  * This notice MAY NOT be removed.
  *
- * @package  yana
+ * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
- *
- * @ignore
  */
 
-namespace Yana\Db\Mdb2;
+namespace Yana\Db\Helpers;
 
 /**
- * <<wrapper>> Represents a FileDB resultset.
- *
- * @package     yana
- * @subpackage  db
- *
  * @ignore
- * @codeCoverageIgnore
  */
-class Result extends \Yana\Db\Mdb2\AbstractResult
+require_once __DIR__ . '/../../../../include.php';
+
+/**
+ * @package  test
+ */
+class IdGeneratorTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \MDB2_Result_Common
+     * @var IdGenerator
      */
-    private $_result = null;
+    protected $object;
 
     /**
-     * Creates a new resultset.
-     *
-     * @param  \MDB2_Result_Common  $result  resultset
+     * Sets up the fixture, for example, opens a network connection.
+     * This method is called before a test is executed.
      */
-    public function __construct(\MDB2_Result_Common $result)
+    protected function setUp()
     {
-        $this->_result = $result;
+        $this->object = new \Yana\Db\Helpers\IdGenerator();
     }
 
     /**
-     * Returns resultset.
-     *
-     * @return  \MDB2_Result_Common
+     * Tears down the fixture, for example, closes a network connection.
+     * This method is called after a test is executed.
      */
-    protected function _getResult()
+    protected function tearDown()
     {
-        return $this->_result;
+        
+    }
+
+    /**
+     * @test
+     */
+    public function test__invoke()
+    {
+        $this->assertInternalType('string', $this->object->__invoke(new \Yana\Db\Ddl\Column("col", new \Yana\Db\Ddl\Table("table"))));
     }
 
 }
-
-?>

@@ -47,16 +47,6 @@ class BeforeInsert extends \Yana\Db\Helpers\Triggers\AbstractTrigger
         return $this->_container->table->getTriggerBeforeInsert();
     }
 
-    /**
-     * Returns an element of {@see \Yana\Db\Helpers\Triggers\TypeEnumeration}.
-     *
-     * @return  string
-     */
-    protected function _getTriggerType()
-    {
-        return \Yana\Db\Helpers\Triggers\TypeEnumeration::BEFORE_INSERT;
-    }
-
 }
 
 ?>

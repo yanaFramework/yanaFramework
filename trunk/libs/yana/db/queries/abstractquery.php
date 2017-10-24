@@ -1977,7 +1977,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
             if (isset($values[$columnName])) {
                 assert('is_string($values[$columnName]);');
                 try {
-                    \Yana\Db\Blob::removeFile($values[$columnName]);
+                    \Yana\Db\Binaries\File::removeFile($values[$columnName]);
                 } catch (\Yana\Core\Exceptions\NotFoundException $e) {
                     /* Create a database event log entry for each
                      * file the was not found.

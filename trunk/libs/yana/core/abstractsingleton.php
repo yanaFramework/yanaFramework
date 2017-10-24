@@ -69,6 +69,13 @@ abstract class AbstractSingleton extends \Yana\Core\Object implements \Yana\Core
     }
 
     /**
+     * Returns the id used to store the instance.
+     *
+     * @return  string
+     */
+    abstract protected static function _getClassName();
+
+    /**
      * Creates an instance if there is none.
      *
      * Then it returns a reference to this (single) instance.
@@ -79,7 +86,7 @@ abstract class AbstractSingleton extends \Yana\Core\Object implements \Yana\Core
      * but takes no arguments, the constructor must also not
      * take any input arguments, unless they are static.
      *
-     * @return  self
+     * @return  static
      */
     public static function getInstance()
     {

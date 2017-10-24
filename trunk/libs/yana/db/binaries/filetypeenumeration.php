@@ -23,29 +23,33 @@
  *
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
- * @ignore
  */
 
-namespace Yana\Db\Helpers\Triggers;
+namespace Yana\Db\Binaries;
 
 /**
- * Internal class meant to help evaluate triggers.
+ * <<enumeration>> File type.
  *
  * @package     yana
  * @subpackage  db
  */
-class BeforeUpdate extends \Yana\Db\Helpers\Triggers\AbstractTrigger
+class FileTypeEnumeration extends \Yana\Core\AbstractEnumeration
 {
 
     /**
-     * Returns the name of the function to call to evaluate the trigger.
-     *
-     * @return  callable
+     * thumbnail file
      */
-    protected function _getTriggerFunction()
-    {
-        return $this->_container->table->getTriggerBeforeUpdate();
-    }
+    const THUMB = 'thumbnail';
+
+    /**
+     * image file
+     */
+    const IMAGE = 'image';
+
+    /**
+     * other file
+     */
+    const FILE = 'file';
 
 }
 

@@ -468,11 +468,15 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
             $columnName = $column->getName();
             $fileId = $this->values[$columnName];
             if (!empty($fileId)) {
+                assert('!isset($helper); // Cannot redeclare var $helper');
                 if ($column->getType() === 'image') {
-                    \Yana\Db\Blob::uploadImage($file, $fileId, $column->getImageSettings());
+                    $helper = new \Yana\Db\Binaries\Uploads\FileUploader();
+                    $helper->upload($file, $fileId, $column->getImageSettings());
                 } else {
-                    \Yana\Db\Blob::uploadFile($file, $fileId);
+                    $helper = new \Yana\Db\Binaries\Uploads\ImageUploader();
+                    $helper->upload($file, $fileId);
                 }
+                unset($helper);
             }
         }
         return $this;

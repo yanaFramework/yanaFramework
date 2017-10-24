@@ -204,15 +204,16 @@ abstract class AbstractPlugin extends \Yana\Core\Object implements \Yana\IsPlugi
      */
     protected function _downloadFile()
     {
-        $source = \Yana\Db\Blob::getFileId();
+        $source = \Yana\Db\Binaries\File::getFileId();
         if ($source === false) {
             exit("Error: invalid resource.");
         }
-        $directory = preg_quote(\Yana\Db\Blob::getDirectory(), '/');
+        $fileConfiguration = \Yana\Db\Binaries\ConfigurationSingleton::getInstance();
+        $directory = preg_quote($fileConfiguration->getDirectory(), '/');
         // downloading a file
         if (preg_match('/^' . $directory . 'file\.\w+\.gz$/', $source)) {
 
-            $dbBlob = new \Yana\Db\Blob($source);
+            $dbBlob = new \Yana\Db\Binaries\File($source);
             $dbBlob->read();
             header("Cache-Control: maxage=1"); // Workaround for a Bug in IE8 with HTTPS-downloads
             header("Pragma: public");

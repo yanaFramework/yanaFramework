@@ -50,13 +50,6 @@ abstract class AbstractTrigger extends \Yana\Core\Object implements \Yana\Db\Hel
     abstract protected function _getTriggerFunction();
 
     /**
-     * Returns an element of {@see \Yana\Db\Helpers\Triggers\TypeEnumeration}.
-     *
-     * @return  string
-     */
-    abstract protected function _getTriggerType();
-
-    /**
      * @param  \Yana\Db\Helpers\Triggers\Container  $container  passed to called function that contains the trigger code
      */
     public function __construct(\Yana\Db\Helpers\Triggers\Container $container)

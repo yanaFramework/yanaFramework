@@ -63,7 +63,7 @@ class DownloadsPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function download_file($target, $fullsize = false)
     {
-        $source = \Yana\Db\Blob::getFilenameFromSession($target, $fullsize);
+        $source = \Yana\Db\Binaries\File::getFilenameFromSession($target, $fullsize);
 
         if ($source === false) {
             $message = "Unable to start download. The requested file was not found.";

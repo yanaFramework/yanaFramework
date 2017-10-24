@@ -121,6 +121,7 @@ abstract class DDL extends \Yana\Core\Object
      * Get a string representation of this object.
      *
      * @return  string
+     * @codeCoverageIgnore
      */
     public function __toString()
     {
