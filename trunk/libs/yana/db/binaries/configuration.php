@@ -28,43 +28,19 @@
 namespace Yana\Db\Binaries;
 
 /**
- * <<interface>> Configuration.
+ * This is primarily meant for unit tests.
+ *
+ * Use the singleton instead - unless you want your configuration to apply to your instance only.
  *
  * @package     yana
  * @subpackage  db
+ *
+ * @ignore
+ * @codeCoverageIgnore
  */
-interface IsConfiguration
+class Configuration extends \Yana\Core\Object implements \Yana\Db\Binaries\IsConfiguration
 {
-
-    /**
-     * Returns path to directory where blob-files are stored.
-     *
-     * @return  string
-     */
-    public function getDirectory();
-
-    /**
-     * Set path to directory where blob-files are stored.
-     * 
-     * @param   string  $directory
-     * @return  self
-     */
-    public function setDirectory($directory);
-
-    /**
-     * Returns data adapter for caching file names.
-     *
-     * @return  \Yana\Data\Adapters\IsDataAdapter
-     */
-    public function getFileNameCache();
-
-    /**
-     * Set data adapter for caching file names.
-     *
-     * @param   \Yana\Data\Adapters\IsDataAdapter  $fileNameCache  for example session cache
-     * @return  self
-     */
-    public function setFileNameCache(\Yana\Data\Adapters\IsDataAdapter $fileNameCache);
+    use \Yana\Db\Binaries\HasConfiguration;
 }
 
 ?>

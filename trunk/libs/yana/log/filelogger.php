@@ -183,6 +183,7 @@ class FileLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
      * @return  \Yana\Mails\FormMailer
      *
      * @internal Override this method in unit-tests to inject a null mailer.
+     * @codeCoverageIgnore
      */
     protected function _getMailer()
     {

@@ -28,43 +28,36 @@
 namespace Yana\Db\Binaries;
 
 /**
- * <<interface>> Configuration.
+ * <<interface>> Stores and retrieves filenames in cache.
  *
  * @package     yana
  * @subpackage  db
  */
-interface IsConfiguration
+interface IsFileNameCache
 {
 
     /**
-     * Returns path to directory where blob-files are stored.
+     * Read the current file id from cache.
      *
+     * Returns the path of a file as stored in the session.
+     * Throws an exception if the id is invalid or the file is not found.
+     *
+     * @param   int   $id        index in files list, of the file to get
+     * @param   bool  $fullsize  show full size or thumb-nail (images only)
      * @return  string
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if file with index $id does not exist
+     * @throws  \Yana\Core\Exceptions\Files\NotFoundException   if the requested file no longer exists
      */
-    public function getDirectory();
+    public function getFilename($id, $fullsize = false);
 
     /**
-     * Set path to directory where blob-files are stored.
-     * 
-     * @param   string  $directory
-     * @return  self
-     */
-    public function setDirectory($directory);
-
-    /**
-     * Returns data adapter for caching file names.
+     * Store filename in cache and return an ID.
      *
-     * @return  \Yana\Data\Adapters\IsDataAdapter
+     * @param   string  $file
+     * @return  string
+     * @throws  \Yana\Core\Exceptions\Files\NotFoundException  if the given $file does not exist
      */
-    public function getFileNameCache();
-
-    /**
-     * Set data adapter for caching file names.
-     *
-     * @param   \Yana\Data\Adapters\IsDataAdapter  $fileNameCache  for example session cache
-     * @return  self
-     */
-    public function setFileNameCache(\Yana\Data\Adapters\IsDataAdapter $fileNameCache);
+    public function storeFilename($file);
 }
 
 ?>

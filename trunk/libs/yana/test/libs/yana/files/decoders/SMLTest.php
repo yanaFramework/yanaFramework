@@ -88,6 +88,15 @@ class SMLTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
+     */
+    public function testGetFileInvalidArgumentException()
+    {
+        $this->object->getFile('test', CASE_UPPER);
+    }
+
+    /**
      * decode
      *
      * @test

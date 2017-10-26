@@ -125,7 +125,11 @@ class SML extends \Yana\Core\Object implements IsDecoder
                 /* END TAG */
                 array_pop($stack);
                 $stackLength--;
-                /* debugging backtrace */
+                /**
+                 * debugging backtrace
+                 *
+                 * @codeCoverageIgnoreStart
+                 */
                 if (defined('YANA_ERROR_REPORTING') && YANA_ERROR_REPORTING !== YANA_ERROR_OFF) {
                     $openTag = array_pop($translatedKey);
                     /* hide follow up errors */
@@ -147,6 +151,9 @@ class SML extends \Yana\Core\Object implements IsDecoder
                         }
                     }
                 }
+                /**
+                 * @codeCoverageIgnoreEnd
+                 */
             } else {
                 /* COMMENT */
             }
@@ -159,6 +166,11 @@ class SML extends \Yana\Core\Object implements IsDecoder
             fclose($handle);
         }
 
+        /**
+         * debugging backtrace
+         *
+         * @codeCoverageIgnoreStart
+         */
         if (defined('YANA_ERROR_REPORTING') && YANA_ERROR_REPORTING !== YANA_ERROR_OFF && $stackLength !== 0) {
             $message = "The tag '" . implode('.', $translatedKey) . "' has never been closed.";
             if ($isFile) {
@@ -168,6 +180,9 @@ class SML extends \Yana\Core\Object implements IsDecoder
             }
             \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
         }
+        /**
+         * @codeCoverageIgnoreEnd
+         */
 
         return $result;
 

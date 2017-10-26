@@ -178,77 +178,6 @@ class File extends \Yana\Files\Readonly
     }
 
     /**
-     * read the current file id from the session vars
-     *
-     * Returns the path of a file as stored in the session.
-     * Throws an exception if the id is invalid or the file is not found.
-     *
-     * @param   int   $id        index in files list, of the file to get
-     * @param   bool  $fullsize  show full size or thumb-nail (images only)
-     * @return  string
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if file with index $id does not exist
-     * @throws  \Yana\Core\Exceptions\Files\NotFoundException   if the requested file no longer exists
-     */
-    public static function getFilenameFromSession($id, $fullsize = false)
-    {
-        assert('is_int($id); // Wrong type for argument 1. Integer expected');
-        assert('is_bool($fullsize); // Wrong type for argument 2. Boolean expected');
-
-        $id = (int) $id;
-
-        /* check arguments */
-        if (!isset($_SESSION[__CLASS__][$id])) {
-            $message = "Invalid argument. File '$id' is undefined.";
-            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
-        }
-
-        $file = $_SESSION[__CLASS__][$id];
-
-        if (!$fullsize && !preg_match('/\.gz$/', $file)) {
-            $mapper = new \Yana\Db\Binaries\FileMapper();
-            $id = $mapper->toFileId($id);
-            $file = $mapper->toFileName($id, \Yana\Db\Binaries\FileTypeEnumeration::THUMB); // may throw NotFoundException
-        }
-        if (!is_file($file)) {
-            $message = "Database entry exists, but the corresponding file was not found '{$file}'.";
-            $code = \Yana\Log\TypeEnumeration::ERROR;
-            $error = new \Yana\Core\Exceptions\Files\NotFoundException($message, $code);
-            $error->setFilename($file);
-            throw $error;
-        }
-        return $file;
-    }
-
-    /**
-     * Store filename as session var and return an ID.
-     *
-     * @param   string  $file
-     * @return  string
-     * @throws  \Yana\Core\Exceptions\Files\NotFoundException  if the given $file does not exist
-     */
-    public static function storeFilenameInSession($file)
-    {
-        assert('is_string($file); // Wrong argument type argument 1. String expected');
-        if (!is_file($file)) {
-            $message = "File was not found '{$file}'.";
-            $code = \Yana\Log\TypeEnumeration::ERROR;
-            $error = new \Yana\Core\Exceptions\Files\NotFoundException($message, $code);
-            $error->setFilename($file);
-            throw $error;
-        }
-        if (!isset($_SESSION[__CLASS__]) || !is_array($_SESSION[__CLASS__])) {
-            $_SESSION[__CLASS__] = array();
-            $id = false;
-        } else {
-            $id = array_search($file, $_SESSION[__CLASS__]);
-        }
-        if ($id === false) {
-            $id = array_push($_SESSION[__CLASS__], $file) - 1;
-        }
-        return $id;
-    }
-
-    /**
      * copy the file to some destination
      *
      * @param    string  $destFile   destination to copy the file to
@@ -303,9 +232,8 @@ class File extends \Yana\Files\Readonly
      * Returns bool(true) on success and bool(false) if the file does not exist.
      *
      * @param   string    $fileToDelete  filename which would be removed
-     * @throws  \Yana\Core\Exceptions\NotFoundException  when the given file was not found
+     * @throws  \Yana\Core\Exceptions\Files\NotFoundException  when the given file was not found
      * @since   3.1.0
-     * @ignore
      */
     public static function removeFile($fileToDelete)
     {
@@ -321,7 +249,9 @@ class File extends \Yana\Files\Readonly
 
         // error - file does not exist
         if (!is_file($fileToDelete)) {
-            throw new \Yana\Core\Exceptions\NotFoundException("File not found: $fileToDelete");
+            $error = new \Yana\Core\Exceptions\Files\NotFoundException("File not found", \Yana\Log\TypeEnumeration::WARNING);
+            $error->setFilename($fileToDelete);
+            throw $error;
         }
 
         // delete file

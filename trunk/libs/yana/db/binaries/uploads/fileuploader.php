@@ -56,7 +56,8 @@ class FileUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
      * <code>
      * // get a random filename
      * $column = $db->schema->{'my_table'}->{'my_file'};
-     * $fileId = \Yana\Db\Blob::getNewFileId($column);
+     * $idGenerator = new \Yana\Db\Helpers\IdGenerator();
+     * $fileId = $idGenerator($column);
      * // and assign it to your row to update/insert
      * $row['my_file'] = $fileId;
      *
@@ -93,7 +94,6 @@ class FileUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
 
         /* name of output file */
         $path = "{$dir}/{$fileId}.gz";
-        assert('is_string($path); // Wrong argument type for argument 2. String expected');
 
         /*
          * mime-type
@@ -101,14 +101,26 @@ class FileUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
          * The Mime-type is saved, so it may be sent to the client on download.
          */
         assert('!isset($mimetype); // Cannot redeclare var $mimetype');
+        $mimetype = "";
         if (!empty($file['type'])) {
-            $mimetype = $file['type'];
-            $mimetype = preg_replace('/\s/', ' ', $mimetype);
+            $mimetype = preg_replace('/\s/', ' ', (string) $file['type']);
         }
 
-        /*
-         * create zip file
-         */
+        $this->_createCompressedFile($path, $filename, $fileTempName, $mimetype);
+        return $filename;
+    }
+
+    /**
+     * Copy and compress contents of uploaded source file to target G-Zip file.
+     *
+     * @param  string  $path          where to store file and its name
+     * @param  string  $filename      original file name
+     * @param  string  $fileTempName  path to source file
+     * @param  string  $mimetype      MIME-type of source
+     * @codeCoverageIgnore
+     */
+    protected function _createCompressedFile($path, $filename, $fileTempName, $mimetype)
+    {
         assert('!isset($gz); // Cannot redeclare var $gz');
         $gz = gzopen($path, 'w9');
         /*
@@ -121,14 +133,13 @@ class FileUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
          * Note: line break "\n" is used as a delimiter
          */
         gzwrite($gz, "$filename\n");
-        gzwrite($gz, filesize($fileTempName)."\n");
+        gzwrite($gz, filesize($fileTempName) . "\n");
         gzwrite($gz, "$mimetype\n");
         /*
          * save file contents
          */
         gzwrite($gz, file_get_contents($fileTempName));
         gzclose($gz);
-        return $filename;
     }
 
 }

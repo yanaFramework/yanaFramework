@@ -35,6 +35,7 @@ namespace Yana\Db;
  * @package     yana
  * @subpackage  db
  * @deprecated  since 3.1.0
+ * @codeCoverageIgnore
  */
 class Structure extends \Yana\Files\SML
 {

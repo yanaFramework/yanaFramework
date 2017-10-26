@@ -440,7 +440,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
         }
 
         // upload new files
-        $this->deleteFiles($this->files);
+        $this->deleteFiles($this->files); // just in case there are any
         $this->uploadFiles($this->files);
 
         // return result object
@@ -448,12 +448,9 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
     }
 
     /**
-     * upload new files
+     * Upload new files.
      *
-     * When a row is updated, blobs associated with it old values need to be removed.
-     *
-     * A list of these files was created before the row was updated.
-     * Now we need to remove the old files and upload the new ones.
+     * When a row is inserted, blobs associated with it need to be moved to a file-store.
      *
      * @param   array  $files  list of files to upload
      * @return  \Yana\Db\Queries\Insert

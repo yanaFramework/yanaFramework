@@ -287,13 +287,14 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
     public function setType($value)
     {
         assert('is_string($value); // Invalid argument $value: string expected');
-        $value = strtolower($value);
-        assert('in_array($value, self::getSupportedTypes()); // Undefined column type "' . $value . '". ');
         if (empty($value)) {
             throw new \Yana\Core\Exceptions\InvalidArgumentException("Type cannot be empty.");
         }
 
-        $this->type = "$value";
+        $lowerCaseValue = strtolower((string) $value);
+        assert('in_array($lowerCaseValue, self::getSupportedTypes()); // Undefined column type "' . $lowerCaseValue . '". ');
+
+        $this->type = $lowerCaseValue;
         return $this;
     }
 
@@ -860,10 +861,8 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
             case 'inet':
                 if ($isAutoFill) {
                     $this->setDefault('REMOTE_ADDR');
-                } else {
-                    if ($this->getDefault() === 'REMOTE_ADDR') {
-                        $this->setDefault();
-                    }
+                } elseif ($this->getDefault() === 'REMOTE_ADDR') {
+                    $this->setDefault();
                 }
             break;
 
@@ -872,10 +871,8 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
             case 'timestamp':
                 if ($isAutoFill) {
                     $this->setDefault('CURRENT_TIMESTAMP');
-                } else {
-                    if ($this->getDefault() === 'CURRENT_TIMESTAMP') {
-                        $this->setDefault();
-                    }
+                } elseif ($this->getDefault() === 'CURRENT_TIMESTAMP') {
+                    $this->setDefault();
                 }
             break;
 
@@ -1745,22 +1742,22 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
                     }
                 }
                 return $value;
-            break;
+
             case 'bool':
                 return (!empty($value));
-            break;
+
             case 'date':
                 if (!is_string($value)) {
                     return null;
                 }
                 return strtotime($value);
-            break;
+
             case 'html':
                 if (!is_scalar($value)) {
                     return "";
                 }
                 return htmlspecialchars_decode($value);
-            break;
+
             case 'color':
             case 'enum':
             case 'inet':
@@ -1774,19 +1771,23 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
                     return "";
                 }
                 return "$value";
-            break;
+
             case 'file':
             case 'image':
                 if (empty($value)) {
                     return null;
                 }
-                try {
-                    $mapper = new \Yana\Db\Binaries\FileMapper();
-                    return $mapper->toFileName($value, $type);
-                } catch (\Exception $e) {
+                // get filename
+                $mapper = new \Yana\Db\Binaries\FileMapper();
+                $fileType = ($type === 'image') ? \Yana\Db\Binaries\FileTypeEnumeration::IMAGE : \Yana\Db\Binaries\FileTypeEnumeration::FILE;
+                $filename = $mapper->toFileName($value, $fileType);
+                unset($fileType, $mapper);
+                // return NULL if file doesn't exist
+                if (!\is_file($filename)) {
                     return null;
                 }
-            break;
+                return $filename;
+
             case 'range':
             case 'float':
                 if (!is_numeric($value)) {
@@ -1821,7 +1822,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
                     }
                 }
                 return $value;
-            break;
+
             case 'integer':
                 if (!is_numeric($value)) {
                     return null;
@@ -1845,23 +1846,22 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
                     }
                 }
                 return $value;
-            break;
+
             case 'time':
                 if (!is_string($value)) {
                     return null;
                 }
                 return strtotime($value);
-            break;
+
             case 'timestamp':
                 if (!is_numeric($value)) {
                     return null;
                 }
                 return (int) $value;
-            break;
+
             default:
                 \Yana\Log\LogManager::getLogger()->addLog("Unknown column type '{$column->getType()}'.");
                 return null;
-            break;
         }
         throw null;
     }

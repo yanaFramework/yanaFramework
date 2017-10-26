@@ -93,8 +93,6 @@ class ImageUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
         assert('is_string($path); // Wrong argument type for argument 2. String expected');
         assert('is_string($thumbnailPath); // Wrong argument type for argument 3. String expected');
 
-        $fileTempName = $file['tmp_name'];
-
         /*
          * process image
          *
@@ -129,19 +127,38 @@ class ImageUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
                 );
             }
         }
+        $this->_createImageAndThumbnail($image, $path, $thumbnailPath, $width, $height, $ratio, (array) $background, $mimetype, $fileTempName);
+        return $path;
+    }
+
+
+    /**
+     * Resize images and save files.
+     *
+     * @param  \Yana\Media\Image $image  $image            source
+     * @param  string                    $path             where to store file
+     * @param  string                    $thumbnailPath    where to store tumbnail
+     * @param  int                       $width            resize to
+     * @param  int                       $height           resize to
+     * @param  bool                      $keepAspectRatio  for resizing
+     * @param  array                     $background       RGB color
+     * @param  string                    $fileEnding       of target
+     * @param  string                    $fileTempName     of source
+     * @codeCoverageIgnore
+     */
+    protected function _createImageAndThumbnail(\Yana\Media\Image $image, $path, $thumbnailPath, $width, $height, $keepAspectRatio, array $background, $fileEnding, $fileTempName)
+    {
         // resize (if at least a width or height is given)
         if ($width || $height) {
-            $image->createThumbnail($width, $height, $ratio, $background);
-            $image->outputToFile($path, $mimetype);
+            $image->createThumbnail($width, $height, $keepAspectRatio, $background);
+            $image->outputToFile($path, $fileEnding);
         } else {
-            move_uploaded_file($fileTempName, "$path.$mimetype");
+            move_uploaded_file($fileTempName, "$path.$fileEnding");
         }
         // create thumbnail
         $image->createThumbnail(100, 100, true, $background);
         $image->outputToFile($thumbnailPath, 'png');
-        return $path;
     }
-
 }
 
 ?>

@@ -99,11 +99,10 @@ class FileMapper extends \Yana\Files\Readonly
      * Get matching filename for a given id.
      *
      * @param   string  $fileId  file id
-     * @param   bool    $type    file type (image or file, leave blank for auto-detect)
+     * @param   bool    $type    file type
      * @return  string
-     * @throws  \Yana\Core\Exceptions\Files\NotFoundException  when the file does not exist
      */
-    public function toFileName($fileId, $type = '')
+    public function toFileName($fileId, $type)
     {
         assert('is_string($fileId); // Invalid argument $fileId: string expected');
         assert('is_string($type); // Invalid argument $type: string expected');
@@ -113,20 +112,14 @@ class FileMapper extends \Yana\Files\Readonly
         switch ($type)
         {
             case \Yana\Db\Binaries\FileTypeEnumeration::IMAGE:
-                $file .= $directory . 'thumb.' . $fileId . '.png';
+                $file .= $directory . $fileId . '.png';
             break;
             case \Yana\Db\Binaries\FileTypeEnumeration::THUMB:
-                $file .= $directory . $fileId . '.png';
+                $file .= $directory . 'thumb.' . $fileId . '.png';
             break;
             case \Yana\Db\Binaries\FileTypeEnumeration::FILE:
                 $file .= $directory . $fileId . '.gz';
             break;
-        }
-        if (!is_file($file)) {
-            $message = "File corresponding to database entry was not found '{$file}'.";
-            $code = \Yana\Log\TypeEnumeration::ERROR;
-            $error = new \Yana\Core\Exceptions\Files\NotFoundException($message, $code);
-            $error->setFilename($file);
         }
         return $file;
     }

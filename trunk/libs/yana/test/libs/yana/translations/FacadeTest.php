@@ -49,6 +49,19 @@ class MyFacade extends \Yana\Translations\Facade
 }
 
 /**
+ * @ignore
+ */
+class MyFacadeMockManager extends \Yana\Translations\MyFacade
+{
+
+    protected function _getManager()
+    {
+        return new \Yana\Translations\NullFacade();
+    }
+
+}
+
+/**
  * @package test
  */
 class FacadeTest extends \PHPUnit_Framework_TestCase
@@ -109,6 +122,15 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
     public function testGetLocale()
     {
         $this->assertEquals('', $this->object->getLocale());
+    }
+
+    /**
+     * @test
+     */
+    public function testReadFile()
+    {
+        $this->object = new \Yana\Translations\MyFacadeMockManager();
+        $this->assertSame($this->object, $this->object->readFile('test'));
     }
 
     /**

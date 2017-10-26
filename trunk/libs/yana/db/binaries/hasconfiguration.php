@@ -28,20 +28,33 @@
 namespace Yana\Db\Binaries;
 
 /**
- * <<interface>> Configuration.
+ * <<trait>> Holds the configuration for the file pool.
  *
  * @package     yana
  * @subpackage  db
  */
-interface IsConfiguration
+trait HasConfiguration
 {
+
+    /**
+     * @var  string
+     */
+    private  $_directory = 'config/db/.blob/';
+
+    /**
+     * @var  \Yana\Data\Adapters\IsDataAdapter
+     */
+    private  $_fileNameCache = null;
 
     /**
      * Returns path to directory where blob-files are stored.
      *
      * @return  string
      */
-    public function getDirectory();
+    public function getDirectory()
+    {
+        return $this->_directory;
+    }
 
     /**
      * Set path to directory where blob-files are stored.
@@ -49,14 +62,25 @@ interface IsConfiguration
      * @param   string  $directory
      * @return  self
      */
-    public function setDirectory($directory);
+    public function setDirectory($directory)
+    {
+        assert('is_dir($directory); // Directory does not exist');
+        $this->_directory = realpath($directory) . '/';
+        return $this;
+    }
 
     /**
      * Returns data adapter for caching file names.
      *
      * @return  \Yana\Data\Adapters\IsDataAdapter
      */
-    public function getFileNameCache();
+    public function getFileNameCache()
+    {
+        if (!isset($this->_fileNameCache)) {
+            $this->_fileNameCache = new \Yana\Data\Adapters\SessionAdapter(__CLASS__);
+        }
+        return $this->_fileNameCache;
+    }
 
     /**
      * Set data adapter for caching file names.
@@ -64,7 +88,12 @@ interface IsConfiguration
      * @param   \Yana\Data\Adapters\IsDataAdapter  $fileNameCache  for example session cache
      * @return  self
      */
-    public function setFileNameCache(\Yana\Data\Adapters\IsDataAdapter $fileNameCache);
+    public function setFileNameCache(\Yana\Data\Adapters\IsDataAdapter $fileNameCache)
+    {
+        $this->_fileNameCache = $fileNameCache;
+        return $this;
+    }
+
 }
 
 ?>

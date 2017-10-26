@@ -35,11 +35,7 @@ namespace Yana\Db\Binaries;
  */
 class ConfigurationSingleton extends \Yana\Core\AbstractSingleton implements \Yana\Db\Binaries\IsConfiguration
 {
-
-    /**
-     * @var  string
-     */
-    private  $_directory = 'config/db/.blob/';
+    use \Yana\Db\Binaries\HasConfiguration;
 
     /**
      * Returns the class name of the called class.
@@ -49,30 +45,6 @@ class ConfigurationSingleton extends \Yana\Core\AbstractSingleton implements \Ya
     protected static function _getClassName()
     {
         return __CLASS__;
-    }
-
-    /**
-     * Returns path to directory where blob-files are stored.
-     *
-     * @return  string
-     */
-    public function getDirectory()
-    {
-        assert('is_dir($this->_directory); // Blob-dir does not exist');
-        return $this->_directory;
-    }
-
-    /**
-     * Set path to directory where blob-files are stored.
-     * 
-     * @param   string  $directory
-     * @return  self
-     */
-    public function setDirectory($directory)
-    {
-        assert('is_dir($directory); // Directory does not exist');
-        $this->_directory = realpath($directory) . '/';
-        return $this;
     }
 
 }
