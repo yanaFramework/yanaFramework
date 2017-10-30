@@ -33,7 +33,7 @@ namespace Yana\Data\Adapters\MemCache;
  * Provide a common interface for all Memcache client APIs.
  *
  * @package     yana
- * @subpackage  io
+ * @subpackage  data
  */
 interface IsWrapper
 {

@@ -34,7 +34,7 @@ namespace Yana\Data\Adapters;
  * Note: it is recommended to set the ArrayAdapter in the constructor as default if no other cache is provided.
  *
  * @package     yana
- * @subpackage  core
+ * @subpackage  data
  */
 interface IsCacheable
 {

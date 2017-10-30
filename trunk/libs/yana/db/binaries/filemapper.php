@@ -108,17 +108,17 @@ class FileMapper extends \Yana\Files\Readonly
         assert('is_string($type); // Invalid argument $type: string expected');
 
         $directory = $this->_getConfiguration()->getDirectory();
-        $file = $directory . $fileId;
+        $file = $directory; // and ...
         switch ($type)
         {
             case \Yana\Db\Binaries\FileTypeEnumeration::IMAGE:
-                $file .= $directory . $fileId . '.png';
+                $file .= $fileId . '.png';
             break;
             case \Yana\Db\Binaries\FileTypeEnumeration::THUMB:
-                $file .= $directory . 'thumb.' . $fileId . '.png';
+                $file .= 'thumb.' . $fileId . '.png';
             break;
             case \Yana\Db\Binaries\FileTypeEnumeration::FILE:
-                $file .= $directory . $fileId . '.gz';
+                $file .= $fileId . '.gz';
             break;
         }
         return $file;

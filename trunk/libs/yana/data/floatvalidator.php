@@ -31,7 +31,7 @@ namespace Yana\Data;
  * Used for validating number input.
  *
  * @package     yana
- * @subpackage  io
+ * @subpackage  data
  */
 class FloatValidator extends NumberValidator
 {

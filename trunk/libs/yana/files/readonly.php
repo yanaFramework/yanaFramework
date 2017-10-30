@@ -69,7 +69,7 @@ class Readonly extends \Yana\Files\AbstractResource implements \Yana\Files\IsRea
     public function read()
     {
         if (!$this->exists()) {
-            throw new \Yana\Core\Exceptions\NotFoundException("No such file: '{$this->getPath()}'.", E_USER_NOTICE);
+            throw new \Yana\Core\Exceptions\NotFoundException("No such file: '{$this->getPath()}'.", \Yana\Log\TypeEnumeration::INFO);
         }
         $content = file_get_contents($this->getPath());
         /**
@@ -81,7 +81,7 @@ class Readonly extends \Yana\Files\AbstractResource implements \Yana\Files\IsRea
          */
         if ($content === false || $this->_getFilesize() !== strlen($content)) {
             $message = "File '{$this->getPath()}' is currently not readable.";
-            throw new \Yana\Core\Exceptions\NotReadableException($message, E_USER_NOTICE);
+            throw new \Yana\Core\Exceptions\NotReadableException($message, \Yana\Log\TypeEnumeration::INFO);
         }
         $this->content = explode("\n", $content);
         return $this;
@@ -110,7 +110,7 @@ class Readonly extends \Yana\Files\AbstractResource implements \Yana\Files\IsRea
             }
         }
         $message = "File '{$this->getPath()}' is currently not readable.";
-        throw new \Yana\Core\Exceptions\NotReadableException($message, E_USER_NOTICE);
+        throw new \Yana\Core\Exceptions\NotReadableException($message, \Yana\Log\TypeEnumeration::INFO);
     }
 
     /**

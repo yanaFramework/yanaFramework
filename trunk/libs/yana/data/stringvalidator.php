@@ -31,7 +31,7 @@ namespace Yana\Data;
  * String validation class.
  *
  * @package     yana
- * @subpackage  io
+ * @subpackage  data
  */
 class StringValidator extends AbstractValidator
 {

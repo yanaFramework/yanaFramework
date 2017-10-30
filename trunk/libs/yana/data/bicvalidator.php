@@ -31,7 +31,7 @@ namespace Yana\Data;
  * Used for validating bank information.
  *
  * @package     yana
- * @subpackage  io
+ * @subpackage  data
  */
 class BicValidator extends \Yana\Data\AbstractValidator
 {

@@ -35,7 +35,7 @@ namespace Yana\Data\Adapters;
  * Base class for plain entities.
  *
  * @package     yana
- * @subpackage  io
+ * @subpackage  data
  */
 interface IsEntity extends \Yana\Core\IsObject
 {

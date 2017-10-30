@@ -33,7 +33,7 @@ namespace Yana\Data\Adapters\MemCache;
  * Thrown when none of the registered Memcache servers can be reached.
  *
  * @package     yana
- * @subpackage  io
+ * @subpackage  data
  */
 class ServerNotAvailableException extends \Yana\Data\Adapters\AdapterException
 {

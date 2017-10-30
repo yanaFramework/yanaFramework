@@ -31,7 +31,7 @@ namespace Yana\Data;
  * IP-address validation.
  *
  * @package     yana
- * @subpackage  io
+ * @subpackage  data
  */
 class IpValidator extends AbstractValidator
 {

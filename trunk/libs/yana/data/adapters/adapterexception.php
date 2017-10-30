@@ -31,7 +31,7 @@ namespace Yana\Data\Adapters;
  * <<exception>> Indicates, that an I/O operation on a data-adapter has failed.
  *
  * @package     yana
- * @subpackage  io
+ * @subpackage  data
  */
 class AdapterException extends \Yana\Core\Exceptions\DataException
 {

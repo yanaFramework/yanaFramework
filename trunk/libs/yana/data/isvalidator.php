@@ -31,7 +31,7 @@ namespace Yana\Data;
  * <<interface>> For data validation.
  *
  * @package     yana
- * @subpackage  io
+ * @subpackage  data
  */
 interface IsValidator
 {

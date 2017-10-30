@@ -33,7 +33,7 @@ namespace Yana\Data;
  * Should be extended to more specific classes.
  *
  * @package     yana
- * @subpackage  io
+ * @subpackage  data
  */
 class ValidatorException extends \Yana\Core\Exceptions\RuntimeException
 {

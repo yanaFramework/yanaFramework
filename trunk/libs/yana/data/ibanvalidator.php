@@ -63,7 +63,7 @@ namespace Yana\Data;
  * and the invalid country-code will be ignored.
  *
  * @package     yana
- * @subpackage  io
+ * @subpackage  data
  */
 class IbanValidator extends \Yana\Data\AbstractValidator
 {

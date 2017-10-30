@@ -31,7 +31,7 @@ namespace Yana\Data;
  * <<exception>> Thrown when an IBAN uses an prohibited 2-letter country prefix.
  *
  * @package     yana
- * @subpackage  io
+ * @subpackage  data
  */
 class IbanCountryDisallowedException extends \Yana\Data\ValidatorException
 {

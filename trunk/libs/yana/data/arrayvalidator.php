@@ -31,7 +31,7 @@ namespace Yana\Data;
  * Used for validating array input.
  *
  * @package     yana
- * @subpackage  io
+ * @subpackage  data
  * @ignore
  */
 class ArrayValidator extends AbstractValidator

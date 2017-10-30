@@ -33,7 +33,7 @@ namespace Yana\Data\Adapters;
  * An entity is a <<subject>> persisted on demand by an observer.
  *
  * @package     yana
- * @subpackage  io
+ * @subpackage  data
  */
 abstract class AbstractEntity extends \Yana\Core\Object implements \Yana\Data\Adapters\IsEntity
 {

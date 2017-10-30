@@ -35,7 +35,7 @@ namespace Yana\Data\Adapters;
  * The DataAdapter is used to inject a dependency into the {@see AbstractDataContainer}.
  *
  * @package     yana
- * @subpackage  io
+ * @subpackage  data
  */
 interface IsDataAdapter extends \Yana\Core\IsCountableArray
 {

@@ -33,7 +33,7 @@ namespace Yana\Data\Adapters;
  * Database adapter, that stores and restores the given object from a database connection.
  *
  * @package     yana
- * @subpackage  io
+ * @subpackage  data
  */
 abstract class AbstractDatabaseAdapter extends \Yana\Core\Object implements \Yana\Data\Adapters\IsDataBaseAdapter
 {

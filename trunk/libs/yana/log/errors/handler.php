@@ -140,6 +140,7 @@ class Handler extends \Yana\Log\Errors\AbstractHandler
 
     /**
      * Exit the application on error.
+     * @codeCoverageIgnore
      */
     protected function _exit()
     {

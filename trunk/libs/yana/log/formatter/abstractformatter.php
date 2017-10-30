@@ -120,7 +120,7 @@ abstract class AbstractFormatter extends \Yana\Core\Object implements \Yana\Log\
     {
         $baseStyle = 'font-size: 13px; font-weight: normal; padding: 5px; border: 1px solid #888; text-align: left;';
 
-        $isTraceableError = (bool) !empty($trace) || function_exists('debug_backtrace');
+        $isTraceableError = true;
 
         /* for readability do not report errors twice */
         $message = $this->_getMessage();
@@ -168,98 +168,40 @@ abstract class AbstractFormatter extends \Yana\Core\Object implements \Yana\Log\
                 $description = "Assertion $description failed";
             }
         }
-        $shortenFilepath = '/^' . preg_quote(getcwd(), '/') . '/';
-
-        /* Backtracing */
-        if ($isTraceableError === true) {
-            if (empty($trace)) {
-                $trace = debug_backtrace();
-            }
-            /* Format backtrace */
-            $backtrace = array();
-            foreach ($trace as $temp)
-            {
-                /* initialize vars */
-                $i = count($backtrace);
-                $backtrace[$i] = "";
-
-                /* shorten file path for readability */
-                if (isset($temp['file'])) {
-                    $tempFile = preg_replace($shortenFilepath, '.', $temp['file']);
-                }
-
-                if (isset($temp['class'])) {
-                    $backtrace[$i] .= $temp['class'];
-                    if (isset($temp['type'])) {
-                        $backtrace[$i] .= $temp['type'];
-                    }
-                }
-                if (isset($temp['function'])) {
-                    if (preg_match('/^(?:trigger_error|user_error)$/i', $temp['function'])) {
-                        if (isset($tempFile)) {
-                            $backtrace[$i] = "Error was raised in file '" . $tempFile . "'";
-                            if (isset($temp['line'])) {
-                                $backtrace[$i] .= " on line " . $temp['line'];
-                            }
-                            unset($tempFile);
-                        }
-                        continue;
-                    } else {
-                        $backtrace[$i] .= $temp['function'];
-                        $backtrace[$i] .= '(';
-                        if (isset($temp['args']) && is_array($temp['args'])) {
-                            for ($j = 0; $j < count($temp['args']); $j++)
-                            {
-                                if ($j > 0) {
-                                    $backtrace[$i] .= ', ';
-                                }
-                                $backtrace[$i] .= gettype($temp['args'][$j]);
-                            }
-                            unset($j);
-                        }
-                        $backtrace[$i] .= ')';
-                    }
-                }
-                unset($tempFile, $i);
-            } // end for
-            unset($temp);
-        } else {
-            $backtrace = null;
-        }
 
         // shorten file path for readability
+        $shortenFilepath = '/^' . preg_quote(getcwd(), '/') . '/';
         assert('isset($shortenFilepath);');
         $filename = preg_replace($shortenFilepath, '.', $filename);
 
         if ($asHtml === true) {
             $style = 'overflow: auto; color: ' . self::$_colors[self::$_errortypeToColor[$level][1]]['color'] . '; background: ' .
                 self::$_colors[self::$_errortypeToColor[$level][1]]['background'] . ';';
-            $errorMessage = '<div style="' . $baseStyle . $style . '"><pre>';
+            $errorMessage = '<div style="' . $baseStyle . $style . '">';
             // encode description depending on type of error
             switch ($level)
             {
-                case E_USER_ERROR:
-                case E_USER_WARNING:
-                case E_USER_NOTICE:
+                case \Yana\Log\TypeEnumeration::ERROR:
+                case \Yana\Log\TypeEnumeration::WARNING:
+                case \Yana\Log\TypeEnumeration::INFO:
                 case \Yana\Log\TypeEnumeration::ASSERT:
                 case \Yana\Log\TypeEnumeration::UNKNOWN:
                     $description = htmlspecialchars($description, ENT_NOQUOTES, 'UTF-8');
                     $description = preg_replace('/\'[^\'\"\s]+\'/', '<span style="color:#f00">$0</span>', $description);
             }
             // create output
-            if ($isTraceableError) {
-                $errorMessage .= '<span style="font-weight: bold; text-decoration: underline;">' .
+            if ($isTraceableError === true) {
+                $errorMessage .= '<pre><span style="font-weight: bold; text-decoration: underline;">' .
                     self::$_errortypeToColor[$level][0] . "</span>\n";
                 $errorMessage .= "  description:\t$description\n";
                 $errorMessage .= "  file:\t\t$filename\n";
                 $errorMessage .= "  line:\t\t$lineNumber</pre>";
-                if (!is_null($backtrace)) {
-                    $errorMessage .= '<div><pre><span style="font-weight: bold; font-style: italic;">Backtrace</span>';
-                    $errorMessage .= "\n\t" . implode("\n\t", $backtrace);
-                    $errorMessage .= '</pre></div>';
-                }
+                /* Backtracing */
+                $errorMessage .= '<div><pre><span style="font-weight: bold; font-style: italic;">Backtrace</span>';
+                $errorMessage .= "\n\t" . implode("\n\t", $this->_formatBacktrace($trace));
+                $errorMessage .= '</pre></div>';
             } else {
-                $errorMessage .= ((mb_strpos($description, "\t\t")) ? "\t\t" : "") . $description;
+                $errorMessage .= '<pre>' . ((mb_strpos($description, "\t\t")) ? "\t\t" : "") . $description . '</pre>';
             }
             $errorMessage .= "</div>";
         } else {
@@ -267,6 +209,74 @@ abstract class AbstractFormatter extends \Yana\Core\Object implements \Yana\Log\
         }
 
         return $errorMessage;
+    }
+
+    /**
+     * Formats and returns debug backgtrace as array of strings.
+     *
+     * Each returned string is one hop.
+     * The hops are ordered the same way as they are given.
+     *
+     * @param   array  $trace  output of debug_backtrace()
+     * @return  array
+     */
+    protected function _formatBacktrace(array $trace = array())
+    {
+        if (empty($trace)) {
+            $trace = debug_backtrace();
+        }
+
+        $backtrace = array();
+        $shortenFilepath = '/^' . preg_quote(getcwd(), '/') . '/';
+        /* Format backtrace */
+        foreach ($trace as $temp)
+        {
+            /* initialize vars */
+            $i = count($backtrace);
+            $backtrace[$i] = "";
+
+            /* shorten file path for readability */
+            if (isset($temp['file'])) {
+                $tempFile = preg_replace($shortenFilepath, '.', $temp['file']);
+            }
+
+            if (isset($temp['class'])) {
+                $backtrace[$i] .= $temp['class'];
+                if (isset($temp['type'])) {
+                    $backtrace[$i] .= $temp['type'];
+                }
+            }
+            if (isset($temp['function'])) {
+                if (preg_match('/^(?:trigger_error|user_error)$/i', $temp['function'])) {
+                    if (isset($tempFile)) {
+                        $backtrace[$i] = "Error was raised in file '" . $tempFile . "'";
+                        if (isset($temp['line'])) {
+                            $backtrace[$i] .= " on line " . $temp['line'];
+                        }
+                        unset($tempFile);
+                    }
+                    continue;
+                } else {
+                    $backtrace[$i] .= $temp['function'];
+                    $backtrace[$i] .= '(';
+                    if (isset($temp['args']) && is_array($temp['args'])) {
+                        for ($j = 0; $j < count($temp['args']); $j++)
+                        {
+                            if ($j > 0) {
+                                $backtrace[$i] .= ', ';
+                            }
+                            $backtrace[$i] .= gettype($temp['args'][$j]);
+                        }
+                        unset($j);
+                    }
+                    $backtrace[$i] .= ')';
+                }
+            }
+            unset($tempFile, $i);
+        } // end foreach
+        unset($temp);
+
+        return $backtrace;
     }
 
 }

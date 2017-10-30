@@ -31,7 +31,7 @@ namespace Yana\Data;
  * Bool-values validation class.
  *
  * @package     yana
- * @subpackage  io
+ * @subpackage  data
  */
 class BooleanValidator extends AbstractValidator
 {

@@ -31,7 +31,7 @@ namespace Yana\Data;
  * <<abstract>> Used for validating number input.
  *
  * @package     yana
- * @subpackage  io
+ * @subpackage  data
  */
 abstract class NumberValidator extends AbstractValidator
 {

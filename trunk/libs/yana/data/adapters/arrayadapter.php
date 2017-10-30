@@ -34,7 +34,7 @@ namespace Yana\Data\Adapters;
  * Use this for UnitTests!
  *
  * @package     yana
- * @subpackage  io
+ * @subpackage  data
  */
 class ArrayAdapter extends \Yana\Core\AbstractCountableArray implements \Yana\Data\Adapters\IsDataAdapter
 {

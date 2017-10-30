@@ -33,7 +33,7 @@ namespace Yana\Data;
  * All validators should extend this class.
  *
  * @package     yana
- * @subpackage  io
+ * @subpackage  data
  */
 class ObjectValidator extends AbstractValidator
 {

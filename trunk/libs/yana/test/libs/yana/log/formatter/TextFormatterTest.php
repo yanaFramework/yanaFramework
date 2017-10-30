@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Db\Binaries;
+namespace Yana\Log\Formatter;
 
 /**
  * @ignore
@@ -35,11 +35,11 @@ require_once __DIR__ . '/../../../../include.php';
 /**
  * @package  test
  */
-class FileTest extends \PHPUnit_Framework_TestCase
+class TextFormatterTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Db\Binaries\File
+     * @var \Yana\Log\Formatter\TextFormatter
      */
     protected $object;
 
@@ -49,7 +49,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Db\Binaries\File(__FILE__);
+        $this->object = new \Yana\Log\Formatter\TextFormatter();
     }
 
     /**
@@ -58,50 +58,38 @@ class FileTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
+        
     }
 
     /**
      * @test
      */
-    public function testGetPath()
+    public function testFormat()
     {
-        $this->assertSame(__FILE__, $this->object->getPath());
-    }
-
-    /**
-     * @test
-     * @expectedException \Yana\Core\Exceptions\NotFoundException
-     */
-    public function testReadNotFoundException()
-    {
-        $this->object = new \Yana\Db\Binaries\File('no_such_file');
-        $this->object->read();
-    }
-
-    /**
-     * @test
-     * @expectedException \Yana\Core\Exceptions\NotReadableException
-     */
-    public function testReadNotReadableException()
-    {
-        $this->object = new \Yana\Db\Binaries\File(__FILE__);
-        $this->object->read();
+        $formattedString = $this->object->format(\Yana\Log\TypeEnumeration::ERROR, 'description', 'test.php', 10);
+        $this->assertSame("Yana Error: description in file 'test.php' on line 10.", $formattedString);
+        $multipleOccurencesText = $this->object->format(\Yana\Log\TypeEnumeration::ERROR, 'description', 'test.php', 10);
+        $this->assertSame("\t... the previous error was reported multiple times.", $multipleOccurencesText);
+        $finalText = $this->object->format(\Yana\Log\TypeEnumeration::ERROR, 'description', 'test.php', 10);
+        $this->assertSame("", $finalText);
     }
 
     /**
      * @test
      */
-    public function testGetMimeType()
+    public function testFormatAssertion()
     {
-        $this->assertSame('application/unknown', $this->object->getMimeType());
+        $formattedString = $this->object->format(\Yana\Log\TypeEnumeration::ASSERT, 'description', 'test.php', 10);
+        $this->assertSame("Assertion failed: Assertion description failed in file 'test.php' on line 10.", $formattedString);
     }
 
     /**
      * @test
      */
-    public function testGetFilesize()
+    public function testFormatUnknown()
     {
-        $this->assertSame(0, $this->object->getFilesize());
+        $formattedString = $this->object->format(-10, 'description', 'test.php', 10);
+        $this->assertSame("Unknown Error: description in file 'test.php' on line 10.", $formattedString);
     }
 
 }

@@ -34,7 +34,7 @@ namespace Yana\Data\Adapters\MemCache;
  * This is the configuration of the server to be used with the Memcache client.
  *
  * @package     yana
- * @subpackage  io
+ * @subpackage  data
  */
 class Server extends \Yana\Core\Object
 {

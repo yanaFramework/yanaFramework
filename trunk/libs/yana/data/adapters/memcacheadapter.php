@@ -33,7 +33,7 @@ namespace Yana\Data\Adapters;
  * Session adapter, that stores and restores the given object from the session settings.
  *
  * @package     yana
- * @subpackage  io
+ * @subpackage  data
  */
 class MemCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yana\Data\Adapters\IsDataAdapter
 {

@@ -31,7 +31,7 @@ namespace Yana\Data;
  * Mail-address validation.
  *
  * @package     yana
- * @subpackage  io
+ * @subpackage  data
  */
 class MailValidator extends AbstractValidator
 {

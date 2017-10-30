@@ -156,9 +156,9 @@ class File extends \Yana\Files\Readonly
     /**
      * Get mime-type of this file.
      *
-     * Returns bool(false) on error.
+     * Default is 'application/unknown'.
      *
-     * @return  string|bool(false)
+     * @return  string
      */
     public function getMimeType()
     {
@@ -175,49 +175,6 @@ class File extends \Yana\Files\Readonly
     public function getFilesize()
     {
         return (int) $this->_fileSize;
-    }
-
-    /**
-     * copy the file to some destination
-     *
-     * @param    string  $destFile   destination to copy the file to
-     * @param    bool    $overwrite  setting this to false will prevent existing files from getting overwritten
-     * @return   bool
-     * @throws   \Yana\Core\Exceptions\InvalidArgumentException  on invalid filename
-     */
-    public function copy($destFile, $overwrite = true)
-    {
-        assert('is_string($destFile); // Wrong type for argument 1. String expected');
-        assert('is_bool($overwrite); // Wrong type for argument 2. Boolean expected');
-
-        /* validity checking */
-        if (mb_strlen($destFile) > 512 || !preg_match('/^[\w\d-_\.][\w\d-_\/\.]*$/', $destFile)) {
-            throw new \Yana\Core\Exceptions\InvalidArgumentException("Invalid filename '".$destFile."'.", \Yana\Log\TypeEnumeration::WARNING);
-        }
-
-        if (!$overwrite && file_exists($destFile)) {
-            \Yana\Log\LogManager::getLogger()->addLog("Unable to copy to file '{$destFile}'. " .
-                "Another file with the same name does already exist.");
-            return false;
-        } elseif ($overwrite && file_exists($destFile) && !is_writeable($destFile)) {
-            \Yana\Log\LogManager::getLogger()->addLog("Unable to copy file to '{$destFile}'. Permission denied.");
-            return false;
-        } else {
-            $handle = fopen($destFile, "w+");
-            if ($handle === false) {
-                return false;
-            }
-            flock($handle, LOCK_EX);
-            if (fwrite($handle, $this->getFileContent()) == false) {
-                return false;
-            }
-            flock($handle, LOCK_UN);
-            if (fclose($handle) == false) {
-                return false;
-            }
-            chmod($destFile, 0777);
-            return true;
-        }
     }
 
     /**

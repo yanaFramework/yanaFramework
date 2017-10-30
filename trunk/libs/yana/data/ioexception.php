@@ -31,7 +31,7 @@ namespace Yana\Data;
  * <<exception>> Indicates, that an I/O operation on a data-resource has failed.
  *
  * @package     yana
- * @subpackage  core
+ * @subpackage  data
  */
 class IoException extends \Yana\Core\Exceptions\DataException
 {

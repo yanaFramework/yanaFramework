@@ -36,7 +36,7 @@ namespace Yana\Data\Adapters;
  * It is part of a very simple approach to object-relational mapping.
  *
  * @package     yana
- * @subpackage  io
+ * @subpackage  data
  */
 interface IsEntityMapper
 {

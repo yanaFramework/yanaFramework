@@ -31,7 +31,7 @@ namespace Yana\Data;
  * URL validation.
  *
  * @package     yana
- * @subpackage  io
+ * @subpackage  data
  */
 class UrlValidator extends AbstractValidator
 {
