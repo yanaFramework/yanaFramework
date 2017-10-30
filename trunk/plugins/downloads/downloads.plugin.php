@@ -63,15 +63,11 @@ class DownloadsPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function download_file($target, $fullsize = false)
     {
-        $source = \Yana\Db\Binaries\File::getFilenameFromSession($target, $fullsize);
+        $filenameCache = new \Yana\Db\Binaries\FileNameCache();
+        $source = $filenameCache->getFilename($target, $fullsize);
+        unset($filenameCache);
 
-        if ($source === false) {
-            $message = "Unable to start download. The requested file was not found.";
-            $code = \Yana\Log\TypeEnumeration::ERROR;
-            $error = new \Yana\Core\Exceptions\Files\NotFoundException($message, $code);
-            $error->setFilename((string) $target);
-            throw $error;
-        } elseif (preg_match('/\.gz$/', $source)) {
+        if (preg_match('/\.gz$/', $source)) {
             $this->_downloadDocument($source);
         } else {
             $this->_downloadImage($source);
