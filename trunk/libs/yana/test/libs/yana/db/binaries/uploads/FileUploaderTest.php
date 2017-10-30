@@ -50,6 +50,11 @@ class FileUploaderTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
+     * @var \Yana\Db\Binaries\Configuration
+     */
+    protected $configuration;
+
+    /**
      * @var \Yana\Db\Binaries\Uploads\MyFileUploader
      */
     protected $object;
@@ -60,7 +65,9 @@ class FileUploaderTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Db\Binaries\Uploads\MyFileUploader();
+        $this->configuration = new \Yana\Db\Binaries\Configuration();
+        $this->configuration->setDirectory(CWD);
+        $this->object = new \Yana\Db\Binaries\Uploads\MyFileUploader($this->configuration);
     }
 
     /**
@@ -83,7 +90,7 @@ class FileUploaderTest extends \PHPUnit_Framework_TestCase
             'tmp_name' => __FILE__,
             'type' => 'text/plain'
         );
-        $this->assertSame($file['name'], $this->object->upload($file, 'Test'));
+        $this->assertSame($this->configuration->getDirectory() . '/Test.gz', $this->object->upload($file, 'Test'));
     }
 
     /**

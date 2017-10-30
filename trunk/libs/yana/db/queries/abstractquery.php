@@ -1974,7 +1974,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
             assert('$column instanceof \Yana\Db\Ddl\Column;');
             $columnName = mb_strtoupper($column->getName());
             // delete old files
-            if (isset($values[$columnName])) {
+            if (isset($values[$columnName]) && $values[$columnName] > "") {
                 assert('is_string($values[$columnName]);');
                 try {
                     \Yana\Db\Binaries\File::removeFile($values[$columnName]);

@@ -37,8 +37,11 @@ require_once __DIR__ . '/../../../../../include.php';
  */
 class MyImageUploader extends \Yana\Db\Binaries\Uploads\ImageUploader
 {
+    public $params;
+
     protected function _createImageAndThumbnail(\Yana\Media\Image $image, $path, $thumbnailPath, $width, $height, $keepAspectRatio, array $background, $fileEnding, $fileTempName)
     {
+        $this->params = \func_get_args();
     }
 
 }
@@ -50,7 +53,12 @@ class ImageUploaderTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Db\Binaries\Uploads\ImageUploader
+     * @var \Yana\Db\Binaries\Configuration
+     */
+    protected $configuration;
+
+    /**
+     * @var \Yana\Db\Binaries\Uploads\MyImageUploader
      */
     protected $object;
 
@@ -60,7 +68,9 @@ class ImageUploaderTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Db\Binaries\Uploads\MyImageUploader();
+        $this->configuration = new \Yana\Db\Binaries\Configuration();
+        $this->configuration->setDirectory(CWD);
+        $this->object = new \Yana\Db\Binaries\Uploads\MyImageUploader($this->configuration);
     }
 
     /**
@@ -102,6 +112,35 @@ class ImageUploaderTest extends \PHPUnit_Framework_TestCase
         );
         $settings = array();
         $this->object->upload($file, 'Test', $settings);
+    }
+
+    /**
+     * @test
+     */
+    public function testUpload()
+    {
+        $file = array(
+            'error' => \UPLOAD_ERR_OK,
+            'name' => 'original',
+            'tmp_name' => \CWD . 'resources/image/logo.png',
+            'type' => 'image/png'
+        );
+        $settings = array(
+            'width' => 200,
+            'height' => 100,
+            'ratio' => true,
+            'background' => '#aabbcc'
+        );
+        $dir = $this->configuration->getDirectory();
+        $this->assertSame($dir . '/Test.png', $this->object->upload($file, 'Test', $settings));
+        $this->assertSame($dir . '/Test', $this->object->params[1], 'Image target path');
+        $this->assertSame($dir . '/thumb.Test', $this->object->params[2], 'Thumbnail target path');
+        $this->assertSame(200, $this->object->params[3], 'Setting width');
+        $this->assertSame(100, $this->object->params[4], 'Setting height');
+        $this->assertSame(true, $this->object->params[5], 'Setting aspect-ratio');
+        $this->assertSame(array(170, 187, 204), $this->object->params[6], 'Setting background');
+        $this->assertSame('png', $this->object->params[7], 'File type');
+        $this->assertSame(\CWD . 'resources/image/logo.png', $this->object->params[8], 'Temporary file path');
     }
 
 }

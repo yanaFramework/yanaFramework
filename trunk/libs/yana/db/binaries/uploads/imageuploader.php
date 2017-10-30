@@ -32,6 +32,7 @@ namespace Yana\Db\Binaries\Uploads;
  *
  * @package     yana
  * @subpackage  db
+ * @ignore
  */
 class ImageUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
 {
@@ -40,6 +41,8 @@ class ImageUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
      * The purpose of this method is to store images in a file pool.
      *
      * If the file already exists, it will get replaced.
+     *
+     * Returns the path to the uploaded file.
      *
      * PHP-Code:
      * <code>
@@ -66,7 +69,6 @@ class ImageUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
      *                             bool   ratio       keep aspect ratio when resizing?,
      *                             string background  RGB color as hex-value (e.g. #ffffff)
      * @return  string
-     * @ignore
      * @throws  \Yana\Core\Exceptions\Files\InvalidImageException  when the uploaded file was no valid image
      */
     public function upload(array $file, $fileId, array $settings)
@@ -76,15 +78,15 @@ class ImageUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
         $filename = $this->_getOriginalName($file);
 
         // check mime-type of uploaded file
-        $mimetype = 'png';
+        $fileType = 'png';
         if (!empty($file['type'])) {
-            if (!preg_match('/^image\/(\w+)$/s', $file['type'], $mimetype)) {
+            if (!preg_match('/^image\/(\w+)$/s', $file['type'], $fileType)) {
                 $message = "The uploaded file has an invalid MIME-type.";
                 $level = UPLOAD_ERR_FILE_TYPE;
                 $error = new \Yana\Core\Exceptions\Files\InvalidImageException($message, $level);
                 throw $error->setFilename($filename);
             }
-            $mimetype = $mimetype[1];
+            $fileType = $fileType[1];
         }
 
         /* name of output files */
@@ -99,7 +101,7 @@ class ImageUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
          * Note: this also checks the file content and will
          * set a "broken" flag if the image is not valid.
          */
-        $image = new \Yana\Media\Image($fileTempName, $mimetype);
+        $image = new \Yana\Media\Image($fileTempName, $fileType);
         /*
          * check if the "broken" flag has been set
          */
@@ -127,8 +129,8 @@ class ImageUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
                 );
             }
         }
-        $this->_createImageAndThumbnail($image, $path, $thumbnailPath, $width, $height, $ratio, (array) $background, $mimetype, $fileTempName);
-        return $path;
+        $this->_createImageAndThumbnail($image, $path, $thumbnailPath, $width, $height, $ratio, (array) $background, $fileType, $fileTempName);
+        return "$path.$fileType";
     }
 
 

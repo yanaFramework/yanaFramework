@@ -32,6 +32,7 @@ namespace Yana\Db\Binaries\Uploads;
  *
  * @package     yana
  * @subpackage  db
+ * @ignore
  */
 class FileUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
 {
@@ -40,6 +41,8 @@ class FileUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
      * The purpose of this method is to store (text) files in a file pool.
      *
      * If the file already exists, it will get replaced.
+     *
+     * Returns the path to the uploaded file.
      *
      * Example of usage:
      *
@@ -71,7 +74,6 @@ class FileUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
      * @param   array   $file    item taken from array $_FILES
      * @param   string  $fileId  name of target file
      * @return  string
-     * @ignore
      */
     public function upload(array $file, $fileId)
     {
@@ -107,7 +109,7 @@ class FileUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
         }
 
         $this->_createCompressedFile($path, $filename, $fileTempName, $mimetype);
-        return $filename;
+        return $path;
     }
 
     /**

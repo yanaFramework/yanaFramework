@@ -218,7 +218,7 @@ abstract class AbstractPlugin extends \Yana\Core\Object implements \Yana\IsPlugi
             header("Cache-Control: maxage=1"); // Workaround for a Bug in IE8 with HTTPS-downloads
             header("Pragma: public");
             header('Content-Disposition: attachment; filename=' . $dbBlob->getPath());
-            header('Content-Length: ' . $dbBlob->_getFilesize());
+            header('Content-Length: ' . $dbBlob->getFilesize());
             header('Content-type: ' . $dbBlob->getMimeType());
             print $dbBlob->getContent();
 
