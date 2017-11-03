@@ -65,6 +65,14 @@ class LogManagerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testGetLogger()
+    {
+        $this->assertSame($this->object, \Yana\Log\LogManager::getLogger());
+    }
+
+    /**
+     * @test
+     */
     public function testAttachLogger()
     {
         $this->assertCount(0, $this->object);
@@ -85,14 +93,6 @@ class LogManagerTest extends \PHPUnit_Framework_TestCase
         \Yana\Log\LogManager::setLoggers($collection);
         $this->assertNotSame($this->object, \Yana\Log\LogManager::getLogger());
         $this->assertSame($collection, \Yana\Log\LogManager::getLogger());
-    }
-
-    /**
-     * @test
-     */
-    public function testGetLogger()
-    {
-        $this->assertSame($this->object, \Yana\Log\LogManager::getLogger());
     }
 
 }

@@ -107,8 +107,8 @@ class DataWriterHelperTest extends \PHPUnit_Framework_TestCase
     public function testGetActionTitles()
     {
         $this->collection[] = (new \Yana\Plugins\Configs\MethodConfiguration())->setMethodName('N1')->setTitle('Title1');
-        $this->collection[] = (new \Yana\Plugins\Configs\MethodConfiguration())->setMethodName('N2')->setTitle('Title2');
-        $this->assertEquals(array('N1' => 'Title1', 'N2' => 'Title2'), $this->object->getActionTitles());
+        $this->collection[] = (new \Yana\Plugins\Configs\MethodConfiguration())->setMethodName('N2');
+        $this->assertEquals(array('N1' => 'Title1', 'N2' => 'N2'), $this->object->getActionTitles());
     }
 
     /**

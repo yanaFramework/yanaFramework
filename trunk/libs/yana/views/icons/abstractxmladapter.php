@@ -114,9 +114,7 @@ abstract class AbstractXmlAdapter extends \Yana\Core\Object implements \Yana\Dat
         unset($fileNode, $entity);
 
         $this->_file->setContent($xmlRootNode->asXML());
-        /**
-         * @codeCoverageIgnoreStart
-         */
+        // @codeCoverageIgnoreStart
         try {
             $this->_file->write();
 
@@ -127,9 +125,7 @@ abstract class AbstractXmlAdapter extends \Yana\Core\Object implements \Yana\Dat
             throw new \Yana\Data\Adapters\AdapterException('Target file modified by third party.', \Yana\Log\TypeEnumeration::WARNING, $e);
 
         }
-        /**
-         * @codeCoverageIgnoreEnd
-         */
+        // @codeCoverageIgnoreEnd
     }
 
 }

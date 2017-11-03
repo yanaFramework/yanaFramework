@@ -195,6 +195,8 @@ class ReflectionClass extends \ReflectionClass
 
             $this->_classDoc = parent::getDocComment();
             if ($this->_classDoc === false) {
+                // That's just a fallback. In some cases, the parent class returns an empty doc-comment.
+                // @codeCoverageIgnoreStart
 
                 $this->_classDoc = "";
                 $file = file($this->getFileName());
@@ -208,6 +210,8 @@ class ReflectionClass extends \ReflectionClass
                     }
                 }
                 $this->_classDoc = preg_replace('/^\s*(.*?\*\/).*/s', '$1', $this->_classDoc);
+
+                // @codeCoverageIgnoreEnd
             }
         }
         return $this->_classDoc;

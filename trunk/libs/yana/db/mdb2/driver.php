@@ -66,11 +66,11 @@ class Driver extends \Yana\Core\AbstractDecorator implements \Yana\Db\IsDriver
     protected function _checkReturnValue($errorCode)
     {
         if ($errorCode instanceof \MDB2_Error) {
-            /* @codeCoverageIgnoreStart */
+            // @codeCoverageIgnoreStart
             if ($this->_exceptionFactory === null) {
                 $this->_exceptionFactory = new \Yana\Db\Mdb2\ExceptionFactory();
             }
-            /* @codeCoverageIgnoreEnd */
+            // @codeCoverageIgnoreEnd
             throw $this->_exceptionFactory->toException($errorCode);
         }
         return $errorCode;

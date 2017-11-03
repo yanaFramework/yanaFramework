@@ -32,6 +32,7 @@ namespace Yana\Data\Adapters;
  *
  * @package     yana
  * @subpackage  data
+ * @codeCoverageIgnore
  */
 class AdapterException extends \Yana\Core\Exceptions\DataException
 {

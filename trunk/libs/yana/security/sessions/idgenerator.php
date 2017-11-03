@@ -95,18 +95,14 @@ class IdGenerator extends \Yana\Core\Object implements \Yana\Security\Sessions\I
         assert('!isset($sessionId); // Cannot redeclare var $sessionId');
         $sessionId = uniqid($this->createApplicationUserId(), true);
         assert('!isset($encryptedId); // Cannot redeclare var $encryptedId');
-        /**
-         * @codeCoverageIgnoreStart
-         */
+        // @codeCoverageIgnoreStart
         if (function_exists('sha1')) {
             $encryptedId = sha1($sessionId);
         } else {
             /* if sha1 is not supported, fall back to default encryption method */
             $encryptedId = md5($sessionId);
         }
-        /**
-         * @codeCoverageIgnoreEnd
-         */
+        // @codeCoverageIgnoreEnd
         return (string) $encryptedId;
     }
 

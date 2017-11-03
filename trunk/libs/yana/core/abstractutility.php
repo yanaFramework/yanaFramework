@@ -41,6 +41,7 @@ namespace Yana\Core;
  *
  * @package     yana
  * @subpackage  core
+ * @codeCoverageIgnore
  */
 abstract class AbstractUtility extends \StdClass
 {

@@ -323,18 +323,14 @@ class Strings extends \Yana\Core\AbstractUtility
         switch (mb_strtolower($encryption))
         {
             case 'crc32':
-                /**
-                 * @codeCoverageIgnoreStart
-                 */
+                // @codeCoverageIgnoreStart
                 if (function_exists('crc32')) {
                     return crc32($string);
                 } else {
                     $message = "Unsupported encryption method: '$encryption'.";
                     throw new \Yana\Core\Exceptions\NotImplementedException($message);
                 }
-                /**
-                 * @codeCoverageIgnoreEnd
-                 */
+                // @codeCoverageIgnoreEnd
             break;
             case 'md5':
                 if (mb_strlen($salt) > 8 && CRYPT_MD5 == 1) {
@@ -345,18 +341,14 @@ class Strings extends \Yana\Core\AbstractUtility
             break;
             case 'sha':
             case 'sha1':
-                /**
-                 * @codeCoverageIgnoreStart
-                 */
+                // @codeCoverageIgnoreStart
                 if (function_exists('sha1')) {
                     return sha1($string);
                 } else {
                     $message = "Unsupported encryption method: '$encryption'.";
                     throw new \Yana\Core\Exceptions\NotImplementedException($message);
                 }
-                /**
-                 * @codeCoverageIgnoreEnd
-                 */
+                // @codeCoverageIgnoreEnd
             break;
             case 'crypt':
                 if (mb_strlen($salt) > 0) {
@@ -396,14 +388,10 @@ class Strings extends \Yana\Core\AbstractUtility
                     return soundex($string);
 
                 } else {
-                    /**
-                     * @codeCoverageIgnoreStart
-                     */
+                    // @codeCoverageIgnoreStart
                     $message = "Unsupported encryption method: '$encryption'.";
                     throw new \Yana\Core\Exceptions\NotImplementedException($message);
-                    /**
-                     * @codeCoverageIgnoreEnd
-                     */
+                    // @codeCoverageIgnoreEnd
                 }
             break;
             case 'metaphone':
@@ -416,14 +404,10 @@ class Strings extends \Yana\Core\AbstractUtility
                         return metaphone($string);
                     }
                 } else {
-                    /**
-                     * @codeCoverageIgnoreStart
-                     */
+                    // @codeCoverageIgnoreStart
                     $message = "Unsupported encryption method: '$encryption'.";
                     throw new \Yana\Core\Exceptions\NotImplementedException($message);
-                    /**
-                     * @codeCoverageIgnoreEnd
-                     */
+                    // @codeCoverageIgnoreEnd
                 }
             break;
             case 'xor':
@@ -575,9 +559,7 @@ class Strings extends \Yana\Core\AbstractUtility
             case 'rot13':
                 return str_rot13($string);
             case 'entities':
-                /**
-                 * @codeCoverageIgnoreStart
-                 */
+                // @codeCoverageIgnoreStart
                 if ($style == ENT_COMPAT || $style == ENT_QUOTES || $style == ENT_NOQUOTES) {
                     if ($charset != "") {
                         return html_entity_decode($string, $style, $charset);
@@ -585,9 +567,7 @@ class Strings extends \Yana\Core\AbstractUtility
                     return html_entity_decode($string, $style);
                 }
                 return html_entity_decode($string);
-                /**
-                 * @codeCoverageIgnoreEnd
-                 */
+                // @codeCoverageIgnoreEnd
             default:
                 $message = "The value of the \$encoding parameter (argument 1) is invalid: '" . $encoding . "'.";
                 throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);

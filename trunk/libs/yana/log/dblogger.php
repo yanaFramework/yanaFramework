@@ -90,8 +90,8 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
      *
      * When the max. number of rows is reached, the logger will flush the oldest entries.
      *
-     * @param  int  $max  0 means infinite
-     * @return DbLogger
+     * @param   int  $max  0 means infinite
+     * @return  self
      */
     public function setMaxNumerOfEntries($max = 0)
     {
@@ -114,8 +114,8 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
      * You may set up an e-mail recipient to which all log-entries will be sent,
      * when the log is full, instead of dumping the oldest log entries.
      *
-     * @param  string  $recipient  must be a valid e-mail address, empty string means no mail will be send
-     * @return DbLogger
+     * @param   string  $recipient  must be a valid e-mail address, empty string means no mail will be send
+     * @return  self
      */
     public function setMailRecipient($recipient = "")
     {
@@ -128,7 +128,7 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
     /**
      * Get e-mail recipient for log-files.
      *
-     * @return string
+     * @return  string
      */
     public function getMailRecipient()
     {

@@ -65,17 +65,13 @@ class Loader extends \Yana\Core\Autoloaders\AbstractLoader
             }
         }
         unset($mapper);
-        /**
-         * @codeCoverageIgnoreStart
-         */
+        // @codeCoverageIgnoreStart
         if ($this->doesThrowExceptionWhenClassIsNotFound()) {
             // The exception is only thrown when the loader is told to do so. By default this is: false
             $message = "No such class: '" . $className . "'.";
             throw new \Yana\Core\Exceptions\ClassNotFoundException($message);
         }
-        /**
-         * @codeCoverageIgnoreEnd
-         */
+        // @codeCoverageIgnoreEnd
     }
 
 }

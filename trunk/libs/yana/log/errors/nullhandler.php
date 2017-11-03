@@ -25,63 +25,53 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Plugins\Configs;
+namespace Yana\Log\Errors;
 
 /**
- * <<abstract>> Plugin configuration builder.
- *
- * This class produces a configuration from a class reflection.
+ * For unit testing only.
  *
  * @package     yana
- * @subpackage  plugins
- *
+ * @subpackage  log
  * @ignore
+ * @codeCoverageIgnore
  */
-abstract class AbstractBuilder extends \Yana\Core\Object
+class NullHandler extends \Yana\Log\Errors\AbstractHandler
 {
 
     /**
-     * Plugin configuration raw object.
+     * This custom error handler implements logging of errors.
      *
-     * @var \Yana\Plugins\Configs\ClassConfiguration
+     * @param   int     $errorNumber  ignored
+     * @param   string  $description  ignored
+     * @param   string  $file         ignored
+     * @param   int     $lineNumber   ignored
      */
-    protected $object = null;
-
-    /**
-     * constructor
-     */
-    public function __construct()
+    public function handleError($errorNumber, $description, $file, $lineNumber)
     {
-        $this->createNewConfiguration();
+        // intentionally left blank
     }
 
     /**
-     * Resets the instance that is currently build.
+     * Handles failed assertions.
+     *
+     * @param   string  $pathToFile   ignored
+     * @param   int     $lineNumber   ignored
+     * @param   string  $code         ignored
+     * @param   string  $description  ignored
      */
-    public function createNewConfiguration()
+    public function handleAssertion($pathToFile, $lineNumber, $code, $description = "")
     {
-        $this->object = new \Yana\Plugins\Configs\ClassConfiguration();
+        // intentionally left blank
     }
 
     /**
-     * Build class object.
-     */
-    abstract protected function buildClass();
-
-    /**
-     * Build method object.
-     */
-    abstract protected function buildMethod();
-
-    /**
-     * Returns the built object.
+     * Handles uncaught exceptions.
      *
-     * @return  \Yana\Plugins\Configs\ClassConfiguration
+     * @param  mixed  $e  ignored
      */
-    public function getPluginConfigurationClass()
+    public function handleException($e)
     {
-        $this->buildClass();
-        return $this->object;
+        // intentionally left blank
     }
 
 }

@@ -72,4 +72,12 @@ class NullDataProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($expected->equals($actual));
     }
 
+    /**
+     * @test
+     */
+    public function testGetListOfValidIds()
+    {
+        $this->assertEquals(array(), $this->object->getListOfValidIds());
+    }
+
 }

@@ -249,9 +249,11 @@ class Image extends \Yana\Core\Object
         assert('is_null($imageType) || is_string($imageType); // Wrong type for argument 2. String expected');
 
         if (!function_exists('imagecreate')) {
+            // @codeCoverageIgnoreStart
             $message = "The GD library does not seem to be installed.\nWithout this library this framework will be ".
                 "unable to create images.\nPlease update your configuration!";
             \Yana\Log\LogManager::getLogger()->addLog($message);
+            // @codeCoverageIgnoreEnd
 
         /* if no filename is provided, create an empty truecolor image */
         } elseif (is_null($filename)) {

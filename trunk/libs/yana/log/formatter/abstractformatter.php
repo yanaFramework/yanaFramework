@@ -38,10 +38,9 @@ abstract class AbstractFormatter extends \Yana\Core\Object implements \Yana\Log\
 {
 
     /**
-     * @var Message
-     * @ignore
+     * @var \Yana\Log\Formatter\Message
      */
-    private static $_message = null;
+    private $_message = null;
 
     /**
      * Configuration setting.
@@ -88,10 +87,10 @@ abstract class AbstractFormatter extends \Yana\Core\Object implements \Yana\Log\
      */
     protected function _getMessage()
     {
-        if (!isset(self::$_message)) {
-            self::$_message = new \Yana\Log\Formatter\Message();
+        if (!isset($this->_message)) {
+            $this->_message = new \Yana\Log\Formatter\Message();
         }
-        return self::$_message;
+        return $this->_message;
     }
 
     /**
@@ -102,7 +101,7 @@ abstract class AbstractFormatter extends \Yana\Core\Object implements \Yana\Log\
      */
     protected function _setMessage(\Yana\Log\Formatter\Message $message)
     {
-        self::$_message = $message;
+        $this->_message = $message;
     }
 
     /**
@@ -120,34 +119,33 @@ abstract class AbstractFormatter extends \Yana\Core\Object implements \Yana\Log\
     {
         $baseStyle = 'font-size: 13px; font-weight: normal; padding: 5px; border: 1px solid #888; text-align: left;';
 
-        $isTraceableError = true;
-
-        /* for readability do not report errors twice */
         $message = $this->_getMessage();
-        if ($message->getLevel() === $level && $message->getFilename() === $filename && $message->getLineNumber() === $lineNumber) {
-            $isTraceableError = false;
-            if ($message->getDescription() === $description) {
-                if ($message->hasMore() === true) {
-                    $errorMessage = '';
-                } else {
-                    $message->setHasMore();
-                    if ($asHtml === true) {
-                        $errorMessage = '<div style="' . $baseStyle . '"><pre>' . "\t" . '... the previous' .
-                            ' error was reported multiple times.</pre></div>';
-                    } else {
-                        $errorMessage = "\t... the previous error was reported multiple times.";
-                    }
-                }
-                return $errorMessage;
-            }
-        } else {
-            $message = new Message();
+        $isTraceableError = !($message->getLevel() === $level && $message->getFilename() === $filename && $message->getLineNumber() === $lineNumber);
+
+        if ($isTraceableError) {
+            $message = new \Yana\Log\Formatter\Message();
             $message->setLevel($level)
                 ->setDescription($description)
                 ->setFilename($filename)
                 ->setLineNumber($lineNumber);
             $this->_setMessage($message);
+
+        } elseif (!$isTraceableError && $message->getDescription() === $description) {
+            /* for readability do not report errors twice */
+            if ($message->hasMore() === true) {
+                $errorMessage = '';
+            } else {
+                $message->setHasMore();
+                if ($asHtml === true) {
+                    $errorMessage = '<div style="' . $baseStyle . '"><pre>' . "\t" . '... the previous' .
+                        ' error was reported multiple times.</pre></div>';
+                } else {
+                    $errorMessage = "\t... the previous error was reported multiple times.";
+                }
+            }
+            return $errorMessage;
         }
+        unset($message);
 
         if (!isset(self::$_errortypeToColor[$level])) {
             $level = \Yana\Log\TypeEnumeration::UNKNOWN;
@@ -201,6 +199,8 @@ abstract class AbstractFormatter extends \Yana\Core\Object implements \Yana\Log\
                 $errorMessage .= "\n\t" . implode("\n\t", $this->_formatBacktrace($trace));
                 $errorMessage .= '</pre></div>';
             } else {
+                // This will be executed if the error occured in the same file and on the same line as a previous one,
+                // but with a different message
                 $errorMessage .= '<pre>' . ((mb_strpos($description, "\t\t")) ? "\t\t" : "") . $description . '</pre>';
             }
             $errorMessage .= "</div>";

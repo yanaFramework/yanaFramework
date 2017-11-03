@@ -100,7 +100,7 @@ class ReflectionMethod extends \ReflectionMethod
     {
         if (!isset($this->_text)) {
             $this->_text = "";
-            $pageDoc = $this->getPageComment();
+            $pageDoc = $this->getDocComment();
             $match = $match2 = array();
             if (preg_match('/\/\*\*[\s\*\r\f\n]*(\S.*?)[\r\f\n]/', $this->_docComment, $match)) {
                 if (preg_match('/[\s\*\r\f\n]([^@\{]+)/si', $pageDoc, $match2, 0, mb_strlen($match[0]))) {
@@ -132,6 +132,8 @@ class ReflectionMethod extends \ReflectionMethod
 
             $this->_docComment = parent::getDocComment();
             if ($this->_docComment === false) {
+                // That's just a fallback. In some cases, the parent class returns an empty doc-comment.
+                // @codeCoverageIgnoreStart
 
                 $this->_docComment = "";
 
@@ -146,6 +148,8 @@ class ReflectionMethod extends \ReflectionMethod
                     }
                 }
                 $this->_docComment = preg_replace('/^\s*(.*?\*\/).*/s', '$1', $this->_docComment);
+
+                // @codeCoverageIgnoreEnd
             }
         }
         return $this->_docComment;

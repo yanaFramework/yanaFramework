@@ -49,15 +49,11 @@ class SecurityLevelRule extends \Yana\Security\Rules\AbstractRule
      */
     public function __invoke(\Yana\Security\Rules\Requirements\IsRequirement $required, $profileId, $action, \Yana\Security\Data\Behaviors\IsBehavior $user)
     {
-        /**
-         * @codeCoverageIgnoreStart
-         */
+        // @codeCoverageIgnoreStart
         if ($required->getLevel() < 0) {
             return null; // should be unreachable
         }
-        /**
-         * @codeCoverageIgnoreEnd
-         */
+        // @codeCoverageIgnoreEnd
         if ($required->getLevel() === 0) {
             return true;
         }

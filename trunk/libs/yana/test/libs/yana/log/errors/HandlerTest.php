@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Log\Formatter;
+namespace Yana\Log\Errors;
 
 /**
  * @ignore
@@ -33,13 +33,30 @@ namespace Yana\Log\Formatter;
 require_once __DIR__ . '/../../../../include.php';
 
 /**
+ * @ignore
  * @package  test
  */
-class TextFormatterTest extends \PHPUnit_Framework_TestCase
+class MyHandler extends \Yana\Log\Errors\Handler
+{
+    protected function _exit()
+    {
+        // do nothing
+    }
+}
+
+/**
+ * @package  test
+ */
+class HandlerTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Log\Formatter\TextFormatter
+     * @var \Yana\Log\NullLogger
+     */
+    protected $logger;
+
+    /**
+     * @var \Yana\Log\Errors\MyHandler
      */
     protected $object;
 
@@ -49,7 +66,9 @@ class TextFormatterTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Log\Formatter\TextFormatter();
+        $this->logger = new \Yana\Log\NullLogger();
+        $formatter = new \Yana\Log\Formatter\NullFormatter();
+        $this->object = new \Yana\Log\Errors\MyHandler($formatter, $this->logger);
     }
 
     /**
@@ -64,32 +83,34 @@ class TextFormatterTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testFormat()
+    public function testHandleError()
     {
-        $formattedString = $this->object->format(\Yana\Log\TypeEnumeration::ERROR, __METHOD__, 'test.php', 10);
-        $this->assertSame("Yana Error: " . __METHOD__ . " in file 'test.php' on line 10.", $formattedString);
-        $multipleOccurencesText = $this->object->format(\Yana\Log\TypeEnumeration::ERROR, __METHOD__, 'test.php', 10);
-        $this->assertSame("\t... the previous error was reported multiple times.", $multipleOccurencesText);
-        $finalText = $this->object->format(\Yana\Log\TypeEnumeration::ERROR, __METHOD__, 'test.php', 10);
-        $this->assertSame("", $finalText);
+        $this->object->setErrorReportingLevel(2);
+        $this->object->handleError(1, "description", "file", 2);
+        $this->assertEmpty($this->logger->getLogs());
+        $this->object->setErrorReportingLevel(1);
+        $this->object->handleError(1, "description", "file", 2);
+        $this->assertCount(1, $this->logger->getLogs());
+        
     }
 
     /**
      * @test
      */
-    public function testFormatAssertion()
+    public function testHandleAssertion()
     {
-        $formattedString = $this->object->format(\Yana\Log\TypeEnumeration::ASSERT, __METHOD__, 'test.php', 10);
-        $this->assertSame("Assertion failed: Assertion " . __METHOD__ . " failed in file 'test.php' on line 10.", $formattedString);
+        $this->object->handleAssertion("file", 2, 1);
+        $this->assertCount(1, $this->logger->getLogs());
     }
 
     /**
      * @test
      */
-    public function testFormatUnknown()
+    public function testHandleException()
     {
-        $formattedString = $this->object->format(-10, __METHOD__, 'test.php', 10);
-        $this->assertSame("Unknown Error: " . __METHOD__ . " in file 'test.php' on line 10.", $formattedString);
+        $e = new \Exception('description', 1);
+        $this->object->handleException($e);
+        $this->assertCount(1, $this->logger->getLogs());
     }
 
 }

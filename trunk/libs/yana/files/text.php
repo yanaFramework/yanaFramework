@@ -81,9 +81,6 @@ class Text extends \Yana\Files\File implements \Yana\Files\IsTextFile
     public function appendLine($content)
     {
         assert('is_scalar($content); // Wrong argument type $content. Scalar value expected.');
-        if (!isset($this->content)) {
-            $this->content = array();
-        }
         assert('is_array($this->content);');
         array_push($this->content, "$content");
     }

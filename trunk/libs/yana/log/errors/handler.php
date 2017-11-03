@@ -59,6 +59,26 @@ class Handler extends \Yana\Log\Errors\AbstractHandler
     }
 
     /**
+     * Return logger to pass formatted log entries to.
+     *
+     * @return  \Yana\Log\IsLogger
+     */
+    protected function _getLogger()
+    {
+        return $this->_logger;
+    }
+
+    /**
+     * Return instance to format log entries.
+     *
+     * @return  \Yana\Log\Formatter\IsFormatter 
+     */
+    protected function _getFormatter()
+    {
+        return $this->_formatter;
+    }
+
+    /**
      * This custom error handler implements logging of errors.
      *
      * Be aware that error logs can get very large very soon, if not reset or deleted frequently.

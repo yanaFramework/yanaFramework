@@ -28,11 +28,10 @@
 namespace Yana\Plugins\Configs;
 
 /**
- * <<builder>> Plugin configuration builder
+ * <<builder>> Plugin configuration builder.
  *
  * This class produces a configuration from a class reflection.
  *
- * @name        PluginConfiguration
  * @package     yana
  * @subpackage  plugins
  *

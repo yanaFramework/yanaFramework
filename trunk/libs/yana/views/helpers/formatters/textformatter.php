@@ -258,14 +258,10 @@ class TextFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
                                         '" target="_blank">' . $mailText . '</a>',
                                     $string);
                             } else {
-                                /**
-                                 * @codeCoverageIgnoreStart
-                                 */
+                                // @codeCoverageIgnoreStart
                                 $replace = str_replace('{$RESOURCE}', 'mail', $this->_buildTagForInvalidResource());
                                 $string = str_replace($mailMatch, $replace, $string);
-                                /**
-                                 * @codeCoverageIgnoreEnd
-                                 */
+                                // @codeCoverageIgnoreEnd
                             }
                         } // end while
                     break;
@@ -285,14 +281,10 @@ class TextFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
                                     '"/>';
                                 $string = str_replace($matches[0], $replace, $string);
                             } else {
-                                /**
-                                 * @codeCoverageIgnoreStart
-                                 */
+                                // @codeCoverageIgnoreStart
                                 $replace = str_replace('{$RESOURCE}', 'image', $this->_buildTagForInvalidResource());
                                 $string = str_replace($matches[0], $replace, $string);
-                                /**
-                                 * @codeCoverageIgnoreEnd
-                                 */
+                                // @codeCoverageIgnoreEnd
                             }
                         } // end foreach
                     break;
@@ -344,24 +336,17 @@ class TextFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
                                 $replace = '<a href="' . $uriHref . '" target="_blank">' . $uriText . '</a>';
                                 $string = str_replace($uriMatch, $replace, $string);
                             } else {
-                                /**
-                                 * @codeCoverageIgnoreStart
-                                 */
+                                // @codeCoverageIgnoreStart
                                 $replace = str_replace('{$RESOURCE}', 'uri', $this->_buildTagForInvalidResource());
                                 $string = str_replace($uriMatch, $replace, $string);
-                                /**
-                                 * @codeCoverageIgnoreEnd
-                                 */
+                                // @codeCoverageIgnoreEnd
                             }
                             unset($uriMatch, $uriHref, $uriText);
                         } // end while
                     break;
 
-                    /*
-                     * load and apply embedded tags from system configuration
-                     *
-                     * @codeCoverageIgnoreStart
-                     */
+                    // load and apply embedded tags from system configuration
+                    // @codeCoverageIgnoreStart
                     default:
                         assert('!isset($userTag); // Cannot redeclare var $userTag');
                         assert('!isset($opt); // Cannot redeclare var $opt');
@@ -393,9 +378,7 @@ class TextFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
                         } // end foreach
                         unset($opt, $tagName, $regExp, $replace);
                     break;
-                    /**
-                     * @codeCoverageIgnoreEnd
-                     */
+                    // @codeCoverageIgnoreEnd
                 } // end switch
             } // end foreach
             unset($tag);

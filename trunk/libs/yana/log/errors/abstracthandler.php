@@ -94,7 +94,8 @@ abstract class AbstractHandler extends \Yana\Core\Object implements \Yana\Log\Er
      * Activate or deactive error handler.
      *
      * @param   bool  $isActive  true = activate, false = deactivate
-     * @return  Handler 
+     * @return  $this
+     * @codeCoverageIgnore
      */
     public function setActivate($isActive = true)
     {
@@ -120,7 +121,7 @@ abstract class AbstractHandler extends \Yana\Core\Object implements \Yana\Log\Er
      *
      * Defaults to native PHP setting returned by error_reporting().
      *
-     * @return int
+     * @return  int
      */
     public function getErrorReportingLevel()
     {
@@ -139,8 +140,8 @@ abstract class AbstractHandler extends \Yana\Core\Object implements \Yana\Log\Er
      * So you don't _have_ to set this manually.
      * But you may - for example when writing unit-tests.
      *
-     * @param int $newLevel
-     * @return \Yana\Log\Errors\AbstractHandler
+     * @param   int  $newLevel  error reporting level corresponding to PHP error levels
+     * @return  $this
      */
     public function setErrorReportingLevel($newLevel)
     {

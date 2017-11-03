@@ -66,13 +66,25 @@ class HtmlFormatterTest extends \PHPUnit_Framework_TestCase
      */
     public function testFormat()
     {
-        $formattedString = $this->object->format(\Yana\Log\TypeEnumeration::ERROR, 'description', 'test.php', 10);
-        $regExp = "/^<div style=[^>]+><pre><span style[^>]+>Yana Error<\/span>\s+description:\s+description\s+file:\s+test.php\s+line:\s+10<\/pre>.*?<\/div>$/s";
+        $formattedString = $this->object->format(\Yana\Log\TypeEnumeration::ERROR, __METHOD__, 'test.php', 10);
+        $regExp = "/^<div style=[^>]+><pre><span style[^>]+>Yana Error<\/span>\s+description:\s+" .
+                \preg_quote(__METHOD__, '/') . "\s+file:\s+test.php\s+line:\s+10<\/pre>.*?<\/div>$/s";
         $this->assertRegExp($regExp, $formattedString);
-        $multipleOccurencesText = $this->object->format(\Yana\Log\TypeEnumeration::ERROR, 'description', 'test.php', 10);
+        $multipleOccurencesText = $this->object->format(\Yana\Log\TypeEnumeration::ERROR, __METHOD__, 'test.php', 10);
         $this->assertRegExp("/^<div style=[^>]+><pre>\t... the previous error was reported multiple times.<\/pre><\/div>$/", $multipleOccurencesText);
-        $finalText = $this->object->format(\Yana\Log\TypeEnumeration::ERROR, 'description', 'test.php', 10);
+        $finalText = $this->object->format(\Yana\Log\TypeEnumeration::ERROR, __METHOD__, 'test.php', 10);
         $this->assertSame("", $finalText);
+    }
+
+    /**
+     * @test
+     */
+    public function testFormatSameLineDifferentError()
+    {
+        $this->object->format(\Yana\Log\TypeEnumeration::ERROR, 'message1', 'test.php', 10);
+        $formattedString = $this->object->format(\Yana\Log\TypeEnumeration::ERROR, 'message2', 'test.php', 10);
+        $regExp = "/^<div style=[^>]+><pre>message2<\/pre>.*?<\/div>$/s";
+        $this->assertRegExp($regExp, $formattedString);
     }
 
     /**
@@ -80,8 +92,9 @@ class HtmlFormatterTest extends \PHPUnit_Framework_TestCase
      */
     public function testFormatAssertion()
     {
-        $formattedString = $this->object->format(\Yana\Log\TypeEnumeration::ASSERT, 'description', 'test.php', 10);
-        $regExp = "/^<div style=[^>]+><pre><span style[^>]+>Assertion failed<\/span>\s+description:\s+description\s+file:\s+test.php\s+line:\s+10<\/pre>.*?<\/div>$/s";
+        $formattedString = $this->object->format(\Yana\Log\TypeEnumeration::ASSERT, __METHOD__, 'test.php', 10);
+        $regExp = "/^<div style=[^>]+><pre><span style[^>]+>Assertion failed<\/span>\s+description:\s+" .
+                \preg_quote(__METHOD__, '/') . "\s+file:\s+test.php\s+line:\s+10<\/pre>.*?<\/div>$/s";
         $this->assertRegExp($regExp, $formattedString);
     }
 
@@ -90,8 +103,9 @@ class HtmlFormatterTest extends \PHPUnit_Framework_TestCase
      */
     public function testFormatUnknown()
     {
-        $formattedString = $this->object->format(-10, 'description', 'test.php', 10);
-        $regExp = "/^<div style=[^>]+><pre><span style[^>]+>Unknown Error<\/span>\s+description:\s+description\s+file:\s+test.php\s+line:\s+10<\/pre>.*?<\/div>$/s";
+        $formattedString = $this->object->format(-10, __METHOD__, 'test.php', 10);
+        $regExp = "/^<div style=[^>]+><pre><span style[^>]+>Unknown Error<\/span>\s+description:\s+" .
+                \preg_quote(__METHOD__, '/') . "\s+file:\s+test.php\s+line:\s+10<\/pre>.*?<\/div>$/s";
         $this->assertRegExp($regExp, $formattedString);
     }
 
@@ -100,9 +114,25 @@ class HtmlFormatterTest extends \PHPUnit_Framework_TestCase
      */
     public function testFormatBacktrace()
     {
-        $formattedString = $this->object->format(\Yana\Log\TypeEnumeration::ERROR, 'description', 'test.php', 10);
+        $formattedString = $this->object->format(\Yana\Log\TypeEnumeration::ERROR, __METHOD__, 'test.php', 10);
         $regExp = "/^<div style=[^>]+>.*<div><pre><span style=[^>]+>Backtrace<\/span>(\n\t[\w\\\\]+(->|::)\w+\([\w, ]*\))*<\/pre><\/div><\/div>$/s";
         $this->assertRegExp($regExp, $formattedString);
+    }
+
+    /**
+     * @test
+     */
+    public function testFormatBacktraceTriggerError()
+    {
+        $backtrace = array(
+            array(
+                'file' => 'file.php',
+                'line' => 123,
+                'function' => 'trigger_error'
+            )
+        );
+        $formattedString = $this->object->format(\Yana\Log\TypeEnumeration::ERROR, __METHOD__, 'test.php', 10, $backtrace);
+        $this->assertContains("Error was raised in file 'file.php' on line 123", $formattedString);
     }
 
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case.
+ * PHPUnit test-case
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Log\Formatter;
+namespace Yana\Plugins\Configs;
 
 /**
  * @ignore
@@ -35,11 +35,11 @@ require_once __DIR__ . '/../../../../include.php';
 /**
  * @package  test
  */
-class TextFormatterTest extends \PHPUnit_Framework_TestCase
+class BuilderTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Log\Formatter\TextFormatter
+     * @var \Yana\Plugins\Configs\Builder
      */
     protected $object;
 
@@ -49,7 +49,7 @@ class TextFormatterTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Log\Formatter\TextFormatter();
+        $this->object = new \Yana\Plugins\Configs\Builder();
     }
 
     /**
@@ -64,32 +64,21 @@ class TextFormatterTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testFormat()
+    public function testSetReflection()
     {
-        $formattedString = $this->object->format(\Yana\Log\TypeEnumeration::ERROR, __METHOD__, 'test.php', 10);
-        $this->assertSame("Yana Error: " . __METHOD__ . " in file 'test.php' on line 10.", $formattedString);
-        $multipleOccurencesText = $this->object->format(\Yana\Log\TypeEnumeration::ERROR, __METHOD__, 'test.php', 10);
-        $this->assertSame("\t... the previous error was reported multiple times.", $multipleOccurencesText);
-        $finalText = $this->object->format(\Yana\Log\TypeEnumeration::ERROR, __METHOD__, 'test.php', 10);
-        $this->assertSame("", $finalText);
+        $this->assertSame($this->object, $this->object->setReflection(new \Yana\Plugins\Annotations\ReflectionClass(__CLASS__)));
     }
 
     /**
-     * @test
+     * @covers Yana\Plugins\Configs\Builder::setAnnotationParser
+     * @todo   Implement testSetAnnotationParser().
      */
-    public function testFormatAssertion()
+    public function testSetAnnotationParser()
     {
-        $formattedString = $this->object->format(\Yana\Log\TypeEnumeration::ASSERT, __METHOD__, 'test.php', 10);
-        $this->assertSame("Assertion failed: Assertion " . __METHOD__ . " failed in file 'test.php' on line 10.", $formattedString);
-    }
-
-    /**
-     * @test
-     */
-    public function testFormatUnknown()
-    {
-        $formattedString = $this->object->format(-10, __METHOD__, 'test.php', 10);
-        $this->assertSame("Unknown Error: " . __METHOD__ . " in file 'test.php' on line 10.", $formattedString);
+        // Remove the following lines when you implement this test.
+        $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+        );
     }
 
 }
