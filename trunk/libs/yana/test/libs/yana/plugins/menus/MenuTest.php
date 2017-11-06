@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Plugins\Annotations;
+namespace Yana\Plugins;
 
 /**
  * @ignore
@@ -35,11 +35,11 @@ require_once __DIR__ . '/../../../../include.php';
 /**
  * @package  test
  */
-class ReflectionMethodTest extends \PHPUnit_Framework_TestCase
+class MenuTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Plugins\Annotations\ReflectionMethod
+     * @var \Yana\Plugins\Menus\Menu
      */
     protected $object;
 
@@ -49,7 +49,8 @@ class ReflectionMethodTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Plugins\Annotations\ReflectionMethod(__CLASS__, 'documentation');
+        $builder = new \Yana\Plugins\Menus\NullMenuBuilder();
+        $this->object = new \Yana\Plugins\Menus\Menu($builder);
     }
 
     /**
@@ -62,50 +63,19 @@ class ReflectionMethodTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * This is a title.
-     *
-     * This is a description.
-     *
-     * @ignore
+     * @test
      */
-    protected function documentation()
+    public function testGetMenuName()
     {
-
+        $this->assertInternalType('string', $this->object->getMenuName('id'));
     }
 
     /**
      * @test
      */
-    public function testGetTitle()
+    public function testGetTextMenu()
     {
-        $this->assertSame('This is a title.', $this->object->getTitle());
-    }
-
-    /**
-     * @test
-     */
-    public function testGetText()
-    {
-        $this->assertSame('This is a description.', $this->object->getText());
-    }
-
-    /**
-     * @test
-     */
-    public function testGetClassName()
-    {
-        $this->assertSame(__CLASS__, $this->object->getClassName());
-    }
-
-    /**
-     * @test
-     */
-    public function testGetDocComment()
-    {
-        $regExp = "/\/\*\*\s+\* This is a title.\s+\*\s+\* This is a description.\s+\*\s+\* @ignore\s+\*\//s";
-        $this->assertStringStartsWith("/**", $this->object->getDocComment());
-        $this->assertRegExp($regExp, $this->object->getDocComment());
-        $this->assertStringEndsWith("*/", $this->object->getDocComment());
+        $this->assertInternalType('array', $this->object->getTextMenu());
     }
 
 }

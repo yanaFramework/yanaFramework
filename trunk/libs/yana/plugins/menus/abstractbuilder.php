@@ -41,6 +41,8 @@ namespace Yana\Plugins\Menus;
 abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Plugins\Menus\IsBuilder, \Yana\Log\IsLogable
 {
 
+    use \Yana\Log\HasLogger;
+
     /**
      * @var  string
      */
@@ -57,11 +59,6 @@ abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Plugin
     private $_dependencies = null;
 
     /**
-     * @var  \Yana\Log\LoggerCollection
-     */
-    private $_loggers = null;
-
-    /**
      * <<constructor>> Initializes dependencies
      *
      * @param  \Yana\Plugins\Dependencies\IsMenuContainer  $container  containing all dependencies
@@ -69,30 +66,6 @@ abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Plugin
     public function __construct(\Yana\Plugins\Dependencies\IsMenuContainer $container)
     {
         $this->_dependencies = $container;
-    }
-
-    /**
-     * Adds a logger to the class.
-     *
-     * @param  \Yana\Log\IsLogger  $logger  instance that will handle the logging
-     */
-    public function attachLogger(\Yana\Log\IsLogger $logger)
-    {
-        $collection = $this->getLogger();
-        $collection[] = $logger;
-    }
-
-    /**
-     * Returns the attached loggers.
-     *
-     * @return  \Yana\Log\IsLogHandler
-     */
-    public function getLogger()
-    {
-        if (!isset($this->_loggers)) {
-            $this->_loggers = new \Yana\Log\LoggerCollection();
-        }
-        return $this->_loggers;
     }
 
     /**

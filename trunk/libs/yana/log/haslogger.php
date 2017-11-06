@@ -28,30 +28,45 @@
 namespace Yana\Log;
 
 /**
- * <<Interface>> Identifies classes the can accept a logger.
+ * <<trait>> Adds log-level member and access functions to class.
  *
- * A class may have mutliple loggers.
- *
- * @package     yana
- * @subpackage  log
+ * @package    yana
+ * @subpackage log
  */
-interface IsLogable
+trait HasLogger
 {
+
+    /**
+     * Collection for keeping and calling loggers.
+     *
+     * @var  \Yana\Log\IsLoggerCollection
+     */
+    private $_loggers = null;
 
     /**
      * Adds a logger to the class.
      *
      * @param  \Yana\Log\IsLogger  $logger  instance that will handle the logging
      */
-    public function attachLogger(\Yana\Log\IsLogger $logger);
+    public function attachLogger(\Yana\Log\IsLogger $logger)
+    {
+        $collection = $this->getLogger();
+        $collection[] = $logger;
+        return $this;
+    }
 
     /**
      * Returns the attached loggers.
      *
-     * @return  \Yana\Log\IsLogger
+     * @return  \Yana\Log\IsLoggerCollection
      */
-    public function getLogger();
-
+    public function getLogger()
+    {
+        if (!isset($this->_loggers)) {
+            $this->_loggers = new \Yana\Log\LoggerCollection();
+        }
+        return $this->_loggers;
+    }
 }
 
 ?>

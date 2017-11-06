@@ -38,6 +38,8 @@ namespace Yana\Translations;
 abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Translations\IsTranslationManager
 {
 
+    use \Yana\Log\HasLogger;
+
     /**
      * @var  \Yana\Translations\TextData\DataProviderCollection
      */
@@ -52,13 +54,6 @@ abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Transl
      * @var  \Yana\Translations\TextData\IsTextContainer
      */
     private $_translationContainer = null;
-
-    /**
-     * Collection for keeping and calling loggers.
-     *
-     * @var  \Yana\Log\IsLogHandler
-     */
-    private $_loggers = null;
 
     /**
      * @var  \Yana\Translations\LocaleCollection
@@ -217,32 +212,6 @@ abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Transl
         unset($provider);
 
         return $languages;
-    }
-
-    /**
-     * Adds a logger to the class.
-     *
-     * @param   \Yana\Log\IsLogger  $logger  instance that will handle the logging
-     * @return  \Yana\Translations\IsTranslationManager
-     */
-    public function attachLogger(\Yana\Log\IsLogger $logger)
-    {
-        $collection = $this->getLogger();
-        $collection[] = $logger;
-        return $this;
-    }
-
-    /**
-     * Returns the attached loggers.
-     *
-     * @return  \Yana\Log\IsLogHandler
-     */
-    public function getLogger()
-    {
-        if (!isset($this->_loggers)) {
-            $this->_loggers = new \Yana\Log\LoggerCollection();
-        }
-        return $this->_loggers;
     }
 
     /**

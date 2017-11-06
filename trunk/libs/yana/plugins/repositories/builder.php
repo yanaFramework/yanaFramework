@@ -104,6 +104,7 @@ class Builder extends \Yana\Plugins\Repositories\AbstractBuilder
         // list of subscribing methods
         $subscribers = array();
         $configBuilder = new \Yana\Plugins\Configs\Builder();
+        $configBuilder->attachLogger($this->getLogger());
 
         /**
          * 1) build plugin repository

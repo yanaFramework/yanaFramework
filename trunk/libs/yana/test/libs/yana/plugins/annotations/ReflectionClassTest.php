@@ -135,7 +135,7 @@ class ReflectionClassTest extends \PHPUnit_Framework_TestCase
     public function testGetPageComment()
     {
         $text = $this->object->getPageComment();
-        $this->assertStringStartsWith("/**\n * PHPUnit test-case", $text);
+        $this->assertContains(" * PHPUnit test-case", $text);
         $this->assertStringEndsWith(" */", $text);
     }
 
@@ -144,7 +144,9 @@ class ReflectionClassTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetDocComment()
     {
-        $this->assertSame("/**\n * Test class.\n * @ignore\n */", $this->object->getDocComment());
+        $this->assertContains(" * Test class.", $this->object->getDocComment());
+        $this->assertContains("@ignore", $this->object->getDocComment());
+        $this->assertStringEndsWith(" */", $this->object->getDocComment());
     }
 
     /**

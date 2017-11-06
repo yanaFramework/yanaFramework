@@ -34,12 +34,30 @@ require_once __DIR__ . '/../../../../include.php';
 
 /**
  * @package  test
+ * @ignore
+ */
+class MyBuilder extends \Yana\Plugins\Configs\Builder
+{
+    public function buildClass()
+    {
+        return parent::buildClass();
+    }
+
+    public function buildMethod()
+    {
+        return parent::buildMethod();
+    }
+
+}
+
+/**
+ * @package  test
  */
 class BuilderTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Plugins\Configs\Builder
+     * @var \Yana\Plugins\Configs\MyBuilder
      */
     protected $object;
 
@@ -49,7 +67,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Plugins\Configs\Builder();
+        $this->object = new \Yana\Plugins\Configs\MyBuilder();
     }
 
     /**
@@ -70,15 +88,110 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Yana\Plugins\Configs\Builder::setAnnotationParser
-     * @todo   Implement testSetAnnotationParser().
+     * @test
      */
     public function testSetAnnotationParser()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame($this->object, $this->object->setAnnotationParser(new \Yana\Plugins\Annotations\Parser()));
+    }
+
+    /**
+     * @test
+     */
+    public function testBuildClass()
+    {
+        $this->assertEquals(new \Yana\Plugins\Configs\ClassConfiguration(), $this->object->buildClass());
+    }
+
+    /**
+     * @test
+     */
+    public function testBuildMethod()
+    {
+        $this->assertEquals(new \Yana\Plugins\Configs\MethodConfiguration(), $this->object->buildMethod());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetPluginConfigurationClass()
+    {
+        $filename = CWD . '/resources/testplugin.php';
+        include_once $filename;
+        $this->object->setReflection(new \Yana\Plugins\Annotations\ReflectionClass('TestPlugin'));
+
+        $expected = new \Yana\Plugins\Configs\ClassConfiguration();
+        $expected
+                ->setClassName('TestPlugin')
+                ->setDirectory('resources')
+                ->setActive(2)
+                ->setAuthors(array('Author 1', 'Author 2'))
+                ->setTitles(array('A' => 'Title A', 'B' => 'Title B'))
+                ->setTexts(array('A' => 'Translation A.', 'B' => 'Translation B.'))
+                ->setDefaultTitle('Title')
+                ->setDefaultText('Description.')
+                ->setLastModified(\filemtime($filename))
+                ->setType('primary')
+                ->setGroup('my group')
+                ->setLicense('Some License')
+                ->setParent('my Parent')
+                ->setDependencies(array('Dependency 1', 'Dependency 2'))
+                ->setUrl('Some URL')
+                ->setVersion('12.3 Beta');
+        $menu1 = new \Yana\Plugins\Menus\Entry();
+        $menu1
+                ->setTitle('Menu Title')
+                ->setGroup('groupname')
+                ->setIcon('icon1.png');
+        $expected->addMenu($menu1);
+        $menu2 = new \Yana\Plugins\Menus\Entry();
+        $menu2
+                ->setTitle('{lang id="menu.title"}')
+                ->setGroup('groupname.sub')
+                ->setIcon('icon2.png');
+        $expected->addMenu($menu2);
+
+        $method = new \Yana\Plugins\Configs\MethodConfiguration();
+        $method
+                ->setClassName('TestPlugin')
+                ->setMethodName('testA')
+                ->setParams(array('a' => 'string', 'b' => 'int'))
+                ->setDefaults(array(1 => 123))
+                ->setGroup($expected->getGroup()) // inherited
+                ->setSafeMode(true)
+                ->setTemplate($expected->getDirectory() . '/testplugin.php')
+                ->setType('read')
+                ->addPath($expected->getDirectory()) // inherited
+                ->setReturn('array')
+                ->setOverwrite(true)
+                ->setSubscribe(true)
+                ->setScripts(array($expected->getDirectory() . '/Script1.js', $expected->getDirectory() . '/Script2.js'))
+                ->setStyles(array($expected->getDirectory() . '/Style1.css', $expected->getDirectory() . '/Style2.css'));
+        $user = new \Yana\Plugins\Configs\UserPermissionRule();
+        $user
+                ->setGroup('my_Group')
+                ->setRole('my_Role')
+                ->setLevel(12);
+        $method->addUserLevel($user);
+        $menu3 = new \Yana\Plugins\Menus\Entry();
+        $menu3
+                ->setTitle('Menu Title 2')
+                ->setGroup('groupname')
+                ->setIcon('icon3.png');
+        $method->setMenu($menu3);
+        $onError = new \Yana\Plugins\Configs\EventRoute();
+        $onError
+                ->setMessage('Error')
+                ->setTarget('error_action');
+        $method->setOnError($onError);
+        $onSuccess = new \Yana\Plugins\Configs\EventRoute();
+        $onSuccess
+                ->setMessage('Success')
+                ->setTarget('success_action');
+        $method->setOnSuccess($onSuccess);
+        $expected->addMethod($method);
+
+        $this->assertEquals($expected, $this->object->getPluginConfigurationClass());
     }
 
 }

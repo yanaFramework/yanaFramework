@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Plugins\Annotations;
+namespace Yana\Plugins\Configs;
 
 /**
  * @ignore
@@ -34,12 +34,30 @@ require_once __DIR__ . '/../../../../include.php';
 
 /**
  * @package  test
+ * @ignore
  */
-class ReflectionMethodTest extends \PHPUnit_Framework_TestCase
+class MyNullBuilder extends \Yana\Plugins\Configs\AbstractBuilder
+{
+    protected function buildClass()
+    {
+        // do nothing
+    }
+
+    protected function buildMethod()
+    {
+        // do nothing
+    }
+
+}
+
+/**
+ * @package  test
+ */
+class AbstractBuilderTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Plugins\Annotations\ReflectionMethod
+     * @var \Yana\Plugins\Configs\MyNullBuilder
      */
     protected $object;
 
@@ -49,7 +67,7 @@ class ReflectionMethodTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Plugins\Annotations\ReflectionMethod(__CLASS__, 'documentation');
+        $this->object = new \Yana\Plugins\Configs\MyNullBuilder();
     }
 
     /**
@@ -62,50 +80,11 @@ class ReflectionMethodTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * This is a title.
-     *
-     * This is a description.
-     *
-     * @ignore
-     */
-    protected function documentation()
-    {
-
-    }
-
-    /**
      * @test
      */
-    public function testGetTitle()
+    public function testGetPluginConfigurationClass()
     {
-        $this->assertSame('This is a title.', $this->object->getTitle());
-    }
-
-    /**
-     * @test
-     */
-    public function testGetText()
-    {
-        $this->assertSame('This is a description.', $this->object->getText());
-    }
-
-    /**
-     * @test
-     */
-    public function testGetClassName()
-    {
-        $this->assertSame(__CLASS__, $this->object->getClassName());
-    }
-
-    /**
-     * @test
-     */
-    public function testGetDocComment()
-    {
-        $regExp = "/\/\*\*\s+\* This is a title.\s+\*\s+\* This is a description.\s+\*\s+\* @ignore\s+\*\//s";
-        $this->assertStringStartsWith("/**", $this->object->getDocComment());
-        $this->assertRegExp($regExp, $this->object->getDocComment());
-        $this->assertStringEndsWith("*/", $this->object->getDocComment());
+        $this->assertEquals(new \Yana\Plugins\Configs\ClassConfiguration(), $this->object->getPluginConfigurationClass());
     }
 
 }

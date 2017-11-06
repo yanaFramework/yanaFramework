@@ -37,8 +37,10 @@ namespace Yana\Plugins\Configs;
  *
  * @ignore
  */
-class Builder extends \Yana\Plugins\Configs\AbstractBuilder
+class Builder extends \Yana\Plugins\Configs\AbstractBuilder implements \Yana\Log\IsLogable
 {
+
+    use \Yana\Log\HasLogger;
 
     /**
      * @var  \Yana\Plugins\Annotations\ReflectionClass
@@ -57,6 +59,8 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder
 
     /**
      * Build class object.
+     *
+     * @return  \Yana\Plugins\Configs\IsClassConfiguration
      */
     protected function buildClass()
     {
@@ -101,6 +105,9 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder
                 if (isset($tag[\Yana\Plugins\Annotations\Enumeration::TITLE])) {
                     $menu->setTitle($tag[\Yana\Plugins\Annotations\Enumeration::TITLE]);
                 }
+                if (isset($tag[\Yana\Plugins\Annotations\Enumeration::IMAGE])) {
+                    $menu->setIcon($tag[\Yana\Plugins\Annotations\Enumeration::IMAGE]);
+                }
                 $this->object->addMenu($menu);
                 unset($menu);
             }
@@ -120,6 +127,8 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder
 
     /**
      * Build method object.
+     *
+     * @return  \Yana\Plugins\Configs\IsMethodConfiguration
      */
     protected function buildMethod()
     {
@@ -169,34 +178,19 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder
                 if (isset($tag[\Yana\Plugins\Annotations\Enumeration::TITLE])) {
                     $menu->setTitle($tag[\Yana\Plugins\Annotations\Enumeration::TITLE]);
                 }
+                if (isset($tag[\Yana\Plugins\Annotations\Enumeration::IMAGE])) {
+                    $menu->setIcon($tag[\Yana\Plugins\Annotations\Enumeration::IMAGE]);
+                }
                 $method->setMenu($menu);
                 unset($menu);
             }
             $tag = $parser->getTag(\Yana\Plugins\Annotations\Enumeration::ONERROR);
             if (!empty($tag)) {
-                assert('!isset($event); // Cannot redeclare var $event');
-                $event = new \Yana\Plugins\Configs\EventRoute();
-                if (isset($tag[\Yana\Plugins\Annotations\Enumeration::GO])) {
-                    $event->setTarget($tag[\Yana\Plugins\Annotations\Enumeration::GO]);
-                }
-                if (isset($tag[\Yana\Plugins\Annotations\Enumeration::TEXT])) {
-                    $event->setMessage($tag[\Yana\Plugins\Annotations\Enumeration::TEXT]);
-                }
-                $method->setOnError($event);
-                unset($event);
+                $method->setOnError($this->_buildEventRoute($tag));
             }
             $tag = $parser->getTag(\Yana\Plugins\Annotations\Enumeration::ONSUCCESS);
             if (!empty($tag)) {
-                assert('!isset($event); // Cannot redeclare var $event');
-                $event = new \Yana\Plugins\Configs\EventRoute();
-                if (isset($tag[\Yana\Plugins\Annotations\Enumeration::GO])) {
-                    $event->setTarget($tag[\Yana\Plugins\Annotations\Enumeration::GO]);
-                }
-                if (isset($tag[\Yana\Plugins\Annotations\Enumeration::TEXT])) {
-                    $event->setMessage($tag[\Yana\Plugins\Annotations\Enumeration::TEXT]);
-                }
-                $method->setOnSuccess($event);
-                unset($event);
+                $method->setOnSuccess($this->_buildEventRoute($tag));
             }
             unset($tag);
             $method->setSafeMode($parser->getTag(\Yana\Plugins\Annotations\Enumeration::SAFEMODE));
@@ -213,9 +207,9 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder
             foreach ($parser->getTags(\Yana\Plugins\Annotations\Enumeration::SCRIPT, array()) as $script)
             {
                 if (!is_string($script)) {
-                    $message = 'Syntax error in @script: ' . $this->className . '::' . $this->methodName . '()';
+                    $message = 'Syntax error in @script: ' . $this->_method->getClassName() . '::' . $this->_method->getName() . '()';
                     $level = \Yana\Log\TypeEnumeration::ERROR;
-                    \Yana\Log\LogManager::getLogger()->addLog($message, $level, $param);
+                    $this->getLogger()->addLog($message, $level);
                     continue;
                 }
                 $scripts[] = $classPath . "/" . $script;
@@ -229,9 +223,9 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder
             foreach ($parser->getTags(\Yana\Plugins\Annotations\Enumeration::STYLE, array()) as $style)
             {
                 if (!is_string($style)) {
-                    $message = 'Syntax error in @style: ' .$this->className . '::' . $this->methodName . '()';
+                    $message = 'Syntax error in @style: ' . $this->_method->getClassName() . '::' . $this->_method->getName() . '()';
                     $level = \Yana\Log\TypeEnumeration::ERROR;
-                    \Yana\Log\LogManager::getLogger()->addLog($message, $level, $param);
+                    $this->getLogger()->addLog($message, $level);
                     continue;
                 }
                 $styles[] = $classPath . "/" . $style;
@@ -254,12 +248,6 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder
             assert('!isset($type); // Cannot redeclare var $type');
             foreach ($parser->getTags(\Yana\Plugins\Annotations\Enumeration::PARAM, array()) as $param)
             {
-                if (!is_string($param)) {
-                    $message = 'Syntax error in @param: ' . $this->className . '::' . $this->methodName . '()';
-                    $level = \Yana\Log\TypeEnumeration::ERROR;
-                    \Yana\Log\LogManager::getLogger()->addLog($message, $level, $param);
-                    continue;
-                }
                 if (preg_match('/^(\w+)\s+\$(\w+)/', $param, $match)) {
                     $name = $match[2];
                     $type = $match[1];
@@ -283,14 +271,14 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder
             unset($defaults, $param);
             $this->object->addMethod($method);
         }
-        return $this->_method;
+        return $method;
     }
 
     /**
      * Build from PHP reflection.
      *
      * @param   \Yana\Plugins\Annotations\ReflectionClass  $pluginClass  base class description
-     * @return  \Yana\Plugins\Configs\Builder 
+     * @return  $this
      */
     public function setReflection(\Yana\Plugins\Annotations\ReflectionClass $pluginClass)
     {
@@ -304,7 +292,7 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder
      * Defaults to {@see PluginAnnotationParser}.
      *
      * @param   \Yana\Plugins\Annotations\IsParser  $parser  used to parse the class for annotations.
-     * @return  \Yana\Plugins\Configs\Builder 
+     * @return  $this
      */
     public function setAnnotationParser(\Yana\Plugins\Annotations\IsParser $parser)
     {
@@ -354,6 +342,25 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder
                 }
             }
         }
+    }
+
+    /**
+     * Build event route object from array of tags.
+     *
+     * @param   array  $tag  routing information
+     * @return  \Yana\Plugins\Configs\EventRoute
+     */
+    private function _buildEventRoute(array $tag)
+    {
+        assert('!isset($event); // Cannot redeclare var $event');
+        $event = new \Yana\Plugins\Configs\EventRoute();
+        if (isset($tag[\Yana\Plugins\Annotations\Enumeration::GO])) {
+            $event->setTarget($tag[\Yana\Plugins\Annotations\Enumeration::GO]);
+        }
+        if (isset($tag[\Yana\Plugins\Annotations\Enumeration::TEXT])) {
+            $event->setMessage($tag[\Yana\Plugins\Annotations\Enumeration::TEXT]);
+        }
+        return $event;
     }
 
 }

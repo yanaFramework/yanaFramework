@@ -25,58 +25,43 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Plugins\Repositories;
+namespace Yana\Plugins\Menus;
 
 /**
- * <<abstract>> Plugin configuration repository builder.
- *
- * This class produces a configuration repository by scanning a directory.
+ * For unit tests only.
  *
  * @package     yana
  * @subpackage  plugins
+ *
+ * @ignore
  */
-abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Log\IsLogable
+class NullMenuBuilder extends \Yana\Core\Object implements \Yana\Plugins\Menus\IsTextMenuBuilder
 {
 
-    use \Yana\Log\HasLogger;
-
     /**
-     * Plugin repository raw object.
+     * Return menu as associative array.
      *
-     * @var  \Yana\Plugins\Repositories\Repository
+     * Extracts all menus and items.
+     * Array Keys are menu names.
+     * Value Keys are URLs, values are text labels.
+     *
+     * @param   \Yana\Plugins\Menus\IsMenu  $menu  from which to take the entries
+     * @return  array
      */
-    protected $object = null;
-
-    /**
-     * constructor
-     */
-    public function __construct()
+    public function getTextMenu(\Yana\Plugins\Menus\IsMenu $menu)
     {
-        $this->createNewRepository();
+        return array();
     }
 
     /**
-     * Resets the instance that is currently build.
-     */
-    public function createNewRepository()
-    {
-        $this->object = new \Yana\Plugins\Repositories\Repository();
-    }
-
-    /**
-     * Build new repository.
-     */
-    abstract protected function buildRepository();
-
-    /**
-     * Returns the built object.
+     * Translate menu name in selected system locale.
      *
-     * @return  \Yana\Plugins\Configs\IsClassConfiguration
+     * @param   string  $menuNameToken  menu name language token
+     * @return  string
      */
-    public function getRepository()
+    public function translateMenuName($menuNameToken)
     {
-        $this->buildRepository();
-        return $this->object;
+        return $menuNameToken;
     }
 
 }

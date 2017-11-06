@@ -386,18 +386,16 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
      * Adds a logger to the class.
      *
      * @param   \Yana\Log\IsLogger  $logger  instance that will handle the logging
-     * @return  self
      */
     public function attachLogger(\Yana\Log\IsLogger $logger)
     {
         $this->_getManager()->attachLogger($logger);
-        return $this;
     }
 
     /**
      * Returns the attached loggers.
      *
-     * @return  \Yana\Log\IsLogHandler
+     * @return  \Yana\Log\IsLogger
      */
     public function getLogger()
     {

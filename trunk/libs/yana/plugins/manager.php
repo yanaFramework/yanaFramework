@@ -66,8 +66,10 @@ namespace Yana\Plugins;
  * @package     yana
  * @subpackage  plugins
  */
-class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsReportable
+class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsReportable, \Yana\Log\IsLogable
 {
+
+    use \Yana\Log\HasLogger;
 
     /**
      * @var \Yana\Files\IsDir
@@ -386,6 +388,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
         $builder = new \Yana\Plugins\Repositories\Builder();
         $builder->addDirectory($this->getPluginDir());
         $builder->setBaseRepository($this->_getRepository());
+        $builder->attachLogger($this->getLogger());
         $repository = $builder->getRepository();
 
         $file = self::getConfigFilePath();

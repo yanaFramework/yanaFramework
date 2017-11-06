@@ -670,7 +670,7 @@ class ConfigurationBuilder extends \Yana\Plugins\Configs\AbstractBuilder
     /**
      * Build class object.
      *
-     * @access protected
+     * @return  \Yana\Plugins\Configs\IsClassConfiguration
      */
     protected function buildClass()
     {
@@ -743,10 +743,13 @@ class ConfigurationBuilder extends \Yana\Plugins\Configs\AbstractBuilder
                 $this->buildMethod();
             }
         }
+        return $this->object;
     }
 
     /**
      * Build method object.
+     *
+     * @return  \Yana\Plugins\Configs\IsMethodConfiguration
      */
     protected function buildMethod()
     {
@@ -803,6 +806,7 @@ class ConfigurationBuilder extends \Yana\Plugins\Configs\AbstractBuilder
         }
 
         $this->object->addMethod($method);
+        return $method;
     }
 
     /**
