@@ -55,11 +55,13 @@ abstract class AbstractMenu extends \Yana\Core\Object implements \Yana\Plugins\M
      *
      * @param   string                   $action     name of action
      * @param   \Yana\Plugins\Menus\IsEntry  $menuEntry  configuration object
+     * @return  $this
      */
     public function setMenuEntry($action, \Yana\Plugins\Menus\IsEntry $menuEntry)
     {
         assert('is_string($action); // Invalid argument $action: string expected');
         \Yana\Util\Hashtable::set($this->_entries, $menuEntry->getGroup() . ".$action", $menuEntry);
+        return $this;
     }
 
     /**
@@ -83,12 +85,14 @@ abstract class AbstractMenu extends \Yana\Core\Object implements \Yana\Plugins\M
      *
      * @param   string  $menu  menu where entry should be added, blank means root-level
      * @param   string  $name  name of your choice
+     * @return  $this
      */
     public function setMenuName($menu, $name = "")
     {
         assert('is_string($menu); // Invalid argument $menu: string expected');
         assert('is_string($name); // Invalid argument $name: string expected');
         $this->_names[$menu] = $name;
+        return $this;
     }
 
     /**

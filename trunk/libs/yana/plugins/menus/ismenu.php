@@ -46,6 +46,7 @@ interface IsMenu
      *
      * @param   string                       $action     name of action
      * @param   \Yana\Plugins\Menus\IsEntry  $menuEntry  configuration object
+     * @return  $this
      */
     public function setMenuEntry($action, \Yana\Plugins\Menus\IsEntry $menuEntry);
 
@@ -65,6 +66,7 @@ interface IsMenu
      *
      * @param   string  $menu  menu where entry should be added, blank means root-level
      * @param   string  $name  name of your choice
+     * @return  $this
      */
     public function setMenuName($menu, $name = "");
 
