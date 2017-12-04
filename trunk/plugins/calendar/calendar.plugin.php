@@ -360,14 +360,15 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
             $file->create();
         }
         $file->setContent($xmlCalendarModel);
-        $fileResult = $file->write();
-
-        // insert a new database entry with the currentUser informations about the calendar file
-        if ($fileResult) {
+        try {
+            $file->write();
+            // insert a new database entry with the currentUser informations about the calendar file
             $result = $this->insertCalendar($name, $fileName);
-        } else {
+
+        } catch(\Exception $e) {
             $result = false;
         }
+
         if ($result) {
             $db = $this->_getDatabase();
             $db->commit();

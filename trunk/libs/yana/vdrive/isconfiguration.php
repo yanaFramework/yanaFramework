@@ -40,7 +40,7 @@ interface IsConfiguration extends \Yana\Util\IsXmlArray
      * Sets the name of this mountpoint.
      *
      * @param   string  $name  mountpoint-name
-     * @return  self
+     * @return  $this
      */
     public function setNodeName($name);
 
@@ -68,8 +68,8 @@ interface IsConfiguration extends \Yana\Util\IsXmlArray
     /**
      * Sets the namespace attribute of a file-node.
      *
-     * @param  string  $namespace  a PHP namespace used as prefix for class-names of file wrappers
-     * @return \Yana\VDrive\Configuration
+     * @param   string  $namespace  a PHP namespace used as prefix for class-names of file wrappers
+     * @return  $this
      */
     public function setNodeNamespace($namespace);
 
@@ -77,7 +77,7 @@ interface IsConfiguration extends \Yana\Util\IsXmlArray
      * Sets the filter of this mountpoint.
      *
      * @param   string  $filter  mountpoint-filter
-     * @return  self
+     * @return  $this
      */
     public function setNodeFilter($filter);
 
@@ -92,7 +92,7 @@ interface IsConfiguration extends \Yana\Util\IsXmlArray
      * Sets the auto-mount attribute of this mountpoint.
      *
      * @param   string  $isAutomount  mountpoint-auto-mount setting
-     * @return  self
+     * @return  $this
      */
     public function setNodeAutomount($isAutomount);
 
@@ -107,6 +107,8 @@ interface IsConfiguration extends \Yana\Util\IsXmlArray
 
     /**
      * Adds a variable definition to the drive.
+     *
+     * Returns the added node.
      *
      * @param   string  $name   name of var
      * @param   string  $value  value of var
@@ -124,6 +126,8 @@ interface IsConfiguration extends \Yana\Util\IsXmlArray
     /**
      * Adds a file definition to the drive.
      *
+     * Returns the added node.
+     *
      * @param   string  $name         name of file
      * @param   bool    $isAutomount  auto-mount setting
      * @return  self
@@ -139,6 +143,8 @@ interface IsConfiguration extends \Yana\Util\IsXmlArray
 
     /**
      * Adds a directory definition to the drive.
+     *
+     * Returns the added node.
      *
      * @param   string  $name       name of directory
      * @param   bool    $automount  auto-mount setting
@@ -157,6 +163,8 @@ interface IsConfiguration extends \Yana\Util\IsXmlArray
     /**
      * Adds an include path definition to the drive.
      *
+     * Returns the added node.
+     *
      * @param   string  $path   path
      * @return  self
      */
@@ -172,6 +180,8 @@ interface IsConfiguration extends \Yana\Util\IsXmlArray
     /**
      * Adds a source path to the list.
      *
+     * Returns the added node.
+     *
      * Note: a resource may have multiple alternative paths.
      * Where the first path that refers to an existing resource "wins".
      * The last path should hold a default value.
@@ -186,7 +196,7 @@ interface IsConfiguration extends \Yana\Util\IsXmlArray
     /**
      * Returns a list of sources for the mountpoint, sorted by priority.
      *
-     * @return  self
+     * @return  $this
      */
     public function getNodeSources();
 
@@ -196,7 +206,7 @@ interface IsConfiguration extends \Yana\Util\IsXmlArray
      * @param   string  $readable    (true = is redable , false otherweise)
      * @param   string  $writeable   (true = is writeable , false otherweise)
      * @param   string  $executable  (true = is executable , false otherweise)
-     * @return  self
+     * @return  $this
      */
     public function setNodeRequirements($readable = false, $writeable = false, $executable = false);
 

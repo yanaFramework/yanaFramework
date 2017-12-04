@@ -108,6 +108,26 @@ interface IsXmlArray extends \Traversable
      */
     public function toArray($asNumericArray = false);
 
+    /**
+     * Get XML content as object.
+     *
+     * Especially usefull for XML documents that use no attributes and are thus
+     * very simple.
+     *
+     * Be aware! This will NOT work for every valid XML file.
+     *
+     * If attributes are present, they are treated as text nodes.
+     *
+     * If the node is a text node that has no attributes, only the PCDATA
+     * section is returned, which is a string (not an array).
+     *
+     * Note: a node may either be a container or a text node.
+     * It must not be both. This means: it must not have inline nodes.
+     *
+     * @return  \Yana\Util\IsXmlObject
+     */
+    public function toObject();
+
 }
 
 ?>

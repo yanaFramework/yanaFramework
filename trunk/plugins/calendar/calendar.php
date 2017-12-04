@@ -1541,9 +1541,10 @@ class Calendar extends \Yana\Files\AbstractResource
             return false;
         }
         $file->setContent("$content");
-        if ($file->write()) {
+        try {
+            $file->write();
             return true;
-        } else {
+        } catch (\Exception $e) {
             return false;
         }
     }

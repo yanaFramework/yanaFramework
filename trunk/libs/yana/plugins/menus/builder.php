@@ -105,7 +105,7 @@ class Builder extends \Yana\Plugins\Menus\AbstractBuilder implements \Yana\Plugi
             $menu = $menus[$locale];
 
         } elseif (isset($cache[$locale])) {
-            $menu = \unserialize($cache[$locale]);
+            $menu = $cache[$locale];
 
         } else {
 

@@ -213,10 +213,11 @@ class IpBlockAdminPlugin extends \Yana\Plugins\AbstractPlugin
             $blacklistFile->read();
         }
 
-        if (!$blacklistFile->setContent($blacklist)->write()) {
-            return false;
-        }
-        if (!$whitelistFile->setContent($whitelist)->write()) {
+        try {
+            $blacklistFile->setContent($blacklist)->write();
+            $whitelistFile->setContent($whitelist)->write();
+
+        } catch (\Exception $e) {
             return false;
         }
         return true;

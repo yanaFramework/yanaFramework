@@ -1396,15 +1396,12 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
      *
      * @param   bool  $commit on / off
      * @return  \Yana\Db\FileDb\Result
+     * @throws  \Yana\Db\DatabaseException  when changes have not been saved
      */
     protected function _write($commit = false)
     {
         /* pessimistic scanning */
         assert('is_bool($commit); // Wrong argument type for argument 1. Boolean expected.');
-
-        /* optimistic type casting */
-        /* settype to BOOLEAN */
-        $commit = (bool) $commit;
 
         $this->_cache = array();
 
@@ -1421,9 +1418,11 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
 
                 $table->create(); // auto-create missing file
             }
-            if (!$table->write()) {
+            try {
+                $table->write();
 
-                throw new \Yana\Db\DatabaseException('unable to save changes');
+            } catch (\Exception $e) {
+                throw new \Yana\Db\DatabaseException('unable to save changes', \Yana\Log\TypeEnumeration::WARNING, $e);
 
             }
         } /* end for */

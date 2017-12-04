@@ -77,9 +77,13 @@ class Flood extends \Yana\Files\File
             $this->content[1] = time();
             $this->content[2] += 1;
         }
-        $test = $this->write();
-        assert('is_bool($test);');
-        return $test;
+        try {
+            $this->write();
+            return true;
+
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     /**

@@ -66,7 +66,7 @@ class NullFileTest extends \PHPUnit_Framework_TestCase
      */
     public function testWrite()
     {
-        $this->assertTrue($this->object->write());
+        $this->object->write(); // does nothing
     }
 
     /**

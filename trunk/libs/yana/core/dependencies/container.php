@@ -41,7 +41,7 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
     /**
      * System configuration file
      *
-     * @var  \Yana\Util\IsXmlArray
+     * @var  \Yana\Util\IsXmlObject
      */
     private $_configuration = null;
 
@@ -143,9 +143,9 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
     /**
      * <<constructor>> Creates an instance.
      *
-     * @param  \Yana\Util\IsXmlArray  $configuration  loaded from XML file in config-directory
+     * @param  \Yana\Util\IsXmlObject  $configuration  loaded from XML file in config-directory
      */
-    public function __construct(\Yana\Util\IsXmlArray $configuration)
+    public function __construct(\Yana\Util\Xml\IsObject $configuration)
     {
         $this->_configuration = $configuration;
     }
@@ -333,7 +333,8 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
             } else {
                 $this->_registry = new \Yana\VDrive\Registry((string) $this->_configuration->configdrive, YANA_INSTALL_DIR);
                 $this->_registry->setVar("ID", $this->getProfileId());
-                $this->_registry->mergeVars('*', \Yana\Util\Hashtable::changeCase($this->_configuration->toArray(), \CASE_UPPER));
+                $configurationArray = \Yana\Util\Xml\Converter::convertObjectToAssociativeArray($this->_configuration);
+                $this->_registry->mergeVars('*', \Yana\Util\Hashtable::changeCase($configurationArray, \CASE_UPPER));
             }
             $request = $this->getRequest();
             $this->_registry->mergeVars('*', $request->all()->asArrayOfStrings());
@@ -625,8 +626,8 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
                 $result = $values;
             }
         }
-        if ($result instanceof \Yana\Util\IsXmlArray) {
-            $result = $result->toArray();
+        if ($result instanceof \Yana\Util\Xml\IsObject) {
+            $result = \Yana\Util\Xml\Converter::convertObjectToAssociativeArray($result);
         }
         return $result;
     }

@@ -59,8 +59,9 @@ class FileCollection extends \Yana\Core\AbstractCollection
     /**
      * Set a list of items
      *
-     * @param  array  $items  list of items to work on
+     * @param   array  $items  list of items to work on
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the value is not valid
+     * @return  $this
      */
     public function setItems(array $items = array())
     {
@@ -69,6 +70,7 @@ class FileCollection extends \Yana\Core\AbstractCollection
         {
             $this->offsetSet($offset, $value);
         }
+        return $this;
     }
 
 }

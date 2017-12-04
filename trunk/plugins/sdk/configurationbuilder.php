@@ -453,10 +453,13 @@ class ConfigurationBuilder extends \Yana\Plugins\Configs\AbstractBuilder
         $phpFile = new \Yana\Files\Text($pluginDir->getPath() . $pluginId . '.plugin.php');
         $phpFile->create();
         $phpFile->setContent($this->getClassSkeleton());
-        if (!$phpFile->write()) {
+        try {
+            $phpFile->write();
+
+        } catch (Exception $e) {
             $message = "PHP file was not created. Is target directory writeable?";
             $code = \Yana\Log\TypeEnumeration::ERROR;
-            $error = new \Yana\Core\Exceptions\Files\NotWriteableException($message, $code);
+            $error = new \Yana\Core\Exceptions\Files\NotWriteableException($message, $code, $e);
             $error->setFilename($phpFile->getPath());
             throw $error;
         }
@@ -466,36 +469,45 @@ class ConfigurationBuilder extends \Yana\Plugins\Configs\AbstractBuilder
         $apiFile = new \Yana\Files\Text($skinDir->getPath() . '/api.js');
         $apiFile->create();
         $apiFile->setContent($this->getJsApi());
-        if (!$apiFile->write()) {
+        try {
+            $apiFile->write();
+
+        } catch (Exception $e) {
             $message = "JavaScript file was not created. Is target directory writeable?";
             $code = \Yana\Log\TypeEnumeration::ERROR;
-            $error = new \Yana\Core\Exceptions\Files\NotWriteableException($message, $code);
+            $error = new \Yana\Core\Exceptions\Files\NotWriteableException($message, $code, $e);
             $error->setFilename($apiFile->getPath());
             throw $error;
         }
         unset($apiFile);
 
         // create XLIFF translation file
-        $xliffFile = new \Yana\Files\Text($enDir->getPath() . '/' . $pluginId . '.xlf');
-        $xliffFile->create();
-        $xliffFile->setContent("<?xml version=\"1.0\"?>\n" . $this->getXliff());
-        if (!$xliffFile->write()) {
+        $xliffFileEnglish = new \Yana\Files\Text($enDir->getPath() . '/' . $pluginId . '.xlf');
+        $xliffFileEnglish->create();
+        $xliffFileEnglish->setContent("<?xml version=\"1.0\"?>\n" . $this->getXliff());
+        try {
+            $xliffFileEnglish->write();
+
+        } catch (Exception $e) {
             $message = "XLIFF english locale file was not created. Is target directory writeable?";
             $code = \Yana\Log\TypeEnumeration::ERROR;
-            $error = new \Yana\Core\Exceptions\Files\NotWriteableException($message, $code);
-            $error->setFilename($xliffFile->getPath());
+            $error = new \Yana\Core\Exceptions\Files\NotWriteableException($message, $code, $e);
+            $error->setFilename($xliffFileEnglish->getPath());
             throw $error;
         }
-        unset($xliffFile);
+        unset($xliffFileEnglish);
 
-        $xliffFile = new \Yana\Files\Text($deDir->getPath() . '/' . $pluginId . '.xlf');
-        $xliffFile->create();
-        $xliffFile->setContent("<?xml version=\"1.0\"?>\n" . $this->getXliff("en", "de"));
-        if (!$xliffFile->write()) {
+        $xliffFileGerman = new \Yana\Files\Text($deDir->getPath() . '/' . $pluginId . '.xlf');
+        $xliffFileGerman->create();
+        $xliffFileGerman->setContent("<?xml version=\"1.0\"?>\n" . $this->getXliff("en", "de"));
+        try {
+            $xliffFileGerman->write();
+
+        } catch (Exception $e) {
             $message = "XLIFF german locale file was not created. Is target directory writeable?";
             $code = \Yana\Log\TypeEnumeration::ERROR;
-            $error = new \Yana\Core\Exceptions\Files\NotWriteableException($message, $code);
-            $error->setFilename($xliffFile->getPath());
+            $error = new \Yana\Core\Exceptions\Files\NotWriteableException($message, $code, $e);
+            $error->setFilename($xliffFileGerman->getPath());
             throw $error;
         }
     }

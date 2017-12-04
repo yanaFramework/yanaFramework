@@ -47,7 +47,7 @@ class ConfigurationFactory extends \Yana\Core\Object implements \Yana\IsConfigur
      * to initialize this class.
      *
      * @param   string  $filename  path to system.config
-     * @return  \Yana\Util\IsXmlArray
+     * @return  \Yana\Util\Xml\IsObject
      */
     public function loadConfiguration($filename)
     {
@@ -55,7 +55,8 @@ class ConfigurationFactory extends \Yana\Core\Object implements \Yana\IsConfigur
         assert('is_file($filename); // Invalid argument 1. Input is not a file.');
         assert('is_readable($filename); // Invalid argument 1. Configuration file is not readable.');
         // get System Config file
-        $configuration = simplexml_load_file($filename, '\Yana\Util\XmlArray');
+        $xmlSource = simplexml_load_file($filename);
+        $configuration = \Yana\Util\Xml\Converter::convertXmlToObject($xmlSource);
         // load CD-ROM application settings on demand
         if (YANA_CDROM === true) {
             $this->_activateCDApplication($configuration);
@@ -68,10 +69,10 @@ class ConfigurationFactory extends \Yana\Core\Object implements \Yana\IsConfigur
     /**
      * Set directory references to real paths.
      *
-     * @param  \Yana\Util\IsXmlArray  $configuration  base configuration
-     * @param  string                 $cwd            current working directory
+     * @param  \Yana\Util\Xml\IsObject  $configuration  base configuration
+     * @param  string                   $cwd            current working directory
      */
-    private function _setRealPaths(\Yana\Util\IsXmlArray $configuration, $cwd)
+    private function _setRealPaths(\Yana\Util\Xml\IsObject $configuration, $cwd)
     {
         $cwd .= '/';
         $configuration->tempdir = $cwd . (string) $configuration->tempdir;
@@ -86,9 +87,9 @@ class ConfigurationFactory extends \Yana\Core\Object implements \Yana\IsConfigur
      * Sets the configuration to CD-ROM settings.
      * Configuration is expected to be loaded prior to calling this function.
      *
-     * @param  \Yana\Util\IsXmlArray  $configuration  base configuration
+     * @param  \Yana\Util\Xml\IsObject  $configuration  base configuration
      */
-    private function _activateCDApplication(\Yana\Util\IsXmlArray $configuration)
+    private function _activateCDApplication(\Yana\Util\Xml\IsObject $configuration)
     {
         assert('isset($this->_configuration); // Configuration must be loaded first');
         if (!file_exists(YANA_CDROM_DIR)) {

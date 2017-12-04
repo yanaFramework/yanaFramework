@@ -63,7 +63,6 @@ class File extends \Yana\Files\Readonly implements \Yana\Files\IsWritable
      * This function will return bool(true) on success.
      * It issues an E_USER_NOTICE and returns bool(false) on error.
      *
-     * @return  bool
      * @throws  \Yana\Core\Exceptions\Files\NotWriteableException  when file does not exist or is not writeable
      * @throws  \Yana\Core\Exceptions\Files\UncleanWriteException  when the file was changed by a third party
      */
@@ -73,7 +72,7 @@ class File extends \Yana\Files\Readonly implements \Yana\Files\IsWritable
         $this->content = (array) $this->content;
 
         if (!$this->isWriteable()) {
-            $message = "Unable to write to file '" . $this->getPath() . "'. The file is not writeable.";
+            $message = "Unable to write to file '" . $this->getPath() . "'.";
             $e = new \Yana\Core\Exceptions\Files\NotWriteableException($message, \Yana\Log\TypeEnumeration::INFO);
             $e->setFilename($this->getPath());
             throw $e;
@@ -93,7 +92,6 @@ class File extends \Yana\Files\Readonly implements \Yana\Files\IsWritable
         flock($handle, LOCK_UN);
         fclose($handle);
         $this->_resetStats();
-        return true;
     }
 
     /**
@@ -133,11 +131,13 @@ class File extends \Yana\Files\Readonly implements \Yana\Files\IsWritable
     {
         for ($i = 0; $i < 3; $i++)
         {
-            if ($this->write()) {
+            try {
+                $this->write();
                 return true;
-                break;
-            } else {
+
+            } catch (\Exception $e) {
                 sleep(0.7);
+                unset($e);
             }
         }
         return false;

@@ -112,7 +112,7 @@ class EngineFactoryTest extends \PHPUnit_Framework_TestCase
             <allowphptag>false</allowphptag>
         </security>
     </templates>');
-        $this->object = new \Yana\Views\EngineFactory($config);
+        $this->object = new \Yana\Views\EngineFactory(\Yana\Util\Xml\Converter::convertXmlToObject($config));
     }
 
     /**

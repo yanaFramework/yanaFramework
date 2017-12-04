@@ -40,6 +40,7 @@ interface IsCollection extends \Iterator, \Yana\Core\IsCountableArray
      * Set a list of items
      *
      * @param   array $items  list of items to work on
+     * @return  $this
      */
     public function setItems(array $items = array());
 

@@ -52,6 +52,7 @@ class StandardBehaviorTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $session = new \Yana\Security\Sessions\NullWrapper();
+        $session->setName('YanaTestSession');
         $this->object = new \Yana\Security\Logins\StandardBehavior($session);
     }
 

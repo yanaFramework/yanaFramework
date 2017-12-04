@@ -38,12 +38,10 @@ class NullFile extends \Yana\Files\Text
 
     /**
      * Does nothing.
-     *
-     * @return  bool
      */
     public function write()
     {
-        return true;
+        // intentionally left blank
     }
 
     /**

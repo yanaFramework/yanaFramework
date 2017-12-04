@@ -46,7 +46,8 @@ abstract class AbstractCollection extends \Yana\Core\Object implements \Yana\Cor
     /**
      * Set a list of items
      *
-     * @param  array  $items  list of items to work on
+     * @param   array  $items  list of items to work on
+     * @return  $this
      */
     public function setItems(array $items = array())
     {
@@ -55,6 +56,7 @@ abstract class AbstractCollection extends \Yana\Core\Object implements \Yana\Cor
         {
             $this->offsetSet($offset, $value);
         }
+        return $this;
     }
 
     /**

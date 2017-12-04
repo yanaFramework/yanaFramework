@@ -89,7 +89,7 @@ class StandardBehavior extends \Yana\Security\Logins\AbstractBehavior
      * Returns bool(true) on success and bool(false) on error.
      *
      * @param   \Yana\Security\Data\Users\IsEntity  $user  entity
-     * @return  self
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\Security\InvalidLoginException  when access is denied
      */
     public function handleLogin(\Yana\Security\Data\Users\IsEntity $user)
@@ -112,7 +112,8 @@ class StandardBehavior extends \Yana\Security\Logins\AbstractBehavior
         $this
             ->_setupSessionDataOnLogin($session, $user)
             ->_setupSessionUserId($session)
-            ->_updateUserDataOnLogin($user, $session->getSessionUserId());
+            ->_updateUserDataOnLogin($user, $session->getSessionUserId())
+            ->_setCookie($session->getId());
 
         return $this;
     }
@@ -121,7 +122,7 @@ class StandardBehavior extends \Yana\Security\Logins\AbstractBehavior
      * Initializes session user id.
      *
      * @param   \Yana\Security\Sessions\IsWrapper   $session  some session wrapper
-     * @return  \Yana\Security\Logins\StandardBehavior
+     * @return  $this
      */
     private function _setupSessionUserId(\Yana\Security\Sessions\IsWrapper $session)
     {
@@ -137,7 +138,7 @@ class StandardBehavior extends \Yana\Security\Logins\AbstractBehavior
      *
      * @param   \Yana\Security\Sessions\IsWrapper   $session  some session wrapper
      * @param   \Yana\Security\Data\Users\IsEntity  $user     which is to be logged in
-     * @return  \Yana\Security\Logins\StandardBehavior
+     * @return  $this
      */
     private function _setupSessionDataOnLogin(\Yana\Security\Sessions\IsWrapper $session, \Yana\Security\Data\Users\IsEntity $user)
     {
@@ -163,7 +164,7 @@ class StandardBehavior extends \Yana\Security\Logins\AbstractBehavior
      * Updates user entity with login time and login count.
      *
      * @param   \Yana\Security\Data\Users\IsEntity  $user  which is to be logged in
-     * @return  \Yana\Security\Logins\StandardBehavior
+     * @return  $this
      */
     private function _updateUserDataOnLogin(\Yana\Security\Data\Users\IsEntity $user)
     {
@@ -183,7 +184,7 @@ class StandardBehavior extends \Yana\Security\Logins\AbstractBehavior
      * Destroy the current session and clear all session data.
      *
      * @param   \Yana\Security\Data\Users\IsEntity  $user  entity
-     * @return  self
+     * @return  $this
      */
     public function handleLogout(\Yana\Security\Data\Users\IsEntity $user)
     {
@@ -195,10 +196,7 @@ class StandardBehavior extends \Yana\Security\Logins\AbstractBehavior
         }
         // make session cookie expire (get's deleted)
         if (\filter_has_var(\INPUT_COOKIE, $session->getName())) {
-            $params = $session->getCookieParameters();
-            setcookie($session->getName(), '', time() - 42000, $params["path"],
-                $params["domain"], $params["secure"], $params["httponly"]
-            );
+            $this->_setCookie("", time() - 42000);
         }
         // unset session data
         $session->unsetAll();
@@ -211,6 +209,25 @@ class StandardBehavior extends \Yana\Security\Logins\AbstractBehavior
         $user->setSessionCheckSum("")->saveEntity();
         // Note: the session data has already been purged,
         // so we don't need to reset $session['user_session'] at this point.
+        return $this;
+    }
+
+    /**
+     * Send cookie value.
+     *
+     * @param   string  $sessionId  current session id (set to blank to reset)
+     * @param   int     $timeStamp  cookie lifetamp (set to 0 for session cookie)
+     * @return  $this
+     */
+    private function _setCookie($sessionId, $timeStamp = 0)
+    {
+        if (!\headers_sent()) {
+            $session = $this->_getSession();
+            $params = $session->getCookieParameters();
+            setcookie($session->getName(), $sessionId, $timeStamp, $params["path"],
+                $params["domain"], $params["secure"], $params["httponly"]
+            );
+        }
         return $this;
     }
 

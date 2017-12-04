@@ -393,15 +393,19 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
 
         $file = self::getConfigFilePath();
         $file->setContent(serialize($repository));
-        switch (false)
-        {
-            // create repository cache
-            case $file->exists() || $file->create():
-            case $file->write():
-                // an error occured - unable to write cache file
-                $message = "Repository file '" . $file->getPath() . "' not writeable";
-                $code = \Yana\Log\TypeEnumeration::ERROR;
-                throw new \Yana\Core\Exceptions\NotWriteableException($message, $code);
+        if (!$file->exists()) {
+            $file->create(); // May throw \Yana\Core\Exceptions\NotWriteableException
+        }
+        // create repository cache
+        try {
+            $file->write();
+
+        } catch (\Yana\Core\Exceptions\NotWriteableException $e) {
+
+            // an error occured - unable to write cache file
+            $message = "Repository file '" . $file->getPath() . "' not writeable";
+            $code = \Yana\Log\TypeEnumeration::ERROR;
+            throw new \Yana\Core\Exceptions\NotWriteableException($message, $code, $e);
         }
         // cache has been written and is not empty
         // actuate current config setting
@@ -857,6 +861,15 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     protected static function _getClassName()
     {
         return __CLASS__;
+    }
+
+    /**
+     * Destructor called by serialize().
+     */
+    public function __sleep()
+    {
+        // Need to destroy plugin cache, otherwise PHP will not properly load the plugin classes, causing trouble.
+        $this->_plugins = array();
     }
 
 }

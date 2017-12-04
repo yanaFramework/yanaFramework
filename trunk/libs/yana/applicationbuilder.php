@@ -329,7 +329,7 @@ class ApplicationBuilder extends \Yana\Core\Object
      *
      * Also uses the file (if found) to initialize some default directories important to the application.
      *
-     * @return  \Yana\Util\XmlArray
+     * @return  \Yana\Util\Xml\IsObject
      */
     private function _loadConfiguration()
     {

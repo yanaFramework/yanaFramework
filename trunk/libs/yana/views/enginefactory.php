@@ -47,21 +47,21 @@ class EngineFactory extends \Yana\Core\Object
     private static $_instance = null;
 
     /**
-     * @var \SimpleXMLElement
+     * @var \Yana\Util\Xml\IsObject
      */
     private $_config = null;
 
     /**
      *
-     * @param \SimpleXMLElement $configuration
+     * @param \Yana\Util\Xml\IsObject $configuration
      */
-    public function __construct(\SimpleXMLElement $configuration)
+    public function __construct(\Yana\Util\Xml\IsObject $configuration)
     {
         $this->_config = $configuration;
     }
 
     /**
-     * @return \SimpleXMLElement
+     * @return \Yana\Util\Xml\IsObject
      */
     protected function _getConfiguration()
     {
@@ -71,33 +71,32 @@ class EngineFactory extends \Yana\Core\Object
     /**
      * Registers a plugin.
      *
-     * @param  \Smarty            $smarty  instance that should be modified
-     * @param  int                $type    either a modifier, function, block
-     * @param  \SimpleXMLElement  $plugin  configuration element
+     * @param  \Smarty                  $smarty  instance that should be modified
+     * @param  int                      $type    either a modifier, function, block
+     * @param  \Yana\Util\Xml\IsObject  $plugin  configuration element
      */
-    private function _registerPlugin(\Smarty $smarty, $type, \SimpleXMLElement $plugin)
+    private function _registerPlugin(\Smarty $smarty, $type, \Yana\Util\Xml\IsObject $plugin)
     {
-        $className = (string) $plugin;
+        $className = $plugin->getPcData();
         $instance = new $className(self::$_instance);
-        $attributes = $plugin->attributes();
         $smarty->registerPlugin(
             $type,
-            (string) $attributes->name,
+            $plugin->getAttribute("name"),
             array($instance, '__invoke'),
-            strtolower((string) $attributes->cacheable) !== 'false'
+            strtolower($plugin->getAttribute("cacheable")) !== 'false'
         );
     }
 
     /**
      * Registers a filter.
      *
-     * @param  \Smarty            $smarty  instance that should be modified
-     * @param  int                $type    either pre, post, output or var
-     * @param  \SimpleXMLElement  $filter  configuration element
+     * @param  \Smarty                  $smarty  instance that should be modified
+     * @param  int                      $type    either pre, post, output or var
+     * @param  \Yana\Util\Xml\IsObject  $filter  configuration element
      */
-    private function _registerFilter(\Smarty $smarty, $type, \SimpleXMLElement $filter)
+    private function _registerFilter(\Smarty $smarty, $type, \Yana\Util\Xml\IsObject $filter)
     {
-        $className = (string) $filter;
+        $className = $filter->getPcData();
         if ($className) {
             $instance = new $className(self::$_instance);
             $smarty->registerFilter(
@@ -110,30 +109,29 @@ class EngineFactory extends \Yana\Core\Object
     /**
      * Registers a resource.
      *
-     * @param  \Smarty            $smarty  instance that should be modified
-     * @param  \SimpleXMLElement  $resource  configuration element
+     * @param  \Smarty                  $smarty  instance that should be modified
+     * @param  \Yana\Util\Xml\IsObject  $resource  configuration element
      */
-    private function _registerResource(\Smarty $smarty, \SimpleXMLElement $resource)
+    private function _registerResource(\Smarty $smarty, \Yana\Util\Xml\IsObject $resource)
     {
-        $className = (string) $resource;
+        $className = $resource->getPcData();
         $instance = new $className(self::$_instance);
-        $attributes = $resource->attributes();
-        $smarty->registerResource((string) $attributes->name, $instance);
+        $smarty->registerResource((string) $resource->getAttribute("name"), $instance);
     }
 
     /**
      * Set up directories, debugging and caching.
      *
-     * @param  \Smarty            $smarty  instance that will be configured
-     * @param  \SimpleXMLElement  $config  configuration settings
+     * @param  \Smarty                  $smarty  instance that will be configured
+     * @param  \Yana\Util\Xml\IsObject  $config  configuration settings
      * @return  EngineFactory
      */
-    protected function _configureGeneralSettings(\Smarty $smarty, \SimpleXMLElement $config)
+    protected function _configureGeneralSettings(\Smarty $smarty, \Yana\Util\Xml\IsObject $config)
     {
-        if ($config->leftdelimiter) {
+        if (!empty($config->leftdelimiter)) {
             $smarty->left_delimiter = (string) $config->leftdelimiter;
         }
-        if ($config->rightdelimiter) {
+        if (!empty($config->rightdelimiter)) {
             $smarty->right_delimiter = (string) $config->rightdelimiter;
         }
 
@@ -145,15 +143,15 @@ class EngineFactory extends \Yana\Core\Object
         /**
          * Directory setup
          */
-        foreach ($config->templatedir as $dir)
+        foreach ($config->getAll("templatedir") as $dir)
         {
-            $smarty->addTemplateDir($dir);
+            $smarty->addTemplateDir((string) $dir);
         }
         unset($dir);
 
-        foreach ($config->configdir as $dir)
+        foreach ($config->getAll("configdir") as $dir)
         {
-            $smarty->addConfigDir($dir);
+            $smarty->addConfigDir((string) $dir);
         }
         unset($dir);
 
@@ -165,9 +163,9 @@ class EngineFactory extends \Yana\Core\Object
          */
         $smarty->caching = strtolower((string) $config->caching) === 'true';
         if (isset($config->cachelifetime)) {
-            $smarty->cache_lifetime = (int) $config->cachelifetime;
+            $smarty->cache_lifetime = (int) (string) $config->cachelifetime;
         }
-        if ($config->cachingtype) {
+        if (!empty($config->cachingtype)) {
             $smarty->caching_type = (string) $config->cachingtype;
         }
         $smarty->use_sub_dirs = strtolower((string) $config->usesubdirs) !== 'false';
@@ -175,73 +173,70 @@ class EngineFactory extends \Yana\Core\Object
 
         $smarty->error_reporting = E_ALL & ~E_NOTICE;
 
-        $directory = (string) $config->templatedir;
-        $smarty->addTemplateDir($directory);
-
         return $this;
     }
 
     /**
      * Set up filters, modifiers and functions.
      *
-     * @param  \Smarty            $smarty  instance that will be configured
-     * @param  \SimpleXMLElement  $config  configuration settings
+     * @param  \Smarty                  $smarty  instance that will be configured
+     * @param  \Yana\Util\Xml\IsObject  $config  configuration settings
      * @return  EngineFactory
      */
-    protected function _configurePlugins(\Smarty $smarty, \SimpleXMLElement $config)
+    protected function _configurePlugins(\Smarty $smarty, \Yana\Util\Xml\IsObject $config)
     {
         /**
          * Register plugins
          */
-        foreach ($config->modifier as $plugin)
+        foreach ($config->getAll("modifier") as $plugin)
         {
             $this->_registerPlugin($smarty, \Smarty::PLUGIN_MODIFIER, $plugin);
         }
         unset($plugin);
 
-        foreach ($config->defaultmodifier as $plugin)
+        foreach ($config->getAll("defaultmodifier") as $plugin)
         {
             $smarty->addDefaultModifiers((string) $plugin);
         }
         unset($plugin);
 
-        foreach ($config->function as $plugin)
+        foreach ($config->getAll("function") as $plugin)
         {
             $this->_registerPlugin($smarty, \Smarty::PLUGIN_FUNCTION, $plugin);
         }
         unset($plugin);
 
-        foreach ($config->blockfunction as $plugin)
+        foreach ($config->getAll("blockfunction") as $plugin)
         {
             $this->_registerPlugin($smarty, \Smarty::PLUGIN_BLOCK, $plugin);
         }
         unset($plugin);
 
-        foreach ($config->prefilter as $filter)
+        foreach ($config->getAll("prefilter") as $filter)
         {
             $this->_registerFilter($smarty, \Smarty::FILTER_PRE, $filter);
         }
         unset($filter);
 
-        foreach ($config->postfilter as $filter)
+        foreach ($config->getAll("postfilter") as $filter)
         {
             $this->_registerFilter($smarty, \Smarty::FILTER_POST, $filter);
         }
         unset($filter);
 
-        foreach ($config->outputfilter as $filter)
+        foreach ($config->getAll("outputfilter") as $filter)
         {
             $this->_registerFilter($smarty, \Smarty::FILTER_OUTPUT, $filter);
         }
         unset($filter);
 
-        foreach ($config->varfilter as $filter)
+        foreach ($config->getAll("varfilter") as $filter)
         {
             $this->_registerFilter($smarty, \Smarty::FILTER_VARIABLE, $filter);
         }
         unset($filter);
 
-        foreach ($config->resourcetype as $resource)
+        foreach ($config->getAll("resourcetype") as $resource)
         {
             $this->_registerResource($smarty, $resource);
         }
@@ -254,11 +249,11 @@ class EngineFactory extends \Yana\Core\Object
     /**
      * Set up filters, modifiers and functions.
      *
-     * @param  \Smarty_Security   $security  instance that will be configured
-     * @param  \SimpleXMLElement  $config    configuration settings
+     * @param  \Smarty_Security         $security  instance that will be configured
+     * @param  \Yana\Util\Xml\IsObject  $config    configuration settings
      * @return  EngineFactory
      */
-    protected function _configureSecuritySettings(\Smarty_Security $security, \SimpleXMLElement $config)
+    protected function _configureSecuritySettings(\Smarty_Security $security, \Yana\Util\Xml\IsObject $config)
     {
         /**
          * Security settings
@@ -299,7 +294,7 @@ class EngineFactory extends \Yana\Core\Object
          * Template directories that are considered secure.
          */
         $security->secure_dir = array();
-        foreach ($config->securedir as $item)
+        foreach ($config->getAll("securedir") as $item)
         {
             $security->secure_dir[] = (string) $item;
         }
@@ -310,7 +305,7 @@ class EngineFactory extends \Yana\Core\Object
          * the templates with {includephp}.
          */
         $security->trusted_dir = array();
-        foreach ($config->trusteddir as $item)
+        foreach ($config->getAll("trusteddir") as $item)
         {
             $security->trusted_dir[] = (string) $item;
         }
@@ -320,14 +315,14 @@ class EngineFactory extends \Yana\Core\Object
          * Blacklist elements.
          */
         $security->disabled_modifiers = array();
-        foreach ($config->disabledmodifier as $item)
+        foreach ($config->getAll("disabledmodifier") as $item)
         {
             $security->disabled_modifiers[] = (string) $item;
         }
         unset($item);
 
         $security->disabled_tags = array();
-        foreach ($config->disabledtag as $item)
+        foreach ($config->getAll("disabledtag") as $item)
         {
             $security->disabled_tags[] = (string) $item;
         }
@@ -336,20 +331,20 @@ class EngineFactory extends \Yana\Core\Object
         /**
          * Whitelist elements.
          */
-        foreach ($config->allowedtag as $item)
+        foreach ($config->getAll("allowedtag") as $item)
         {
             $security->allowed_tags[] = (string) $item;
         }
         unset($item);
 
-        foreach ($config->allowedmodifier as $item)
+        foreach ($config->getAll("allowedmodifier") as $item)
         {
             $security->allowed_modifiers[] = (string) $item;
         }
         unset($item);
         if (!empty($config->phpfunction)) {
             $security->php_functions = array();
-            foreach ($config->phpfunction as $item)
+            foreach ($config->getAll("phpfunction") as $item)
             {
                 $security->php_functions[] = (string) $item;
             }
@@ -358,7 +353,7 @@ class EngineFactory extends \Yana\Core\Object
 
         if (!empty($config->phpmodifier)) {
             $security->php_modifiers = array();
-            foreach ($config->phpmodifier as $item)
+            foreach ($config->getAll("phpmodifier") as $item)
             {
                 $security->php_modifiers[] = (string) $item;
             }
@@ -368,7 +363,7 @@ class EngineFactory extends \Yana\Core\Object
         $security->static_classes = 'none';
         if (!empty($config->staticclass)) {
             $security->static_classes = array();
-            foreach ($config->staticclass as $item)
+            foreach ($config->getAll("staticclass") as $item)
             {
                 $security->static_classes[] = (string) $item;
             }
@@ -377,7 +372,7 @@ class EngineFactory extends \Yana\Core\Object
 
         if (!empty($config->stream)) {
             $security->streams = array();
-            foreach ($config->stream as $item)
+            foreach ($config->getAll("stream") as $item)
             {
                 $security->streams[] = (string) $item;
             }

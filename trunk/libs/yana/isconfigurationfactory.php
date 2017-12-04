@@ -47,7 +47,7 @@ interface IsConfigurationFactory
      * to initialize this class.
      *
      * @param   string  $filename  path to system.config
-     * @return  \Yana\Util\IsXmlArray
+     * @return  \Yana\Util\Xml\IsObject
      */
     public function loadConfiguration($filename);
 

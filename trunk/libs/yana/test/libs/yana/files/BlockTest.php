@@ -84,7 +84,7 @@ class BlockTest extends \PHPUnit_Framework_TestCase
     {
         $input = 'qwertyTest';
 
-        $this->assertTrue($this->_object->setContent($input)->write(), 'assert failed, write has failed');
+        $this->_object->setContent($input)->write();
 
         $this->_object->read();
 

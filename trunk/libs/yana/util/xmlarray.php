@@ -50,7 +50,7 @@ class XmlArray extends \SimpleXMLElement implements \Yana\Util\IsXmlArray
      * very simple.
      *
      * Be aware! This will NOT work for every valid XML file.
-     * It's use is limited to real simple XML documents.
+     * Its use is limited to real simple XML documents.
      *
      * If attributes are present, they are treated as text nodes.
      *
@@ -115,78 +115,37 @@ class XmlArray extends \SimpleXMLElement implements \Yana\Util\IsXmlArray
      */
     public function toArray($asNumericArray = false)
     {
-        $attributes = $this->attributes();
-        $children = $this->children();
-
-        if (empty($attributes) && empty($children)) {
-            return (string) $this;
-
-        } else {
-            $array = array();
-            if ($asNumericArray) {
-                $array['#tag'] = $this->getName();
-            }
-
-            if (!empty($attributes)) {
-                foreach ($attributes as $name => $value)
-                {
-                    $array["@$name"] = (string) $value;
-                }
-                unset($name, $value);
-            }
-
-            if (count($children) > 0) {
-                foreach ($children as $name => $node)
-                {
-                    $value = null;
-                    if (!$node->children()) {
-                        if ($asNumericArray) {
-                            $value = array(
-                                '#tag' => $name,
-                                '#pcdata' => (string) $node
-                            );
-                        } else {
-                            $value = (string) $node;
-                        }
-                    } else {
-                        $value = $node->toArray($asNumericArray);
-                    }
-                    // numeric mode
-                    if ($asNumericArray) {
-                        $array[] = $value;
-
-                    // new node
-                    } elseif (!isset($array[$name])) {
-                        $array[$name] = $value;
-
-                    // node is already a list
-                    } elseif (is_array($array[$name]) && isset($array[$name][0])) {
-                        $array[$name][] = $value;
-
-                    // convert node to list
-                    } else {
-                        $array[$name] = array($array[$name]);
-                        $array[$name][] = $value;
-
-                    }
-                } // end foreach
-                unset($name, $node);
-
-                // has no children (is text-node)
-            } else {
-                $textNode = trim((string) $this);
-                // non-empty text node
-                if ($textNode !== '') {
-                    $array['#pcdata'] = $textNode;
-
-                } else { // empty text-node
-                    // ignore
-                }
-            } // end if
-            return $array;
+        switch ($asNumericArray)
+        {
+            case true:
+                return \Yana\Util\Xml\Converter::convertXmlToNumericArray($this);
+            default:
+               return \Yana\Util\Xml\Converter::convertXmlToAssociativeArray($this);
         }
     }
 
+    /**
+     * Get XML content as object.
+     *
+     * Especially usefull for XML documents that use no attributes and are thus
+     * very simple.
+     *
+     * Be aware! This will NOT work for every valid XML file.
+     *
+     * If attributes are present, they are treated as text nodes.
+     *
+     * If the node is a text node that has no attributes, only the PCDATA
+     * section is returned, which is a string (not an array).
+     *
+     * Note: a node may either be a container or a text node.
+     * It must not be both. This means: it must not have inline nodes.
+     *
+     * @return  \Yana\Util\IsXmlObject
+     */
+    public function toObject()
+    {
+        return \Yana\Util\Xml\Converter::convertXmlToObject($this);
+    }
 }
 
 ?>

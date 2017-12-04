@@ -53,21 +53,46 @@ namespace Plugins\DbTools;
  */
 class DbDesigner4 extends \Yana\Files\File implements \Plugins\DbTools\IsImport
 {
-    /**#@+
-     * @ignore
-     * @access  private
+
+    /**
+     * @var string
      */
+    private $name = "";
 
-    /** @var string       */ private $name = "";
-    /** @var array        */ private $info = array();
-    /** @var Plugins\DbTools\InfoTable  */ private $currentTable = array('columns' => array());
-    /** @var Plugins\DbTools\InfoColumn */ private $currentColumn = array();
-    /** @var array        */ private $currentIndex = array();
-    /** @var array        */ private $dataTypes = "";
-    /** @var array        */ private $columns = array();
-    /** @var array        */ private $tableNames = array();
+    /**
+     * @var array
+     */
+    private $info = array();
 
-    /**#@-*/
+    /**
+     * @var \Plugins\DbTools\InfoTable
+     */
+    private $currentTable = array('columns' => array());
+
+    /**
+     * @var \Plugins\DbTools\InfoColumn
+     */
+    private $currentColumn = array();
+
+    /**
+     * @var array
+     */
+    private $currentIndex = array();
+
+    /**
+     * @var array
+     */
+    private $dataTypes = "";
+
+    /**
+     * @var array
+     */
+    private $columns = array();
+
+    /**
+     * @var array
+     */
+    private $tableNames = array();
 
     /**
      * Return table info for current data

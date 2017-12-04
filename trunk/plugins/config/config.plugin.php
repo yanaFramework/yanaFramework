@@ -366,6 +366,7 @@ class ConfigPlugin extends \Yana\Plugins\AbstractPlugin
         }
         try {
             $newProfile->create();
+
         } catch (\Exception $e) {
             $message = "Directory is not writable or permission denied.";
             $code = \Yana\Log\TypeEnumeration::ERROR;
@@ -373,10 +374,13 @@ class ConfigPlugin extends \Yana\Plugins\AbstractPlugin
             throw $error->setFilename($newProfile->getPath());
         }
         $newProfile->setVars($REF);
-        if (!$newProfile->write()) {
+        try {
+            $newProfile->write();
+
+        } catch (\Exception $e) {
             $message = "Changes to profile could not be saved.";
             $code = \Yana\Log\TypeEnumeration::ERROR;
-            $error = new \Yana\Core\Exceptions\Files\NotWriteableException($message, $code);
+            $error = new \Yana\Core\Exceptions\Files\NotWriteableException($message, $code, $e);
             throw $error->setFilename($newProfile->getPath());
         }
     }
