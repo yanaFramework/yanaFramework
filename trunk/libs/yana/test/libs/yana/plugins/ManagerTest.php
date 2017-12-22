@@ -80,6 +80,330 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->object->setActive('helloworld', ActivityEnumeration::INACTIVE)->isActive('helloworld'));
     }
 
+    /**
+     * @test
+     */
+    public function testGetDependencies()
+    {
+        $this->assertNull($this->object->getDependencies());
+    }
+
+    /**
+     * @test
+     */
+    public function testAttachDependencies()
+    {
+        $dependencies = new \Yana\Plugins\Dependencies\Container(new \Yana\Security\Sessions\Wrapper(), array());
+        $this->assertSame($dependencies, $this->object->attachDependencies($dependencies)->getDependencies());
+    }
+
+    /**
+     * @test
+     * @runInSeparateProcess
+     */
+    public function testSetPath()
+    {
+        $configFile = new \Yana\Files\Text(__FILE__);
+        $configDirectory = new \Yana\Files\Dir(__DIR__);
+        $this->assertNull(\Yana\Plugins\Manager::setPath($configFile, $configDirectory));
+        $this->assertSame($configFile, \Yana\Plugins\Manager::getConfigFilePath());
+        $this->assertSame($configDirectory, $this->object->getPluginDir());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetConfigFilePath()
+    {
+        $this->assertTrue(\Yana\Plugins\Manager::getConfigFilePath() instanceof \Yana\Files\File);
+    }
+
+    /**
+     * @test
+     */
+    public function testGetPluginConfigurations()
+    {
+        $configs = $this->object->getPluginConfigurations();
+        $this->assertTrue($configs instanceof \Yana\Plugins\Configs\ClassCollection);
+        $this->assertGreaterThan(0, $configs->count());
+    }
+
+    /**
+     * @covers Yana\Plugins\Manager::broadcastEvent
+     * @todo   Implement testBroadcastEvent().
+     */
+    public function testBroadcastEvent()
+    {
+        // Remove the following lines when you implement this test.
+        $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+        );
+    }
+
+    /**
+     * @covers Yana\Plugins\Manager::getLastResult
+     * @todo   Implement testGetLastResult().
+     */
+    public function testGetLastResult()
+    {
+        // Remove the following lines when you implement this test.
+        $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+        );
+    }
+
+    /**
+     * @covers Yana\Plugins\Manager::getLastEvent
+     * @todo   Implement testGetLastEvent().
+     */
+    public function testGetLastEvent()
+    {
+        // Remove the following lines when you implement this test.
+        $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+        );
+    }
+
+    /**
+     * @covers Yana\Plugins\Manager::getFirstEvent
+     * @todo   Implement testGetFirstEvent().
+     */
+    public function testGetFirstEvent()
+    {
+        // Remove the following lines when you implement this test.
+        $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+        );
+    }
+
+    /**
+     * @covers Yana\Plugins\Manager::getNextEvent
+     * @todo   Implement testGetNextEvent().
+     */
+    public function testGetNextEvent()
+    {
+        // Remove the following lines when you implement this test.
+        $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+        );
+    }
+
+    /**
+     * @covers Yana\Plugins\Manager::refreshPluginFile
+     * @todo   Implement testRefreshPluginFile().
+     */
+    public function testRefreshPluginFile()
+    {
+        // Remove the following lines when you implement this test.
+        $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+        );
+    }
+
+    /**
+     * @covers Yana\Plugins\Manager::isDefaultActive
+     * @todo   Implement testIsDefaultActive().
+     */
+    public function testIsDefaultActive()
+    {
+        // Remove the following lines when you implement this test.
+        $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+        );
+    }
+
+    /**
+     * @covers Yana\Plugins\Manager::get
+     * @todo   Implement testGet().
+     */
+    public function testGet()
+    {
+        // Remove the following lines when you implement this test.
+        $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+        );
+    }
+
+    /**
+     * @covers Yana\Plugins\Manager::__get
+     * @todo   Implement test__get().
+     */
+    public function test__get()
+    {
+        // Remove the following lines when you implement this test.
+        $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+        );
+    }
+
+    /**
+     * @covers Yana\Plugins\Manager::isInstalled
+     * @todo   Implement testIsInstalled().
+     */
+    public function testIsInstalled()
+    {
+        // Remove the following lines when you implement this test.
+        $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+        );
+    }
+
+    /**
+     * @covers Yana\Plugins\Manager::__toString
+     * @todo   Implement test__toString().
+     */
+    public function test__toString()
+    {
+        // Remove the following lines when you implement this test.
+        $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+        );
+    }
+
+    /**
+     * @covers Yana\Plugins\Manager::getPluginDir
+     * @todo   Implement testGetPluginDir().
+     */
+    public function testGetPluginDir()
+    {
+        // Remove the following lines when you implement this test.
+        $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+        );
+    }
+
+    /**
+     * @covers Yana\Plugins\Manager::getPluginConfiguration
+     * @todo   Implement testGetPluginConfiguration().
+     */
+    public function testGetPluginConfiguration()
+    {
+        // Remove the following lines when you implement this test.
+        $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+        );
+    }
+
+    /**
+     * @covers Yana\Plugins\Manager::getPluginNames
+     * @todo   Implement testGetPluginNames().
+     */
+    public function testGetPluginNames()
+    {
+        // Remove the following lines when you implement this test.
+        $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+        );
+    }
+
+    /**
+     * @covers Yana\Plugins\Manager::getEventType
+     * @todo   Implement testGetEventType().
+     */
+    public function testGetEventType()
+    {
+        // Remove the following lines when you implement this test.
+        $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+        );
+    }
+
+    /**
+     * @covers Yana\Plugins\Manager::getEventConfiguration
+     * @todo   Implement testGetEventConfiguration().
+     */
+    public function testGetEventConfiguration()
+    {
+        // Remove the following lines when you implement this test.
+        $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+        );
+    }
+
+    /**
+     * @covers Yana\Plugins\Manager::getEventConfigurations
+     * @todo   Implement testGetEventConfigurations().
+     */
+    public function testGetEventConfigurations()
+    {
+        // Remove the following lines when you implement this test.
+        $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+        );
+    }
+
+    /**
+     * @covers Yana\Plugins\Manager::isEvent
+     * @todo   Implement testIsEvent().
+     */
+    public function testIsEvent()
+    {
+        // Remove the following lines when you implement this test.
+        $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+        );
+    }
+
+    /**
+     * @covers Yana\Plugins\Manager::isLoaded
+     * @todo   Implement testIsLoaded().
+     */
+    public function testIsLoaded()
+    {
+        // Remove the following lines when you implement this test.
+        $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+        );
+    }
+
+    /**
+     * @covers Yana\Plugins\Manager::getReport
+     * @todo   Implement testGetReport().
+     */
+    public function testGetReport()
+    {
+        // Remove the following lines when you implement this test.
+        $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+        );
+    }
+
+    /**
+     * @covers Yana\Plugins\Manager::__sleep
+     * @todo   Implement test__sleep().
+     */
+    public function test__sleep()
+    {
+        // Remove the following lines when you implement this test.
+        $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+        );
+    }
+
+    /**
+     * @covers Yana\Plugins\Manager::attachLogger
+     * @todo   Implement testAttachLogger().
+     */
+    public function testAttachLogger()
+    {
+        // Remove the following lines when you implement this test.
+        $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+        );
+    }
+
+    /**
+     * @covers Yana\Plugins\Manager::getLogger
+     * @todo   Implement testGetLogger().
+     */
+    public function testGetLogger()
+    {
+        // Remove the following lines when you implement this test.
+        $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+        );
+    }
+
 }
 
 ?>
