@@ -77,6 +77,7 @@ class Enumeration extends \Yana\Core\AbstractEnumeration
     const SEE = 'see';
     const SINCE = 'since';
     const STYLE = 'style';
+    const MEDIA = 'media';
     const SUBPACKAGE = 'subpackage';
     const TEXT = 'text';
     const THROWS = 'throws';
