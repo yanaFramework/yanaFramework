@@ -135,7 +135,7 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
      * @return  bool
      * @throws  \Yana\Core\Exceptions\InvalidActionException  when the event is undefined
      */
-    public function callAction($action = "", array $args = null)
+    public function execute($action = "", array $args = null)
     {
         assert('is_string($action); // Invalid argument $action: string expected');
 

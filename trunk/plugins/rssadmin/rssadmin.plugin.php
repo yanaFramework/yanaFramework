@@ -92,9 +92,9 @@ class RssAdminPlugin extends \Yana\Plugins\AbstractPlugin
             return false;
         }
         if (empty($ARGS['id'])) {
-            return $YANA->callAction('set_config_default', $ARGS);
+            return $YANA->execute('set_config_default', $ARGS);
         } else {
-            return $YANA->callAction('set_config_profile', $ARGS);
+            return $YANA->execute('set_config_profile', $ARGS);
         }
     }
 

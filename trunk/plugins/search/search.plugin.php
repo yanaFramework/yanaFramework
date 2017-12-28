@@ -229,7 +229,7 @@ class SearchPlugin extends \Yana\Plugins\AbstractPlugin
         /*
          * 2) cache input values for later use
          */
-        $YANA->callAction('set_config_default',
+        $YANA->execute('set_config_default',
             array("search" => array('dir' => $dir, 'recurse' => $recurse, 'meta' => $meta)));
 
         /*

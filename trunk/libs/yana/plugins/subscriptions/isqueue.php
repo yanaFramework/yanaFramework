@@ -25,59 +25,41 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Plugins\Repositories;
+namespace Yana\Plugins\Subscriptions;
 
 /**
- * <<abstract>> Plugin configuration repository builder.
+ * Standard priority queue.
  *
- * This class produces a configuration repository by scanning a directory.
+ * Sorted by priority attribute of subscribers.
  *
  * @package     yana
  * @subpackage  plugins
  */
-abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Log\IsLogable
+interface IsQueue
 {
 
-    use \Yana\Log\HasLogger;
-
     /**
-     * Plugin repository raw object.
+     * Get list of IDs for plugins sorted by priority.
      *
-     * @var  \Yana\Plugins\Repositories\IsRepository
+     * @return  array
      */
-    protected $object = null;
+    public function getSubscribers();
 
     /**
-     * constructor
+     * Subscribe the given class to this event.
+     * 
+     * @param   \Yana\Plugins\Configs\IsClassConfiguration  $class  implements the given event as a method
+     * @return  $this
      */
-    public function __construct()
-    {
-        $this->createNewRepository();
-    }
+    public function subscribe(\Yana\Plugins\Configs\IsClassConfiguration $class);
 
     /**
-     * Resets the instance that is currently build.
+     * Unregister an subscribing class.
+     * 
+     * @param   \Yana\Plugins\Configs\IsClassConfiguration $class  identifies the plugin
+     * @return  $this
      */
-    public function createNewRepository()
-    {
-        $this->object = new \Yana\Plugins\Repositories\Repository();
-    }
-
-    /**
-     * Build new repository.
-     */
-    abstract protected function buildRepository();
-
-    /**
-     * Returns the built object.
-     *
-     * @return  \Yana\Plugins\Repositories\IsRepository
-     */
-    public function getRepository()
-    {
-        $this->buildRepository();
-        return $this->object;
-    }
+    public function unsubscribe(\Yana\Plugins\Configs\IsClassConfiguration $class);
 
 }
 

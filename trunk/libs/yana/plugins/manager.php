@@ -62,7 +62,6 @@ namespace Yana\Plugins;
  * described above. Also each plugin may abort the chain of operation at any time by either
  * returning FALSE or throwing an exception.
  *
- * @name        PluginManager
  * @package     yana
  * @subpackage  plugins
  */
@@ -136,12 +135,12 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     private $_loadedPlugins = array();
 
     /**
-     * @var \Yana\Plugins\Repositories\Repository
+     * @var \Yana\Plugins\Repositories\IsRepository
      */
     private $_repository = null;
 
     /**
-     * @var \Yana\Plugins\Dependencies\Container
+     * @var \Yana\Plugins\Dependencies\IsContainer
      */
     private $_dependencies = null;
 
@@ -150,7 +149,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      *
      * Defaults to NULL.
      *
-     * @return  \Yana\Plugins\Dependencies\Container
+     * @return  \Yana\Plugins\Dependencies\IsContainer
      */
     public function getDependencies()
     {
@@ -162,10 +161,10 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      *
      * The container and its dependencies will be passed on to any plugins the manager loads.
      *
-     * @param   \Yana\Plugins\Dependencies\Container  $dependencies  to inject
-     * @return  \Yana\Plugins\Manager
+     * @param   \Yana\Plugins\Dependencies\IsContainer  $dependencies  to inject
+     * @return  $this
      */
-    public function attachDependencies(\Yana\Plugins\Dependencies\Container $dependencies)
+    public function attachDependencies(\Yana\Plugins\Dependencies\IsContainer $dependencies)
     {
         $this->_dependencies = $dependencies;
         return $this;
@@ -218,7 +217,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     /**
      * Get configuration manager.
      *
-     * @return  \Yana\Plugins\Repositories\Repository
+     * @return  \Yana\Plugins\Repositories\IsRepository
      */
     private function _getRepository()
     {
@@ -239,7 +238,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      * Returns an associative array, where the keys are the plugin-names and the values are instances
      * of \Yana\Plugins\Configs\ClassConfiguration.
      *
-     * @return  \Yana\Plugins\Configs\ClassCollection
+     * @return  \Yana\Plugins\Configs\IsClassCollection
      */
     public function getPluginConfigurations()
     {
@@ -426,13 +425,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     public function isActive($pluginName)
     {
         assert('is_string($pluginName); // Invalid argument $pluginName: string expected');
-        $plugins = $this->_getRepository()->getPlugins();
-        $active = null;
-        if ($plugins->offsetExists($pluginName)) {
-            $active = $plugins->offsetGet($pluginName)->getActive();
-        }
-        return $active === \Yana\Plugins\ActivityEnumeration::ACTIVE ||
-            $active === \Yana\Plugins\ActivityEnumeration::DEFAULT_ACTIVE;
+        return $this->_getRepository()->getPlugins()->isActive($pluginName);
     }
 
     /**
@@ -447,39 +440,37 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      * @return  bool
      * @since   3.1.0
      */
-    public function isDefaultActive($pluginName)
+    public function isActiveByDefault($pluginName)
     {
-        assert('is_string($pluginName); // Wrong type for argument 1. String expected');
-        $plugins = $this->_getRepository()->getPlugins();
-        $active = null;
-        if ($plugins->offsetExists($pluginName)) {
-            $active = $plugins->offsetGet($pluginName)->getActive();
-        }
-        return $active === \Yana\Plugins\ActivityEnumeration::DEFAULT_ACTIVE;
+        assert('is_string($pluginName); // Invalid argument $pluginName: string expected');
+        return $this->_getRepository()->getPlugins()->isActiveByDefault($pluginName);
     }
 
     /**
-     * Activate / deactive a plugin.
+     * Activate a plugin.
      *
-     * @param   string  $pluginName   identifier for the plugin to be de-/activated
-     * @param   int     $state        ActivityEnumeration::INACTIVE = off, ActivityEnumeration::ACTIVE = on
-     * @throws  \Yana\Core\Exceptions\NotFoundException     when no plugin with the given name is found
-     * @throws  \Yana\Core\Exceptions\InvalidValueException when trying to change a default plugin
-     * @return  \Yana\Plugins\Manager
+     * @param   string  $pluginName  identifier for the plugin to be de-/activated
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when no plugin with the given name is found
+     * @return  $this
      */
-    public function setActive($pluginName, $state = \Yana\Plugins\ActivityEnumeration::ACTIVE)
+    public function activate($pluginName)
     {
-        $plugins = $this->_getRepository()->getPlugins();
-        if (isset($plugins[$pluginName])) {
-            $plugin = $plugins[$pluginName];
-            if ($plugin->getActive() === \Yana\Plugins\ActivityEnumeration::DEFAULT_ACTIVE) {
-                $message = "Changing activity state of plugin '$pluginName' with setting: 'always active' is not allowed.";
-                throw new \Yana\Core\Exceptions\InvalidValueException($message);
-            }
-            $plugin->setActive($state);
-        } else {
-            throw new \Yana\Core\Exceptions\NotFoundException("No such plugin: '$pluginName'.");
-        }
+        assert('is_string($pluginName); // Invalid argument $pluginName: string expected');
+        $this->_getRepository()->getPlugins()->activate($pluginName);
+        return $this;
+    }
+
+    /**
+     * Dectivate a plugin.
+     *
+     * @param   string  $pluginName  identifier for the plugin to be de-/activated
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when no plugin with the given name is found
+     * @return  $this
+     */
+    public function deactive($pluginName)
+    {
+        assert('is_string($pluginName); // Invalid argument $pluginName: string expected');
+        $this->_getRepository()->getPlugins()->deactivate($pluginName);
         return $this;
     }
 
@@ -692,7 +683,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      */
     public function getEventConfigurations()
     {
-        return $this->_getRepository()->getMethods();
+        return $this->_getRepository()->getEvents();
     }
 
     /**
@@ -707,7 +698,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     public function isEvent($eventName)
     {
         assert('is_string($eventName); // Invalid argument $eventName: string expected');
-        return $this->_getRepository()->isMethod($eventName);
+        return $this->_getRepository()->isEvent($eventName);
     }
 
     /**

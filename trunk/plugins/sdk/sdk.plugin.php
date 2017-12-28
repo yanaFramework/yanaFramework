@@ -156,7 +156,7 @@ class SdkPlugin extends \Yana\Plugins\AbstractPlugin
         $pluginBuilder->buildPlugin($overwriteFiles);
 
         /* load new plugin */
-        $this->_getApplication()->callAction('refresh_pluginlist');
+        $this->_getApplication()->execute('refresh_pluginlist');
         self::_createBackup($ARGS);
     }
 

@@ -855,6 +855,52 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Conf
         return $this;
     }
 
+    /**
+     * Check if plugin is active.
+     * @return  bool
+     */
+    public function isActive()
+    {
+        $active = $this->getActive();
+        return $active === \Yana\Plugins\ActivityEnumeration::ACTIVE || $active === \Yana\Plugins\ActivityEnumeration::DEFAULT_ACTIVE;
+    }
+
+    /**
+     * Check if plugin is active by default.
+     *
+     * @return  bool
+     */
+    public function isActiveByDefault()
+    {
+        return $this->getActive() === \Yana\Plugins\ActivityEnumeration::DEFAULT_ACTIVE;
+    }
+
+    /**
+     * Mark this class as active.
+     *
+     * This is done by setting the active property to 1.
+     *
+     * @return  $this
+     */
+    public function activate()
+    {
+        $this->setActive(\Yana\Plugins\ActivityEnumeration::ACTIVE);
+        return $this;
+    }
+
+    /**
+     * Mark this class as inactive.
+     *
+     * This is done by setting the active property to 0.
+     *
+     * @return  $this
+     */
+    public function deactivate()
+    {
+        $this->setActive(\Yana\Plugins\ActivityEnumeration::INACTIVE);
+        return $this;
+    }
+
 }
 
 ?>

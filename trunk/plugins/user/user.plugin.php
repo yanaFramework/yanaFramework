@@ -181,7 +181,7 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
         $YANA = $this->_getApplication();
         // check captcha field
         if ($this->_getPluginsFacade()->isActive('antispam') && $YANA->getVar("PROFILE.SPAM.CAPTCHA")) {
-            if ($YANA->callAction("security_check_image", $ARGS) === false) {
+            if ($YANA->execute("security_check_image", $ARGS) === false) {
                 \Yana\Log\LogManager::getLogger()->addLog('SPAM: CAPTCHA not solved, entry has not been created.');
                 return false;
             }

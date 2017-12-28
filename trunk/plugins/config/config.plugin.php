@@ -153,7 +153,7 @@ class ConfigPlugin extends \Yana\Plugins\AbstractPlugin
             $pluginConfiguration = $pluginManager->getPluginConfiguration($item);
 
             /* check if plugin is active */
-            if ($pluginManager->isDefaultActive($item)) {
+            if ($pluginManager->isActiveByDefault($item)) {
                 $active = 2;
             } elseif ($pluginManager->isActive($item)) {
                 $active = 1;
@@ -306,10 +306,11 @@ class ConfigPlugin extends \Yana\Plugins\AbstractPlugin
             /* We don't mind, wether $plugin is a plugin or not, since
              * the PluginManager does this checking for us.
              */
-            $state = (in_array($plugin, $plugins)) ? \Yana\Plugins\ActivityEnumeration::ACTIVE :
-                \Yana\Plugins\ActivityEnumeration::INACTIVE;
-
-            $pluginManager->setActive($plugin, $state); // may throw NotFoundException
+            if (in_array($plugin, $plugins)) {
+                $pluginManager->activate($plugin); // may throw NotFoundException
+            } else {
+                $pluginManager->deactivate($plugin); // may throw NotFoundException
+            }
         }
         /* save changes and refresh the plugin cache */
         return $this->refresh_pluginlist();

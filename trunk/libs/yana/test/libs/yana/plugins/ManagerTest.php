@@ -72,16 +72,24 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testSetActive()
+    public function testActivate()
     {
-        $this->assertFalse($this->object->isActive('helloworld'));
-        $this->assertTrue($this->object->setActive('helloworld')->isActive('helloworld'));
-        $this->assertTrue($this->object->setActive('helloworld', ActivityEnumeration::ACTIVE)->isActive('helloworld'));
-        $this->assertFalse($this->object->setActive('helloworld', ActivityEnumeration::INACTIVE)->isActive('helloworld'));
+        $this->object->deactive('helloworld');
+        $this->assertTrue($this->object->activate('helloworld')->isActive('helloworld'));
     }
 
     /**
      * @test
+     */
+    public function testDeactivate()
+    {
+        $this->object->activate('helloworld');
+        $this->assertFalse($this->object->deactive('helloworld')->isActive('helloworld'));
+    }
+
+    /**
+     * @test
+     * @runInSeparateProcess
      */
     public function testGetDependencies()
     {
@@ -124,7 +132,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     public function testGetPluginConfigurations()
     {
         $configs = $this->object->getPluginConfigurations();
-        $this->assertTrue($configs instanceof \Yana\Plugins\Configs\ClassCollection);
+        $this->assertTrue($configs instanceof \Yana\Plugins\Configs\IsClassCollection);
         $this->assertGreaterThan(0, $configs->count());
     }
 

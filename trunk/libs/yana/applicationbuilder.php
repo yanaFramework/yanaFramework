@@ -191,7 +191,7 @@ class ApplicationBuilder extends \Yana\Core\Object
     private function _runOnCommandLine()
     {
         // Handle the request
-        $this->buildApplication()->callAction();
+        $this->buildApplication()->execute();
 
         /* Since this is expected to be used for cronjobs,
          * no (human readable) output is explicitely created here.
@@ -275,7 +275,7 @@ class ApplicationBuilder extends \Yana\Core\Object
             }
         }
         $application = $this->buildApplication();
-        $application->callAction();         // Handle the request
+        $application->execute();         // Handle the request
         $application->outputResults();      // Create the output
         // flush the output buffer (GZ-compression)
         if ($outputCompressionActive && ob_get_length() !== false) {

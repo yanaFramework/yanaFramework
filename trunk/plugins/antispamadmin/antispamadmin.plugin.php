@@ -84,7 +84,7 @@ class AntiSpamAdminPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function set_setup_global_antispam(array $ARGS)
     {
-        return $this->_getApplication()->callAction('set_config_default', $this->_getArguments($ARGS));
+        return $this->_getApplication()->execute('set_config_default', $this->_getArguments($ARGS));
     }
 
     /**
@@ -124,7 +124,7 @@ class AntiSpamAdminPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function set_setup_antispam(array $ARGS)
     {
-        return $this->_getApplication()->callAction('set_config_profile', $this->_getArguments($ARGS));
+        return $this->_getApplication()->execute('set_config_profile', $this->_getArguments($ARGS));
     }
 
     /**

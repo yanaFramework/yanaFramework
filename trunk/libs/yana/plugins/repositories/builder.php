@@ -83,9 +83,9 @@ class Builder extends \Yana\Plugins\Repositories\AbstractBuilder
     /**
      * Set base repository to compare the plugin list with.
      *
-     * @param  \Yana\Plugins\Repositories\Repository  $repository  old repository for comparison
+     * @param  \Yana\Plugins\Repositories\IsRepository  $repository  old repository for comparison
      */
-    public function setBaseRepository(\Yana\Plugins\Repositories\Repository $repository)
+    public function setBaseRepository(\Yana\Plugins\Repositories\IsRepository $repository)
     {
         $this->_oldRepository = $repository;
     }
@@ -157,8 +157,8 @@ class Builder extends \Yana\Plugins\Repositories\AbstractBuilder
                 $isSubscriber = $method->getSubscribe();
 
                 // add method to index
-                if ((!$this->object->isMethod($methodName) || $isOverwrite) && !$isSubscriber) {
-                    $this->object->addMethod($method);
+                if ((!$this->object->isEvent($methodName) || $isOverwrite) && !$isSubscriber) {
+                    $this->object->addEvent($method);
                 } elseif ($isSubscriber) {
                     $subscribers[$methodName][] = $method; // will be used later
                 }
@@ -249,7 +249,7 @@ class Builder extends \Yana\Plugins\Repositories\AbstractBuilder
         // load configuration settings for each method and build list of implementing classes
         assert('!isset($methodName); // Cannot redeclare var $methodName');
         assert('!isset($methodConfig); // Cannot redeclare var $methodConfig');
-        foreach ($this->object->getMethods() as $methodName => $methodConfig)
+        foreach ($this->object->getEvents() as $methodName => $methodConfig)
         {
             // get type of current event
             $baseType = $methodConfig->getType();

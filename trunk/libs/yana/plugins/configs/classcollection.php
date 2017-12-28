@@ -34,10 +34,8 @@ namespace Yana\Plugins\Configs;
  *
  * @package     yana
  * @subpackage  plugins
- *
- * @ignore
  */
-class ClassCollection extends \Yana\Core\AbstractCollection
+class ClassCollection extends \Yana\Core\AbstractCollection implements \Yana\Plugins\Configs\IsClassCollection
 {
 
     /**
@@ -95,6 +93,84 @@ class ClassCollection extends \Yana\Core\AbstractCollection
                 "Found " . gettype($value) . "(" . ((is_object($value)) ? get_class($value) : $value) . ") instead.";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
         }
+    }
+
+    /**
+     * Check if plugin is active.
+     *
+     * Returns bool(true) if the plugin identified by $pluginName exists
+     * and is active and bool(false) otherwise.
+     *
+     * @param   string  $className  identifier for the plugin
+     * @return  bool
+     */
+    public function isActive($className)
+    {
+        assert('is_string($className); // Invalid argument $className: string expected');
+        $isActive = false;
+        if ($this->offsetExists($className)) {
+            $isActive = $this->offsetGet($className)->isActive();
+        }
+        return $isActive;
+    }
+
+    /**
+     * Check if plugin is active by default.
+     *
+     * A plugin that is active by default cannot be deactivated via the configuration menu.
+     *
+     * Returns bool(true) if the plugin identified by $pluginName exists
+     * and is active and bool(false) otherwise.
+     *
+     * @param   string  $className  identifier for the plugin
+     * @return  bool
+     */
+    public function isActiveByDefault($className)
+    {
+        assert('is_string($className); // Invalid argument $className: string expected');
+        $isDefaultActive = false;
+        if ($this->offsetExists($className)) {
+            $isDefaultActive = $this->offsetGet($className)->isActiveByDefault();
+        }
+        return $isDefaultActive;
+    }
+
+    /**
+     * Mark this class as active.
+     *
+     * This is done by setting the active property to 1.
+     *
+     * @param   string  $className  identifier for the plugin
+     * @return  $this
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when no plugin with the given name is found
+     */
+    public function activate($className)
+    {
+        assert('is_string($className); // Invalid argument $className: string expected');
+        if (!$this->offsetExists($className)) {
+            throw new \Yana\Core\Exceptions\NotFoundException("No such plugin: '$className'.");
+        }
+        $this->offsetGet($className)->activate();
+        return $this;
+    }
+
+    /**
+     * Mark this class as inactive.
+     *
+     * This is done by setting the active property to 0.
+     *
+     * @param   string  $className  identifier for the plugin
+     * @return  $this
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when no plugin with the given name is found
+     */
+    public function deactivate($className)
+    {
+        assert('is_string($className); // Invalid argument $className: string expected');
+        if (!$this->offsetExists($className)) {
+            throw new \Yana\Core\Exceptions\NotFoundException("No such plugin: '$className'.");
+        }
+        $this->offsetGet($className)->deactivate();
+        return $this;
     }
 
 }

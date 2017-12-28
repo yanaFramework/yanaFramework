@@ -30,4 +30,5 @@
 <!ELEMENT style (#PCDATA)>
 <!ATTLIST style
     id  CDATA  #IMPLIED
+    media  CDATA  #IMPLIED
 >
