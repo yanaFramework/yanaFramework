@@ -44,6 +44,11 @@ class MySmiliesModifier extends \Yana\Views\Helpers\Modifiers\SmiliesModifier
         return new \Yana\Views\Helpers\Formatters\NullFormatter();
     }
 
+    public function getFormatter()
+    {
+        return parent::_getFormatter();
+    }
+
 }
 
 /**
@@ -83,6 +88,14 @@ class SmiliesModifierTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(123, $this->object->__invoke(123));
         $this->assertSame('', $this->object->__invoke(''));
         $this->assertSame('Test', $this->object->__invoke('Test'));
+    }
+
+    /**
+     * @test
+     */
+    public function testGetFormatter()
+    {
+        $this->assertTrue($this->object->getFormatter() instanceof \Yana\Views\Helpers\Formatters\IconFormatter);
     }
 
 }

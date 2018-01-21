@@ -36,6 +36,7 @@ namespace Yana\Security\Data\Tables;
  * @subpackage  security
  *
  * @ignore
+ * @codeCoverageIgnore
  */
 class RoleEnumeration extends \Yana\Core\AbstractEnumeration
 {

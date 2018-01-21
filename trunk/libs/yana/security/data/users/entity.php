@@ -420,7 +420,7 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
     }
 
     /**
-     * Update expert setting.
+     * Activate/Deactivate user.
      *
      * Set to bool(true) if the user should be able to log-in or to bool(false) if the user
      * should be deactivated (suspended) without permanently deleting the user settings.

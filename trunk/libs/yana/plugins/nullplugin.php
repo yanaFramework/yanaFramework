@@ -23,32 +23,39 @@
  *
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
- *
- * @ignore
  */
 
-namespace Yana\Security\Data\Tables;
+namespace Yana\Plugins;
 
 /**
- * <<enumeration>> Column names for table securityrules.
+ * Null object for testing purposes only.
  *
  * @package     yana
- * @subpackage  security
- *
+ * @subpackage  plugins
  * @ignore
- * @codeCoverageIgnore
  */
-class RuleEnumeration extends \Yana\Core\AbstractEnumeration
+class NullPlugin extends \Yana\Core\Object implements \Yana\IsPlugin
 {
 
-    const TABLE = 'securityrules';
-    const ID = 'rule_id';
-    const GRANTED_BY_USER = 'user_created';
-    const USER = 'user_id';
-    const GROUP = 'group_id';
-    const ROLE = 'role_id';
-    const PROFILE = 'profile';
-    const HAS_GRANT_OPTION = 'user_proxy_active';
+    /**
+     * <<constructor>> Does nothing.
+     */
+    public function __construct()
+    {
+        // intentionally left blank
+    }
+
+    /**
+     * Always returns bool(true).
+     *
+     * @param   string  $event  ignored
+     * @param   array   $ARGS   ignored
+     * @return  boolean
+     */
+    public function catchAll($event, array $ARGS)
+    {
+        return true;
+    }
 
 }
 

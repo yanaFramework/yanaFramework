@@ -35,7 +35,7 @@ namespace Yana\Plugins\Subscriptions;
  * @package     yana
  * @subpackage  plugins
  */
-class Queue extends \Yana\Core\Object
+class Queue extends \Yana\Core\Object implements \Yana\Plugins\Subscriptions\IsQueue
 {
 
     /**
@@ -67,20 +67,21 @@ class Queue extends \Yana\Core\Object
     public function subscribe(\Yana\Plugins\Configs\IsClassConfiguration $class)
     {
         $this->_subscribers[$class->getId()] = $class->getPriority();
-        asort($this->_subscribers);
+        arsort($this->_subscribers);
         return $this;
     }
 
     /**
      * Unregister an subscribing class.
      * 
-     * @param   \Yana\Plugins\Configs\IsClassConfiguration $class  identifies the plugin
+     * @param   string  $classId  identifies the plugin
      * @return  $this
      */
-    public function unsubscribe(\Yana\Plugins\Configs\IsClassConfiguration $class)
+    public function unsubscribe($classId)
     {
-        if (isset($this->_subscribers[$class->getId()])) {
-            unset($this->_subscribers[$class->getId()]);
+        assert('is_string($classId); // Invalid argument $classId: string expected');
+        if (isset($this->_subscribers[$classId])) {
+            unset($this->_subscribers[$classId]);
         }
         return $this;
     }

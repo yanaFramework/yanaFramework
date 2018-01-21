@@ -62,6 +62,37 @@ class ConstraintCollectionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     */
+    public function testConstruct()
+    {
+        $object = new \Yana\Db\Ddl\Constraint(__FUNCTION__);
+        $object->setConstraint("true");
+        $this->object = new \Yana\Db\Helpers\ConstraintCollection(array('test' => $object));
+        $this->assertSame("true", $this->object->offsetGet('test'));
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
+     */
+    public function testOffsetSetInvalidArgumentException()
+    {
+        $this->object->offsetSet(null, new \Yana\Core\Object());
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
+     */
+    public function testOffsetSetInvalidArgumentException1()
+    {
+        $object = new \Yana\Db\Ddl\Constraint(__FUNCTION__);
+        $object->setConstraint("invalid constraint");
+        $this->object->offsetSet(null, $object);
+    }
+
+    /**
      * checkConstraint
      *
      * @test
@@ -124,6 +155,7 @@ class ConstraintCollectionTest extends \PHPUnit_Framework_TestCase
  *
  * used for check if the trigger methods are executed
  *
+ * @package  test
  * @ignore
  */
 class checktrigger

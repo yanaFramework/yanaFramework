@@ -89,6 +89,7 @@ abstract class AbstractPlugin extends \Yana\Core\Object implements \Yana\IsPlugi
      * @param   string                                        $name           must be valid identifier. Consists of chars, numbers and underscores.
      * @param   \Yana\Files\IsDir                             $fromDirectory  where plugin files reside
      * @param   \Yana\Plugins\Dependencies\IsPluginContainer  $container      to be injected into the plugin
+     * @return  \Yana\IsPlugin
      * @throws  \Yana\Core\Exceptions\NotFoundException  when the plugin or its base-class was not found
      */
     public static function loadPlugin($name, \Yana\Files\IsDir $fromDirectory, \Yana\Plugins\Dependencies\IsPluginContainer $container)

@@ -119,33 +119,33 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testGetImplementations()
+    public function testGetSubscribers()
     {
-        $this->assertSame(array(), $this->object->getImplementations('test'));
+        $this->assertCount(0, $this->object->getSubscribers('test'));
     }
 
     /**
      * @test
      */
-    public function testSetImplementation()
+    public function testSubscribe()
     {
         $plugin = new \Yana\Plugins\Configs\ClassConfiguration();
         $plugin->setId('my_test')->setPriority(3);
         $method = new \Yana\Plugins\Configs\MethodConfiguration();
         $method->setMethodName('Test');
-        $this->assertSame(array('my_test' => 3), $this->object->setImplementation($method, $plugin)->getImplementations('test'));
+        $this->assertEquals(array('my_test'), $this->object->subscribe($method, $plugin)->getSubscribers('test'));
     }
 
     /**
      * @test
      */
-    public function testUnsetImplementation()
+    public function testUnsubscribe()
     {
         $plugin = new \Yana\Plugins\Configs\ClassConfiguration();
         $plugin->setId('my_test');
         $method = new \Yana\Plugins\Configs\MethodConfiguration();
         $method->setMethodName('Test');
-        $this->assertSame(array(), $this->object->setImplementation($method, $plugin)->unsetImplementation($method, 'my_test')->getImplementations('test'));
+        $this->assertSame(array(), $this->object->subscribe($method, $plugin)->unsubscribe($method, 'my_test')->getSubscribers('test'));
     }
 
 }

@@ -25,42 +25,38 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Plugins\Subscriptions;
+namespace Yana\Plugins;
 
 /**
- * Standard priority queue.
- *
- * Sorted by priority attribute of subscribers.
+ * <<collection>> Collection of Plugins.
  *
  * @package     yana
  * @subpackage  plugins
  */
-interface IsQueue
+class Collection extends \Yana\Core\AbstractCollection
 {
 
     /**
-     * Get list of IDs for plugins sorted by priority.
+     * Replaces the given offset and returns the value.
      *
-     * @return  array
+     * @param   string          $offset  plugin name
+     * @param   \Yana\IsPlugin  $value   plugin instance
+     * @return  \Yana\IsPlugin
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if the value is not a valid collection item
      */
-    public function getSubscribers();
-
-    /**
-     * Subscribe the given class to this event.
-     * 
-     * @param   \Yana\Plugins\Configs\IsClassConfiguration  $class  implements the given event as a method
-     * @return  $this
-     */
-    public function subscribe(\Yana\Plugins\Configs\IsClassConfiguration $class);
-
-    /**
-     * Unregister an subscribing class.
-     * 
-     * @param   string  $classId  identifies the plugin
-     * @return  $this
-     */
-    public function unsubscribe($classId);
-
+    public function offsetSet($offset, $value)
+    {
+        assert('is_null($offset) || is_string($offset); // $offset expected to be String');
+        if (!$value instanceof \Yana\IsPlugin) {
+            $message = "Instance of \Yana\IsPlugin expected.";
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
+        }
+        if (is_null($offset)) {
+            $offset = get_class($value);
+        }
+        return $this->_offsetSet($offset, $value);
+    }
+    
 }
 
 ?>

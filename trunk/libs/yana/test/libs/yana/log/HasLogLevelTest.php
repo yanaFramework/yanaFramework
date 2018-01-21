@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -25,40 +25,35 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Views\Helpers\Modifiers;
+namespace Yana\Log;
 
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/../../../../../include.php';
+require_once __DIR__ . '/../../../include.php';
 
 /**
  * @package test
  * @ignore
  */
-class MyEmbeddedTagsModifier extends \Yana\Views\Helpers\Modifiers\EmbeddedTagsModifier
+class MyLogLevel
 {
+    use \Yana\Log\HasLogLevel;
 
-    protected function _getFormatter()
+    public function isAcceptable($level)
     {
-        return new \Yana\Views\Helpers\Formatters\NullFormatter();
+        return $this->_isAcceptable($level);
     }
-
-    public function getFormatter()
-    {
-        return parent::_getFormatter();
-    }
-
 }
 
 /**
  * @package test
  */
-class EmbeddedTagsModifierTest extends \PHPUnit_Framework_TestCase
+class HasLogLevelTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Views\Helpers\Modifiers\MyEmbeddedTagsModifier
+     * @var \Yana\Log\MyLogLevel 
      */
     protected $object;
 
@@ -68,7 +63,7 @@ class EmbeddedTagsModifierTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Views\Helpers\Modifiers\MyEmbeddedTagsModifier(new \Yana\Views\Managers\NullManager());
+        $this->object = new \Yana\Log\MyLogLevel();
     }
 
     /**
@@ -77,25 +72,33 @@ class EmbeddedTagsModifierTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        
     }
 
     /**
      * @test
      */
-    public function test__invoke()
+    public function testGetLogLevel()
     {
-        $this->assertSame(123, $this->object->__invoke(123));
-        $this->assertSame('', $this->object->__invoke(''));
-        $this->assertSame('Test', $this->object->__invoke('Test'));
+        $this->assertSame(0, $this->object->getLogLevel());
     }
 
     /**
      * @test
      */
-    public function testGetFormatter()
+    public function testSetLogLevel()
     {
-        $this->assertTrue($this->object->getFormatter() instanceof \Yana\Views\Helpers\Formatters\TextFormatter);
+        $this->assertSame(1, $this->object->setLogLevel(1)->getLogLevel());
+    }
+
+    /**
+     * @test
+     */
+    public function testIsAcceptable()
+    {
+        $this->assertTrue($this->object->setLogLevel(2)->isAcceptable(2));
+        $this->assertFalse($this->object->setLogLevel(2)->isAcceptable(1));
+        $this->assertTrue($this->object->setLogLevel(2)->isAcceptable(3));
+        $this->assertTrue($this->object->setLogLevel(0)->isAcceptable(-1));
     }
 
 }

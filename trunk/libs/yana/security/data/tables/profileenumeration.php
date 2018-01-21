@@ -36,6 +36,7 @@ namespace Yana\Security\Data\Tables;
  * @subpackage  security
  *
  * @ignore
+ * @codeCoverageIgnore
  */
 class ProfileEnumeration extends \Yana\Core\AbstractEnumeration
 {

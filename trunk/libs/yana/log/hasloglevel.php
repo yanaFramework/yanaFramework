@@ -62,19 +62,21 @@ trait HasLogLevel
      * $logger->setLogLevel(IsLogger::ALL & ~IsLogger::DEBUG)
      * </code>
      *
-     * @param  int  $level  logging level, following the PHP error bitmask
+     * @param   int  $level  logging level, following the PHP error bitmask
+     * @return  $this
      */
     public function setLogLevel($level)
     {
         assert('is_int($level); // Invalid argument $level: int expected');
         $this->_logLevel = (int) $level;
+        return $this;
     }
 
     /**
      * Returns TRUE if the logger should react on the given error level.
      *
-     * @param  int  $level  logging level, following the PHP error bitmask
-     * @return bool
+     * @param   int  $level  logging level, following the PHP error bitmask
+     * @return  bool
      */
     protected function _isAcceptable($level)
     {

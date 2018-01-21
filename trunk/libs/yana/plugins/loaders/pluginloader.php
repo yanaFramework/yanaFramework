@@ -23,32 +23,33 @@
  *
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
- *
- * @ignore
  */
 
-namespace Yana\Security\Data\Tables;
+namespace Yana\Plugins\Loaders;
 
 /**
- * <<enumeration>> Column names for table securityrules.
+ * Loads plugin instances.
  *
  * @package     yana
- * @subpackage  security
+ * @subpackage  plugins
  *
  * @ignore
- * @codeCoverageIgnore
  */
-class RuleEnumeration extends \Yana\Core\AbstractEnumeration
+class PluginLoader extends \Yana\Plugins\Loaders\AbstractPluginLoader
 {
 
-    const TABLE = 'securityrules';
-    const ID = 'rule_id';
-    const GRANTED_BY_USER = 'user_created';
-    const USER = 'user_id';
-    const GROUP = 'group_id';
-    const ROLE = 'role_id';
-    const PROFILE = 'profile';
-    const HAS_GRANT_OPTION = 'user_proxy_active';
+    /**
+     * Load a plugin.
+     *
+     * @param   string  $name  Must be valid identifier. Consists of chars, numbers and underscores.
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when no plugin with that name exists
+     * @return  \Yana\IsPlugin
+     */
+    public function loadPlugin($name)
+    {
+        assert('is_string($name); // Invalid argument $name: string expected');
+        return \Yana\Plugins\AbstractPlugin::loadPlugin($name, $this->_getPluginDirectory(), $this->_getContainer());
+    }
 
 }
 

@@ -226,7 +226,7 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
         $result = false;
         try {
 
-            $result = $plugins->broadcastEvent($action, $args, $this);
+            $result = $plugins->sendEvent($action, $args, $this);
             if ($result !== false) {
                 /* Create timestamp to provide information for read-stability isolation level */
                 $_SESSION['transaction_isolation_created'] = time();

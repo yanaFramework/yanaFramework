@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<?xml-stylesheet type="text/xsl" href=".xsl/documentation.xsl"?>
+<!DOCTYPE database SYSTEM "../dtd/database.dtd">
+<database>
+    <table name="plugins">
+        <primarykey>plugin_id</primarykey>
+        <declaration>
+            <string name="plugin_id" length="50" title="Id" notnull="yes"/>
+            <bool name="plugin_is_active" notnull="yes" title="Active">
+                <default>0</default>
+            </bool>
+        </declaration>
+    </table>
+</database>

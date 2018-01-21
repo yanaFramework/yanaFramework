@@ -87,33 +87,33 @@ interface IsRepository
     public function getEvents();
 
     /**
-     * Get list of plugin priorities for a method name.
+     * Get list of plugins that are subscribed to the event.
      *
-     * If the event is not registered, the function returns NULL.
-     * Otherwise it returns a list of items of {@see PluginPriorityEnumeration}.
+     * If the event is not registered, the function returns an empty array.
+     * Otherwise it returns a list of plugin IDs sorted by priority.
      *
-     * @param   string $methodName  name of the event to check for
+     * @param   string  $eventName  name of the event to check for
      * @return  array
      */
-    public function getImplementations($methodName);
+    public function getSubscribers($eventName);
 
     /**
      * Register that the given class implements the given method.
      * 
-     * @param   \Yana\Plugins\Configs\IsMethodConfiguration $method   implemented by the given class
-     * @param   \Yana\Plugins\Configs\IsClassConfiguration  $class    implements the given method
+     * @param   \Yana\Plugins\Configs\IsMethodConfiguration  $event       implemented by the given class
+     * @param   \Yana\Plugins\Configs\IsClassConfiguration   $subscriber  implements the given method
      * @return  $this
      */
-    public function setImplementation(\Yana\Plugins\Configs\IsMethodConfiguration $method, \Yana\Plugins\Configs\IsClassConfiguration $class);
+    public function subscribe(\Yana\Plugins\Configs\IsMethodConfiguration $event, \Yana\Plugins\Configs\IsClassConfiguration $subscriber);
 
     /**
      * Unregister an implementing class for a method.
      * 
-     * @param   \Yana\Plugins\Configs\IsMethodConfiguration $method   remove the implementation of this function
-     * @param   string                                      $classId  plugin identifier
+     * @param   \Yana\Plugins\Configs\IsMethodConfiguration  $event         remove the implementation of this function
+     * @param   string                                       $subscriberId  plugin identifier
      * @return  $this
      */
-    public function unsetImplementation(\Yana\Plugins\Configs\IsMethodConfiguration $method, $classId);
+    public function unsubscribe(\Yana\Plugins\Configs\IsMethodConfiguration $event, $subscriberId);
 
 }
 

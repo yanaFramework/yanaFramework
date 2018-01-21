@@ -25,40 +25,21 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Views\Helpers\Modifiers;
+namespace Yana\Plugins;
 
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/../../../../../include.php';
+require_once __DIR__ . '/../../../include.php';
 
 /**
- * @package test
- * @ignore
+ * @package  test
  */
-class MyEmbeddedTagsModifier extends \Yana\Views\Helpers\Modifiers\EmbeddedTagsModifier
-{
-
-    protected function _getFormatter()
-    {
-        return new \Yana\Views\Helpers\Formatters\NullFormatter();
-    }
-
-    public function getFormatter()
-    {
-        return parent::_getFormatter();
-    }
-
-}
-
-/**
- * @package test
- */
-class EmbeddedTagsModifierTest extends \PHPUnit_Framework_TestCase
+class NullPluginTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Views\Helpers\Modifiers\MyEmbeddedTagsModifier
+     * @var NullPlugin
      */
     protected $object;
 
@@ -68,7 +49,7 @@ class EmbeddedTagsModifierTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Views\Helpers\Modifiers\MyEmbeddedTagsModifier(new \Yana\Views\Managers\NullManager());
+        $this->object = new \Yana\Plugins\NullPlugin();
     }
 
     /**
@@ -83,19 +64,9 @@ class EmbeddedTagsModifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function test__invoke()
+    public function testCatchAll()
     {
-        $this->assertSame(123, $this->object->__invoke(123));
-        $this->assertSame('', $this->object->__invoke(''));
-        $this->assertSame('Test', $this->object->__invoke('Test'));
-    }
-
-    /**
-     * @test
-     */
-    public function testGetFormatter()
-    {
-        $this->assertTrue($this->object->getFormatter() instanceof \Yana\Views\Helpers\Formatters\TextFormatter);
+        $this->assertTrue($this->object->catchAll("", array()));
     }
 
 }

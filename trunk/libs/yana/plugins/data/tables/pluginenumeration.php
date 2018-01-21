@@ -27,28 +27,23 @@
  * @ignore
  */
 
-namespace Yana\Security\Data\Tables;
+namespace Yana\Plugins\Data\Tables;
 
 /**
- * <<enumeration>> Column names for table securityrules.
+ * <<enumeration>> Column names for table plugins.
  *
  * @package     yana
- * @subpackage  security
+ * @subpackage  plugins
  *
  * @ignore
  * @codeCoverageIgnore
  */
-class RuleEnumeration extends \Yana\Core\AbstractEnumeration
+class PluginEnumeration extends \Yana\Core\AbstractEnumeration
 {
 
-    const TABLE = 'securityrules';
-    const ID = 'rule_id';
-    const GRANTED_BY_USER = 'user_created';
-    const USER = 'user_id';
-    const GROUP = 'group_id';
-    const ROLE = 'role_id';
-    const PROFILE = 'profile';
-    const HAS_GRANT_OPTION = 'user_proxy_active';
+    const TABLE = 'plugins';
+    const ID = 'plugin_id';
+    const TITLE = 'plugin_is_active';
 
 }
 

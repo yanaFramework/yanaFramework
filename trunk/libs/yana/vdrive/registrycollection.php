@@ -25,41 +25,35 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Plugins\Subscriptions;
+namespace Yana\VDrive;
 
 /**
- * Standard priority queue.
+ * <<collection>> Of virtual drives.
  *
- * Sorted by priority attribute of subscribers.
  *
- * @package     yana
- * @subpackage  plugins
+ * @package    yana
+ * @subpackage vdrive
  */
-interface IsQueue
+class RegistryCollection extends \Yana\Core\AbstractCollection
 {
 
     /**
-     * Get list of IDs for plugins sorted by priority.
+     * Replaces the given offset and returns the value.
      *
-     * @return  array
+     * @param   string                   $offset  plugin name
+     * @param   \Yana\VDrive\IsRegistry  $value   virtual drive instance
+     * @return  \Yana\VDrive\IsRegistry
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if the value is not a valid collection item
      */
-    public function getSubscribers();
-
-    /**
-     * Subscribe the given class to this event.
-     * 
-     * @param   \Yana\Plugins\Configs\IsClassConfiguration  $class  implements the given event as a method
-     * @return  $this
-     */
-    public function subscribe(\Yana\Plugins\Configs\IsClassConfiguration $class);
-
-    /**
-     * Unregister an subscribing class.
-     * 
-     * @param   string  $classId  identifies the plugin
-     * @return  $this
-     */
-    public function unsubscribe($classId);
+    public function offsetSet($offset, $value)
+    {
+        assert('is_null($offset) || is_string($offset); // $offset expected to be String');
+        if (!$value instanceof \Yana\VDrive\IsRegistry) {
+            $message = "Instance of \Yana\VDrive\IsRegistry expected.";
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
+        }
+        return $this->_offsetSet($offset, $value);
+    }
 
 }
 

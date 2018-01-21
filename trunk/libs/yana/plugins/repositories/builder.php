@@ -166,12 +166,12 @@ class Builder extends \Yana\Plugins\Repositories\AbstractBuilder
                 // overwrite method configuration of base plugin
                 if ($isOverwrite && !empty($parent)) {
                     $overwrittenMethods[$methodName][$parent] = true;
-                    $this->object->unsetImplementation($method, $parent);
+                    $this->object->unsubscribe($method, $parent);
                 }
 
                 // add to implementations
                 if (!isset($overwrittenMethods[$methodName][$pluginId])) {
-                    $this->object->setImplementation($method, $config);
+                    $this->object->subscribe($method, $config);
                 }
             } // end foreach method
             unset($isOverwrite, $isSubscriber, $methodName, $method);
@@ -283,7 +283,7 @@ class Builder extends \Yana\Plugins\Repositories\AbstractBuilder
                     continue;
                 }
 
-                $this->object->setImplementation($methodConfig, $pluginConfig);
+                $this->object->subscribe($methodConfig, $pluginConfig);
             }
             unset($pluginName, $pluginConfig);
         }

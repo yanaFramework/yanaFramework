@@ -41,7 +41,7 @@ class Repository extends \Yana\Core\Object implements \Yana\Plugins\Repositories
     /**
      * Collection of {@see \Yana\Plugins\Configs\MethodConfiguration}s.
      *
-     * @var  \Yana\Plugins\Configs\MethodCollection
+     * @var  \Yana\Plugins\Configs\IsMethodCollection
      */
     private $_events = null;
 
@@ -55,9 +55,9 @@ class Repository extends \Yana\Core\Object implements \Yana\Plugins\Repositories
     /**
      * Priority list of methods.
      *
-     * @var  array
+     * @var  \Yana\Plugins\Subscriptions\QueueCollection
      */
-    private $_implementations = array();
+    private $_queues = null;
 
     /**
      * Initialize instance.
@@ -66,6 +66,7 @@ class Repository extends \Yana\Core\Object implements \Yana\Plugins\Repositories
     {
         $this->_plugins = new \Yana\Plugins\Configs\ClassCollection();
         $this->_events = new \Yana\Plugins\Configs\MethodCollection();
+        $this->_queues = new \Yana\Plugins\Subscriptions\QueueCollection();
     }
 
     /**
@@ -139,48 +140,73 @@ class Repository extends \Yana\Core\Object implements \Yana\Plugins\Repositories
     }
 
     /**
+     * Returns queue collection.
+     *
+     * @return  \Yana\Plugins\Subscriptions\QueueCollection
+     */
+    protected function _getQueues()
+    {
+        return $this->_queues;
+    }
+
+    /**
+     * Returns queue corresponding to method name.
+     *
+     * Creates one if none exists.
+     *
+     * @param   string $methodName  name of the event to check for
+     * @return  \Yana\Plugins\Subscriptions\IsQueue
+     */
+    protected function _getQueue($methodName)
+    {
+        $queues = $this->_getQueues();
+        $id = mb_strtolower($methodName);
+        if (!isset($queues[$id])) {
+            $queues[$id] = new \Yana\Plugins\Subscriptions\Queue();
+        }
+        return $queues[$id];
+    }
+
+    /**
      * Get list of plugin priorities for a method name.
      *
-     * If the event is not registered, the function returns NULL.
-     * Otherwise it returns a list of items of {@see PluginPriorityEnumeration}.
+     * If the event is not registered, the function returns an empty array.
+     * Otherwise it returns a list of plugin IDs sorted by priority.
      *
      * @param   string $methodName  name of the event to check for
      * @return  array
      */
-    public function getImplementations($methodName)
+    public function getSubscribers($methodName)
     {
         assert('is_string($methodName); // Invalid argument $methodName: string expected');
-        $id = mb_strtolower($methodName);
-        return (isset($this->_implementations[$id])) ? $this->_implementations[$id] : array();
+        return $this->_getQueue($methodName)->getSubscribers();
     }
 
     /**
      * Register that the given class implements the given method.
      * 
-     * @param   \Yana\Plugins\Configs\IsMethodConfiguration $method   implemented by the given class
-     * @param   \Yana\Plugins\Configs\IsClassConfiguration  $class    implements the given method
+     * @param   \Yana\Plugins\Configs\IsMethodConfiguration $event       implemented by the given class
+     * @param   \Yana\Plugins\Configs\IsClassConfiguration  $subscriber  implements the given method
      * @return  $this
      */
-    public function setImplementation(\Yana\Plugins\Configs\IsMethodConfiguration $method, \Yana\Plugins\Configs\IsClassConfiguration $class)
+    public function subscribe(\Yana\Plugins\Configs\IsMethodConfiguration $event, \Yana\Plugins\Configs\IsClassConfiguration $subscriber)
     {
-        $methodName = mb_strtolower($method->getMethodName());
-        $this->_implementations[$methodName][$class->getId()] = $class->getPriority();
+        $queue = $this->_getQueue($event->getMethodName());
+        $queue->subscribe($subscriber);
         return $this;
     }
 
     /**
      * Unregister an implementing class for a method.
      * 
-     * @param   \Yana\Plugins\Configs\IsMethodConfiguration $method   remove the implementation of this function
-     * @param   string                                      $classId  plugin identifier
+     * @param   \Yana\Plugins\Configs\IsMethodConfiguration  $event         remove the implementation of this function
+     * @param   string                                       $subscriberId  plugin identifier
      * @return  $this
      */
-    public function unsetImplementation(\Yana\Plugins\Configs\IsMethodConfiguration $method, $classId)
+    public function unsubscribe(\Yana\Plugins\Configs\IsMethodConfiguration $event, $subscriberId)
     {
-        $methodName = mb_strtolower($method->getMethodName());
-        if (isset($this->_implementations[$methodName][$classId])) {
-            unset($this->_implementations[$methodName][$classId]);
-        }
+        $queue = $this->_getQueue($event->getMethodName());
+        $queue->unsubscribe($subscriberId);
         return $this;
     }
 

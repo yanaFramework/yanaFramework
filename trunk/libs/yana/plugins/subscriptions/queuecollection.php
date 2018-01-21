@@ -35,32 +35,25 @@ namespace Yana\Plugins\Subscriptions;
  * @package     yana
  * @subpackage  plugins
  */
-interface IsQueue
+class QueueCollection extends \Yana\Core\AbstractCollection
 {
 
     /**
-     * Get list of IDs for plugins sorted by priority.
+     * Add a new connection to the collection.
      *
-     * @return  array
+     * @param   scalar  $offset  method name
+     * @param   \Yana\Plugins\Subscriptions\IsQueue  $value  connection that shoud be added
+     * @return  \Yana\Plugins\Subscriptions\IsQueue
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the value is not a mapper
      */
-    public function getSubscribers();
-
-    /**
-     * Subscribe the given class to this event.
-     * 
-     * @param   \Yana\Plugins\Configs\IsClassConfiguration  $class  implements the given event as a method
-     * @return  $this
-     */
-    public function subscribe(\Yana\Plugins\Configs\IsClassConfiguration $class);
-
-    /**
-     * Unregister an subscribing class.
-     * 
-     * @param   string  $classId  identifies the plugin
-     * @return  $this
-     */
-    public function unsubscribe($classId);
-
+    public function offsetSet($offset, $value)
+    {
+        if (!$value instanceof \Yana\Plugins\Subscriptions\IsQueue) {
+            $message = "Instance of \Yana\Plugins\Subscriptions\IsQueue expected.";
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
+        }
+        return $this->_offsetSet($offset, $value);
+    }
 }
 
 ?>

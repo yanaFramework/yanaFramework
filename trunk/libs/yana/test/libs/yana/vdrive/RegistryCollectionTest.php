@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -25,40 +25,21 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Views\Helpers\Modifiers;
+namespace Yana\VDrive;
 
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/../../../../../include.php';
+require_once __DIR__ . '/../../../include.php';
 
 /**
- * @package test
- * @ignore
+ * @package  test
  */
-class MyEmbeddedTagsModifier extends \Yana\Views\Helpers\Modifiers\EmbeddedTagsModifier
-{
-
-    protected function _getFormatter()
-    {
-        return new \Yana\Views\Helpers\Formatters\NullFormatter();
-    }
-
-    public function getFormatter()
-    {
-        return parent::_getFormatter();
-    }
-
-}
-
-/**
- * @package test
- */
-class EmbeddedTagsModifierTest extends \PHPUnit_Framework_TestCase
+class RegistryCollectionTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Views\Helpers\Modifiers\MyEmbeddedTagsModifier
+     * @var RegistryCollection
      */
     protected $object;
 
@@ -68,7 +49,7 @@ class EmbeddedTagsModifierTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Views\Helpers\Modifiers\MyEmbeddedTagsModifier(new \Yana\Views\Managers\NullManager());
+        $this->object = new \Yana\VDrive\RegistryCollection();
     }
 
     /**
@@ -83,19 +64,20 @@ class EmbeddedTagsModifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function test__invoke()
+    public function testOffsetSet()
     {
-        $this->assertSame(123, $this->object->__invoke(123));
-        $this->assertSame('', $this->object->__invoke(''));
-        $this->assertSame('Test', $this->object->__invoke('Test'));
+        $o = new \Yana\VDrive\Registry(__FILE__);
+        $this->assertSame($o, $this->object->offsetSet('test', $o));
+        $this->assertSame($o, $this->object['test']);
     }
 
     /**
      * @test
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      */
-    public function testGetFormatter()
+    public function testOffsetSetInvalidArgumentException()
     {
-        $this->assertTrue($this->object->getFormatter() instanceof \Yana\Views\Helpers\Formatters\TextFormatter);
+        $this->object[] = new \Yana\Core\Object();
     }
 
 }

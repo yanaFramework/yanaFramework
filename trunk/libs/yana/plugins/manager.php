@@ -81,32 +81,6 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     private static $_path = null;
 
     /**
-     * @var bool
-     */
-    private $_isLoaded = false;
-
-    /**
-     * result of last handled action
-     *
-     * @var bool
-     */
-    private static $_lastResult = null;
-
-    /**
-     * name of currently handled event
-     *
-     * @var string
-     */
-    private static $_lastEvent = "";
-
-    /**
-     * name of initially handled event
-     *
-     * @var string
-     */
-    private static $_firstEvent = "";
-
-    /**
      * definition of next event in queue
      *
      * @var \Yana\Plugins\Configs\EventRoute
@@ -114,25 +88,18 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     private static $_nextEvent = null;
 
     /**
+     * Event dispatching strategy.
+     *
+     * @var \Yana\Plugins\Events\IsDispatcher
+     */
+    private static $_dispatcher = null;
+
+    /**
      * virtual drive
      *
-     * @var array
+     * @var \Yana\Plugins\Loaders\IsRegistryLoader
      */
-    private $_drive = array();
-
-    /**
-     * plugin objects
-     *
-     * @var array
-     */
-    private $_plugins = array();
-
-    /**
-     * currently loaded plugins
-     *
-     * @var array
-     */
-    private $_loadedPlugins = array();
+    private $_registryLoader = null;
 
     /**
      * @var \Yana\Plugins\Repositories\IsRepository
@@ -143,6 +110,11 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      * @var \Yana\Plugins\Dependencies\IsContainer
      */
     private $_dependencies = null;
+
+    /**
+     * @var \Yana\Plugins\Loaders\IsLoader
+     */
+    private $_pluginLoader = null;
 
     /**
      * Get dependency injection container.
@@ -168,6 +140,44 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     {
         $this->_dependencies = $dependencies;
         return $this;
+    }
+
+    /**
+     * Create instance of plugin loader.
+     *
+     * @param   \Yana\Application  $application  injected dependency
+     * @return  \Yana\Plugins\Loaders\IsLoader
+     */
+    protected function _createPluginLoader(\Yana\Application $application)
+    {
+        $container = new \Yana\Plugins\Dependencies\PluginContainer($application, $this->getDependencies()->getSession());
+        return new \Yana\Plugins\Loaders\PluginLoader($this->getPluginDir(), $container);
+    }
+
+    /**
+     * Get instance of registry loader.
+     *
+     * @return  \Yana\Plugins\Loaders\IsRegistryLoader
+     */
+    protected function _getRegistryLoader()
+    {
+        if (!isset($this->_registryLoader)) {
+            $this->_registryLoader = new \Yana\Plugins\Loaders\RegistryLoader($this->getPluginDir());
+        }
+        return $this->_registryLoader;
+    }
+
+    /**
+     * Get instance of registry loader.
+     *
+     * @return  \Yana\Plugins\Events\Dispatcher
+     */
+    protected static function _getDispatcher()
+    {
+        if (!isset(self::$_dispatcher)) {
+            self::$_dispatcher = new \Yana\Plugins\Events\Dispatcher();
+        }
+        return self::$_dispatcher;
     }
 
     /**
@@ -248,60 +258,48 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     /**
      * Broadcast an event to all plugins.
      *
-     * This function looks up an event that you provide
-     * with the argument $event, and sends it to all
+     * This function looks up an event that you provide with the argument $event, and sends it to all
      * plugins that are in the event's group of recipients.
      *
-     * Note: that "handle an event" actually means "calling
-     * a function that serves as an event handler".
-     * You may pass arguments to this function by using
-     * the argument $ARGUMENTS, which is supposed to be
-     * an associative array.
+     * Note: that "sending an event" actually means "calling a function that serves as an event handler".
      *
-     * @param   string             $event        identifier of the occured event
-     * @param   array              $args         list of arguments
+     * @param   string             $action       identifier of the requested action
+     * @param   array              $args         list of arguments as associative array
      * @param   \Yana\Application  $application  facade
      * @return  mixed
      * @throws  \Yana\Core\Exceptions\NotReadableException    when an existing VDrive definition is not readable
      * @throws  \Yana\Core\Exceptions\InvalidActionException  when the event is undefined
+     * @throws  \Exception                                    plugins may throw arbitrary exceptions on failure
      */
-    public function broadcastEvent($event, array $args, \Yana\Application $application)
+    public function sendEvent($action, array $args, \Yana\Application $application)
     {
-        assert('is_string($event); // Invalid argument $event: string expected');
+        assert('is_string($action); // Invalid argument $action: string expected');
 
         // event must be defined
-        $config = $this->getEventConfiguration($event);
+        $config = $this->getEventConfiguration($action);
         if (!($config instanceof \Yana\Plugins\Configs\IsMethodConfiguration)) {
-            $error = new \Yana\Core\Exceptions\InvalidActionException();
-            $error->setAction($event);
+            $error = new \Yana\Core\Exceptions\InvalidActionException(); // if the event is not defined, we throw an exception
+            $error->setAction($action);
             throw $error;
         }
 
-        if (empty(self::$_firstEvent)) {
-            self::$_firstEvent = $event;
-        }
-        self::$_lastEvent = $event;
-        $eventSubscribers = $this->_getEventSubscribers($event);
-        $this->_loadPlugins(array_keys($eventSubscribers), $application);
-        self::$_lastResult = true;
-
+        // In preparation of calling the plugin implementation, we store the list of arguments that are to be passed
         $config->setEventArguments($args);
-
+        // we start by identifying the plugins that are subscribing to the event
+        $listofPluginsSubcribedToEvent = $this->_getRepository()->getSubscribers($action);
+        // before we load the plugins (and thus call a constructor) we need to load the configurations required by them
+        $this->_getRegistryLoader()->loadRegistries($listofPluginsSubcribedToEvent);
+        // so far we only know the names of the plugins - next we actually need to load their implementation, the plugin-loader lets us do that
+        $this->_pluginLoader = $this->_createPluginLoader($application);
+        // next, by using the plugin loader, we instantiate all plugins that have subscribed to this event
         assert('!isset($element); // cannot redeclare variable $element');
-        foreach ($this->_plugins as $element)
-        {
-            $lastResult = $config->sendEvent($element);
-            if ($lastResult === false) {
-                self::$_lastResult = false;
-                break;
-            }
-            if ($config->hasMethod($element)) {
-                self::$_lastResult = $lastResult;
-            }
-        }
-        unset($element);
-
-        return self::$_lastResult;
+        $subscribers = $this->_pluginLoader->loadPlugins($listofPluginsSubcribedToEvent);
+        // Finally we need to load a dispatch strategy to notify all subscribers of the event
+        $dispatcher = self::_getDispatcher();
+        // and finally we send the even to all subscribers
+        $result = $dispatcher->sendEvent($subscribers, $config);
+        // Done! Now we return the result of the call
+        return $result;
     }
 
     /**
@@ -315,7 +313,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      */
     public static function getLastResult()
     {
-        return self::$_lastResult;
+        return self::_getDispatcher()->getLastResult();
     }
 
     /**
@@ -329,7 +327,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      */
     public static function getLastEvent()
     {
-        return self::$_lastEvent;
+        return self::_getDispatcher()->getLastEvent();
     }
 
     /**
@@ -343,7 +341,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      */
     public function getFirstEvent()
     {
-        return self::$_firstEvent;
+        return self::_getDispatcher()->getFirstEvent();
     }
 
     /**
@@ -359,8 +357,9 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     public function getNextEvent()
     {
         if (!isset(self::$_nextEvent)) {
-            $event = $this->getFirstEvent();
-            $result = self::getLastResult();
+            $dispatcher = self::_getDispatcher();
+            $event = $dispatcher->getFirstEvent();
+            $result = $dispatcher->getLastResult();
             $methods = $this->getEventConfigurations();
             /* @var $method \Yana\Plugins\Configs\IsMethodConfiguration */
             $method = $methods[$event];
@@ -475,72 +474,16 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     }
 
     /**
-     * Get a file from a virtual drive.
-     *
-     * Each plugin defines it's own virtual drive with files that are required
-     * for it to function as intended.
-     *
-     * You may access the virtual drive of any plugin if you know the plugin's
-     * name $pluginName and the name $key of the file you want.
-     * This is usefull from plugins that extend the functionality of another.
-     *
-     * @param   string  $pluginName  identifier for the plugin
-     * @param   string  $key         identifier for the file to get
-     * @return  \Yana\Files\AbstractResource
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the plugin name is invalid
-     */
-    public function get($pluginName, $key)
-    {
-        assert('is_string($key); // Invalid argument $key: string expected');
-        assert('is_string($pluginName); // Invalid argument $pluginName: string expected');
-
-        $pluginName = (string) $pluginName;
-        $key = (string) $key;
-
-        if (isset($this->_drive[$pluginName])) {
-            return $this->_drive[$pluginName]->getResource($key);
-        } else {
-            $message = "There is no plugin named '" . $pluginName . "'.";
-            $level = \Yana\Log\TypeEnumeration::WARNING;
-            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
-        }
-    }
-
-    /**
      * Access the drive of a plugin by using it's name.
      *
-     * @param   string  $name  name of plugin
-     * @return  \Yana\VDrive\VDrive
+     * @param   string  $name  name of plugin or resource
+     * @return  \Yana\Files\IsReadable
+     * @throws  \Yana\Core\Exceptions\UndefinedPropertyException  if no such resource exists
      */
     public function __get($name)
     {
         assert('is_string($name); // Wrong type for argument 1. String expected');
-        if (!isset($this->_drive[$name])) {
-            // recursive search
-            $drive = substr($name, 0, strpos($name, ':/'));
-            if (isset($this->_drive[$drive])) {
-                $this->_drive[$name] = $this->_drive[$drive]->$name;
-            } else {
-                $this->_drive[$name] = null;
-            }
-        }
-        return $this->_drive[$name];
-    }
-
-    /**
-     * Check if a specific plugin is installed.
-     *
-     * This returns bool(true) if a plugin with the name
-     * $pluginName exists and has currently been installed.
-     * Otherwise it returns bool(false).
-     *
-     * @param   string  $pluginName  identifier for the plugin
-     * @return  bool
-     */
-    public function isInstalled($pluginName)
-    {
-        assert('is_bool($this->_isLoaded);');
-        return (bool) ($this->_isLoaded && isset($this->_plugins[mb_strtolower("$pluginName")]));
+        return $this->_getRegistryLoader()->$name;
     }
 
     /**
@@ -552,6 +495,8 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      */
     public function __toString()
     {
+        $txt = "Plugin list is empty.\n";
+
         $pluginConfig = $this->getPluginConfigurations();
         if (!empty($pluginConfig)) {
             $txt = "";
@@ -562,10 +507,8 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
                 "\t- type = " . $pluginConfig->getType() . "\n" .
                 "\t- priority = " . $pluginConfig->getPriority() . "\n";
             }
-            return $txt;
-        } else {
-            return "Plugin list is empty.\n";
         }
+        return $txt;
     }
 
     /**
@@ -603,7 +546,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
 
         /**
          * @todo check if this is necessary
-         * $this->_loadPlugin($pluginName); 
+         * $this->_loadPlugin($pluginName);
          */
         $pluginConfig = $this->getPluginConfigurations();
         if (isset($pluginConfig[$pluginName])) {
@@ -642,7 +585,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     public function getEventType($eventName = null)
     {
         if (is_null($eventName)) {
-            $eventName = self::$_lastEvent;
+            $eventName = self::getLastEvent();
         }
         assert('is_string($eventName); // Wrong type for argument 1. String expected');
 
@@ -710,86 +653,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     public function isLoaded($pluginName)
     {
         assert('is_string($pluginName); // Invalid argument $pluginName: string expected');
-        return isset($this->_loadedPlugins[mb_strtolower("$pluginName")]);
-    }
-
-    /**
-     * Get event subscribers.
-     *
-     * @param   string  $event  event
-     * @return  array
-     *
-     * @ignore
-     */
-    private function _getEventSubscribers($event)
-    {
-        assert('is_string($event); // Invalid argument $event: string expected');
-        $this->_loadedPlugins = array();
-
-        $config = $this->_getRepository()->getImplementations($event);
-
-        foreach (array_keys($config) as $pluginName)
-        {
-            $this->_loadedPlugins[$pluginName] = true;
-        }
-        arsort($config);
-        return $config;
-    }
-
-    /**
-     * Loads plugins from a list of names.
-     *
-     * If no list is provided, all known plugins are loaded.
-     *
-     * @param   array              $plugins      list of plugin names
-     * @param   \Yana\Application  $application  facade to bind plugins to
-     * @throws  \Yana\Core\Exceptions\NotReadableException  when an existing VDrive definition is not readable
-     * @ignore
-     */
-    private function _loadPlugins(array $plugins, \Yana\Application $application)
-    {
-        foreach ($plugins as $name)
-        {
-            $this->_loadPlugin($name, $application);
-        }
-        $this->_isLoaded = true;
-    }
-
-    /**
-     * Load a plugin.
-     *
-     * @param   string             $name         Must be valid identifier. Consists of chars, numbers and underscores.
-     * @param   \Yana\Application  $application  facade to bind plugin to
-     * @throws  \Yana\Core\Exceptions\NotReadableException  when an existing VDrive definition is not readable
-     * @ignore
-     */
-    private function _loadPlugin($name, \Yana\Application $application)
-    {
-        assert('is_string($name); // Invalid argument $name: string expected');
-        if (!isset($this->_plugins[$name])) {
-            $pluginDir = $this->getPluginDir();
-
-            // load virtual drive, if it exists
-            assert('!isset($driveFile); // Cannot redeclare var $driveFile');
-            $driveFile = \Yana\Plugins\PluginNameMapper::toVDriveFilenameWithDirectory($name, $pluginDir);
-
-            if (is_file($driveFile)) {
-                $this->_drive[$name] = new \Yana\VDrive\Registry($driveFile, $this->getPluginDir()->getPath() . $name . "/");
-                $this->_drive[$name]->read();
-            }
-            unset($driveFile);
-            // load base class, if it exists
-            try {
-                $container = new \Yana\Plugins\Dependencies\PluginContainer($application, $this->getDependencies()->getSession());
-                $this->_plugins[$name] =
-                    \Yana\Plugins\AbstractPlugin::loadPlugin($name, $pluginDir, $container);
-
-            } catch (\Yana\Core\Exceptions\NotFoundException $e) {
-                unset($e); // ignore plugins that are not found
-            }
-        } else {
-            /* plugin is already loaded */
-        }
+        return $this->_pluginLoader instanceOf \Yana\Plugins\Loaders\IsLoader && $this->_pluginLoader->isLoaded($pluginName);
     }
 
     /**
@@ -852,15 +716,6 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     protected static function _getClassName()
     {
         return __CLASS__;
-    }
-
-    /**
-     * Destructor called by serialize().
-     */
-    public function __sleep()
-    {
-        // Need to destroy plugin cache, otherwise PHP will not properly load the plugin classes, causing trouble.
-        $this->_plugins = array();
     }
 
 }

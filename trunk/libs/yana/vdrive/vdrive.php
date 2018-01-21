@@ -166,7 +166,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
      * You may access the drive of a plugin by using it's name.
      *
      * @param   string  $name  name of plugin
-     * @return  \Yana\VDrive\VDrive
+     * @return  \Yana\Files\IsReadable
      */
     public function __get($name)
     {
@@ -541,7 +541,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
      *
      * @name    VDrive::getResource()
      * @param   string  $path  virtual file path
-     * @return  \Yana\Files\AbstractResource
+     * @return  \Yana\Files\IsReadable
      * @throws  \Yana\Core\Exceptions\NotFoundException       when virtual file or directory does not exist.
      * @throws  \Yana\Core\Exceptions\NotReadableException    when source file is not readable
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when the file could not be read or contains invalid syntax

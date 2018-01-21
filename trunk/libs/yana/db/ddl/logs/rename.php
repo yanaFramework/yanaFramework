@@ -124,11 +124,11 @@ class Rename extends \Yana\Db\Ddl\Logs\Create
      */
     public function commitUpdate()
     {
+        $result = false;
         if (isset(self::$handler)) {
-            return call_user_func(self::$handler, $this->getSubject(), $this->getOldName(), $this->getName());
-        } else {
-            return false;
+            $result = call_user_func(self::$handler, $this->getSubject(), $this->getOldName(), $this->getName());
         }
+        return $result;
     }
 
     /**
