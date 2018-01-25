@@ -44,9 +44,6 @@ if (empty($_SERVER['DOCUMENT_ROOT']) && isset($_SERVER['OS']) && preg_match('/wi
 \Yana\Db\Ddl\DDL::setDirectory(CWD . '/resources/');
 \Yana\Db\FileDb\Driver::setBaseDirectory(CWD . 'resources/db/');
 
-\Yana\Plugins\Manager::setPath(
-    new \Yana\Files\Text(CWD . '/resources/plugins.cfg'),
-    new \Yana\Files\Dir(CWD . '/../../../plugins/')
-);
+\Yana\Plugins\Facade::setPluginDirectory(new \Yana\Files\Dir(CWD . '/../../../plugins/'));
 
 ?>

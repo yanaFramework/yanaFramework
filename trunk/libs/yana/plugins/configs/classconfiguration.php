@@ -514,9 +514,9 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Conf
 
         // get defaults
         if (is_null($language)) {
-            $languageManager = \Yana\Translations\Facade::getInstance();
-            $language = $languageManager->getLanguage();
-            $country = $languageManager->getCountry();
+            $languageFacade = \Yana\Translations\Facade::getInstance();
+            $language = $languageFacade->getLanguage();
+            $country = $languageFacade->getCountry();
         }
 
         if (isset($this->_titles["$language-$country"])) {
@@ -856,16 +856,6 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Conf
     }
 
     /**
-     * Check if plugin is active.
-     * @return  bool
-     */
-    public function isActive()
-    {
-        $active = $this->getActive();
-        return $active === \Yana\Plugins\ActivityEnumeration::ACTIVE || $active === \Yana\Plugins\ActivityEnumeration::DEFAULT_ACTIVE;
-    }
-
-    /**
      * Check if plugin is active by default.
      *
      * @return  bool
@@ -873,32 +863,6 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Conf
     public function isActiveByDefault()
     {
         return $this->getActive() === \Yana\Plugins\ActivityEnumeration::DEFAULT_ACTIVE;
-    }
-
-    /**
-     * Mark this class as active.
-     *
-     * This is done by setting the active property to 1.
-     *
-     * @return  $this
-     */
-    public function activate()
-    {
-        $this->setActive(\Yana\Plugins\ActivityEnumeration::ACTIVE);
-        return $this;
-    }
-
-    /**
-     * Mark this class as inactive.
-     *
-     * This is done by setting the active property to 0.
-     *
-     * @return  $this
-     */
-    public function deactivate()
-    {
-        $this->setActive(\Yana\Plugins\ActivityEnumeration::INACTIVE);
-        return $this;
     }
 
 }

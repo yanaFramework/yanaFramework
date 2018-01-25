@@ -94,10 +94,10 @@ class Configuration extends \Yana\Util\XmlArray implements \Yana\VDrive\IsConfig
      * Returns the file identified by $path as a Configuration object.
      *
      * @param   string  $path  file path
-     * @return  $this
+     * @return  \Yana\VDrive\Configuration
      * @throws  \Yana\Core\Exceptions\Files\NotFoundException  when the given path is invalid
      */
-    public static function loadFile($path)
+    public static function createInstanceFromFile($path)
     {
         assert('is_string($path); // Wrong type for argument 1. String expected');
         assert('$path > ""; // Argument 1 must not be empty');
@@ -115,9 +115,9 @@ class Configuration extends \Yana\Util\XmlArray implements \Yana\VDrive\IsConfig
      * Returns $string as a Configuration object.
      *
      * @param   string  $string     string
-     * @return  $this
+     * @return  \Yana\VDrive\Configuration
      */
-    public static function loadString($string)
+    public static function createInstanceFromString($string)
     {
         assert('is_string($string); // Wrong type for argument 1. String expected');
         return \simplexml_load_string($string, __CLASS__);
@@ -128,9 +128,9 @@ class Configuration extends \Yana\Util\XmlArray implements \Yana\VDrive\IsConfig
      *
      * Returns the an empty file identified by $path as a Configuration object.
      *
-     * @return  $this
+     * @return  \Yana\VDrive\Configuration
      */
-    public static function createDrive()
+    public static function createInstance()
     {
         return new self("<drive></drive>");
     }
@@ -322,7 +322,7 @@ class Configuration extends \Yana\Util\XmlArray implements \Yana\VDrive\IsConfig
     {
         $vars = array();
         if (isset($this->var)) {
-            $vars = $this->var;
+            $vars = $this->xpath('var');
         }
         return $vars;
     }
@@ -359,7 +359,7 @@ class Configuration extends \Yana\Util\XmlArray implements \Yana\VDrive\IsConfig
     {
         $files = array();
         if (isset($this->file)) {
-            $files = $this->file;
+            $files = $this->xpath('file');
         }
         return $files;
     }
@@ -399,7 +399,7 @@ class Configuration extends \Yana\Util\XmlArray implements \Yana\VDrive\IsConfig
     {
         $dirs = array();
         if (isset($this->dir)) {
-            $dirs = $this->dir;
+            $dirs = $this->xpath('dir');
         }
         return $dirs;
     }
@@ -433,7 +433,7 @@ class Configuration extends \Yana\Util\XmlArray implements \Yana\VDrive\IsConfig
     {
         $includes = array();
         if (isset($this->include)) {
-            $includes = $this->include;
+            $includes = $this->xpath('include');
         }
         return $includes;
     }
@@ -466,15 +466,15 @@ class Configuration extends \Yana\Util\XmlArray implements \Yana\VDrive\IsConfig
     /**
      * Returns a list of sources for the mountpoint, sorted by priority.
      *
-     * @return  $this
+     * @return  array
      */
     public function getNodeSources()
     {
         $sources = null;
         if (isset($this->source)) {
-            $sources = $this->source;
+            $sources = $this->xpath('source');
         } else {
-            $sources = new \Yana\VDrive\Configuration('<source/>');
+            $sources = array(new \Yana\VDrive\Configuration('<source/>'));
         }
         return $sources;
     }
@@ -485,7 +485,7 @@ class Configuration extends \Yana\Util\XmlArray implements \Yana\VDrive\IsConfig
      * @param   string  $readable    (true = is redable , false otherweise)
      * @param   string  $writeable   (true = is writeable , false otherweise)
      * @param   string  $executable  (true = is executable , false otherweise)
-     * @return  $this
+     * @return  \Yana\VDrive\Configuration|null
      */
     public function setNodeRequirements($readable = false, $writeable = false, $executable = false)
     {

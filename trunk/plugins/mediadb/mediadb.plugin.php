@@ -76,22 +76,6 @@ class MediaDbPlugin extends \Yana\Plugins\AbstractPlugin
     }
 
     /**
-     * Default event handler
-     *
-     * The default event handler catches all events, whatever they might be.
-     * If you don't need it, you may deactive it by adding an @ignore to the annotations below.
-     *
-     * @param   string  $event  name of the called event in lower-case
-     * @param   array   $ARGS   array of arguments passed to the function
-     * @return  bool
-     * @ignore
-     */
-    public function catchAll($event, array $ARGS)
-    {
-        return true;
-    }
-
-    /**
      * save changes made in edit-form
      *
      * @type       write

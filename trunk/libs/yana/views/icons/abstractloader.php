@@ -66,8 +66,10 @@ abstract class AbstractLoader extends \Yana\Core\Object implements \Yana\Views\I
             assert('!isset($application); // Cannot redeclare var $application');
             $builder = new \Yana\ApplicationBuilder();
             $application = $builder->buildApplication();
-            $this->_adapter = new \Yana\Views\Icons\XmlAdapter(new \Yana\Files\Dir($application->getVar('PROFILE.SMILEYDIR')));
-            unset($builder, $application);
+            $file = $application->getResource('system:/smile/config.text');
+            $directory = $application->getVar('PROFILE.SMILEYDIR');
+            $this->_adapter = new \Yana\Views\Icons\XmlAdapter($file, $directory);
+            unset($builder);
         }
         return $this->_adapter;
     }

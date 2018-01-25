@@ -129,28 +129,28 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
     private $_profileId = "";
 
     /**
-     * @var  \Yana\Plugins\Manager
+     * @var  \Yana\Plugins\Facade
      */
-    private $_pluginManager;
+    private $_plugins;
 
     /**
      * <<constructor>> Initializes dependencies.
      *
-     * @param  \Yana\Plugins\Manager  $manager  dependent resource
+     * @param  \Yana\Plugins\Facade  $facade  dependent resource
      */
-    public function __construct(\Yana\Plugins\Manager $manager)
+    public function __construct(\Yana\Plugins\Facade $facade)
     {
-        $this->_pluginManager = $manager;
+        $this->_plugins = $facade;
     }
 
     /**
      * Return plugin manager instance.
      *
-     * @return  \Yana\Plugins\Manager
+     * @return  \Yana\Plugins\Facade
      */
-    protected function _getPluginManager()
+    protected function _getPlugins()
     {
-        return $this->_pluginManager;
+        return $this->_plugins;
     }
 
     /**
@@ -458,7 +458,7 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
     /**
      * Set list of events for plugins.
      *
-     * @param   \Yana\Plugins\Configs\MethodCollection  $eventConfigurationsForPlugins  provided by Plugins\Manager
+     * @param   \Yana\Plugins\Configs\MethodCollection  $eventConfigurationsForPlugins  provided by Plugins\Facade
      * @return  self
      */
     public function setEventConfigurationsForPlugins(\Yana\Plugins\Configs\MethodCollection $eventConfigurationsForPlugins)
@@ -477,7 +477,7 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
     public function getEventConfigurationsForPlugins()
     {
         if (!isset($this->_eventConfigurationsForPlugins)) {
-            $this->_eventConfigurationsForPlugins = $this->_getPluginManager()->getEventConfigurations();
+            $this->_eventConfigurationsForPlugins = $this->_getPlugins()->getEventConfigurations();
         }
         return $this->_eventConfigurationsForPlugins;
     }
@@ -511,7 +511,7 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
      */
     public function getLastPluginAction()
     {
-        return (string) $this->_getPluginManager()->getLastEvent();
+        return (string) $this->_getPlugins()->getLastEvent();
     }
 
     /**

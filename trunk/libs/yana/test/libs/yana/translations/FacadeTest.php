@@ -162,6 +162,14 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testGetVars()
+    {
+        $this->assertEquals(array(), $this->object->getVars());
+    }
+
+    /**
+     * @test
+     */
     public function testIsVar()
     {
         $this->assertFalse($this->object->isVar('test'));

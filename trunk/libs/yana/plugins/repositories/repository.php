@@ -35,39 +35,8 @@ namespace Yana\Plugins\Repositories;
  * @package     yana
  * @subpackage  plugins
  */
-class Repository extends \Yana\Core\Object implements \Yana\Plugins\Repositories\IsRepository
+class Repository extends \Yana\Plugins\Repositories\AbstractRepository
 {
-
-    /**
-     * Collection of {@see \Yana\Plugins\Configs\MethodConfiguration}s.
-     *
-     * @var  \Yana\Plugins\Configs\IsMethodCollection
-     */
-    private $_events = null;
-
-    /**
-     * Collection of {@see \Yana\Plugins\Configs\ClassConfiguration}s.
-     *
-     * @var  \Yana\Plugins\Configs\IsClassCollection
-     */
-    private $_plugins = null;
-
-    /**
-     * Priority list of methods.
-     *
-     * @var  \Yana\Plugins\Subscriptions\QueueCollection
-     */
-    private $_queues = null;
-
-    /**
-     * Initialize instance.
-     */
-    public function __construct()
-    {
-        $this->_plugins = new \Yana\Plugins\Configs\ClassCollection();
-        $this->_events = new \Yana\Plugins\Configs\MethodCollection();
-        $this->_queues = new \Yana\Plugins\Subscriptions\QueueCollection();
-    }
 
     /**
      * Check if a plugin with the given name exists.
@@ -77,7 +46,7 @@ class Repository extends \Yana\Core\Object implements \Yana\Plugins\Repositories
      */
     public function isPlugin($plugin)
     {
-        return $this->_plugins->offsetExists($plugin);
+        return $this->getPlugins()->offsetExists($plugin);
     }
 
     /**
@@ -88,20 +57,8 @@ class Repository extends \Yana\Core\Object implements \Yana\Plugins\Repositories
      */
     public function addPlugin(\Yana\Plugins\Configs\ClassConfiguration $plugin)
     {
-        $this->_plugins[] = $plugin;
+        $this->getPlugins()->offsetSet(null, $plugin);
         return $this;
-    }
-
-    /**
-     * Get list of plugin configurations.
-     *
-     * Returns a collection object that may be used as an array.
-     *
-     * @return  \Yana\Plugins\Configs\IsClassCollection
-     */
-    public function getPlugins()
-    {
-        return $this->_plugins;
     }
 
     /**
@@ -112,7 +69,7 @@ class Repository extends \Yana\Core\Object implements \Yana\Plugins\Repositories
      */
     public function isEvent($method)
     {
-        return $this->_events->offsetExists($method);
+        return $this->getEvents()->offsetExists($method);
     }
 
     /**
@@ -123,48 +80,8 @@ class Repository extends \Yana\Core\Object implements \Yana\Plugins\Repositories
      */
     public function addEvent(\Yana\Plugins\Configs\IsMethodConfiguration $method)
     {
-        $this->_events[] = $method;
+        $this->getEvents()->offsetSet(null, $method);
         return $this;
-    }
-
-    /**
-     * Get list of method configurations.
-     *
-     * Returns a collection object that may be used as an array.
-     *
-     * @return  \Yana\Plugins\Configs\MethodCollection
-     */
-    public function getEvents()
-    {
-        return $this->_events;
-    }
-
-    /**
-     * Returns queue collection.
-     *
-     * @return  \Yana\Plugins\Subscriptions\QueueCollection
-     */
-    protected function _getQueues()
-    {
-        return $this->_queues;
-    }
-
-    /**
-     * Returns queue corresponding to method name.
-     *
-     * Creates one if none exists.
-     *
-     * @param   string $methodName  name of the event to check for
-     * @return  \Yana\Plugins\Subscriptions\IsQueue
-     */
-    protected function _getQueue($methodName)
-    {
-        $queues = $this->_getQueues();
-        $id = mb_strtolower($methodName);
-        if (!isset($queues[$id])) {
-            $queues[$id] = new \Yana\Plugins\Subscriptions\Queue();
-        }
-        return $queues[$id];
     }
 
     /**

@@ -69,7 +69,7 @@ class Wrapper extends \Yana\Core\Sessions\Wrapper implements \Yana\Security\Sess
      */
     public function getCurrentUserName()
     {
-        return $this->offsetExists($this->_userNameKey) ? $this->offsetGet($this->_userNameKey) : "";
+        return $this->offsetExists($this->_userNameKey) && $this->offsetGet($this->_userNameKey) ? (string) $this->offsetGet($this->_userNameKey) : "";
     }
 
     /**
@@ -82,7 +82,7 @@ class Wrapper extends \Yana\Core\Sessions\Wrapper implements \Yana\Security\Sess
      */
     public function setCurrentUserName(\Yana\Security\Data\Users\IsEntity $user)
     {
-        $this->offsetSet($this->_userNameKey, $user->getId());
+        $this->offsetSet($this->_userNameKey, (string) $user->getId());
         return $this;
     }
 
@@ -93,7 +93,7 @@ class Wrapper extends \Yana\Core\Sessions\Wrapper implements \Yana\Security\Sess
      */
     public function getApplicationUserId()
     {
-        return $this->offsetExists($this->_applicationUserId) ? $this->offsetGet($this->_applicationUserId) : "";
+        return $this->offsetExists($this->_applicationUserId) && $this->offsetGet($this->_applicationUserId) ? (string) $this->offsetGet($this->_applicationUserId) : "";
     }
 
     /**
@@ -116,7 +116,7 @@ class Wrapper extends \Yana\Core\Sessions\Wrapper implements \Yana\Security\Sess
      */
     public function getSessionUserId()
     {
-        return $this->offsetExists($this->_sessionUserId) ? $this->offsetGet($this->_sessionUserId) : "";
+        return $this->offsetExists($this->_sessionUserId) && $this->offsetGet($this->_sessionUserId) ? (string) $this->offsetGet($this->_sessionUserId) : "";
     }
 
     /**
@@ -139,7 +139,7 @@ class Wrapper extends \Yana\Core\Sessions\Wrapper implements \Yana\Security\Sess
      */
     public function getCurrentLanguage()
     {
-        return $this->offsetExists($this->_languageKey) ? $this->offsetGet($this->_languageKey) : "";
+        return $this->offsetExists($this->_languageKey) && $this->offsetGet($this->_languageKey) ? (string) $this->offsetGet($this->_languageKey) : "";
     }
 
     /**

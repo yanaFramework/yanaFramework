@@ -53,21 +53,6 @@ class SdkPlugin extends \Yana\Plugins\AbstractPlugin
     );
 
     /**
-     * Default event handler
-     *
-     * returns bool(true) on success and bool(false) on error
-     *
-     * @return  bool
-     * @param   string  $event  name of the called event in lower-case
-     * @param   array   $ARGS   array of arguments passed to the function
-     * @ignore
-     */
-    public function catchAll($event, array $ARGS)
-    {
-        return true;
-    }
-
-    /**
      * Software Development Kit
      *
      * Enter information used to create a new plugin.

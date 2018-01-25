@@ -55,7 +55,7 @@ class XmlAdapterTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->file = new \Yana\Files\NullFile(\CWD . '/resources/icons.xml');
-        $this->object = new \Yana\Views\Icons\XmlAdapter($this->file);
+        $this->object = new \Yana\Views\Icons\XmlAdapter($this->file, \CWD . '/resources');
     }
 
     /**

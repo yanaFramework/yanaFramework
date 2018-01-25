@@ -270,22 +270,22 @@ abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Plugin
     }
 
     /**
-     * Load list of active plugin settings using the plugin manager.
+     * Load list of active plugin settings using the plugin facade.
      *
      * @return  \Yana\Plugins\Configs\IsClassConfiguration[]
      */
     protected function _getListOfActivePlugins()
     {
-        assert('!isset($pluginManager); // Cannot redeclare var $pluginManager');
-        $pluginManager = $this->_getDependencies()->getPluginManager();
-        /* @var $pluginManager \Yana\Plugins\Manager */
+        assert('!isset($pluginFacade); // Cannot redeclare var $pluginFacade');
+        $pluginFacade = $this->_getDependencies()->getPluginFacade();
+        /* @var $pluginFacade \Yana\Plugins\Facade */
         assert('!isset($plugins); // Cannot redeclare var $plugins');
-        $plugins = $pluginManager->getPluginConfigurations()->toArray();
+        $plugins = $pluginFacade->getPluginConfigurations()->toArray();
 
         /* @var $pluginConfiguration PluginConfigurationClass */
         foreach (array_keys($plugins) as $pluginName)
         {
-            if (!$pluginManager->isActive($pluginName)) {
+            if (!$pluginFacade->isActive($pluginName)) {
                 unset($plugins[$pluginName]);
             }
         }

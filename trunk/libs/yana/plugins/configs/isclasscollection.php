@@ -37,17 +37,6 @@ interface IsClassCollection extends \Yana\Core\IsCollection
 {
 
     /**
-     * Check if plugin is active.
-     *
-     * Returns bool(true) if the plugin identified by $pluginName exists
-     * and is active and bool(false) otherwise.
-     *
-     * @param   string  $className  identifier for the plugin
-     * @return  bool
-     */
-    public function isActive($className);
-
-    /**
      * Check if plugin is active by default.
      *
      * A plugin that is active by default cannot be deactivated via the configuration menu.
@@ -59,28 +48,6 @@ interface IsClassCollection extends \Yana\Core\IsCollection
      * @return  bool
      */
     public function isActiveByDefault($className);
-
-    /**
-     * Mark this class as active.
-     *
-     * This is done by setting the active property to 1.
-     *
-     * @param   string  $className  identifier for the plugin
-     * @return  $this
-     * @throws  \Yana\Core\Exceptions\NotFoundException  when no plugin with the given name is found
-     */
-    public function activate($className);
-
-    /**
-     * Mark this class as inactive.
-     *
-     * This is done by setting the active property to 0.
-     *
-     * @param   string  $className  identifier for the plugin
-     * @return  $this
-     * @throws  \Yana\Core\Exceptions\NotFoundException  when no plugin with the given name is found
-     */
-    public function deactivate($className);
 
 }
 

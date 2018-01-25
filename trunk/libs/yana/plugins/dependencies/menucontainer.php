@@ -103,11 +103,11 @@ class MenuContainer extends \Yana\Core\Object implements \Yana\Plugins\Dependenc
     }
 
     /**
-     * Returns a plugin manager.
+     * Returns a plugin facade.
      *
-     * @return \Yana\Plugins\Manager
+     * @return \Yana\Plugins\Facade
      */
-    public function getPluginManager()
+    public function getPluginFacade()
     {
         return $this->_getApplication()->getPlugins();
     }

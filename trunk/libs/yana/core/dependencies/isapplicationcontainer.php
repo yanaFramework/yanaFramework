@@ -153,7 +153,7 @@ interface IsApplicationContainer extends \Yana\Core\Dependencies\IsExceptionCont
      * This returns the plugin manager. If none exists, a new instance is created.
      * The pluginManager holds repositories for interfaces and implementations of plugins.
      *
-     * @return  \Yana\Plugins\Manager
+     * @return  \Yana\Plugins\Facade
      */
     public function getPlugins();
 
@@ -235,6 +235,13 @@ interface IsApplicationContainer extends \Yana\Core\Dependencies\IsExceptionCont
      * @return  \Yana\Plugins\Menus\IsCacheableBuilder
      */
     public function getMenuBuilder(\Yana\Application $application);
+
+    /**
+     * Returns a ready-to-use factory to create open database connections.
+     *
+     * @return  \Yana\Db\IsConnectionFactory
+     */
+    public function getConnectionFactory();
 
 }
 

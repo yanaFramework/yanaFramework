@@ -128,7 +128,7 @@ class UserBuilder extends \Yana\Core\Object implements \Yana\Security\Data\IsUse
         }
         assert('!isset($userName); // Cannot redeclare var $userName');
         $userName = $session->getCurrentUserName();
-        if ($userName === "") {
+        if ($userName == "") {
             return new \Yana\Security\Data\Users\Guest();
         }
 

@@ -91,6 +91,16 @@ class NullFacade extends \Yana\Core\Object implements \Yana\Translations\IsFacad
     }
 
     /**
+     * Get all language strings.
+     *
+     * @return  array
+     */
+    public function getVars()
+    {
+        return array();
+    }
+
+    /**
      * Check if a translation exists.
      *
      * @param   string  $key  translation key (case insensitive)

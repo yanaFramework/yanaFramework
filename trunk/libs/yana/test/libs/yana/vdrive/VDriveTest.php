@@ -132,6 +132,24 @@ class VDriveTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\NotFoundException
+     */
+    public function testReadNotFoundException()
+    {
+        $this->_inavalidDrive->read();
+    }
+
+    /**
+     * @test
+     */
+    public function testGetFileWithMultipleSources()
+    {
+        $this->assertEquals(CWD . $this->_baseDir . './', $this->_object->getResourcePath('system:/test'));
+        $this->assertEquals(CWD . $this->_baseDir . 'my.drive.xml', $this->_object->getResourcePath('system:/test/test.text'));
+    }
+
+    /**
      * Get Report
      *
      * @test

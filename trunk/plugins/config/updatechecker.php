@@ -153,7 +153,7 @@ class UpdateChecker extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
         $errno = 0;
         $errstr = "";
         if ($urlInfo !== false) {
-            $this->_socket = fsockopen($urlInfo['host'], 80, $errno, $errstr, 30);
+            $this->_socket = @fsockopen($urlInfo['host'], 80, $errno, $errstr, 2);
         }
 
         if ($urlInfo !== false && ($this->_socket) != false) {

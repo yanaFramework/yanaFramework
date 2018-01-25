@@ -56,10 +56,10 @@ class RegistryLoader extends \Yana\Plugins\Loaders\AbstractRegistryLoader
         assert('!isset($driveFile); // Cannot redeclare var $driveFile');
         $driveFile = \Yana\Plugins\PluginNameMapper::toVDriveFilenameWithDirectory($name, $this->_getPluginDirectory());
 
-        if (is_file(!$driveFile)) {
+        if (!is_file($driveFile)) {
             throw new \Yana\Core\Exceptions\NotFoundException("Resource not found: " . $driveFile, \Yana\Log\TypeEnumeration::INFO);
         }
-        $vDrive = new \Yana\VDrive\Registry($driveFile, $this->getPluginDir()->getPath() . $name . "/");
+        $vDrive = new \Yana\VDrive\Registry($driveFile, $this->_getPluginDirectory()->getPath() . $name . "/");
         $vDrive->read(); // Throws \Yana\Core\Exceptions\NotReadableException
         return $vDrive;
     }

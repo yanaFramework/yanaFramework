@@ -100,6 +100,13 @@ interface IsTranslation extends \Yana\Log\IsLogable
     public function getVar($key);
 
     /**
+     * Get all language strings.
+     *
+     * @return  array
+     */
+    public function getVars();
+
+    /**
      * Check if a translation exists.
      *
      * Returns bool(true) if the key can be translated and bool(false) otherwise.

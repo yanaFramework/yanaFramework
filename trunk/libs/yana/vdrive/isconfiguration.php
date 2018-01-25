@@ -196,7 +196,7 @@ interface IsConfiguration extends \Yana\Util\IsXmlArray
     /**
      * Returns a list of sources for the mountpoint, sorted by priority.
      *
-     * @return  $this
+     * @return  array
      */
     public function getNodeSources();
 

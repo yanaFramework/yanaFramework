@@ -46,21 +46,6 @@ class UserGroupPlugin extends \Yana\Plugins\AbstractPlugin
         $security->addSecurityRule(new \Yana\Security\Rules\SecurityGroupRule($defaultProfileId));
     }
 
-    /**
-     * Default event handler.
-     *
-     * Keep this active to ensure, the security rule (checkGroupsAndRoles) is loaded for every event.
-     *
-     * @access  public
-     * @return  bool
-     * @param   string  $event  name of the called event in lower-case
-     * @param   array   $ARGS   array of arguments passed to the function
-     */
-    public function catchAll($event, array $ARGS)
-    {
-        return true; // Nothing to do: The security rule is called automatically.
-    }
-
 }
 
 ?>

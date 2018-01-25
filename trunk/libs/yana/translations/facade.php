@@ -220,6 +220,16 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
     }
 
     /**
+     * Get all language strings.
+     *
+     * @return  array
+     */
+    public function getVars()
+    {
+        return $this->_getManager()->getVars();
+    }
+
+    /**
      * Check if a translation exists.
      *
      * Returns bool(true) if the key can be translated and bool(false) otherwise.

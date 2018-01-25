@@ -35,20 +35,6 @@ class SitemapPlugin extends \Yana\Plugins\AbstractPlugin
 {
 
     /**
-     * Default event handler
-     *
-     * @access  public
-     * @return  bool
-     * @param   string  $event  name of the called event in lower-case
-     * @param   array   $ARGS   array of arguments passed to the function
-     * @ignore
-     */
-    public function catchAll($event, array $ARGS)
-    {
-        return true;
-    }
-
-    /**
      * Show Sitemap.
      *
      * @type        primary
@@ -61,7 +47,7 @@ class SitemapPlugin extends \Yana\Plugins\AbstractPlugin
     {
         $application = $this->_getApplication();
         $viewHelper = new \Plugins\Sitemap\ViewHelper(
-            $application->getPlugins()->getPluginDir()->getPath(),
+            $application->getPlugins()->getPluginDirectory()->getPath(),
             $application->buildApplicationMenu(),
             $application->getLanguage()
         );

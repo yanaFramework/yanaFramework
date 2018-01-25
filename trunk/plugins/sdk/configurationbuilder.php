@@ -141,7 +141,7 @@ class ConfigurationBuilder extends \Yana\Plugins\Configs\AbstractBuilder
     {
         if (!isset($this->_pluginDir)) {
             /* @var $dir \Yana\Files\IsDir */
-            $dir = \Yana\Plugins\Manager::getInstance()->getPluginDir();
+            $dir = \Yana\Plugins\Facade::getInstance()->getPluginDirectory();
             $this->_pluginDir  = new \Yana\Files\Dir($dir->getPath() . '/' . strtolower($this->object->getId()) . '/');
         }
         return $this->_pluginDir;

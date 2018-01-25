@@ -8,26 +8,26 @@
 	The contained entries may not be changed at any case.
 -->
 <drive name="system">
-    <!--
-        The var YANA_CDROM_DIR is overwritten for CD/DVD-ROM applications.
-        This will relocate all files and directories to a temp folder on the
-        host system's hard drive.
+	<!--
+		The var YANA_CDROM_DIR is overwritten for CD/DVD-ROM applications.
+		This will relocate all files and directories to a temp folder on the
+		host system's hard drive.
 
-        If so, the following declaration is ignored.
-        Otherwise it will make sure the value is initialized properly.
-    -->
+		If so, the following declaration is ignored.
+		Otherwise it will make sure the value is initialized properly.
+	-->
 	<var name="YANA_CDROM_DIR" value=""/>
 	<var name="SESSION_USER_ID" value=""/>
 	<var name="CONFIGDIR" value="{$YANA_CDROM_DIR}config/"/>
 	<var name="PROFILESDIR" value="{$YANA_CDROM_DIR}config/profiles/"/>
 	<var name="COUNTERDIR" value="{$YANA_CDROM_DIR}config/counter/"/>
 	<var name="DBDIR" value="{$YANA_CDROM_DIR}config/db/"/>
-    <!--
-        Database blobs should not be moved since they might be too large -
-        however if you need to do it anyway, uncomment this option.
+	<!--
+		Database blobs should not be moved since they might be too large -
+		however if you need to do it anyway, uncomment this option.
 
-        <var name="BLOBDIR" value="{$YANA_CDROM_DIR}config/db/.blob/"/>
-    -->
+		<var name="BLOBDIR" value="{$YANA_CDROM_DIR}config/db/.blob/"/>
+	-->
 	<var name="BLOBDIR" value="config/db/.blob/"/>
 	<var name="DATADIR" value="common_files/"/>
 	<var name="LANGUAGEDIR" value="languages/"/>
@@ -122,6 +122,10 @@
 	<dir name="smile" filter=".gif" automount="yes">
 		<source>{$PROFILE.SMILEYDIR}</source>
 		<requirements readable="yes"/>
+		<file name="config.text" automount="yes">
+			<source>{$PROFILE.SMILEYDIR}config.xml</source>
+			<requirements readable="yes"/>
+		</file>
 	</dir>
 
 </drive>

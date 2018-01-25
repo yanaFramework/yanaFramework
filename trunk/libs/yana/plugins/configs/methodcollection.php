@@ -37,7 +37,7 @@ namespace Yana\Plugins\Configs;
  *
  * @ignore
  */
-class MethodCollection extends \Yana\Core\AbstractCollection implements \Yana\Report\IsReportable
+class MethodCollection extends \Yana\Core\AbstractCollection implements \Yana\Plugins\Configs\IsMethodCollection
 {
 
     /**

@@ -46,22 +46,6 @@ class Builder extends \Yana\Plugins\Repositories\AbstractBuilder
     private $_plugins = array();
 
     /**
-     * Holds old repository for comparison.
-     *
-     * @var  array
-     */
-    private $_oldRepository = null;
-
-    /**
-     * Resets the instance that is currently build.
-     */
-    public function createNewRepository()
-    {
-        $this->_oldRepository = new \Yana\Plugins\Repositories\Repository();
-        parent::createNewRepository();
-    }
-
-    /**
      * Scan a directory for plugins.
      *
      * @param  \Yana\Files\IsDir  $directory  path to scan
@@ -81,21 +65,10 @@ class Builder extends \Yana\Plugins\Repositories\AbstractBuilder
     }
 
     /**
-     * Set base repository to compare the plugin list with.
-     *
-     * @param  \Yana\Plugins\Repositories\IsRepository  $repository  old repository for comparison
-     */
-    public function setBaseRepository(\Yana\Plugins\Repositories\IsRepository $repository)
-    {
-        $this->_oldRepository = $repository;
-    }
-
-    /**
      * Build new repository.
      */
     protected function buildRepository()
     {
-        $oldPlugins = $this->_oldRepository->getPlugins();
         $overwrittenMethods = array();
 
         // initialize list for later use (see step 3)
@@ -127,31 +100,20 @@ class Builder extends \Yana\Plugins\Repositories\AbstractBuilder
             $parent = $config->getParent();
 
             /**
-             * get active preset
-             *
-             * if the plugin's active state is unknown and there is a default state defined by the plugin,
-             * use the setting defined by the plugin.
-             */
-            if ($oldPlugins->offsetExists($id)) {
-                // copy settings from old plugin repository
-                $config->setActive($oldPlugins->offsetGet($id)->getActive());
-            }
-            // ignore methods if plugin is not active
-            if ($config->getActive() === \Yana\Plugins\ActivityEnumeration::INACTIVE) {
-                continue;
-            }
-            /**
              * 2) build method repository
              */
             foreach ($config->getMethods() as $methodName => $method)
             {
+                $methodName = mb_strtolower($methodName);
                 /* @var $method \Yana\Plugins\Configs\IsMethodConfiguration */
                 // skip default event handlers (will be handled in step 3)
-                if ($methodName == 'catchAll') {
-                    $pluginsWithDefaultMethods[$id] = $config;
-                    continue;
+                switch (true)
+                {
+                    case $methodName === 'catchall':
+                        $pluginsWithDefaultMethods[$id] = $config;
+                    case $methodName[0] === '_':
+                        continue;
                 }
-                $methodName = mb_strtolower($methodName);
 
                 $isOverwrite = $method->getOverwrite();
                 $isSubscriber = $method->getSubscribe();

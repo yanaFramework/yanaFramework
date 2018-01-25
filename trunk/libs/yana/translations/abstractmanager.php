@@ -270,6 +270,16 @@ abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Transl
     }
 
     /**
+     * Get all language strings.
+     *
+     * @return  array
+     */
+    public function getVars()
+    {
+        return $this->getTranslations()->getVars();
+    }
+
+    /**
      * Replace a token within a provided text.
      *
      * If a token refers to a non-existing value it is removed.

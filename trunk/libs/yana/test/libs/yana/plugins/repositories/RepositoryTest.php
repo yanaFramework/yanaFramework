@@ -84,14 +84,6 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testGetPlugins()
-    {
-        $this->assertTrue($this->object->getPlugins() instanceof \Yana\Plugins\Configs\IsClassCollection);
-    }
-
-    /**
-     * @test
-     */
     public function testIsEvent()
     {
         $this->assertFalse($this->object->isEvent("no such method"));
@@ -106,14 +98,6 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
         $method->setMethodName('Test');
         $this->assertSame($method, $this->object->addEvent($method)->getEvents()->offsetGet('test'));
         $this->assertTrue($this->object->isEvent("test"));
-    }
-
-    /**
-     * @test
-     */
-    public function testGetEvents()
-    {
-        $this->assertTrue($this->object->getEvents() instanceof \Yana\Plugins\Configs\MethodCollection);
     }
 
     /**

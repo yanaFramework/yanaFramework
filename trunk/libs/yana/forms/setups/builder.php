@@ -273,7 +273,7 @@ class Builder extends \Yana\Core\Object
         $currentPage = $this->object->getPage();
         $listOfEntries = "";
         assert('!isset($pluginManager); // Cannot redeclare var $pluginManager');
-        $pluginManager = \Yana\Plugins\Manager::getInstance();
+        $pluginManager = \Yana\Plugins\Facade::getInstance();
         $action = $pluginManager->getFirstEvent();
         $lang = \Yana\Translations\Facade::getInstance();
         $formatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();

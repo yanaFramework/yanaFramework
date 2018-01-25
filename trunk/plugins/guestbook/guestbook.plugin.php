@@ -105,19 +105,6 @@ class GuestbookPlugin extends \Yana\Plugins\AbstractPlugin
     }
 
     /**
-     * Default event handler
-     *
-     * @return  bool
-     * @param   string  $event  name of the called event in lower-case
-     * @param   array   $ARGS   array of arguments passed to the function
-     * @ignore
-     */
-    public function catchAll($event, array $ARGS)
-    {
-        return true;
-    }
-
-    /**
      * edit guestbook entries
      *
      * this function expects one argument: 'target'

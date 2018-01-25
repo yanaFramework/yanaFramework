@@ -52,6 +52,13 @@ interface IsContainer
      */
     public function getSession();
 
+    /**
+     * Get database adapter for table plugins.
+     *
+     * @return  \Yana\Plugins\Data\IsAdapter
+     */
+    public function getPluginAdapter();
+
 }
 
 ?>

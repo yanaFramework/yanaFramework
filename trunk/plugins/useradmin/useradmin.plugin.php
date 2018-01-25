@@ -76,22 +76,6 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
     private $visibleColumns = array('user_id', 'user_mail', 'user_active', 'user_inserted', 'user_login_last');
 
     /**
-     * Default event handler
-     *
-     * returns bool(true) on success and bool(false) on error
-     *
-     * @return  bool
-     * @param   string  $event  name of the called event in lower-case
-     * @param   array   $ARGS   array of arguments passed to the function
-     *
-     * @ignore
-     */
-    public function catchAll($event, array $ARGS)
-    {
-        return true;
-    }
-
-    /**
      * event handler
      *
      * @type        config

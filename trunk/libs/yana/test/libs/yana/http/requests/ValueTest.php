@@ -305,6 +305,23 @@ class ValueTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testAsArrayOfSafeStrings()
+    {
+        $value = "ß<Test a=\"b\">123\n";
+        $valueSafe = "ß123\n";
+        $object1 = new \Yana\Http\Requests\Value(array($value));
+        $object2 = new \Yana\Http\Requests\Value(array($value, array($value)));
+        $object3 = new \Yana\Http\Requests\Value($value);
+        $object4 = new \Yana\Http\Requests\Value(null);
+        $this->assertEquals(array($valueSafe), $object1->asArrayOfSafeStrings());
+        $this->assertEquals(array($valueSafe, array($valueSafe)), $object2->asArrayOfSafeStrings());
+        $this->assertEquals(array($valueSafe), $object3->asArrayOfSafeStrings());
+        $this->assertEquals(array(), $object4->asArrayOfSafeStrings());
+    }
+
+    /**
+     * @test
+     */
     public function testAll()
     {
         $object1 = new \Yana\Http\Requests\Value(array('1', 'a', '#äß §'));

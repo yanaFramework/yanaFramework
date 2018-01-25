@@ -60,11 +60,11 @@ interface IsMenuContainer
     public function isDefaultProfile();
 
     /**
-     * Returns a plugin manager.
+     * Returns a plugin facade.
      *
-     * @return  \Yana\Plugins\Manager
+     * @return  \Yana\Plugins\Facade
      */
-    public function getPluginManager();
+    public function getPluginFacade();
 
     /**
      * Returns a formatting helper for menu URLs.

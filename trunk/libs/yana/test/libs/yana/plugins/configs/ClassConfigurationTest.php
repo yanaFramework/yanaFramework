@@ -456,18 +456,6 @@ class ClassConfigurationTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testIsActive()
-    {
-        $this->assertFalse($this->object->isActive());
-        $this->assertFalse($this->object->setActive(\Yana\Plugins\ActivityEnumeration::INACTIVE)->isActive());
-        $this->assertFalse($this->object->setActive(-1)->isActive());
-        $this->assertTrue($this->object->setActive(\Yana\Plugins\ActivityEnumeration::ACTIVE)->isActive());
-        $this->assertTrue($this->object->setActive(\Yana\Plugins\ActivityEnumeration::DEFAULT_ACTIVE)->isActive());
-    }
-
-    /**
-     * @test
-     */
     public function testIsActiveByDefault()
     {
         $this->assertFalse($this->object->isActiveByDefault());
@@ -475,26 +463,6 @@ class ClassConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->object->setActive(-1)->isActiveByDefault());
         $this->assertFalse($this->object->setActive(\Yana\Plugins\ActivityEnumeration::ACTIVE)->isActiveByDefault());
         $this->assertTrue($this->object->setActive(\Yana\Plugins\ActivityEnumeration::DEFAULT_ACTIVE)->isActiveByDefault());
-    }
-
-    /**
-     * @test
-     */
-    public function testActivate()
-    {
-        $this->assertFalse($this->object->isActive());
-        $this->assertTrue($this->object->activate()->isActive());
-        $this->assertTrue($this->object->activate()->deactivate()->activate()->isActive());
-    }
-
-    /**
-     * @test
-     */
-    public function testDeactivate()
-    {
-        $this->assertFalse($this->object->isActive());
-        $this->assertFalse($this->object->deactivate()->isActive());
-        $this->assertFalse($this->object->deactivate()->activate()->deactivate()->isActive());
     }
 
 }

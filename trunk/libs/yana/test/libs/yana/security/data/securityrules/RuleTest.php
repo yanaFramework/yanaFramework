@@ -180,4 +180,26 @@ class RuleTest extends \PHPUnit_Framework_TestCase
         $this->assertSame("", $this->object3->setUserName("")->getUserName());
     }
 
+    /**
+     * @test
+     */
+    public function testGrantTo()
+    {
+        $newPermission = $this->object1->setUserName('Test')->grantTo("User@Näme!");
+        $this->assertSame("User@Näme!", $newPermission->getUserName());
+        $this->assertSame("Test", $newPermission->getGrantedByUser());
+        $this->assertSame($this->object1->getRole(), $newPermission->getRole());
+        $this->assertSame($this->object1->getGroup(), $newPermission->getGroup());
+        $this->assertFalse($newPermission->isUserProxyActive());
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\User\NotGrantableException
+     */
+    public function testGrantToNotGrantableException()
+    {
+        $this->object3->grantTo("Test");
+    }
+
 }

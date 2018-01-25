@@ -456,7 +456,7 @@ class Grant extends \Yana\Db\Ddl\DDL
                 $builder = new \Yana\ApplicationBuilder();
                 $application = $builder->buildApplication();
                 $profileId = $application->getProfileId();
-                $action = \Yana\Plugins\Manager::getLastEvent();
+                $action = \Yana\Plugins\Facade::getLastEvent();
                 return (bool) $application->getSecurity()->checkByRequirement($required, $profileId, $action);
         }
     }

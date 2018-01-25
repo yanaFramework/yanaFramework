@@ -207,35 +207,11 @@ interface IsClassConfiguration extends \Yana\Core\MetaData\IsPackageMetaData
     public function getMethods();
 
     /**
-     * Check if plugin is active.
-     * @return  bool
-     */
-    public function isActive();
-
-    /**
      * Check if plugin is active by default.
      *
      * @return  bool
      */
     public function isActiveByDefault();
-
-    /**
-     * Mark this class as active.
-     *
-     * This is done by setting the active property to 1.
-     *
-     * @return  $this
-     */
-    public function activate();
-
-    /**
-     * Mark this class as inactive.
-     *
-     * This is done by setting the active property to 0.
-     *
-     * @return  $this
-     */
-    public function deactivate();
 
 }
 

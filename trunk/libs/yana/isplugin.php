@@ -46,18 +46,6 @@ interface IsPlugin
      * Because doing so would cause trouble, since the plugin factory doesn't expect the constructor to take any arguments.
      */
     public function __construct();
-
-    /**
-     * default event handler
-     *
-     * This is a dummy-implementation. Overwrite this in your
-     * sub-classes as you see fit.
-     *
-     * @param    string  $event  identifier of the occured event
-     * @param    array   $ARGS   list of arguments
-     * @return   bool
-     */
-    public function catchAll($event, array $ARGS);
 }
 
 ?>

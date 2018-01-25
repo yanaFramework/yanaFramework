@@ -28,7 +28,7 @@
 namespace Yana\Plugins;
 
 /**
- * <<Singleton>> <<Mediator>> Plugin-manager.
+ * <<Singleton>> <<Mediator>> Plugin facade.
  *
  * This class implements communication between plugins and provides access to virtual drives
  * and local registries which may be defined on a per plugin basis.
@@ -37,18 +37,18 @@ namespace Yana\Plugins;
  * Note that this implements the Mediator pattern.
  *
  * This is not to be mixed with the Observer pattern:
- * The plugin does not inform the PluginManager that it has changed it's state and
+ * The plugin does not inform the facade that it has changed it's state and
  * requests it to reflect that by changing the application state.
  *
- * Instead the PluginManager recieves a new system event (function call) and broadcasts a
+ * Instead the facade recieves a new system event (function call) and broadcasts a
  * request to all  subscribing plugins to change their state accordingly and not vice versa.
  * }}
  *
  * Code example for "broadcasting" an event to all plugins (= calling a function):
  * <code>
- * $manager = \Yana\Plugins\Manager::getInstance();
+ * $facade = \Yana\Plugins\Facade::getInstance();
  * try {
- *   $result = $manager->broadcastEvent('newState', $arguments);
+ *   $result = $facade->sendEvent('newState', $arguments);
  * } catch (\Exception $e) {
  *   // put error handling here
  * }
@@ -65,7 +65,7 @@ namespace Yana\Plugins;
  * @package     yana
  * @subpackage  plugins
  */
-class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsReportable, \Yana\Log\IsLogable
+class Facade extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsReportable, \Yana\Log\IsLogable
 {
 
     use \Yana\Log\HasLogger;
@@ -73,12 +73,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     /**
      * @var \Yana\Files\IsDir
      */
-    private static $_pluginDir = null;
-
-    /**
-     * @var \Yana\Files\IsTextFile
-     */
-    private static $_path = null;
+    private static $_pluginDirectory = null;
 
     /**
      * definition of next event in queue
@@ -131,7 +126,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     /**
      * Inject a dependency container.
      *
-     * The container and its dependencies will be passed on to any plugins the manager loads.
+     * The container and its dependencies will be passed on to any plugins the facade loads.
      *
      * @param   \Yana\Plugins\Dependencies\IsContainer  $dependencies  to inject
      * @return  $this
@@ -151,7 +146,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     protected function _createPluginLoader(\Yana\Application $application)
     {
         $container = new \Yana\Plugins\Dependencies\PluginContainer($application, $this->getDependencies()->getSession());
-        return new \Yana\Plugins\Loaders\PluginLoader($this->getPluginDir(), $container);
+        return new \Yana\Plugins\Loaders\PluginLoader($this->getPluginDirectory(), $container);
     }
 
     /**
@@ -162,7 +157,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     protected function _getRegistryLoader()
     {
         if (!isset($this->_registryLoader)) {
-            $this->_registryLoader = new \Yana\Plugins\Loaders\RegistryLoader($this->getPluginDir());
+            $this->_registryLoader = new \Yana\Plugins\Loaders\RegistryLoader($this->getPluginDirectory());
         }
         return $this->_registryLoader;
     }
@@ -181,22 +176,16 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     }
 
     /**
-     * Set path configuration.
+     * Set plugin source directory.
      *
-     * The plugin configuration file contains interface-settings for all plugins.
      * The plugin directory is the place, where all plugins reside.
+     * By default this is "plugins/".
      *
-     * Example:
-     * <code>
-     * \Yana\Plugins\Manager::setPath("config/plugins.cfg", "plugins/");
-     * </code>
-     *
-     * @param   \Yana\Files\IsTextFile  $configurationFile  path to plugin configuration file (plugins.cfg)
-     * @param   \Yana\Files\IsDir       $pluginDirectory    path to plugin base directory
+     * @param   \Yana\Files\IsDir  $pluginDirectory  path to plugin base directory
      * @throws  \Yana\Core\Exceptions\NotFoundException  when on of the given paths is invalid
      * @ignore
      */
-    public static function setPath(\Yana\Files\IsTextFile $configurationFile, \Yana\Files\IsDir $pluginDirectory)
+    public static function setPluginDirectory(\Yana\Files\IsDir $pluginDirectory)
     {
         if (!$pluginDirectory->exists()) {
             $message = "No such directory: '" . $pluginDirectory->getPath() . "'.";
@@ -204,40 +193,18 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
             throw new \Yana\Core\Exceptions\NotFoundException($message, $level);
         }
 
-        self::$_path = $configurationFile;
-        self::$_pluginDir = $pluginDirectory;
+        self::$_pluginDirectory = $pluginDirectory;
     }
 
     /**
-     * Get path to plugin configuration file.
-     *
-     * The plugin configuration file contains interface-settings for all plugins.
-     * Returns the path relative to the application root directory.
-     *
-     * @return  \Yana\Files\IsTextFile
-     */
-    public static function getConfigFilePath()
-    {
-        if (!isset(self::$_path)) {
-            self::$_path = new \Yana\Files\File("config/pluginconfig.cfg");
-        }
-        return self::$_path;
-    }
-
-    /**
-     * Get configuration manager.
+     * Get configuration repository.
      *
      * @return  \Yana\Plugins\Repositories\IsRepository
      */
     private function _getRepository()
     {
         if (empty($this->_repository)) {
-            $file = self::getConfigFilePath();
-            if ($file->exists() && !$file->read()->isEmpty()) {
-                $this->_repository = unserialize($file->getContent());
-            } else {
-                $this->_repository = new \Yana\Plugins\Repositories\Repository();
-            }
+            $this->_repository = $this->rebuildPluginRepository();
         }
         return $this->_repository;
     }
@@ -286,7 +253,19 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
         // In preparation of calling the plugin implementation, we store the list of arguments that are to be passed
         $config->setEventArguments($args);
         // we start by identifying the plugins that are subscribing to the event
-        $listofPluginsSubcribedToEvent = $this->_getRepository()->getSubscribers($action);
+        $listofAllPluginsSubcribedToEvent = $this->_getRepository()->getSubscribers($action);
+        // remove those that are not active
+        assert('!isset($listofPluginsSubcribedToEvent); // cannot redeclare variable $listofPluginsSubcribedToEvent');
+        $listofPluginsSubcribedToEvent = array();
+        assert('!isset($pluginName); // cannot redeclare variable $pluginName');
+        foreach ($listofAllPluginsSubcribedToEvent as $pluginName)
+        {
+            if ($this->isActive($pluginName)) {
+                $listofPluginsSubcribedToEvent[] = $pluginName;
+            }
+        }
+        unset($pluginName);
+
         // before we load the plugins (and thus call a constructor) we need to load the configurations required by them
         $this->_getRegistryLoader()->loadRegistries($listofPluginsSubcribedToEvent);
         // so far we only know the names of the plugins - next we actually need to load their implementation, the plugin-loader lets us do that
@@ -375,40 +354,17 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     /**
      * Rescan plugin directory and refresh the plugin cache.
      *
-     * Returns bool(true) on sucess and bool(false) on error.
+     * Returns the built repository on success.
      *
-     * @return  self
-     * @throws  \Yana\Core\Exceptions\NotReadableException   when an existing VDrive definition is not readable
-     * @throws  \Yana\Core\Exceptions\NotWriteableException  when the repository file can't be written
+     * @return  \Yana\Plugins\Repositories\IsRepository
      */
-    public function refreshPluginFile()
+    public function rebuildPluginRepository()
     {
         $builder = new \Yana\Plugins\Repositories\Builder();
-        $builder->addDirectory($this->getPluginDir());
-        $builder->setBaseRepository($this->_getRepository());
+        $builder->addDirectory($this->getPluginDirectory());
         $builder->attachLogger($this->getLogger());
-        $repository = $builder->getRepository();
-
-        $file = self::getConfigFilePath();
-        $file->setContent(serialize($repository));
-        if (!$file->exists()) {
-            $file->create(); // May throw \Yana\Core\Exceptions\NotWriteableException
-        }
-        // create repository cache
-        try {
-            $file->write();
-
-        } catch (\Yana\Core\Exceptions\NotWriteableException $e) {
-
-            // an error occured - unable to write cache file
-            $message = "Repository file '" . $file->getPath() . "' not writeable";
-            $code = \Yana\Log\TypeEnumeration::ERROR;
-            throw new \Yana\Core\Exceptions\NotWriteableException($message, $code, $e);
-        }
-        // cache has been written and is not empty
-        // actuate current config setting
-        $this->_repository = $repository;
-        return $this;
+        $this->_repository = $builder->getRepository();
+        return $this->_repository;
     }
 
     /**
@@ -419,12 +375,21 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      *
      * @param   string  $pluginName  identifier for the plugin
      * @return  bool
-     * @since   2.8.9
      */
     public function isActive($pluginName)
     {
         assert('is_string($pluginName); // Invalid argument $pluginName: string expected');
-        return $this->_getRepository()->getPlugins()->isActive($pluginName);
+
+        $isActive = $this->isActiveByDefault($pluginName);
+        if (!$isActive && !is_null($this->getDependencies())) {
+            $adapter = $this->getDependencies()->getPluginAdapter();
+            if ($adapter->offsetExists($pluginName)) {
+                $plugin = $adapter->offsetGet($pluginName);
+                assert($plugin instanceof \Yana\Plugins\Data\IsEntity);
+                $isActive = $plugin->isActive();
+            }
+        }
+        return $isActive;
     }
 
     /**
@@ -437,7 +402,6 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      *
      * @param   string  $pluginName  identifier for the plugin
      * @return  bool
-     * @since   3.1.0
      */
     public function isActiveByDefault($pluginName)
     {
@@ -455,7 +419,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     public function activate($pluginName)
     {
         assert('is_string($pluginName); // Invalid argument $pluginName: string expected');
-        $this->_getRepository()->getPlugins()->activate($pluginName);
+        $this->_setActiveStatus($pluginName, true);
         return $this;
     }
 
@@ -469,8 +433,30 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     public function deactive($pluginName)
     {
         assert('is_string($pluginName); // Invalid argument $pluginName: string expected');
-        $this->_getRepository()->getPlugins()->deactivate($pluginName);
+        $this->_setActiveStatus($pluginName, false);
         return $this;
+    }
+
+    /**
+     * Activate/deactivate plugin.
+     *
+     * @param  string  $pluginName  identifier for the plugin to be de-/activated
+     * @param  bool    $isActive    new status of plugin (true = active, false = inactive)
+     */
+    private function _setActiveStatus($pluginName, $isActive)
+    {
+        assert('is_string($pluginName); // Invalid argument $pluginName: string expected');
+        assert('is_bool($isActive); // Invalid argument $isActive: bool expected');
+
+        $adapter = $this->getDependencies()->getPluginAdapter();
+        if ($adapter->offsetExists($pluginName)) {
+            $entity = $adapter->offsetGet($pluginName);
+        } else {
+            $entity = new \Yana\Plugins\Data\Entity();
+            $entity->setId($pluginName);
+        }
+        $entity->setActive((bool) $isActive);
+        $adapter->saveEntity($entity);
     }
 
     /**
@@ -521,12 +507,12 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      *
      * @return  \Yana\Files\IsDir
      */
-    public function getPluginDir()
+    public function getPluginDirectory()
     {
-        if (!isset(self::$_pluginDir)) {
-            self::$_pluginDir = new \Yana\Files\Dir("plugins/");
+        if (!isset(self::$_pluginDirectory)) {
+            self::$_pluginDirectory = new \Yana\Files\Dir("plugins/");
         }
-        return self::$_pluginDir;
+        return self::$_pluginDirectory;
     }
 
     /**
@@ -679,8 +665,8 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      * </code>
      *
      * <code>
-     * $manager = \Yana\Plugins\Manager::getInstance();
-     * $report = $manager->getReport();
+     * $facade = \Yana\Plugins\Facade::getInstance();
+     * $report = $facade->getReport();
      * $errors = $report->getErrors();
      * if (empty($errors)) {
      * print 'all fine';
@@ -691,7 +677,6 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      *
      * @param   \Yana\Report\IsReport  $report  base report
      * @return  \Yana\Report\IsReport
-     * @name    \Yana\Plugins\Manager::getReport()
      * @ignore
      */
     public function getReport(\Yana\Report\IsReport $report = null)
@@ -699,7 +684,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
         if (is_null($report)) {
             $report = \Yana\Report\Xml::createReport(__CLASS__);
         }
-        $report->addText("Plugin directory: " . $this->getPluginDir()->getPath());
+        $report->addText("Plugin directory: " . $this->getPluginDirectory()->getPath());
         $methodsConfig = $this->getEventConfigurations();
 
         assert($methodsConfig instanceof \Yana\Plugins\Configs\MethodCollection);

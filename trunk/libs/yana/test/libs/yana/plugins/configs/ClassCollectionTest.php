@@ -110,26 +110,6 @@ class ClassCollectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testIsActive()
-    {
-        $o = new \Yana\Plugins\Configs\ClassConfiguration();
-        $o->setClassName('Plugin_ClassName');
-        $this->object['test'] = $o;
-        $this->assertFalse($this->object->isActive('noSuchClass'));
-        $this->assertFalse($this->object->isActive('test'));
-        $o->setActive(\Yana\Plugins\ActivityEnumeration::INACTIVE);
-        $this->assertFalse($this->object->isActive('test'));
-        $o->setActive(-1);
-        $this->assertFalse($this->object->isActive('test'));
-        $o->setActive(\Yana\Plugins\ActivityEnumeration::ACTIVE);
-        $this->assertTrue($this->object->isActive('test'));
-        $o->setActive(\Yana\Plugins\ActivityEnumeration::DEFAULT_ACTIVE);
-        $this->assertTrue($this->object->isActive('test'));
-    }
-
-    /**
-     * @test
-     */
     public function testIsActiveByDefault()
     {
         $o = new \Yana\Plugins\Configs\ClassConfiguration();
@@ -145,48 +125,6 @@ class ClassCollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->object->isActiveByDefault('test'));
         $o->setActive(\Yana\Plugins\ActivityEnumeration::DEFAULT_ACTIVE);
         $this->assertTrue($this->object->isActiveByDefault('test'));
-    }
-
-    /**
-     * @test
-     * @expectedException \Yana\Core\Exceptions\NotFoundException
-     */
-    public function testActivateNotFoundException()
-    {
-        $this->assertFalse($this->object->activate('noSuchClass'));
-    }
-
-    /**
-     * @test
-     */
-    public function testActivate()
-    {
-        $o = new \Yana\Plugins\Configs\ClassConfiguration();
-        $o->setClassName('Plugin_ClassName');
-        $this->object['test'] = $o;
-        $this->assertFalse($this->object->isActive('test'));
-        $this->assertTrue($this->object->activate('test')->isActive('test'));
-    }
-
-    /**
-     * @test
-     * @expectedException \Yana\Core\Exceptions\NotFoundException
-     */
-    public function testDeactivateNotFoundException()
-    {
-        $this->assertFalse($this->object->deactivate('noSuchClass'));
-    }
-
-    /**
-     * @test
-     */
-    public function testDeactivate()
-    {
-        $o = new \Yana\Plugins\Configs\ClassConfiguration();
-        $o->setClassName('Plugin_ClassName')->activate();
-        $this->object['test'] = $o;
-        $this->assertTrue($this->object->isActive('test'));
-        $this->assertFalse($this->object->deactivate('test')->isActive('test'));
     }
 
 }

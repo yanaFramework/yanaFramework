@@ -67,7 +67,7 @@ class Builder extends \Yana\Security\Data\UserBuilder implements \Yana\Security\
     public function getDependencyContainer()
     {
         if (!isset($this->_dependencyContainer)) {
-            $this->_dependencyContainer = new \Yana\Security\Dependencies\Container(\Yana\Plugins\Manager::getInstance());
+            $this->_dependencyContainer = new \Yana\Security\Dependencies\Container(\Yana\Plugins\Facade::getInstance());
         }
         return $this->_dependencyContainer;
     }

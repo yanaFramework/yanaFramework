@@ -44,6 +44,11 @@ abstract class AbstractXmlAdapter extends \Yana\Core\Object implements \Yana\Dat
     private $_file = null;
 
     /**
+     * @var  string
+     */
+    private $_directory = null;
+
+    /**
      * @var  \Yana\Views\Icons\Collection
      */
     private $_collection = null;
@@ -51,11 +56,13 @@ abstract class AbstractXmlAdapter extends \Yana\Core\Object implements \Yana\Dat
     /**
      * <<constructor>> Initialize source file.
      *
-     * @param  \Yana\Files\IsTextFile  $file  XML config file
+     * @param  \Yana\Files\IsTextFile  $file       XML config file
+     * @param  string                  $directory  base directory the file refers to (doesn't have to be same as file)
      */
-    public function __construct(\Yana\Files\IsTextFile $file)
+    public function __construct(\Yana\Files\IsTextFile $file, $directory)
     {
         $this->_file = $file;
+        $this->_directory = (string) $directory;
     }
 
     /**
@@ -81,11 +88,11 @@ abstract class AbstractXmlAdapter extends \Yana\Core\Object implements \Yana\Dat
                     $entity = new \Yana\Views\Icons\File();
                     $this->_collection[] = $entity
                             ->setId((string) $file['id'])
-                            ->setPath((string) $file['path'])
+                            ->setPath((string) $this->_directory . '/' . (string) $file['path'])
                             ->setRegularExpression((string) $file['regex'])
                             ->setDataAdapter($this);
                 }
-                unset($entity, $file);
+                unset($directory, $entity, $file);
             }
         }
         return $this->_collection;

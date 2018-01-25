@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<drive name="test">
+	<file name="my.file">
+		<source>nothing.txt</source>
+	</file>
+</drive>

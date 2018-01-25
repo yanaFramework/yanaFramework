@@ -58,13 +58,6 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
     private $_dependencyContainer = null;
 
     /**
-     * Caches database connections.
-     *
-     * @var  \Yana\Db\IsConnectionFactory
-     */
-    private $_connectionFactory = null;
-
-    /**
      * <<constructor>> Inject dependencies.
      *
      * @param  \Yana\Core\Dependencies\IsApplicationContainer  $container  injected dependencies
@@ -80,7 +73,6 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
      * The dependency container contains code to initialize and return sub-modules.
      *
      * @return  \Yana\Core\Dependencies\IsApplicationContainer
-     * @todo    Application instnance needs a setter for the dependencies - preferably via the constructor
      */
     protected function _getDependencyContainer()
     {
@@ -290,9 +282,9 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
      * Get plugin-manager.
      *
      * This returns the plugin manager. If none exists, a new instance is created.
-     * The pluginManager holds repositories for interfaces and implementations of plugins.
+     * The plugin facade holds repositories for interfaces and implementations of plugins.
      *
-     * @return  \Yana\Plugins\Manager
+     * @return  \Yana\Plugins\Facade
      */
     public function getPlugins()
     {
@@ -617,10 +609,10 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
     public function outputResults()
     {
         /* 0 initialize vars */
-        $pluginManager = $this->getPlugins();
-        $event = $pluginManager->getFirstEvent();
-        $result = $pluginManager->getLastResult();
-        $eventConfiguration = $pluginManager->getEventConfiguration($event);
+        $plugins = $this->getPlugins();
+        $event = $plugins->getFirstEvent();
+        $result = $plugins->getLastResult();
+        $eventConfiguration = $plugins->getEventConfiguration($event);
         if (! $eventConfiguration instanceof \Yana\Plugins\Configs\IsMethodConfiguration) {
             return; // error - unable to continue
         }
@@ -837,10 +829,7 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
      */
     public function connect($schema)
     {
-        if (!isset($this->_connectionFactory)) {
-            $this->_connectionFactory = new \Yana\Db\ConnectionFactory(new \Yana\Db\SchemaFactory($this->getCache()));
-        }
-        return $this->_connectionFactory->createConnection($schema);
+        return $this->_getDependencyContainer()->getConnectionFactory()->createConnection($schema);
     }
 
     /**
@@ -1017,7 +1006,7 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
     public function refreshSettings()
     {
         $this->clearCache();
-        $this->getPlugins()->refreshPluginFile();
+        $this->getPlugins()->rebuildPluginRepository();
         $this->getSecurity()->refreshPluginSecurityRules();
     }
 

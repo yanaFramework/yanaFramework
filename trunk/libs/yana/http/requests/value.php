@@ -122,7 +122,7 @@ class Value extends \Yana\Core\Object implements \Yana\Http\Requests\IsValue
      */
     public function asSafeString()
     {
-        return (string) filter_var(\substr($this->_getValue(), 0, 50000), FILTER_SANITIZE_STRING);
+        return (string) filter_var(\substr((string) $this->_getValue(), 0, 50000), FILTER_SANITIZE_STRING);
     }
 
     /**
@@ -274,6 +274,27 @@ class Value extends \Yana\Core\Object implements \Yana\Http\Requests\IsValue
     public function asUnsafeArray()
     {
         $value = $this->_getValue();
+        return (is_array($value)) ? $value : ((!is_null($value)) ? array($value) : array());
+    }
+
+    /**
+     * Returns contents as sanitized array.
+     *
+     * If the contents are not an array, they are wrapped in a numeric array, where the value is at index "0".
+     *
+     * @return  array
+     */
+    public function asArrayOfSafeStrings()
+    {
+        $value = $this->_getValue();
+        if (is_array($value)) {
+            \array_walk_recursive($value, function (&$item, $key) {
+                $valueObject = new \Yana\Http\Requests\Value($item);
+                $item = ($valueObject->isScalar()) ? $valueObject->asSafeString() : $valueObject->asArrayOfSafeStrings();
+            });
+        } elseif (!is_null($value)) {
+            $value = $this->asSafeString();
+        }
         return (is_array($value)) ? $value : ((!is_null($value)) ? array($value) : array());
     }
 

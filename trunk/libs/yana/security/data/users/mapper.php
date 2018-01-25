@@ -23,21 +23,17 @@
  *
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
- *
- * @ignore
  */
 
 namespace Yana\Security\Data\Users;
 
 /**
- * User manager.
+ * Entity mapper.
  *
- * This persistent class provides access to user data and function to set logins and passwords.
+ * Maps entities to database rows and vice versa.
  *
  * @package     yana
  * @subpackage  security
- *
- * @ignore
  */
 class Mapper extends \Yana\Core\Object implements \Yana\Data\Adapters\IsEntityMapper
 {

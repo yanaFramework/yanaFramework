@@ -62,21 +62,6 @@ class UserProfilePlugin extends \Yana\Plugins\AbstractPlugin
     }
 
     /**
-     * Default event handler.
-     *
-     * @access  public
-     * @return  bool
-     * @param   string  $event  name of the called event in lower-case
-     * @param   array   $ARGS   array of arguments passed to the function
-     *
-     * @ignore
-     */
-    public function catchAll($event, array $ARGS)
-    {
-        return true;
-    }
-
-    /**
      * event handler
      *
      * @type        config
@@ -185,11 +170,12 @@ class UserProfilePlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function view_profile(array $target = array())
     {
+        $session = $this->_getSession();
         if (isset($target['user_id'])) {
             $userId = $target['user_id'];
-            $_SESSION['user'][__FUNCTION__] = $target['user_id'];
-        } elseif (isset($_SESSION['user'][__FUNCTION__])) {
-            $userId = $_SESSION['user'][__FUNCTION__];
+            $session[__FUNCTION__] = $target['user_id'];
+        } elseif (isset($session[__FUNCTION__])) {
+            $userId = $session[__FUNCTION__];
         } else {
             $userId = $this->_getSession()->getCurrentUserName();
         }

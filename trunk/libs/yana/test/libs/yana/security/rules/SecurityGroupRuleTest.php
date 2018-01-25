@@ -74,7 +74,7 @@ class SecurityGroupRuleTest extends \PHPUnit_Framework_TestCase
 
         $entity = new \Yana\Security\Data\Users\Entity('USER');
         $entity->setActive(true)->setPassword('UNINITIALIZED');
-        $container = new \Yana\Security\Dependencies\Container(\Yana\Plugins\Manager::getInstance());
+        $container = new \Yana\Security\Dependencies\Container(\Yana\Plugins\Facade::getInstance());
         $schema = \Yana\Files\XDDL::getDatabase('user');
         restore_error_handler();
         $connection = new \Yana\Db\FileDb\NullConnection($schema);
@@ -103,7 +103,7 @@ class SecurityGroupRuleTest extends \PHPUnit_Framework_TestCase
 
         $entity = new \Yana\Security\Data\Users\Entity('ADMINISTRATOR');
         $entity->setActive(true)->setPassword('UNINITIALIZED');
-        $container = new \Yana\Security\Dependencies\Container(\Yana\Plugins\Manager::getInstance());
+        $container = new \Yana\Security\Dependencies\Container(\Yana\Plugins\Facade::getInstance());
         $schema = \Yana\Files\XDDL::getDatabase('user');
         restore_error_handler();
         $connection = new \Yana\Db\FileDb\NullConnection($schema);

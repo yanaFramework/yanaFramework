@@ -62,7 +62,7 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
     /**
      * to communicate with plugins
      *
-     * @var  \Yana\Plugins\Manager
+     * @var  \Yana\Plugins\Facade
      */
     private $_plugins = null;
 
@@ -139,6 +139,16 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
      * @var  \Yana\Plugins\Menus\Builder
      */
     private $_menuBuilder = null;
+
+    /**
+     * @var  \Yana\Plugins\Data\IsAdapter
+     */
+    private $_pluginAdapter = null;
+
+    /**
+     * @var  \Yana\Db\IsConnectionFactory
+     */
+    private $_connectionFactory = null;
 
     /**
      * <<constructor>> Creates an instance.
@@ -361,7 +371,10 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
                 $this->_registry->setVar('PAGE', $request->all()->value('page')->asInt());
             }
             if (!$request->all()->isEmpty('target')) {
-                $this->_registry->setVar('TARGET', $request->all()->value('target')->asSafeString());
+                $targetValue = $request->all()->value('target');
+                $sanitizedTarget = $targetValue->isScalar() ? $targetValue->asSafeString() : $targetValue->asArrayOfSafeStrings();
+                $this->_registry->setVar('TARGET', $sanitizedTarget);
+                unset($targetValue, $sanitizedTarget);
             }
             if (!empty($_SERVER['REMOTE_ADDR'])) {
                 $this->_registry->setVar('REMOTE_ADDR', $_SERVER['REMOTE_ADDR']);
@@ -380,32 +393,43 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
      * Get plugin-manager.
      *
      * This returns the plugin manager. If none exists, a new instance is created.
-     * The pluginManager holds repositories for interfaces and implementations of plugins.
+     * The plugin facade holds repositories for interfaces and implementations of plugins.
      *
-     * @return  \Yana\Plugins\Manager
+     * @return  \Yana\Plugins\Facade
      */
     public function getPlugins()
     {
         if (!isset($this->_plugins)) {
-            $cacheId = 'pluginmanager';
+            $cacheId = 'plugins';
             $cache = $this->getCache();
 
             if (isset($cache[$cacheId])) {
                 $this->_plugins = $cache[$cacheId];
-                assert($this->_plugins instanceof \Yana\Plugins\Manager);
+                assert($this->_plugins instanceof \Yana\Plugins\Facade);
 
             } else {
-                $this->_plugins = \Yana\Plugins\Manager::getInstance();
+                $this->_plugins = \Yana\Plugins\Facade::getInstance();
                 $container = new \Yana\Plugins\Dependencies\Container($this->getSession(), $this->_getDefaultEvent());
+                $container->setPluginAdapter($this->_getPluginAdapter());
                 $this->_plugins->attachDependencies($container);
                 $this->_plugins->attachLogger($this->getLogger());
-                if (!\Yana\Plugins\Manager::getConfigFilePath()->exists()) {
-                    $this->_plugins->refreshPluginFile();
-                }
                 $cache[$cacheId] = $this->_plugins;
             }
         }
         return $this->_plugins;
+    }
+
+    /**
+     * Lazy-loads and returns a plugin database adapter.
+     *
+     * @return  \Yana\Plugins\Data\IsAdapter
+     */
+    private function _getPluginAdapter()
+    {
+        if (!isset($this->_pluginAdapter)) {
+            $this->_pluginAdapter = new \Yana\Plugins\Data\Adapter($this->getConnectionFactory()->createConnection("plugins"));
+        }
+        return $this->_pluginAdapter;
     }
 
     /**
@@ -670,6 +694,19 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
             $tempDir .= '/';
         }
         return $tempDir;
+    }
+
+    /**
+     * Returns a ready-to-use factory to create open database connections.
+     *
+     * @return  \Yana\Db\IsConnectionFactory
+     */
+    public function getConnectionFactory()
+    {
+        if (!isset($this->_connectionFactory)) {
+            $this->_connectionFactory = new \Yana\Db\ConnectionFactory(new \Yana\Db\SchemaFactory($this->getCache()));
+        }
+        return $this->_connectionFactory;
     }
 
 }

@@ -39,7 +39,7 @@ namespace Yana\Plugins\Data;
  *
  * @ignore
  */
-abstract class AbstractAdapter extends \Yana\Data\Adapters\AbstractDatabaseAdapter
+abstract class AbstractAdapter extends \Yana\Data\Adapters\AbstractDatabaseAdapter implements \Yana\Plugins\Data\IsAdapter
 {
 
     /**
@@ -50,7 +50,7 @@ abstract class AbstractAdapter extends \Yana\Data\Adapters\AbstractDatabaseAdapt
     private $_entityMapper = null;
 
     /**
-     * <<construct>> Creates a new user-manager.
+     * <<construct>> Creates a new plugin adapter.
      *
      * @param  \Yana\Db\IsConnection               $connection  database connection to table user
      * @param  \Yana\Data\Adapters\IsEntityMapper  $mapper      simple OR-mapper to convert database entries to objects

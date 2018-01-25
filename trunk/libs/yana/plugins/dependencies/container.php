@@ -49,6 +49,11 @@ class Container extends \Yana\Core\Object implements \Yana\Plugins\Dependencies\
     private $_defaultEvent = array();
 
     /**
+     * @var \Yana\Plugins\Data\IsAdapter
+     */
+    private $_pluginAdapter = null;
+
+    /**
      * 
      * @param  \Yana\Security\Sessions\IsWrapper  $session       bound to current environment parameters
      * @param  array                              $defaultEvent  tells us what to do as fallback and comes from application configuration file
@@ -77,6 +82,32 @@ class Container extends \Yana\Core\Object implements \Yana\Plugins\Dependencies\
     public function getSession()
     {
         return $this->_session;
+    }
+
+    /**
+     * Get database adapter for table plugins.
+     *
+     * @return  \Yana\Plugins\Data\IsAdapter
+     */
+    public function getPluginAdapter()
+    {
+        if (!isset($this->_pluginAdapter)) {
+            $factory = new \Yana\Db\ConnectionFactory(new \Yana\Db\SchemaFactory());
+            $this->_pluginAdapter = new \Yana\Plugins\Data\Adapter($factory->createConnection('plugins'));
+        }
+        return $this->_pluginAdapter;
+    }
+
+    /**
+     * Set database adapter.
+     *
+     * @param   \Yana\Plugins\Data\IsAdapter  $pluginAdapter  database adapter for table plugins
+     * @return  $this
+     */
+    public function setPluginAdapter(\Yana\Plugins\Data\IsAdapter $pluginAdapter)
+    {
+        $this->_pluginAdapter = $pluginAdapter;
+        return $this;
     }
 
 }

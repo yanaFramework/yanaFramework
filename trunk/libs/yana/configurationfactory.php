@@ -78,7 +78,6 @@ class ConfigurationFactory extends \Yana\Core\Object implements \Yana\IsConfigur
         $configuration->tempdir = $cwd . (string) $configuration->tempdir;
         $configuration->configdir = $cwd . (string) $configuration->configdir;
         $configuration->configdrive = $cwd . (string) $configuration->configdrive;
-        $configuration->pluginfile = $cwd . (string) $configuration->pluginfile;
     }
 
     /**

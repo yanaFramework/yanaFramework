@@ -39,7 +39,7 @@ namespace Yana\Plugins;
  * @package     yana
  * @subpackage  plugins
  */
-abstract class AbstractPlugin extends \Yana\Core\Object implements \Yana\IsPlugin
+abstract class AbstractPlugin extends \stdClass implements \Yana\IsPlugin
 {
 
     /**
@@ -116,7 +116,7 @@ abstract class AbstractPlugin extends \Yana\Core\Object implements \Yana\IsPlugi
         // With the dependencies already injected, we now call the custom constructor.
         $plugin = new $className();
 
-        // Since the Plugin-Manager only insists on the interface
+        // Since the plugin facade only insists on the interface
         if ($plugin instanceof self) {
             // This initializes the dependency container in case _getDependencyContainer() was not called by the constructor
             $plugin->_dependencyContainer = $container;
@@ -153,7 +153,7 @@ abstract class AbstractPlugin extends \Yana\Core\Object implements \Yana\IsPlugi
     }
 
     /**
-     * @return  \Yana\Plugins\Manager
+     * @return  \Yana\Plugins\Facade
      */
     protected function _getPluginsFacade()
     {

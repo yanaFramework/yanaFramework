@@ -89,7 +89,7 @@ abstract class AbstractRegistryLoader extends \Yana\Core\Object implements \Seri
      *
      * @param   string  $name  name of plugin
      * @return  \Yana\Files\IsReadable
-     * @throws  \Yana\Core\Exceptions\UndefinedPropertyException  when no such file is defined
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when no such file is defined
      */
     public function __get($name)
     {
@@ -101,10 +101,12 @@ abstract class AbstractRegistryLoader extends \Yana\Core\Object implements \Seri
         if (!$resource instanceof \Yana\Files\IsReadable) {
             // recursive search
             $drive = substr($name, 0, strpos($name, ':/'));
-            if (!isset($collection[$drive]) || !isset($collection[$drive]->$name)) {
-                $resource = parent::__get($name); // throws exception
+            if (!isset($collection[$drive])) {
+                throw new \Yana\Core\Exceptions\NotFoundException("No virtual file found with name '$name'.", \Yana\Log\TypeEnumeration::WARNING);
             }
-            $resource = $collection[$drive]->$name;
+            /* @var $registry \Yana\VDrive\IsRegistry */
+            $registry = $collection->offsetGet($drive);
+            $resource = $registry->getResource($name); // may throw NotFoundException
         }
         return $resource;
     }
@@ -128,7 +130,7 @@ abstract class AbstractRegistryLoader extends \Yana\Core\Object implements \Seri
             }
 
             try {
-                $collection[$name] = $this->loadDrive($name);
+                $collection[$name] = $this->loadRegistry($name);
             } catch (\Yana\Core\Exceptions\NotFoundException $e) {
                 // skip file
             }
@@ -143,9 +145,7 @@ abstract class AbstractRegistryLoader extends \Yana\Core\Object implements \Seri
      */
     public function unserialize($serialized)
     {
-        $array = unserialize($serialized);
-        $this->_pluginDirectory = $array[0];
-        $this->_container = $array[1];
+        $this->_pluginDirectory = unserialize($serialized);
     }
 
     /**
@@ -155,7 +155,7 @@ abstract class AbstractRegistryLoader extends \Yana\Core\Object implements \Seri
      */
     public function serialize()
     {
-        return \serialize(array($this->_pluginDirectory, $this->_container));
+        return \serialize($this->_pluginDirectory);
     }
 
 }

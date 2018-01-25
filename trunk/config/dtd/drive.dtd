@@ -3,8 +3,8 @@
 <!ELEMENT var EMPTY>
 <!ELEMENT include EMPTY>
 
-<!ELEMENT dir ((source | requirements)+, (dir | file)*)>
-<!ELEMENT file (source | requirements)+>
+<!ELEMENT dir (source+, requirements?, (dir | file)*)>
+<!ELEMENT file (source+, requirements?)>
 
 <!ELEMENT source (#PCDATA)>
 <!ELEMENT requirements EMPTY>

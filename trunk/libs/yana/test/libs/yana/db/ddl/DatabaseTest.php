@@ -1960,7 +1960,7 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     public function testGetListOfFilesFullFilenames()
     {
         $get = \Yana\Db\Ddl\DDL::getListOfFiles(true);
-        $this->assertCount(6, $get);
+        $this->assertCount(7, $get);
         foreach ($get as $file)
         {
             $this->assertFileExists($file);

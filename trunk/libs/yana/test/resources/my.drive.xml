@@ -119,4 +119,15 @@
 		<requirements readable="yes"/>
 	</dir>
 
+	<dir name="test">
+		<source>no-such-dir</source>
+                <source>.</source>
+		<requirements readable="yes"/>
+		<file name="test.text">
+			<source>no-such-file</source>
+			<source>my.drive.xml</source>
+			<requirements readable="yes"/>
+		</file>
+	</dir>
+
 </drive>

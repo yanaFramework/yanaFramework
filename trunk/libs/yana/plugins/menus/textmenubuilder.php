@@ -85,7 +85,7 @@ class TextMenuBuilder extends \Yana\Core\Object implements \Yana\Plugins\Menus\I
         assert('is_string($pluginName); // Invalid argument $pluginName: string expected');
         if (empty($this->_hasGroup)) {
 
-            $plugins = $this->_getDependencies()->getPluginManager();
+            $plugins = $this->_getDependencies()->getPluginFacade();
             /* @var $pluginConfiguration PluginConfigurationClass */
             foreach ($plugins->getPluginConfigurations()->toArray() as $pluginName => $pluginConfiguration)
             {
@@ -108,7 +108,7 @@ class TextMenuBuilder extends \Yana\Core\Object implements \Yana\Plugins\Menus\I
     {
         assert('is_string($menuId); // Invalid argument $menuId: string expected');
         if (empty($this->_pluginsWithGroups)) {
-            $plugins = $this->_getDependencies()->getPluginManager()->getPluginConfigurations()->toArray();
+            $plugins = $this->_getDependencies()->getPluginFacade()->getPluginConfigurations()->toArray();
 
             /* @var $pluginConfiguration PluginConfigurationClass */
             assert('!isset($pluginName); // Cannot redeclare var $pluginName');
@@ -158,7 +158,7 @@ class TextMenuBuilder extends \Yana\Core\Object implements \Yana\Plugins\Menus\I
      */
     public function getTextMenu(\Yana\Plugins\Menus\IsMenu $menuConfiguration)
     {
-        $plugins = $this->_getDependencies()->getPluginManager();
+        $plugins = $this->_getDependencies()->getPluginFacade();
         $useDefaultProfile = $this->_getDependencies()->isDefaultProfile();
         $textMenu = array();
 

@@ -50,7 +50,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $file = new \Yana\Files\Text(\CWD . '/resources/icons.xml');
-        $adapter = new \Yana\Views\Icons\XmlAdapter($file);
+        $adapter = new \Yana\Views\Icons\XmlAdapter($file, \CWD . '/resources/');
         $this->object = new \Yana\Views\Icons\Loader($adapter);
     }
 
@@ -61,7 +61,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
     public function testGetIconsNotFoundException()
     {
         $file = new \Yana\Files\Text('no such file');
-        $adapter = new \Yana\Views\Icons\XmlAdapter($file);
+        $adapter = new \Yana\Views\Icons\XmlAdapter($file, \CWD . '/resources/');
         $loader = new \Yana\Views\Icons\Loader($adapter);
         $loader->getIcons();
     }

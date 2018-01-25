@@ -23,8 +23,6 @@
  *
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
- *
- * @ignore
  */
 
 namespace Yana\Plugins\Data;
@@ -36,8 +34,6 @@ namespace Yana\Plugins\Data;
  *
  * @package     yana
  * @subpackage  plugins
- *
- * @ignore
  */
 class Adapter extends \Yana\Plugins\Data\AbstractAdapter
 {
@@ -78,200 +74,121 @@ class Adapter extends \Yana\Plugins\Data\AbstractAdapter
     }
 
     /**
-     * Loads and returns an user account from the database.
+     * Loads and returns an entry from the database.
      *
-     * @param   string  $userId  name of the account
-     * @return  \Yana\Security\Data\Users\IsEntity
-     * @throws  \Yana\Core\Exceptions\User\NotFoundException  when no such user exists
+     * @param   string  $id  name of the plugin
+     * @return  \Yana\Plugins\Data\IsEntity
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when no such entry exists
      */
-    public function offsetGet($userId)
+    public function offsetGet($id)
     {
-        assert('is_string($userId); // Wrong type argument $userId. String expected.');
+        assert('is_string($id); // Wrong type argument $id. String expected.');
 
         try {
-            return parent::offsetGet(\Yana\Util\Strings::toUpperCase((string) $userId));
+            return parent::offsetGet(\Yana\Util\Strings::toUpperCase((string) $id));
 
         } catch (\Yana\Core\Exceptions\InvalidArgumentException $e) {
 
-            $message = "No user found with id: " . \htmlentities((string) $userId);
+            $message = "No plugin found with id: " . \htmlentities((string) $id);
             $level = \Yana\Log\TypeEnumeration::ERROR;
-            throw new \Yana\Core\Exceptions\User\NotFoundException($message, $level, $e);
+            throw new \Yana\Core\Exceptions\NotFoundException($message, $level, $e);
         }
     }
 
     /**
-     * Write an user entry to the database.
+     * Write an entry to the database.
      *
-     * @param  string                              $userId      name of user account (can be NULL)
-     * @param  \Yana\Security\Data\Users\IsEntity  $userEntity  the account data
-     * @return \Yana\Security\Data\Users\IsEntity
+     * @param  string                       $id      name of plugin (can be NULL)
+     * @param  \Yana\Plugins\Data\IsEntity  $entity  the plugin status
+     * @return \Yana\Plugins\Data\IsEntity
      * @throws \Yana\Core\Exceptions\InvalidArgumentException  when the entity is invalid
-     * @throws \Yana\Core\Exceptions\User\NotSavedException    when there was a problem with the database
+     * @throws \Yana\Db\DatabaseException                      when there was a problem with the database
      */
-    public function offsetSet($userId, $userEntity)
+    public function offsetSet($id, $entity)
     {
-        assert('is_string($userId) || is_null($userId); // Wrong type argument $userId. String expected.');
+        assert('is_string($id) || is_null($id); // Wrong type argument $id. String expected.');
 
-        if (!($userEntity instanceof \Yana\Security\Data\Users\IsEntity)) {
-            assert('!isset($className); // Cannot redeclare var $className');
-            $className = \is_object($userEntity) ? \get_class($userEntity) : \gettype($userEntity);
-            assert('!isset($message); // Cannot redeclare var $message');
-            $message = "Instance of \Yana\Security\Data\Users\IsEntity expected. Found " . $className . " instead.";
-            throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
+        if (!($entity instanceof \Yana\Plugins\Data\IsEntity)) {
+            throw new \Yana\Core\Exceptions\InvalidArgumentException('Instance of "\Yana\Plugins\Data\IsEntity" expected.');
         }
 
-        if (!is_null($userId)) {
-            $userId = \Yana\Util\Strings::toUpperCase((string) $userId);
+        if (!is_null($id)) {
+            $id = \Yana\Util\Strings::toUpperCase((string) $id);
         }
 
-        try {
-            return parent::offsetSet($userId, $userEntity);
-
-        } catch (\Yana\Db\DatabaseException $e) {
-
-            assert('!isset($message); // Cannot redeclare var $message');
-            $message = "User not saved due to a database error.";
-            assert('!isset($level); // Cannot redeclare var $level');
-            $level = \Yana\Log\TypeEnumeration::ERROR;
-            throw new \Yana\Core\Exceptions\User\NotSavedException($message, $level, $e);
-        }
+        return parent::offsetSet($id, $entity);
     }
 
     /**
-     * Triggered when offsetSet() is called and the offset doesn't exists.
+     * Returns collection of all plugin status stored in database.
      *
-     * This function adds an additional empty user profile.
-     *
-     * @param   \Yana\Data\Adapters\IsEntity  $entity      object to be stored
-     * @param   scalar                        $optionalId  primary key
-     * @return  scalar
+     * @return  \Yana\Plugins\Data\Collection
      */
-    protected function _onInsert(\Yana\Data\Adapters\IsEntity $entity, $optionalId = null)
+    public function getAll()
     {
-        $id = parent::_onInsert($entity, $optionalId);
-        $db = $this->_getDatabaseConnection();
-        // There is a 1:1 connection between profile and user. Ergo, the primary keys are the same.
-        $db->insert(
-            \Yana\Security\Data\Tables\ProfileEnumeration::TABLE . "." . \Yana\Util\Strings::toUpperCase($id), // profile id
-            array(\Yana\Security\Data\Tables\ProfileEnumeration::TIME_MODIFIED => time()) // empty profile row
-        );
-        return $id;
-    }
-
-    /**
-     * Tries to delete the user from the database.
-     *
-     * @param   string  $userId  the account name
-     * @throws  \Yana\Core\Exceptions\User\NotFoundException     when no such user exists
-     * @throws  \Yana\Db\Queries\Exceptions\NotDeletedException  when there was a problem with the database
-     */
-    public function offsetUnset($userId)
-    {
-        assert('is_string($userId); // Wrong type argument $userId. String expected.');
-
-        // user does not exist
-        if (!$this->offsetExists($userId)) {
-            assert('!isset($message); // Cannot redeclare var $message');
-            $message = "No such user: '$userId'.";
-            assert('!isset($level); // Cannot redeclare var $level');
-            $level = \Yana\Log\TypeEnumeration::WARNING;
-            throw new \Yana\Core\Exceptions\User\NotFoundException($message, $level);
+        $collection = new \Yana\Plugins\Data\Collection();
+        foreach ($this->_getDatabaseConnection()->select($this->_getTableName()) as $row)
+        {
+            $collection[] = $this->_getEntityMapper()->toEntity($row);
         }
-
-        assert('!isset($upperCaseUserId); // Cannot redeclare var $upperCaseUserId');
-        $upperCaseUserId = \Yana\Util\Strings::toUpperCase($userId);
-
-        assert('!isset($db); // Cannot redeclare var $db');
-        $db = $this->_getDatabaseConnection();
-        try {
-
-            // delete profile (if any)
-            try {
-                $db->remove(\Yana\Security\Data\Tables\ProfileEnumeration::TABLE . "." . $upperCaseUserId)
-                    ->commit(); // may throw exception
-
-            } catch (\Yana\Core\Exceptions\NotFoundException $e) {
-
-                $db->rollback(); // don't try to commit this statement again
-            }
-            // delete user's security level (if any)
-            try {
-                $db->remove(\Yana\Security\Data\Tables\LevelEnumeration::TABLE,
-                    array(\Yana\Security\Data\Tables\LevelEnumeration::USER, "=", $upperCaseUserId), 0)
-                    ->commit(); // may throw exception
-
-            } catch (\Yana\Core\Exceptions\NotFoundException $e) {
-
-                $db->rollback(); // don't try to commit this statement again
-            }
-            // delete access permissions (temporarily) granted by this user (if any)
-            try {
-                $db->remove(\Yana\Security\Data\Tables\RuleEnumeration::TABLE,
-                    array(\Yana\Security\Data\Tables\RuleEnumeration::GRANTED_BY_USER, "=", $upperCaseUserId), 0)
-                    ->commit(); // may throw exception
-
-            } catch (\Yana\Core\Exceptions\NotFoundException $e) {
-
-                $db->rollback(); // don't try to commit this statement again
-            }
-            try {
-                $db->remove(\Yana\Security\Data\Tables\LevelEnumeration::TABLE . ".*",
-                    array(\Yana\Security\Data\Tables\LevelEnumeration::GRANTED_BY_USER, "=", $upperCaseUserId), 0)
-                    ->commit(); // may throw exception
-
-            } catch (\Yana\Core\Exceptions\NotFoundException $e) {
-
-                $db->rollback(); // don't try to commit this statement again
-            }
-            // delete user settings
-            parent::offsetUnset($upperCaseUserId); // may throw exception
-
-        } catch (\Exception $e) {
-
-            $message = "Unable to commit changes to the database server while trying to remove user '{$userId}'.";
-            $level = \Yana\Log\TypeEnumeration::WARNING;
-            throw new \Yana\Db\Queries\Exceptions\NotDeletedException($message, $level, $e);
-        }
+        return $collection;
     }
 
     /**
-     * Return the number of users in the database.
+     * Return only those plugins that are active.
      *
-     * Since there must be at least 1 admin-account at all times, this function should never return any
-     * value smaller than 1, unless there is a problem with the database.
-     *
-     * If the databae in fact is empty this function will return 0.
-     * In which case you should evacuate children first.
-     *
-     * @return  int
-     */
-    public function count()
-    {
-        return $this->_getDatabaseConnection()->length($this->_getTableName());
-    }
-
-    /**
-     * Return an array of all valid identifiers.
-     *
+     * @param   array  $plugins  list of identifiers
      * @return  array
      */
-    public function getIds()
+    public function filterActivePlugins(array $plugins)
     {
-        assert('!isset($key); // Cannot redeclare var $key');
-        $key = $this->_getTableName() . '.*.' . \Yana\Security\Data\Tables\UserEnumeration::ID;
-        return $this->_getDatabaseConnection()->select($key);
+        assert('!isset($filteredPlugins); // Cannot redeclare var $filteredPlugins');
+        $filteredPlugins = array();
+
+        assert('!isset($pluginName); // Cannot redeclare var $pluginName');
+        foreach ($plugins as $pluginName)
+        {
+            assert('is_string($pluginName); // Invalid argument $pluginName: string expected');
+            if ($this->isActive($pluginName)) {
+                $filteredPlugins[] = $pluginName;
+            }
+        }
+        unset($pluginName);
+
+        return $filteredPlugins;
     }
 
     /**
-     * Saves the account data to the database.
+     * Check if plugin is active.
+     *
+     * Returns bool(true) if the plugin identified by $pluginName exists
+     * and is active and bool(false) otherwise.
+     *
+     * @param   string  $pluginName  identifier for the plugin
+     * @return  bool
+     */
+    public function isActive($pluginName)
+    {
+        assert('is_string($pluginName); // Invalid argument $pluginName: string expected');
+
+        assert('!isset($query); // Cannot redeclare var $query');
+        $query = new \Yana\Db\Queries\SelectExist($this->_getDatabaseConnection());
+        $query->setTable($this->_getTableName());
+        $query->setRow($pluginName);
+        $query->setWhere(array(\Yana\Plugins\Data\Tables\PluginEnumeration::IS_ACTIVE, '=', true));
+        return $query->doesExist();
+    }
+
+    /**
+     * Saves the plugin status to the database.
      *
      * @param  \Yana\Data\Adapters\IsEntity  $entity  object to persist
      * @throws \Yana\Core\Exceptions\InvalidArgumentException  when the entity is invalid
-     * @throws \Yana\Core\Exceptions\User\UserException        when there was a problem with the database
+     * @throws \Yana\Db\DatabaseException                      when there was a problem with the database
      */
     public function saveEntity(\Yana\Data\Adapters\IsEntity $entity)
     {
-        $this->offsetSet(null, $entity);
+        $this->offsetSet($entity->getId(), $entity);
     }
 
 }

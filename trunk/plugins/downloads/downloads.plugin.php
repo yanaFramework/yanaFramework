@@ -34,20 +34,6 @@ class DownloadsPlugin extends \Yana\Plugins\AbstractPlugin
 {
 
     /**
-     * Default event handler
-     *
-     * @access  public
-     * @param   string  $event  name of the called event in lower-case
-     * @param   array   $ARGS   array of params passed to the function
-     * @return  bool
-     * @ignore
-     */
-    public function catchAll($event, array $ARGS)
-    {
-        return true;
-    }
-
-    /**
      * Create an image or download a file from a source.
      *
      * The files are stored in the user's session.

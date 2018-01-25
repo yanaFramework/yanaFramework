@@ -239,7 +239,7 @@ class Rule extends \Yana\Security\Data\SecurityRules\AbstractRule
      * Grant this permission to another user.
      *
      * @param   string  $userName  user id (will trigger database exception if not valid)
-     * @return  self
+     * @return  \Yana\Security\Rules\IsRule
      * @throws  \Yana\Core\Exceptions\User\NotGrantableException                when the permission has no grant option
      * @throws  \Yana\Core\Exceptions\User\RuleAlreadyExistsExceptionException  when the new permission can't be saved
      * @throws  \Yana\Core\Exceptions\User\RuleNotSavedException                when a similar entry already exists
@@ -259,7 +259,7 @@ class Rule extends \Yana\Security\Data\SecurityRules\AbstractRule
             ->setGrantedByUser($this->getUserName())
             ->setProfile($this->getProfile())
             ->saveEntity(); // may throw exception
-        return $this;
+        return $permission;
     }
 
 }

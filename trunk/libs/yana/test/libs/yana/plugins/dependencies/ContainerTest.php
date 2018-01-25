@@ -88,4 +88,21 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->session, $this->object->getSession());
     }
 
+    /**
+     * @test
+     */
+    public function testGetPluginAdapter()
+    {
+        $this->assertTrue($this->object->getPluginAdapter() instanceof \Yana\Plugins\Data\IsAdapter);
+    }
+
+    /**
+     * @test
+     */
+    public function testSetPluginAdapter()
+    {
+        $adapter = new \Yana\Plugins\Data\Adapter(new \Yana\Db\NullConnection());
+        $this->assertSame($adapter, $this->object->setPluginAdapter($adapter)->getPluginAdapter());
+    }
+
 }

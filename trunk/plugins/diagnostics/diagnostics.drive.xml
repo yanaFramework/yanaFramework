@@ -7,7 +7,7 @@
 	The contained entries may not be changed at any case.
 -->
 <drive name="diagnostics">
-    <file name="report.file">
-   		<source>report.xsl</source>
-    </file>
+	<file name="report.file">
+		<source>report.xsl</source>
+	</file>
 </drive>

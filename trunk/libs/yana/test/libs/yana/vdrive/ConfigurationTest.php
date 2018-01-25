@@ -48,7 +48,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = Configuration::loadFile(CWD . '/resources/test.drive.xml');
+        $this->object = \Yana\VDrive\Configuration::createInstanceFromFile(CWD . '/resources/test.drive.xml');
     }
 
     /**
@@ -60,13 +60,87 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\Files\NotFoundException
+     */
+    public function testCreateInstanceFromFileNotFoundException()
+    {
+        \Yana\VDrive\Configuration::createInstanceFromFile('no-such-file');
+    }
+
+    /**
+     * @test
+     */
+    public function testCreateInstanceFromString()
+    {
+        $actual = \Yana\VDrive\Configuration::createInstanceFromString(\file_get_contents(CWD . '/resources/test.drive.xml'));
+        $this->assertEquals($this->object, $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function testIsInclude()
+    {
+        $this->assertFalse(\Yana\VDrive\Configuration::createInstanceFromString('<drive/>')->isInclude());
+        $this->assertTrue(\Yana\VDrive\Configuration::createInstanceFromString('<include/>')->isInclude());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetNodeRequirements()
+    {
+        $file = $this->object->addNodeFile("test");
+        $requirements1 = $file->setNodeRequirements(true, true, true);
+        $this->assertTrue($requirements1 instanceof \Yana\VDrive\Configuration);
+        $this->assertEquals('requirements', $requirements1->getName());
+
+        $attributes = $requirements1->toArray();
+        $this->assertArrayHasKey('@readable', $attributes);
+        $this->assertArrayHasKey('@writeable', $attributes);
+        $this->assertArrayHasKey('@executable', $attributes);
+        $this->assertEquals('yes', $attributes['@readable']);
+        $this->assertEquals('yes', $attributes['@writeable']);
+        $this->assertEquals('yes', $attributes['@executable']);
+        $this->assertTrue($file->nodeRequiresReadable());
+        $this->assertTrue($file->nodeRequiresWriteable());
+        $this->assertTrue($file->nodeRequiresExecutable());
+
+        $requirements2 = $file->setNodeRequirements(false, false, false);
+        $this->assertSame('no', (string) $requirements1->attributes()->readable);
+        $this->assertSame('no', (string) $requirements1->attributes()->writeable);
+        $this->assertSame('no', (string) $requirements1->attributes()->executable);
+        $this->assertSame('no', (string) $requirements2->attributes()->readable);
+        $this->assertSame('no', (string) $requirements2->attributes()->writeable);
+        $this->assertSame('no', (string) $requirements2->attributes()->executable);
+        $this->assertEquals($requirements1, $requirements2);
+        $this->assertFalse($file->nodeRequiresReadable());
+        $this->assertFalse($file->nodeRequiresWriteable());
+        $this->assertFalse($file->nodeRequiresExecutable());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetNodeFiles()
+    {
+        $file1 = $this->object->addNodeFile("test1");
+        $file2 = $this->object->addNodeFile("test2");
+        $files = $this->object->getNodeFiles();
+        $this->assertCount(2, $files);
+        $this->assertEquals($file1, $files[0]);
+        $this->assertEquals($file2, $files[1]);
+    }
+
+    /**
      * Test vars.
      *
      * @test
      */
     public function testVars()
     {
-        $this->object = \Yana\VDrive\Configuration::createDrive();
+        $this->object = \Yana\VDrive\Configuration::createInstance();
         $var = $this->object->addNodeVar('foo', 'yes');
         $this->assertEquals('yes', $var->getNodeValue());
         $this->assertTrue($var->isVar());
@@ -101,7 +175,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         // test includes
         $this->object->addNodeInclude('foo.php');
         $this->object->addNodeInclude('bar.php');
-        $this->assertEquals($this->object->getNodeIncludes()->asXML(), '<include path="foo.php"/>', '"set/get includes" test failed');
+        $this->assertEquals($this->object->getNodeIncludes()[0]->asXML(), '<include path="foo.php"/>', '"set/get includes" test failed');
         // test files
         $file = $this->object->addNodeFile("test", true);
         $this->assertTrue(isset($file), '"create file" test failed');
@@ -121,7 +195,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         // test source
         $file->addNodeSource('foo.txt');
         $file->addNodeSource('bar.txt');
-        $this->assertEquals('<source>foo.txt</source>', $file->getNodeSources()->asXML(), '"set/get source" test failed');
+        $this->assertEquals('<source>foo.txt</source>', $file->getNodeSources()[0]->asXML(), '"set/get source" test failed');
         // test directories
         $dir = $this->object->addNodeDir("test", true);
         $this->assertTrue(isset($dir), '"create dir" test failed');
@@ -144,7 +218,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         // test source
         $dir->addNodeSource('foo');
         $dir->addNodeSource('bar');
-        $this->assertEquals($dir->getNodeSources()->asXML(), '<source>foo</source>', '"set/get source" test failed');
+        $this->assertEquals($dir->getNodeSources()[0]->asXML(), '<source>foo</source>', '"set/get source" test failed');
         $file = $dir->addNodeFile("bar");
         $this->assertEquals($file->getNodeName(), "bar", '"add file" test failed');
     }

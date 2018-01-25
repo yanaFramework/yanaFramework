@@ -37,22 +37,6 @@ class AboutConfigPlugin extends \Yana\Plugins\AbstractPlugin
 {
 
     /**
-     * Default event handler
-     *
-     * returns bool(true) on success and bool(false) on error
-     *
-     * @access  public
-     * @return  bool
-     * @param   string  $event  name of the called event in lower-case
-     * @param   array   $ARGS   array of arguments passed to the function
-     * @ignore
-     */
-    public function catchAll($event, array $ARGS)
-    {
-        return true;
-    }
-
-    /**
      * create a menu to edit default settings of the framework
      *
      * this function does not expect any arguments

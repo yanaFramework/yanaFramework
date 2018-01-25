@@ -212,7 +212,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
             unset($rawContent);
 
             /* create configuration */
-            $this->_configuration = \Yana\VDrive\Configuration::loadString($content);
+            $this->_configuration = \Yana\VDrive\Configuration::createInstanceFromString($content);
             /* read XML */
             if (!($this->_configuration instanceOf \Yana\VDrive\IsConfiguration)) {
                 $message = "Not a valid VDrive configuration file: '{$path}'";
@@ -474,7 +474,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
      */
     private function _getSource(\Yana\VDrive\IsConfiguration $content)
     {
-        $sources = (array) $content->getNodeSources();
+        $sources = $content->getNodeSources();
 
         /* default mode
          *
@@ -492,10 +492,8 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
             $source = (string) $source;
             if (mb_strpos($source, YANA_LEFT_DELIMITER) !== false) {
                 $source = \Yana\Util\Strings::replaceToken($source, self::$_defaultSettings);
-            } else {
-                /* intentionally left blank */
-            }
-            if (!preg_match('/^(\w:|\/)/', $source)) {
+            } 
+           if (!preg_match('/^(\w:|\/)/', $source)) {
                 $source = $this->_getBaseDirectory() . $source;
             }
             if (file_exists($source)) {
@@ -679,7 +677,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
             $this->$key = $value;
         }
         $this->_setPath($this->_configuration);
-        $this->_configuration = \Yana\VDrive\Configuration::loadFile($this->_configuration);
+        $this->_configuration = \Yana\VDrive\Configuration::createInstanceFromFile($this->_configuration);
     }
 
 }

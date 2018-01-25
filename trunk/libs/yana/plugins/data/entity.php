@@ -23,8 +23,6 @@
  *
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
- *
- * @ignore
  */
 
 namespace Yana\Plugins\Data;
@@ -35,15 +33,20 @@ namespace Yana\Plugins\Data;
  * Holds user data and function to set logins and passwords.
  *
  * @package     yana
- * @subpackage  security
- *
- * @ignore
+ * @subpackage  plugins
  */
-class Entity extends \Yana\Data\Adapters\AbstractEntity
+class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Plugins\Data\IsEntity
 {
 
-    /** @var string */ private $_id = null;
-    /** @var bool   */ private $_isActive = false;
+    /**
+     * @var string
+     */
+    private $_id = "";
+
+    /**
+     * @var bool
+     */
+    private $_isActive = false;
 
     /**
      * Get the alphanumeric name of the plugin as a string.

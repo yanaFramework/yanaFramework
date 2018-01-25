@@ -110,7 +110,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetPlugins()
     {
-        $this->assertTrue($this->object->getPlugins() instanceof \Yana\Plugins\Manager);
+        $this->assertTrue($this->object->getPlugins() instanceof \Yana\Plugins\Facade);
     }
 
     /**

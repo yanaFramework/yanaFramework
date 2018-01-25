@@ -52,7 +52,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         restore_error_handler();
-        $manager = \Yana\Plugins\Manager::getInstance();
+        $manager = \Yana\Plugins\Facade::getInstance();
         $this->object = new \Yana\Security\Dependencies\Container($manager);
     }
 

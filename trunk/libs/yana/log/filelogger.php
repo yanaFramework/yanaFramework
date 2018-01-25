@@ -77,7 +77,7 @@ class FileLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
             $logEntry = array(
                 'MESSAGE' => (string) $message,
                 'USER' => (!empty($_SESSION['user_name'])) ? (string) $_SESSION['user_name'] : '*GUEST',
-                'ACTION' => \Yana\Plugins\Manager::getLastEvent(),
+                'ACTION' => \Yana\Plugins\Facade::getLastEvent(),
                 'TIME' => date('r')
             );
             $errorMessage = "";

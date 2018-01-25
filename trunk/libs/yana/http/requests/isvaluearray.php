@@ -50,6 +50,15 @@ interface IsValueArray
     public function asUnsafeArray();
 
     /**
+     * Returns contents as sanitized array.
+     *
+     * If the contents are not an array, they are wrapped in a numeric array, where the value is at index "0".
+     *
+     * @return  array
+     */
+    public function asArrayOfSafeStrings();
+
+    /**
      * Returns contents as collection for sanitation.
      *
      * @return  \Yana\Http\Requests\ValueWrapper

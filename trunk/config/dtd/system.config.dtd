@@ -1,12 +1,11 @@
 <!-- auto-generated DTD -->
-<!ELEMENT system (date|default|templates|php_self|pluginfile|skindir|blobdir|plugindir|tempdir|configdrive|configdir)*>
+<!ELEMENT system (date|default|templates|php_self|skindir|blobdir|plugindir|tempdir|configdrive|configdir)*>
 <!ELEMENT configdir (#PCDATA)>
 <!ELEMENT configdrive (#PCDATA)>
 <!ELEMENT tempdir (#PCDATA)>
 <!ELEMENT plugindir (#PCDATA)>
 <!ELEMENT skindir (#PCDATA)>
 <!ELEMENT blobdir (#PCDATA)>
-<!ELEMENT pluginfile (#PCDATA)>
 <!ELEMENT php_self (#PCDATA)>
 <!ELEMENT templates (security|usesubdirs|defaultresourcetype|outputfilter|postfilter|prefilter|varfilter|blockfunction|function|modifier|resourcetype|leftdelimiter|rightdelimiter|templatedir|cachedir|caching|cachelifetime|cachingtype|compilecheck|compiledir|configdir|debugging|defaultmodifier)*>
 <!ELEMENT leftdelimiter (#PCDATA)>

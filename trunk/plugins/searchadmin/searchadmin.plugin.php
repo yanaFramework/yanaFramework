@@ -39,20 +39,6 @@ class SearchAdminPlugin extends \Yana\Plugins\AbstractPlugin
 {
 
     /**
-     * Default event handler
-     *
-     * @access  public
-     * @param   string  $event  name of the called event in lower-case
-     * @param   array   $ARGS   array of arguments passed to the function
-     * @return  bool
-     * @ignore
-     */
-    public function catchAll($event, array $ARGS)
-    {
-        return true;
-    }
-
-    /**
      * Show setup form.
      *
      * @type        config

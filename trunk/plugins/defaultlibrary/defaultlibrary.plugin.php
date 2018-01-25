@@ -35,21 +35,7 @@ class DefaultLibraryPlugin extends \Yana\Plugins\AbstractPlugin
 {
 
     /**
-     * Default event handler
-     *
-     * @access  public
-     * @param   string  $event  name of the called event in lower-case
-     * @param   array   $ARGS   array of params passed to the function
-     * @return  bool
-     * @ignore
-     */
-    public function catchAll($event, array $ARGS)
-    {
-        return true;
-    }
-
-    /**
-     * clear server's template-cache
+     * Clear server's template-cache.
      *
      * @type        primary
      * @template    message
@@ -65,42 +51,38 @@ class DefaultLibraryPlugin extends \Yana\Plugins\AbstractPlugin
     }
 
     /**
-     * create preview message
+     * Create preview message.
      *
-     * Note: this function ends the program
-     *
-     * parameters taken:
-     *
-     * <ul>
-     * <li> string eintraege    text to be previewed </li>
-     * </ul>
+     * Note: this function ends the program.
      *
      * @type        primary
      * @template    null
      *
      * @access      public
-     * @param       string  $eintraege        text to format
+     * @param       string  $eintraege        text to be previewed
      * @param       bool    $is_ajax_request  is Ajax request
      */
     public function preview($eintraege, $is_ajax_request = false)
     {
-        $eintraege = \Yana\Data\StringValidator::sanitize($eintraege, 0, \Yana\Data\StringValidator::USERTEXT);
+        $sanitizedText = \Yana\Data\StringValidator::sanitize($eintraege, 0, \Yana\Data\StringValidator::USERTEXT);
         $formatter = new \Yana\Views\Helpers\Formatters\TextFormatterCollection();
-        $eintraege = $formatter($eintraege);
+        $formattedText = $formatter($sanitizedText);
         if ($is_ajax_request) {
-            exit($eintraege);
+            exit($formattedText);
         } else {
             $doc = $this->_getApplication()->getView()->createContentTemplate('id:blank');
-            $content = '<div style="overflow: hidden; height: 100%;">' . $eintraege . '</div>';
+            $content = '<div style="overflow: hidden; height: 100%;">' . $formattedText . '</div>';
             $doc->setVar('INSERT_CONTENT_HERE', $content);
             exit("$doc");
         }
     }
 
     /**
-     * Check for correct syntax of embedded tags in all textarea fields.
+     * Checks syntax of embedded tags.
      *
-     * Note: this function ends the program
+     * Checks for correct syntax of embedded tags in all textarea fields.
+     *
+     * Note: this function ends the program.
      *
      * This functions produces a XML output, containing an array,
      * where index "error" contains an error number and index
@@ -320,7 +302,7 @@ class DefaultLibraryPlugin extends \Yana\Plugins\AbstractPlugin
     }
 
     /**
-     * Shows a color-picker.
+     * Show color-picker.
      *
      * @type        primary
      * @template    COLORPICKER_CONTENT

@@ -43,7 +43,7 @@ class PluginEnumeration extends \Yana\Core\AbstractEnumeration
 
     const TABLE = 'plugins';
     const ID = 'plugin_id';
-    const TITLE = 'plugin_is_active';
+    const IS_ACTIVE = 'plugin_is_active';
 
 }
 
