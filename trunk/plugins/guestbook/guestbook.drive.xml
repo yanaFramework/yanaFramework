@@ -11,8 +11,8 @@
 		<source>../../{$TEMPDIR}{$ID}.flood</source>
 		<requirements writeable="yes"/>
 	</file>
-    <file name="notification.file">
+	<file name="notification.file">
 		<source>templates/notification.mail.tpl</source>
 		<requirements writeable="yes"/>
-    </file>
+	</file>
 </drive>

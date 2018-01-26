@@ -772,6 +772,9 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
         }
         $selectQuery->setOffset($formSetup->getPage() * $formSetup->getEntriesPerPage());
         $values = $selectQuery->getResults();
+        if ($selectQuery->getExpectedResult() === \Yana\Db\ResultEnumeration::ROW) {
+            $values = array($values);
+        }
         $this->_setupBuilder->setRows($values);
         $referenceValues = array();
         foreach ($formSetup->getForeignKeys() as $name => $reference)

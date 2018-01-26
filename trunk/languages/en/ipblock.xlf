@@ -14,7 +14,7 @@
             <group id="admin">
                 <trans-unit id="admin.0">
                     <source/>
-                    <target>Blacklist:<bpt id="c1">&lt;span class="embtag_tag_c"&gt;</bpt>(blocked IPs)<ept id="c1">&lt;/span</ept></target>
+                    <target>Blacklist:<bpt id="c1">&lt;span class="embtag_tag_c"&gt;</bpt>(blocked IPs)<ept id="c1">&lt;/span&gt;</ept></target>
                 </trans-unit>
                 <trans-unit id="admin.1">
                     <source/>
@@ -22,7 +22,7 @@
                 </trans-unit>
                 <trans-unit id="admin.2">
                     <source/>
-                    <target>Whitelist:<bpt id="c1">&lt;span class="embtag_tag_c"&gt;</bpt>(allowed IPs)<ept id="c1">&lt;/span</ept></target>
+                    <target>Whitelist:<bpt id="c1">&lt;span class="embtag_tag_c"&gt;</bpt>(allowed IPs)<ept id="c1">&lt;/span&gt;</ept></target>
                 </trans-unit>
             </group>
         </body>

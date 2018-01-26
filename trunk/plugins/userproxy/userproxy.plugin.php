@@ -40,6 +40,70 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
 {
 
     /**
+     * Get security levels.
+     *
+     * @param   \Yana\Security\Data\Behaviors\IsBehavior   $user            that is currently logged in
+     * @param   string                                     $defaultProfile  must be valid id
+     * @return  array
+     */
+    private function _getAllSecurityLevels(\Yana\Security\Data\Behaviors\IsBehavior $user, $defaultProfile)
+    {
+        assert('!isset($grantableLevels); // Cannot redeclare var $grantableLevels');
+        $grantableLevels = array();
+        assert('!isset($level); // Cannot redeclare var $level');
+        foreach ($user->getAllSecurityLevels() as $level)
+        {
+            /* @var $level \Yana\Security\Data\SecurityLevels\IsLevelEntity */
+            if (!$level->isUserProxyActive()) {
+                continue; // If this level can't be granted to other users, we ignore it.
+            }
+            $profileId = \mb_strtolower($level->getProfile() > "" ? $level->getProfile() : $defaultProfile);
+            $grantableLevels[$profileId] = array(
+                "SECURITY_ID" => $level->getId(),
+                "SECURITY_LEVEL" => $level->getSecurityLevel()
+            );
+            unset($profileId);
+        }
+        unset($level);
+
+        return $grantableLevels;
+    }
+
+    /**
+     * Get security rules.
+     *
+     * @param   \Yana\Security\Data\Behaviors\IsBehavior   $user            that is currently logged in
+     * @param   string                                     $defaultProfile  must be valid id
+     * @return  array
+     */
+    private function _getAllSecurityRules(\Yana\Security\Data\Behaviors\IsBehavior $user, $defaultProfile)
+    {
+        assert('!isset($rules); // Cannot redeclare var $rules');
+        $rules = array();
+        assert('!isset($rule); // Cannot redeclare var $rule');
+        assert('!isset($profileId); // Cannot redeclare var $profileId');
+        foreach ($user->getAllSecurityGroupsAndRoles() as $rule)
+        {
+            /* @var $rule \Yana\Security\Data\SecurityRules\IsRuleEntity */
+
+            if (!$rule->isUserProxyActive()) {
+                continue;
+            }
+            $profileId = \mb_strtolower($rule->getProfile() > "" ? $rule->getProfile() : $defaultProfile);
+            if (!isset($rules[$profileId])) {
+                $rules[$profileId] = array();
+            }
+            $rules[$profileId][$rule->getId()] = array(
+                "GROUP_ID" => $rule->getGroup(),
+                "ROLE_ID" => $rule->getRole()
+            );
+        }
+        unset($rule, $profileId);
+
+        return $rules;
+    }
+
+    /**
      * Create edit form.
      *
      * This presents a form that shows all security levels, groups,
@@ -86,50 +150,13 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
          * get security levels
          */
         $user = $this->_getSecurityFacade()->loadUser($currentUser);
-        assert('!isset($grantableLevels); // Cannot redeclare var $grantableLevels');
-        $grantableLevels = array();
-        assert('!isset($level); // Cannot redeclare var $level');
-        foreach ($user->getAllSecurityLevels() as $level)
-        {
-            /* @var $level \Yana\Security\Data\SecurityLevels\IsLevelEntity */
-
-            if (!$level->isUserProxyActive()) {
-                continue; // If this level can't be granted to other users, we ignore it.
-            }
-            $profileId = $level->getProfile() > "" ? $level->getProfile() : $defaultProfile;
-            $grantableLevels[$profileId] = array(
-                "SECURITY_ID" => $level->getId(),
-                "SECURITY_LEVEL" => $level->getSecurityLevel()
-            );
-        }
-        unset($level);
-        $YANA->setVar("LEVELS", $grantableLevels);
-        unset($grantableLevels);
+        $YANA->setVar("LEVELS", $this->_getAllSecurityLevels($user, $defaultProfile));
 
         /**
          * get security rules
          */
         assert('!isset($rules); // Cannot redeclare var $rules');
-        $rules = array();
-        assert('!isset($rule); // Cannot redeclare var $rule');
-        assert('!isset($profileId); // Cannot redeclare var $profileId');
-        foreach ($user->getAllSecurityGroupsAndRoles() as $rule)
-        {
-            /* @var $rule \Yana\Security\Data\SecurityRules\IsRuleEntity */
-
-            if (!$rule->isUserProxyActive()) {
-                continue;
-            }
-            $profileId = $rule->getProfile() > "" ? $rule->getProfile() : $defaultProfile;
-            if (!isset($rules[$profileId])) {
-                $rules[$profileId] = array();
-            }
-            $rules[$profileId][$rule->getId()] = array(
-                "GROUP_ID" => $rule->getGroup(),
-                "ROLE_ID" => $rule->getRole()
-            );
-        }
-        unset($rule, $profileId);
+        $rules = $this->_getAllSecurityRules($user, $defaultProfile);
         $YANA->setVar("RULES", $rules);
         $YANA->setVar("PROFILES", array_keys($rules)); // set profiles
         unset($rules);
@@ -162,7 +189,7 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
         }
         unset($level);
         $YANA->setVar("GRANTED_LEVELS", $grantedLevels);
-        unset($grantedLevels);
+        unset($grantedLevels, $profileId);
 
         /**
          * get groups
@@ -190,7 +217,7 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
         }
         unset($rule, $profileId);
         $YANA->setVar("GRANTED_RULES", $grantedRules);
-        unset($grantedRules);
+        unset($grantedRules, $profileId);
 
         // store list of users with grants
         $YANA->setVar("GRANTED_USERS", \array_unique($users));

@@ -12,16 +12,16 @@
             </group>
             <group id="admin">
                 <trans-unit id="admin.0">
-                    <source>Blacklist:<bpt id="c1">&lt;span class="embtag_tag_c"&gt;</bpt>(blocked IPs)<ept id="c1">&lt;/span</ept></source>
-                    <target>Blacklist:<bpt id="c1">&lt;span class="embtag_tag_c"&gt;</bpt>(blockierte IPs)<ept id="c1">&lt;/span</ept></target>
+                    <source>Blacklist:<bpt id="c1">&lt;span class="embtag_tag_c"&gt;</bpt>(blocked IPs)<ept id="c1">&lt;/span&gt;</ept></source>
+                    <target>Blacklist:<bpt id="c1">&lt;span class="embtag_tag_c"&gt;</bpt>(blockierte IPs)<ept id="c1">&lt;/span&gt;</ept></target>
                 </trans-unit>
                 <trans-unit id="admin.1">
                     <source>IP exclusion</source>
                     <target>IP-Sperre</target>
                 </trans-unit>
                 <trans-unit id="admin.2">
-                    <source>Whitelist:<bpt id="c1">&lt;span class="embtag_tag_c"&gt;</bpt>(allowed IPs)<ept id="c1">&lt;/span</ept></source>
-                    <target>Whitelist:<bpt id="c1">&lt;span class="embtag_tag_c"&gt;</bpt>(erlaubte IPs)<ept id="c1">&lt;/span</ept></target>
+                    <source>Whitelist:<bpt id="c1">&lt;span class="embtag_tag_c"&gt;</bpt>(allowed IPs)<ept id="c1">&lt;/span&gt;</ept></source>
+                    <target>Whitelist:<bpt id="c1">&lt;span class="embtag_tag_c"&gt;</bpt>(erlaubte IPs)<ept id="c1">&lt;/span&gt;</ept></target>
                 </trans-unit>
             </group>
         </body>

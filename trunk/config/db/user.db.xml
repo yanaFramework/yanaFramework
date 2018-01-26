@@ -100,7 +100,6 @@
                 notnull="yes"
                 table="user"
                 column="user_id"
-                readonly="yes"
                 title='{lang id="USER.OPTION.0"}'>
             </reference>
             <timestamp

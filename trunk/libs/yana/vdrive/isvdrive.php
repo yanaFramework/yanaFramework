@@ -89,6 +89,16 @@ interface IsVDrive extends \Yana\Files\IsResource, \Yana\Report\IsReportable
     public function read();
 
     /**
+     * Returns name of virtual drive.
+     *
+     * @return  string
+     * @throws  \Yana\Core\Exceptions\NotFoundException       when configuration file doesn't exist
+     * @throws  \Yana\Core\Exceptions\NotReadableException    when configuration file is not readable
+     * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when the file could not be read or contains invalid syntax
+     */
+    public function getDriveName();
+
+    /**
      * Return file contents as string.
      *
      * @return  string

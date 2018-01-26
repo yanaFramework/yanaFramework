@@ -570,7 +570,6 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
                 ->findEntitiesGrantedByUser($this->getId());
         } catch (\Yana\Core\Exceptions\User\NotFoundException $e) {
             $securityLevelEntities = new \Yana\Security\Data\SecurityLevels\Collection();
-            $securityLevelEntities[] = new \Yana\Security\Data\SecurityLevels\Level(0, true); // 0 is default
             unset($e);
         }
         return $securityLevelEntities;

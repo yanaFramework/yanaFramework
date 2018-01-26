@@ -81,7 +81,7 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
      */
     public function testActivate()
     {
-        $this->object->deactive('helloworld');
+        $this->object->deactivate('helloworld');
         $this->assertTrue($this->object->activate('helloworld')->isActive('helloworld'));
     }
 
@@ -91,7 +91,7 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
     public function testDeactivate()
     {
         $this->object->activate('helloworld');
-        $this->assertFalse($this->object->deactive('helloworld')->isActive('helloworld'));
+        $this->assertFalse($this->object->deactivate('helloworld')->isActive('helloworld'));
     }
 
     /**

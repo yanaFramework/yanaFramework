@@ -119,6 +119,7 @@ class TextFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
      * @assert ('a[color=a]b[/color]c') == 'a<span class="embtag_tag_color" style="color:a">b</span>c'
      * @assert ('a[mail=mailto:a[wbr]@b.c]b[/mail]c') == 'a<a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;a@b.c" target="_blank">b</a>c'
      * @assert ('a[url]b[/url]c') == 'a<a href="http://b" target="_blank">b</a>c'
+     * @assert ('a:[c](b)[/c]') == 'a:<span class="embtag_tag_c">(b)</span>'
      */
     public function __invoke($string)
     {

@@ -430,7 +430,7 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRepo
      * @throws  \Yana\Core\Exceptions\NotFoundException  when no plugin with the given name is found
      * @return  $this
      */
-    public function deactive($pluginName)
+    public function deactivate($pluginName)
     {
         assert('is_string($pluginName); // Invalid argument $pluginName: string expected');
         $this->_setActiveStatus($pluginName, false);

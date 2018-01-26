@@ -270,6 +270,19 @@ class TextFormatterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Generated from @assert ('a:[c](b)[/c]') == 'a:<span class="embtag_tag_c">(b)</span>'.
+     *
+     * @test
+     */
+    public function test__invoke17()
+    {
+        $this->assertEquals(
+            'a:<span class="embtag_tag_c">(b)</span>'
+            , $this->object->__invoke('a:[c](b)[/c]')
+        );
+    }
+
+    /**
      * @test
      */
     public function test__invokePHP()

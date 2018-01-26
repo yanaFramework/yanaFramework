@@ -33,45 +33,39 @@ namespace Plugins\IpBlockAdmin;
 class IpBlockAdminPlugin extends \Yana\Plugins\AbstractPlugin
 {
 
-    /**#@+
-     * @ignore
-     * @access  private
-     * @static
-     */
-
-    /** @var \Yana\Files\Block */ private static $_whitelist = null;
-    /** @var \Yana\Files\Block */ private static $_blacklist = null;
-
-    /**#@-*/
+    /** @var \Yana\Files\Block */ private $_whitelist = null;
+    /** @var \Yana\Files\Block */ private $_blacklist = null;
 
     /**
      * get whitelist contents
      *
-     * @access  private
-     * @static
      * @return  \Yana\Files\Block
      */
-    private static function _getWhitelist()
+    private function _getWhitelist()
     {
-        if (!isset(self::$_whitelist)) {
-            self::$_whitelist = $this->_getPluginsFacade()->ipblock_admin->getContent("ipblock:/dir/whitelist.block");
+        if (!isset($this->_whitelist)) {
+            $this->_whitelist = $this->_getPluginsFacade()->{"ipblock:/dir/whitelist.block"};
+            if ($this->_whitelist->exists()) {
+                $this->_whitelist->read();
+            }
         }
-        return self::$_whitelist;
+        return $this->_whitelist;
     }
 
     /**
      * get blacklist contents
      *
-     * @access  private
-     * @static
      * @return  \Yana\Files\Block
      */
-    private static function _getBlacklist()
+    private function _getBlacklist()
     {
-        if (!isset(self::$_blacklist)) {
-            self::$_blacklist = $this->_getPluginsFacade()->ipblock_admin->getContent("ipblock:/dir/blacklist.block");
+        if (!isset($this->_blacklist)) {
+            $this->_blacklist = $this->_getPluginsFacade()->{"ipblock:/dir/blacklist.block"};
+            if ($this->_blacklist->exists()) {
+                $this->_blacklist->read();
+            }
         }
-        return self::$_blacklist;
+        return $this->_blacklist;
     }
 
     /**
@@ -108,19 +102,17 @@ class IpBlockAdminPlugin extends \Yana\Plugins\AbstractPlugin
 
     /**
      * set template vars for presentation
-     *
-     * @access      private
      */
     private function _getBlock()
     {
         $YANA = $this->_getApplication();
-        $whitelist = self::_getWhitelist();
-        $blacklist = self::_getBlacklist();
+        $whitelist = $this->_getWhitelist();
+        $blacklist = $this->_getBlacklist();
         if ($whitelist->exists()) {
-            $YANA->setVar("WHITELIST", $whitelist->get());
+            $YANA->setVar("WHITELIST", $whitelist->getContent());
         }
         if ($blacklist->exists()) {
-            $YANA->setVar("BLACKLIST", $blacklist->get());
+            $YANA->setVar("BLACKLIST", $blacklist->getContent());
         }
     }
 
@@ -141,7 +133,7 @@ class IpBlockAdminPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function set_root_block($blacklist = "", $whitelist = "")
     {
-        return $this->_set($blacklist, $whitelist);
+        return $this->_set($blacklist, $whitelist, $this->_getApplication()->getDefault('profile'));
     }
 
     /**
@@ -162,7 +154,7 @@ class IpBlockAdminPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function set_block($id, $blacklist = "", $whitelist = "")
     {
-        return $this->_set($blacklist, $whitelist);
+        return $this->_set($blacklist, $whitelist, $this->_getApplication()->getProfileId());
     }
 
     /**
@@ -175,25 +167,27 @@ class IpBlockAdminPlugin extends \Yana\Plugins\AbstractPlugin
      * Returns bool(true) on success and bool(false) on error.
      *
      * @access  private
-     * @param   string  $blacklist  list of blacklisted IPs
-     * @param   string  $whitelist  list of whitelisted IPs
+     * @param   string  $blacklist    list of blacklisted IPs
+     * @param   string  $whitelist    list of whitelisted IPs
+     * @param   string  $profileName  to save to
      * @return  bool
      * @ignore
      */
-    private function _set($blacklist, $whitelist)
+    private function _set($blacklist, $whitelist, $profileName)
     {
-        $whitelistFile = self::_getWhitelist();
-        $blacklistFile = self::_getBlacklist();
+        /* @var $baseDirectory \Yana\Files\IsDir */
+        $baseDirectory = $this->_getApplication()->getPlugins()->{"ipblock:/dir"};
+        $whitelistFile = new \Yana\Files\Block($baseDirectory->getPath() . $profileName . '.whitelist');
+        $blacklistFile = new \Yana\Files\Block($baseDirectory->getPath() . $profileName . '.blacklist');
+        unset($baseDirectory);
 
         if (!$whitelistFile->exists()) {
-            $whitelistFile = new \Yana\Files\Block(dirname($whitelistFile->getPath()) . '/' . $this->_getApplication()->getProfileId() . '.whitelist');
             $whitelistFile->create();
         } else {
             $whitelistFile->read();
         }
 
         if (!$blacklistFile->exists()) {
-            $blacklistFile = new \Yana\Files\Block(dirname($blacklistFile->getPath()) . '/' . $this->_getApplication()->getProfileId() . '.blacklist');
             $blacklistFile->create();
         } else {
             $blacklistFile->read();

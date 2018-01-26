@@ -7,18 +7,16 @@
 	The contained entries may not be changed at any case.
 -->
 <drive name="ipblock">
-    <dir name="dir" filter=".cfg">
-    	<source>../../{$PROFILESDIR}</source>
-    	<requirements readable="yes" writeable="yes"/>
-    	<file name="whitelist.block">
-   			<source>{$ID}.whitelist</source>
-   			<source>default_whitelist.config</source>
-    		<requirements writeable="yes"/>
-    	</file>
-    	<file name="blacklist.block">
-   			<source>{$ID}.blacklist</source>
-   			<source>default_blacklist.config</source>
-    		<requirements writeable="yes"/>
-    	</file>
-    </dir>
+	<dir name="dir" filter=".cfg">
+		<source>../../{$PROFILESDIR}</source>
+		<requirements readable="yes" writeable="yes"/>
+		<file name="whitelist.block">
+   			<source>../../{$PROFILESDIR}/{$ID}.whitelist</source>
+			<requirements writeable="yes"/>
+		</file>
+		<file name="blacklist.block">
+   			<source>../../{$PROFILESDIR}/{$ID}.blacklist</source>
+			<requirements writeable="yes"/>
+		</file>
+	</dir>
 </drive>

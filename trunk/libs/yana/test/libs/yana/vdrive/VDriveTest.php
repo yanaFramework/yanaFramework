@@ -176,6 +176,15 @@ class VDriveTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testGetDriveName()
+    {
+        $this->_object->read();
+        $this->assertSame("system", $this->_object->getDriveName());
+    }
+
+    /**
+     * @test
+     */
     public function testSerialize()
     {
         $this->_object->read();
