@@ -33,28 +33,12 @@
           <label class="label" style="display: block; margin-left: 50%; height: 30px;">
             <img border="0" src="data/mail.gif" hspace="8" width="23" height="20" alt='{lang id="3"}'/>
             <input type="text" title='{lang id="27"}' size="22" name="mail" maxlength="60"
-                   onchange="if(null==(this.value.match(/^[Ã¤Ã¶Ã¼ÃŸ\w\d-_\.]+\@[Ã¤Ã¶Ã¼ÃŸ\w\d-_\.]+\.[\w\d-_\.]+$/i))){ldelim}alert('{lang id="INVALID_INPUT"}');this.value='';this.className='invalid';{rdelim}else{ldelim}this.className='';{rdelim}"/>
+                   onchange="if(null==(this.value.match(/^[äöüß\w\d-_\.]+\@[äöüß\w\d-_\.]+\.[\w\d-_\.]+$/i))){ldelim}alert('{lang id="INVALID_INPUT"}');this.value='';this.className='invalid';{rdelim}else{ldelim}this.className='';{rdelim}"/>
           </label>
     
           <label class="label" style="display: block; float: left; width: 50%; text-align: right; height: 30px;">
             {lang id="4"}:<img border="0" src="data/location.gif" hspace="12" alt=""/>
             <input type="text" title='{lang id="26"}' size="22" name="hometown" maxlength="60"/>
-          </label>
-    
-          <label class="label" style="display: block; margin-left: 50%; height: 30px;">
-            <img border="0" src="data/messenger.gif" hspace="12" width="20" height="20" alt='{lang id="22"}'/>
-            <input type="text" title='{lang id="29"}' size="10" name="messenger" maxlength="60"/>
-            <select name="msgtyp">
-                <option value="ICQ" style="background-color: yellowgreen; color: black">ICQ</option>
-                <option value="AOL" style="background-color: yellow; color: black">AOL</option>
-                <option value="YAHOO" style="background-color: orange; color: black">Yahoo!</option>
-                <option value="MSN" style="background-color: tomato; color: black">MSN</option>
-            </select>
-          </label>
-    
-          <label class="label" style="display: block; float: left; width: 50%; text-align: right; height: 30px;">
-            {lang id="2"}:<img border="0" src="data/homepage.gif" hspace="10" width="23" height="20" alt=""/>
-            <input type="text" title='{lang id="28"}' size="22" name="homepage" maxlength="60"/>
           </label>
     
           <label class="label" style="display: block; margin-left: 50%; height: 30px;">
@@ -66,6 +50,11 @@
                 <option value="3" style="background-color: #FFD050; color: black">{lang id="RATE_3"}</option>
                 <option value="4" style="background-color: #FFB050; color: black">{lang id="RATE_4"}</option>
             </select>
+          </label>
+    
+          <label class="label" style="display: block; float: left; width: 50%; text-align: right; height: 30px;">
+            {lang id="2"}:<img border="0" src="data/homepage.gif" hspace="10" width="23" height="20" alt=""/>
+            <input type="text" title='{lang id="28"}' size="22" name="homepage" maxlength="60"/>
           </label>
 
           <br />

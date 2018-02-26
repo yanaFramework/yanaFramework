@@ -42,22 +42,6 @@
           </label>
     
           <label class="label" style="display: block; margin-left: 50%; height: 30px;">
-            <img border="0" src="data/messenger.gif" hspace="12" width="20" height="20" alt="{lang id="22"}"/>
-            <input type="text" title="{lang id="29"}" size="10" name="messenger" maxlength="60" value="{$ROW.GUESTBOOK_MESSENGER}"/>
-            <select name="msgtyp">
-                <option {if $ROW.GUESTBOOK_MSGTYP == 'ICQ'}selected="selected"{/if}value="ICQ" style="background-color: yellowgreen; color: black">ICQ</option>
-                <option {if $ROW.GUESTBOOK_MSGTYP == 'AOL'}selected="selected"{/if}value="AOL" style="background-color: yellow; color: black">AOL</option>
-                <option {if $ROW.GUESTBOOK_MSGTYP == 'YAHOO'}selected="selected"{/if}value="YAHOO" style="background-color: orange; color: black">Yahoo!</option>
-                <option {if $ROW.GUESTBOOK_MSGTYP == 'MSN'}selected="selected"{/if}value="MSN" style="background-color: tomato; color: black">MSN</option>
-            </select>
-          </label>
-    
-          <label class="label" style="display: block; float: left; width: 50%; text-align: right; height: 30px;">
-            {lang id="2"}:<img border="0" src="data/homepage.gif" hspace="10" width="23" height="20" alt=""/>
-            <input type="text" title="{lang id="28"}" size="22" name="homepage" maxlength="60" value="{$ROW.GUESTBOOK_HOMEPAGE}"/>
-          </label>
-    
-          <label class="label" style="display: block; margin-left: 50%; height: 30px;">
             {lang id="RATE_0"}
             <select name="opinion">
                 <option value="0" style="background-color: #EEEEEE; color: black">{lang id="23"}:</option>
@@ -66,6 +50,11 @@
                 <option {if $ROW.GUESTBOOK_OPINION == 3}selected="selected"{/if} value="3" style="background-color: #FFD050; color: black">{lang id="RATE_3"}</option>
                 <option {if $ROW.GUESTBOOK_OPINION == 4}selected="selected"{/if} value="4" style="background-color: #FFB050; color: black">{lang id="RATE_4"}</option>
             </select>
+          </label>
+    
+          <label class="label" style="display: block; float: left; width: 50%; text-align: right; height: 30px;">
+            {lang id="2"}:<img border="0" src="data/homepage.gif" hspace="10" width="23" height="20" alt=""/>
+            <input type="text" title="{lang id="28"}" size="22" name="homepage" maxlength="60" value="{$ROW.GUESTBOOK_HOMEPAGE}"/>
           </label>
 
           <br />

@@ -14,8 +14,6 @@
 {lang id="3"}: {$GUESTBOOK_MAIL}
 {/if}{if $GUESTBOOK_HOMETOWN}
 {lang id="4"}: {$GUESTBOOK_HOMETOWN}
-{/if}{if $GUESTBOOK_MESSENGER}
-{lang id="22"}: {$GUESTBOOK_MESSENGER}
 {/if}{if $GUESTBOOK_HOMEPAGE}
 {lang id="2"}: {$GUESTBOOK_HOMEPAGE}
 {/if}

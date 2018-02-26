@@ -89,8 +89,8 @@
                 <target>Ihr Name</target>
             </trans-unit>
             <trans-unit id="22">
-                <source>Messenger</source>
-                <target>Messenger</target>
+                <source>Dummy</source>
+                <target>Dummy</target>
             </trans-unit>
             <trans-unit id="23">
                 <source>this website is</source>
@@ -117,8 +117,8 @@
                 <target>in dieses Feld können Sie die Adresse Ihrer Homepage eintragen (ohne http://)</target>
             </trans-unit>
             <trans-unit id="29">
-                <source>Here you may (in case you got one) enter an ID, which can be used by others to contact you via messenger programs</source>
-                <target>Hier können Sie (falls Sie haben) die ID eingeben, unter der Besucher Sie über Messenger-Programme erreichen können</target>
+                <source>Dummy</source>
+                <target>Dummy</target>
             </trans-unit>
             <trans-unit id="30">
                 <source>Dummy</source>

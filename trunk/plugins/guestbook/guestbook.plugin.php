@@ -153,15 +153,13 @@ class GuestbookPlugin extends \Yana\Plugins\AbstractPlugin
      * @param       int     $target      guestbook id
      * @param       string  $name        author name
      * @param       string  $message     text
-     * @param       string  $msgtyp      messenger type
-     * @param       string  $messenger   messenger id
      * @param       string  $mail        author mail
      * @param       string  $hometown    author location
      * @param       string  $homepage    URL
      * @param       int     $opinion     rating (0..5)
      * @throws      \Yana\Db\Queries\Exceptions\NotUpdatedException  when the entry was not updated
      */
-    public function guestbook_write_edit($target, $name, $message, $msgtyp, $messenger = "", $mail = "", $hometown = "", $homepage = "", $opinion = "")
+    public function guestbook_write_edit($target, $name, $message, $mail = "", $hometown = "", $homepage = "", $opinion = "")
     {
         $YANA = $this->_getApplication();
 
@@ -183,8 +181,6 @@ class GuestbookPlugin extends \Yana\Plugins\AbstractPlugin
         $entry = array(
             'GUESTBOOK_NAME' => $name,
             'GUESTBOOK_MESSAGE' => $message,
-            'GUESTBOOK_MSGTYPE' => $msgtyp,
-            'GUESTBOOK_MESSENGER' => $messenger,
             'GUESTBOOK_MAIL' => $mail,
             'GUESTBOOK_HOMETOWN' => $hometown,
             'GUESTBOOK_HOMEPAGE' => $homepage,
@@ -237,7 +233,7 @@ class GuestbookPlugin extends \Yana\Plugins\AbstractPlugin
     public function guestbook_write_delete(array $selected_entries)
     {
         /* check if input exists */
-        if (!empty($selected_entries)) {
+        if (empty($selected_entries)) {
             $message = "No entry selected for deletion.";
             $level = \Yana\Log\TypeEnumeration::INFO;
             throw new \Yana\Core\Exceptions\Forms\NothingSelectedException($message, $level);
@@ -388,8 +384,6 @@ class GuestbookPlugin extends \Yana\Plugins\AbstractPlugin
         $entry = array(
             'guestbook_name' => $name,
             'guestbook_message' => $message,
-            'guestbook_msgtype' => $msgtyp,
-            'guestbook_messenger' => $messenger,
             'guestbook_mail' => $mail,
             'guestbook_hometown' => $hometown,
             'guestbook_homepage' => $homepage,

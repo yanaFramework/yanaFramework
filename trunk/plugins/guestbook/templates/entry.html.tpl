@@ -1,6 +1,6 @@
     <div class="guestbook_head">
 
-      <!-- {if $CURRENT.GUESTBOOK_OPINION || $CURRENT.GUESTBOOK_HOMEPAGE || $CURRENT.GUESTBOOK_MAIL || $CURRENT.GUESTBOOK_HOMETOWN || $CURRENT.GUESTBOOK_MESSENGER || ($PERMISSION==100 && $CURRENT.GUESTBOOK_IP)} -->
+      <!-- {if $CURRENT.GUESTBOOK_OPINION || $CURRENT.GUESTBOOK_HOMEPAGE || $CURRENT.GUESTBOOK_MAIL || $CURRENT.GUESTBOOK_HOMETOWN || ($PERMISSION==100 && $CURRENT.GUESTBOOK_IP)} -->
         <div class="guestbook_details" style="float: left;">
           <div class="guestbook_details_title">{lang id="7"} ...</div>
           <div class="guestbook_details_content">
@@ -36,18 +36,6 @@
               <img alt="" src="data/location.gif" style="margin-right: 5px;"/>
               <span class="label">{lang id="4"}:</span>
               <span class="guestbook_value">{$CURRENT.GUESTBOOK_HOMETOWN}</span>
-            </div>
-            <!-- {/if} -->
-            <!-- {if $CURRENT.GUESTBOOK_MESSENGER} -->
-            <div>
-              <img alt="" src="data/messenger.gif" style="margin-right: 10px;"/>
-              <!-- {if $CURRENT.GUESTBOOK_MSGTYP=="icq"} -->
-              <span class="label">ICQ:</span>
-              <span class="guestbook_value"><img alt="" src="http://web.icq.com/whitepages/online?icq={$CURRENT.GUESTBOOK_MESSENGER}&amp;img=5"/>{$CURRENT.GUESTBOOK_MESSENGER}</span>
-              <!-- {else} -->
-              <span class="label">{$CURRENT.GUESTBOOK_MSGTYP}:</span>
-              <span class="guestbook_value">{$CURRENT.GUESTBOOK_MESSENGER}</span>
-              <!-- {/if} -->
             </div>
             <!-- {/if} -->
             <!-- {if $PERMISSION==100 && $CURRENT.GUESTBOOK_IP} -->

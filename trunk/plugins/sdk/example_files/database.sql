@@ -7,8 +7,6 @@ CREATE TABLE `guestbook` (
   `guestbook_mail` varchar(255) default NULL,
   `guestbook_homepage` text,
   `guestbook_hometown` varchar(100) default NULL,
-  `guestbook_messenger` varchar(255) default NULL,
-  `guestbook_msgtyp` varchar(5) default NULL,
   `guestbook_opinion` int(1) default NULL,
   `guestbook_date` int(11) NOT NULL default '0',
   `guestbook_comment` text,
