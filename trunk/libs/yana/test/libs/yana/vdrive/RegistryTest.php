@@ -119,8 +119,22 @@ class RegistryTest extends \PHPUnit_Framework_TestCase
     public function testSetVar()
     {
         // check only if the element is set
-        $this->registry->setVar('RULES', 'skin/rules/');
-        $this->assertEquals('skin/rules/', $this->registry->getVar('RULES'));
+        $this->assertEquals('skin/rules/', $this->registry->setVar('RULES', 'skin/rules/')->getVar('RULES'));
+    }
+
+    /**
+     * @test
+     */
+    public function testSetVarByReference()
+    {
+        $value = 'a';
+        $this->assertSame('a', $this->registry->setVarByReference('a', $value)->getVar('a'));
+        $value .= 'b';
+        $this->assertSame('ab', $this->registry->getVar('a'));
+        $value2 = 'c';
+        $this->assertSame('c', $this->registry->setVarByReference('a', $value2)->getVar('a'));
+        $value .= 'bc';
+        $this->assertSame('c', $this->registry->getVar('a'));
     }
 
     /**
@@ -147,6 +161,39 @@ class RegistryTest extends \PHPUnit_Framework_TestCase
         $array2 = array(1 => 'b', 2 => 'c');
         $this->registry->mergeVars($key, $array2);
         $this->assertEquals(array('a', 'b', 'c'), $this->registry->getVar('RULES'));
+    }
+
+    /**
+     * @test
+     */
+    public function testMergeVarsEmptySourceWithOverwrite()
+    {
+        $this->registry->setVars(array());
+        $array = array('a' => 'b', 'c' => 'd');
+        $this->assertSame($this->registry, $this->registry->mergeVars('no-such-entry', $array, true));
+        $this->assertEquals($array, $this->registry->getVar('no-such-entry'));
+    }
+
+    /**
+     * @test
+     */
+    public function testMergeVarsEmptySourceWithoutOverwrite()
+    {
+        $this->registry->setVars(array());
+        $array = array('a' => 'b', 'c' => 'd');
+        $this->assertSame($this->registry, $this->registry->mergeVars('no-such-entry', $array, false));
+        $this->assertEquals($array, $this->registry->getVar('no-such-entry'));
+    }
+
+    /**
+     * @test
+     */
+    public function testMergeVarsAllWithEmptySource()
+    {
+        $this->registry->setVars(array());
+        $array = array('a' => 'b', 'c' => 'd');
+        $this->assertSame($this->registry, $this->registry->mergeVars('*', $array, false));
+        $this->assertEquals($array, $this->registry->getVars(''));
     }
 
     /**

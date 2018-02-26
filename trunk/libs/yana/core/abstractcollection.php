@@ -84,6 +84,8 @@ abstract class AbstractCollection extends \Yana\Core\Object implements \Yana\Cor
     /**
      * Get field key.
      *
+     * May return NULL if there is no key.
+     *
      * @return  string
      */
     public function key()

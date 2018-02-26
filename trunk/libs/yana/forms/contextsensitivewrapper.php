@@ -33,11 +33,14 @@ namespace Yana\Forms;
  * This class is meant to provide a context-aware form object by binding a form to
  * its current context and identifying the fields that apply to it.
  *
+ * Note: this implements the Iterator interface, since it extends a collection,
+ * and all collections in this framework MUST implement this interface.
+ *
  * @package     yana
  * @subpackage  form
  * @ignore
  */
-class ContextSensitiveWrapper extends \Yana\Forms\Fields\FacadeCollection implements \Iterator
+class ContextSensitiveWrapper extends \Yana\Forms\Fields\FacadeCollection
 {
 
     /**
@@ -56,6 +59,12 @@ class ContextSensitiveWrapper extends \Yana\Forms\Fields\FacadeCollection implem
 
     /**
      * Initialize a field collection from a given context.
+     *
+     * Note that this will automatically create a field list based on the table associated with the form,
+     * and save it as new context collection items.
+     *
+     * So it DOES modify the given context. This will initialize the context and is INTENTIONAL.
+     * However, pre-existing entries in the context will not be changed.
      *
      * @param   \Yana\Forms\Facade          $form     form structure and setup
      * @param   \Yana\Forms\Setups\Context  $context  form context to take the field list from
@@ -114,23 +123,36 @@ class ContextSensitiveWrapper extends \Yana\Forms\Fields\FacadeCollection implem
     private function _buildFormFieldCollection(\Yana\Forms\Setups\Context $context)
     {
         try {
-            $table = $this->_form->getTable();
             foreach ($context->getColumnNames() as $columnName)
             {
-                try {
-                    $column = $table->getColumn($columnName);
-                } catch (\Yana\Core\Exceptions\NotFoundException $e) {
-                    continue; // skip invalid column definition
+                if (!$this->offsetExists($columnName)) {
+                    $this->_buildFormFieldFacade($columnName);
                 }
-                $field = null;
-                if ($this->_form->isField($columnName)) {
-                    $field = $this->_form->getField($columnName);
-                }
-                $facade = new \Yana\Forms\Fields\Facade($this, $column, $field);
-                $this->offsetSet($columnName, $facade);
             }
         } catch (\Yana\Core\Exceptions\NotFoundException $e) {
-            // Collection will be empty
+            // No table - collection will remain unchanged (probably empty)
+        }
+    }
+
+    /**
+     * Find a column in the table and create a field facade based on that.
+     *
+     * @param  string  $columnName  must be valid column in table associated with form
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when there is no such table
+     */
+    private function _buildFormFieldFacade($columnName)
+    {
+        $table = $this->_form->getTable(); // May throw NotFoundException when there is no table
+        try {
+            $column = $table->getColumn($columnName); // May throw NotFoundException when there is no such column
+
+            if ($this->_form->isField($columnName)) {
+                $field = $this->_form->getField($columnName);
+            }
+            $facade = new \Yana\Forms\Fields\Facade($this, $column, $field);
+            $this->offsetSet($columnName, $facade);
+        } catch (\Yana\Core\Exceptions\NotFoundException $e) {
+            // do nothing
         }
     }
 
@@ -165,10 +187,15 @@ class ContextSensitiveWrapper extends \Yana\Forms\Fields\FacadeCollection implem
 
     /**
      * Advances the pointer one row.
+     *
+     * If there is no next row, this does nothing.
+     *
+     * @return  $this
      */
     public function nextRow()
     {
         $this->_context->getRows()->next();
+        return $this;
     }
 
 }

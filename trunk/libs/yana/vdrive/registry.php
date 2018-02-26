@@ -228,15 +228,15 @@ class Registry extends \Yana\VDrive\VDrive implements \Yana\VDrive\IsRegistry
     {
         assert('is_string($key); // wrong argument type for argument 1, string expected');
         /* settype to STRING */
-        $key = (string) $key;
+        $keyString = (string) $key;
 
-        if (isset($this->vars[$key])) {
-            $this->vars[$key] =& $value;
+        if (isset($this->vars[$keyString])) {
+            $this->vars[$keyString] =& $value;
             return $this;
         }
 
-        \Yana\Util\Hashtable::setByReference($this->vars, $key, $value);
-        $this->cache[$key] =& $value;
+        \Yana\Util\Hashtable::setByReference($this->vars, $keyString, $value);
+        $this->cache[$keyString] =& $value;
         return $this;
     }
 

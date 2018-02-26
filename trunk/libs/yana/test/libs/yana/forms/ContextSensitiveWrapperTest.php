@@ -74,15 +74,19 @@ class ContextSensitiveWrapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Yana\Forms\ContextSensitiveWrapper::__call
-     * @todo   Implement test__call().
+     * @test
      */
-    public function test__call()
+    public function test__callContext()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame($this->context->getContextName(), $this->object->getContextName());
+    }
+
+    /**
+     * @test
+     */
+    public function test__callForm()
+    {
+        $this->assertSame($this->form->getName(), $this->object->getName());
     }
 
     /**
@@ -94,51 +98,42 @@ class ContextSensitiveWrapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Yana\Forms\ContextSensitiveWrapper::getPrimaryKey
-     * @todo   Implement testGetPrimaryKey().
+     * @test
      */
     public function testGetPrimaryKey()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertNull($this->object->getPrimaryKey());
     }
 
     /**
-     * @covers Yana\Forms\ContextSensitiveWrapper::hasRows
-     * @todo   Implement testHasRows().
+     * @test
      */
     public function testHasRows()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->object->hasRows());
+        $this->object->getContext()->setRows(array(array('key' => 'value')));
+        $this->assertTrue($this->object->hasRows());
     }
 
     /**
-     * @covers Yana\Forms\ContextSensitiveWrapper::getRowCount
-     * @todo   Implement testGetRowCount().
+     * @test
      */
     public function testGetRowCount()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame(0, $this->object->getRowCount());
+        $this->object->getContext()->setRows(array(array('key' => 'value')));
+        $this->assertSame(1, $this->object->getRowCount());
     }
 
     /**
-     * @covers Yana\Forms\ContextSensitiveWrapper::nextRow
-     * @todo   Implement testNextRow().
+     * @test
      */
     public function testNextRow()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame($this->object, $this->object->nextRow());
+        $this->object->getContext()->setRows(array('a' => array('key' => 'value')));
+        $this->assertSame('A', $this->object->getContext()->getRows()->key());
+        $this->assertNull($this->object->nextRow()->getRows()->key());
     }
 
 }
