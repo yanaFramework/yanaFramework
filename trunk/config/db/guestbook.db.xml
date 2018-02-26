@@ -42,19 +42,6 @@
                 name="guestbook_homepage"
                 title='{lang id="2"}'>
             </url>
-            <string
-                name="guestbook_messenger"
-                length="255"
-                title="Messenger">
-            </string>
-            <enum
-                name="guestbook_msgtype"
-                title="Typ">
-                <option value="ICQ">ICQ</option>
-                <option value="AOL">AOL</option>
-                <option value="YAHOO">Yahoo!</option>
-                <option value="MSN">MSN</option>
-            </enum>
             <enum
                 name="guestbook_opinion"
                 title='{lang id="RATE_0"}'>
