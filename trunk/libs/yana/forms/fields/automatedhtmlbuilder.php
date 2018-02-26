@@ -43,24 +43,27 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
     /**
      * Set name attribute based on field settings.
      *
-     * @param   \Yana\Forms\Fields\Facade  $field  definition to create name from
+     * @param   \Yana\Forms\Fields\IsFacade  $field  definition to create name from
      * @return  \Yana\Forms\Fields\AutomatedHtmlBuilder
      */
-    private function _setName(\Yana\Forms\Fields\Facade $field)
+    private function _setName(\Yana\Forms\Fields\IsFacade $field)
     {
         $key = $field->getContext()->getRows()->key();
-        $name = $field->getForm()->getName() . "[" . $field->getContext()->getContextName() . "]" .
-            ((!is_null($key)) ? "[" . $key . "]" : "") . "[" . $field->getName() . "]";
+        $formName = $field->getForm()->getName();
+        $contextName = $field->getContext()->getContextName();
+        $fieldName = $field->getName();
+
+        $name = $formName . "[" . $contextName . "]" . ((!is_null($key)) ? "[" . $key . "]" : "") . "[" . $fieldName . "]";
         return $this->setName($name);
     }
 
     /**
      * Set id attribute based on field settings.
      *
-     * @param   \Yana\Forms\Fields\Facade  $field  definition to create id from
+     * @param   \Yana\Forms\Fields\IsFacade  $field  definition to create id from
      * @return  \Yana\Forms\Fields\AutomatedHtmlBuilder
      */
-    private function _setId(\Yana\Forms\Fields\Facade $field)
+    private function _setId(\Yana\Forms\Fields\IsFacade $field)
     {
         $id = $field->getForm()->getName() . "-" . $field->getContext()->getContextName() . "-" . $field->getName();
         return $this->setId($id);
@@ -69,10 +72,10 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
     /**
      * Set id attribute based on row number and field settings.
      *
-     * @param   \Yana\Forms\Fields\Facade  $field  definition to create name from
+     * @param   \Yana\Forms\Fields\IsFacade  $field  definition to create name from
      * @return  \Yana\Forms\Fields\AutomatedHtmlBuilder
      */
-    private function _setIdByRow(\Yana\Forms\Fields\Facade $field)
+    private function _setIdByRow(\Yana\Forms\Fields\IsFacade $field)
     {
         $key = $field->getContext()->getRows()->key();
         $id = $field->getForm()->getName() . "-" . $field->getContext()->getContextName() .
@@ -83,10 +86,10 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
     /**
      * Set class attribute based on field settings.
      *
-     * @param   \Yana\Forms\Fields\Facade  $field  definition to create id from
+     * @param   \Yana\Forms\Fields\IsFacade  $field  definition to create id from
      * @return  \Yana\Forms\Fields\AutomatedHtmlBuilder
      */
-    private function _setCssClass(\Yana\Forms\Fields\Facade $field)
+    private function _setCssClass(\Yana\Forms\Fields\IsFacade $field)
     {
         $class = $field->getForm()->getName() . "-" . $field->getContext()->getContextName() . "-" . $field->getName();
         return $this->setCssClass($class);
@@ -98,12 +101,12 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
      * Returns the HTML-code representing an input element for the current field.
      * If the field has an action attached to it, an clickable icon or text-link is created next to it.
      *
-     * @param   \Yana\Forms\Fields\Facade  $field  structure definition
+     * @param   \Yana\Forms\Fields\IsFacade  $field  structure definition
      * @return  string
      *
      * @ignore
      */
-    public function __invoke(\Yana\Forms\Fields\Facade $field)
+    public function __invoke(\Yana\Forms\Fields\IsFacade $field)
     {
         $this->_setName($field);
         $setup = $field->getForm()->getSetup();
@@ -134,13 +137,13 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
      *
      * Returns the HTML-code representing an input element for the current field.
      *
-     * @param   \Yana\Forms\Fields\Facade  $field  structure definition
-     * @param   \Yana\Forms\Setup        $setup  information about how to treat the form
+     * @param   \Yana\Forms\Fields\IsFacade  $field  structure definition
+     * @param   \Yana\Forms\IsSetup          $setup  information about how to treat the form
      * @return  string
      *
      * @ignore
      */
-    protected function buildByTypeUpdatable(\Yana\Forms\Fields\Facade $field, \Yana\Forms\Setup $setup)
+    protected function buildByTypeUpdatable(\Yana\Forms\Fields\IsFacade $field, \Yana\Forms\IsSetup $setup)
     {
         $column = $field->getColumn();
 
@@ -308,13 +311,13 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
      *
      * Returns the HTML-code representing an input element for the current field.
      *
-     * @param   \Yana\Forms\Fields\Facade  $field  structure definition
-     * @param   \Yana\Forms\Setup        $setup  information about how to treat the form
+     * @param   \Yana\Forms\Fields\IsFacade  $field  structure definition
+     * @param   \Yana\Forms\IsSetup          $setup  information about how to treat the form
      * @return  string
      *
      * @ignore
      */
-    protected function buildByTypeNonUpdatable(\Yana\Forms\Fields\Facade $field, \Yana\Forms\Setup $setup)
+    protected function buildByTypeNonUpdatable(\Yana\Forms\Fields\IsFacade $field, \Yana\Forms\IsSetup $setup)
     {
         // retrieve search arguments
         $value = $field->getValue();
@@ -400,13 +403,13 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
      *
      * Returns the HTML-code representing an input element for the current field.
      *
-     * @param   \Yana\Forms\Fields\Facade  $field  structure definition
-     * @param   \Yana\Forms\Setup        $setup  information about how to treat the form
+     * @param   \Yana\Forms\Fields\IsFacade  $field  structure definition
+     * @param   \Yana\Forms\IsSetup          $setup  information about how to treat the form
      * @return  string
      *
      * @ignore
      */
-    protected function buildByTypeSearchfield(\Yana\Forms\Fields\Facade $field, \Yana\Forms\Setup $setup)
+    protected function buildByTypeSearchfield(\Yana\Forms\Fields\IsFacade $field, \Yana\Forms\IsSetup $setup)
     {
         $column = $field->getColumn();
 
@@ -490,11 +493,11 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
      *
      * Returns the HTML-code for this field.
      *
-     * @param   \Yana\Forms\Fields\Facade  $field  structure definition
+     * @param   \Yana\Forms\Fields\IsFacade  $field  structure definition
      * @return  string
      * @ignore
      */
-    protected function createLink(\Yana\Forms\Fields\Facade $field)
+    protected function createLink(\Yana\Forms\Fields\IsFacade $field)
     {
         $result = "";
         if ($field->getField() instanceof \Yana\Db\Ddl\Field) {
@@ -560,11 +563,11 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
      *
      * Note: the results are cached.
      *
-     * @param   \Yana\Forms\Fields\Facade  $field  input field
+     * @param   \Yana\Forms\Fields\IsFacade  $field  input field
      * @return  string
      * @ignore
      */
-    protected function createJavascriptEvents(\Yana\Forms\Fields\Facade $field)
+    protected function createJavascriptEvents(\Yana\Forms\Fields\IsFacade $field)
     {
         $eventsAsHtml = "";
         if ($field->getField()) {

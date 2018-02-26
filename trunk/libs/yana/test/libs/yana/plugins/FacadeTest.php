@@ -118,7 +118,7 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetPluginDirectory()
     {
-        $configDirectory = new \Yana\Files\Dir(__DIR__);
+        $configDirectory = new \Yana\Files\Dir(CWD . '/resources/plugins/');
         $this->assertNull(\Yana\Plugins\Facade::setPluginDirectory($configDirectory));
         $this->assertSame($configDirectory, $this->object->getPluginDirectory());
     }

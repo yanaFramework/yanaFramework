@@ -38,9 +38,7 @@ class UserProfilePlugin extends \Yana\Plugins\AbstractPlugin
     /**
      * Get form definition.
      *
-     * @access  protected
-     * @static
-     * @return  FormFacade
+     * @return  \Yana\Forms\Facade
      */
     protected static function getProfileForm()
     {
@@ -51,9 +49,7 @@ class UserProfilePlugin extends \Yana\Plugins\AbstractPlugin
     /**
      * Get form definition.
      *
-     * @access  protected
-     * @static
-     * @return  FormFacade
+     * @return  \Yana\Forms\Facade
      */
     protected static function getDetailForm()
     {
@@ -80,9 +76,10 @@ class UserProfilePlugin extends \Yana\Plugins\AbstractPlugin
         $builder = new \Yana\Forms\Builder('user_admin');
         $builder->setId('userdetails')
             ->setEntries(1)
-            ->setLayout(1)
+            ->setLayout(4)
             ->setWhere(array('USER_ID', '=', $this->_getSession()->getCurrentUserName()));
-        $YANA->setVar("USERFORM", $builder->__invoke());
+        $profileEditForm = $builder->__invoke();
+        $YANA->setVar("USERFORM", $profileEditForm);
     }
 
     /**
@@ -99,21 +96,26 @@ class UserProfilePlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function set_profile_edit()
     {
-        $form = self::getProfileForm();
+        // build form
+        $builder = new \Yana\Forms\Builder('user_admin'); // use database definition file "user_admin"
+        $builder->setId('userdetails'); // use form "userdetails"
+        $form = $builder->__invoke(); // build the form
 
-        if (count($form->getUpdateValues()) !== 1) {
+        $updateContext = $form->getUpdateForm()->getContext(); // switch to update context
+        $rows = $updateContext->getRows(); // and get the updated rows
+        if (!isset($rows[0]) || !is_array($rows[0])) { // this form doesn't contain a primary key, so the values will be at index "0"
             $message = "Input is invalid";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Core\Exceptions\Forms\MissingInputException($message, $level);
         }
 
+        // Add user name to updated row or else we will get a database error
+        $userName = \mb_strtoupper($this->_getSession()->getCurrentUserName());
+        $updateContext->setRows(array($userName => $rows[0]));
+        // Just for statistical purposes we keep track of when the form was changed
+        $updateContext->updateRow($userName, array('USERPROFILE_MODIFIED' => time()));
+
         $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
-        $worker->beforeCreate(
-            function (&$id)
-            {
-                $id = $this->_getSession()->getCurrentUserName();
-            }
-        );
         return $worker->update();
     }
 

@@ -219,7 +219,7 @@ class QueryBuilder extends \Yana\Core\Object
         if ($this->_form->getSetup()->getContext('search')->getValues()) {
             $clause = $select->getWhere();
             // determine new where clause
-            /* @var $field FormFieldFacade */
+            /* @var $field \Yana\Forms\Fields\IsFacade */
             foreach ($this->_form->getSearchForm() as $field)
             {
                 $test = $field->getValueAsWhereClause();

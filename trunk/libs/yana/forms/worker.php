@@ -330,7 +330,7 @@ class Worker extends \Yana\Forms\QueryBuilder
     {
         $result = false;
         if ($this->_form) {
-            $updatedEntries = $this->_form->getSetup()->getContext('update')->getRows()->toArray();
+            $updatedEntries = $this->_form->getUpdateValues();
             $tableName = $this->_form->getBaseForm()->getTable();
 
             if (empty($updatedEntries)) {

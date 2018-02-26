@@ -56,7 +56,7 @@ class UserPwdAdminPlugin extends \Yana\Plugins\AbstractPlugin
      *
      * @type        security
      * @user        group: admin, level: 100
-     * @template    guestbook_config_template
+     * @template    user_pwd_quality
      * @menu        group: setup
      * @safemode    false
      *

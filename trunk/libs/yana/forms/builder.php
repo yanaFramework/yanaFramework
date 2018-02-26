@@ -563,7 +563,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
      *
      * Name of action (plugin-function) to execute on the event
      *
-     * @param   string  $ondownload  form action name
+     * @param   string  $onsearch  form action name
      * @return  \Yana\Forms\Builder 
      */
     public function setOnsearch($onsearch)
@@ -728,11 +728,12 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
     public function __invoke()
     {
         $form = $this->_buildForm();
+        $formName = $form->getName();
         $formSetup = null;
 
         $cache = $this->_getCache();
-        if (isset($cache[$form->getName()])) {
-            $formSetup = $cache[$form->getName()];
+        if (isset($cache[$formName])) {
+            $formSetup = $cache[$formName];
         } else {
             $formSetup = $this->_buildSetup($form);
         }
@@ -744,10 +745,10 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
             $formSetup->setSearchTerm($this->_facade->getParent()->getSetup()->getSearchTerm());
         }
 
-        $request = (array) \Yana\Http\Requests\Builder::buildFromSuperGlobals()->all()->value($form->getName())->all()->asArrayOfStrings();
+        $request = (array) \Yana\Http\Requests\Builder::buildFromSuperGlobals()->all()->value($formName)->all()->asArrayOfStrings();
         $uploadWrapper = \Yana\Http\Uploads\Builder::buildFromSuperGlobals();
-        if ($uploadWrapper->has($form->getName())) {
-            $files = (array) \Yana\Http\Uploads\Builder::buildFromSuperGlobals()->all($form->getName());
+        if ($uploadWrapper->has($formName) && $uploadWrapper->isListOfFiles($formName)) {
+            $files = (array) $uploadWrapper->all($formName);
         }
         if (!empty($files)) {
             $request = \Yana\Util\Hashtable::merge($request, $files);
@@ -788,7 +789,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
             $this->_setupBuilder->updateValues($request);
         }
 
-        $cache[$form->getName()] = $this->_setupBuilder->__invoke(); // add to cache
+        $cache[$formName] = $this->_setupBuilder->__invoke(); // add to cache
         $this->_buildSubForms($this->_facade);
 
         return $this->_facade;

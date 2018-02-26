@@ -57,8 +57,8 @@ class Object extends \StdClass implements \Yana\Core\IsObject, \Yana\Core\IsClon
     /**
      * <<magic>> Issues a warning when trying to call an undefined method.
      *
-     * @param string $name       method name
-     * @param array  $arguments  method arguments
+     * @param   string $name       method name
+     * @param   array  $arguments  method arguments
      * @throws  \Yana\Core\Exceptions\UndefinedMethodException  always!
      */
     public function __call($name, array $arguments)

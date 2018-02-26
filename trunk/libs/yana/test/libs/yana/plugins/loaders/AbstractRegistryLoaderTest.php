@@ -40,7 +40,7 @@ class MyRegistryLoader extends \Yana\Plugins\Loaders\AbstractRegistryLoader
 {
     public function loadRegistry($name)
     {
-        return new \Yana\VDrive\Registry(__DIR__);
+        return new \Yana\VDrive\Registry($this->_getPluginDirectory()->getPath() . $name . '/' . $name . '.drive.xml');
     }
 
 }
@@ -63,7 +63,7 @@ class AbstractRegistryLoaderTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Plugins\Loaders\MyRegistryLoader(new \Yana\Files\Dir('resources/plugins'));
+        $this->object = new \Yana\Plugins\Loaders\MyRegistryLoader(new \Yana\Files\Dir(CWD . '/resources/plugins'));
     }
 
     /**
@@ -87,11 +87,22 @@ class AbstractRegistryLoaderTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testLoadRegistriesEmpty()
+    {
+        $this->assertCount(0, $this->object->loadRegistries(array('no-such-file')));
+    }
+
+    /**
+     * @test
+     */
     public function testLoadRegistries()
     {
         $expected = new \Yana\VDrive\RegistryCollection();
         $expected['test'] = $this->object->loadRegistry('test');
-        $this->assertEquals($expected, $this->object->loadRegistries(array('test')));
+        $expected['test']->read(); // or else cached values will be different
+        $this->assertEquals($expected, $this->object->loadRegistries(array('test', 'test')));
+        $this->assertEquals($expected, $this->object->loadRegistries(array('')));
+        $this->assertEquals($expected, $this->object->loadRegistries(array('no-such-file')));
     }
 
     /**

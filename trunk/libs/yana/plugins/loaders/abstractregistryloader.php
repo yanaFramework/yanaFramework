@@ -131,7 +131,8 @@ abstract class AbstractRegistryLoader extends \Yana\Core\Object implements \Seri
 
             try {
                 $registry = $this->loadRegistry($name);
-                $collection[$registry->getDriveName()] = $registry;
+                $driveName = $registry->getDriveName();
+                $collection[$driveName] = $registry;
             } catch (\Yana\Core\Exceptions\NotFoundException $e) {
                 // skip file
             }

@@ -29,6 +29,13 @@
 #user_profile .option
 {
 }
+
+#userdetails-toolbar,
+#userdetails-search-small
+{
+    display: none;
+}
+
 #new_user, #user_register
 {
     display: block;

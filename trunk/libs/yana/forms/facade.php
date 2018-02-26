@@ -96,7 +96,7 @@ class Facade extends \Yana\Core\Object
     private $_parent = null;
 
     /**
-     * create new instance
+     * <<constructor>> Initialize name and setup.
      */
     public function __construct()
     {
@@ -109,7 +109,7 @@ class Facade extends \Yana\Core\Object
      * @param   string  $name       method name
      * @param   array   $arguments  list of arguments to pass to function
      * @return  mixed
-     * @throws  \Yana\Core\Exceptions\NotImplementedException  when the function is not found
+     * @throws  \Yana\Core\Exceptions\UndefinedMethodException  when the called method is not found
      */
     public function __call($name, array $arguments)
     {
@@ -118,8 +118,7 @@ class Facade extends \Yana\Core\Object
         } elseif (method_exists($this->_setup, $name)) {
             return call_user_func_array(array($this->_setup, $name), $arguments);
         } else {
-            $message = "Call to undefined function: '$name' in class " . __CLASS__ . ".";
-            throw new \Yana\Core\Exceptions\NotImplementedException($message);
+            return parent::__call($name, $arguments);
         }
     }
 
@@ -156,6 +155,9 @@ class Facade extends \Yana\Core\Object
      */
     public function getBaseForm()
     {
+        if (!isset($this->_form)) {
+            $this->_form = new \Yana\Db\Ddl\Form("form");
+        }
         return $this->_form;
     }
 
@@ -424,6 +426,18 @@ class Facade extends \Yana\Core\Object
             }
         }
         return $title;
+    }
+
+    /**
+     * Returns the form name.
+     *
+     * The form name must be a valid id and cannot be empty.
+     *
+     * @return  string
+     */
+    public function getName()
+    {
+        return $this->getBaseForm()->getName();
     }
 
     /**

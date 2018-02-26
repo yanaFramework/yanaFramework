@@ -181,13 +181,13 @@ class Context extends \Yana\Core\Object
      * Replaces existing values, adds new values and keeps values that haven't been changed in the request.
      * If the row does not exist, it is created.
      *
-     * @param   array  $row  new values
+     * @param   string  $key  valid identifier
+     * @param   array   $row  new values
      * @return  self
      */
     public function updateRow($key, array $row)
     {
-        $row = \Yana\Util\Hashtable::changeCase($row, CASE_UPPER);
-        $updatedRow = $row + (array) $this->getRows()->offsetGet($key);
+        $updatedRow = \Yana\Util\Hashtable::changeCase($row, CASE_UPPER) + (array) $this->getRows()->offsetGet($key);
         $this->getRows()->offsetSet($key, $updatedRow);
         return $this;
     }
@@ -200,7 +200,7 @@ class Context extends \Yana\Core\Object
      */
     public function setRows(array $rows)
     {
-        $this->getRows()->setItems($rows);
+        $this->getRows()->setItems(\Yana\Util\Hashtable::changeCase($rows, CASE_UPPER));
         return $this;
     }
 
