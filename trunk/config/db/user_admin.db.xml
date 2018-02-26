@@ -78,10 +78,9 @@
         <input name="userprofile_description" readonly="yes"/>
         <event name="update">set_profiles_edit</event>
     </form>
-    <form name="userdetails" table="userprofile" allinput="yes" template="1">
-        <grant select="no"/>
-        <grant level="1"/>
-        <input name="user_id" readonly="yes"/>
+    <form name="userdetails" table="userprofile" allinput="yes" template="4">
+        <grant select="yes" insert="no" update="yes" delete="no" level="1"/>
+        <input name="user_id" hidden="yes"/>
         <input name="userprofile_modified" hidden="yes"/>
         <input name="userprofile_image_active">
             <grant select="no" insert="no" update="no"/>
