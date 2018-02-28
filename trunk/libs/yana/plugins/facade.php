@@ -340,12 +340,10 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRepo
             $event = $dispatcher->getFirstEvent();
             $result = $dispatcher->getLastResult();
             $methods = $this->getEventConfigurations();
-            /* @var $method \Yana\Plugins\Configs\IsMethodConfiguration */
-            $method = $methods[$event];
-            if ($result !== false) {
-                self::$_nextEvent = $method->getOnSuccess();
-            } else {
-                self::$_nextEvent = $method->getOnError();
+            if ($methods->offsetExists($event)) {
+                /* @var $method \Yana\Plugins\Configs\IsMethodConfiguration */
+                $method = $methods[$event];
+                self::$_nextEvent = $result !== false ? $method->getOnSuccess() : $method->getOnError();
             }
         }
         return self::$_nextEvent;

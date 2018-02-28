@@ -125,6 +125,16 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @expectedException \Yana\Core\Exceptions\NotFoundException
+     */
+    public function testSetPluginDirectoryNotFoundException()
+    {
+        $configDirectory = new \Yana\Files\Dir('no-such-directory');
+        \Yana\Plugins\Facade::setPluginDirectory($configDirectory);
+    }
+
+    /**
+     * @test
      */
     public function testGetPluginConfigurations()
     {
@@ -134,80 +144,43 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo   Implement testSendEvent().
-     */
-    public function testSendEvent()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo   Implement testGetLastResult().
+     * @test
      */
     public function testGetLastResult()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertNull($this->object->getLastResult());
     }
 
     /**
-     * @todo   Implement testGetLastEvent().
+     * @test
      */
     public function testGetLastEvent()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame("", $this->object->getLastEvent());
     }
 
     /**
-     * @todo   Implement testGetFirstEvent().
+     * @test
      */
     public function testGetFirstEvent()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame("", $this->object->getFirstEvent());
     }
 
     /**
-     * @todo   Implement testGetNextEvent().
+     * @test
      */
     public function testGetNextEvent()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertNull($this->object->getNextEvent());
     }
 
     /**
-     * @todo   Implement testRefreshPluginFile().
+     * @test
      */
-    public function testRefreshPluginFile()
+    public function testIsActiveByDefault()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo   Implement testIsDefaultActive().
-     */
-    public function testIsDefaultActive()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->object->isActiveByDefault("no-such-plugin"));
     }
 
     /**
@@ -233,36 +206,19 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo   Implement testIsInstalled().
-     */
-    public function testIsInstalled()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo   Implement test__toString().
+     * @test
      */
     public function test__toString()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertRegExp('/(Plugin "\w+":\s+(- \w+ = \w+\s*)+)+/s', $this->object->__toString());
     }
 
     /**
-     * @todo   Implement testGetPluginDir().
+     * @test
      */
-    public function testGetPluginDir()
+    public function testGetPluginDirectory()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertStringEndsWith('plugins/', $this->object->getPluginDirectory()->getPath());
     }
 
     /**
@@ -321,42 +277,34 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo   Implement testIsEvent().
+     * @test
      */
     public function testIsEvent()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->object->isEvent('No-such-event'));
     }
 
     /**
-     * @todo   Implement testIsLoaded().
+     * @test
      */
     public function testIsLoaded()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->object->isLoaded('No-such-plugin'));
     }
 
     /**
-     * @todo   Implement testGetReport().
+     * @test
      */
     public function testGetReport()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertTrue($this->object instanceof \Yana\Report\IsReportable);
+        $this->assertTrue($this->object->getReport() instanceof \Yana\Report\IsReport);
     }
 
     /**
-     * @todo   Implement test__sleep().
+     * @todo   Implement testRefreshPluginFile().
      */
-    public function test__sleep()
+    public function testRefreshPluginFile()
     {
         // Remove the following lines when you implement this test.
         $this->markTestIncomplete(
@@ -365,20 +313,9 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo   Implement testAttachLogger().
+     * @todo   Implement testSendEvent().
      */
-    public function testAttachLogger()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo   Implement testGetLogger().
-     */
-    public function testGetLogger()
+    public function testSendEvent()
     {
         // Remove the following lines when you implement this test.
         $this->markTestIncomplete(

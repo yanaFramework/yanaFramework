@@ -112,8 +112,7 @@ class ArrayAdapterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Yana\Security\Data\Users\ArrayAdapter::delete
-     * @todo   Implement testDelete().
+     * @test
      */
     public function testDelete()
     {

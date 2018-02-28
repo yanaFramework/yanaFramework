@@ -46,7 +46,8 @@ trait HasLogger
     /**
      * Adds a logger to the class.
      *
-     * @param  \Yana\Log\IsLogger  $logger  instance that will handle the logging
+     * @param   \Yana\Log\IsLogger  $logger  instance that will handle the logging
+     * @return  $this
      */
     public function attachLogger(\Yana\Log\IsLogger $logger)
     {

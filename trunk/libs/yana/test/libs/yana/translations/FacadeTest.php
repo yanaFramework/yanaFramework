@@ -225,7 +225,7 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testReplaceToken().
+     * @test
      */
     public function testReplaceToken()
     {
@@ -239,8 +239,7 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
     public function testAttachLogger()
     {
         $logger = new \Yana\Log\NullLogger();
-        $this->object->attachLogger($logger);
-        $collection = $this->object->getLogger();
+        $collection = $this->object->attachLogger($logger)->getLogger();
         $this->assertEquals(1, count($collection));
     }
 

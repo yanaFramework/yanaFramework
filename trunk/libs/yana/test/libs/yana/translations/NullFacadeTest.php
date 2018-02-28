@@ -186,7 +186,7 @@ class NullFacadeTest extends \PHPUnit_Framework_TestCase
      */
     public function testAttachLogger()
     {
-        $this->assertNull($this->object->attachLogger(new \Yana\Log\NullLogger()));
+        $this->assertSame($this->object, $this->object->attachLogger(new \Yana\Log\NullLogger()));
     }
 
     /**

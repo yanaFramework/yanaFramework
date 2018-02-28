@@ -213,10 +213,11 @@ class NullFacade extends \Yana\Core\Object implements \Yana\Translations\IsFacad
      * Adds a logger to the class.
      *
      * @param   \Yana\Log\IsLogger  $logger  instance that will handle the logging
+     * @return  $this
      */
     public function attachLogger(\Yana\Log\IsLogger $logger)
     {
-        // intentionally left blank
+        return $this;
     }
 
     /**
