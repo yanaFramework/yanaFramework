@@ -44,6 +44,13 @@ abstract class AbstractMapper extends \Yana\Core\Object implements \Yana\Core\Au
     private $_nameSpace = "";
 
     /**
+     * The part of the namespace that is not included in directory structure.
+     *
+     * @var  string
+     */
+    private $_nameSpacePrefix = "";
+
+    /**
      * As absolute path.
      *
      * @var  string
@@ -105,6 +112,18 @@ abstract class AbstractMapper extends \Yana\Core\Object implements \Yana\Core\Au
     }
 
     /**
+     * The part of the namespace that is not included in directory structure.
+     *
+     * By default empty.
+     *
+     * @return  string
+     */
+    public function getNameSpacePrefix()
+    {
+        return $this->_nameSpacePrefix;
+    }
+
+    /**
      * Set the path to the directory where the files are to be found.
      *
      * Important note! You HAVE to add the final directory seperator at this point.
@@ -125,7 +144,7 @@ abstract class AbstractMapper extends \Yana\Core\Object implements \Yana\Core\Au
      * Usually this is ".php", which is also the default.
      *
      * @param   string  $fileExtension  should start with a dot
-     * @return  \Yana\Core\Autoloaders\IsMapper
+     * @return  $this
      */
     public function setFileExtension($fileExtension)
     {
@@ -141,7 +160,7 @@ abstract class AbstractMapper extends \Yana\Core\Object implements \Yana\Core\Au
      * to "class.".
      *
      * @param   string  $filePrefix  the new prefix
-     * @return  \Yana\Core\Autoloaders\IsMapper
+     * @return  $this
      */
     public function setFilePrefix($filePrefix)
     {
@@ -154,13 +173,43 @@ abstract class AbstractMapper extends \Yana\Core\Object implements \Yana\Core\Au
      * Set namespace that mapper will be limited to.
      * 
      * @param   string  $nameSpace  including final namespace separator
-     * @return  \Yana\Core\Autoloaders\IsMapper
+     * @return  $this
      */
     public function setNameSpace($nameSpace)
     {
         assert('is_string($nameSpace); // Invalid input $nameSpace. String expected');
         $this->_nameSpace = (string) $nameSpace;
         return $this;
+    }
+
+    /**
+     * Set part of the namespace that is not included in directory structure.
+     *
+     * By default empty.
+     * 
+     * @param   string  $nameSpacePrefix  including final namespace separator
+     * @return  $this
+     */
+    public function setNameSpacePrefix($nameSpacePrefix)
+    {
+        assert('is_string($nameSpacePrefix); // Invalid input $nameSpacePrefix. String expected');
+        $this->_nameSpacePrefix = (string) $nameSpacePrefix;
+        return $this;
+    }
+
+    /**
+     * Removes namespace-prefix from class-name.
+     *
+     * @param   string  $className  including prefix
+     * @return  string
+     */
+    protected function _removeNameSpacePrefix($className)
+    {
+        $nameSpacePrefix = $this->getNameSpacePrefix();
+        if (\stripos($className, $this->getNameSpacePrefix()) === 0) {
+            $className = \substr($className, \strlen($nameSpacePrefix));
+        }
+        return $className;
     }
 
 }

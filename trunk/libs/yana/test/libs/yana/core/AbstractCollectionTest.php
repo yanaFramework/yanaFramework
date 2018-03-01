@@ -86,6 +86,14 @@ class AbstractCollectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testSetItems()
+    {
+        $this->assertEquals(array('1', '2'), $this->_object->setItems(array('1', '2'))->toArray());
+    }
+
+    /**
+     * @test
+     */
     public function testIterator()
     {
         foreach ($this->_object as $key => $value)
@@ -194,8 +202,18 @@ class AbstractCollectionTest extends \PHPUnit_Framework_TestCase
     public function testOffsetSetViaAPI()
     {
         $this->assertEquals(null, $this->_object[-1]);
-        $this->_object->offsetSet(-1, 'a');
+        $this->assertSame('a', $this->_object->offsetSet(-1, 'a'));
         $this->assertEquals('a', $this->_object[-1]);
+    }
+
+    /**
+     * @test
+     */
+    public function testOffsetSetNull()
+    {
+        $this->_object->setItems();
+        $this->assertSame('b', $this->_object->offsetSet(null, 'b'));
+        $this->assertEquals('b', $this->_object->offsetGet(0));
     }
 
     /**
@@ -204,7 +222,7 @@ class AbstractCollectionTest extends \PHPUnit_Framework_TestCase
     public function testOffsetUnset()
     {
         $this->assertTrue(isset($this->_object[0]));
-        unset($this->_object[0]);
+        $this->_object->offsetUnset(0);
         $this->assertFalse(isset($this->_object[0]));
     }
 

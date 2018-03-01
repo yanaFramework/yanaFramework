@@ -44,6 +44,15 @@ interface IsMapper
     public function getNameSpace();
 
     /**
+     * The part of the namespace that is not included in directory structure.
+     *
+     * By default empty.
+     *
+     * @return  string
+     */
+    public function getNameSpacePrefix();
+
+    /**
      * Get absolute path of base-directory.
      *
      * @return  string
@@ -68,15 +77,25 @@ interface IsMapper
      * Set namespace that mapper will be limited to.
      * 
      * @param   string  $nameSpace  including final namespace separator
-     * @return  \Yana\Core\Autoloaders\IsMapper
+     * @return  $this
      */
     public function setNameSpace($nameSpace);
+
+    /**
+     * Set part of the namespace that is not included in directory structure.
+     *
+     * By default empty.
+     *
+     * @param   string  $nameSpacePrefix  including final namespace separator
+     * @return  $this
+     */
+    public function setNameSpacePrefix($nameSpacePrefix);
 
     /**
      * Set the path to the directory where the files are to be found.
      * 
      * @param   string  $baseDirectory  as absolute path
-     * @return  \Yana\Core\Autoloaders\IsMapper
+     * @return  $this
      */
     public function setBaseDirectory($baseDirectory);
 
@@ -86,7 +105,7 @@ interface IsMapper
      * Usually this is ".php", which is also the default.
      *
      * @param   string  $fileExtension  should start with a dot
-     * @return  \Yana\Core\Autoloaders\IsMapper
+     * @return  $this
      */
     public function setFileExtension($fileExtension);
 
@@ -97,7 +116,7 @@ interface IsMapper
      * to "class.".
      *
      * @param   string  $filePrefix  the new prefix
-     * @return  \Yana\Core\Autoloaders\IsMapper
+     * @return  $this
      */
     public function setFilePrefix($filePrefix);
 

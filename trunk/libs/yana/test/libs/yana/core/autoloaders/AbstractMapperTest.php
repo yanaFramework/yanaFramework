@@ -50,6 +50,16 @@ class MyMapper extends \Yana\Core\Autoloaders\AbstractMapper
         // intentionally left blank
     }
 
+    /**
+     * Removes namespace-prefix from class-name.
+     *
+     * @param   string  $className  including prefix
+     * @return  string
+     */
+    public function removeNameSpacePrefix($className)
+    {
+        return $this->_removeNameSpacePrefix($className);
+    }
 }
 
 
@@ -117,6 +127,14 @@ class AbstractMapperTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testGetNameSpacePrefix()
+    {
+        $this->assertSame("", $this->object->getNameSpacePrefix());
+    }
+
+    /**
+     * @test
+     */
     public function testSetBaseDirectory()
     {
         $this->assertSame(__DIR__, $this->object->setBaseDirectory(__DIR__)->getBaseDirectory());
@@ -144,6 +162,22 @@ class AbstractMapperTest extends \PHPUnit_Framework_TestCase
     public function testSetNameSpace()
     {
         $this->assertSame('NameSpace', $this->object->setNameSpace('NameSpace')->getNameSpace());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetNameSpacePrefix()
+    {
+        $this->assertSame('NameSpacePrefix', $this->object->setNameSpacePrefix('NameSpacePrefix')->getNameSpacePrefix());
+    }
+
+    /**
+     * @test
+     */
+    public function testRemoveNameSpacePrefix()
+    {
+        $this->assertSame('NameSpace\\Class', $this->object->setNameSpacePrefix('Pre\\')->removeNameSpacePrefix('Pre\\NameSpace\\Class'));
     }
 
 }

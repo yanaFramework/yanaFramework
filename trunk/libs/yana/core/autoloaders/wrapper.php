@@ -28,7 +28,7 @@
 namespace Yana\Core\Autoloaders;
 
 /**
- * This is a simple wrapper class for spl_autoload_* function.
+ * This is a simple wrapper class for spl_autoload_* functions.
  *
  * @package     yana
  * @subpackage  core

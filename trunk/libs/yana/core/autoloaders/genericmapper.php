@@ -51,9 +51,13 @@ class GenericMapper extends \Yana\Core\Autoloaders\AbstractMapper
     {
         assert('is_string($className); // Invalid input $className. String expected');
 
+        $classNameWithoutPrefix = $this->_removeNameSpacePrefix($className);
+        $underScoresResolved = \preg_replace('/_(?=[^\\\\]+$)/', '/', $classNameWithoutPrefix);
+        $namespacesResolved = str_replace('\\', '/', $underScoresResolved);
+
         $path = $this->getBaseDirectory()
                 . $this->getFilePrefix()
-                . str_replace(array('_', '\\'), DIRECTORY_SEPARATOR, strtolower($className))
+                . $namespacesResolved
                 . $this->getFileExtension();
 
         return $path;

@@ -39,8 +39,11 @@ class Loader extends \Yana\Core\Autoloaders\AbstractLoader
     /**
      * Try to load a file associated with a class.
      *
+     * Returns bool(true) on success and bool(false) on failure.
+     *
      * @param   string  $className  name of class you are trying to load
      * @throws  \Yana\Core\Exceptions\ClassNotFoundException  when the class was not found (needs to be activated)
+     * @return  bool
      */
     public function loadClassFile($className)
     {
@@ -60,18 +63,29 @@ class Loader extends \Yana\Core\Autoloaders\AbstractLoader
             // If the mapper delivers absolute paths we check if the file exists.
             // If the path is relative we just rely on PHP include-path to find it.
             if (!$mapper->getBaseDirectory() || \file_exists($fileName)) {
-                @include_once $fileName;
+                $this->_includeFile($fileName);
                 return true;
             }
         }
         unset($mapper);
-        // @codeCoverageIgnoreStart
         if ($this->doesThrowExceptionWhenClassIsNotFound()) {
             // The exception is only thrown when the loader is told to do so. By default this is: false
             $message = "No such class: '" . $className . "'.";
             throw new \Yana\Core\Exceptions\ClassNotFoundException($message);
         }
-        // @codeCoverageIgnoreEnd
+        return false;
+    }
+
+    /**
+     * Overwrite this for unit tests.
+     *
+     * @param  string  $fileName  path to PHP file
+     * @codeCoverageIgnore
+     */
+    protected function _includeFile($fileName)
+    {
+        assert('is_string($fileName); // $className expected to be String');
+        @include_once $fileName;
     }
 
 }

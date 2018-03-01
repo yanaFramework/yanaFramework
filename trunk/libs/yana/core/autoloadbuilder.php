@@ -36,9 +36,6 @@ require_once __DIR__ . '/iscollection.php';
 require_once __DIR__ . '/abstractcollection.php';
 require_once __DIR__ . '/autoloaders/mappercollection.php';
 require_once __DIR__ . '/autoloaders/abstractmapper.php';
-require_once __DIR__ . '/autoloaders/genericmapper.php';
-require_once __DIR__ . '/autoloaders/lowercasedmapper.php';
-require_once __DIR__ . '/autoloaders/directmapper.php';
 require_once __DIR__ . '/autoloaders/isloader.php';
 require_once __DIR__ . '/autoloaders/abstractloader.php';
 require_once __DIR__ . '/autoloaders/loader.php';
@@ -55,9 +52,11 @@ require_once __DIR__ . '/../log/formatter/message.php';
 class AutoLoadBuilder extends \Yana\Core\Object
 {
 
-    const GENERIC_MAPPER = 0;
-    const DIRECT_MAPPER = 1;
-    const LOWERCASED_MAPPER = 2;
+    const PSR0 = 0;
+    const GENERIC_MAPPER = 1;
+    const DIRECT_MAPPER = 2;
+    const LOWERCASED_MAPPER = 3;
+    const PSR4 = 4;
 
     /**
      * @var  \Yana\Core\Autoloaders\IsLoader
@@ -89,13 +88,21 @@ class AutoLoadBuilder extends \Yana\Core\Object
         switch ($mapperType)
         {
             case self::DIRECT_MAPPER:
+                include_once __DIR__ . '/autoloaders/directmapper.php';
                 $mapper = new \Yana\Core\Autoloaders\DirectMapper();
             break;
             case self::LOWERCASED_MAPPER:
+                include_once __DIR__ . '/autoloaders/lowercasedmapper.php';
                 $mapper = new \Yana\Core\Autoloaders\LowerCasedMapper();
             break;
+            case self::PSR4:
+                include_once __DIR__ . '/autoloaders/psr4mapper.php';
+                $mapper = new \Yana\Core\Autoloaders\Psr4Mapper();
+            break;
+            case self::PSR0:
             case self::GENERIC_MAPPER:
             default:
+                include_once __DIR__ . '/autoloaders/genericmapper.php';
                 $mapper = new \Yana\Core\Autoloaders\GenericMapper();
         }
         $maps = $this->_getLoader()->getMaps();
