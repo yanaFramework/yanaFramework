@@ -83,6 +83,7 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
     {
         $this->object->deactivate('helloworld');
         $this->assertTrue($this->object->activate('helloworld')->isActive('helloworld'));
+        $this->assertTrue($this->object->activate('no-such-plugin')->isActive('no-such-plugin'));
     }
 
     /**
@@ -92,6 +93,7 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
     {
         $this->object->activate('helloworld');
         $this->assertFalse($this->object->deactivate('helloworld')->isActive('helloworld'));
+        $this->assertFalse($this->object->activate('no-such-plugin')->deactivate('no-such-plugin')->isActive('no-such-plugin'));
     }
 
     /**
@@ -184,25 +186,12 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo   Implement testGet().
+     * @test
+     * @expectedException \Yana\Core\Exceptions\NotFoundException
      */
-    public function testGet()
+    public function test__getNotFoundException()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo   Implement test__get().
-     */
-    public function test__get()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->object->__get('no such resource');
     }
 
     /**
@@ -222,58 +211,72 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo   Implement testGetPluginConfiguration().
+     * @test
      */
     public function testGetPluginConfiguration()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $pluginName = 'no_such_plugin';
+        $className = \Yana\Plugins\PluginNameMapper::toClassNameWithNamespace($pluginName);
+        $this->assertEquals(new \Yana\Plugins\Configs\ClassConfiguration($className), $this->object->getPluginConfiguration($pluginName));
+        $this->assertSame('config', $this->object->getPluginConfiguration('config')->getId());
     }
 
     /**
-     * @todo   Implement testGetPluginNames().
+     * @test
      */
     public function testGetPluginNames()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertNotEmpty($this->object->getPluginNames());
+
+        $previousKey = 0;
+        foreach ($this->object->getPluginNames() as $key => $name)
+        {
+            $this->assertInternalType('int', $key);
+            $this->assertInternalType('string', $name);
+            $this->assertNotEmpty($name);
+            $this->assertSame($previousKey++, $key);
+        }
     }
 
     /**
-     * @todo   Implement testGetEventType().
+     * @test
      */
     public function testGetEventType()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
+        $this->assertSame('default', $this->object->getEventType());
+        $this->assertSame('default', $this->object->getEventType('no such event'));
+        $this->assertSame('config', $this->object->getEventType('index'));
+
+        $defaultEvent = array(
+            \Yana\Plugins\Annotations\Enumeration::TYPE => 'Test'
         );
+        $dependencies = new \Yana\Plugins\Dependencies\Container(new \Yana\Security\Sessions\NullWrapper(), $defaultEvent);
+        $this->object->attachDependencies($dependencies);
+        $this->assertSame('Test', $this->object->getEventType('no such event'));
     }
 
     /**
-     * @todo   Implement testGetEventConfiguration().
+     * @test
      */
     public function testGetEventConfiguration()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertNull($this->object->getEventConfiguration('no such event'));
     }
 
     /**
-     * @todo   Implement testGetEventConfigurations().
+     * @test
      */
     public function testGetEventConfigurations()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertTrue($this->object->getEventConfigurations() instanceof \Yana\Plugins\Configs\MethodCollection);
+        $this->assertNotEmpty($this->object->getEventConfigurations());
+
+        foreach ($this->object->getEventConfigurations() as $key => $method)
+        {
+            $this->assertInternalType('string', $key);
+            $this->assertNotEmpty($key);
+            $this->assertTrue($method instanceof \Yana\Plugins\Configs\IsMethodConfiguration);
+        }
     }
 
     /**
@@ -302,25 +305,21 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo   Implement testRefreshPluginFile().
+     * @test
      */
     public function testRefreshPluginFile()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $repository = $this->object->rebuildPluginRepository();
+        $this->assertSame($this->object->getPluginConfigurations(), $repository->getPlugins());
+        $this->assertSame($this->object->getEventConfigurations(), $repository->getEvents());
     }
 
     /**
-     * @todo   Implement testSendEvent().
+     * @test
      */
     public function testSendEvent()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->markTestIncomplete('');
     }
 
 }

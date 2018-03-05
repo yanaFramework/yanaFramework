@@ -43,7 +43,7 @@ class Result extends \Yana\Core\Object implements \Yana\Db\IsResult
     /**
      * @var array
      */
-    private $_result = array();
+    private $_result = null;
 
     /**
      * @var string
@@ -53,19 +53,15 @@ class Result extends \Yana\Core\Object implements \Yana\Db\IsResult
     /**
      * Creates a new resultset.
      *
-     * @param  mixed   $result   resultset (set "null" for error)
+     * @param  array   $result   resultset (set "null" for error)
      * @param  string  $message  error message
      */
-    public function __construct($result, $message = '')
+    public function __construct(array $result = null, $message = '')
     {
-        $message = (string) $message;
-        if (is_null($result)) {
-            $this->_result = null;
-        } else {
-            assert('is_array($result);');
+        if (is_array($result)) {
             $this->_result = \Yana\Util\Hashtable::changeCase($result, CASE_LOWER);
         }
-        $this->_message  = trim($message);
+        $this->_message  = trim((string) $message);
     }
 
     /**
@@ -100,7 +96,9 @@ class Result extends \Yana\Core\Object implements \Yana\Db\IsResult
     /**
      * Fetch and return all rows from the result set.
      *
-     * @return  array
+     * If the result is an error, null is returned instead.
+     *
+     * @return  array|null
      */
     public function fetchAll()
     {
@@ -118,7 +116,7 @@ class Result extends \Yana\Core\Object implements \Yana\Db\IsResult
         assert('is_string($column) || is_int($column); // Invalid argument $column: int expected');
 
         $result = array();
-        foreach ($this->_result as $row)
+        foreach ((array) $this->fetchAll() as $row)
         {
             $result[] = $this->_fetchCellFromRow($row, $column);
         }
@@ -128,8 +126,8 @@ class Result extends \Yana\Core\Object implements \Yana\Db\IsResult
     /**
      * Fetch single column from the next row from a result set.
      *
-     * @param   int|string  $column  the column number (or name) to fetch
-     * @param   int         $row     number of the row where the data can be found
+     * @param   int|string  $column     the column number (or name) to fetch
+     * @param   int         $rowNumber  number of the row where the data can be found
      * @return  mixed
      */
     public function fetchOne($column = 0, $rowNumber = 0)
@@ -152,24 +150,23 @@ class Result extends \Yana\Core\Object implements \Yana\Db\IsResult
     {
         assert('is_string($column) || is_int($column); // Invalid argument $column: int expected');
 
-        $cell = null;
         switch (true)
         {
             case is_int($column) && count($row) >= $column:
                 $row = \array_values($row);
-            // fall through
-            case is_string($column) && isset($row[$column]):
-                $cell = $row[$column];
+                break;
+
+            case is_string($column):
+                $column = \mb_strtolower($column);
         }
-        return $cell;
+
+        return isset($row[$column]) ? $row[$column] : null;
     }
 
     /**
      * Returns an error message (if any) if the resultset is in error-state.
      *
      * If there is none, an empty string is returned instead.
-     *
-     * Use FileDbResult::isError() to check, if the result is in an error state.
      *
      * @return  string
      */

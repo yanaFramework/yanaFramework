@@ -508,7 +508,9 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRepo
     public function getPluginDirectory()
     {
         if (!isset(self::$_pluginDirectory)) {
+            // @codeCoverageIgnoreStart
             self::$_pluginDirectory = new \Yana\Files\Dir("plugins/");
+            // @codeCoverageIgnoreEnd
         }
         return self::$_pluginDirectory;
     }
@@ -564,7 +566,6 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRepo
      *
      * @param   string  $eventName  identifier of the wanted event
      * @return  string
-     * @ignore
      */
     public function getEventType($eventName = null)
     {
@@ -593,6 +594,8 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRepo
 
     /**
      * Get the event configuration.
+     *
+     * If no such event exists, this function will return NULL instead.
      *
      * @param   string  $eventName  identifier of the wanted event
      * @return  \Yana\Plugins\Configs\IsMethodConfiguration

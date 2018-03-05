@@ -87,7 +87,7 @@ class Dispatcher extends \Yana\Core\Object implements \Serializable, \Yana\Plugi
         assert('!isset($element); // cannot redeclare variable $element');
         foreach ($subscribers as $element)
         {
-            $lastResult = $event->sendEvent($element); // call the subscribing plugin
+            $lastResult = $this->_sendEvent($element, $event); // call the subscribing plugin
             // finally we check what the outcome of this call was - if it returned FALSE (=failure), we abort
             if ($lastResult === false) {
                 $this->_lastResult = false;
@@ -102,6 +102,19 @@ class Dispatcher extends \Yana\Core\Object implements \Serializable, \Yana\Plugi
 
         // and here we go: all done - and the result of the event evaluation is ready to be returned to the callee.
         return $this->_lastResult;
+    }
+
+    /**
+     * Send event to target.
+     *
+     * @param   \Yana\IsPlugin                               $subscriber  implements event handler
+     * @param   \Yana\Plugins\Configs\IsMethodConfiguration  $event       describes the call interface of the event
+     * @return  mixed
+     * @codeCoverageIgnore
+     */
+    protected function _sendEvent(\Yana\IsPlugin $subscriber, \Yana\Plugins\Configs\IsMethodConfiguration $event)
+    {
+        return $event->sendEvent($subscriber);
     }
 
     /**

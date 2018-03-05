@@ -59,6 +59,13 @@ interface IsContainer
      */
     public function getPluginAdapter();
 
+    /**
+     * Get instance of event dispatcher.
+     *
+     * @return  \Yana\Plugins\Events\IsDispatcher
+     */
+    public function getDispatcher();
+
 }
 
 ?>

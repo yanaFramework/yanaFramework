@@ -105,4 +105,21 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($adapter, $this->object->setPluginAdapter($adapter)->getPluginAdapter());
     }
 
+    /**
+     * @test
+     */
+    public function testGetDispatcher()
+    {
+        $this->assertTrue($this->object->getDispatcher() instanceof \Yana\Plugins\Events\IsDispatcher);
+    }
+
+    /**
+     * @test
+     */
+    public function testSetDispatcher()
+    {
+        $dispatcher = new \Yana\Plugins\Events\Dispatcher();
+        $this->assertSame($dispatcher, $this->object->setDispatcher($dispatcher)->getDispatcher());
+    }
+
 }

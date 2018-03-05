@@ -25,28 +25,29 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Db\FileDb;
+namespace Yana\Plugins\Events;
 
 /**
- * <<decorator>> For testing purposes only.
+ * Null object for unit tests.
  *
  * @package     yana
- * @subpackage  db
+ * @subpackage  plugins
+ *
  * @ignore
- * @codeCoverageIgnore
  */
-class NullConnection extends \Yana\Db\FileDb\Connection
+class NullDispatcher extends \Yana\Plugins\Events\Dispatcher
 {
 
     /**
-     * Creates a new instance of this class.
+     * Always returns bool(true).
      *
-     * @param  \Yana\Db\Ddl\Database  $schema  schema in database definition language
+     * @param   \Yana\IsPlugin                               $subscriber  implements event handler
+     * @param   \Yana\Plugins\Configs\IsMethodConfiguration  $event       describes the call interface of the event
+     * @return  bool
      */
-    public function __construct(\Yana\Db\Ddl\Database $schema)
+    protected function _sendEvent(\Yana\IsPlugin $subscriber, \Yana\Plugins\Configs\IsMethodConfiguration $event)
     {
-        parent::__construct($schema);
-        $this->_setConnection(new \Yana\Db\FileDb\NullDriver($schema, new \Yana\Db\Queries\Parser($this)));
+        return true;
     }
 
 }

@@ -39,6 +39,7 @@ namespace Yana\Db\FileDb;
  * @package     yana
  * @subpackage  db
  * @ignore
+ * @codeCoverageIgnore
  */
 class NullDriver extends \Yana\Db\FileDb\Driver
 {

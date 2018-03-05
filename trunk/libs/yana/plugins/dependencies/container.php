@@ -54,6 +54,11 @@ class Container extends \Yana\Core\Object implements \Yana\Plugins\Dependencies\
     private $_pluginAdapter = null;
 
     /**
+     * @var \Yana\Plugins\Events\IsDispatcher
+     */
+    private $_dispatcher = null;
+
+    /**
      * 
      * @param  \Yana\Security\Sessions\IsWrapper  $session       bound to current environment parameters
      * @param  array                              $defaultEvent  tells us what to do as fallback and comes from application configuration file
@@ -107,6 +112,31 @@ class Container extends \Yana\Core\Object implements \Yana\Plugins\Dependencies\
     public function setPluginAdapter(\Yana\Plugins\Data\IsAdapter $pluginAdapter)
     {
         $this->_pluginAdapter = $pluginAdapter;
+        return $this;
+    }
+
+    /**
+     * Get instance of event dispatcher.
+     *
+     * @return  \Yana\Plugins\Events\IsDispatcher
+     */
+    public function getDispatcher()
+    {
+        if (!isset($this->_dispatcher)) {
+            $this->_dispatcher = new \Yana\Plugins\Events\Dispatcher();
+        }
+        return $this->_dispatcher;
+    }
+
+    /**
+     * Set event dispatcher.
+     *
+     * @param   \Yana\Plugins\Events\IsDispatcher  $dispatcher  will distribute events to subscribing plugins
+     * @return  $this
+     */
+    public function setDispatcher(\Yana\Plugins\Events\IsDispatcher $dispatcher)
+    {
+        $this->_dispatcher = $dispatcher;
         return $this;
     }
 

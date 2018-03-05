@@ -69,7 +69,7 @@ class LoopBlockTest extends \PHPUnit_Framework_TestCase
         $array = array('a' => 1, 'b' => array('foo', 'bar'), 'c' => 2);
         $content = '$key = $element' . "\n";
         $smarty = new \Smarty(); // will be ignored
-        $template = new \Smarty_Internal_Template('', $smarty); // will be ignored
+        $template = new \Smarty_Internal_Template('test', $smarty); // will be ignored
         $param = array(
             'from' => $array,
             'key' => 'key',

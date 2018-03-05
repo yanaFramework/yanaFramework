@@ -36,6 +36,7 @@ namespace Yana\Db\Mdb2;
  * @subpackage  db
  *
  * @ignore
+ * @codeCoverageIgnore
  */
 abstract class AbstractResult extends \Yana\Core\Object implements \Yana\Db\IsResult
 {
