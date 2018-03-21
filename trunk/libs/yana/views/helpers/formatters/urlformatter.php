@@ -35,7 +35,7 @@ namespace Yana\Views\Helpers\Formatters;
  * @package     yana
  * @subpackage  views
  */
-class UrlFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFormatter
+class UrlFormatter extends \Yana\Views\Helpers\Formatters\AbstractFormatter
 {
 
     /**

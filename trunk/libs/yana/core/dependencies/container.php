@@ -151,6 +151,11 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
     private $_connectionFactory = null;
 
     /**
+     * @var  \Yana\Views\Icons\IsLoader
+     */
+    private $_iconLoader = null;
+
+    /**
      * <<constructor>> Creates an instance.
      *
      * @param  \Yana\Util\IsXmlObject  $configuration  loaded from XML file in config-directory
@@ -318,6 +323,26 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
     }
 
     /**
+     * XML default configuration object.
+     *
+     * @return  \Yana\Util\Xml\IsObject
+     */
+    public function getDefaultConfiguration()
+    {
+        return $this->_configuration->default;
+    }
+
+    /**
+     * XML template configuration object.
+     *
+     * @return  \Yana\Util\Xml\IsObject
+     */
+    public function getTemplateConfiguration()
+    {
+        return $this->_configuration->templates;
+    }
+
+    /**
      * Get registry.
      *
      * This returns the registry. If none exists, a new instance is created.
@@ -460,7 +485,7 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
     public function getView()
     {
         if (!isset($this->_view)) {
-            $factory = new \Yana\Views\EngineFactory($this->_configuration->templates);
+            $factory = new \Yana\Views\EngineFactory($this);
             $this->_view = $factory->createInstance();
             $this->getRegistry()->setVar("ACTION", $this->getAction());
         }
@@ -659,13 +684,12 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
     /**
      * Creates and returns an application menu builder.
      *
-     * @param   \Yana\Application  $application  necessary to initialize dependency container
      * @return  \Yana\Plugins\Menus\IsCacheableBuilder
      */
-    public function getMenuBuilder(\Yana\Application $application)
+    public function getMenuBuilder()
     {
         if (!isset($this->_menuBuilder)) {
-            $container = new \Yana\Plugins\Dependencies\MenuContainer($application);
+            $container = new \Yana\Plugins\Dependencies\MenuContainer($this);
             $this->_menuBuilder = new \Yana\Plugins\Menus\Builder($container);
             $this->_menuBuilder->attachLogger($this->getLogger());
             $this->_menuBuilder->setLocale($this->getLanguage()->getLocale());
@@ -707,6 +731,23 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
             $this->_connectionFactory = new \Yana\Db\ConnectionFactory(new \Yana\Db\SchemaFactory($this->getCache()));
         }
         return $this->_connectionFactory;
+    }
+
+    /**
+     * Returns the application's default icon loader.
+     *
+     * @return  \Yana\Views\Icons\IsLoader
+     */
+    public function getIconLoader()
+    {
+        if (!isset($this->_iconLoader)) {
+            $registry = $this->getRegistry();
+            $file = $registry->getResource('system:/smile/config.text');
+            $directory = (string) $registry->getVar('PROFILE.SMILEYDIR');
+            $dataAdapater = new \Yana\Views\Icons\XmlAdapter($file, $directory);
+            $this->_iconLoader = new \Yana\Views\Icons\Loader($dataAdapater);
+        }
+        return $this->_iconLoader;
     }
 
 }

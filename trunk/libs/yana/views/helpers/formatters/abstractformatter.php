@@ -1,5 +1,4 @@
 <?php
-
 /**
  * YANA library
  *
@@ -28,24 +27,18 @@
  * @ignore
  */
 
-namespace Yana\Views\Managers;
+namespace Yana\Views\Helpers\Formatters;
 
 /**
- * <<interface>> For any classes that may accept a view manager.
+ * <<abstract>> Abstract base class for all formatters.
  *
  * @package     yana
  * @subpackage  views
+ * @codeCoverageIgnore
  */
-interface IsManageable
+abstract class AbstractFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFormatter
 {
-
-    /**
-     * Assign the view manager.
-     *
-     * @param  \Yana\Views\Managers\IsManager  $manager  View manager instance
-     */
-    public function __construct(\Yana\Views\Managers\IsManager $manager);
-
+    // intentionally left blank
 }
 
 ?>

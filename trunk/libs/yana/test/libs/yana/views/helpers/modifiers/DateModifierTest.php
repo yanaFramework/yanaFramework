@@ -63,7 +63,9 @@ class DateModifierTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Views\Helpers\Modifiers\MyDateModifier(new \Yana\Views\Managers\NullManager());
+        $configurationFactory = new \Yana\ConfigurationFactory();
+        $configuration = $configurationFactory->loadConfiguration(CWD . 'resources/system.config.xml');
+        $this->object = new \Yana\Views\Helpers\Modifiers\MyDateModifier(new \Yana\Core\Dependencies\Container($configuration));
     }
 
     /**

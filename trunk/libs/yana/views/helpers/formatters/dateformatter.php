@@ -35,7 +35,7 @@ namespace Yana\Views\Helpers\Formatters;
  * @package     yana
  * @subpackage  views
  */
-class DateFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFormatter
+class DateFormatter extends \Yana\Views\Helpers\Formatters\AbstractFormatter
 {
 
     /**

@@ -35,7 +35,7 @@ namespace Yana\Core\Dependencies;
  * @package     yana
  * @subpackage  core
  */
-interface IsApplicationContainer extends \Yana\Core\Dependencies\IsExceptionContainer
+interface IsApplicationContainer extends \Yana\Core\Dependencies\IsExceptionContainer, \Yana\Core\Dependencies\IsViewContainer, \Yana\Core\Dependencies\IsFormContainer
 {
 
     /**
@@ -136,18 +136,6 @@ interface IsApplicationContainer extends \Yana\Core\Dependencies\IsExceptionCont
     public function isSafemode();
 
     /**
-     * Get registry.
-     *
-     * This returns the registry. If none exists, a new instance is created.
-     * These settings may be read later by using \Yana\Application::getVar().
-     *
-     * @return  \Yana\VDrive\IsRegistry
-     * @throws  \Yana\Core\Exceptions\NotReadableException    when Registry file is not readable
-     * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when Registry file could not be read or contains invalid syntax
-     */
-    public function getRegistry();
-
-    /**
      * Get plugin-manager.
      *
      * This returns the plugin manager. If none exists, a new instance is created.
@@ -156,25 +144,6 @@ interface IsApplicationContainer extends \Yana\Core\Dependencies\IsExceptionCont
      * @return  \Yana\Plugins\Facade
      */
     public function getPlugins();
-
-    /**
-     * Get view.
-     *
-     * This returns the view component. If none exists, a new instance is created.
-     * This is an auxiliary class that provides access to output-specific functions.
-     *
-     * @return  \Yana\Views\Managers\IsManager
-     */
-    public function getView();
-
-    /**
-     * Get language translation-repository.
-     *
-     * This returns the language component. If none exists, a new instance is created.
-     *
-     * @return  \Yana\Translations\IsFacade
-     */
-    public function getLanguage();
 
     /**
      * get skin
@@ -186,42 +155,6 @@ interface IsApplicationContainer extends \Yana\Core\Dependencies\IsExceptionCont
     public function getSkin();
 
     /**
-     * Get current profile id.
-     *
-     * Returns the id of the profile the data of the current profile is to be associated with.
-     *
-     * This is a shortcut for $YANA->getVar('ID').
-     * However it is important to note a slight difference.
-     * <ul>
-     *   <li> $YANA->getVar('ID'):
-     *     This value is available to all plugins and all 
-     *     of them may read AND write this setting as the
-     *     developer sees fit.
-     *     This may mean, that this setting has been subject
-     *     to changes by some plugin, e.g. to switch between
-     *     profiles.
-     *   </li>
-     *   <li> $container->getId():
-     *     Always returns the original value, regardless of
-     *     changes by plugins.
-     *   </li>
-     * </ul>
-     *
-     * You may want to decide for the behaviour you prefer
-     * and choose either one or the other.
-     *
-     * @return  string
-     */
-    public function getProfileId();
-
-    /**
-     * Returns the attached loggers.
-     *
-     * @return  \Yana\Log\LoggerCollection
-     */
-    public function getLogger();
-
-    /**
      * Retrieve session wrapper.
      *
      * @return  \Yana\Security\Sessions\IsWrapper
@@ -229,19 +162,11 @@ interface IsApplicationContainer extends \Yana\Core\Dependencies\IsExceptionCont
     public function getSession();
 
     /**
-     * Creates and returns an application menu builder.
+     * XML default configuration object.
      *
-     * @param   \Yana\Application  $application  necessary to initialize dependency container
-     * @return  \Yana\Plugins\Menus\IsCacheableBuilder
+     * @return  \Yana\Util\Xml\IsObject
      */
-    public function getMenuBuilder(\Yana\Application $application);
-
-    /**
-     * Returns a ready-to-use factory to create open database connections.
-     *
-     * @return  \Yana\Db\IsConnectionFactory
-     */
-    public function getConnectionFactory();
+    public function getDefaultConfiguration();
 
 }
 

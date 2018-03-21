@@ -53,19 +53,13 @@ class AjaxBridgeFilter extends \Yana\Views\Helpers\AbstractViewHelper implements
     {
         assert('is_string($source); // Wrong type for argument 1. String expected');
 
-        assert('!isset($builder); // Cannot redeclare var $builder');
-        assert('!isset($application); // Cannot redeclare var $application');
-        $builder = new \Yana\ApplicationBuilder();
-        $application = $builder->buildApplication();
-        unset($builder);
-
         if (mb_strpos($source, '<head') > -1) {
             assert('!isset($script); // Cannot redeclare var $script');
             $script = "\n        " . '<script type="text/javascript" language="javascript"><!--' . "\n" .
-                '        window.yanaProfileId="' . $application->getProfileId() . '";' . "\n" .
+                '        window.yanaProfileId="' . $this->_getProfileId() . '";' . "\n" .
                 '        window.yanaSessionName="{$SESSION_NAME}";' . "\n" .
                 '        window.yanaSessionId="{$SESSION_ID}";' . "\n" .
-                '        window.yanaLanguage="' . $application->getLanguage()->getLocale() . '";' . "\n" .
+                '        window.yanaLanguage="' . $this->_getLanguage()->getLocale() . '";' . "\n" .
                 '        var src="";' . "\n" .
                 '        var php_self="' . $templateClass->getTemplateVars('PHP_SELF') . '";' . "\n" .
                 '        //--></script>';

@@ -72,6 +72,16 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testGetRow()
+    {
+        $row = array('a' => 1, 'b' => 2);
+        $this->object->setRows(array($row));
+        $this->assertEquals(array('A' => 1, 'B' => 2), $this->object->getRow());
+    }
+
+    /**
+     * @test
+     */
     public function testGetRows()
     {
         $this->assertTrue($this->object->getRows() instanceof \Yana\Forms\RowIterator,
@@ -114,6 +124,14 @@ class ContextTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetValue()
     {
+        $this->assertSame(123, $this->object->setValue('a', 123)->getValue('a'));
+    }
+
+    /**
+     * @test
+     */
+    public function testSetValues()
+    {
         $values = array('a' => 1, 'b' => array('a' => 2), 'c' => array('d' => array(1, 2, 3)));
         $this->object->setValues($values);
         $this->assertEquals($values['a'], $this->object->getValue('a'));
@@ -127,7 +145,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testSetValues()
+    public function testSetValues2()
     {
         $values = array(1, 2, 3);
         $this->assertEquals($values, $this->object->setValues($values)->getValues());

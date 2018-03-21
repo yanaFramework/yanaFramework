@@ -35,7 +35,7 @@ namespace Yana\Views\Helpers\Formatters;
  * @package     yana
  * @subpackage  views
  */
-class IconFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFormatter
+class IconFormatter extends \Yana\Views\Helpers\Formatters\AbstractFormatter
 {
 
     /**

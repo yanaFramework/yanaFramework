@@ -33,7 +33,7 @@ namespace Yana\Forms\Setups;
  * @package     yana
  * @subpackage  form
  */
-class Builder extends \Yana\Core\Object
+class Builder extends \Yana\Core\Object implements \Yana\Forms\Setups\IsBuilder
 {
 
     /**
@@ -120,7 +120,7 @@ class Builder extends \Yana\Core\Object
      * Set form object.
      *
      * @param   \Yana\Db\Ddl\Form  $form  configuring the contents of the form
-     * @return  \Yana\Forms\Setups\Builder
+     * @return  $this
      */
     public function setForm(\Yana\Db\Ddl\Form $form)
     {
@@ -132,7 +132,7 @@ class Builder extends \Yana\Core\Object
      * Update setup with request array.
      *
      * @param   array  $request  initial values (e.g. Request array)
-     * @return  \Yana\Forms\Setups\Builder
+     * @return  $this
      */
     public function updateSetup(array $request = array())
     {
@@ -173,7 +173,7 @@ class Builder extends \Yana\Core\Object
      * Update values with request array.
      *
      * @param   array  $request  initial values (e.g. Request array)
-     * @return  \Yana\Forms\Setups\Builder
+     * @return  $this
      */
     public function updateValues(array $request = array())
     {
@@ -220,7 +220,7 @@ class Builder extends \Yana\Core\Object
      * Overwrite row values.
      *
      * @param   array  $rows  initial values
-     * @return  \Yana\Forms\Setups\Builder
+     * @return  $this
      */
     public function setRows(array $rows = array())
     {
@@ -233,7 +233,7 @@ class Builder extends \Yana\Core\Object
     /**
      * Create info on visible entries.
      *
-     * @return  \Yana\Forms\Setups\Builder
+     * @return  $this
      */
     private function _buildHeader()
     {
@@ -259,7 +259,7 @@ class Builder extends \Yana\Core\Object
     /**
      * Create links to other pages.
      *
-     * @return  \Yana\Forms\Setups\Builder
+     * @return  $this
      */
     private function _buildFooter()
     {
@@ -357,7 +357,7 @@ class Builder extends \Yana\Core\Object
     /**
      * Scans the actions and removes those to whom the current user has no access.
      *
-     * @return  \Yana\Forms\Setups\Builder
+     * @return  $this
      */
     private function _buildActions()
     {
@@ -465,7 +465,7 @@ class Builder extends \Yana\Core\Object
      * and selects the visible columns for these contexts based on the table definition
      * and form settings.
      *
-     * @return  \Yana\Forms\Setups\Builder
+     * @return  $this
      */
     private function _buildSetupContext()
     {
@@ -572,7 +572,7 @@ class Builder extends \Yana\Core\Object
      * Limits the visible columns to entries of this list.
      *
      * @param   array  $columnNames  whitelist
-     * @return  \Yana\Forms\Setups\Builder
+     * @return  $this
      */
     public function setColumnsWhitelist(array $columnNames)
     {
@@ -587,7 +587,7 @@ class Builder extends \Yana\Core\Object
      * Limits the visible columns to entries not on this list.
      *
      * @param   array  $columnNames  whitelist
-     * @return  \Yana\Forms\Setups\Builder
+     * @return  $this
      */
     public function setColumnsBlacklist(array $columnNames)
     {
@@ -601,7 +601,7 @@ class Builder extends \Yana\Core\Object
      *
      * This function filters out all columns not apparent in the whitelist on all contexts.
      *
-     * @return  \Yana\Forms\Setups\Builder
+     * @return  $this
      */
     private function _applyWhitelistColumnNames()
     {

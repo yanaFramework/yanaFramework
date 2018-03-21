@@ -2,6 +2,8 @@
 /**
  * YANA library
  *
+ * Primary controller class
+ *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
  * License:   GNU GPL  http://www.gnu.org/licenses/
@@ -25,31 +27,23 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Plugins\Events;
+namespace Yana\Core\Dependencies;
 
 /**
- * Null object for unit tests.
+ * <<interface>> Dependency container for the form facade.
  *
  * @package     yana
- * @subpackage  plugins
- *
- * @ignore
+ * @subpackage  core
  */
-class NullDispatcher extends \Yana\Plugins\Events\Dispatcher
+interface IsFormContainer
 {
 
     /**
-     * Always returns bool(true).
+     * Returns a ready-to-use factory to create open database connections.
      *
-     * @param   \Yana\IsPlugin                               $subscriber  implements event handler
-     * @param   \Yana\Plugins\Configs\IsMethodConfiguration  $event       describes the call interface of the event
-     * @return  bool
-     * @codeCoverageIgnore
+     * @return  \Yana\Db\IsConnectionFactory
      */
-    protected function _sendEvent(\Yana\IsPlugin $subscriber, \Yana\Plugins\Configs\IsMethodConfiguration $event)
-    {
-        return true;
-    }
+    public function getConnectionFactory();
 
 }
 

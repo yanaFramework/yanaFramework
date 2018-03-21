@@ -61,7 +61,7 @@ class EngineFactoryTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $config = simplexml_load_string('<templates>
+        $config = simplexml_load_string('<system><templates>
         <leftdelimiter>{</leftdelimiter>
         <rightdelimiter>}</rightdelimiter>
         <templatedir>skins/</templatedir>
@@ -111,8 +111,9 @@ class EngineFactoryTest extends \PHPUnit_Framework_TestCase
             <allowsuperglobals>false</allowsuperglobals>
             <allowphptag>false</allowphptag>
         </security>
-    </templates>');
-        $this->object = new \Yana\Views\EngineFactory(\Yana\Util\Xml\Converter::convertXmlToObject($config));
+    </templates></system>');
+        $container = new \Yana\Core\Dependencies\Container(\Yana\Util\Xml\Converter::convertXmlToObject($config));
+        $this->object = new \Yana\Views\EngineFactory($container);
     }
 
     /**

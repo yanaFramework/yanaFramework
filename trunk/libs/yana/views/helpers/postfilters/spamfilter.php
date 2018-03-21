@@ -55,22 +55,23 @@ class SpamFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana
      *
      * By default this is \Yana\Core\Sessions\Wrapper.
      *
-     * @return  \Yana\Core\Sessions\IsWrapper
+     * @return  \Yana\Security\Sessions\IsWrapper
      */
     public function getSession()
     {
         if (!isset($this->_session)) {
-            $this->_session = new \Yana\Core\Sessions\Wrapper();
+            $this->_session = new \Yana\Security\Sessions\Wrapper();
         }
         return $this->_session;
     }
 
     /**
-     * 
-     * @param   \Yana\Core\Sessions\IsWrapper  $session  holds session data
+     * Set active session wrapper.
+     *
+     * @param   \Yana\Security\Sessions\IsWrapper  $session  holds session data
      * @return  \Yana\Views\Helpers\PostFilters\SpamFilter
      */
-    public function setSession(\Yana\Core\Sessions\IsWrapper $session)
+    public function setSession(\Yana\Security\Sessions\IsWrapper $session)
     {
         $this->_session = $session;
         return $this;
@@ -88,7 +89,7 @@ class SpamFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana
     {
         if (!isset($this->_user)) {
             $userManager = new \Yana\Security\Data\Behaviors\Builder();
-            $this->_user = $userManager->buildFromSession();
+            $this->_user = $userManager->buildFromSession($this->getSession());
         }
         return $this->_user;
     }

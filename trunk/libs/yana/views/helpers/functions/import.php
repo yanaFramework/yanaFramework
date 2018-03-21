@@ -87,7 +87,7 @@ class Import extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vie
 
             default:
                 $message = "Missing argument. You need to provide either the argument 'file' or 'id'.";
-                \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
+                $this->_getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
                 return "";
         }
 

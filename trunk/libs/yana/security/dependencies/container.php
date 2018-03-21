@@ -138,7 +138,7 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
      *
      * @param  \Yana\Plugins\Facade  $facade  dependent resource
      */
-    public function __construct(\Yana\Plugins\Facade $facade)
+    public function __construct(\Yana\Plugins\Facade $facade = null)
     {
         $this->_plugins = $facade;
     }
@@ -150,6 +150,9 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
      */
     protected function _getPlugins()
     {
+        if (!isset($this->_plugins)) {
+            $this->_plugins = \Yana\Plugins\Facade::getInstance();
+        }
         return $this->_plugins;
     }
 

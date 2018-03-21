@@ -36,7 +36,7 @@ namespace Yana\Forms\Setups;
  * @package     yana
  * @subpackage  form
  */
-class Context extends \Yana\Core\Object
+class Context extends \Yana\Core\Object implements \Yana\Forms\Setups\IsContext
 {
 
     /**

@@ -39,9 +39,9 @@ class MenuContainer extends \Yana\Core\Object implements \Yana\Plugins\Dependenc
 {
 
     /**
-     * @var \Yana\Application
+     * @var  \Yana\Core\Dependencies\IsApplicationContainer
      */
-    private $_application = null;
+    private $_applicationContainer = null;
 
     /**
      * <<constructor>> Initializes the dependencies.
@@ -54,11 +54,11 @@ class MenuContainer extends \Yana\Core\Object implements \Yana\Plugins\Dependenc
      *
      * But feel free to swap this implementation if you have a better idea >;)
      *
-     * @param  \Yana\Application
+     * @param  \Yana\Core\Dependencies\IsApplicationContainer  $container
      */
-    public function __construct(\Yana\Application $application)
+    public function __construct(\Yana\Core\Dependencies\IsApplicationContainer $container)
     {
-        $this->_application = $application;
+        $this->_applicationContainer = $container;
     }
 
     /**
@@ -66,9 +66,9 @@ class MenuContainer extends \Yana\Core\Object implements \Yana\Plugins\Dependenc
      *
      * @return  \Yana\Application
      */
-    protected function _getApplication()
+    protected function _getApplicationContainer()
     {
-        return $this->_application;
+        return $this->_applicationContainer;
     }
 
     /**
@@ -78,7 +78,7 @@ class MenuContainer extends \Yana\Core\Object implements \Yana\Plugins\Dependenc
      */
     public function getTranslationFacade()
     {
-        return $this->_getApplication()->getLanguage();
+        return $this->_getApplicationContainer()->getLanguage();
     }
 
     /**
@@ -88,7 +88,7 @@ class MenuContainer extends \Yana\Core\Object implements \Yana\Plugins\Dependenc
      */
     public function getSecurityFacade()
     {
-        return $this->_getApplication()->getSecurity();
+        return $this->_getApplicationContainer()->getSecurity();
     }
 
     /**
@@ -98,7 +98,7 @@ class MenuContainer extends \Yana\Core\Object implements \Yana\Plugins\Dependenc
      */
     public function isDefaultProfile()
     {
-        $application = $this->_getApplication();
+        $application = $this->_getApplicationContainer();
         return 0 === \strcasecmp($application->getProfileId(), $application->getDefault('PROFILE'));
     }
 
@@ -109,7 +109,7 @@ class MenuContainer extends \Yana\Core\Object implements \Yana\Plugins\Dependenc
      */
     public function getPluginFacade()
     {
-        return $this->_getApplication()->getPlugins();
+        return $this->_getApplicationContainer()->getPlugins();
     }
 
     /**

@@ -154,4 +154,12 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->object->getLogger() instanceof \Yana\Log\IsLogHandler);
     }
 
+    /**
+     * @test
+     */
+    public function testGetIconLoader()
+    {
+        $this->assertTrue($this->object->getIconLoader() instanceof \Yana\Views\Icons\IsLoader);
+    }
+
 }

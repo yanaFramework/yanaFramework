@@ -47,25 +47,30 @@ class EngineFactory extends \Yana\Core\Object
     private static $_instance = null;
 
     /**
-     * @var \Yana\Util\Xml\IsObject
+     * @var  \Yana\Core\Dependencies\IsViewContainer
      */
-    private $_config = null;
+    private $_dependencyContainer = null;
 
     /**
+     * <<construct>> Initialize dependencies.
      *
-     * @param \Yana\Util\Xml\IsObject $configuration
+     * @param  \Yana\Core\Dependencies\IsViewContainer  $container  dependency container
      */
-    public function __construct(\Yana\Util\Xml\IsObject $configuration)
+    public function __construct(\Yana\Core\Dependencies\IsViewContainer $container)
     {
-        $this->_config = $configuration;
+        $this->_dependencyContainer = $container;
     }
 
     /**
-     * @return \Yana\Util\Xml\IsObject
+     * Returns the container.
+     *
+     * The dependency container contains code to initialize and return dependent objects.
+     *
+     * @return  \Yana\Core\Dependencies\IsViewContainer
      */
-    protected function _getConfiguration()
+    protected function _getDependencyContainer()
     {
-        return $this->_config;
+        return $this->_dependencyContainer;
     }
 
     /**
@@ -78,7 +83,7 @@ class EngineFactory extends \Yana\Core\Object
     private function _registerPlugin(\Smarty $smarty, $type, \Yana\Util\Xml\IsObject $plugin)
     {
         $className = $plugin->getPcData();
-        $instance = new $className(self::$_instance);
+        $instance = new $className($this->_getDependencyContainer());
         $smarty->registerPlugin(
             $type,
             $plugin->getAttribute("name"),
@@ -98,7 +103,7 @@ class EngineFactory extends \Yana\Core\Object
     {
         $className = $filter->getPcData();
         if ($className) {
-            $instance = new $className(self::$_instance);
+            $instance = new $className($this->_getDependencyContainer());
             $smarty->registerFilter(
                 $type,
                 array($instance, '__invoke')
@@ -115,7 +120,7 @@ class EngineFactory extends \Yana\Core\Object
     private function _registerResource(\Smarty $smarty, \Yana\Util\Xml\IsObject $resource)
     {
         $className = $resource->getPcData();
-        $instance = new $className(self::$_instance);
+        $instance = new $className($this->_getDependencyContainer());
         $smarty->registerResource((string) $resource->getAttribute("name"), $instance);
     }
 
@@ -391,10 +396,10 @@ class EngineFactory extends \Yana\Core\Object
     {
         if (!self::$_instance instanceof \Yana\Views\Managers\IsManager) {
             $smarty = new \Smarty();
-            self::$_instance = new \Yana\Views\Managers\Manager($smarty);
-            $config = $this->_getConfiguration();
-            $this->_configureGeneralSettings($smarty, $config)
-                    ->_configurePlugins($smarty, $config);
+            self::$_instance = new \Yana\Views\Managers\Manager($smarty, $this->_getDependencyContainer());
+            $config = $this->_getDependencyContainer()->getTemplateConfiguration();
+            $this->_configureGeneralSettings($smarty, $config);
+            $this->_configurePlugins($smarty, $config);
             if ($config->security) {
                 $smarty->enableSecurity();
                 $this->_configureSecuritySettings($smarty->security_policy, $config->security);

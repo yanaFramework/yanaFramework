@@ -46,8 +46,8 @@ class TextFormatterCollection extends FormatterCollection
      */
     public function __construct()
     {
-        $this[] = new IconFormatter();
-        $this[] = new TextFormatter();
+        $this[] = new \Yana\Views\Helpers\Formatters\IconFormatter();
+        $this[] = new \Yana\Views\Helpers\Formatters\TextFormatter();
     }
 
 }

@@ -798,7 +798,7 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
     public function clearCache()
     {
         // clear Menu Cache
-        $this->_getDependencyContainer()->getMenuBuilder($this)
+        $this->_getDependencyContainer()->getMenuBuilder()
                 ->clearMenuCache(); // uses session cache adapter by default
 
         // Clear Template cache
@@ -1020,7 +1020,7 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
      */
     public function buildApplicationMenu()
     {
-        return $this->_getDependencyContainer()->getMenuBuilder($this)->buildMenu();
+        return $this->_getDependencyContainer()->getMenuBuilder()->buildMenu();
     }
 
 }

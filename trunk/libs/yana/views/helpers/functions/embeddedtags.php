@@ -59,7 +59,7 @@ class EmbeddedTags extends \Yana\Views\Helpers\AbstractViewHelper implements \Ya
         /* Argument 'show' */
         if (isset($params['show']) && !preg_match('/^(\w+|\||-)(,(\w+|\||-))*$/is', $params['show'])) {
             $message = "Argument 'show' contains illegal characters in function " . __FUNCTION__ . "().";
-            \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
+            $this->_getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
             return "";
         } elseif (!isset($params['show'])) {
             $show =& $listOfTags;
@@ -72,7 +72,7 @@ class EmbeddedTags extends \Yana\Views\Helpers\AbstractViewHelper implements \Ya
         /* Argument 'hide' */
         if (!empty($params['hide']) && !preg_match('/^[\w,]+$/is', $params['hide'])) {
             $message = "Argument 'hide' contains illegal characters for function " . __FUNCTION__ . "().";
-            \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
+            $this->_getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
             return "";
         } elseif (empty($params['hide'])) {
             $hide = array();
@@ -88,15 +88,10 @@ class EmbeddedTags extends \Yana\Views\Helpers\AbstractViewHelper implements \Ya
         $tags = array_diff($show, $hide);
 
         /* create document */
-        assert('!isset($builder); // Cannot redeclare var $builder');
-        assert('!isset($application); // Cannot redeclare var $application');
-        $builder = new \Yana\ApplicationBuilder();
-        $application = $builder->buildApplication();
-        unset($builder);
         $document = $smarty->smarty->createTemplate("id:GUI_EMBEDDED_TAGS", null, null, $smarty);
         $document->assign('TAGS', $tags);
-        $document->assign('USER_DEFINED', $application->getVar('PROFILE.EMBTAG'));
-        $document->assign('LANGUAGE', $application->getLanguage()->getVars());
+        $document->assign('USER_DEFINED', $this->_getRegistry()->getVar('PROFILE.EMBTAG'));
+        $document->assign('LANGUAGE', $this->_getLanguage()->getVars());
 
         return $document->fetch();
     }

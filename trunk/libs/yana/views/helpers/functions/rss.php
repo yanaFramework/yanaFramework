@@ -49,18 +49,13 @@ class Rss extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Views\
      */
     public function __invoke(array $params, \Smarty_Internal_Template $smarty)
     {
-        assert('!isset($builder); // Cannot redeclare var $builder');
-        assert('!isset($application); // Cannot redeclare var $application');
-        $builder = new \Yana\ApplicationBuilder();
-        $application = $builder->buildApplication();
-        unset($builder);
         if (isset($params['image'])) {
             $image = (string) $params['image'];
         } else {
-            $image = $application->getVar('DATADIR') .'rss.gif';
+            $image = $this->_getRegistry()->getVar('DATADIR') .'rss.gif';
         }
-        $title = $application->getLanguage()->getVar('RSS_TITLE');
-        $name = $application->getLanguage()->getVar('PROGRAM_TITLE');
+        $title = $this->_getLanguage()->getVar('RSS_TITLE');
+        $name = $this->_getLanguage()->getVar('PROGRAM_TITLE');
         $result = "";
         $formatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
         foreach (\Yana\RSS\Publisher::getFeeds() as $action)
