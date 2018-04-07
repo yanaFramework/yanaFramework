@@ -39,6 +39,8 @@ namespace Yana\Forms;
 abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheable
 {
 
+    use \Yana\Forms\Dependencies\HasContainer;
+
     /**
      * Cache adapter.
      *
@@ -201,13 +203,6 @@ abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Data\A
     private $_form = null;
 
     /**
-     * injected dependencies
-     *
-     * @var  \Yana\Core\Dependencies\IsFormContainer
-     */
-    private $_dependencyContainer = null;
-
-    /**
      * <<constructor>> Initialize instance.
      *
      * @param  string                                   $file       name of database to connect to
@@ -218,17 +213,7 @@ abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Data\A
         assert('is_string($file); // Invalid argument $file: String expected');
 
         $this->_file = (string) $file;
-        $this->_dependencyContainer = $container;
-    }
-
-    /**
-     * Get injected dependencies.
-     *
-     * @return  \Yana\Core\Dependencies\IsFormContainer
-     */
-    protected function _getDependencyContainer()
-    {
-        return $this->_dependencyContainer;
+        $this->_setDependencyContainer($container);
     }
 
     /**
@@ -676,7 +661,7 @@ abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Data\A
     /**
      * Set bsae \Yana\Db\Ddl\Form.
      *
-     * @param   \Yana\Db\Ddl\Form $form  base form definition
+     * @param   \Yana\Db\Ddl\Form  $form  base form definition
      * @return  $this 
      */
     protected function _setForm(\Yana\Db\Ddl\Form $form, \Yana\Forms\Facade $parentForm = null)
@@ -686,7 +671,7 @@ abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Data\A
         if ($this->_setupBuilder) {
             $this->_setupBuilder->setForm($this->_form);
         } else {
-            $this->_setupBuilder = new \Yana\Forms\Setups\Builder($this->_form);
+            $this->_setupBuilder = new \Yana\Forms\Setups\Builder($this->_form, $this->_getDependencyContainer());
         }
         if ($parentForm) {
             $this->_getFacade()->setParent($parentForm);

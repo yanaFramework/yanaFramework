@@ -70,6 +70,18 @@ class IdGenerator extends \Yana\Core\Object
             $tableName = $table->getName();
         }
         $columnName = $column->getName();
+        return $this->generateIdByName($tableName, $columnName);
+    }
+
+    /**
+     * Generate an Id based on table and column name.
+     *
+     * @param   string  $tableName   first part of prefix
+     * @param   string  $columnName  second part of prefix
+     * @return  string
+     */
+    public function generateIdByName($tableName, $columnName)
+    {
         return md5(uniqid("$tableName.$columnName.", true));
     }
 

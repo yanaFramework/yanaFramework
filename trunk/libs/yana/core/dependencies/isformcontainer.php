@@ -45,6 +45,43 @@ interface IsFormContainer
      */
     public function getConnectionFactory();
 
+    /**
+     * Builds and returns request object.
+     *
+     * By default this will be done by using the respective super-globals like $_GET, $_POST aso.
+     *
+     * @return  \Yana\Http\IsFacade
+     */
+    public function getRequest();
+
+    /**
+     * Get language translation-repository.
+     *
+     * This returns the language component. If none exists, a new instance is created.
+     *
+     * @return  \Yana\Translations\IsFacade
+     */
+    public function getLanguage();
+
+    /**
+     * Get plugin-manager.
+     *
+     * This returns the plugin manager. If none exists, a new instance is created.
+     * The pluginManager holds repositories for interfaces and implementations of plugins.
+     *
+     * @return  \Yana\Plugins\Facade
+     */
+    public function getPlugins();
+
+    /**
+     * Get security facade.
+     *
+     * This facade is used to manage user information and check permissions.
+     * 
+     * @return \Yana\Security\IsFacade
+     */
+    public function getSecurity();
+
 }
 
 ?>

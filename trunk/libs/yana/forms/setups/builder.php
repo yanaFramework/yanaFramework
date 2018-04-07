@@ -36,6 +36,8 @@ namespace Yana\Forms\Setups;
 class Builder extends \Yana\Core\Object implements \Yana\Forms\Setups\IsBuilder
 {
 
+    use \Yana\Forms\Dependencies\HasContainer;
+
     /**
      * Builder product.
      *
@@ -77,10 +79,11 @@ class Builder extends \Yana\Core\Object implements \Yana\Forms\Setups\IsBuilder
      *
      * @param  \Yana\Db\Ddl\Form  $form  base form defintion that the setup will apply to
      */
-    public function __construct(\Yana\Db\Ddl\Form $form)
+    public function __construct(\Yana\Db\Ddl\Form $form, \Yana\Core\Dependencies\IsFormContainer $container)
     {
         $this->_form = $form;
         $this->object = new \Yana\Forms\Setup();
+        $this->_setDependencyContainer($container);
     }
 
     /**
@@ -249,9 +252,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Forms\Setups\IsBuilder
             'OFFSET_PAGE' => $offsetPage,
             'LAST_PAGE' => $lastPage
         );
-        $lang = \Yana\Translations\Facade::getInstance();
-        $header = $lang->getVar("DESCR_SHOW");
-        $header = \Yana\Util\Strings::replaceToken($header, $params);
+        $header = \Yana\Util\Strings::replaceToken($this->_getDependencyContainer()->getLanguage()->getVar("DESCR_SHOW"), $params);
         $this->object->getContext('update')->setHeader($header);
         return $this;
     }
@@ -273,9 +274,9 @@ class Builder extends \Yana\Core\Object implements \Yana\Forms\Setups\IsBuilder
         $currentPage = $this->object->getPage();
         $listOfEntries = "";
         assert('!isset($pluginManager); // Cannot redeclare var $pluginManager');
-        $pluginManager = \Yana\Plugins\Facade::getInstance();
+        $pluginManager = $this->_getDependencyContainer()->getPlugins();
         $action = $pluginManager->getFirstEvent();
-        $lang = \Yana\Translations\Facade::getInstance();
+        $lang = $this->_getDependencyContainer()->getLanguage();
         $formatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
         $linkTemplate = '<a class="gui_generator_%s" href="' .
             $formatter("action=$action&" . $this->getForm()->getName() . "[page]=%s", false, false) .
@@ -371,11 +372,8 @@ class Builder extends \Yana\Core\Object implements \Yana\Forms\Setups\IsBuilder
             $searchAction = $this->_resolveAction('search');
             $exportAction = $this->_resolveAction('export');
             $downloadAction = $this->_resolveAction('download');
-            $builder = new \Yana\ApplicationBuilder();
-            $application = $builder->buildApplication();
-            unset($builder);
             if (empty($downloadAction)) {
-                if ($application->getSecurity()->checkRules(null, "download_file")) {
+                if ($this->_getDependencyContainer()->getSecurity()->checkRules(null, "download_file")) {
                     $downloadAction = "download_file";
                 }
             }
@@ -420,9 +418,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Forms\Setups\IsBuilder
                 $action = $event->getAction();
             }
         }
-        $builder = new \Yana\ApplicationBuilder();
-        $security = $builder->buildApplication()->getSecurity();
-        unset($builder);
+        $security = $this->_getDependencyContainer()->getSecurity();
         if (!empty($action) && !$security->checkRules(null, $action)) {
             $action = "";
         }

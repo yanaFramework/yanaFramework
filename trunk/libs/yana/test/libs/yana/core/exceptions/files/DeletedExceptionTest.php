@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case.
+ * YANA library
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -25,21 +25,21 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Db\Helpers;
+namespace Yana\Core\Exceptions\Files;
 
 /**
  * @ignore
  */
-require_once __DIR__ . '/../../../../include.php';
+require_once __DIR__ . '/../../../../../include.php';
 
 /**
- * @package  test
+ * @package test
  */
-class IdGeneratorTest extends \PHPUnit_Framework_TestCase
+class DeletedExceptionTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var IdGenerator
+     * @var DeletedException
      */
     protected $object;
 
@@ -49,7 +49,7 @@ class IdGeneratorTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Db\Helpers\IdGenerator();
+        $this->object = new DeletedException;
     }
 
     /**
@@ -64,17 +64,9 @@ class IdGeneratorTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function test__invoke()
+    public function testSetFilename()
     {
-        $this->assertInternalType('string', $this->object->__invoke(new \Yana\Db\Ddl\Column("col", new \Yana\Db\Ddl\Table("table"))));
-    }
-
-    /**
-     * @test
-     */
-    public function testGenerateIdByName()
-    {
-        $this->assertInternalType('string', $this->object->generateIdByName("table", "col"));
+        $this->assertEquals(array('FILE' => 'test'), $this->object->setFilename('test')->getData());
     }
 
 }

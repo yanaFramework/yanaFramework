@@ -172,225 +172,105 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
         if (empty($title)) {
             $title = $column->getName();
         }
-        $column = $column->getReferenceColumn();
-        $type = $column->getType();
-        $length = (int) $column->getLength();
+        $refColumn = $column->getReferenceColumn();
 
         // validate pattern
-        $pattern = $column->getPattern();
+        $pattern = $refColumn->getPattern();
         if (!empty($pattern) && !preg_match("/^$pattern\$/", $value)) {
             $message = "Field data does not match pattern.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             $error = new \Yana\Core\Exceptions\Forms\InvalidSyntaxException($message, $level);
             throw $error->setValid($pattern)->setValue($value)->setField($title);
         }
+        $worker = new \Yana\Db\Helpers\ValueSanitizerWorker($value);
 
-        switch ($type)
+        switch ($refColumn->getType())
         {
             case 'array':
-                if (is_array($value)) {
-                    return $value;
-                }
-            break;
+                return $worker->asArray();
+
             case 'bool':
-                if (!is_bool($value)) { // required since bool(false) will return NULL!
-                    $value = filter_var((string) $value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-                }
-                if (is_bool($value)) {
-                    return $value;
-                }
-            break;
+                return $worker->asBool();
+
             case 'color':
-                /* This is a hexadecimal color value.
-                 * It contains exactly 6 characters of [0-9A-F] and a leading '#' sign.
-                 * Example: #f01234
-                 */
-                $options["regexp"] = '/^#[0-9a-f]{6}$/si';
-                if (filter_var($value, FILTER_VALIDATE_REGEXP, array("options" => $options)) !== false) {
-                    return strtoupper($value);
-                }
-            break;
+                return $worker->asColor();
+
             case 'date':
-                // example: 2000-05-28
-                if (is_array($value) && isset($value['month'], $value['day'], $value['year'])) {
-                    $value = mktime(0, 0, 0, $value['month'], $value['day'], $value['year']);
-                }
-                if (is_int($value)) {
-                    return date('Y-m-d', $value);
-                } elseif (is_string($value) && preg_match('/^\d{4}-\d{2}-\d{2}$/s', $value)) {
-                    return $value;
-                }
-            break;
+                return $worker->asDateString();
+
             case 'enum':
-                $enumerationItems = $column->getEnumerationItemNames();
-                if (!YANA_DB_STRICT || in_array($value, $enumerationItems)) {
-                    return $value;
-                }
-            break;
+                return $worker->asEnumeration($refColumn->getEnumerationItemNames());
+
             case 'image':
             case 'file':
-                /* Files and images are both treated in the same way.
-                 * They are just displayed differently by the GUI and
-                 * use different code for upload and download in the
-                 * \Yana\Db\Blob class, which handles all database artifacts.
-                 */
-                if (is_array($value)) {
-                    /* Value is the uploaded file as if taken from $_FILES[$columnName].
-                     * This information is used later to iterate over the files to insert or update.
-                     */
-                    if (isset($value['error']) && $value['error'] !== UPLOAD_ERR_NO_FILE) {
-                        /* check file size
-                         *
-                         * Note: the size value is given in 'byte'
-                         */
-                        $maxSize = (int) $column->getSize();
-                        if ($maxSize > 0 && $value['size'] > $maxSize) {
-                            $message = "Uploaded file is too large.";
-                            $alert = new \Yana\Core\Exceptions\Files\SizeException($message, UPLOAD_ERR_SIZE);
-                            throw $alert->setFilename($value['name'])->setMaxSize($maxSize);
-                        }
-                        $idGenerator = new \Yana\Db\Helpers\IdGenerator();
-                        $id = $idGenerator($column);
-                        $value['column'] = $column;
-                        $files[] = $value;
-                        return $id;
-                    } else {
-                        return null;
-                    }
-                } elseif ($value === "1") {
-                    // This occurs when a file is deleted
+                try {
+                    $fileId = $worker->asFileId((int) $refColumn->getSize());
+
+                } catch (\Yana\Core\Exceptions\Files\NotFoundException $e) {
+                    return null;
+
+                } catch (\Yana\Core\Exceptions\Files\DeletedException $e) {
                     $files[] = array('column' => $column);
                     return "";
-                } else {
-                    $mapper = new \Yana\Db\Binaries\FileMapper();
-                    return $mapper->toFileId($value);
                 }
-            break;
+
+                if (is_string($fileId)) {
+                    return $fileId;
+                }
+                $value['column'] = $column;
+                $files[] = $value;
+                $idGenerator = new \Yana\Db\Helpers\IdGenerator();
+                return $idGenerator($column);
+
             case 'range':
-                $value = filter_var($value, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-                if (filter_var($value, FILTER_VALIDATE_FLOAT) === false) {
-                    $message = "Input is not a valid number.";
-                    $level = \Yana\Log\TypeEnumeration::WARNING;
-                    $error = new \Yana\Core\Exceptions\Forms\InvalidValueException($message, $level);
-                    throw $error->setField($title);
-                }
-                if (($value <= $column->getRangeMax()) && ($value >= $column->getRangeMin())) {
-                    return (float) $value;
-                }
-            break;
+                return $worker->asRangeValue((int) $refColumn->getRangeMax(), (int) $refColumn->getRangeMin());
+
             case 'float':
-                $precision = (int) $column->getPrecision();
-                if (\Yana\Data\FloatValidator::validate($value, $length - $precision, (bool) $column->isUnsigned())) {
-                    return round($value, $precision);
-                }
-            break;
+                return $worker->asFloat((int) $refColumn->getLength(), (int) $refColumn->getPrecision(), (bool) $refColumn->isUnsigned());
+
             case 'html':
-                if (is_string($value)) {
-                    $value = \Yana\Util\Strings::htmlSpecialChars($value);
-                    if ($length > 0) {
-                        $value = mb_substr($value, 0, $length);
-                    }
-                    return $value;
-                }
-            break;
+                return $worker->asHtmlString((int) $refColumn->getLength());
+
             case 'inet':
-                if (filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_NO_RES_RANGE) !== false) {
-                    return $value;
-                }
-            break;
+                return $worker->asIpAddress();
+
             case 'integer':
-                if (\Yana\Data\IntegerValidator::validate($value, $length, (bool) $column->isUnsigned())) {
-                    return (int) $value;
-                }
-            break;
+                return $worker->asInteger((int) $refColumn->getLength(), (bool) $refColumn->isUnsigned());
+
             case 'list':
-                if (is_array($value)) {
-                    return array_values($value);
-                }
-            break;
+                return $worker->asListOfValues();
+
             case 'mail':
-                $value = filter_var($value, FILTER_SANITIZE_EMAIL);
-                if ($length > 0) {
-                    $value = mb_substr($value, 0, $length);
-                }
-                if (filter_var($value, FILTER_VALIDATE_EMAIL) !== false) {
-                    return $value;
-                }
-            break;
+                return $worker->asMailAddress((int) $refColumn->getLength());
+
             case 'password':
-                if (is_string($value)) {
-                    return md5($value);
-                }
-            break;
+                return $worker->asPassword();
+
             case 'set':
-                if (is_array($value)) {
-                    $enumerationItems = $column->getEnumerationItemNames();
-                    if (count(array_diff($value, $enumerationItems)) > 0) {
-                        $message = "Field is not a valid enumartion item.";
-                        $level = \Yana\Log\TypeEnumeration::WARNING;
-                        $error = new \Yana\Core\Exceptions\Forms\InvalidValueException($message, $level);
-                        throw $error->setField($title);
-                    }
-                    unset($enumerationItems);
-                    return $value;
-                }
-            break;
+                return $worker->asSetOfEnumerationItems($refColumn->getEnumerationItemNames());
+
             case 'reference':
             case 'string':
-                if (is_string($value)) {
-                    return \Yana\Data\StringValidator::sanitize($value, $length, \Yana\Data\StringValidator::LINEBREAK);
-                }
-            break;
+                return $worker->asString((int) $refColumn->getLength());
+
             case 'text':
-                if (is_string($value)) {
-                    return \Yana\Data\StringValidator::sanitize($value, $length, \Yana\Data\StringValidator::USERTEXT);
-                }
-            break;
+                return $worker->asText((int) $refColumn->getLength());
+
             case 'time':
+                return $worker->asTimeString();
+
             case 'timestamp':
-                if (is_array($value)) {
-                    if (isset($value['hour'], $value['minute'], $value['month'], $value['day'], $value['year'])) {
-                        $value = mktime(
-                            $value['hour'],
-                            $value['minute'],
-                            0,
-                            $value['month'],
-                            $value['day'],
-                            $value['year']
-                        );
-                    }
-                }
-                if ($type === 'time') {
-                    if (is_int($value)) {
-                        return date('c', $value);
-                    } elseif (is_string($value)) {
-                        // 2000-05-28T18:10:25+00:00
-                        if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}([\+\-]\d{2}:\d{2})?$/s', $value)) {
-                            return $value;
-                        }
-                    }
-                } elseif (is_int($value)) { // $type === 'timestamp'
-                    return $value;
-                }
-            break;
+                return $worker->asTimestamp();
+
             case 'url':
-                $value = filter_var($value, FILTER_SANITIZE_URL);
-                if ($length > 0) {
-                    $value = mb_substr($value, 0, $length);
-                }
-                if (filter_var($value, FILTER_VALIDATE_URL) !== false) {
-                    return $value;
-                }
-            break;
+                return $worker->asUrl((int) $refColumn->getLength());
+
             default:
                 assert('!in_array($value, self::getSupportedTypes()); // Unhandled column type. ');
                 throw new \Yana\Core\Exceptions\NotImplementedException(
-                    "Type '$type' not implemented.", \Yana\Log\TypeEnumeration::ERROR
+                    "Type '" . $refColumn->getType() . "' not implemented.", \Yana\Log\TypeEnumeration::ERROR
                 );
         }
-        $error = new \Yana\Core\Exceptions\Forms\InvalidValueException();
-        $error->setField($title);
-        throw $error;
     }
 
 }

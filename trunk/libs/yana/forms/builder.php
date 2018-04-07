@@ -67,8 +67,8 @@ class Builder extends \Yana\Forms\AbstractBuilder
             $formSetup->setSearchTerm($this->_getFacade()->getParent()->getSetup()->getSearchTerm());
         }
 
-        $request = (array) \Yana\Http\Requests\Builder::buildFromSuperGlobals()->all()->value($formName)->all()->asArrayOfStrings();
-        $uploadWrapper = \Yana\Http\Uploads\Builder::buildFromSuperGlobals();
+        $request = (array) $this->_getDependencyContainer()->getRequest()->all()->value($formName)->all()->asArrayOfStrings();
+        $uploadWrapper = $this->_getDependencyContainer()->getRequest()->files();
         if ($uploadWrapper->has($formName) && $uploadWrapper->isListOfFiles($formName)) {
             $files = (array) $uploadWrapper->all($formName);
         }
@@ -243,7 +243,7 @@ class Builder extends \Yana\Forms\AbstractBuilder
             if (strcasecmp($subForm->getTable(), $baseForm->getTable()) === 0) {
                 $builder = clone $this;
             } else {
-                $builder = new \Yana\Forms\Builder($this->getFile());
+                $builder = new \Yana\Forms\Builder($this->getFile(), $this->_getDependencyContainer());
             }
             $builder->_setForm($subForm, $form);
             // build sub-form

@@ -92,6 +92,15 @@ class NullReaderTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testLoadRequirementById1()
+    {
+        $collection = $this->object->loadRequirementById(0);
+        $this->assertTrue($collection instanceof \Yana\Security\Rules\Requirements\Requirement, 'Instance of Requirement expected');
+    }
+
+    /**
+     * @test
+     */
     public function testLoadListOfGroups()
     {
         $this->assertInternalType('array', $this->object->loadListOfGroups());
