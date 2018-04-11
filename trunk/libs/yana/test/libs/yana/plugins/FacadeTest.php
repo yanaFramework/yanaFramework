@@ -49,13 +49,12 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = \Yana\Plugins\Facade::getInstance();
+        $this->object = new \Yana\Plugins\Facade($this->_buildDependencies());
     }
 
     private function _buildDependencies()
     {
-        $dependencies = new \Yana\Plugins\Dependencies\Container(new \Yana\Security\Sessions\NullWrapper(), array());
-        $this->object->attachDependencies($dependencies);
+        return new \Yana\Plugins\Dependencies\Container(new \Yana\Security\Sessions\NullWrapper(), array());
     }
 
     /**
@@ -94,24 +93,6 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
         $this->object->activate('helloworld');
         $this->assertFalse($this->object->deactivate('helloworld')->isActive('helloworld'));
         $this->assertFalse($this->object->activate('no-such-plugin')->deactivate('no-such-plugin')->isActive('no-such-plugin'));
-    }
-
-    /**
-     * @test
-     * @runInSeparateProcess
-     */
-    public function testGetDependencies()
-    {
-        $this->assertNull($this->object->getDependencies());
-    }
-
-    /**
-     * @test
-     */
-    public function testAttachDependencies()
-    {
-        $dependencies = new \Yana\Plugins\Dependencies\Container(new \Yana\Security\Sessions\Wrapper(), array());
-        $this->assertSame($dependencies, $this->object->attachDependencies($dependencies)->getDependencies());
     }
 
     /**
@@ -251,7 +232,7 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
             \Yana\Plugins\Annotations\Enumeration::TYPE => 'Test'
         );
         $dependencies = new \Yana\Plugins\Dependencies\Container(new \Yana\Security\Sessions\NullWrapper(), $defaultEvent);
-        $this->object->attachDependencies($dependencies);
+        $this->object = new \Yana\Plugins\Facade($dependencies);
         $this->assertSame('Test', $this->object->getEventType('no such event'));
     }
 

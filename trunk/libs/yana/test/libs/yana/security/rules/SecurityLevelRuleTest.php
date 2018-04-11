@@ -74,7 +74,7 @@ class SecurityLevelRuleTest extends \PHPUnit_Framework_TestCase
 
         $entity = new \Yana\Security\Data\Users\Entity('USER');
         $entity->setActive(true)->setPassword('UNINITIALIZED');
-        $container = new \Yana\Security\Dependencies\Container(\Yana\Plugins\Facade::getInstance());
+        $container = new \Yana\Security\Dependencies\Container();
         $schema = \Yana\Files\XDDL::getDatabase('user');
         restore_error_handler();
         $connection = new \Yana\Db\FileDb\NullConnection($schema);

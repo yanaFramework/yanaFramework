@@ -38,6 +38,8 @@ namespace Yana\Core\Dependencies;
 class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsApplicationContainer
 {
 
+    use \Yana\Core\Dependencies\HasSecurity;
+
     /**
      * System configuration file
      *
@@ -156,6 +158,11 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
     private $_iconLoader = null;
 
     /**
+     * @var  \Yana\Plugins\Configs\MethodCollection
+     */
+    private $_eventConfigurationsForPlugins = null;
+
+    /**
      * <<constructor>> Creates an instance.
      *
      * @param  \Yana\Util\IsXmlObject  $configuration  loaded from XML file in config-directory
@@ -207,7 +214,7 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
      * Builds and returns a class that converts exceptions to messages and passes them as var
      * "STDOUT" to a var-container for output in a template or on the command line.
      *
-     * @return  \Yana\Log\ExceptionLogger
+     * @return  Yana\Log\IsLogger
      */
     public function getExceptionLogger()
     {
@@ -292,13 +299,7 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
     public function getSecurity()
     {
         if (!isset($this->_security)) {
-            $container = new \Yana\Security\Dependencies\Container($this->getPlugins());
-            $container
-                    ->setCache($this->getCache())
-                    ->setSession($this->getSession())
-                    ->setDefaultUser($this->getDefault('user'))
-                    ->setProfileId($this->getProfileId());
-            $this->_security = new \Yana\Security\Facade($container);
+            $this->_security = new \Yana\Security\Facade($this);
         }
         return $this->_security;
     }
@@ -433,10 +434,9 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
                 assert($this->_plugins instanceof \Yana\Plugins\Facade);
 
             } else {
-                $this->_plugins = \Yana\Plugins\Facade::getInstance();
                 $container = new \Yana\Plugins\Dependencies\Container($this->getSession(), $this->_getDefaultEvent());
                 $container->setPluginAdapter($this->_getPluginAdapter());
-                $this->_plugins->attachDependencies($container);
+                $this->_plugins = new \Yana\Plugins\Facade($container);
                 $this->_plugins->attachLogger($this->getLogger());
                 $cache[$cacheId] = $this->_plugins;
             }
@@ -748,6 +748,41 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
             $this->_iconLoader = new \Yana\Views\Icons\Loader($dataAdapater);
         }
         return $this->_iconLoader;
+    }
+
+    /**
+     * Returns the stored list of events for plugins.
+     *
+     * If none was given, tries to autoload them.
+     *
+     * @return  \Yana\Plugins\Configs\MethodCollection
+     */
+    public function getEventConfigurationsForPlugins()
+    {
+        if (!isset($this->_eventConfigurationsForPlugins)) {
+            $this->_eventConfigurationsForPlugins = $this->getPlugins()->getEventConfigurations();
+        }
+        return $this->_eventConfigurationsForPlugins;
+    }
+
+    /**
+     * Get action for current request.
+     *
+     * @return  string
+     */
+    public function getLastPluginAction()
+    {
+        return (string) $this->getPlugins()->getLastEvent();
+    }
+
+    /**
+     * Get default user settings.
+     *
+     * @return  array
+     */
+    public function getDefaultUser()
+    {
+        return $this->getDefault('user');
     }
 
 }

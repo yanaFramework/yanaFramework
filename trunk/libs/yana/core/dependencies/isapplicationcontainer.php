@@ -35,17 +35,8 @@ namespace Yana\Core\Dependencies;
  * @package     yana
  * @subpackage  core
  */
-interface IsApplicationContainer extends \Yana\Core\Dependencies\IsExceptionContainer, \Yana\Core\Dependencies\IsViewContainer, \Yana\Core\Dependencies\IsFormContainer
+interface IsApplicationContainer extends \Yana\Core\Dependencies\IsExceptionContainer, \Yana\Core\Dependencies\IsViewContainer, \Yana\Core\Dependencies\IsFormContainer, \Yana\Core\Dependencies\IsSecurityContainer
 {
-
-    /**
-     * Get the application cache.
-     *
-     * By default this will be a file-cache in the temporary directory of the framework.
-     *
-     * @return  \Yana\Data\Adapters\IsDataAdapter
-     */
-    public function getCache();
 
     /**
      * Get exception logger.
@@ -125,13 +116,6 @@ interface IsApplicationContainer extends \Yana\Core\Dependencies\IsExceptionCont
      * @return  \Yana\Views\Skins\IsSkin
      */
     public function getSkin();
-
-    /**
-     * Retrieve session wrapper.
-     *
-     * @return  \Yana\Security\Sessions\IsWrapper
-     */
-    public function getSession();
 
     /**
      * XML default configuration object.

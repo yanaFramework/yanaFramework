@@ -28,7 +28,7 @@
 namespace Yana\Plugins;
 
 /**
- * <<Singleton>> <<Mediator>> Plugin facade.
+ * <<Mediator>> Plugin facade.
  *
  * This class implements communication between plugins and provides access to virtual drives
  * and local registries which may be defined on a per plugin basis.
@@ -46,7 +46,7 @@ namespace Yana\Plugins;
  *
  * Code example for "broadcasting" an event to all plugins (= calling a function):
  * <code>
- * $facade = \Yana\Plugins\Facade::getInstance();
+ * $facade = new \Yana\Plugins\Facade($dependencyContainer);
  * try {
  *   $result = $facade->sendEvent('newState', $arguments);
  * } catch (\Exception $e) {
@@ -65,7 +65,7 @@ namespace Yana\Plugins;
  * @package     yana
  * @subpackage  plugins
  */
-class Facade extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsReportable, \Yana\Log\IsLogable
+class Facade extends \Yana\Core\Object implements \Yana\Report\IsReportable, \Yana\Log\IsLogable
 {
 
     use \Yana\Log\HasLogger;
@@ -112,29 +112,25 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRepo
     private $_pluginLoader = null;
 
     /**
+     * <<constructor>> Inject dependencies.
+     *
+     * @param  \Yana\Plugins\Dependencies\IsContainer  $container  dependency container
+     */
+    public function __construct(\Yana\Plugins\Dependencies\IsContainer $container)
+    {
+        $this->_dependencies = $container;
+    }
+
+    /**
      * Get dependency injection container.
      *
      * Defaults to NULL.
      *
      * @return  \Yana\Plugins\Dependencies\IsContainer
      */
-    public function getDependencies()
+    protected function _getDependencies()
     {
         return $this->_dependencies;
-    }
-
-    /**
-     * Inject a dependency container.
-     *
-     * The container and its dependencies will be passed on to any plugins the facade loads.
-     *
-     * @param   \Yana\Plugins\Dependencies\IsContainer  $dependencies  to inject
-     * @return  $this
-     */
-    public function attachDependencies(\Yana\Plugins\Dependencies\IsContainer $dependencies)
-    {
-        $this->_dependencies = $dependencies;
-        return $this;
     }
 
     /**
@@ -145,7 +141,7 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRepo
      */
     protected function _createPluginLoader(\Yana\Application $application)
     {
-        $container = new \Yana\Plugins\Dependencies\PluginContainer($application, $this->getDependencies()->getSession());
+        $container = new \Yana\Plugins\Dependencies\PluginContainer($application, $this->_getDependencies()->getSession());
         return new \Yana\Plugins\Loaders\PluginLoader($this->getPluginDirectory(), $container);
     }
 
@@ -379,8 +375,8 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRepo
         assert('is_string($pluginName); // Invalid argument $pluginName: string expected');
 
         $isActive = $this->isActiveByDefault($pluginName);
-        if (!$isActive && !is_null($this->getDependencies())) {
-            $adapter = $this->getDependencies()->getPluginAdapter();
+        if (!$isActive && !is_null($this->_getDependencies())) {
+            $adapter = $this->_getDependencies()->getPluginAdapter();
             if ($adapter->offsetExists($pluginName)) {
                 $plugin = $adapter->offsetGet($pluginName);
                 assert($plugin instanceof \Yana\Plugins\Data\IsEntity);
@@ -446,7 +442,7 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRepo
         assert('is_string($pluginName); // Invalid argument $pluginName: string expected');
         assert('is_bool($isActive); // Invalid argument $isActive: bool expected');
 
-        $adapter = $this->getDependencies()->getPluginAdapter();
+        $adapter = $this->_getDependencies()->getPluginAdapter();
         if ($adapter->offsetExists($pluginName)) {
             $entity = $adapter->offsetGet($pluginName);
         } else {
@@ -579,7 +575,7 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRepo
             /* String */ $type = $methodsConfig[$eventName]->getType();
         } else {
             assert('!isset($defaultEvent); // Cannot redeclare var $defaultEvent');
-            /* array */ $defaultEvent = $this->getDependencies()->getDefaultEvent();
+            /* array */ $defaultEvent = $this->_getDependencies()->getDefaultEvent();
             assert('is_array($defaultEvent);');
             if (is_array($defaultEvent) && isset($defaultEvent[\Yana\Plugins\Annotations\Enumeration::TYPE])) {
                 /* string */ $type = $defaultEvent[\Yana\Plugins\Annotations\Enumeration::TYPE];
@@ -666,7 +662,7 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRepo
      * </code>
      *
      * <code>
-     * $facade = \Yana\Plugins\Facade::getInstance();
+     * $facade = new \Yana\Plugins\Facade($dependencyContainer);
      * $report = $facade->getReport();
      * $errors = $report->getErrors();
      * if (empty($errors)) {
@@ -692,16 +688,6 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRepo
         $methodsConfig->getReport($report);
 
         return $report;
-    }
-
-    /**
-     * Returns the class name of the called class.
-     *
-     * @return string
-     */
-    protected static function _getClassName()
-    {
-        return __CLASS__;
     }
 
 }

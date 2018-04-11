@@ -27,23 +27,20 @@
  * @ignore
  */
 
-namespace Yana\Security\Dependencies;
+namespace Yana\Core\Dependencies;
 
 /**
- * Dependency container.
- *
- * With default settings, creates the required instances automatically.
- * Otherwise allowing them to be overwritten.
+ * <<trait>> Security sub-system dependencies.
  *
  * @package     yana
  * @subpackage  security
  *
  * @ignore
  */
-class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies\IsFacadeContainer, \Yana\Data\Adapters\IsCacheable
+trait HasSecurity
 {
 
-    use \Yana\Data\Adapters\HasCache;
+    use \Yana\Data\Adapters\HasCache, \Yana\Core\Dependencies\HasSession;
 
     /**
      * Database connection.
@@ -67,11 +64,6 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
     private $_rulesAdapter = null;
 
     /**
-     * @var  array
-     */
-    private $_defaultUser = array();
-
-    /**
      * @var  \Yana\Security\Rules\Requirements\IsDataReader
      */
     private $_requirementsDataReader = null;
@@ -80,11 +72,6 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
      * @var  \Yana\Security\Rules\IsChecker
      */
     private $_rulesChecker = null;
-
-    /**
-     * @var  \Yana\Security\Sessions\IsWrapper
-     */
-    private $_session = null;
 
     /**
      * Handles the login- and logout-functionality.
@@ -116,55 +103,11 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
     private $_passwordBehavior = null;
 
     /**
-     * @var  \Yana\Plugins\Configs\MethodCollection
-     */
-    private $_eventConfigurationsForPlugins = null;
-
-    /**
-     * @var  string
-     */
-    private $_profileId = "";
-
-    /**
-     * @var  \Yana\Plugins\Facade
-     */
-    private $_plugins;
-
-    /**
-     * <<constructor>> Initializes dependencies.
+     * Get default user settings.
      *
-     * @param  \Yana\Plugins\Facade  $facade  dependent resource
+     * @return  array
      */
-    public function __construct(\Yana\Plugins\Facade $facade = null)
-    {
-        $this->_plugins = $facade;
-    }
-
-    /**
-     * Return plugin manager instance.
-     *
-     * @return  \Yana\Plugins\Facade
-     */
-    protected function _getPlugins()
-    {
-        if (!isset($this->_plugins)) {
-            $this->_plugins = new \Yana\Plugins\Facade(new \Yana\Plugins\Dependencies\Container(new \Yana\Security\Sessions\Wrapper(), array()));
-        }
-        return $this->_plugins;
-    }
-
-    /**
-     * Get cache-adapter.
-     *
-     * Uses an ArrayAdapter by default.
-     * The cache-adapter is passed on to the security rule manager.
-     *
-     * @return  \Yana\Data\Adapters\IsDataAdapter
-     */
-    public function getCache()
-    {
-        return $this->_getCache();
-    }
+    abstract public function getDefaultUser();
 
     /**
      * Get database connection.
@@ -174,7 +117,7 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
     public function getDataConnection()
     {
         if (!isset($this->_dataConnection)) {
-            $connectionFactory = new \Yana\Db\ConnectionFactory(new \Yana\Db\SchemaFactory($this->getCache()));
+            $connectionFactory = new \Yana\Db\ConnectionFactory(new \Yana\Db\SchemaFactory($this->_getCache()));
             $this->_dataConnection = $connectionFactory->createConnection('user');
         }
         return $this->_dataConnection;
@@ -193,28 +136,6 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
     }
 
     /**
-     * Get default user settings.
-     *
-     * @return  array
-     */
-    public function getDefaultUser()
-    {
-        return $this->_defaultUser;
-    }
-
-    /**
-     * Set default user settings.
-     *
-     * @param   array  $defaultUser  settings
-     * @return  self
-     */
-    public function setDefaultUser(array $defaultUser)
-    {
-        $this->_defaultUser = $defaultUser;
-        return $this;
-    }
-
-    /**
      * Builds and returns a rule-checker object.
      *
      * @return  \Yana\Security\Rules\IsChecker
@@ -223,7 +144,7 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
     {
         if (!isset($this->_rulesChecker)) {
             $rulesChecker = new \Yana\Security\Rules\CacheableChecker($this->getRequirementsDataReader());
-            $rulesChecker->setCache($this->getCache());
+            $rulesChecker->setCache($this->_getCache());
             $this->_rulesChecker = $rulesChecker;
         }
         return $this->_rulesChecker;
@@ -243,31 +164,6 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
                 $this->getDataConnection(), $this->getDefaultUser());
         }
         return $this->_requirementsDataReader;
-    }
-
-    /**
-     * Retrieve session wrapper.
-     *
-     * @return  \Yana\Security\Sessions\IsWrapper
-     */
-    public function getSession()
-    {
-        if (!isset($this->_session)) {
-            $this->_session = new \Yana\Security\Sessions\Wrapper();
-        }
-        return $this->_session;
-    }
-
-    /**
-     * Inject session wrapper.
-     *
-     * @param   \Yana\Security\Sessions\IsWrapper  $session  dependency
-     * @return  self
-     */
-    public function setSession(\Yana\Security\Sessions\IsWrapper $session)
-    {
-        $this->_session = $session;
-        return $this;
     }
 
     /**
@@ -430,78 +326,6 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
             $this->_rulesAdapter = new \Yana\Security\Data\SecurityRules\Adapter($this->getDataConnection());
         }
         return $this->_rulesAdapter;
-    }
-
-    /**
-     * Set list of events for plugins.
-     *
-     * @param   \Yana\Plugins\Configs\MethodCollection  $eventConfigurationsForPlugins  provided by Plugins\Facade
-     * @return  self
-     */
-    public function setEventConfigurationsForPlugins(\Yana\Plugins\Configs\MethodCollection $eventConfigurationsForPlugins)
-    {
-        $this->_eventConfigurationsForPlugins = $eventConfigurationsForPlugins;
-        return $this;
-    }
-
-    /**
-     * Returns the stored list of events for plugins.
-     *
-     * If none was given, tries to autoload them.
-     *
-     * @return  \Yana\Plugins\Configs\MethodCollection
-     */
-    public function getEventConfigurationsForPlugins()
-    {
-        if (!isset($this->_eventConfigurationsForPlugins)) {
-            $this->_eventConfigurationsForPlugins = $this->_getPlugins()->getEventConfigurations();
-        }
-        return $this->_eventConfigurationsForPlugins;
-    }
-
-    /**
-     * Get event logger.
-     *
-     * Retrieves a default logger if none was defined.
-     *
-     * @return  \Yana\Log\IsLogHandler
-     */
-    public function getLogger()
-    {
-        return \Yana\Log\LogManager::getLogger();
-    }
-
-    /**
-     * Get profile id for current request.
-     *
-     * @return  string
-     */
-    public function getProfileId()
-    {
-        return $this->_profileId;
-    }
-
-    /**
-     * Get action for current request.
-     *
-     * @return  string
-     */
-    public function getLastPluginAction()
-    {
-        return (string) $this->_getPlugins()->getLastEvent();
-    }
-
-    /**
-     * Set profile id for current request.
-     *
-     * @param   string  $profileId  from request to application
-     * @return  self
-     */
-    public function setProfileId($profileId)
-    {
-        assert('is_string($profileId); // $profileId expected to be String');
-        $this->_profileId = (string) $profileId;
-        return $this;
     }
 
 }

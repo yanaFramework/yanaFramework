@@ -38,10 +38,7 @@ namespace Yana\Plugins\Dependencies;
 class Container extends \Yana\Core\Object implements \Yana\Plugins\Dependencies\IsContainer
 {
 
-    /**
-     * @var  \Yana\Security\Sessions\IsWrapper
-     */
-    private $_session = null;
+    use \Yana\Core\Dependencies\HasSession;
 
     /**
      * @var  array
@@ -65,7 +62,7 @@ class Container extends \Yana\Core\Object implements \Yana\Plugins\Dependencies\
      */
     public function __construct(\Yana\Security\Sessions\IsWrapper $session, array $defaultEvent)
     {
-        $this->_session = $session;
+        $this->setSession($session);
         $this->_defaultEvent = $defaultEvent;
     }
 
@@ -77,16 +74,6 @@ class Container extends \Yana\Core\Object implements \Yana\Plugins\Dependencies\
     public function getDefaultEvent()
     {
         return $this->_defaultEvent;
-    }
-
-    /**
-     * Get session data.
-     *
-     * @return  \Yana\Security\Sessions\IsWrapper
-     */
-    public function getSession()
-    {
-        return $this->_session;
     }
 
     /**

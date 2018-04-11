@@ -40,47 +40,7 @@ namespace Yana\Security\Rules;
 class CacheableChecker extends \Yana\Security\Rules\Checker implements \Yana\Data\Adapters\IsCacheable
 {
 
-    /**
-     * Result cache.
-     *
-     * @var  \Yana\Data\Adapters\IsDataAdapter
-     */
-    private $_cache = null;
-
-    /**
-     * Replace the cache adapter.
-     *
-     * This class uses an ArrayAdapter by default.
-     * Overwrite only for unit-tests, or if you are absolutely sure you need to
-     * and know what you are doing.
-     * Replacing this by the wrong adapter might introduce a security risk,
-     * unless you are in a very specific usage scenario.
-     *
-     * Note that this may also replace the cache contents.
-     *
-     * @param   \Yana\Data\Adapters\IsDataAdapter  $cache  new cache adapter
-     * @return  self
-     * @ignore
-     */
-    public function setCache(\Yana\Data\Adapters\IsDataAdapter $cache)
-    {
-        $this->_cache = $cache;
-        return $this;
-    }
-
-    /**
-     * Get cache-adapter
-     *
-     * @return  \Yana\Data\Adapters\IsDataAdapter
-     * @ignore
-     */
-    protected function _getCache()
-    {
-        if (!isset($this->_cache)) {
-            $this->_cache = new \Yana\Data\Adapters\ArrayAdapter();
-        }
-        return $this->_cache;
-    }
+    use \Yana\Data\Adapters\HasCache;
 
     /**
      * Check requirements.

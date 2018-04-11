@@ -35,13 +35,7 @@ namespace Yana\Db;
  */
 class SchemaFactory extends \Yana\Core\Object implements \Yana\Db\IsSchemaFactory, \Yana\Data\Adapters\IsCacheable
 {
-
-    /**
-     * caches database connections
-     *
-     * @var  \Yana\Db\ConnectionCollection
-     */
-    private $_cache = null;
+    use \Yana\Data\Adapters\HasCache;
 
     /**
      * <<constructor>> Initialize instance.
@@ -52,33 +46,9 @@ class SchemaFactory extends \Yana\Core\Object implements \Yana\Db\IsSchemaFactor
      */
     public function __construct(\Yana\Data\Adapters\IsDataAdapter $cache = null)
     {
-        $this->_cache = $cache;
-    }
-
-    /**
-     * Replace the cache adapter.
-     *
-     * Note that this may also replace the cache contents.
-     *
-     * @param   \Yana\Data\Adapters\IsDataAdapter  $cache  new cache adapter
-     * @return  self
-     */
-    public function setCache(\Yana\Data\Adapters\IsDataAdapter $cache)
-    {
-        $this->_cache = $cache;
-        return $this;
-    }
-
-    /**
-     *
-     * @return  \Yana\Data\Adapters\IsDataAdapter
-     */
-    protected function _getCache()
-    {
-        if (!isset($this->_cache)) {
-            $this->_cache = new \Yana\Data\Adapters\ArrayAdapter();
+        if (!is_null($cache)) {
+            $this->setCache($cache);
         }
-        return $this->_cache;
     }
 
     /**

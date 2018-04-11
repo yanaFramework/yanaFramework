@@ -162,4 +162,20 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->object->getIconLoader() instanceof \Yana\Views\Icons\IsLoader);
     }
 
+    /**
+     * @test
+     */
+    public function testGetDefaultUser()
+    {
+        $this->assertSame($this->object->getDefault('user'), $this->object->getDefaultUser());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetEventConfigurationsForPlugins()
+    {
+        $this->assertTrue($this->object->getEventConfigurationsForPlugins() instanceof \Yana\Plugins\Configs\MethodCollection);
+    }
+
 }

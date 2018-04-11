@@ -225,7 +225,7 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
             }
 
         } catch (\Yana\Core\Exceptions\IsException $e) {
-            $this->_getExceptionLogger()->addException($e);
+            $this->_getDependencyContainer()->getExceptionLogger()->addException($e);
 
         } catch (\Exception $e) {
             $message = get_class($e) . ': ' . $e->getMessage() . ' Thrown in ' . $e->getFile() .
@@ -234,20 +234,6 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
 
         }
         return $result !== false;
-    }
-
-    /**
-     * Get exception logger.
-     *
-     * Builds and returns a class that converts exceptions to messages and passes them as var
-     * "STDOUT" to a var-container for output in a template or on the command line.
-     *
-     * @return  \Yana\Log\ExceptionLogger
-     * @ignore
-     */
-    protected function _getExceptionLogger()
-    {
-        return $this->_getDependencyContainer()->getExceptionLogger();
     }
 
     /**
@@ -592,7 +578,7 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
          * save message and relocate.
          */
         unset($_SESSION['STDOUT']);
-        $messageCollection = $this->_getExceptionLogger()->getMessages();
+        $messageCollection = $this->_getDependencyContainer()->getExceptionLogger()->getMessages();
         if ($messageCollection->count() > 0) {
             $_SESSION['STDOUT'] = $messageCollection;
         }
@@ -645,7 +631,7 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
              * 3) all other template settings go here
              */
             default:
-                if ($result === false && $this->_getExceptionLogger()->getMessages()->count() === 0) {
+                if ($result === false && $this->_getDependencyContainer()->getExceptionLogger()->getMessages()->count() === 0) {
                     $this->_outputAsMessage();
                     return;
                 }
@@ -689,7 +675,7 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
         $target = "";
         $messageClass = "";
 
-        $logger = $this->_getExceptionLogger();
+        $logger = $this->_getDependencyContainer()->getExceptionLogger();
         if ($route instanceof \Yana\Plugins\Configs\EventRoute) {
             // create default message if there is none
             if ($logger->getMessages()->count() === 0) {
@@ -751,7 +737,7 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
             $template->setVar('STDOUT', $_SESSION['STDOUT']);
             unset($_SESSION['STDOUT']);
         } else {
-            $template->setVar('STDOUT', $this->_getExceptionLogger()->getMessages());
+            $template->setVar('STDOUT', $this->_getDependencyContainer()->getExceptionLogger()->getMessages());
         }
 
         /* print the page to the client */
