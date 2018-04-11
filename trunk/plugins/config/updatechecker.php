@@ -24,10 +24,7 @@ class UpdateChecker extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
     \Yana\Data\Adapters\IsCacheable
 {
 
-    /**
-     * @var  \Yana\Data\Adapters\IsDataAdapter
-     */
-    private $_cacheAdapter = null;
+    use \Yana\Data\Adapters\HasCache;
 
     /**
      * @var  \Yana\Translations\Facade
@@ -54,32 +51,8 @@ class UpdateChecker extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
      */
     public function __construct(\Yana\Translations\Facade $language, $updateServer)
     {
-        $cache = new \Yana\Data\Adapters\ArrayAdapter();
-        $this->setCache($cache);
         $this->_language = $language;
         $this->_updateServer = (string) $updateServer;
-    }
-
-    /**
-     * Set a caching method for this class.
-     *
-     * @param  \Yana\Data\Adapters\IsDataAdapter  $cache  implements cache storage
-     * @return \UpdateChecker
-     */
-    public function setCache(\Yana\Data\Adapters\IsDataAdapter $cache)
-    {
-        $this->_cacheAdapter = $cache;
-        return $this;
-    }
-
-    /**
-     * Returns the currently selected cache adapter.
-     *
-     * @return  \Yana\Data\Adapters\IsDataAdapter
-     */
-    protected function _getCache()
-    {
-        return $this->_cacheAdapter;
     }
 
     /**
