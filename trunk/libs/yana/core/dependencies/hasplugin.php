@@ -2,8 +2,6 @@
 /**
  * YANA library
  *
- * Primary controller class
- *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
  * License:   GNU GPL  http://www.gnu.org/licenses/
@@ -25,19 +23,53 @@
  *
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
+ *
+ * @ignore
  */
 
 namespace Yana\Core\Dependencies;
 
 /**
- * <<interface>> Dependency container for the security sub-system.
+ * <<trait>> Plugin sub-system dependencies.
  *
  * @package     yana
- * @subpackage  core
+ * @subpackage  security
+ *
+ * @ignore
  */
-interface IsSecurityContainer extends \Yana\Security\Dependencies\IsFacadeContainer
+trait HasPlugin
 {
-    // intentionally left blank
+
+    /**
+     * @var \Yana\Plugins\Events\IsDispatcher
+     */
+    private $_dispatcher = null;
+
+    /**
+     * Get instance of event dispatcher.
+     *
+     * @return  \Yana\Plugins\Events\IsDispatcher
+     */
+    public function getDispatcher()
+    {
+        if (!isset($this->_dispatcher)) {
+            $this->_dispatcher = new \Yana\Plugins\Events\Dispatcher();
+        }
+        return $this->_dispatcher;
+    }
+
+    /**
+     * Set event dispatcher.
+     *
+     * @param   \Yana\Plugins\Events\IsDispatcher  $dispatcher  will distribute events to subscribing plugins
+     * @return  $this
+     */
+    public function setDispatcher(\Yana\Plugins\Events\IsDispatcher $dispatcher)
+    {
+        $this->_dispatcher = $dispatcher;
+        return $this;
+    }
+
 }
 
 ?>

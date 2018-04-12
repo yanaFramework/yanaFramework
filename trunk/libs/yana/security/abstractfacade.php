@@ -67,44 +67,11 @@ abstract class AbstractFacade extends \Yana\Core\Object implements \Yana\Securit
     }
 
     /**
-     * @return \Yana\Security\Rules\Requirements\DataReader
-     */
-    protected function _createDataReader()
-    {
-        $container = $this->_getContainer();
-        return new \Yana\Security\Rules\Requirements\DefaultableDataReader($container->getDataConnection(), $container->getDefaultUser());
-    }
-
-    /**
-     * @return \Yana\Security\Rules\Requirements\DataWriter
-     */
-    protected function _createDataWriter()
-    {
-        return new \Yana\Security\Rules\Requirements\DataWriter($this->_getContainer()->getDataConnection());
-    }
-
-    /**
-     * @return \Yana\Security\Data\Users\Mapper
-     */
-    protected function _createUserMapper()
-    {
-        return new \Yana\Security\Data\Users\Mapper();
-    }
-
-    /**
-     * @return \Yana\Security\Data\Users\Adapter
-     */
-    protected function _createUserAdapter()
-    {
-        return new \Yana\Security\Data\Users\Adapter($this->_getContainer()->getDataConnection(), $this->_createUserMapper());
-    }
-
-    /**
      * @return \Yana\Security\Data\Behaviors\Builder
      */
     protected function _createUserBuilder()
     {
-        $builder = new \Yana\Security\Data\Behaviors\Builder($this->_createUserAdapter());
+        $builder = new \Yana\Security\Data\Behaviors\Builder($this->_getContainer()->getUserAdapter());
         $builder->setDependencyContainer($this->_getContainer());
         return $builder;
     }

@@ -67,6 +67,39 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testGetPlugins()
+    {
+        $this->assertTrue($this->object->getPlugins() instanceof \Yana\Plugins\Facade);
+    }
+
+    /**
+     * @test
+     */
+    public function testSetPlugins()
+    {
+        $object = new \Yana\Plugins\Facade(new \Yana\Plugins\Dependencies\Container(new \Yana\Security\Sessions\Wrapper(), array()));
+        $this->assertSame($object, $this->object->setPlugins($object)->getPlugins());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetProfileId()
+    {
+        $this->assertSame("", $this->object->getProfileId());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetProfileId()
+    {
+        $this->assertSame("Test", $this->object->setProfileId("Test")->getProfileId());
+    }
+
+    /**
+     * @test
+     */
     public function testGetCache()
     {
         $this->assertTrue($this->object->getCache() instanceof \Yana\Data\Adapters\IsDataAdapter);
@@ -80,23 +113,6 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     {
         $object = new \Yana\Data\Adapters\SessionAdapter(__CLASS__);
         $this->assertSame($object, $this->object->setCache($object)->getCache());
-    }
-
-    /**
-     * @test
-     */
-    public function testGetDataConnection()
-    {
-        $this->assertTrue($this->object->getDataConnection() instanceof \Yana\Db\IsConnection);
-    }
-
-    /**
-     * @test
-     */
-    public function testSetDataConnection()
-    {
-        $object = new \Yana\Db\NullConnection();
-        $this->assertSame($object, $this->object->setDataConnection($object)->getDataConnection());
     }
 
     /**

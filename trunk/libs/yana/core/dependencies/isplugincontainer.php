@@ -35,7 +35,7 @@ namespace Yana\Core\Dependencies;
  * @package     yana
  * @subpackage  core
  */
-interface IsSecurityContainer extends \Yana\Security\Dependencies\IsFacadeContainer
+interface IsPluginContainer extends \Yana\Plugins\Dependencies\IsContainer
 {
     // intentionally left blank
 }

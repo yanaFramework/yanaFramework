@@ -110,29 +110,23 @@ trait HasSecurity
     abstract public function getDefaultUser();
 
     /**
+     * Returns a ready-to-use factory to create open database connections.
+     *
+     * @return  \Yana\Db\IsConnectionFactory
+     */
+    abstract public function getConnectionFactory();
+
+    /**
      * Get database connection.
      *
      * @return  \Yana\Db\IsConnection
      */
-    public function getDataConnection()
+    protected function _getDataConnection()
     {
         if (!isset($this->_dataConnection)) {
-            $connectionFactory = new \Yana\Db\ConnectionFactory(new \Yana\Db\SchemaFactory($this->_getCache()));
-            $this->_dataConnection = $connectionFactory->createConnection('user');
+            $this->_dataConnection = $this->getConnectionFactory()->createConnection('user');
         }
         return $this->_dataConnection;
-    }
-
-    /**
-     * Set connection to user database.
-     *
-     * @param   \Yana\Db\IsConnection  $dataConnection  connection to user database
-     * @return  self
-     */
-    public function setDataConnection(\Yana\Db\IsConnection $dataConnection)
-    {
-        $this->_dataConnection = $dataConnection;
-        return $this;
     }
 
     /**
@@ -161,7 +155,7 @@ trait HasSecurity
     {
         if (!isset($this->_requirementsDataReader)) {
             $this->_requirementsDataReader = new \Yana\Security\Rules\Requirements\DefaultableDataReader(
-                $this->getDataConnection(), $this->getDefaultUser());
+                $this->_getDataConnection(), $this->getDefaultUser());
         }
         return $this->_requirementsDataReader;
     }
@@ -310,7 +304,7 @@ trait HasSecurity
     public function getLevelsAdapter()
     {
         if (!isset($this->_levelsAdapter)) {
-            $this->_levelsAdapter = new \Yana\Security\Data\SecurityLevels\Adapter($this->getDataConnection());
+            $this->_levelsAdapter = new \Yana\Security\Data\SecurityLevels\Adapter($this->_getDataConnection());
         }
         return $this->_levelsAdapter;
     }
@@ -323,11 +317,50 @@ trait HasSecurity
     public function getRulesAdapter()
     {
         if (!isset($this->_rulesAdapter)) {
-            $this->_rulesAdapter = new \Yana\Security\Data\SecurityRules\Adapter($this->getDataConnection());
+            $this->_rulesAdapter = new \Yana\Security\Data\SecurityRules\Adapter($this->_getDataConnection());
         }
         return $this->_rulesAdapter;
     }
 
+    /**
+     * Create and return data reader.
+     *
+     * @return \Yana\Security\Rules\Requirements\DataReader
+     */
+    public function getDataReader()
+    {
+        return new \Yana\Security\Rules\Requirements\DefaultableDataReader($this->_getDataConnection(), $this->getDefaultUser());
+    }
+
+    /**
+     * Create and return data writer.
+     *
+     * @return \Yana\Security\Rules\Requirements\DataWriter
+     */
+    public function getDataWriter()
+    {
+        return new \Yana\Security\Rules\Requirements\DataWriter($this->_getDataConnection());
+    }
+
+    /**
+     * Create and return user adapter.
+     *
+     * @return \Yana\Security\Data\Users\Adapter
+     */
+    public function getUserAdapter()
+    {
+        return new \Yana\Security\Data\Users\Adapter($this->_getDataConnection(), $this->_getUserMapper());
+    }
+
+    /**
+     * Create and return user database mapper.
+     *
+     * @return  \Yana\Data\Adapters\IsEntityMapper
+     */
+    protected function _getUserMapper()
+    {
+        return new \Yana\Security\Data\Users\Mapper();
+    }
 }
 
 ?>

@@ -32,6 +32,8 @@ namespace Yana\Security\Dependencies;
 /**
  * Dependency container.
  *
+ * This class is basically just here for unit tests.
+ *
  * With default settings, creates the required instances automatically.
  * Otherwise allowing them to be overwritten.
  *
@@ -43,77 +45,12 @@ namespace Yana\Security\Dependencies;
 class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies\IsFacadeContainer, \Yana\Data\Adapters\IsCacheable
 {
 
-    use \Yana\Data\Adapters\HasCache;
-
-    /**
-     * Database connection.
-     *
-     * @var  \Yana\Db\IsConnection
-     */
-    private $_dataConnection = null;
-
-    /**
-     * Level data adapter.
-     *
-     * @var  \Yana\Security\Data\SecurityLevels\Adapter
-     */
-    private $_levelsAdapter = null;
-
-    /**
-     * Rules data adapter.
-     *
-     * @var  \Yana\Security\Data\SecurityRules\Adapter
-     */
-    private $_rulesAdapter = null;
+    use \Yana\Core\Dependencies\HasSecurity;
 
     /**
      * @var  array
      */
     private $_defaultUser = array();
-
-    /**
-     * @var  \Yana\Security\Rules\Requirements\IsDataReader
-     */
-    private $_requirementsDataReader = null;
-
-    /**
-     * @var  \Yana\Security\Rules\IsChecker
-     */
-    private $_rulesChecker = null;
-
-    /**
-     * @var  \Yana\Security\Sessions\IsWrapper
-     */
-    private $_session = null;
-
-    /**
-     * Handles the login- and logout-functionality.
-     *
-     * @var  \Yana\Security\Logins\IsBehavior
-     */
-    private $_loginBehavior = null;
-
-    /**
-     * @var  \Yana\Security\Passwords\Builders\Builder
-     */
-    private $_passwordAlgorithmBuilder = null;
-
-    /**
-     * @var  \Yana\Security\Passwords\IsAlgorithm
-     */
-    private $_passwordAlgorithm = null;
-
-    /**
-     * @var  \Yana\Security\Passwords\Generators\IsAlgorithm
-     */
-    private $_passwordGenerator = null;
-
-    /**
-     * Handles the changing of passwords.
-     *
-     * @var  \Yana\Security\Passwords\Behaviors\IsBehavior
-     */
-    private $_passwordBehavior = null;
 
     /**
      * @var  \Yana\Plugins\Configs\MethodCollection
@@ -131,6 +68,13 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
     private $_plugins;
 
     /**
+     * Database connection.
+     *
+     * @var  \Yana\Db\IsConnection
+     */
+    private $_dataConnection = null;
+
+    /**
      * <<constructor>> Initializes dependencies.
      *
      * @param  \Yana\Plugins\Facade  $facade  dependent resource
@@ -141,16 +85,48 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
     }
 
     /**
+     * Returns a ready-to-use factory to create open database connections.
+     *
+     * @return  \Yana\Db\IsConnectionFactory
+     */
+    public function getConnectionFactory()
+    {
+        return new \Yana\Db\ConnectionFactory(new \Yana\Db\SchemaFactory($this->getCache()));
+    }
+
+    /**
+     * Lazy-loads and returns a plugin database adapter.
+     *
+     * @return  \Yana\Db\IsConnection
+     */
+    public function getConnectionToUserData()
+    {
+        return $this->getConnectionFactory()->createConnection('user');
+    }
+
+    /**
      * Return plugin manager instance.
      *
      * @return  \Yana\Plugins\Facade
      */
-    protected function _getPlugins()
+    public function getPlugins()
     {
         if (!isset($this->_plugins)) {
             $this->_plugins = new \Yana\Plugins\Facade(new \Yana\Plugins\Dependencies\Container(new \Yana\Security\Sessions\Wrapper(), array()));
         }
         return $this->_plugins;
+    }
+
+    /**
+     * Set plugin manager instance.
+     *
+     * @param   \Yana\Plugins\Facade  $facade  plugin facade
+     * @return  $this
+     */
+    public function setPlugins(\Yana\Plugins\Facade $facade)
+    {
+        $this->_plugins = $facade;
+        return $this;
     }
 
     /**
@@ -171,13 +147,22 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
      *
      * @return  \Yana\Db\IsConnection
      */
-    public function getDataConnection()
+    protected function _getDataConnection()
     {
         if (!isset($this->_dataConnection)) {
-            $connectionFactory = new \Yana\Db\ConnectionFactory(new \Yana\Db\SchemaFactory($this->getCache()));
-            $this->_dataConnection = $connectionFactory->createConnection('user');
+            $this->_dataConnection = $this->getConnectionFactory()->createConnection('user');
         }
         return $this->_dataConnection;
+    }
+
+    /**
+     * Get database connection.
+     *
+     * @return  \Yana\Db\IsConnection
+     */
+    public function getDataConnection()
+    {
+        return $this->_getDataConnection();
     }
 
     /**
@@ -215,224 +200,6 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
     }
 
     /**
-     * Builds and returns a rule-checker object.
-     *
-     * @return  \Yana\Security\Rules\IsChecker
-     */
-    public function getRulesChecker()
-    {
-        if (!isset($this->_rulesChecker)) {
-            $rulesChecker = new \Yana\Security\Rules\CacheableChecker($this->getRequirementsDataReader());
-            $rulesChecker->setCache($this->getCache());
-            $this->_rulesChecker = $rulesChecker;
-        }
-        return $this->_rulesChecker;
-    }
-
-    /**
-     * Builds and returns a default data reader.
-     *
-     * The purpose of the data reader is to retrieve requirements data from the database and build corresponding entities.
-     *
-     * @return \Yana\Security\Rules\Requirements\IsDataReader
-     */
-    public function getRequirementsDataReader()
-    {
-        if (!isset($this->_requirementsDataReader)) {
-            $this->_requirementsDataReader = new \Yana\Security\Rules\Requirements\DefaultableDataReader(
-                $this->getDataConnection(), $this->getDefaultUser());
-        }
-        return $this->_requirementsDataReader;
-    }
-
-    /**
-     * Retrieve session wrapper.
-     *
-     * @return  \Yana\Security\Sessions\IsWrapper
-     */
-    public function getSession()
-    {
-        if (!isset($this->_session)) {
-            $this->_session = new \Yana\Security\Sessions\Wrapper();
-        }
-        return $this->_session;
-    }
-
-    /**
-     * Inject session wrapper.
-     *
-     * @param   \Yana\Security\Sessions\IsWrapper  $session  dependency
-     * @return  self
-     */
-    public function setSession(\Yana\Security\Sessions\IsWrapper $session)
-    {
-        $this->_session = $session;
-        return $this;
-    }
-
-    /**
-     * Inject login behavior instance.
-     *
-     * @param   \Yana\Security\Logins\IsBehavior  $loginBehavior  dependency
-     * @return  self
-     */
-    public function setLoginBehavior(\Yana\Security\Logins\IsBehavior $loginBehavior)
-    {
-        $this->_loginBehavior = $loginBehavior;
-        return $this;
-    }
-
-    /**
-     * Inject password algorithm builder instance.
-     *
-     * @param   \Yana\Security\Passwords\Builders\Builder  $passwordAlgorithmBuilder  dependency
-     * @return  self
-     */
-    public function setPasswordAlgorithmBuilder(\Yana\Security\Passwords\Builders\Builder $passwordAlgorithmBuilder)
-    {
-        $this->_passwordAlgorithmBuilder = $passwordAlgorithmBuilder;
-        return $this;
-    }
-
-    /**
-     * Inject specific password algorithm.
-     *
-     * @param   \Yana\Security\Passwords\IsAlgorithm  $passwordAlgorithm  dependency
-     * @return  self
-     */
-    public function setPasswordAlgorithm(\Yana\Security\Passwords\IsAlgorithm $passwordAlgorithm)
-    {
-        $this->_passwordAlgorithm = $passwordAlgorithm;
-        return $this;
-    }
-
-    /**
-     * Inject password generator.
-     *
-     * @param   \Yana\Security\Passwords\Generators\IsAlgorithm  $passwordGenerator  dependency
-     * @return  self
-     */
-    public function setPasswordGenerator(\Yana\Security\Passwords\Generators\IsAlgorithm $passwordGenerator)
-    {
-        $this->_passwordGenerator = $passwordGenerator;
-        return $this;
-    }
-
-    /**
-     * Inject password checking behavior.
-     *
-     * @param   \Yana\Security\Passwords\Behaviors\IsBehavior  $passwordBehavior  dependency
-     * @return  self
-     */
-    public function setPasswordBehavior(\Yana\Security\Passwords\Behaviors\IsBehavior $passwordBehavior)
-    {
-        $this->_passwordBehavior = $passwordBehavior;
-        return $this;
-    }
-
-    /**
-     * Retrieve algorithm builder.
-     *
-     * The builder's purpose is to select and create instances of hashing algorithms used to create and compare password hashes.
-     *
-     * @return  \Yana\Security\Passwords\Builders\IsBuilder
-     */
-    public function getPasswordAlgorithmBuilder()
-    {
-        if (!isset($this->_passwordAlgorithmBuilder)) {
-            $this->_passwordAlgorithmBuilder = new \Yana\Security\Passwords\Builders\Builder();
-        }
-        return $this->_passwordAlgorithmBuilder;
-    }
-
-    /**
-     * Retrieve password behavior dependency.
-     *
-     * @return  \Yana\Security\Logins\IsBehavior
-     */
-    public function getLoginBehavior()
-    {
-        if (!isset($this->_loginBehavior)) {
-            $this->_loginBehavior = new \Yana\Security\Logins\StandardBehavior($this->getSession());
-        }
-        return $this->_loginBehavior;
-    }
-
-    /**
-     * Retrieve password algorithm dependency.
-     *
-     * @return  \Yana\Security\Passwords\IsAlgorithm
-     */
-    public function getPasswordAlgorithm()
-    {
-        if (!isset($this->_passwordAlgorithm)) {
-            $this->_passwordAlgorithm =
-                $this->getPasswordAlgorithmBuilder()
-                    ->add(\Yana\Security\Passwords\Builders\Enumeration::BASIC)
-                    ->add(\Yana\Security\Passwords\Builders\Enumeration::BLOWFISH)
-                    ->add(\Yana\Security\Passwords\Builders\Enumeration::SHA256)
-                    ->add(\Yana\Security\Passwords\Builders\Enumeration::SHA512)
-                    ->add(\Yana\Security\Passwords\Builders\Enumeration::BCRYPT)
-                    ->__invoke();
-        }
-        return $this->_passwordAlgorithm;
-    }
-
-    /**
-     * Retrieve password generator dependency.
-     *
-     * @return  \Yana\Security\Passwords\Generators\IsAlgorithm
-     */
-    public function getPasswordGenerator()
-    {
-        if (!isset($this->_passwordGenerator)) {
-            $this->_passwordGenerator = new \Yana\Security\Passwords\Generators\StandardAlgorithm();
-        }
-        return $this->_passwordGenerator;
-    }
-
-    /**
-     * Retrieve password behavior dependency.
-     *
-     * @return  \Yana\Security\Passwords\Behaviors\IsBehavior
-     */
-    public function getPasswordBehavior()
-    {
-        if (!isset($this->_passwordBehavior)) {
-            $this->_passwordBehavior = new \Yana\Security\Passwords\Behaviors\StandardBehavior(
-                $this->getPasswordAlgorithm(), $this->getPasswordGenerator()
-            );
-        }
-        return $this->_passwordBehavior;
-    }
-
-    /**
-     * Retrieve levels data adapter.
-     *
-     * @return  \Yana\Security\Data\SecurityLevels\Adapter
-     */
-    public function getLevelsAdapter()
-    {
-        if (!isset($this->_levelsAdapter)) {
-            $this->_levelsAdapter = new \Yana\Security\Data\SecurityLevels\Adapter($this->getDataConnection());
-        }
-        return $this->_levelsAdapter;
-    }
-
-    /**
-     * Retrieve rules data adapter.
-     *
-     * @return  \Yana\Security\Data\SecurityRules\Adapter
-     */
-    public function getRulesAdapter()
-    {
-        if (!isset($this->_rulesAdapter)) {
-            $this->_rulesAdapter = new \Yana\Security\Data\SecurityRules\Adapter($this->getDataConnection());
-        }
-        return $this->_rulesAdapter;
-    }
-
-    /**
      * Set list of events for plugins.
      *
      * @param   \Yana\Plugins\Configs\MethodCollection  $eventConfigurationsForPlugins  provided by Plugins\Facade
@@ -454,7 +221,7 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
     public function getEventConfigurationsForPlugins()
     {
         if (!isset($this->_eventConfigurationsForPlugins)) {
-            $this->_eventConfigurationsForPlugins = $this->_getPlugins()->getEventConfigurations();
+            $this->_eventConfigurationsForPlugins = $this->getPlugins()->getEventConfigurations();
         }
         return $this->_eventConfigurationsForPlugins;
     }
@@ -488,7 +255,7 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
      */
     public function getLastPluginAction()
     {
-        return (string) $this->_getPlugins()->getLastEvent();
+        return (string) $this->getPlugins()->getLastEvent();
     }
 
     /**

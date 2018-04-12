@@ -81,15 +81,6 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testRefreshPluginSecurityRules()
-    {
-        // data write has its own unit tests, so we won't test this again here and instead just check the return value
-        $this->assertTrue($this->object->refreshPluginSecurityRules() instanceof \Yana\Security\Facade);
-    }
-
-    /**
-     * @test
-     */
     public function testAddSecurityRule()
     {
         // rules checker has its own unit tests, so we won't test this again here and instead just check the return value
@@ -261,6 +252,15 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertFalse($this->object->isExistingUserName('non-existing user'));
         $this->assertTrue($this->object->isExistingUserName('Administrator'));
+    }
+
+    /**
+     * @test
+     */
+    public function testRefreshPluginSecurityRules()
+    {
+        // data write has its own unit tests, so we won't test this again here and instead just check the return value
+        $this->assertTrue($this->object->refreshPluginSecurityRules() instanceof \Yana\Security\Facade);
     }
 
 }

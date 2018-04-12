@@ -38,12 +38,7 @@ namespace Yana\Plugins\Dependencies;
 class Container extends \Yana\Core\Object implements \Yana\Plugins\Dependencies\IsContainer
 {
 
-    use \Yana\Core\Dependencies\HasSession;
-
-    /**
-     * @var  array
-     */
-    private $_defaultEvent = array();
+    use \Yana\Core\Dependencies\HasPlugin, \Yana\Core\Dependencies\HasSession;
 
     /**
      * @var \Yana\Plugins\Data\IsAdapter
@@ -51,9 +46,9 @@ class Container extends \Yana\Core\Object implements \Yana\Plugins\Dependencies\
     private $_pluginAdapter = null;
 
     /**
-     * @var \Yana\Plugins\Events\IsDispatcher
+     * @var  array
      */
-    private $_dispatcher = null;
+    private $_defaultEvent = array();
 
     /**
      * 
@@ -63,7 +58,7 @@ class Container extends \Yana\Core\Object implements \Yana\Plugins\Dependencies\
     public function __construct(\Yana\Security\Sessions\IsWrapper $session, array $defaultEvent)
     {
         $this->setSession($session);
-        $this->_defaultEvent = $defaultEvent;
+        $this->setDefaultEvent($defaultEvent);
     }
 
     /**
@@ -74,6 +69,17 @@ class Container extends \Yana\Core\Object implements \Yana\Plugins\Dependencies\
     public function getDefaultEvent()
     {
         return $this->_defaultEvent;
+    }
+
+    /**
+     * Replace default event settings.
+     *
+     * @return  array
+     */
+    public function setDefaultEvent(array $event)
+    {
+        $this->_defaultEvent = $event;
+        return $this;
     }
 
     /**
@@ -99,31 +105,6 @@ class Container extends \Yana\Core\Object implements \Yana\Plugins\Dependencies\
     public function setPluginAdapter(\Yana\Plugins\Data\IsAdapter $pluginAdapter)
     {
         $this->_pluginAdapter = $pluginAdapter;
-        return $this;
-    }
-
-    /**
-     * Get instance of event dispatcher.
-     *
-     * @return  \Yana\Plugins\Events\IsDispatcher
-     */
-    public function getDispatcher()
-    {
-        if (!isset($this->_dispatcher)) {
-            $this->_dispatcher = new \Yana\Plugins\Events\Dispatcher();
-        }
-        return $this->_dispatcher;
-    }
-
-    /**
-     * Set event dispatcher.
-     *
-     * @param   \Yana\Plugins\Events\IsDispatcher  $dispatcher  will distribute events to subscribing plugins
-     * @return  $this
-     */
-    public function setDispatcher(\Yana\Plugins\Events\IsDispatcher $dispatcher)
-    {
-        $this->_dispatcher = $dispatcher;
         return $this;
     }
 

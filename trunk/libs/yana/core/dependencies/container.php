@@ -38,7 +38,7 @@ namespace Yana\Core\Dependencies;
 class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsApplicationContainer
 {
 
-    use \Yana\Core\Dependencies\HasSecurity;
+    use \Yana\Core\Dependencies\HasSecurity, \Yana\Core\Dependencies\HasPlugin;
 
     /**
      * System configuration file
@@ -434,9 +434,7 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
                 assert($this->_plugins instanceof \Yana\Plugins\Facade);
 
             } else {
-                $container = new \Yana\Plugins\Dependencies\Container($this->getSession(), $this->_getDefaultEvent());
-                $container->setPluginAdapter($this->_getPluginAdapter());
-                $this->_plugins = new \Yana\Plugins\Facade($container);
+                $this->_plugins = new \Yana\Plugins\Facade($this);
                 $this->_plugins->attachLogger($this->getLogger());
                 $cache[$cacheId] = $this->_plugins;
             }
@@ -445,24 +443,11 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
     }
 
     /**
-     * Lazy-loads and returns a plugin database adapter.
-     *
-     * @return  \Yana\Plugins\Data\IsAdapter
-     */
-    private function _getPluginAdapter()
-    {
-        if (!isset($this->_pluginAdapter)) {
-            $this->_pluginAdapter = new \Yana\Plugins\Data\Adapter($this->getConnectionFactory()->createConnection("plugins"));
-        }
-        return $this->_pluginAdapter;
-    }
-
-    /**
      * Gets settings for default event configuration and converts them to an array.
      *
      * @return  array
      */
-    private function _getDefaultEvent()
+    public function getDefaultEvent()
     {
         $defaultEvent = $this->getDefault('EVENT');
         if ($defaultEvent instanceof \Yana\Util\IsXmlArray) {
@@ -768,6 +753,8 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
     /**
      * Get action for current request.
      *
+     * This is just a shorthand for getPlugins()->getLastEvent().
+     *
      * @return  string
      */
     public function getLastPluginAction()
@@ -783,6 +770,19 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
     public function getDefaultUser()
     {
         return $this->getDefault('user');
+    }
+
+    /**
+     * Lazy-loads and returns a plugin database adapter.
+     *
+     * @return  \Yana\Plugins\Data\IsAdapter
+     */
+    public function getPluginAdapter()
+    {
+        if (!isset($this->_pluginAdapter)) {
+            $this->_pluginAdapter = new \Yana\Plugins\Data\Adapter($this->getConnectionFactory()->createConnection("plugins"));
+        }
+        return $this->_pluginAdapter;
     }
 
 }

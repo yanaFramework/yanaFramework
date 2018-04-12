@@ -67,6 +67,15 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testGetPluginAdapter()
+    {
+        $adapter = $this->object->getPluginAdapter();
+        $this->assertTrue($adapter instanceof \Yana\Plugins\Data\IsAdapter);
+    }
+
+    /**
+     * @test
+     */
     public function testGetRequest()
     {
         $this->assertTrue($this->object->getRequest() instanceof \Yana\Http\Facade);
@@ -173,9 +182,33 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testGetDefaultEvent()
+    {
+        $this->assertSame($this->object->getDefault('event'), $this->object->getDefaultEvent());
+    }
+
+    /**
+     * @test
+     */
     public function testGetEventConfigurationsForPlugins()
     {
         $this->assertTrue($this->object->getEventConfigurationsForPlugins() instanceof \Yana\Plugins\Configs\MethodCollection);
+    }
+
+    /**
+     * @test
+     */
+    public function testGetLastPluginAction()
+    {
+        $this->assertSame($this->object->getPlugins()->getLastEvent(), $this->object->getLastPluginAction());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetMenuBuilder()
+    {
+        $this->assertTrue($this->object->getMenuBuilder() instanceof \Yana\Plugins\Menus\IsCacheableBuilder);
     }
 
 }

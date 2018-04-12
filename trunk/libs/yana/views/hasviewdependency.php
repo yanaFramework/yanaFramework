@@ -61,11 +61,23 @@ trait HasViewDependency
      *
      * You may use this to modify settings of the view layer and access the template engine.
      *
-     * @return \Yana\Views\Managers\IsManager
+     * @return  \Yana\Core\Dependencies\IsViewContainer
+     */
+    protected function _getDependencyContainer()
+    {
+        return $this->_dependencyContainer;
+    }
+
+    /**
+     * Returns a reference to the registered view manager.
+     *
+     * You may use this to modify settings of the view layer and access the template engine.
+     *
+     * @return  \Yana\Views\Managers\IsManager
      */
     protected function _getViewManager()
     {
-        return $this->_dependencyContainer->getView();
+        return $this->_getDependencyContainer()->getView();
     }
 
     /**
@@ -75,7 +87,7 @@ trait HasViewDependency
      */
     protected function _getIconLoader()
     {
-        return $this->_dependencyContainer->getIconLoader();
+        return $this->_getDependencyContainer()->getIconLoader();
     }
 
     /**
@@ -85,7 +97,7 @@ trait HasViewDependency
      */
     protected function _getMenuBuilder()
     {
-        return $this->_dependencyContainer->getMenuBuilder();
+        return $this->_getDependencyContainer()->getMenuBuilder();
     }
 
     /**
@@ -97,7 +109,7 @@ trait HasViewDependency
      */
     protected function _getLanguage()
     {
-        return $this->_dependencyContainer->getLanguage();
+        return $this->_getDependencyContainer()->getLanguage();
     }
 
     /**
@@ -107,7 +119,7 @@ trait HasViewDependency
      */
     protected function _getLogger()
     {
-        return $this->_dependencyContainer->getLogger();
+        return $this->_getDependencyContainer()->getLogger();
     }
 
     /**
@@ -121,7 +133,7 @@ trait HasViewDependency
      */
     protected function _getRegistry()
     {
-        return $this->_dependencyContainer->getRegistry();
+        return $this->_getDependencyContainer()->getRegistry();
     }
 
     /**
@@ -133,7 +145,7 @@ trait HasViewDependency
      */
     protected function _getProfileId()
     {
-        return $this->_dependencyContainer->getProfileId();
+        return $this->_getDependencyContainer()->getProfileId();
     }
 
 }

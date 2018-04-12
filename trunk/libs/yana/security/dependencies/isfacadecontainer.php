@@ -58,11 +58,11 @@ interface IsFacadeContainer extends \Yana\Security\Dependencies\IsContainer
     public function getSession();
 
     /**
-     * Get database connection.
+     * Returns a ready-to-use factory to create open database connections.
      *
-     * @return  \Yana\Db\IsConnection
+     * @return  \Yana\Db\IsConnectionFactory
      */
-    public function getDataConnection();
+    public function getConnectionFactory();
 
     /**
      * Returns the stored list of events for plugins.
@@ -110,6 +110,27 @@ interface IsFacadeContainer extends \Yana\Security\Dependencies\IsContainer
      * @return  \Yana\Security\Rules\IsChecker
      */
     public function getRulesChecker();
+
+    /**
+     * Create and return data reader.
+     *
+     * @return \Yana\Security\Rules\Requirements\DataReader
+     */
+    public function getDataReader();
+
+    /**
+     * Create and return data writer.
+     *
+     * @return \Yana\Security\Rules\Requirements\DataWriter
+     */
+    public function getDataWriter();
+
+    /**
+     * Create and return user adapter.
+     *
+     * @return \Yana\Security\Data\Users\Adapter
+     */
+    public function getUserAdapter();
 
 }
 

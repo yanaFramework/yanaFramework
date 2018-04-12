@@ -39,8 +39,6 @@ namespace Yana\Forms;
 abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheable
 {
 
-    use \Yana\Forms\Dependencies\HasContainer;
-
     /**
      * Cache adapter.
      *

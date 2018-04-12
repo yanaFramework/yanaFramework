@@ -55,7 +55,7 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      */
     public function refreshPluginSecurityRules()
     {
-        $refreshRequirements = $this->_createDataWriter();
+        $refreshRequirements = $this->_getContainer()->getDataWriter();
         $refreshRequirements($this->_getContainer()->getEventConfigurationsForPlugins());
         return $this;
     }
@@ -121,7 +121,7 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
         }
         assert('is_string($profileId);');
         assert('!isset($uppderCaseProfileId); // Cannot redeclare $uppderCaseProfileId');
-        $uppderCaseProfileId = \Yana\Util\Strings::toUpperCase((string) $profileId);
+        $upperCaseProfileId = \Yana\Util\Strings::toUpperCase((string) $profileId);
 
         /* Argument 2 */
         if (is_null($action) || $action === "") {
@@ -152,7 +152,7 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
         try {
 
             assert('!isset($result); // Cannot redeclare $result');
-            $result = $this->_getContainer()->getRulesChecker()->checkRules($uppderCaseProfileId, $lowerCaseAction, $user);
+            $result = $this->_getContainer()->getRulesChecker()->checkRules($upperCaseProfileId, $lowerCaseAction, $user);
 
         } catch (\Yana\Security\Rules\Requirements\NotFoundException $e) {
             $this->_getContainer()->getLogger()->addLog($e->getMessage());
@@ -193,7 +193,7 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      */
     public function loadListOfGroups()
     {
-        return $this->_createDataReader()->loadListOfGroups();
+        return $this->_getContainer()->getDataReader()->loadListOfGroups();
     }
 
     /**
@@ -207,7 +207,7 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      */
     public function loadListOfRoles()
     {
-        return $this->_createDataReader()->loadListOfRoles();
+        return $this->_getContainer()->getDataReader()->loadListOfRoles();
     }
 
     /**
@@ -231,7 +231,7 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      */
     public function loadListOfUsers()
     {
-        return $this->_createUserAdapter()->getIds();
+        return $this->_getContainer()->getUserAdapter()->getIds();
     }
 
     /**
@@ -326,8 +326,8 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
     public function createUserByFormData(array $formData)
     {
         assert('!isset($entity); // $entity already declared');
-        $entity = $this->_createUserMapper()->toEntity($formData);
-        $entity->setDataAdapter($this->_createUserAdapter());
+        $entity = $this->_getContainer()->getUserAdapter()->toEntity($formData);
+        $entity->setDataAdapter($this->_getContainer()->getUserAdapter());
         assert('!isset($builder); // $builder already declared');
         $builder = $this->_createUserBuilder();
         assert('!isset($user); // $user already declared');
@@ -388,7 +388,7 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
                 throw new \Yana\Core\Exceptions\User\DeleteSelfException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
 
-        $this->_createUserAdapter()->offsetUnset($upperCaseUserName); // throws NotDeletedException
+        $this->_getContainer()->getUserAdapter()->offsetUnset($upperCaseUserName); // throws NotDeletedException
         return $this;
     }
 

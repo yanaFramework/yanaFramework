@@ -46,6 +46,10 @@ class MyHasSecurity
         return array();
     }
 
+    public function getConnectionFactory()
+    {
+        return new \Yana\Db\ConnectionFactory(new \Yana\Db\SchemaFactory());
+    }
 }
 
 /**
@@ -78,23 +82,6 @@ class HasSecurityTest extends \PHPUnit_Framework_TestCase
     protected function tearDown()
     {
         
-    }
-
-    /**
-     * @test
-     */
-    public function testGetDataConnection()
-    {
-        $this->assertTrue($this->object->getDataConnection() instanceof \Yana\Db\IsConnection);
-    }
-
-    /**
-     * @test
-     */
-    public function testSetDataConnection()
-    {
-        $object = new \Yana\Db\NullConnection();
-        $this->assertSame($object, $this->object->setDataConnection($object)->getDataConnection());
     }
 
     /**

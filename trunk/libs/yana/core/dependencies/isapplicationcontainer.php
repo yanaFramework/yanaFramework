@@ -35,7 +35,13 @@ namespace Yana\Core\Dependencies;
  * @package     yana
  * @subpackage  core
  */
-interface IsApplicationContainer extends \Yana\Core\Dependencies\IsExceptionContainer, \Yana\Core\Dependencies\IsViewContainer, \Yana\Core\Dependencies\IsFormContainer, \Yana\Core\Dependencies\IsSecurityContainer
+interface IsApplicationContainer
+    extends
+    \Yana\Core\Dependencies\IsExceptionContainer,
+    \Yana\Core\Dependencies\IsViewContainer,
+    \Yana\Core\Dependencies\IsFormContainer,
+    \Yana\Core\Dependencies\IsSecurityContainer,
+    \Yana\Core\Dependencies\IsPluginContainer
 {
 
     /**

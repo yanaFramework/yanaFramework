@@ -92,7 +92,6 @@ class IdResource extends \Yana\Views\Resources\FileResource
     {
         assert('is_string($id); // Wrong argument type argument 1. String expected');
 
-        $fileName = $id;
         try {
 
             $templateData = $this->_getSkin()->getTemplateData($id); // may throw NotFoundException

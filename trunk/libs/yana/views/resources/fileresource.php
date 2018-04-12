@@ -99,7 +99,7 @@ class FileResource extends \Yana\Views\Resources\AbstractResource
             $mtime = filemtime($filename);
             $fileContents = file_get_contents($filename);
             $baseDir = \dirname($filename) . '/';
-            $filter = new \Yana\Views\Resources\Helpers\RelativePathsFilter($this->_getViewManager());
+            $filter = new \Yana\Views\Resources\Helpers\RelativePathsFilter($this->_getDependencyContainer());
             $output = $filter($fileContents, $baseDir);
         }
     }
