@@ -92,6 +92,7 @@ class AutoLoadBuilder extends \Yana\Core\Object
                 $mapper = new \Yana\Core\Autoloaders\DirectMapper();
             break;
             case self::LOWERCASED_MAPPER:
+                include_once __DIR__ . '/autoloaders/genericmapper.php';
                 include_once __DIR__ . '/autoloaders/lowercasedmapper.php';
                 $mapper = new \Yana\Core\Autoloaders\LowerCasedMapper();
             break;
