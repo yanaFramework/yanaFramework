@@ -58,9 +58,11 @@ class ParserTest extends \PHPUnit_Framework_TestCase
              * @param array  $test2
              * {@test  Key1: Value, Key2: Value,
              *        Key3: Value}
+             * {@test1}
              * @test2  Key1: Value, Key2: Value, Key3: Value
              * @test3 \Name\Space\ClassName
              * @test4 Key1: \Name\Space\ClassName
+             * @ignore
              */
         ';
         $this->object = new \Yana\Plugins\Annotations\Parser($text);
@@ -97,6 +99,22 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         );
         $this->assertEquals($array, $this->object->getTag('test'));
         $this->assertEquals($array, $this->object->getTag('test2'));
+    }
+
+    /**
+     * @test
+     */
+    public function testGetIngore()
+    {
+        $this->assertTrue($this->object->getTag('ignore'));
+    }
+
+    /**
+     * @test
+     */
+    public function testEmptyComplexTag()
+    {
+//        $this->assertTrue($this->object->getTag('test5'));
     }
 
     /**

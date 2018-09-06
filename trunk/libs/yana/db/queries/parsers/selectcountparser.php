@@ -49,24 +49,45 @@ class SelectCountParser extends \Yana\Db\Queries\Parsers\AbstractParser implemen
         $query = new \Yana\Db\Queries\SelectCount($this->_getDatabase());
 
         // retrieve table
-        $tables = $syntaxTree['tables'];
+        $tables = $this->_mapTableList($syntaxTree);
         if (empty($tables)) {
-            $message = "SQL-statement has no table names: $syntaxTree.";
-            return new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
+            $message = "SQL-statement has no table names.";
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
         } elseif (count($tables) > 1) {
             $message = "Row-Counts are not supported on joined tables.";
-            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
-        $query->setTable(current($tables));
+
+        $table = current($tables);
+        if (is_array($table) && isset($table["table"])) {
+            $table = $table["table"];
+        }
+        $query->setTable((string) $table);
 
         // retrieve column
-        $function = current($syntaxTree['set_function']); // array of column names
-        if ($function['name'] !== 'count') {
-            $message = "Funktion 'count' expected for 'Select count(foo) ...'-statement. " .
-                "Found '{$function['name']}' instead.";
-            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
+        $columns = $this->_mapColumnList($syntaxTree); // array of column names
+        if (empty($columns)) {
+            $message = "SQL-statement has no column names.";
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
+
+        } elseif (count($columns) > 1) {
+            $message = "Row-Counts are not supported on more than one column.";
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
+
+        } elseif (!isset($columns[0]) || !isset($columns[0]['args']) || !isset($columns[0]['args'][0]) || !isset($columns[0]['args'][0]['name'])) {
+            $message = "Function name expected.";
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
+
+        } elseif (!isset($columns[0]['args'][0]['arg'])) {
+            $message = "Column name expected for function count.";
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
+
+        } elseif ($columns[0]['args'][0]['name'] !== 'count') {
+            $message = "Function 'count' expected for 'Select count(foo) ...'-statement. " .
+                "Found '{$columns[0]['args'][0]['name']}' instead.";
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
-        $column = current($function['arg']);
+        $column = current($columns[0]['args'][0]['arg']);
         if ($column != '*') {
             $query->setColumn($column);
         }

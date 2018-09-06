@@ -49,15 +49,22 @@ class SelectExistParser extends \Yana\Db\Queries\Parsers\AbstractParser implemen
         $query = new \Yana\Db\Queries\SelectExist($this->_getDatabase());
 
         // retrieve table
-        $tables = $syntaxTree['tables'];
-        if (empty($tables)) {
-            $message = "SQL-statement has no table names: $syntaxTree.";
-            return new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
+        $tables = $this->_mapTableList($syntaxTree);
+
+        if (empty($tables) || !is_array($tables)) {
+            $message = "SQL-statement has no table names.";
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
+
         } elseif (count($tables) > 1) {
             $message = "Checks for existence are not supported on joined tables.";
-            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
-        $query->setTable(current($tables));
+
+        $table = current($tables);
+        if (is_array($table) && isset($table["table"])) {
+            $table = $table["table"];
+        }
+        $query->setTable((string) $table);
 
         // retrieve where clause
         if (!empty($syntaxTree['where_clause'])) {

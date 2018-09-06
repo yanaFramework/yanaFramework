@@ -93,35 +93,48 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testExists()
     {
-        $sqlStmt = 'SELECT 1 FROM ft WHERE ft.ftid = "2"';
+        $sqlStmt = "SELECT 1 FROM ft WHERE ftid = '2'";
+        $expectedResult = "SELECT 1 FROM ft WHERE ft.ftid = " . YANA_DB_DELIMITER . "2" . YANA_DB_DELIMITER;
         $this->query = $this->parser->parseSQL($sqlStmt, $this->db);
         $this->assertTrue($this->query instanceof \Yana\Db\Queries\SelectExist, "Parser error: $sqlStmt");
         $sqlResult = (string) $this->query;
-        $this->assertEquals($sqlStmt, $sqlResult, "Statement not resolved: $sqlResult");
+        $this->assertEquals($expectedResult, $sqlResult, "Statement not resolved: $sqlResult");
     }
 
     /**
      * @test
      */
-    public function testAlternativeWriting1()
+    public function testExists1()
     {
-        $sql1 = 'SELECT 1 FROM ft WHERE ft.ftid = "2"';
-        $sql3 = 'SELECT 1 FROM ft WHERE ftid = "2"';
-        $this->query = $this->parser->parseSQL($sql3, $this->db);
-        $this->assertTrue($this->query instanceof \Yana\Db\Queries\SelectExist, "Parser error: $sql3");
-        $sql2 = (string) $this->query;
-        $this->assertEquals($sql1, $sql2, "Statement not resolved: $sql2");
+        $sqlStmt = "SELECT 1 FROM ft WHERE ftid = '2'";
+        $expectedResult = "SELECT 1 FROM ft WHERE ft.ftid = " . YANA_DB_DELIMITER . "2" . YANA_DB_DELIMITER;
+        $this->query = $this->parser->parseSQL($sqlStmt, $this->db);
+        $this->assertTrue($this->query instanceof \Yana\Db\Queries\SelectExist, "Parser error: $sqlStmt");
+        $sqlResult = (string) $this->query;
+        $this->assertEquals($expectedResult, $sqlResult, "Statement not resolved: $sqlResult");
     }
 
     /**
      * @test
      */
-    public function testAlternativeWriting2()
+    public function testExists2()
     {
-        $sql1 = 'SELECT ft.ftid FROM ft WHERE ft.ftid = "1" ORDER BY ft.ftid';
-        $sql3 = 'SELECT ft.ftid FROM ft WHERE ft.ftid = "1" ORDER BY ftid';
-        $this->query = $this->parser->parseSQL($sql3, $this->db);
-        $this->assertTrue($this->query instanceof \Yana\Db\Queries\SelectExist, "Parser error: $sql3");
+        $sqlStmt = "SELECT ft.ftid FROM ft WHERE ft.ftid = '1' ORDER BY ftid";
+        $expectedResult = "SELECT ft.ftid FROM ft WHERE ft.ftid = " . YANA_DB_DELIMITER . "1" . YANA_DB_DELIMITER . " ORDER BY ftid";
+        $this->query = $this->parser->parseSQL($sqlStmt, $this->db);
+        $this->assertTrue($this->query instanceof \Yana\Db\Queries\SelectExist, "Parser error: $sqlStmt");
+        $sqlResult = (string) $this->query;
+        $this->assertEquals($expectedResult, $sqlResult, "Statement not resolved: $sqlResult");
+    }
+
+    /**
+     * @test
+     */
+    public function testCount()
+    {
+        $sql1 = "SELECT count(*) FROM ft WHERE ft.ftid = '2'";
+        $this->query = $this->parser->parseSQL($sql1, $this->db);
+        $this->assertTrue($this->query instanceof \Yana\Db\Queries\SelectCount, "Parser error: $sql1");
         $sql2 = (string) $this->query;
         $this->assertEquals($sql1, $sql2, "Statement not resolved: $sql2");
     }
@@ -131,12 +144,12 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testAlternativeWriting3()
     {
-        $sql1 = 'SELECT * FROM ft WHERE ft.ftid = "1" ORDER BY ft.ftid DESC';
-        $sql3 = 'SELECT * FROM ft WHERE ft.ftid = "1" ORDER BY ftid DESC';
-        $this->query = $this->parser->parseSQL($sql3, $this->db);
-        $this->assertTrue($this->query instanceof \Yana\Db\Queries\SelectExist, "Parser error: $sql3");
-        $sql2 = (string) $this->query;
-        $this->assertEquals($sql1, $sql2, "Statement not resolved: $sql2");
+        $expectedResult = "SELECT * FROM ft WHERE ft.ftid = " . YANA_DB_DELIMITER . "1" . YANA_DB_DELIMITER . " ORDER BY ft.ftid DESC";
+        $sqlStmt = "SELECT * FROM ft WHERE ft.ftid = '1' ORDER BY ftid DESC";
+        $this->query = $this->parser->parseSQL($sqlStmt, $this->db);
+        $this->assertTrue($this->query instanceof \Yana\Db\Queries\Select, "Parser error: $sqlStmt");
+        $sqlResult = (string) $this->query;
+        $this->assertEquals($expectedResult, $sqlResult, "Statement not resolved: $sqlResult");
     }
 
     /**
@@ -146,13 +159,13 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testDelete()
     {
-        $sql1 = 'DELETE FROM ft WHERE ft.ftvalue = "0"';
+        $sql1 = "DELETE FROM ft WHERE ft.ftvalue = '0'";
         $this->query = $this->parser->parseSQL($sql1, $this->db);
         $this->assertTrue($this->query instanceof \Yana\Db\Queries\Delete, "Parser error: $sql1");
         $sql2 = (string) $this->query;
         $this->assertEquals($sql1, $sql2, "Statement not resolved: $sql2");
 
-        $sql1 = 'DELETE FROM ft WHERE ft.ftvalue = "1"';
+        $sql1 = "DELETE FROM ft WHERE ft.ftvalue = '1'";
         $this->query = $this->parser->parseSQL($sql1, $this->db);
         $this->assertTrue($this->query instanceof \Yana\Db\Queries\Delete, "Parser error: $sql1");
         $sql2 = (string) $this->query;
@@ -169,20 +182,8 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testDeleteInvalidArgumentException()
     {
-        $sql1 = 'DELETE t&t FROM ft WHERE ft.ftvalue = "1"';
+        $sql1 = "DELETE t&t FROM ft WHERE ft.ftvalue = '1'";
         $this->query = $this->parser->parseSQL($sql1, $this->db);
-    }
-
-    /**
-     * @test
-     */
-    public function testLength()
-    {
-        $sql1 = 'SELECT count(*) FROM ft WHERE ft.ftid = "2"';
-        $this->query = $this->parser->parseSQL($sql1, $this->db);
-        $this->assertTrue($this->query instanceof \Yana\Db\Queries\SelectCount, "Parser error: $sql1");
-        $sql2 = (string) $this->query;
-        $this->assertEquals($sql1, $sql2, "Statement not resolved: $sql2");
     }
 
     /**
@@ -202,7 +203,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testSelectRow()
     {
-        $sql1 = 'SELECT * FROM ft WHERE ft.ftid = "2"';
+        $sql1 = "SELECT * FROM ft WHERE ft.ftid = '2'";
         $this->query = $this->parser->parseSQL($sql1, $this->db);
         $this->assertTrue($this->query instanceof \Yana\Db\Queries\Select, "Parser error: $sql1");
         $sql2 = (string) $this->query;
@@ -214,11 +215,11 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testSelectColumn()
     {
-        $sql1 = 'SELECT ftid FROM ft WHERE ftid = "2" ;';
+        $sql1 = "SELECT ftid FROM ft WHERE ftid = '2' ;";
         $this->query = $this->parser->parseSQL($sql1, $this->db);
         $this->assertTrue($this->query instanceof \Yana\Db\Queries\Select, "Parser error: $sql1");
         $sql2 = (string) $this->query;
-        $expected = 'SELECT ft.ftid FROM ft WHERE ft.ftid = "2"';
+        $expected = "SELECT ft.ftid FROM ft WHERE ft.ftid = '2'";
         $this->assertEquals($expected, $sql2, "Statement not resolved: $sql2");
     }
 
@@ -227,7 +228,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddColumn()
     {
-        $sql1 = 'SELECT ftid FROM ft WHERE ftid = "2" ;';
+        $sql1 = "SELECT ftid FROM ft WHERE ftid = '2' ;";
         $this->query = $this->parser->parseSQL($sql1, $this->db);
         $this->query->addColumn('ftvalue');
         $columns = $this->query->getColumns();
@@ -247,7 +248,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testSelectCrossJoin()
     {
-        $sql1 = 'SELECT ft.ftid FROM ft,t WHERE ft.ftid = "2"';
+        $sql1 = "SELECT ft.ftid FROM ft,t WHERE ft.ftid = '2'";
         $this->parser->parseSQL($sql1, $this->db);
     }
 
@@ -261,7 +262,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testSelectMissingForeignKeyInvalidException()
     {
-        $sql1 = 'INSERT INTO t (tid, tvalue) VALUES ("1", "2")';
+        $sql1 = "INSERT INTO t (tid, tvalue) VALUES ('1', '2')";
         $this->parser->parseSQL($sql1, $this->db);
     }
 
@@ -270,19 +271,19 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testInsertInto()
     {
-        $sql1 = 'INSERT INTO t (tid, tvalue, ftid) VALUES ("1", "2", "1");';
+        $sql1 = "INSERT INTO t (tid, tvalue, ftid) VALUES ('1', '2', '1');";
         $query = $this->query;
         /* @var $query \Yana\Db\Queries\Insert */
         $query = $this->parser->parseSQL($sql1, $this->db);
         $this->assertTrue($query instanceof \Yana\Db\Queries\Insert, "Parser error: $sql1");
         $expectedValues = array(
-            'tid' => "1",
-            'tvalue' => "2",
-            'ftid' => "1"
+            'tid' => '1',
+            'tvalue' => '2',
+            'ftid' => '1'
         );
         $this->assertEquals($expectedValues, $query->getValues());
         $sql2 = (string) $query;
-        $sql3 = 'INSERT INTO t (tid, tvalue, ftid) VALUES ("1", "2", "1")';
+        $sql3 = "INSERT INTO t (tid, tvalue, ftid) VALUES ('1', '2', '1')";
         $this->assertEquals($sql3, $sql2, "Statement not resolved: $sql2");
     }
 
@@ -294,7 +295,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testInsertIntoMissingPrimaryKey()
     {
-        $sql1 = 'INSERT INTO ft(ftvalue) VALUES("2")';
+        $sql1 = "INSERT INTO ft(ftvalue) VALUES('2')";
         // supposed to fail (due to missing primary key)
         $this->parser->parseSQL($sql1, $this->db);
     }
@@ -304,11 +305,11 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testUpdate()
     {
-        $sql1 = 'UPDATE t SET tvalue="2" WHERE tid = "2"';
+        $sql1 = "UPDATE t SET tvalue='2' WHERE tid = '2'";
         $this->query = $this->parser->parseSQL($sql1, $this->db);
         $this->assertTrue($this->query instanceof \Yana\Db\Queries\Update, "Parser error: $sql1");
         $sql2 = (string) $this->query;
-        $sql3 = 'UPDATE t SET tvalue = "2" WHERE t.tid = "2"';
+        $sql3 = "UPDATE t SET tvalue = '2' WHERE t.tid = '2'";
         $this->assertEquals($sql3, $sql2, "Statement not resolved: $sql2");
     }
 
@@ -359,7 +360,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->query->setRow('1');
         $this->query->setOrderBy(array('ftid'));
         $s1 =  (string) $this->query;
-        $valid = 'SELECT ft.ftid FROM ft WHERE ft.ftid = "1" ORDER BY ft.ftid';
+        $valid = "SELECT ft.ftid FROM ft WHERE ft.ftid = '1' ORDER BY ft.ftid";
         $this->assertEquals($valid, $s1, 'assert failed, the sql select statements must be equal');
 
         $this->query->resetQuery();
@@ -385,7 +386,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $getLimit = $this->query->getLimit();
         $this->assertEquals(20, $getLimit, 'assert failed, the expected value needs to be 20');
         $s2 = (string) $this->query;
-        $valid = 'SELECT * FROM t WHERE t.ftid = "2" ORDER BY t.tvalue';
+        $valid = "SELECT * FROM t WHERE t.ftid = '2' ORDER BY t.tvalue";
         $this->assertEquals($valid, $s2, 'assert failed, the sql select statements must be equal');
     }
 
@@ -405,7 +406,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $getJoin = $this->query->getJoin('ft');
         $this->assertEquals(array('ftid', 'ftid', false), $getJoin, 'Join clause must match ftid=ftid, leftJoin=false');
         $s3 = (string) $this->query;
-        $valid = 'SELECT t.tid, t.tvalue, t.ti, t.ftid FROM t, ft  WHERE t.ftid = ft.ftid';
+        $valid = "SELECT t.tid, t.tvalue, t.ti, t.ftid FROM t, ft  WHERE t.ftid = ft.ftid";
         $this->assertEquals($valid, $s3, 'assert failed the sql select statements must be equal');
     }
 
@@ -432,13 +433,13 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $getJoin = $this->query->getJoin('ft');
         $this->assertFalse($getJoin, 'assert failed, the join ft does not exist');
         $s4 = (string) $this->query;
-        $valid = 'SELECT t.tid, t.tvalue, t.ti, t.ftid FROM t';
+        $valid = "SELECT t.tid, t.tvalue, t.ti, t.ftid FROM t";
         $this->assertEquals($valid, $s4, 'assert failed, the expected sql select statement must be equal');
         $this->query->setLeftJoin('ft', 'ftid', 'ftid');
         $getJoin = $this->query->getJoin('ft');
         $this->assertEquals(array('ftid', 'ftid', true), $getJoin, 'Join clause must match ftid=ftid, leftJoin=true');
         $s4 = (string) $this->query;
-        $valid = 'SELECT t.tid, t.tvalue, t.ti, t.ftid FROM t LEFT JOIN ft ON t.ftid = ft.ftid';
+        $valid = "SELECT t.tid, t.tvalue, t.ti, t.ftid FROM t LEFT JOIN ft ON t.ftid = ft.ftid";
         $this->assertEquals($valid, $s4, 'assert failed, the expected sql select statement must be equal');
     }
 
@@ -455,7 +456,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->query->setRow(2);
         $this->query->useInheritance(true);
         $s5 = (string) $this->query;
-        $valid = 'DELETE FROM ft WHERE ft.ftid = "2"';
+        $valid = "DELETE FROM ft WHERE ft.ftid = '2'";
         $this->assertEquals($valid, $s5, 'assert failed, the expected sql delete statement must be equal');
     }
 
@@ -475,7 +476,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('array', $getValues, 'assert failed, the value should be of type array');
         $this->assertTrue(in_array(50, $getValues), 'assert failed, the expected value 50 should be match an enry in givin array');
         $s6 = (string) $this->query;
-        $valid = 'INSERT INTO ft (ftid, ftvalue) VALUES ("2", "50")';
+        $valid = "INSERT INTO ft (ftid, ftvalue) VALUES ('2', '50')";
         $this->assertEquals($valid, $s6, 'assert failed, the expected sql insert statement must be equal');
 
         $this->query->resetQuery();
@@ -504,7 +505,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $expected = array(array('t', 'tvalue'), '>', '20');
         $this->assertEquals($expected, $getHaving, 'assert failed, the values must be equal');
         $string = (string) $this->query;
-        $valid = 'SELECT t.tid, t.tvalue FROM t WHERE t.ftid = "1" HAVING t.tvalue > "20"';
+        $valid = "SELECT t.tid, t.tvalue FROM t WHERE t.ftid = '1' HAVING t.tvalue > '20'";
         $this->assertEquals($valid, $string, 'assert failed, the sql select statements must be equal');
     }
 
@@ -529,7 +530,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $expected = '"tid";"tvalue";"tb"' . "\n" . '"1";"1";"1"' . "\n";
         $this->assertEquals($expected, $actual, "CSV export invalid when querying table.");
         // retriev single row from table
-        $this->query->setRow("1");
+        $this->query->setRow('1');
         $actual = $this->query->toCSV();
         $this->assertEquals($expected, $actual, "CSV export invalid when querying row.");
         // retriev single cell from table

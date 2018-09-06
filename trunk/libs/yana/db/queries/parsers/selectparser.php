@@ -47,8 +47,10 @@ class SelectParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
      */
     public function parseStatement(array $syntaxTree)
     {
-        $tables = $syntaxTree['tables']; // array of table names
-        $column = $syntaxTree['columns']; // array of column names
+        $tables = $this->_mapTableList($syntaxTree); // array of table names
+        $tableJoins = $this->_mapTableJoins($syntaxTree); // array of join types
+        $columnsAst = $this->_mapColumnList($syntaxTree); // array of column syntax trees
+        $columns = $this->_mapColumnListToListOfIdentifiers($columnsAst); // array of column names
         // array of left operand, operator, right operand
         $unparsedWhere = (!empty($syntaxTree['where_clause'])) ? $syntaxTree['where_clause'] : array();
         // array of left operand, operator, right operand
@@ -56,9 +58,9 @@ class SelectParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
         // list of columns (keys) and asc/desc (value)
         $orderBy = (!empty($syntaxTree['sort_order'])) ? $syntaxTree['sort_order'] : array();
 
-        if (empty($tables)) {
-            $message = "SQL-statement has no table names: $syntaxTree.";
-            return \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
+        if (empty($tables) || !is_array($tables)) {
+            $message = "SQL-statement has no table names.";
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
 
         /*
@@ -66,8 +68,14 @@ class SelectParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
          */
         $database = $this->_getDatabase();
         $query = new \Yana\Db\Queries\Select($database);
-        $query->setTable(current($tables));
-        $query->setColumns($column);
+
+        $table = current($tables);
+        if (is_array($table) && isset($table["table"])) {
+            $table = $table["table"];
+        }
+        $query->setTable((string) $table);
+
+        $query->setColumns($columns);
 
         if (!empty($unparsedWhere)) {
             $where = $this->_parseWhere($unparsedWhere);
@@ -78,19 +86,28 @@ class SelectParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
         /*
          * Resolve natural join to inner joins by automatically finding appropriate keys.
          */
-        if (!empty($syntaxTree['table_join'])) {
+        if (count($tableJoins) > 0) {
             assert('!isset($i); // Cannot redeclare variable $i');
             assert('!isset($join); // Cannot redeclare variable $join');
             $dbSchema = $database->getSchema();
             $i = 0;
-            foreach ($syntaxTree['table_join'] as $join)
+            foreach ($tableJoins as $join)
             {
                 $i++;
                 $tableNameA = $tables[$i - 1];
                 $tableNameB = $tables[$i];
+
+                if (is_array($tableNameA) && isset($tableNameA["table"])) {
+                    $tableNameA = $tableNameA["table"];
+                }
+
+                if (is_array($tableNameB) && isset($tableNameB["table"])) {
+                    $tableNameB = $tableNameB["table"];
+                }
+
                 $isLeftJoin = false;
                 // switch by type of join
-                switch ($join)
+                switch (\strtolower($join))
                 {
                     case 'natural join':
                         $tableA = $dbSchema->getTable($tableNameA);
@@ -131,13 +148,15 @@ class SelectParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
                     case 'left outer join':
                         $isLeftJoin = true;
                         // fall through
+                    case 'inner join':
+                    case 'join':
                     default:
                         $where = $query->getWhere();
                         $success = $this->_parseJoin($query, $tableNameA, $tableNameB, $where, $isLeftJoin);
                         if (!$success) {
                             $message = "SQL error: accidental cross-join detected in statement '{$query}'." .
                                 "\n\t\tThe statement has been ignored.";
-                            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_NOTICE);
+                            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::INFO);
                         }
                         continue;
                     break;
