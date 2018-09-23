@@ -68,7 +68,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     /**
      * @var string
      */
-    protected $id = null;
+    private $_id = null;
 
     /**
      * @var int
@@ -136,7 +136,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     protected $db = null;
 
     /**
-     * @var array
+     * @var \Yana\Db\Queries\IsJoinCondition[]
      */
     protected $joins = array();
 
@@ -266,7 +266,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
      */
     public function resetQuery()
     {
-        $this->id            = null;
+        $this->resetId();
         $this->row           = '*';
         $this->column        = array();
         $this->profile       = array();
@@ -309,7 +309,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
      */
     protected function setType($type)
     {
-        $this->id = null;
+        $this->resetId();
         $table = $this->currentTable();
 
         switch ($type)
@@ -526,25 +526,27 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
         // lazy loading: resolve source tables for requested column
         if (isset($this->tableByColumn[$columnName])) {
             $table = $dbSchema->getTable($this->tableByColumn[$columnName]);
+
         } elseif ($this->currentTable()->isColumn($columnName)) {
             $table = $this->currentTable();
+
         } elseif (!empty($this->joins)) {
-            assert('!isset($tableName); // Cannot redeclare var $tableName');
             assert('!isset($joinedTable); // Cannot redeclare var $joinedTable');
-            foreach (array_keys($this->joins) as $tableName)
+            assert('!isset($joinCondition); // Cannot redeclare var $joinCondition');
+            foreach ($this->joins as $joinCondition)
             {
-                $joinedTable = $dbSchema->getTable($tableName);
+                $joinedTable = $dbSchema->getTable($joinCondition->getJoinedTableName());
                 if ($joinedTable->isColumn($columnName)) {
                     $table = $joinedTable;
                     break;
                 }
                 unset($joinedTable);
             }
-            unset($tableName);
+            unset($joinCondition);
         }
 
         if (! $table instanceof \Yana\Db\Ddl\Table) {
-            $message = "Column '$columnName' is undefined.";
+            $message = "Column '" . $columnName . "' is undefined.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Db\Queries\Exceptions\ColumnNotFoundException($message, $level);
         } else {
@@ -588,7 +590,10 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     }
 
     /**
-     * recursively detect the parent of a table
+     * Recursively detect the parent of a table.
+     *
+     * Two tables are considered to implement inheritance if there is a 1:1 relation between them,
+     * where the primary key of the child table is a foreign key that references the primary key of its parent table.
      *
      * @param   \Yana\Db\Ddl\Table  $table    table
      * @since   2.9.6
@@ -620,7 +625,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
             $foreignTable = $dbSchema->getTable($fTableKey);
             assert('$foreignTable instanceof \Yana\Db\Ddl\Table; // Misspelled foreign key in table: ' . $tableName);
             $foreignKey = mb_strtoupper($foreignTable->getPrimaryKey());
-            $this->setJoin($fTableKey, $primaryKey, $foreignKey);
+            $this->setJoin($fTableKey, $foreignKey, $tableName, $primaryKey);
             $this->_setParentTable($table, $foreignTable);
             $table = $foreignTable;
             $primaryKey = $foreignKey;
@@ -630,80 +635,92 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     }
 
     /**
-     * join the resultsets for two tables
+     * Join the resultsets for two tables.
      *
-     * This will join the currently selected table with another.
-     *
-     * If $table is not provided, this will reset the list of joined tables.
-     * If $key1 is not provided, the function will automatically search for
-     * a suitable foreign key, that refers to $table.
-     * If $key2 is not provided, the function will automatically look up
-     * the primary of $table and use it instead.
+     * If the target key is not provided, the function will automatically search for
+     * a suitable foreign key in the source table, that refers to the foreign table.
+     * If target  is not provided, the function will automatically look up
+     * the primary key of $tableName and use it instead.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @param   string $tableName   name of another table to join the current table with
-     * @param   string $key1        name of the foreign key in current table
-     *                              (when omitted the API will look up the key in the structure file)
-     * @param   string $key2        name of the key in foreign table that is referenced
-     *                              (may be omitted if it is the primary key)
-     * @param   bool   $isLeftJoin  use left join instead of inner join
+     * @param   string $joinedTableName  name of the foreign table to join the source table with
+     * @param   string $targetKey        name of the key in foreign table that is referenced
+     *                                   (may be omitted if it is the primary key)
+     * @param   string $sourceTableName  name of the source table
+     * @param   string $foreignKey       name of the foreign key in source table
+     *                                   (when omitted the API will look up the key in the schema file)
+     * @param   bool   $isLeftJoin       use left join instead of inner join
      * @throws  \Yana\Db\Queries\Exceptions\TableNotFoundException   if a provided table is not found
      * @throws  \Yana\Db\Queries\Exceptions\ConstraintException      if no suitable column is found to create a foreign key
      * @return  \Yana\Db\Queries\AbstractQuery
      * @ignore
      */
-    protected function setJoin($tableName, $key1 = null, $key2 = null, $isLeftJoin = false)
+    protected function setJoin($joinedTableName, $targetKey = null, $sourceTableName = null, $foreignKey = null, $isLeftJoin = false)
     {
-        assert('is_string($tableName); // Wrong type for argument 1. String expected');
-        assert('is_null($key1) || is_string($key1); // Wrong type for argument 2. String expected');
-        assert('is_null($key2) || is_string($key2); // Wrong type for argument 3. String expected');
-        assert('is_bool($isLeftJoin); // Wrong type for argument 4. Boolean expected');
+        assert('is_string($joinedTableName); // Wrong type for argument 1. String expected');
+        assert('is_null($targetKey) || is_string($targetKey); // Wrong type for argument 2. String expected');
+        assert('is_null($sourceTableName) || is_string($sourceTableName); // Wrong type for argument 3. String expected');
+        assert('is_null($foreignKey) || is_string($foreignKey); // Wrong type for argument 4. String expected');
+        assert('is_bool($isLeftJoin); // Wrong type for argument 5. Boolean expected');
 
-        $this->id = null;
-        $tableName = mb_strtolower($tableName);
-        $table = $this->db->getSchema()->getTable($tableName);
-        $sourceTable = $this->currentTable();
+        $joinedTableName = mb_strtolower((string) $joinedTableName);
+        $joinedTable = $this->getDatabase()->getSchema()->getTable($joinedTableName);
+        $sourceTableName = $sourceTableName > "" ? mb_strtolower((string) $sourceTableName) : (string) $this->getTable();
+        $sourceTable = $this->getDatabase()->getSchema()->getTable($sourceTableName); // may return NULL
 
-        if (! $table instanceof \Yana\Db\Ddl\Table) {
-            throw new \Yana\Db\Queries\Exceptions\TableNotFoundException("Table not found '$tableName'.");
+        if (! $joinedTable instanceof \Yana\Db\Ddl\Table) {
+            throw new \Yana\Db\Queries\Exceptions\TableNotFoundException("Table not found '" . $joinedTableName . "'.");
         }
 
+        if (! $sourceTable instanceof \Yana\Db\Ddl\Table) {
+            throw new \Yana\Db\Queries\Exceptions\TableNotFoundException("Table not found '" . $sourceTableName . "'.");
+        }
         // error - no such column in current table
-        assert('is_null($key1) || $sourceTable->isColumn($key1); // ' .
-            "Cannot join tables '{$this->tableName}' and '{$tableName}'. " .
-            "Field '{$key1}' does not exist in table '{$this->tableName}'.");
+        assert('is_null($targetKey) || $joinedTable->isColumn($targetKey); // ' .
+            "Cannot join tables '" . $sourceTableName . "' and '" . $joinedTableName . "'. " .
+            "Field '" . $targetKey . "' does not exist in table '" . $joinedTableName . "'.");
         // error - no such column in referenced table
-        assert('is_null($key2) || $table->isColumn($key2); // ' .
-            "Cannot join tables '{$this->tableName}' and '{$tableName}'. " .
-            "Field '{$key2}' does not exist in table '{$tableName}'.");
+        assert('is_null($foreignKey) || $sourceTable->isColumn($foreignKey); // ' .
+            "Cannot join tables '" . $sourceTableName . "' and '" . $joinedTableName . "'. " .
+            "Field '" . $foreignKey . "' does not exist in table '" . $sourceTableName . "'.");
 
         // Try to auto-detect valid foreign key if possible
-        if (is_null($key1) || is_null($key2)) {
+        if (is_null($targetKey) || is_null($foreignKey)) {
 
-            if (!self::_findForeignKey($sourceTable, $table, $key1, $key2)) {
-                if (!self::_findForeignKey($table, $sourceTable, $key2, $key1)) {
+            if (!self::_findForeignKey($sourceTable, $joinedTable, $foreignKey, $targetKey)) {
+                if (!self::_findForeignKey($joinedTable, $sourceTable, $foreignKey, $targetKey)) {
                     throw new \Yana\Db\Queries\Exceptions\ConstraintException(
-                        "Cannot join tables '" . $this->tableName . "' and '" . $tableName . "'. " .
+                        "Cannot join tables '" . $sourceTableName . "' and '" . $joinedTableName . "'. " .
                         "No foreign key constraint has been found."
                     );
                 }
             }
         }
-        $key1 = mb_strtolower($key1); // lower-case input
-        $key2 = mb_strtolower($key2); // lower-case input
-
-        /* 2. reset old association */
-        if (isset($this->joins[$tableName])) {
-            unset($this->joins[$tableName]);
-        }
+        $targetKey = mb_strtolower((string) $targetKey); // lower-case input
+        $foreignKey = mb_strtolower((string) $foreignKey); // lower-case input
 
         // expecting both keys to be resolved and valid at this point
-        assert('$sourceTable->isColumn($key1);');
-        assert('$table->isColumn($key2);');
+        assert('$sourceTable->isColumn($foreignKey);');
+        assert('$joinedTable->isColumn($targetKey);');
 
-        /* 3. create new association */
-        $this->joins[$tableName] = array($key1, $key2, (bool) $isLeftJoin);
+        // create new join condition
+        assert('!isset($joinType); // Cannot redeclare variable $joinType');
+        $joinType = ($isLeftJoin) ? \Yana\Db\Queries\JoinTypeEnumeration::LEFT_JOIN : \Yana\Db\Queries\JoinTypeEnumeration::INNER_JOIN;
+        $this->addJoinCondition(new \Yana\Db\Queries\JoinCondition($joinedTableName, $targetKey, $sourceTableName, $foreignKey, $joinType));
+        return $this;
+    }
+
+    /**
+     * Add a join condition to the list of joined tables.
+     *
+     * @param   \Yana\Db\Queries\JoinCondition  $condition  to add
+     * @return  $this
+     */
+    protected function addJoinCondition(\Yana\Db\Queries\JoinCondition $condition)
+    {
+        $this->resetId();
+        $this->joins[$condition->getJoinedTableName()] = $condition;
         return $this;
     }
 
@@ -801,7 +818,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     public function setTable($table)
     {
         assert('is_string($table); // Wrong type for argument 1. String expected');
-        $this->id = null;
+        $this->resetId();
 
         $tableName = mb_strtolower($table);
         $table = $this->db->getSchema()->getTable($tableName);
@@ -887,7 +904,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     protected function setColumn($column = '*')
     {
         assert('is_string($column); // Wrong type for argument 1. String expected');
-        $this->id = null;
+        $this->resetId();
 
         /**
          * 1) wrong order of commands, need to set up table first
@@ -1111,7 +1128,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     public function setRow($row)
     {
         assert('is_scalar($row); // Wrong argument type for argument 1. Scalar expected.');
-        $this->id = null;
+        $this->resetId();
 
         /*
          * 1) wrong order of commands, need to set up table first
@@ -1372,7 +1389,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     {
         settype($orderBy, 'array');
         settype($desc, 'array');
-        $this->id = null;
+        $this->resetId();
         $this->orderBy = array();
         $this->desc = array();
 
@@ -1769,9 +1786,36 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     protected function setWhere(array $where = array())
     {
         // clear cached query id
-        $this->id = null;
+        $this->resetId();
 
         $this->where = $this->parseWhereArray($where); // throws exception
+        return $this;
+    }
+
+    /**
+     * add where clause
+     *
+     * The syntax is as follows:
+     * array(0=>column,1=>operator,2=>value)
+     * Where "operator" can be one of the following:
+     * '=', 'REGEXP', 'LIKE', '<', '>', '!=', '<=', '>='
+     *
+     * @param   array  $where  where clause
+     * @throws  \Yana\Core\Exceptions\NotFoundException         when a column is not found
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the having-clause contains invalid values
+     * @return  \Yana\Db\Queries\SelectExist 
+     */
+    protected function addWhere(array $where)
+    {
+        if (!empty($where)) {
+            if (!empty($this->where)) {
+                // clear cached query id
+                $this->resetId();
+                $this->where = array($this->parseWhereArray($where), 'and', $this->where);
+            } else {
+                $this->setWhere($where);
+            }
+        }
         return $this;
     }
 
@@ -1874,7 +1918,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     protected function setLimit($limit)
     {
         assert('is_int($limit); // Wrong argument type for argument 1. Integer expected.');
-        $this->id = null;
+        $this->resetId();
         if ($limit < 0) {
             $message = "Limit must not be negative: '$limit'";
             $level = \Yana\Log\TypeEnumeration::WARNING;
@@ -1885,19 +1929,29 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     }
 
     /**
-     * get unique id
+     * Get unique id.
      *
      * @return  string
-     * @since   2.9.3
      * @ignore
      */
     public function toId()
     {
-        if (!isset($this->id)) {
-            $this->id = serialize(array($this->type, $this->tableName, $this->column, $this->row,
-                $this->where, $this->orderBy, $this->having, $this->desc, $this->joins, $this->offset, $this->limit));
+        if (!isset($this->_id)) {
+            $this->_id = serialize(array($this->type, $this->tableName, $this->column, $this->row,
+            $this->where, $this->orderBy, $this->having, $this->desc, $this->joins, $this->offset, $this->limit, $this->values));
         }
-        return $this->id;
+        return $this->_id;
+    }
+
+    /**
+     * Resets query ID to null.
+     *
+     * @return  $this
+     */
+    protected function resetId()
+    {
+        $this->_id = null;
+        return $this;
     }
 
     /**

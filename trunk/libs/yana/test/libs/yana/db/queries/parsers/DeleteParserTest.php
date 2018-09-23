@@ -35,7 +35,7 @@ require_once __DIR__ . '/../../../../../include.php';
 /**
  * @package  test
  */
-class SelectExistParserTest extends \PHPUnit_Framework_TestCase
+class DeleteParserTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
@@ -44,9 +44,10 @@ class SelectExistParserTest extends \PHPUnit_Framework_TestCase
     protected $parser;
 
     /**
-     * @var  \Yana\Db\Queries\Parsers\SelectExistParser
+     * @var \Yana\Db\Queries\Parsers\DeleteParser
      */
     protected $object;
+
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -60,7 +61,7 @@ class SelectExistParserTest extends \PHPUnit_Framework_TestCase
         try {
             chdir(CWD . '../../');
             $db = new \Yana\Db\FileDb\Connection(\Yana\Files\XDDL::getDatabase('check'));
-            $this->object = new \Yana\Db\Queries\Parsers\SelectExistParser($db);
+            $this->object = new \Yana\Db\Queries\Parsers\DeleteParser($db);
             $this->parser = new \SQL_Parser();
         } catch (\Exception $e) {
             $this->markTestSkipped("Unable to connect to database");
@@ -81,47 +82,71 @@ class SelectExistParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testParseStatement()
     {
-        $sqlStmt = "SELECT 1 FROM ft WHERE ftid = '2'";
-        $expectedResult = "SELECT 1 FROM ft WHERE ft.ftid = " . YANA_DB_DELIMITER . "2" . YANA_DB_DELIMITER;
+        $expectedResult = "DELETE FROM ft WHERE ft.ftvalue = " . \YANA_DB_DELIMITER . "0" . \YANA_DB_DELIMITER;
+        $sqlStmt = "DELETE FROM ft WHERE ft.ftvalue = '0'";
         $ast = $this->parser->parse($sqlStmt);
         $query = $this->object->parseStatement(\array_shift($ast));
-        $this->assertTrue($query instanceof \Yana\Db\Queries\SelectExist, "Parser error: $sqlStmt");
+        $this->assertTrue($query instanceof \Yana\Db\Queries\Delete);
         $sqlResult = (string) $query;
-        $this->assertEquals($expectedResult, $sqlResult, "Statement not resolved: $sqlResult");
+        $this->assertEquals($expectedResult, $sqlResult);
     }
 
     /**
      * @test
      */
-    public function testParseStatement1()
+    public function testParseStatement2()
     {
-        $sqlStmt = "SELECT 1 FROM dbo.ft WHERE ft.ftid = '2'";
-        $expectedResult = "SELECT 1 FROM ft WHERE ft.ftid = " . YANA_DB_DELIMITER . "2" . YANA_DB_DELIMITER;
+        $expectedResult = "DELETE FROM ft WHERE " .
+            "ft.ftvalue = " . \YANA_DB_DELIMITER . "1" . \YANA_DB_DELIMITER . " OR " .
+            "ft.ftvalue = " . \YANA_DB_DELIMITER . "0" . \YANA_DB_DELIMITER;
+        $sqlStmt = "DELETE FROM ft WHERE ftvalue = '1' or ftvalue = '0';";
         $ast = $this->parser->parse($sqlStmt);
         $query = $this->object->parseStatement(\array_shift($ast));
-        $this->assertTrue($query instanceof \Yana\Db\Queries\SelectExist, "Parser error: $sqlStmt");
+        $this->assertTrue($query instanceof \Yana\Db\Queries\Delete);
         $sqlResult = (string) $query;
-        $this->assertEquals($expectedResult, $sqlResult, "Statement not resolved: $sqlResult");
+        $this->assertEquals($expectedResult, $sqlResult);
     }
 
     /**
      * @test
-     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      */
-    public function testParseStatementInvalidArgumentException()
+    public function testDeleteTable()
     {
-        $this->object->parseStatement(array());
-    }
-
-    /**
-     * @test
-     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
-     */
-    public function testParseStatementInvalidArgumentException2()
-    {
-        $sqlStmt = "SELECT 1 FROM dbo.ft, dbo.ft WHERE ftid = ftid";
+        $expectedResult = "DELETE FROM ft";
+        $sqlStmt = "DELETE FROM ft";
         $ast = $this->parser->parse($sqlStmt);
-        $this->object->parseStatement(\array_shift($ast));
+        $query = $this->object->parseStatement(\array_shift($ast));
+        $this->assertTrue($query instanceof \Yana\Db\Queries\Delete);
+        $sqlResult = (string) $query;
+        $this->assertEquals($expectedResult, $sqlResult);
+    }
+
+    /**
+     * The ORDER BY syntax is not supported by the parser.
+     *
+     * We include this test to keep an eye on whether this changes in future versions.
+     *
+     * @test
+     */
+    public function testDeleteWithOrderBy()
+    {
+        $sqlStmt = "DELETE FROM ft ORDER BY tvalue";
+        $ast = $this->parser->parse($sqlStmt);
+        $this->assertInternalType('string', $ast);
+    }
+
+    /**
+     * The LIMIT syntax is not supported by the parser.
+     *
+     * We include this test to keep an eye on whether this changes in future versions.
+     *
+     * @test
+     */
+    public function testDeleteWithLimit()
+    {
+        $sqlStmt = "DELETE FROM ft LIMIT 1";
+        $ast = $this->parser->parse($sqlStmt);
+        $this->assertInternalType('string', $ast);
     }
 
 }

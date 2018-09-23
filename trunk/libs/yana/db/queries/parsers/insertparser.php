@@ -42,58 +42,47 @@ class InsertParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
      *
      * @param   array  $syntaxTree  SQL statement
      * @return  \Yana\Db\Queries\Insert
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException      if the query is invalid or could not be parsed
-     * @throws  \Yana\Db\Queries\Exceptions\InvalidSyntaxException  when the statement contains illegal values
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException          when the query is invalid or could not be parsed
+     * @throws  \Yana\Core\Exceptions\Forms\InvalidValueException       when the statement contains illegal values
+     * @throws  \Yana\Db\Queries\Exceptions\NotFoundException           when a table or column wasn't found
+     * @throws  \Yana\Db\Queries\Exceptions\NotSupportedException       when we encounter an unsupported feature in the given SQL
+     * @throws  \Yana\Db\Queries\Exceptions\InvalidPrimaryKeyException  when trying to insert a row without a primary key
      */
     public function parseStatement(array $syntaxTree)
     {
-        $table = current($syntaxTree['tables']); // array of table names
-        $keys = $syntaxTree['columns']; // array of column names
-        $values = $syntaxTree['values']; // array of value settings
-        $set = array(); // combined array of $keys and $values
-
+        $table = $this->_mapTableName($syntaxTree);
         $query = new \Yana\Db\Queries\Insert($this->_getDatabase());
-        $query->setTable($table);
+        $query->setTable($table); // may throw \Yana\Db\Exceptions\TableNotFoundException
+
+        $keys = $this->_mapColumnNames($syntaxTree); // array of column names
+        if (empty($keys)) {
+            $keys = $this->_getDatabase()->getSchema()->getTable($table)->getColumnNames();
+        }
+
+        // @todo Currently this is limited to the "current" row of values. For multiple inserts we need to go through all of them in a loop.
+        if (isset($syntaxTree['values']) && count($syntaxTree['values']) > 1) {
+            $message = "Inserting more than one row in a single statement is not yet supported.";
+            throw new \Yana\Db\Queries\Exceptions\NotSupportedException($message, \Yana\Log\TypeEnumeration::WARNING);
+        }
+        $values = $this->_mapValues(current($syntaxTree['values']));
 
         // combine arrays of keys and values
-        $set = $this->_parseSet($query, $keys, $values);
-        if (empty($set)) {
-            $message = 'SQL syntax error. The statement contains illegal values.';
-            throw new \Yana\Db\Queries\Exceptions\InvalidSyntaxException($message);
-        }
+        $set = $this->_parseSet($query, $keys, $values); // combined array of $keys and $values
+        assert('!empty($set); // Cannot be empty - the parser must not allow ');
+        $query->setValues($set); // may throw \Yana\Core\Exceptions\InvalidArgumentException or \Yana\Db\Queries\Exceptions\InvalidPrimaryKeyException
         unset($keys, $values);
 
-        // set values
-        $query->setValues($set);
-
-        // check security constraint
-        if ($query->getExpectedResult() !== \Yana\Db\ResultEnumeration::ROW) {
-            if (!$query->table->getColumn($query->table->getPrimaryKey())->isAutoFill()) {
-                $message = "SQL security restriction. Cannot insert a table (only rows).";
-                $level = \Yana\Log\TypeEnumeration::WARNING;
-                throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
-            }
-        }
         return $query;
     }
 
     /**
-     * combine a list of keys and values
+     * Prepare value-arrays by unpacking 'value'.
      *
-     * Returns the row-array on success.
-     * On failure an empty array is returned.
-     *
-     * @param   \Yana\Db\Queries\Insert $query   Query object to modify
-     * @param   array                   $keys    keys
-     * @param   array                   $values  values
+     * @param   array  $values  array of value settings
      * @return  array
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when given column does not exist
-     * @ignore
      */
-    protected function _parseSet(\Yana\Db\Queries\AbstractQuery $query, array $keys, array $values)
+    protected function _mapValues(array $values)
     {
-        assert('count($keys) == count($values);');
-        // prepare values
         assert('!isset($value); // Cannot redeclare var $value');
         assert('!isset($i); // Cannot redeclare var $i');
         foreach ($values as $i => $value)
@@ -103,6 +92,26 @@ class InsertParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
             }
         }
         unset($i, $value);
+        return $values;
+    }
+
+    /**
+     * combine a list of keys and values
+     *
+     * Returns the row-array on success.
+     * On failure an empty array is returned.
+     *
+     * @param   \Yana\Db\Queries\Insert  $query   Query object to modify
+     * @param   array                    $keys    keys
+     * @param   array                    $values  values
+     * @return  array
+     * @throws  \Yana\Db\Queries\Exceptions\ColumnNotFoundException  when given column does not exist
+     * @ignore
+     */
+    protected function _parseSet(\Yana\Db\Queries\AbstractQuery $query, array $keys, array $values)
+    {
+        assert('count($keys) >= count($values);');
+
         // combine keys and values
         $set = array();
         $table = $this->_getDatabase()->getSchema()->getTable($query->getTable());
@@ -110,11 +119,14 @@ class InsertParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
         assert('!isset($i); // Cannot redeclare var $i');
         for ($i = 0; $i < count($keys); $i++)
         {
+            if (!array_key_exists($i, $values)) {
+                break;
+            }
             $column = $table->getColumn($keys[$i]);
             if (! $column instanceof \Yana\Db\Ddl\Column) {
                 $message = "Column '" . $keys[$i] . "' does not exist in table '" . $query->getTable() . "'.";
                 $level = \Yana\Log\TypeEnumeration::WARNING;
-                throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
+                throw new \Yana\Db\Queries\Exceptions\ColumnNotFoundException($message, $level);
             }
             if ($column->getType() === 'array') {
                 $set[mb_strtoupper($keys[$i])] = json_decode($values[$i]);

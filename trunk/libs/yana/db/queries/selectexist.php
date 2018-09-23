@@ -130,11 +130,7 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery
      */
     public function addWhere(array $where)
     {
-        // clear cached query id
-        $this->id = null;
-        if (!empty($where)) {
-            $this->where = array($this->parseWhereArray($where), 'and', $this->where);
-        }
+        parent::addWhere($where);
         return $this;
     }
 
@@ -151,22 +147,23 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery
     /**
      * Joins the selected table with another (by using an inner join).
      *
-     * If $key1 is not provided, the function will automatically search for
-     * a suitable foreign key, that refers to $tableName.
-     * If $key2 is not provided, the function will automatically look up
+     * If the target key is not provided, the function will automatically search for
+     * a suitable foreign key in the source table, that refers to the foreign table.
+     * If target  is not provided, the function will automatically look up
      * the primary key of $tableName and use it instead.
      *
-     * @param   string $tableName   name of another table to join the current table with
-     * @param   string $key1        name of the foreign key in current table
-     *                              (when omitted the API will look up the key in the structure file)
-     * @param   string $key2        name of the key in foreign table that is referenced
-     *                              (may be omitted if it is the primary key)
+     * @param   string $joinedTableName  name of the foreign table to join the source table with
+     * @param   string $targetKey        name of the key in foreign table that is referenced
+     *                                   (may be omitted if it is the primary key)
+     * @param   string $sourceTableName  name of the source table
+     * @param   string $foreignKey       name of the foreign key in source table
+     *                                   (when omitted the API will look up the key in the schema file)
      * @throws  \Yana\Core\Exceptions\NotFoundException  if a provided table or column is not found
      * @return  \Yana\Db\Queries\SelectExist
      */
-    public function setInnerJoin($tableName, $key1 = null, $key2 = null)
+    public function setInnerJoin($joinedTableName, $targetKey = null, $sourceTableName = null, $foreignKey = null)
     {
-        parent::setJoin($tableName, $key1, $key2);
+        parent::setJoin($joinedTableName, $targetKey, $sourceTableName, $foreignKey, false);
         return $this;
     }
 
@@ -188,7 +185,7 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery
         $table = mb_strtolower($table);
 
         if (YANA_DB_STRICT && !$this->db->getSchema()->isTable($table)) {
-            throw new \Yana\Core\Exceptions\NotFoundException("The table '$table' is unknown.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotFoundException("The table '$table' is unknown.", \Yana\Log\TypeEnumeration::WARNING);
         }
 
         unset($this->joins[$table]);
@@ -203,7 +200,7 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery
      * If the table is not joined, the function will return bool(false).
      *
      * @param   string  $table target table
-     * @return  array
+     * @return  \Yana\Db\Queries\JoinCondition
      * @throws  \Yana\Core\Exceptions\NotFoundException  when the target table does not exist
      */
     public function getJoin($table)
@@ -212,7 +209,7 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery
         $table = mb_strtolower($table);
 
         if (YANA_DB_STRICT && !$this->db->getSchema()->isTable($table)) {
-            throw new \Yana\Core\Exceptions\NotFoundException("The table '$table' is unknown.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotFoundException("The table '$table' is unknown.", \Yana\Log\TypeEnumeration::WARNING);
         }
 
         if (!isset($this->joins[$table])) {
@@ -231,11 +228,21 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery
      *
      * The array will be empty if there are now table-joins in the current query.
      *
-     * @return  array
+     * @return  \Yana\Db\Queries\JoinCondition[]
      */
     public function getJoins()
     {
         return $this->joins;
+    }
+
+    /**
+     * Returns list of table names including those joined in the statement.
+     *
+     * @return  array
+     */
+    protected function getTables()
+    {
+        return array_merge(array($this->getTable()), array_keys($this->getJoins()));
     }
 
     /**
@@ -281,24 +288,40 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery
 
         /* 1. replace %TABLE% */
         if (!empty($this->joins)) {
-            $table = $this->db->quoteId(YANA_DATABASE_PREFIX.$this->getTable());
+            $table = $this->db->quoteId(YANA_DATABASE_PREFIX . $this->getTable());
 
             assert('!isset($_where); // cannot redeclare variable $_where   ');
             $_where = array();
 
             assert('!isset($tableName); // cannot redeclare variable $tableName');
-            assert('!isset($join); // cannot redeclare variable $join     ');
+            assert('!isset($join); // cannot redeclare variable $join');
             foreach ($this->joins as $tableName => $join)
             {
-                /* collect tables */
-                if (empty($join)) {
-                    $table .= ' NATURAL JOIN ' . $this->db->quoteId(YANA_DATABASE_PREFIX.$tableName);
-                } elseif (!empty($join[2])) {
-                    $table .= ' LEFT JOIN ' . $this->db->quoteId(YANA_DATABASE_PREFIX.$tableName) . ' ON ' .
-                        $this->tableName . '.' . $join[0] . ' = ' . $tableName . '.' . $join[1];
-                } else {
-                    $table .= ', ' . $this->db->quoteId(YANA_DATABASE_PREFIX.$tableName) . ' ';
-                    $_where[] = array($this->tableName . '.' . $join[0], $tableName . '.' . $join[1]);
+                /* add table-join */
+                switch (true)
+                {
+                    case $join->isLeftJoin():
+                        $table .= ' LEFT JOIN ' . $this->db->quoteId(YANA_DATABASE_PREFIX . $tableName);
+                    break;
+                    case $join->isInnerJoin():
+                        $table .= ' JOIN ' . $this->db->quoteId(YANA_DATABASE_PREFIX . $tableName);
+                    break;
+                };
+                if ($join->getForeignKey() === "" || $join->getTargetKey() === "") {
+                    continue; // nothing to add to on-clause
+                }
+                /* add on-clause */
+                switch (true)
+                {
+                    case $join->isLeftJoin():
+                    case $join->isInnerJoin():
+                        $table .= ' ON ' .
+                            ($join->getSourceTableName() > "" ? $this->db->quoteId(YANA_DATABASE_PREFIX . $join->getSourceTableName()) . '.' : "") .
+                            $this->db->quoteId($join->getForeignKey()) .
+                            ' = ' .
+                            ($join->getJoinedTableName() > "" ? $this->db->quoteId(YANA_DATABASE_PREFIX . $join->getJoinedTableName()) . '.' : "") .
+                            $this->db->quoteId($join->getTargetKey());
+                    break;
                 }
             } /* end foreach */
             unset($tableName, $join);

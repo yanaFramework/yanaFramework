@@ -171,7 +171,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
      */
     public function setValues($values)
     {
-        $this->id = null;
+        $this->resetId();
         /*
          * 1.a) lowercase array keys
          */
@@ -477,21 +477,6 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
             }
         }
         return $this;
-    }
-
-    /**
-     * Get unique id.
-     *
-     * @return  string
-     * @ignore
-     */
-    public function toId()
-    {
-        if (!isset($this->id)) {
-            $this->id = serialize(array($this->type, $this->tableName, $this->column, $this->row,
-            $this->where, $this->orderBy, $this->desc, $this->values));
-        }
-        return $this->id;
     }
 
     /**

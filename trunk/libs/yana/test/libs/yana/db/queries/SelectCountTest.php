@@ -35,7 +35,7 @@ require_once __DIR__ . '/../../../../include.php';
 /**
  * @package  test
  */
-class ParserTest extends \PHPUnit_Framework_TestCase
+class SelectCountTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
@@ -65,6 +65,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
             $this->db->remove('t', array(), 0);
             $this->db->remove('ft', array(), 0);
             $this->db->commit();
+            $this->query = new \Yana\Db\Queries\SelectCount($this->db);
         } catch (\Exception $e) {
             $this->markTestSkipped("Unable to connect to database");
         }
@@ -77,6 +78,48 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     protected function tearDown()
     {
         chdir(CWD);
+    }
+
+    /**
+     * @covers Yana\Db\Queries\SelectCount::setColumn
+     * @todo   Implement testSetColumn().
+     */
+    public function testSetColumn()
+    {
+        // Remove the following lines when you implement this test.
+        $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function testGetColumn()
+    {
+        $this->query->setTable('t');
+        $this->assertEquals('tid', $this->query->setColumn('tid')->getColumn());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetColumns()
+    {
+        $this->query->setTable('t');
+        $this->assertEquals(array(array('t', 'tid')), $this->query->setColumn('tid')->getColumns());
+    }
+
+    /**
+     * @covers Yana\Db\Queries\SelectCount::countResults
+     * @todo   Implement testCountResults().
+     */
+    public function testCountResults()
+    {
+        // Remove the following lines when you implement this test.
+        $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+        );
     }
 
 }

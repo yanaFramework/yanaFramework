@@ -49,11 +49,6 @@ class SelectCountParserTest extends \PHPUnit_Framework_TestCase
     protected $object;
 
     /**
-     * @var  \Yana\Db\FileDb\Connection
-     */
-    protected $db;
-
-    /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
@@ -64,8 +59,8 @@ class SelectCountParserTest extends \PHPUnit_Framework_TestCase
         }
         try {
             chdir(CWD . '../../');
-            $this->db = new \Yana\Db\FileDb\Connection(\Yana\Files\XDDL::getDatabase('check'));
-            $this->object = new \Yana\Db\Queries\Parsers\SelectCountParser($this->db);
+            $db = new \Yana\Db\FileDb\Connection(\Yana\Files\XDDL::getDatabase('check'));
+            $this->object = new \Yana\Db\Queries\Parsers\SelectCountParser($db);
             $this->parser = new \SQL_Parser();
         } catch (\Exception $e) {
             $this->markTestSkipped("Unable to connect to database");

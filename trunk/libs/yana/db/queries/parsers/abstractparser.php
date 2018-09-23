@@ -131,121 +131,6 @@ abstract class AbstractParser extends \Yana\Core\Object implements \Yana\Db\Quer
 
         $whereClause = $this->_parseWhereByArguments($operators, $arguments, $isNegated);
         return $whereClause;
-//
-//        switch ($operator)
-//        {
-//            case 'and':
-//            case 'or':
-//                $leftOperand = $this->_parseWhere($leftOperand);
-//                $rightOperand = $this->_parseWhere($rightOperand);
-//                return array($leftOperand, $operator, $rightOperand);
-//            break;
-//            // is test for existence
-//            case 'is not':
-//                $negate = !$negate;
-//            case 'is':
-//                $rightOperand = null;
-//                if ($negate) {
-//                    $operator = '!=';
-//                } else {
-//                    $operator = '=';
-//                }
-//            break;
-//            case 'in':
-//                if ($negate) {
-//                    $operator = 'not in';
-//                }
-//            break;
-//            case 'exists':
-//                if ($negate) {
-//                    $operator = 'not exists';
-//                }
-//            break;
-//            case '<>':
-//                $operator = '!=';
-//            // fall through
-//            case '!=':
-//                if ($negate) {
-//                    $operator = '=';
-//                }
-//            break;
-//            case '=':
-//                if ($negate) {
-//                    $operator = '!=';
-//                }
-//            break;
-//            case '<':
-//                if ($negate) {
-//                    $operator = '>=';
-//                }
-//            break;
-//            case '<=':
-//                if ($negate) {
-//                    $operator = '>';
-//                }
-//            break;
-//            case '>':
-//                if ($negate) {
-//                    $operator = '<=';
-//                }
-//            break;
-//            case '>=':
-//                if ($negate) {
-//                    $operator = '<';
-//                }
-//            break;
-//            case 'not like':
-//            case 'like':
-//            case 'regexp':
-//                // intentionally left blank
-//            break;
-//            // other operators are currently not supported
-//            default:
-//                throw new \Yana\Core\Exceptions\InvalidArgumentException("Invalid where clause '$syntaxTree'.");
-//        }
-//
-//        $leftOperand = $whereClause[0];
-//        $operator = $whereClause[1];
-//        $rightOperand = $whereClause[2];
-//        // flip operands, where necessary
-//        switch (true)
-//        {
-//            case is_array($rightOperand) && isset($rightOperand['type']) && $rightOperand['type'] === 'ident': // pre 0.7
-//            case is_array($rightOperand) && isset($rightOperand['table']) && isset($rightOperand['column']):
-//                $_rightOperand = $rightOperand;
-//                $rightOperand = $leftOperand;
-//                $leftOperand = $_rightOperand;
-//                unset($_rightOperand);
-//        }
-//        if (is_array($rightOperand) && isset($rightOperand['type']) && $rightOperand['type'] === 'ident') {
-//            $_rightOperand = $rightOperand;
-//            $rightOperand = $leftOperand;
-//            $leftOperand = $_rightOperand;
-//            unset($_rightOperand);
-//        }
-//        // left operand must be identifier
-//        if (is_array($leftOperand) && isset($leftOperand['type']) && $leftOperand['type'] !== 'ident') {
-//            throw new \Yana\Core\Exceptions\InvalidArgumentException("Invalid where clause. Left operand must be identifier.");
-//        }
-//        if (is_array($leftOperand) && isset($leftOperand['value'])) {
-//            $leftOperand = $leftOperand['value'];
-//        }
-//        if (is_string($leftOperand) && strpos($leftOperand, '.') !== false) {
-//            $leftOperand = explode('.', $leftOperand);
-//        }
-//        // right operand may be identifier or value is column name
-//        if (is_array($rightOperand) && isset($rightOperand['type']) && $rightOperand['type'] === 'ident') {
-//            if (strpos($rightOperand['value'], '.') !== false) {
-//                $rightOperand['value'] = explode('.', $rightOperand['value']);
-//            }
-//        } elseif (is_array($rightOperand) && isset($rightOperand['type']) && $rightOperand['type'] === 'command') {
-//            $rightOperand['value'] = $this->parseSQL($rightOperand);
-//        }
-//        if (is_array($rightOperand) && isset($rightOperand['value'])) {
-//            $rightOperand = $rightOperand['value'];
-//        }
-//
-//        return array($leftOperand, $operator, $rightOperand);
     }
 
     /**
@@ -292,7 +177,7 @@ abstract class AbstractParser extends \Yana\Core\Object implements \Yana\Db\Quer
                 case 'and':
                 case 'or':
                     $where = array($where, $operator, $this->_parseWhereByArguments($operators, $arguments, $isNegated));
-                break;
+                break 2;
                 // other operators are currently not supported
                 default:
                     throw new \Yana\Core\Exceptions\InvalidArgumentException("Unsupported operator in where clause: " . $operator);
@@ -469,12 +354,14 @@ abstract class AbstractParser extends \Yana\Core\Object implements \Yana\Db\Quer
     }
 
     /**
-     * Returns list of join types in FROM-clause.
+     * Returns the ON-clause associated with table joins, if there is any.
+     *
+     * The syntax of the returned AST is the same as that of the WHERE clause.
      *
      * @param   array  $syntaxTree  abstract syntax tree as provided by SQL_Parser
      * @return  array
      */
-    protected function _mapOnClauseFromTableJoins(array $syntaxTree)
+    protected function _mapTableJoinClause(array $syntaxTree)
     {
         $joins = array();
         // retrieve table
@@ -482,22 +369,86 @@ abstract class AbstractParser extends \Yana\Core\Object implements \Yana\Db\Quer
 
             /* Example:
              * <pre>
-             * { "from" => 
-             *   { "table_references" =>
-             *     { "table_join_clause" =>
-             *       [ "join", "inner join", "left join" ]
-             *     }
-             *   }
-             * }
+             * { "args" =>
+             *     [
+             *         {
+             *             "database" => ""
+             *             "table" => "t"
+             *             "column" => "ftid"
+             *             "alias" => ""
+             *         },
+             *         {
+             *             "database" => ""
+             *             "table" => "ft"
+             *             "column" => "ftid"
+             *             "alias" => ""
+             *         }
+             *     ],
+             *     "ops" => [ "=" ]
+             * )
              * </pre>
              */
-            foreach ($syntaxTree['from']['table_references']['table_join_clause'] as $onClause)
-            {
-                $joins[] = $this->_parseWhere($onClause);
-            }
-            unset($onClause);
+            $joins = $syntaxTree['from']['table_references']['table_join_clause'];
         }
         return $joins;
+    }
+
+    /**
+     * Returns list of columns in DML statements.
+     *
+     * @param   array  $syntaxTree  abstract syntax tree as provided by SQL_Parser
+     * @return  array
+     * @codeCoverageIgnore
+     */
+    protected function _mapColumnNames(array $syntaxTree)
+    {
+        $columns = array();
+        // retrieve columns
+        if (isset($syntaxTree['column_names']) && is_array($syntaxTree['column_names'])) {
+
+            $columns = $syntaxTree['column_names'];
+        } elseif (isset($syntaxTree['columns']) && is_array($syntaxTree['columns'])) {
+
+            $columns = $syntaxTree['columns'];
+        }
+        return $columns;
+    }
+
+    /**
+     * Returns list of tables in DML statements.
+     *
+     * @param   array  $syntaxTree  abstract syntax tree as provided by SQL_Parser
+     * @return  array
+     * @codeCoverageIgnore
+     */
+    protected function _mapTableNames(array $syntaxTree)
+    {
+        $tables = array();
+        // retrieve tables
+        if (isset($syntaxTree['table_names']) && is_array($syntaxTree['table_names'])) {
+
+            $tables = $syntaxTree['table_names'];
+        } elseif (isset($syntaxTree['tables']) && is_array($syntaxTree['tables'])) {
+
+            $tables = $syntaxTree['tables'];
+        }
+        return $tables;
+    }
+
+    /**
+     * Returns a single table name in DML statements.
+     *
+     * @param   array  $syntaxTree  abstract syntax tree as provided by SQL_Parser
+     * @return  string
+     */
+    protected function _mapTableName(array $syntaxTree)
+    {
+        $tables = $this->_mapTableNames($syntaxTree);
+        $tableName = (is_array($tables) && count($tables) > 0) ? current($tables) : "";
+        if (!is_string($tableName)) {
+            $tableName = is_array($tableName) && isset($tableName['table']) ? (string) $tableName['table'] : "";
+        }
+        return $tableName;
     }
 
     /**

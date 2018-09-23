@@ -48,32 +48,14 @@ class DeleteParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
      */
     public function parseStatement(array $syntaxTree)
     {
-        $table = current($syntaxTree['tables']); // array of table names
-        $where = @$syntaxTree['where_clause']; // array of left operand, operator, right operand
-        $orderBy = @$syntaxTree['sort_order']; // list of columns (keys) and asc/desc (value)
+        $table = $this->_mapTableName($syntaxTree);
+        $where = isset($syntaxTree['where_clause']) ? (array) $syntaxTree['where_clause'] : array(); // array of left operand, operator, right operand
 
-        /*
-         * 1) set table
-         */
+        // set table
         $query = new \Yana\Db\Queries\Delete($this->_getDatabase());
         $query->setTable($table);
 
-        /*
-         * 2) set order by + direction
-         */
-        if (!empty($orderBy)) {
-            assert('!isset($columnName); // Cannot redeclare variable $columnName');
-            assert('!isset($direction); // Cannot redeclare variable $direction');
-            foreach ($orderBy as $columnName => $direction)
-            {
-                $query->addOrderBy($columnName, $direction == 'desc');
-            }
-            unset($columnName, $direction);
-        }
-
-        /*
-         * 3) where clause
-         */
+        // where clause
         if (!empty($where)) {
             $query->setWhere($this->_parseWhere($where));
         }

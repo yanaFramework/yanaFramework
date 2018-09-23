@@ -138,7 +138,7 @@ class QueryBuilder extends \Yana\Core\Object
                 /* @var $reference \Yana\Db\Ddl\Reference */
                 foreach ($this->_form->getSetup()->getForeignKeys() as $columnName => $reference)
                 {
-                    $query->setLeftJoin($reference->getTable(), $columnName, $reference->getColumn());
+                    $query->setLeftJoin($reference->getTable(), $reference->getColumn(), null, $columnName);
                     $query->addColumn($reference->getTable() . '.' . $reference->getColumn());
                     $query->addColumn($reference->getTable() . '.' . $reference->getLabel());
                 }

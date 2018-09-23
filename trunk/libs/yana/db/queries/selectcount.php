@@ -87,31 +87,6 @@ class SelectCount extends \Yana\Db\Queries\SelectExist
     }
 
     /**
-     * set array address
-     *
-     * Applies to columns of type 'array' only.
-     *
-     * You may provide the array key inside the value of the column that you wish to get.
-     * If it is a multidimensional array, you may traverse in deeper dimensions by linking
-     * keys with a dot '.' - for example: "foo.bar" gets $result['foo']['bar'].
-     *
-     * Note: this will not check if the key that you provided is
-     * a valid key or if it really points to a value. If it is not,
-     * the resultset will be empty.
-     *
-     * @param   string  $arrayAddress   array address
-     * @name    DbQuery::setArrayAddress()
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if a given argument is invalid
-     * @return  \Yana\Db\Queries\SelectCount 
-     * @ignore
-     */
-    public function setArrayAddress($arrayAddress = "")
-    {
-        parent::setArrayAddress($arrayAddress);
-        return $this;
-    }
-
-    /**
      * Returns the lower-cased name of the currently selected column.
      *
      * If none has been selected, '*' is returned.

@@ -49,12 +49,11 @@ class SelectParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
     {
         $tables = $this->_mapTableList($syntaxTree); // array of table names
         $tableJoins = $this->_mapTableJoins($syntaxTree); // array of join types
+        $unparsedTableJoinClauses = $this->_mapTableJoinClause($syntaxTree); // array of join on clauses
         $columnsAst = $this->_mapColumnList($syntaxTree); // array of column syntax trees
         $columns = $this->_mapColumnListToListOfIdentifiers($columnsAst); // array of column names
         // array of left operand, operator, right operand
         $unparsedWhere = (!empty($syntaxTree['where_clause'])) ? $syntaxTree['where_clause'] : array();
-        // array of left operand, operator, right operand
-        $having = (!empty($syntaxTree['having_clause'])) ? $syntaxTree['having_clause'] : array();
         // list of columns (keys) and asc/desc (value)
         $orderBy = (!empty($syntaxTree['sort_order'])) ? $syntaxTree['sort_order'] : array();
 
@@ -83,6 +82,14 @@ class SelectParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
         }
         unset($where, $unparsedWhere);
 
+        $tableJoinClauses = array();
+        if (!empty($unparsedTableJoinClauses) && \is_array($unparsedTableJoinClauses)) {
+            foreach ($unparsedTableJoinClauses as $unparsedTableJoinClause) {
+                $tableJoinClauses[] = $this->_parseWhere($unparsedTableJoinClause);
+            }
+        }
+        unset($unparsedTableJoinClause, $unparsedTableJoinClauses);
+
         /*
          * Resolve natural join to inner joins by automatically finding appropriate keys.
          */
@@ -90,60 +97,38 @@ class SelectParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
             assert('!isset($i); // Cannot redeclare variable $i');
             assert('!isset($join); // Cannot redeclare variable $join');
             $dbSchema = $database->getSchema();
-            $i = 0;
-            foreach ($tableJoins as $join)
+            $tablesAlreadyJoined = array();
+
+            foreach ($tableJoins as $i => $join)
             {
+                $previousTableName = $tables[$i];
+                if (is_array($previousTableName) && isset($previousTableName["table"])) {
+                    $previousTableName = $previousTableName["table"];
+                }
                 $i++;
-                $tableNameA = $tables[$i - 1];
-                $tableNameB = $tables[$i];
-
-                if (is_array($tableNameA) && isset($tableNameA["table"])) {
-                    $tableNameA = $tableNameA["table"];
+                $tableName = $tables[$i];
+                if (is_array($tableName) && isset($tableName["table"])) {
+                    $tableName = $tableName["table"];
                 }
-
-                if (is_array($tableNameB) && isset($tableNameB["table"])) {
-                    $tableNameB = $tableNameB["table"];
-                }
+                $tablesAlreadyJoined[] = $previousTableName;
 
                 $isLeftJoin = false;
                 // switch by type of join
                 switch (\strtolower($join))
                 {
                     case 'natural join':
-                        $tableA = $dbSchema->getTable($tableNameA);
-                        $tableB = $dbSchema->getTable($tableNameB);
-                        // error: table not found
-                        if (! $tableA instanceof \Yana\Db\Ddl\Table) {
-                            throw new \Yana\Db\Queries\Exceptions\TableNotFoundException("Table '{$tableNameA}' not found.");
-                        }
-                        if (! $tableB instanceof \Yana\Db\Ddl\Table) {
-                            throw new \Yana\Db\Queries\Exceptions\TableNotFoundException("Table '{$tableNameB}' not found.");
-                        }
-                        assert('!isset($columnsB); // Cannot redeclare variable $columnsB');
-                        $columnsB = $tableB->getColumnNames();
-                        assert('!isset($colA); // Cannot redeclare variable $colA');
-                        foreach ($tableA->getColumnNames() as $columnA)
-                        {
-                            if (in_array($columnA, $columnsB)) {
-                                $query->addWhere(array($tableNameA, $columnA), '=', array($tableNameB, $columnA));
-                            }
-                        } // end foreach
-                        unset($tableNameA, $tableA, $columnsB, $tableNameB, $tableB, $columnA);
+                        $query->setNaturalJoin($tableName);
                     break;
+
+                    case 'cross join':
+                        $message = "Cross joins are currently not supported.";
+                        throw new \Yana\Db\Queries\Exceptions\NotSupportedException($message, \Yana\Log\TypeEnumeration::WARNING);
+
                     case 'right join':
                     case 'right outer join':
-                        // flip operands: $tableA <-> $tableB
-                        assert('!isset($_); // Cannot redeclare var $_');
-                        // $tableNameA <-> $tableNameB
-                        $_ = $tableNameA;
-                        $tableNameA = $tableNameB;
-                        $tableNameB = $_;
-                        // $tableA <-> $tableB
-                        $_ = $tableA;
-                        $tableA = $tableB;
-                        $tableB = $_;
-                        unset($_);
-                        // fall through
+                        $message = "Right joins are currently not supported.";
+                        throw new \Yana\Db\Queries\Exceptions\NotSupportedException($message, \Yana\Log\TypeEnumeration::WARNING);
+
                     case 'left join':
                     case 'left outer join':
                         $isLeftJoin = true;
@@ -151,8 +136,8 @@ class SelectParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
                     case 'inner join':
                     case 'join':
                     default:
-                        $where = $query->getWhere();
-                        $success = $this->_parseJoin($query, $tableNameA, $tableNameB, $where, $isLeftJoin);
+                        $where = !empty($tableJoinClauses) ? array_shift($tableJoinClauses) : $query->getWhere();
+                        $success = $this->_parseJoin($query, $tablesAlreadyJoined, $tableName, $where, $isLeftJoin);
                         if (!$success) {
                             $message = "SQL error: accidental cross-join detected in statement '{$query}'." .
                                 "\n\t\tThe statement has been ignored.";
@@ -182,13 +167,6 @@ class SelectParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
             $query->setOrderBy($orderByColumns, $orderByDirections);
         }
 
-        /*
-         * 5) set having clause
-         */
-        if (!empty($having)) {
-            $query->setHaving($this->_parseWhere($having));
-        }
-
         return $query;
     }
 
@@ -200,73 +178,94 @@ class SelectParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
      * Returns bool(true) on success and bool(false) on failure.
      *
      * @param   \Yana\Db\Queries\Select  $query       query to modify
-     * @param   string                   $leftTable   name of base table
-     * @param   string                   $rightTable  name of table to join
+     * @param   array                    $baseTables   names of base tables
+     * @param   string                   $joinedTable  name of table to join
      * @param   array                    $where       where clause (will be scanned)
      * @param   bool                     $isLeftJoin  treat as left join (currently no full outer joins supported)
      * @return  bool
      * @ignore
+     * @throws  \Yana\Db\Queries\Exceptions\NotSupportedException  when valid SQL is encountered that is unfortunately not supported by the query builder
      */
-    private function _parseJoin(\Yana\Db\Queries\Select $query, $leftTable, $rightTable, array $where, $isLeftJoin = false)
+    private function _parseJoin(\Yana\Db\Queries\Select $query, array $baseTables, $joinedTable, array $where, $isLeftJoin = false)
     {
-        assert('is_string($leftTable); // Wrong argument type for argument 1. String expected.');
-        assert('is_string($rightTable); // Wrong argument type for argument 2. String expected.');
+        assert('is_string($joinedTable); // Wrong argument type for argument 2. String expected.');
         assert('is_bool($isLeftJoin); // Wrong argument type for argument 4. String expected.');
         if (empty($where)) {
-            return false; // not found
+            /* We can't join two tables if there is no join-condition.
+             * Or, to be more precise, we "could" but we don't "want" to.
+             * Since all that would do is trigger an exception claiming "accidental cross-join detected" and we really don't need that.
+             *
+             * Yes, I know cross-joins are technically valid SQL.
+             * In practice, however, unless you explicitely write "A cross join B", 9 times out of 10 you probably didn't actually mean to.
+             */
+            $message = 'Table-joins without an on-clause are currently not supported.';
+            throw new \Yana\Db\Queries\Exceptions\NotSupportedException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
         $leftOperand = $where[0];
-        $operator = strtolower($where[1]);
         $rightOperand = $where[2];
-        switch ($operator)
-        {
-            case 'and':
-            case 'or':
-                return $this->_parseJoin($query, $leftTable, $rightTable, $leftOperand, $isLeftJoin) ||
-                    $this->_parseJoin($query, $leftTable, $rightTable, $rightOperand, $isLeftJoin);
-            break;
+
+        if (strtolower($where[1]) != "=" || !is_array($leftOperand) || !is_array($rightOperand)) {
+            /* This section is for situations where we encounter SQL like "JOIN B ON c = d AND e = f".
+             * One example would be compound primary/foreign keys, which we currently don't support.
+             */
+            $message = 'On-clauses in table joins have to be given as T1.COLUMN1 = T2.COLUMN2. More complex conditions are currently not supported.';
+            throw new \Yana\Db\Queries\Exceptions\NotSupportedException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
 
-        /* if is join-clause */
-        if (is_array($leftOperand) && is_array($rightOperand)) {
-            $tableA  = $leftOperand[0];
+        /* We identify which part of the condition is the joined table.
+         * Joined table is always table "B".
+         * This convention makes the later steps a little easier.
+         */
+        if (strcasecmp($leftOperand[0], $joinedTable) === 0) {
+            $tableA  = $rightOperand[0]; // right operand is the base table
+            $columnA = $rightOperand[1];
+            $tableB  = $leftOperand[0];
+            $columnB = $leftOperand[1];
+
+        } elseif (strcasecmp($rightOperand[0], $joinedTable) === 0) {
+            $tableA  = $leftOperand[0]; // left operand is the base table
             $columnA = $leftOperand[1];
             $tableB  = $rightOperand[0];
             $columnB = $rightOperand[1];
 
-            // flip operands
-            $param1 = strcasecmp($tableA, $leftTable);
-            $param2 = strcasecmp($tableB, $leftTable);
-            if ($param1 !== 0 && $param2 === 0) {
-                $tableB  = $leftOperand[0];
-                $columnB = $leftOperand[1];
-                $tableA  = $rightOperand[0];
-                $columnA = $rightOperand[1];
-
-            } elseif ($param1 !== 0) { // ignore when there is nothing to join
-                return false; // not found
-            }
-            unset ($param1, $param2);
-            /* At this point we know, that leftOperand = tableA.
-             * We now check if rightOperand = tableB.
-             */
-            if (strcasecmp($tableB, $rightTable) !== 0) {
-                return false; // not found
-            }
-            // tableA is already joined - now join tableB!
-            try {
-                if ($isLeftJoin) {
-                    $query->setLeftJoin($tableB, $columnA, $columnB);
-                } else {
-                    $query->setInnerJoin($tableB, $columnA, $columnB);
-                }
-                return true; // found
-            } catch (\Yana\Db\Queries\Exceptions\QueryException $e) {
-                $message = "Unable to join tables '$tableA' and '$tableB'. Cause: " . $e->getMessage();
-                throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
-            }
+        } else {
+             // If we get to this statement, neither part of the condition was the joined table
+            return false;
         }
-        return false; // not found
+
+        /* At this point we know, that rightOperand = target table.
+         * We now check if leftOperand = base table.
+         */
+        if (!\in_array($tableA, $baseTables)) {
+             // If we get to this statement, neither part of the condition was the base table
+            return false; // not found
+        }
+
+        /* We are now certain that the $tableA is indeed one of the base tables and $tableB is the target table.
+         * Since this is the case, we may now safely add the join, knowing that it will not fail.
+         */
+        try {
+            if ($isLeftJoin) {
+                $query->setLeftJoin($tableB, $columnB, $tableA, $columnA);
+            } else {
+                $query->setInnerJoin($tableB, $columnB, $tableA, $columnA);
+            }
+
+            // If nobody has thrown an exception at this point, we announce the tables married. Good luck to the newly wed.
+            return true;
+
+        // @codeCoverageIgnoreStart
+        } catch (\Yana\Db\Queries\Exceptions\QueryException $e) {
+
+            /* So, it seems one of the table-column pairs was a no-show at this wedding ceremony. Cold feet?
+             * Be it as it may, with at least one half of the package missing, there can be no happy-ever-after.
+             *
+             * Note: unless assertions are switched off or are set to not stop execution, you cannot reach this statement.
+             */
+            $message = "Unable to join tables '" . $tableA . "' and '" . $tableB . "'. Cause: " . $e->getMessage();
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
+        }
+        // @codeCoverageIgnoreEnd
     }
 
 }

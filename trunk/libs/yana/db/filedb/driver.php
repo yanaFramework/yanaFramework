@@ -482,19 +482,27 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
             /*
              * 1.2.3.1) resolve where clause
              */
-            assert('!isset($tableB); // Cannot redeclare var $tableB');
-            assert('!isset($clause); // Cannot redeclare var $tableB');
+            assert('!isset($joinCondition); // Cannot redeclare var $joinCondition');
             assert('!isset($resultset); // Cannot redeclare var $resultset');
             assert('!isset($listOfResultSets); // Cannot redeclare var $listOfResultSets');
             $listOfResultSets = array();
-            foreach ($joins as $tableB => $clause)
+            foreach ($joins as $joinCondition)
             {
-                $resultset = $this->_join($this->_getTableName(), $tableB, $clause[0], $clause[1], $columns, $where, $clause[2]);
+                $resultset = $this->_join(
+                    $joinCondition->getSourceTableName(),
+                    $joinCondition->getJoinedTableName(),
+                    $joinCondition->getForeignKey(),
+                    $joinCondition->getTargetKey(),
+                    $columns,
+                    $where,
+                    $joinCondition->isLeftJoin()
+                );
                 if (!empty($resultset)) {
                     $listOfResultSets[] = $resultset;
                 }
                 unset($resultset);
             } // end foreach
+            unset($joinCondition);
             /*
              * 1.2.3.2) merge resultsets
              */
@@ -509,7 +517,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
                 }
                 unset($item);
             } // end if
-            unset($tableB, $clause, $listOfResultSets);
+            unset($tableB, $listOfResultSets);
             /*
              * 1.2.3.3) sorting and limiting
              */

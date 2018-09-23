@@ -28,49 +28,44 @@
 namespace Yana\Db\Queries;
 
 /**
- * <<Enumeration>> Database query type enumeration.
- *
- * Values for possible database statements.
+ * This class represents a join condition in the form of JoinedTable.TargetKey = SourceTable.ForeignKey.
  *
  * @package     yana
  * @subpackage  db
  * @codeCoverageIgnore
  */
-class TypeEnumeration extends \Yana\Core\AbstractEnumeration
+class JoinTypeEnumeration extends \Yana\Core\AbstractEnumeration
 {
 
     /**
-     * unknown or undefined statement type
+     * Inner join
      */
-    const UNKNOWN = 0;
+    const INNER_JOIN = 0;
+
     /**
-     * select statement
+     * Natural join
      */
-    const SELECT = 8;
+    const NATURAL_JOIN = 1;
+
     /**
-     * update statement
+     * Left (outer) join
      */
-    const UPDATE = 16;
+    const LEFT_JOIN = 2;
+
     /**
-     * insert statement
+     * Right (outer) join
      */
-    const INSERT = 32;
+    const RIGHT_JOIN = 3;
+
     /**
-     * delete statement
+     * Full (outer) join
      */
-    const DELETE = 64;
+    const FULL_JOIN = 4;
+
     /**
-     * checks if a database object exists
+     * Cross join
      */
-    const EXISTS = 128;
-    /**
-     * checks number of occurences
-     */
-    const LENGTH = 256;
-    /**
-     * alias of LENGTH
-     */
-    const COUNT = self::LENGTH;
+    const CROSS_JOIN = 5;
 
 }
 

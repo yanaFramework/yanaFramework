@@ -59,7 +59,7 @@
     <table name="i">
         <primarykey>iid</primarykey>
         <foreign table="t">
-            <key name="iid"/>
+            <key name="iid" column="tid"/>
         </foreign>
         <declaration>
             <string

@@ -35,7 +35,7 @@ require_once __DIR__ . '/../../../../../include.php';
 /**
  * @package  test
  */
-class SelectExistParserTest extends \PHPUnit_Framework_TestCase
+class UpdateParserTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
@@ -44,9 +44,15 @@ class SelectExistParserTest extends \PHPUnit_Framework_TestCase
     protected $parser;
 
     /**
-     * @var  \Yana\Db\Queries\Parsers\SelectExistParser
+     * @var \Yana\Db\Queries\Parsers\UpdateParser
      */
     protected $object;
+
+    /**
+     * @var  \Yana\Db\FileDb\Connection
+     */
+    protected $db;
+
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -60,7 +66,7 @@ class SelectExistParserTest extends \PHPUnit_Framework_TestCase
         try {
             chdir(CWD . '../../');
             $db = new \Yana\Db\FileDb\Connection(\Yana\Files\XDDL::getDatabase('check'));
-            $this->object = new \Yana\Db\Queries\Parsers\SelectExistParser($db);
+            $this->object = new \Yana\Db\Queries\Parsers\UpdateParser($db);
             $this->parser = new \SQL_Parser();
         } catch (\Exception $e) {
             $this->markTestSkipped("Unable to connect to database");
@@ -81,46 +87,32 @@ class SelectExistParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testParseStatement()
     {
-        $sqlStmt = "SELECT 1 FROM ft WHERE ftid = '2'";
-        $expectedResult = "SELECT 1 FROM ft WHERE ft.ftid = " . YANA_DB_DELIMITER . "2" . YANA_DB_DELIMITER;
+        $sqlStmt = "UPDATE t SET tvalue='1' WHERE tid = '2'";
+        $expectedResult = "UPDATE t SET t.tvalue = " . YANA_DB_DELIMITER . "1" . YANA_DB_DELIMITER
+            . " WHERE t.tid = " . YANA_DB_DELIMITER . "2" . YANA_DB_DELIMITER;
         $ast = $this->parser->parse($sqlStmt);
         $query = $this->object->parseStatement(\array_shift($ast));
-        $this->assertTrue($query instanceof \Yana\Db\Queries\SelectExist, "Parser error: $sqlStmt");
-        $sqlResult = (string) $query;
-        $this->assertEquals($expectedResult, $sqlResult, "Statement not resolved: $sqlResult");
+        $this->assertTrue($query instanceof \Yana\Db\Queries\Update);
+        $this->assertEquals($expectedResult, (string) $query);
     }
 
     /**
+     * @expectedException \Yana\Db\Queries\Exceptions\NotSupportedException
      * @test
      */
-    public function testParseStatement1()
+    public function testUpdateWithoutWhere()
     {
-        $sqlStmt = "SELECT 1 FROM dbo.ft WHERE ft.ftid = '2'";
-        $expectedResult = "SELECT 1 FROM ft WHERE ft.ftid = " . YANA_DB_DELIMITER . "2" . YANA_DB_DELIMITER;
-        $ast = $this->parser->parse($sqlStmt);
-        $query = $this->object->parseStatement(\array_shift($ast));
-        $this->assertTrue($query instanceof \Yana\Db\Queries\SelectExist, "Parser error: $sqlStmt");
-        $sqlResult = (string) $query;
-        $this->assertEquals($expectedResult, $sqlResult, "Statement not resolved: $sqlResult");
+        $ast = $this->parser->parse("UPDATE t SET tvalue='1'");
+        $this->object->parseStatement(\array_shift($ast));
     }
 
     /**
+     * @expectedException \Yana\Db\Queries\Exceptions\ColumnNotFoundException
      * @test
-     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      */
-    public function testParseStatementInvalidArgumentException()
+    public function testParseStatementColumnNotFoundException()
     {
-        $this->object->parseStatement(array());
-    }
-
-    /**
-     * @test
-     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
-     */
-    public function testParseStatementInvalidArgumentException2()
-    {
-        $sqlStmt = "SELECT 1 FROM dbo.ft, dbo.ft WHERE ftid = ftid";
-        $ast = $this->parser->parse($sqlStmt);
+        $ast = $this->parser->parse("UPDATE t SET a = 1 WHERE tvalue = 1");
         $this->object->parseStatement(\array_shift($ast));
     }
 

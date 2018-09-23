@@ -89,7 +89,7 @@ class Select extends \Yana\Db\Queries\SelectCount
      * and reuse it without creating another one. This can
      * help to improve the performance of your application.
      *
-     * @return  \Yana\Db\Queries\Select 
+     * @return  $this 
      */
     public function resetQuery()
     {
@@ -149,11 +149,11 @@ class Select extends \Yana\Db\Queries\SelectCount
      * @throws  \Yana\Db\Queries\Exceptions\InvalidSyntaxException   if table has not been initialized
      * @throws  \Yana\Db\Queries\Exceptions\TableNotFoundException   if the base table is not found
      * @throws  \Yana\Db\Queries\Exceptions\ColumnNotFoundException  if the given column is not found
-     * @return  \Yana\Db\Queries\Select 
+     * @return  $this 
      */
     public function setColumns(array $columns = array())
     {
-        $this->id = null;
+        $this->resetId();
 
         /*
          * 1) select all columns
@@ -225,14 +225,14 @@ class Select extends \Yana\Db\Queries\SelectCount
      * @see     DbQuery::setColumn()
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if a given argument is invalid
      * @throws  \Yana\Core\Exceptions\NotFoundException         if the given table or column is not found
-     * @return  \Yana\Db\Queries\Select 
+     * @return  $this 
      */
     public function addColumn($column, $alias = "")
     {
         assert('is_string($column); // Wrong argument type argument 1. String expected');
 
         // reset query id
-        $this->id = null;
+        $this->resetId();
 
         $columnDefinition = $this->_getColumnArray($column); // throws exception
 
@@ -297,7 +297,30 @@ class Select extends \Yana\Db\Queries\SelectCount
     }
 
     /**
-     * Returns the currently address as a string.
+     * Set array address.
+     *
+     * Applies to columns of type 'array' only.
+     *
+     * You may provide the array key inside the value of the column that you wish to get.
+     * If it is a multidimensional array, you may traverse in deeper dimensions by linking
+     * keys with a dot '.' - for example: "foo.bar" gets $result['foo']['bar'].
+     *
+     * Note: this will not check if the key that you provided is
+     * a valid key or if it really points to a value. If it is not,
+     * the resultset will be empty.
+     *
+     * @param   string  $arrayAddress   array address
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if a given argument is invalid
+     * @return  $this
+     */
+    public function setArrayAddress($arrayAddress = "")
+    {
+        parent::setArrayAddress($arrayAddress);
+        return $this;
+    }
+
+    /**
+     * Returns the currently selected address as a string.
      *
      * If none has been selected yet, an empty string is returned.
      *
@@ -316,7 +339,7 @@ class Select extends \Yana\Db\Queries\SelectCount
      * @param   array  $desc     sort descending (true=yes, false=no)
      * @throws  \Yana\Db\Queries\Exceptions\TableNotFoundException  when the base table does not exist
      * @throws  \Yana\Db\Queries\Exceptions\ColumnNotFoundException when the column does not exist
-     * @return  \Yana\Db\Queries\Select
+     * @return  $this
      */
     public function setOrderBy($orderBy, $desc = array())
     {
@@ -400,11 +423,11 @@ class Select extends \Yana\Db\Queries\SelectCount
      * @throws  \Yana\Db\Queries\Exceptions\TableNotFoundException   when a referenced table is not found
      * @throws  \Yana\Db\Queries\Exceptions\ColumnNotFoundException  when a referenced column is not found
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException       when the having-clause contains invalid values
-     * @return  \Yana\Db\Queries\Select
+     * @return  $this
      */
     public function setHaving(array $having = array())
     {
-        $this->id = null; // clear cached query id
+        $this->resetId(); // clear cached query id
 
         if (empty($having)) {
             $this->having = array();
@@ -427,13 +450,13 @@ class Select extends \Yana\Db\Queries\SelectCount
      * @throws  \Yana\Db\Queries\Exceptions\TableNotFoundException   when a referenced table is not found
      * @throws  \Yana\Db\Queries\Exceptions\ColumnNotFoundException  when a referenced column is not found
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException       when the having-clause contains invalid values
-     * @return  \Yana\Db\Queries\Select
+     * @return  $this
      */
     public function addHaving(array $having, $isMandatory = true)
     {
         assert('is_bool($isMandatory); // Wrong type for argument 2. Boolean expected');
         // clear cached query id
-        $this->id = null;
+        $this->resetId();
         $having = $this->parseWhereArray($having); // throws exception
         if ($isMandatory) {
             $operator = 'and';
@@ -475,7 +498,7 @@ class Select extends \Yana\Db\Queries\SelectCount
      *
      * @param   int  $limit  limit for this query
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when limit is not positive
-     * @return  \Yana\Db\Queries\Select
+     * @return  $this
      */
     public function setLimit($limit)
     {
@@ -496,12 +519,12 @@ class Select extends \Yana\Db\Queries\SelectCount
      * have an offset of 0.
      *
      * @param   int  $offset  offset for this query
-     * @return  \Yana\Db\Queries\Select
+     * @return  $this
      */
     public function setOffset($offset)
     {
         assert('is_int($offset); // Wrong argument type for argument 1. Integer expected.');
-        $this->id = null;
+        $this->resetId();
         if ($offset >= 0) {
             $this->offset = (int) $offset;
         }
@@ -700,25 +723,91 @@ class Select extends \Yana\Db\Queries\SelectCount
     }
 
     /**
-     * Joins the currently selected table with another (by using a left join).
+     * Joins two tables (by using a left join).
      *
-     * If $key1 is not provided, the function will automatically search for
-     * a suitable foreign key, that refers to $tableName.
-     * If $key2 is not provided, the function will automatically look up
+     * If the target key is not provided, the function will automatically search for
+     * a suitable foreign key in the source table, that refers to the foreign table.
+     * If target  is not provided, the function will automatically look up
      * the primary key of $tableName and use it instead.
      *
-     * @param   string $tableName  name of another table to join the current table with
-     * @param   string $key1       name of the foreign key in current table
-     *                             (when omitted the API will look up the key in the structure file)
-     * @param   string $key2       name of the key in foreign table that is referenced
-     *                             (may be omitted if it is the primary key)
+     * @param   string $joinedTableName  name of the foreign table to join the source table with
+     * @param   string $targetKey        name of the key in foreign table that is referenced
+     *                                   (may be omitted if it is the primary key)
+     * @param   string $sourceTableName  name of the source table
+     * @param   string $foreignKey       name of the foreign key in source table
+     *                                   (when omitted the API will look up the key in the schema file)
      * @throws  \Yana\Db\Queries\Exceptions\TableNotFoundException   if a provided table is not found
      * @throws  \Yana\Db\Queries\Exceptions\ColumnNotFoundException  if a provided column is not found
-     * @return  \Yana\Db\Queries\Select
+     * @return  $this
      */
-    public function setLeftJoin($tableName, $key1 = null, $key2 = null)
+    public function setLeftJoin($joinedTableName, $targetKey = null, $sourceTableName = null, $foreignKey = null)
     {
-        parent::setJoin($tableName, $key1, $key2, true);
+        parent::setJoin($joinedTableName, $targetKey, $sourceTableName, $foreignKey, true);
+        return $this;
+    }
+
+    /**
+     * Joins two tables (by using a natural join).
+     *
+     * This starts a natural join to all tables left of the join condition.
+     *
+     * In case of natural joins the query builder is by design meant to resolve and rewrite the natural join to an inner join and
+     * create the necessary where clause automatically. The inner join behaves like a natural join.
+     *
+     * There is a good reason for this behavior:
+     * To allow the database to resolve natural joins would create a (even though probably hard to exploit) security vulnerability in our software.
+     *
+     * Because, our query builder is given its own database schema.
+     * This schema may exclude certain columns the software/user is not supposed to see.
+     * If, however, we let the database deal with the natural join on its own, it may (since it is ignorant of these client-side "views" of its schema)
+     * include the hidden columns in the natural join regardless.
+     * With a bit of effort this would possibly enable a remote attacker to "guess" the contents of a hidden column.
+     * Since we are aware of this potential issue (and since it's always better to be safe than sorry) we avoid this problem by rewriting
+     * all natural joins based on the client's view of the database schema.
+     *
+     * @param   string $joinedTableName  name of the foreign table to join the source table with
+     * @throws  \Yana\Db\Queries\Exceptions\TableNotFoundException   if the provided table is not found
+     * @return  $this
+     */
+    public function setNaturalJoin($joinedTableName)
+    {
+        assert('!isset($schema); // Cannot redeclare variable $schema');
+        $schema = $this->getDatabase()->getSchema();
+        assert('!isset($joinedTable); // Cannot redeclare variable $joinedTable');
+        $joinedTable = $schema->getTable($joinedTableName);
+        // error: table not found
+        if (! $joinedTable instanceof \Yana\Db\Ddl\Table) {
+            throw new \Yana\Db\Queries\Exceptions\TableNotFoundException("Table '" . $joinedTableName . "' not found.");
+        }
+        assert('!isset($columns); // Cannot redeclare variable $columns');
+        $columns = $joinedTable->getColumnNames();
+        assert('!isset($foundAtLeastOneMatch); // Cannot redeclare variable $foundAtLeastOneMatch');
+        $foundAtLeastOneMatch = false;
+
+        assert('!isset($tableName); // Cannot redeclare variable $tableName');
+        assert('!isset($table); // Cannot redeclare variable $table');
+        foreach ($this->getTables() as $tableName)
+        {
+            assert('!isset($columnName); // Cannot redeclare variable $columnName');
+            foreach ($schema->getTable($tableName)->getColumnNames() as $columnName)
+            {
+                if (in_array($columnName, $columns)) {
+                    $foundAtLeastOneMatch = true;
+                    $this->addWhere(array(array($tableName, $columnName), '=', array($joinedTableName, $columnName)));
+                }
+            }
+            unset($columnName);
+        } // end foreach
+        unset($tableName, $columns);
+
+        if (!$foundAtLeastOneMatch) {
+            throw new \Yana\Db\Queries\Exceptions\ConstraintException(
+                "Cannot join table '" . $joinedTableName . "'. " .
+                "No matching column has been found."
+            );
+        }
+
+        $this->addJoinCondition(new \Yana\Db\Queries\JoinCondition($joinedTableName, "", "", "", \Yana\Db\Queries\JoinTypeEnumeration::INNER_JOIN));
         return $this;
     }
 

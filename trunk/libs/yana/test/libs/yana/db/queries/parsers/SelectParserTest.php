@@ -49,11 +49,6 @@ class SelectParserTest extends \PHPUnit_Framework_TestCase
     protected $object;
 
     /**
-     * @var  \Yana\Db\FileDb\Connection
-     */
-    protected $db;
-
-    /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
@@ -64,8 +59,8 @@ class SelectParserTest extends \PHPUnit_Framework_TestCase
         }
         try {
             chdir(CWD . '../../');
-            $this->db = new \Yana\Db\FileDb\Connection(\Yana\Files\XDDL::getDatabase('check'));
-            $this->object = new \Yana\Db\Queries\Parsers\SelectParser($this->db);
+            $db = new \Yana\Db\FileDb\Connection(\Yana\Files\XDDL::getDatabase('check'));
+            $this->object = new \Yana\Db\Queries\Parsers\SelectParser($db);
             $this->parser = new \SQL_Parser();
         } catch (\Exception $e) {
             $this->markTestSkipped("Unable to connect to database");
@@ -78,7 +73,7 @@ class SelectParserTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        
+
     }
 
     /**
@@ -139,6 +134,20 @@ class SelectParserTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testSelectColumn2()
+    {        
+        $sqlStmt = "SELECT ft.ftid FROM ft WHERE ft.ftid = '1' ORDER BY ftid";
+        $expectedResult = "SELECT ft.ftid FROM ft WHERE ft.ftid = " . YANA_DB_DELIMITER . "1" . YANA_DB_DELIMITER . " ORDER BY ft.ftid";
+        $ast = $this->parser->parse($sqlStmt);
+        $query = $this->object->parseStatement(\array_shift($ast));
+        $this->assertTrue($query instanceof \Yana\Db\Queries\Select);
+        $sql2 = (string) $query;
+        $this->assertEquals($expectedResult, $sql2);
+    }
+
+    /**
+     * @test
+     */
     public function testSelectMultipleColumns()
     {
         $sqlStmt = "SELECT ftid, ftvalue FROM ft WHERE ftid = '2' ;";
@@ -156,8 +165,58 @@ class SelectParserTest extends \PHPUnit_Framework_TestCase
     public function testSelectJoin()
     {
         $sqlStmt = "SELECT ftid, ftvalue FROM ft join t on t.ftid = ft.ftid WHERE ftid = '2' ;";
-        $expectedResult = "SELECT ft.ftid, ft.ftvalue FROM ft WHERE ft.ftid = " . YANA_DB_DELIMITER . "2" . YANA_DB_DELIMITER . "";
-        $ast = $this->parser->parse($sqlStmt);        \print_r($ast);exit;
+        $expectedResult = "SELECT ft.ftid, ft.ftvalue FROM ft JOIN t ON ft.ftid = t.ftid WHERE ft.ftid = " . YANA_DB_DELIMITER . "2" . YANA_DB_DELIMITER;
+        $ast = $this->parser->parse($sqlStmt);
+        $query = $this->object->parseStatement(\array_shift($ast));
+        $this->assertTrue($query instanceof \Yana\Db\Queries\Select);
+        $sql2 = (string) $query;
+        $this->assertEquals($expectedResult, $sql2);
+    }
+
+    /**
+     * @test
+     */
+    public function testSelectJoinReversed()
+    {
+        $sqlStmt = "SELECT ftid, ftvalue FROM ft join t on ft.ftid = t.ftid;";
+        $expectedResult = "SELECT ft.ftid, ft.ftvalue FROM ft JOIN t ON ft.ftid = t.ftid";
+        $ast = $this->parser->parse($sqlStmt);
+        $query = $this->object->parseStatement(\array_shift($ast));
+        $this->assertTrue($query instanceof \Yana\Db\Queries\Select);
+        $sql2 = (string) $query;
+        $this->assertEquals($expectedResult, $sql2);
+    }
+
+    /**
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
+     * @test
+     */
+    public function testAccidentalCrossJoinInvalidArgumentException()
+    {
+        $sqlStmt = "SELECT * FROM ft join t on ft.ftid = ft.ftid;";
+        $ast = $this->parser->parse($sqlStmt);
+        $this->object->parseStatement(\array_shift($ast));
+    }
+
+    /**
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
+     * @test
+     */
+    public function testAccidentalCrossJoinInvalidArgumentException2()
+    {
+        $sqlStmt = "SELECT * FROM ft join t on t.ftid = t.ftid;";
+        $ast = $this->parser->parse($sqlStmt);
+        $this->object->parseStatement(\array_shift($ast));
+    }
+
+    /**
+     * @test
+     */
+    public function testSelectMultipleJoins()
+    {
+        $sqlStmt = "SELECT * FROM ft join t on t.ftid = ft.ftid left join i on i.iid = t.tid ;";
+        $expectedResult = "SELECT * FROM ft JOIN t ON ft.ftid = t.ftid LEFT JOIN i ON t.tid = i.iid";
+        $ast = $this->parser->parse($sqlStmt);
         $query = $this->object->parseStatement(\array_shift($ast));
         $this->assertTrue($query instanceof \Yana\Db\Queries\Select);
         $sql2 = (string) $query;
@@ -174,18 +233,61 @@ class SelectParserTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * select cross join
-     *
-     * This is supposed to fail (due to cross join).
-     *
-     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
+     * @expectedException \Yana\Db\Queries\Exceptions\NotSupportedException
      * @test
      */
-    public function testSelectCrossJoin()
+    public function testCrossJoinNotSupportedException()
     {
-        $sqlStmt = "SELECT ft.ftid FROM ft,t WHERE ft.ftid = '2'";
+        $sqlStmt = "SELECT * FROM ft,t WHERE ft.ftid = '2'";
+        $ast = $this->parser->parse($sqlStmt);
+        $this->object->parseStatement(\array_shift($ast));
+    }
+
+    /**
+     * @expectedException \Yana\Db\Queries\Exceptions\NotSupportedException
+     * @test
+     */
+    public function testCrossJoinNotSupportedException2()
+    {
+        $sqlStmt = "SELECT * FROM ft CROSS JOIN t";
+        $ast = $this->parser->parse($sqlStmt);
+        $this->object->parseStatement(\array_shift($ast));
+    }
+
+    /**
+     * @expectedException \Yana\Db\Queries\Exceptions\NotSupportedException
+     * @test
+     */
+    public function testRightJoinNotSupportedException()
+    {
+        $sqlStmt = "SELECT * FROM ft RIGHT JOIN t ON t.ftid = ft.ftid";
+        $ast = $this->parser->parse($sqlStmt);
+        $this->object->parseStatement(\array_shift($ast));
+    }
+
+    /**
+     * @expectedException \Yana\Db\Queries\Exceptions\NotSupportedException
+     * @test
+     */
+    public function testJoinWithoutOnClauseNotSupportedException()
+    {
+        $sqlStmt = "SELECT * FROM ft, t";
+        $ast = $this->parser->parse($sqlStmt);
+        $this->object->parseStatement(\array_shift($ast));
+    }
+
+    /**
+     * @test
+     */
+    public function testNaturalJoin()
+    {
+        $sqlStmt = "SELECT * FROM ft natural join t;";
+        $expectedResult = "SELECT * FROM ft JOIN t WHERE ft.ftid = t.ftid";
         $ast = $this->parser->parse($sqlStmt);
         $query = $this->object->parseStatement(\array_shift($ast));
+        $this->assertTrue($query instanceof \Yana\Db\Queries\Select);
+        $sql2 = (string) $query;
+        $this->assertEquals($expectedResult, $sql2);
     }
 
 }

@@ -78,7 +78,7 @@ class Parser extends \Yana\Core\Object implements \Yana\Db\Queries\IsParser
      *
      * The result object is always a subclass of {@see \Yana\Db\Queries\AbstractQuery}.
      *
-     * @param   string     $sqlStatement   SQL statement
+     * @param   string  $sqlStatement  one single SQL statement
      * @return  \Yana\Db\Queries\AbstractQuery
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if the query is invalid or could not be parsed
      */

@@ -28,49 +28,62 @@
 namespace Yana\Db\Queries;
 
 /**
- * <<Enumeration>> Database query type enumeration.
- *
- * Values for possible database statements.
+ * <<interface>> This class represents a join condition in the form of JoinedTable.TargetKey = SourceTable.ForeignKey.
  *
  * @package     yana
  * @subpackage  db
- * @codeCoverageIgnore
  */
-class TypeEnumeration extends \Yana\Core\AbstractEnumeration
+interface IsJoinCondition
 {
 
     /**
-     * unknown or undefined statement type
+     * Returns the name of the joined table.
+     *
+     * @return  string
      */
-    const UNKNOWN = 0;
+    public function getJoinedTableName();
+
     /**
-     * select statement
+     * Returns the name of the column in the joined table.
+     *
+     * @return  string
      */
-    const SELECT = 8;
+    public function getTargetKey();
+
     /**
-     * update statement
+     * Returns the name of the source table.
+     *
+     * @return  string
      */
-    const UPDATE = 16;
+    public function getSourceTableName();
+
     /**
-     * insert statement
+     * Returns the name of the column in the source table.
+     *
+     * @return  string
      */
-    const INSERT = 32;
+    public function getForeignKey();
+
     /**
-     * delete statement
+     * Returns bool(true) if this is an INNER join.
+     *
+     * @return  bool
      */
-    const DELETE = 64;
+    public function isInnerJoin();
+
     /**
-     * checks if a database object exists
+     * Returns bool(true) if this is an LEFT join.
+     *
+     * @return  bool
      */
-    const EXISTS = 128;
+    public function isLeftJoin();
+
     /**
-     * checks number of occurences
+     * Returns bool(true) if this is a NATURAL join.
+     *
+     * @return  bool
      */
-    const LENGTH = 256;
-    /**
-     * alias of LENGTH
-     */
-    const COUNT = self::LENGTH;
+    public function isNaturalJoin();
 
 }
 

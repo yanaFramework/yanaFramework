@@ -359,9 +359,11 @@ class Update extends \Yana\Db\Queries\Insert
                             $set .= ', ';
                         }
                         if (is_array($value)) {
-                            $set .= $column . ' = ' . $this->db->quote(json_encode($value));
+                            $set .= $this->getDatabase()->quoteId($this->getTable()) . '.' . $this->getDatabase()->quoteId($column)
+                                . ' = ' . $this->db->quote(json_encode($value));
                         } else {
-                            $set .= $column . ' = ' . $this->db->quote($value);
+                            $set .= $this->getDatabase()->quoteId($this->getTable()) . '.' . $this->getDatabase()->quoteId($column)
+                                . ' = ' . $this->db->quote($value);
                         }
                     }
                     unset($column, $value);
@@ -374,9 +376,11 @@ class Update extends \Yana\Db\Queries\Insert
                 }
             } elseif ($this->expectedResult === \Yana\Db\ResultEnumeration::CELL) {
                 if (is_array($this->values)) {
-                    $set = $this->getColumn() . ' = ' . $this->db->quote(json_encode($this->values));
+                    $set = $this->getDatabase()->quoteId($this->getTable()) . '.' . $this->getDatabase()->quoteId($column)
+                        . ' = ' . $this->db->quote(json_encode($this->values));
                 } else {
-                    $set = $this->getColumn() . ' = ' . $this->db->quote($this->values);
+                    $set = $this->getDatabase()->quoteId($this->getTable()) . '.' . $this->getDatabase()->quoteId($column)
+                        . ' = ' . $this->db->quote($this->values);
                 }
             } else {
                 assert('!isset($message); // Cannot redeclare $message');
