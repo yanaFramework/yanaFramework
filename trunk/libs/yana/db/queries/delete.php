@@ -185,6 +185,7 @@ class Delete extends \Yana\Db\Queries\AbstractQuery
      * @return  \Yana\Db\IsResult
      * @since   2.9.3
      * @ignore
+     * @codeCoverageIgnore
      */
     public function sendQuery()
     {

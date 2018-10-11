@@ -47,6 +47,7 @@ class DateSelector extends \Yana\Views\Helpers\AbstractViewHelper implements \Ya
      * This function takes the following arguments:
      *
      * string  $name  (mandatory) name attribute of select element
+     * string  $class (optional)  CSS class of select element
      * string  $attr  (optional)  list of attributes for select element
      * string  $id    (optional)  id attribute of select element
      * array   $time  (optional)  selected timestamp
@@ -68,6 +69,9 @@ class DateSelector extends \Yana\Views\Helpers\AbstractViewHelper implements \Ya
         }
         if (!empty($params['id'])) {
             $item->setId((string) $params['id']);
+        }
+        if (!empty($params['class'])) {
+            $item->setCssClass((string) $params['class']);
         }
         if (!empty($params['attr'])) {
             $item->setAttr((string) $params['attr']);

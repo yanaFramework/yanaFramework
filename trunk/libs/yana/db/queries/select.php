@@ -161,14 +161,13 @@ class Select extends \Yana\Db\Queries\SelectCount
         if (empty($columns)) {
 
             $this->column = array();
-            if ($this->row === '*') {
-                if ($this->expectedResult !== \Yana\Db\ResultEnumeration::ROW) {
-                    $this->expectedResult = \Yana\Db\ResultEnumeration::TABLE;
-                }
-            } else {
+            if ($this->row !== '*') {
                 $this->expectedResult = \Yana\Db\ResultEnumeration::ROW;
+
+            } elseif ($this->expectedResult !== \Yana\Db\ResultEnumeration::ROW) {
+                $this->expectedResult = \Yana\Db\ResultEnumeration::TABLE;
             }
-            return;
+            return $this;
         }
 
         /*
@@ -178,7 +177,7 @@ class Select extends \Yana\Db\Queries\SelectCount
             $column = array_pop($columns);
             assert('is_string($column); // String expected');
             $this->setColumn($column);
-            return;
+            return $this;
 
         }
 
@@ -201,11 +200,7 @@ class Select extends \Yana\Db\Queries\SelectCount
         }
         $this->column = $result;
 
-        if ($this->row === '*') {
-            $this->expectedResult = \Yana\Db\ResultEnumeration::TABLE;
-        } else {
-            $this->expectedResult = \Yana\Db\ResultEnumeration::ROW;
-        }
+        $this->expectedResult = ($this->row === '*') ? \Yana\Db\ResultEnumeration::TABLE : \Yana\Db\ResultEnumeration::ROW;
         return $this;
     }
 
@@ -243,11 +238,7 @@ class Select extends \Yana\Db\Queries\SelectCount
             $this->column[$alias] = $columnDefinition;
         }
 
-        if ($this->row === '*') {
-            $this->expectedResult = \Yana\Db\ResultEnumeration::TABLE;
-        } else {
-            $this->expectedResult = \Yana\Db\ResultEnumeration::ROW;
-        }
+        $this->expectedResult = ($this->row === '*') ? \Yana\Db\ResultEnumeration::TABLE : \Yana\Db\ResultEnumeration::ROW;
         return $this;
     }
 
@@ -284,13 +275,12 @@ class Select extends \Yana\Db\Queries\SelectCount
         if (YANA_DB_STRICT) {
             $dbSchema = $this->db->getSchema();
             if (!$dbSchema->isTable($tableName)) {
-                throw new \Yana\Db\Queries\Exceptions\TableNotFoundException("Table not found '" . $tableName . "'.",
-                    E_USER_WARNING);
+                throw new \Yana\Db\Queries\Exceptions\TableNotFoundException("Table not found '" . $tableName . "'.", \Yana\Log\TypeEnumeration::WARNING);
 
             }
             if (!$dbSchema->getTable($tableName)->isColumn($column)) {
                 throw new \Yana\Db\Queries\Exceptions\ColumnNotFoundException("Column '$column' not found in table " .
-                    "'$tableName'.", E_USER_WARNING);
+                    "'$tableName'.", \Yana\Log\TypeEnumeration::WARNING);
             }
         }
         return array($tableName, mb_strtolower($column));
@@ -429,7 +419,7 @@ class Select extends \Yana\Db\Queries\SelectCount
     {
         $this->resetId(); // clear cached query id
 
-        if (empty($having)) {
+        if (count($having) === 0) {
             $this->having = array();
         } else {
             $this->having = $this->parseWhereArray($having); // throws exception

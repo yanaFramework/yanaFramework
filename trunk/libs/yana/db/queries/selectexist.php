@@ -193,30 +193,21 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery
     }
 
     /**
-     * Get foreign key columns.
+     * Get foreign key column.
      *
-     * Returns an array of two column names, where the first is the column in the base table
-     * and the second is the column in the target table (given by the parameter $table).
-     * If the table is not joined, the function will return bool(false).
-     *
-     * @param   string  $table target table
+     * @param   string  $table  joined table
      * @return  \Yana\Db\Queries\JoinCondition
-     * @throws  \Yana\Core\Exceptions\NotFoundException  when the target table does not exist
+     * @throws  \Yana\Db\Queries\Exceptions\NotFoundException  when the target table is not joined
      */
     public function getJoin($table)
     {
         assert('is_string($table); // Wrong type for argument 1. String expected');
         $table = mb_strtolower($table);
 
-        if (YANA_DB_STRICT && !$this->db->getSchema()->isTable($table)) {
-            throw new \Yana\Core\Exceptions\NotFoundException("The table '$table' is unknown.", \Yana\Log\TypeEnumeration::WARNING);
+        if (!isset($this->joins[$table])) {            
+            throw new \Yana\Db\Queries\Exceptions\NotFoundException("The table '$table' is not joined.", \Yana\Log\TypeEnumeration::WARNING);
         }
-
-        if (!isset($this->joins[$table])) {
-            return false;
-        } else {
-            return $this->joins[$table];
-        }
+        return $this->joins[$table];
     }
 
     /**

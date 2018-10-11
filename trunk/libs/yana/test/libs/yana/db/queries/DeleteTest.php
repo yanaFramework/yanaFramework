@@ -81,99 +81,67 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Yana\Db\Queries\Delete::setOrderBy
-     * @todo   Implement testSetOrderBy().
+     * @test
      */
     public function testSetOrderBy()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertEquals(array(array('t', 'tid')), $this->query->setTable('t')->setOrderBy('tid')->getOrderBy());
     }
 
     /**
-     * @covers Yana\Db\Queries\Delete::getOrderBy
-     * @todo   Implement testGetOrderBy().
+     * @test
      */
     public function testGetOrderBy()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame(array(), $this->query->getOrderBy());
     }
 
     /**
-     * @covers Yana\Db\Queries\Delete::getDescending
-     * @todo   Implement testGetDescending().
+     * @test
      */
     public function testGetDescending()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame(array(), $this->query->getDescending());
     }
 
     /**
-     * @covers Yana\Db\Queries\Delete::setWhere
-     * @todo   Implement testSetWhere().
+     * @test
      */
     public function testSetWhere()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertEquals(array(array('t', 'tid'), '=', '1'), $this->query->setTable('t')->setWhere(array('tid', '=', '1'))->getWhere());
     }
 
     /**
-     * @covers Yana\Db\Queries\Delete::getWhere
-     * @todo   Implement testGetWhere().
+     * @test
      */
     public function testGetWhere()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame(array(), $this->query->getWhere());
     }
 
     /**
-     * @covers Yana\Db\Queries\Delete::setLimit
-     * @todo   Implement testSetLimit().
+     * @test
      */
     public function testSetLimit()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame(2, $this->query->setTable('t')->setLimit(2)->getLimit());
     }
 
     /**
-     * @covers Yana\Db\Queries\Delete::getOldValues
-     * @todo   Implement testGetOldValues().
+     * @test
+     */
+    public function testGetLimit()
+    {
+        $this->assertSame(0, $this->query->setTable('t')->getLimit());
+    }
+
+    /**
+     * @test
      */
     public function testGetOldValues()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers Yana\Db\Queries\Delete::sendQuery
-     * @todo   Implement testSendQuery().
-     */
-    public function testSendQuery()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame(array(), $this->query->setTable('t')->getOldValues());
     }
 
     /**

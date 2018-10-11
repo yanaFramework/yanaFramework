@@ -98,8 +98,8 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
     }
 
     /**
-     * @param \Yana\Db\Helpers\IsSanitizer $sanitizer
-     * @return \Yana\Db\Queries\AbstractQuery
+     * @param   \Yana\Db\Helpers\IsSanitizer $sanitizer
+     * @return  $this
      */
     public function setSanitizer(\Yana\Db\Helpers\IsSanitizer $sanitizer)
     {
@@ -144,7 +144,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
      * and reuse it without creating another one. This can
      * help to improve the performance of your application.
      *
-     * @return  \Yana\Db\Queries\Insert
+     * @return  $this
      */
     public function resetQuery()
     {
@@ -163,7 +163,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
      * When updating a single column, it may also be a scalar value.
      *
      * @param   mixed  $values  value(s) for current query
-     * @return  \Yana\Db\Queries\Insert
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException          if a given argument is invalid
      * @throws  \Yana\Db\Queries\Exceptions\InvalidPrimaryKeyException  when the primary key is invalid or ambigious
      * @throws  \Yana\Db\Queries\Exceptions\ConstraintException         when a constraint violation is detected

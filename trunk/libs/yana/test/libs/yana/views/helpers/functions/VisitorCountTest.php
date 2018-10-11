@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case.
+ * PHPUnit test-case
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -25,28 +25,23 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Db\Queries;
+namespace Yana\Views\Helpers\Functions;
 
 /**
  * @ignore
  */
-require_once __DIR__ . '/../../../../include.php';
+require_once dirname(__FILE__) . '/../../../../../include.php';
 
 /**
  * @package  test
  */
-class ParserTest extends \PHPUnit_Framework_TestCase
+class VisitorCountTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var  \Yana\Db\Queries\AbstractQuery
+     * @var \Yana\Views\Helpers\Functions\VisitorCount
      */
-    protected $query;
-
-    /**
-     * @var  \Yana\Db\FileDb\Connection
-     */
-    protected $db;
+    protected $object;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -54,20 +49,12 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        try {
-            chdir(CWD . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
-            if (!isset($this->db)) {
-                $schema = \Yana\Files\XDDL::getDatabase('check');
-                $this->db = new \Yana\Db\FileDb\Connection($schema);
-            }
-            // reset database
-            $this->db->remove('i', array(), 0);
-            $this->db->remove('t', array(), 0);
-            $this->db->remove('ft', array(), 0);
-            $this->db->commit();
-        } catch (\Exception $e) {
-            $this->markTestSkipped("Unable to connect to database");
+        if (!\class_exists('\Smarty') || !\class_exists('\Smarty_Internal_Template')) {
+            $this->markTestSkipped();
         }
+        $configurationFactory = new \Yana\ConfigurationFactory();
+        $configuration = $configurationFactory->loadConfiguration(CWD . 'resources/system.config.xml');
+        $this->object = new \Yana\Views\Helpers\Functions\VisitorCount(new \Yana\Core\Dependencies\Container($configuration));
     }
 
     /**
@@ -76,7 +63,15 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        chdir(CWD);
+        
+    }
+
+    /**
+     * @test
+     */
+    public function test__invoke()
+    {
+        $this->assertSame("", $this->object->__invoke(array(), new \Smarty_Internal_Template("name", new \Smarty())));
     }
 
 }

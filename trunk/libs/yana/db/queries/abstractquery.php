@@ -1524,14 +1524,15 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
      *
      * Returns the parsed and checked array.
      *
-     * @param   array  $where  where clausel as an array
+     * @param   array  $where         where clausel as an array
+     * @param   array  $dontOptimize  will try to move primary key constraints from where clause unless told otherwise
      * @return  array
      * @throws  \Yana\Db\Queries\Exceptions\TableNotFoundException   when a referenced table is not found
      * @throws  \Yana\Db\Queries\Exceptions\ColumnNotFoundException  when a referenced column is not found
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException       when the clause contains invalid values
      * @ignore
      */
-    protected function parseWhereArray(array $where)
+    protected function parseWhereArray(array $where, $dontOptimize = false)
     {
         if (empty($where)) {
             return array();
@@ -1552,7 +1553,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
         {
             case 'and':
             case 'or':
-                return array($this->parseWhereArray($leftOperand), $operator, $this->parseWhereArray($rightOperand));
+                return array($this->parseWhereArray($leftOperand, true), $operator, $this->parseWhereArray($rightOperand, true));
             break;
         }
 
@@ -1718,11 +1719,10 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
                 throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
             break;
         }
-        if ($rightOperand instanceof self)
-        {
+        if ($rightOperand instanceof self) {
             $rightOperand->isSubQuery = true;
         }
-        if (empty($this->rowId) && $operator == '=' && is_string($rightOperand)) {
+        if (!$dontOptimize && empty($this->rowId) && $operator == '=' && is_string($rightOperand)) {
             $primaryKey = $this->currentTable()->getPrimaryKey();
             switch (true)
             {

@@ -124,6 +124,29 @@ class SelectExistTest extends \PHPUnit_Framework_TestCase
         $this->query->setTable('t');
         $this->query->setInnerJoin('ft', 'ftid', 't', 'ftid');
         $join = $this->query->getJoin('ft');
+        $this->assertTrue($this->query->getJoin('ft')->isInnerJoin());
+    }
+
+    /**
+     * @test
+     */
+    public function testUnsetJoin()
+    {
+        $this->query->setTable('t');
+        $this->query->setInnerJoin('ft');
+        $this->assertTrue($this->query->getJoin('ft')->isInnerJoin());
+        $this->query->unsetJoin('ft');
+        $this->assertEquals(array(), $this->query->getJoins());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetJoin()
+    {
+        $this->query->setTable('t');
+        $this->query->setInnerJoin('ft', 'ftid', 't', 'ftid');
+        $join = $this->query->getJoin('ft');
         $this->assertEquals('ftid', $join->getForeignKey());
         $this->assertEquals('ftid', $join->getTargetKey());
         $this->assertEquals('ft', $join->getJoinedTableName());
@@ -132,27 +155,13 @@ class SelectExistTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Yana\Db\Queries\SelectExist::unsetJoin
-     * @todo   Implement testUnsetJoin().
+     * @test
+     * @expectedException \Yana\Db\Queries\Exceptions\NotFoundException
      */
-    public function testUnsetJoin()
+    public function testGetJoinNotFoundException()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers Yana\Db\Queries\SelectExist::getJoin
-     * @todo   Implement testGetJoin().
-     */
-    public function testGetJoin()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->query->setTable('t')->setInnerJoin('ft')->unsetJoin('ft');
+        $this->query->getJoin('ft');
     }
 
     /**

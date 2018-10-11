@@ -39,7 +39,7 @@ class InsertTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var  \Yana\Db\Queries\AbstractQuery
+     * @var  \Yana\Db\Queries\Insert
      */
     protected $query;
 
@@ -81,15 +81,11 @@ class InsertTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Yana\Db\Queries\Insert::setSanitizer
-     * @todo   Implement testSetSanitizer().
+     * @test
      */
     public function testSetSanitizer()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame($this->query, $this->query->setSanitizer(new \Yana\Db\Helpers\NullSanitizer()));
     }
 
     /**
@@ -117,27 +113,47 @@ class InsertTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Yana\Db\Queries\Insert::setValues
-     * @todo   Implement testSetValues().
+     * @test
+     * @expectedException \Yana\Db\Queries\Exceptions\InvalidResultTypeException
      */
-    public function testSetValues()
+    public function testSetValuesInvalidResultTypeException()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->query->setValues(1);
     }
 
     /**
-     * @covers Yana\Db\Queries\Insert::getValues
-     * @todo   Implement testGetValues().
+     * @test
+     * @expectedException \Yana\Db\Queries\Exceptions\InvalidPrimaryKeyException
+     */
+    public function testSetValuesInvalidPrimaryKeyException()
+    {
+        $this->query->setTable('t')->setValues(array(1));
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\Forms\MissingFieldException
+     */
+    public function testSetValuesMissingFieldException()
+    {
+        $this->query->setTable('t')->setValues(array('tid' => 1));
+    }
+
+    /**
+     * @test
+     */
+    public function testSetValues()
+    {
+        $this->query->setSanitizer(new \Yana\Db\Helpers\NullSanitizer());
+        $this->assertSame(array('tid' => '1'), $this->query->setTable('t')->setValues(array('tid' => 1))->getValues());
+    }
+
+    /**
+     * @test
      */
     public function testGetValues()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertNull($this->query->getValues());
     }
 
     /**

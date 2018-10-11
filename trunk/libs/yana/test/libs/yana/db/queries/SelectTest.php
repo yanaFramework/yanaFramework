@@ -81,15 +81,24 @@ class SelectTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Yana\Db\Queries\Select::resetQuery
-     * @todo   Implement testResetQuery().
+     * @test
      */
     public function testResetQuery()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->query->setTable('t');
+        $columns = array('tid', 'tvalue', 'ti', 'ftid');
+        $this->query->setColumns($columns);
+        $this->assertSame(array(), $this->query->resetQuery()->getColumns());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetColumn()
+    {
+        $this->query->setTable('t');
+        $this->query->setColumn('tid');
+        $this->assertEquals('tid', $this->query->getColumn(0));
     }
 
     /**
@@ -107,15 +116,45 @@ class SelectTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Yana\Db\Queries\Select::addColumn
-     * @todo   Implement testAddColumn().
+     * @test
+     */
+    public function testSetColumnsEmpty()
+    {
+        $this->query->setTable('t');
+        $this->assertSame(array(), $this->query->setColumns(array('tid', 'tvalue', 'ti', 'ftid'))->setColumns()->getColumns());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetColumnsOne()
+    {
+        $this->query->setTable('t');
+        $this->assertSame(array(array('t', 'tid')), $this->query->setColumns(array('tid'))->getColumns());
+    }
+
+    /**
+     * @expectedException \Yana\Db\Queries\Exceptions\InvalidSyntaxException
+     * @test
+     */
+    public function testSetColumnsInvalidSyntaxException()
+    {
+        $columns = array('tid', 'tvalue', 'ti', 'ftid');
+        $this->query->setColumns($columns);
+    }
+
+    /**
+     * @test
      */
     public function testAddColumn()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->query->setTable('t');
+        $columns = array('tid', 'tvalue', 'ti', 'ftid');
+        $this->query->addColumn($columns[0])->addColumn($columns[1])->addColumn($columns[2])->addColumn($columns[3]);
+        $this->assertEquals($columns[0], $this->query->getColumn(0));
+        $this->assertEquals($columns[1], $this->query->getColumn(1));
+        $this->assertEquals($columns[2], $this->query->getColumn(2));
+        $this->assertEquals($columns[3], $this->query->getColumn(3));
     }
 
     /**
@@ -146,87 +185,105 @@ class SelectTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Yana\Db\Queries\Select::setOrderBy
-     * @todo   Implement testSetOrderBy().
+     * @test
      */
     public function testSetOrderBy()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->query->setTable('ft');
+        $this->assertSame(array(array('ft', 'ftid')), $this->query->setOrderBy(array('ftid'))->getOrderBy());
     }
 
     /**
-     * @covers Yana\Db\Queries\Select::getOrderBy
-     * @todo   Implement testGetOrderBy().
+     * @test
      */
     public function testGetOrderBy()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame(array(), $this->query->getOrderBy());
     }
 
     /**
-     * @covers Yana\Db\Queries\Select::getDescending
-     * @todo   Implement testGetDescending().
+     * @test
      */
     public function testGetDescending()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame(array(), $this->query->getDescending());
     }
 
     /**
-     * @covers Yana\Db\Queries\Select::setHaving
-     * @todo   Implement testSetHaving().
+     * @test
      */
     public function testSetHaving()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->query->setTable('t');
+        $having = array('tvalue', '=', 1);
+        $this->assertSame(array(array('t', 'tvalue'), '=', '1'), $this->query->setHaving($having)->getHaving());
     }
 
     /**
-     * @covers Yana\Db\Queries\Select::addHaving
-     * @todo   Implement testAddHaving().
+     * @test
+     */
+    public function testSetHavingPrimaryKey()
+    {
+        $this->query->setTable('t');
+        $having = array('tid', '=', 1);
+        $this->assertSame('1', $this->query->setHaving($having)->getRow());
+        $this->assertSame(array(), $this->query->getHaving());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetHavingComplexQuery()
+    {
+        $this->query->setTable('t');
+        $having = array(array('tid', '=', 1), 'or', array('tvalue', '=', 2));
+        $expected = array(array(array('t', 'tid'), '=', '1'), 'or', array(array('t', 'tvalue'), '=', '2'));
+        $this->assertSame($expected, $this->query->setHaving($having)->getHaving());
+    }
+
+    /**
+     * @test
      */
     public function testAddHaving()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->query->setTable('t');
+        $having = $this->query->setHaving(array('tvalue', '>', 1))->addHaving(array('tvalue', '=', 2))->getHaving();
+        $expected = array(array(array('t', 'tvalue'), '>', '1'), 'and', array(array('t', 'tvalue'), '=', '2'));
+        $this->assertSame($expected, $having);
     }
 
     /**
-     * @covers Yana\Db\Queries\Select::getHaving
-     * @todo   Implement testGetHaving().
+     * @test
      */
     public function testGetHaving()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame(array(), $this->query->getHaving());
     }
 
     /**
-     * @covers Yana\Db\Queries\Select::setLimit
-     * @todo   Implement testSetLimit().
+     * @test
+     */
+    public function testGetHavingEmpty()
+    {
+        $this->query->setTable('t');
+        $this->query->setHaving(array('tvalue', '>', 1));
+        $this->assertSame(array(), $this->query->setHaving()->getHaving());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetLimit()
+    {
+        $this->assertSame(0, $this->query->getLimit());
+    }
+
+    /**
+     * @test
      */
     public function testSetLimit()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame(2, $this->query->setLimit(2)->getLimit());
     }
 
     /**
@@ -275,15 +332,20 @@ class SelectTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Yana\Db\Queries\Select::getColumnTitles
-     * @todo   Implement testGetColumnTitles().
+     * @test
      */
     public function testGetColumnTitles()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertEquals(array(), $this->query->getColumnTitles());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetColumnTitlesEmpty()
+    {
+        $this->query->setTable('t')->setColumns(array('tid', 'tvalue'));
+        $this->assertEquals(array('tid', 'tvalue'), $this->query->getColumnTitles());
     }
 
     /**
@@ -325,28 +387,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $this->query->setTable('t');
         $columns = array('tid', 'tvalue', 'ti', 'ftid');
         $this->query->setColumns($columns);
-        $this->query->setInnerJoin('ft');
-        $join = $this->query->getJoin('ft');
-
-
-        $this->assertEquals('ftid', $join->getForeignKey());
-        $this->assertEquals('ftid', $join->getTargetKey());
-        $this->assertEquals('ft', $join->getJoinedTableName());
-        $this->assertEquals('t', $join->getSourceTableName());
-        $this->assertTrue($join->isInnerJoin());
-
-        $this->query->unsetJoin('ft');
-        $getJoin = $this->query->getJoin('ft');
-        $this->assertFalse($getJoin, 'assert failed, the join ft does not exist');
-        $s4 = (string) $this->query;
-        $valid = "SELECT t.tid, t.tvalue, t.ti, t.ftid FROM t";
-        $this->assertEquals($valid, $s4, 'assert failed, the expected sql select statement must be equal');
         $this->query->setLeftJoin('ft', 'ftid', 't', 'ftid');
-        $getJoin = $this->query->getJoin('ft');
-        $this->assertEquals(array('ftid', 'ftid', true), $getJoin, 'Join clause must match ftid=ftid, leftJoin=true');
-        $s4 = (string) $this->query;
+        $this->assertTrue($this->query->getJoin('ft')->isLeftJoin());
         $valid = "SELECT t.tid, t.tvalue, t.ti, t.ftid FROM t LEFT JOIN ft ON t.ftid = ft.ftid";
-        $this->assertEquals($valid, $s4, 'assert failed, the expected sql select statement must be equal');
+        $this->assertEquals($valid, (string) $this->query);
     }
 
     /**
@@ -439,9 +483,18 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $getHaving = $this->query->getHaving();
         $expected = array(array('t', 'tvalue'), '>', '20');
         $this->assertEquals($expected, $getHaving, 'assert failed, the values must be equal');
-        $string = (string) $this->query;
-        $valid = "SELECT t.tid, t.tvalue FROM t WHERE t.ftid = '1' HAVING t.tvalue > '20'";
-        $this->assertEquals($valid, $string, 'assert failed, the sql select statements must be equal');
+        $valid = "SELECT t.tid, t.tvalue FROM t WHERE t.ftid = " . \YANA_DB_DELIMITER . "1" . \YANA_DB_DELIMITER .
+            " HAVING t.tvalue > " . \YANA_DB_DELIMITER . "20" . \YANA_DB_DELIMITER;
+        $this->assertEquals($valid, (string) $this->query, 'assert failed, the sql select statements must be equal');
+    }
+
+    /**
+     * @test
+     */
+    public function testToString()
+    {
+        $this->query->setTable('t')->setColumns(array('tid', 'tvalue', 'ti', 'ftid'));
+        $this->assertEquals("SELECT t.tid, t.tvalue, t.ti, t.ftid FROM t", (string) $this->query);
     }
 
 }

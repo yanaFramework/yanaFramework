@@ -62,7 +62,18 @@ class ParserTest extends \PHPUnit_Framework_TestCase
              * @test2  Key1: Value, Key2: Value, Key3: Value
              * @test3 \Name\Space\ClassName
              * @test4 Key1: \Name\Space\ClassName
+             * @test5
+             * {@test6 Key: 4}
+             * {@test6 Key: 5 }
+             * {@test6 value }
+             * {@test6 Key:}
+             * {@test6}
+             * {@test7 Key1:, Key2: value1, value2, value3, Key3: test }
              * @ignore
+             * {invalid@nonsense}
+             * {@missingbracket
+             *@this wont work
+             * @findme
              */
         ';
         $this->object = new \Yana\Plugins\Annotations\Parser($text);
@@ -92,6 +103,13 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     public function testGetTag()
     {
         $this->assertEquals('public', $this->object->getTag('access'));
+    }
+
+    /**
+     * @test
+     */
+    public function testGetTagComplex()
+    {
         $array = array(
             'Key1' => 'Value',
             'Key2' => 'Value',
@@ -99,6 +117,22 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         );
         $this->assertEquals($array, $this->object->getTag('test'));
         $this->assertEquals($array, $this->object->getTag('test2'));
+    }
+
+    /**
+     * @test
+     */
+    public function testGetTagEmpty()
+    {
+        $this->assertTrue($this->object->getTag('test5'));
+    }
+
+    /**
+     * @test
+     */
+    public function testGetTagDefault()
+    {
+        $this->assertSame('default', $this->object->getTag('nosuchtag', 'default'));
     }
 
     /**
@@ -112,9 +146,9 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testEmptyComplexTag()
+    public function testEmptySimpleTag()
     {
-//        $this->assertTrue($this->object->getTag('test5'));
+        $this->assertTrue($this->object->getTag('test5'));
     }
 
     /**
@@ -138,6 +172,40 @@ class ParserTest extends \PHPUnit_Framework_TestCase
             'array  $test2'
         );
         $this->assertEquals($array, $this->object->getTags('param'));
+    }
+
+    /**
+     * @test
+     */
+    public function testGetTagsComplex()
+    {
+        $array = array(
+            array('Key' => '4'),
+            array('Key' => '5'),
+            'value',
+            array('Key' => true),
+            true
+        );
+        $this->assertEquals($array, $this->object->getTags('test6'));
+    }
+
+    /**
+     * @test
+     */
+    public function testGetTagsComplex2()
+    {
+        $this->assertEquals(array(array('Key1' => true, 'Key2' => 'value1, value2, value3', 'Key3' => 'test')), $this->object->getTags('test7'));
+    }
+
+    /**
+     * @test
+     */
+    public function testGetTagsInvalidExamples()
+    {
+        $this->assertSame(array(), $this->object->getTags('nonsense'));
+        $this->assertSame(array(), $this->object->getTags('missingbracket'));
+        $this->assertSame(array(), $this->object->getTags('this'));
+        $this->assertSame(array(true), $this->object->getTags('findme'));
     }
 
 }
