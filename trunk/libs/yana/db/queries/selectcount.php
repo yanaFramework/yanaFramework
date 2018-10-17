@@ -81,7 +81,7 @@ class SelectCount extends \Yana\Db\Queries\SelectExist
      */
     public function setColumn($column = '*', $alias = "")
     {
-        parent::setColumn($column, $alias);
+        parent::setColumnWithAlias($column, $alias);
         return $this;
     }
 

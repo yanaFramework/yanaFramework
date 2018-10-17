@@ -902,7 +902,25 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
      * @return  \Yana\Db\Queries\AbstractQuery
      * @ignore
      */
-    protected function setColumn($column = '*', $alias = "")
+    protected function setColumn($column = '*')
+    {
+        return $this->setColumnWithAlias($column);
+    }
+
+    /**
+     * Set source column.
+     *
+     * Checks if the column exists and sets the source column of the query to the given value.
+     *
+     * @param   string  $column  column name or '*' for "all"
+     * @param   string  $alias   optional column alias
+     * @throws  \Yana\Db\Queries\Exceptions\InvalidSyntaxException   if table has not been initialized
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException       if a given argument is invalid
+     * @throws  \Yana\Db\Queries\Exceptions\ColumnNotFoundException  if the given column is not found in the table
+     * @return  \Yana\Db\Queries\AbstractQuery
+     * @ignore
+     */
+    protected function setColumnWithAlias($column = '*', $alias = "")
     {
         assert('is_string($column); // Wrong type for argument 1. String expected');
         assert('is_string($alias); // Wrong type for argument 2. String expected');

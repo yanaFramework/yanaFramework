@@ -130,6 +130,18 @@ trait HasSecurity
     }
 
     /**
+     * Set connection to user database.
+     *
+     * @param   \Yana\Db\IsConnection  $dataConnection  connection to user database
+     * @return  $this
+     */
+    protected function _setDataConnection(\Yana\Db\IsConnection $dataConnection)
+    {
+        $this->_dataConnection = $dataConnection;
+        return $this;
+    }
+
+    /**
      * Builds and returns a rule-checker object.
      *
      * @return  \Yana\Security\Rules\IsChecker
@@ -164,7 +176,7 @@ trait HasSecurity
      * Inject login behavior instance.
      *
      * @param   \Yana\Security\Logins\IsBehavior  $loginBehavior  dependency
-     * @return  self
+     * @return  $this
      */
     public function setLoginBehavior(\Yana\Security\Logins\IsBehavior $loginBehavior)
     {
@@ -176,7 +188,7 @@ trait HasSecurity
      * Inject password algorithm builder instance.
      *
      * @param   \Yana\Security\Passwords\Builders\Builder  $passwordAlgorithmBuilder  dependency
-     * @return  self
+     * @return  $this
      */
     public function setPasswordAlgorithmBuilder(\Yana\Security\Passwords\Builders\Builder $passwordAlgorithmBuilder)
     {
@@ -188,7 +200,7 @@ trait HasSecurity
      * Inject specific password algorithm.
      *
      * @param   \Yana\Security\Passwords\IsAlgorithm  $passwordAlgorithm  dependency
-     * @return  self
+     * @return  $this
      */
     public function setPasswordAlgorithm(\Yana\Security\Passwords\IsAlgorithm $passwordAlgorithm)
     {
@@ -200,7 +212,7 @@ trait HasSecurity
      * Inject password generator.
      *
      * @param   \Yana\Security\Passwords\Generators\IsAlgorithm  $passwordGenerator  dependency
-     * @return  self
+     * @return  $this
      */
     public function setPasswordGenerator(\Yana\Security\Passwords\Generators\IsAlgorithm $passwordGenerator)
     {
@@ -212,7 +224,7 @@ trait HasSecurity
      * Inject password checking behavior.
      *
      * @param   \Yana\Security\Passwords\Behaviors\IsBehavior  $passwordBehavior  dependency
-     * @return  self
+     * @return  $this
      */
     public function setPasswordBehavior(\Yana\Security\Passwords\Behaviors\IsBehavior $passwordBehavior)
     {

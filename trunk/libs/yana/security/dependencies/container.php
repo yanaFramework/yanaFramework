@@ -68,13 +68,6 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
     private $_plugins;
 
     /**
-     * Database connection.
-     *
-     * @var  \Yana\Db\IsConnection
-     */
-    private $_dataConnection = null;
-
-    /**
      * <<constructor>> Initializes dependencies.
      *
      * @param  \Yana\Plugins\Facade  $facade  dependent resource
@@ -147,19 +140,6 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
      *
      * @return  \Yana\Db\IsConnection
      */
-    protected function _getDataConnection()
-    {
-        if (!isset($this->_dataConnection)) {
-            $this->_dataConnection = $this->getConnectionFactory()->createConnection('user');
-        }
-        return $this->_dataConnection;
-    }
-
-    /**
-     * Get database connection.
-     *
-     * @return  \Yana\Db\IsConnection
-     */
     public function getDataConnection()
     {
         return $this->_getDataConnection();
@@ -169,12 +149,11 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
      * Set connection to user database.
      *
      * @param   \Yana\Db\IsConnection  $dataConnection  connection to user database
-     * @return  self
+     * @return  $this
      */
     public function setDataConnection(\Yana\Db\IsConnection $dataConnection)
     {
-        $this->_dataConnection = $dataConnection;
-        return $this;
+        return $this->_setDataConnection($dataConnection);
     }
 
     /**
@@ -191,7 +170,7 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
      * Set default user settings.
      *
      * @param   array  $defaultUser  settings
-     * @return  self
+     * @return  $this
      */
     public function setDefaultUser(array $defaultUser)
     {
@@ -203,7 +182,7 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
      * Set list of events for plugins.
      *
      * @param   \Yana\Plugins\Configs\MethodCollection  $eventConfigurationsForPlugins  provided by Plugins\Facade
-     * @return  self
+     * @return  $this
      */
     public function setEventConfigurationsForPlugins(\Yana\Plugins\Configs\MethodCollection $eventConfigurationsForPlugins)
     {
@@ -262,7 +241,7 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
      * Set profile id for current request.
      *
      * @param   string  $profileId  from request to application
-     * @return  self
+     * @return  $this
      */
     public function setProfileId($profileId)
     {

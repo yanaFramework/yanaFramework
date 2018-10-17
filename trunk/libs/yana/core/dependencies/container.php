@@ -115,7 +115,7 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
      *
      * @var  \Yana\Data\Adapters\IsDataAdapter
      */
-    private $_cache = null;
+    private $_applicationCache = null;
 
     /**
      * safe-mode settings
@@ -131,11 +131,6 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
      * @var  \Yana\Http\Facade
      */
     private $_request = null;
-
-    /**
-     * @var  \Yana\Security\Sessions\IsWrapper
-     */
-    private $_session = null;
 
     /**
      * @var  \Yana\Plugins\Menus\Builder
@@ -196,16 +191,16 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
      */
     public function getCache()
     {
-        if (!isset($this->_cache)) {
+        if (!isset($this->_applicationCache)) {
             $tempDir = $this->_getPathToCacheDirectory();
             if (YANA_CACHE_ACTIVE === true && is_dir($tempDir)) {
                 $temporaryDirectory = new \Yana\Files\Dir($tempDir);
-                $this->_cache = new \Yana\Data\Adapters\FileCacheAdapter($temporaryDirectory);
+                $this->_applicationCache = new \Yana\Data\Adapters\FileCacheAdapter($temporaryDirectory);
             } else {
-                $this->_cache = new \Yana\Data\Adapters\ArrayAdapter();
+                $this->_applicationCache = new \Yana\Data\Adapters\ArrayAdapter();
             }
         }
-        return $this->_cache;
+        return $this->_applicationCache;
     }
 
     /**
@@ -274,19 +269,6 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
             $this->_action = $action;
         }
         return $this->_action;
-    }
-
-    /**
-     * Retrieve session wrapper.
-     *
-     * @return  \Yana\Security\Sessions\IsWrapper
-     */
-    public function getSession()
-    {
-        if (!isset($this->_session)) {
-            $this->_session = new \Yana\Security\Sessions\Wrapper();
-        }
-        return $this->_session;
     }
 
     /**
