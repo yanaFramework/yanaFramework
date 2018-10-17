@@ -71,4 +71,14 @@
             />
         </declaration>
     </table>
+    <table name="u">
+        <primarykey>uid</primarykey>
+        <declaration>
+            <string
+                name="uid"
+                length="32"
+                notnull="yes"
+            />
+        </declaration>
+    </table>
 </database>

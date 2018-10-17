@@ -41,7 +41,7 @@ class UrlFormatter extends \Yana\Views\Helpers\Formatters\AbstractFormatter
     /**
      * @var string
      */
-    private static $_baseUrl = null;
+    private static $_baseUrl = "";
 
     /**
      * Sets the prefix for the generated URL.
@@ -61,7 +61,7 @@ class UrlFormatter extends \Yana\Views\Helpers\Formatters\AbstractFormatter
      */
     protected function _getBaseUrl()
     {
-        if (!isset(self::$_baseUrl)) {
+        if (self::$_baseUrl === "") {
             assert('!isset($builder); // Cannot redeclare var $builder');
             $builder = new \Yana\ApplicationBuilder();
             assert('!isset($application); // Cannot redeclare var $application');

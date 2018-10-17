@@ -210,7 +210,7 @@ class Worker extends \Yana\Forms\QueryBuilder
     {
         $result = false;
         if ($this->_form) {
-            $newEntry = $this->_form->getSetup()->getContext('insert')->getValues();
+            $newEntry = $this->_form->getSetup()->getContext(\Yana\Forms\Setups\ContextNameEnumeration::INSERT)->getValues();
 
             /**
              * We need to copy the primary key of the parent form to the foreign key column of the child form.
@@ -309,7 +309,7 @@ class Worker extends \Yana\Forms\QueryBuilder
     {
         $csv = "";
         if ($this->_form) {
-            $updatedEntries = $this->_form->getSetup()->getContext('update')->getRows()->toArray();
+            $updatedEntries = $this->_form->getSetup()->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE)->getRows()->toArray();
             // @todo implement this
         }
         return $csv;

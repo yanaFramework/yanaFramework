@@ -72,17 +72,16 @@ class SelectCount extends \Yana\Db\Queries\SelectExist
      * Checks if the column exists and sets the source column
      * of the query to the given value.
      *
-     * @param   string  $column           column name
-     * @name    DbQuery::setColumn()
-     * @see     DbQuery::setColumns()
+     * @param   string  $column  column name
+     * @param   string  $alias   optional column alias
      * @throws  \Yana\Db\Queries\Exceptions\InvalidSyntaxException   if table has not been initialized
      * @throws  \Yana\Db\Queries\Exceptions\ColumnNotFoundException  if the given column is not found in the table
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException       if a given argument is invalid
      * @return  \Yana\Db\Queries\SelectCount 
      */
-    public function setColumn($column = '*')
+    public function setColumn($column = '*', $alias = "")
     {
-        parent::setColumn($column);
+        parent::setColumn($column, $alias);
         return $this;
     }
 

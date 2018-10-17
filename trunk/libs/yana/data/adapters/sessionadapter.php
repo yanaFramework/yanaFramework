@@ -82,7 +82,8 @@ class SessionAdapter extends \Yana\Data\Adapters\ArrayAdapter implements \Yana\D
      */
     protected function _getItems()
     {
-        return (array) $_SESSION[$this->_getIndex()];
+        $session = isset($_SESSION) ? $_SESSION : array();
+        return isset($session[$this->_getIndex()]) ? (array) $session[$this->_getIndex()] : array();
     }
 
     /**

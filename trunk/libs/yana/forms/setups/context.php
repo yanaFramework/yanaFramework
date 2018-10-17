@@ -91,9 +91,10 @@ class Context extends \Yana\Core\Object implements \Yana\Forms\Setups\IsContext
     private $_columnNames = array();
 
     /**
-     * Initialize instance.
+     * <<constructor>> Initialize instance.
      *
-     * @param   string  $name  context id
+     * @param  string  $name  describes what the form does (insert, update, search, read)
+     * @see \Yana\Forms\Setups\ContextNameEnumeration
      */
     public function __construct($name)
     {
@@ -113,7 +114,7 @@ class Context extends \Yana\Core\Object implements \Yana\Forms\Setups\IsContext
     }
 
     /**
-     * get form value
+     * Get form value.
      *
      * @param   string  $key  id of value to retrieve
      * @return  mixed

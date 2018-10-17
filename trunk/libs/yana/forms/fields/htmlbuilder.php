@@ -51,6 +51,26 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
     }
 
     /**
+     * Creates a new instance and returns it.
+     *
+     * @return  \Yana\Views\Helpers\Formatters\UrlFormatter
+     */
+    protected function _getUrlFormatter()
+    {
+        return new \Yana\Views\Helpers\Formatters\UrlFormatter();
+    }
+
+    /**
+     * Creates a new instance and returns it.
+     *
+     * @return  \Yana\Translations\Facade
+     */
+    protected function _getTranslationFacade()
+    {
+        return \Yana\Translations\Facade::getInstance();
+    }
+
+    /**
      * Generate HTML select element.
      *
      * If the item list is a multi-dimensional array, "optgroup" elements will be created to
@@ -91,11 +111,14 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      *   <select name="foo_year"><option>1910</option>...<option>2035</option></select>
      * </code>
      *
-     * @param   array  $value  must have indexes: "day", "month" and "year, defaults to current timestamp
+     * @param   array  $value  must have indexes: "day", "month" and "year", defaults to current timestamp
      * @return  string
      */
     public function buildDateSelector(array $value = array())
     {
+        assert('!isset($day); // Cannot redeclare var $day');
+        assert('!isset($month); // Cannot redeclare var $month');
+        assert('!isset($year); // Cannot redeclare var $year');
         // get timestamp
         switch (true)
         {
@@ -114,20 +137,26 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
                 $year = (int) $value['year'];
             break;
         }
+        assert('!isset($name); // Cannot redeclare var $name');
         $name = $this->getName();
+        assert('!isset($id); // Cannot redeclare var $id');
         $id = $this->getId();
+        assert('!isset($days); // Cannot redeclare var $days');
         $days = $this->_arrayFill(31);
+        assert('!isset($months); // Cannot redeclare var $months');
         $months = $this->_arrayFill(12);
+        assert('!isset($years); // Cannot redeclare var $years');
         $years = $this->_arrayFill($year + 20, $year - 100);
 
         // returns "<select day><select month><select year><icon>"
+        assert('!isset($string); // Cannot redeclare var $string');
         $string = $this->setId($id . "_day")->setName($name . "[day]")->_getSelect($days, array($day))
             . $this->setId($id . "_month")->setName($name . "[month]")->_getSelect($months, array($month))
             . $this->setId($id . "_year")->setName($name . "[year]")->_getSelect($years, array($year))
             . '<script type="text/javascript">yanaAddCalendar("' . $this->getId() . '", "' . $this->getId() . '_year", '
             . $day . ', ' . ($month - 1) . ', ' . $year . ');</script>'.
             '<script type="text/javascript" src=\'' . \Yana\Views\Skins\Skin::getSkinDirectory('default')
-            . 'scripts/calendar/' . \Yana\Translations\Facade::getInstance()->getVar('calendar.js') . "'></script>";
+            . 'scripts/calendar/' . $this->_getTranslationFacade()->getVar('calendar.js') . "'></script>";
         // Reset changed name and id.
         $this->setId($id)->setName($name);
         return $string;
@@ -188,10 +217,10 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      */
     private function _arrayFill($maxInt, $minInt = 1)
     {
-        $array = array_keys(array_fill(1, $maxInt, 0));
-        for ($i = $minInt; $i < 10 && $i <= $maxInt; $i++)
+        $array = array();
+        for ($i = $minInt; $i <= $maxInt; $i++)
         {
-            $array[$i] = "0" . $i;
+            $array[$i] = ($i < 10 ? "0" : "") . (string) $i;
         }
         return $array;
     }
@@ -207,9 +236,12 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      */
     private function _getSelect(array $values, array $selectedValues, $isMultiple = false, $null = "")
     {
+        if (empty($values)) {
+            return '';
+        }
         return '<select class="' . $this->getCssClass() . '" id="' . $this->getId() . '" name="' . $this->getName() .
-            (($isMultiple) ? '[]" multiple="multiple"' : '" ') .
-            $this->getAttr() . '>' . (($null) ? '<option value="">'. $null . '</option>' : '') .
+            (($isMultiple) ? '[]" multiple="multiple"' : '"') .
+            ($this->getAttr() > '' ? ' ' : '') . $this->getAttr() . '>' . (($null) ? '<option value="">'. $null . '</option>' : '') .
             $this->_getOptions($values, (array) $selectedValues) .
             '</select>';
     }
@@ -230,8 +262,8 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
                 $result .= '<optgroup label="' . $key . '">' .
                     $this->_getOptions($text, $selectedValues) . '</optgroup>';
             } else { // is option
-                $result .= '<option value="' . $key . '" ' .
-                    ((in_array($key, $selectedValues)) ? 'selected="selected"' : '') . '>' . $text . '</option>';
+                $result .= '<option value="' . $key . '"' .
+                    ((in_array($key, $selectedValues)) ? ' selected="selected"' : '') . '>' . $text . '</option>';
             }
         }
         return $result;
@@ -247,20 +279,20 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      */
     public function buildRadio(array $values, $selected, $null = "")
     {
-        $attr = $this->getAttr();
-        $class = $this->getClass();
+        $attr = ($this->getAttr() > '' ? ' ' : '') . $this->getAttr();
+        $class = $this->getCssClass();
         $result = '';
         if ($null) {
-            $result = '<label class="' . $class . '"><input type="radio" ' . $attr . ' ' .
-                'name="' . $this->getName() . '" value=""/>' . $null . '</label> ';
+            $result = '<label class="' . $class . '"><input type="radio"' . $attr . ' ' .
+                'name="' . $this->getName() . '" value=""/>' . $null . '</label>';
         }
 
         $id = ' id="' . $this->getId() . '"'; // only first element
         foreach ($values as $key => $text)
         {
-            $result .= ' <label class="' . $class . '"><input' . $id . ' ' . $attr . ' type="radio" ' .
-                'name="' . $this->getName() . '" value="' . $key . '" ' .
-                (($key === $selected) ? 'checked="checked"' : '') . '/>' . $text . '</label>';
+            $result .= ($result > '' ? ' ' : '') . '<label class="' . $class . '"><input' . $id . $attr . ' type="radio" ' .
+                'name="' . $this->getName() . '" value="' . $key . '"' .
+                (($key === $selected) ? ' checked="checked"' : '') . '/>' . $text . '</label>';
             $id = ""; // reset id for secound element
         }
 
@@ -270,15 +302,16 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
     /**
      * Create HTML checkbox element.
      *
-     * @param   array   $values    item list
+     * @param   array   $values   item list
      * @param   array   $checked  selected values
      * @return  string
      */
     public function buildCheckboxes(array $values, array $checked)
     {
         $class = ($this->getCssClass()) ? $this->getCssClass() : "gui_generator_check";
-        $template = '<label class="' . $class . '" title="' . $this->getTitle() . '"><input %s' . $this->getAttr() .
-            ' type="checkbox" ' . 'name="' . $this->getName() . '[]"  ' .
+        $attr = ($this->getAttr() > '' ? ' ' : '') . $this->getAttr();
+        $template = '<label class="' . $class . '" title="' . $this->getTitle() . '"><input%s' . $attr .
+            ' type="checkbox" name="' . $this->getName() . '[]"' .
             ' class="' . $class . '" value="%s"/>%s</label>' . "\n";
         $attributes = ' id="' . $this->getId() . '"'; // only first element
         return $this->_getCheckBoxes($template, $attributes, $values, $checked);
@@ -301,8 +334,8 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
     {
         $class = ($this->getCssClass()) ? $this->getCssClass() : "gui_generator_check";
         return '<input type="hidden" name="' . $this->getName() . '" value="0"/>' . // add a default value
-            '<input' . $this->getAttr() . ' id="' . $this->getId() . '" class="' . $class . '" type="checkbox" ' .
-            'name="' . $this->getName() . '" value="1" ' . (($isChecked) ? 'checked="checked" ' : ' ') .
+            '<input' . ($this->getAttr() > '' ? ' ' : '') . $this->getAttr() . ' id="' . $this->getId() . '" class="' . $class . '" type="checkbox" ' .
+            'name="' . $this->getName() . '" value="1" ' . ($isChecked ? 'checked="checked" ' : '') .
             'title="' . $this->getTitle() . '"/>';
     }
 
@@ -338,17 +371,20 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
     /**
      * Create list of HTML input fields for arrays.
      *
-     * @param   mixed   $values     list of items  
-     * @param   bool    $isNumeric  true = numeric list, false = associative array
+     * @param   array  $values     list of items  
+     * @param   bool   $isNumeric  true = numeric list, false = associative array
      * @return  string 
      */
     public function buildList(array $values = array(), $isNumeric = false)
     {
-        $lang = \Yana\Translations\Facade::getInstance();
+        assert('!isset($lang); // Cannot redeclare var $lang');
+        $lang = $this->_getTranslationFacade();
+        assert('!isset($template); // Cannot redeclare var $template');
         $template = '';
 
         if (!$isNumeric) {
-            $template = '<input' . $this->getAttr() . ' size="5" type="text" name="' . $this->getName() . '[names][]" value="%s"/>' .
+            $template = '<input' . ($this->getAttr() > '' ? ' ' : '') . $this->getAttr() . ' size="5" type="text" ' .
+                'name="' . $this->getName() . '[names][]" value="%s"/>' .
                 '&nbsp;=&nbsp;<input size="10" type="text" name="' . $this->getName() . '[values][]" value="%s"/>' .
                 '<a class="buttonize" href="javascript://yanaRemoveItem(this)" ' .
                 'onclick="yanaRemoveItem(this)" title="'. $lang->getVar('remove') . '">' .
@@ -357,7 +393,8 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
                 'title="' . $lang->getVar('button_new') . '">' .
                 '<span class="icon_new">&nbsp;</span></a>';
         } else {
-            $template = '<input' . $this->getAttr() . ' size="21" type="text" name="' . $this->getName() .'[%i]" value="%s"/>' .
+            $template = '<input' . ($this->getAttr() > '' ? ' ' : '') . $this->getAttr() . ' size="21" type="text" ' .
+                'name="' . $this->getName() .'[%i]" value="%s"/>' .
                 '<a class="buttonize" href="javascript://yanaRemoveItem(this)" ' .
                 'onclick="yanaRemoveItem(this)" title="'. $lang->getVar('remove') . '">' .
                 '<span class="icon_delete">&nbsp;</span></a>' .
@@ -366,7 +403,11 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
                 '<span class="icon_new">&nbsp;</span></a>';
         }
 
-        $result = '<div class="' . (($this->getCssClass()) ? $this->getCssClass() : "gui_generator_array")  . '">';
+        assert('!isset($id); // Cannot redeclare var $id');
+        $id = $this->getId() > '' ? ' id="' . $this->getId() . '"' : ''; 
+        assert('!isset($result); // Cannot redeclare var $result');
+        $result = '<div' . $id . ' class="' . (($this->getCssClass()) ? $this->getCssClass() : "gui_generator_array")  . '">';
+        unset($id);
 
         /* list of entries*/
         $result .= '<ol>';
@@ -391,8 +432,8 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
     /**
      * Create HTML input field of type text.
      *
-     * @param   string  $value      some text, must not contain line-breaks.
-     * @param   string  $text       valid HTML type attribute.
+     * @param   string  $value  some text, must not contain line-breaks.
+     * @param   string  $type   valid HTML type attribute.
      * @return  string
      */
     public function buildTextfield($value, $type = 'text')
@@ -400,10 +441,11 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
         assert('is_string($type); // Invalid argument $text: string expected');
         assert('preg_match("/^[a-z]+$/", $type); // Invalid argument $text: must only contain characters a-z');
         $maxLength = (int) $this->getMaxLength();
-        return '<input' . $this->getAttr() .' id="' . $this->getId() . '" name="' . $this->getName() . '" ' .
+        $attr = ($this->getAttr() > '' ? ' ' : '') . $this->getAttr();
+        return '<input' . $attr .' id="' . $this->getId() . '" name="' . $this->getName() . '" ' .
             'class="' . $this->getCssClass() . '" type="' . $type . '" value="' . $value .
-            '" ' . ( ($maxLength > 0 ) ? 'maxlength="' . $maxLength . '"' : '' ) .
-            ( ($maxLength < 22 ) ? ' size="' . $maxLength . '"' : '' ) . ' title="' . $this->getTitle() . '"' . '/>';
+            '"' . ( ($maxLength > 0 ) ? ' maxlength="' . $maxLength . '"' : '' ) .
+            ( ($maxLength < 22 && $maxLength > 0 ) ? ' size="' . $maxLength . '"' : '' ) . ' title="' . $this->getTitle() . '"' . '/>';
     }
 
     /**
@@ -418,18 +460,18 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
     {
         assert('is_bool($hasDelete); // Invalid argument $hasDelete: bool expected');
         assert('is_string($mimeType); // Invalid argument $mimeType: string expected');
-        $attr = $this->getAttr();
+        $attr = ($this->getAttr() > '' ? ' ' : '') . $this->getAttr();
         if ($mimeType) {
             $attr .= ' accept="' . \Yana\Util\Strings::htmlSpecialChars($mimeType) . '"';
         }
-        if ($this->getMaxLength()) {
+        if ($this->getMaxLength() > 0) {
             $attr .= ' maxlength="' . (int) $this->getMaxLength() . '"';
         }
         $result = '<input' . $attr . ' size="1" type="file" id="' . $this->getId() . '" name="' .
             $this->getName() . '"/>';
 
         if ($hasDelete) {
-            $lang = \Yana\Translations\Facade::getInstance();
+            $lang = $this->_getTranslationFacade();
             $result .= '<label class="gui_generator_file_delete">' .
                 '<input title="' . $lang->getVar('button_delete_one') . '" type="checkbox" ' .
                 'id="' . $this->getId() . '_delete" name="' . $this->getName() . '" value="1"/>' .
@@ -448,16 +490,14 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      */
     public function buildTextarea($value)
     {
-        $check = ' cols="20"';
+        $check = 'cols="20"';
         if ($this->getMaxLength() > 2000) {
-            $check .= ' cols="30"';
+            $check = 'cols="30"';
         }
         if ($value) {
             $value = $value[0] . str_replace('[br]', "\n", substr($value, 1));
         }
-        return '<textarea' . $this->getAttr() . ' id="' . $this->getId() . '" name="' . $this->getName() .
-            '" class="' . $this->getCssClass() . '" title="' . $this->getTitle() . '" ' . $check . ' rows="3">' .
-            $value . '</textarea>';
+        return $this->_buildTag('textarea', $value, $check . ' rows="3" name="' . $this->getName() . '"');
     }
 
     /**
@@ -469,18 +509,18 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      */
     public function buildFileDownload($filename, $downloadAction)
     {
-        if (empty($filename) || !is_string($filename) || empty($downloadAction)) {
+        if (empty($filename) || !is_string($filename) || empty($downloadAction) || !is_string($downloadAction)) {
             return '<span class="icon_blank">&nbsp;</span>';
-        } else {
-            assert('is_string($filename); // Invalid argument $filename: string expected');
-            assert('is_string($downloadAction); // Invalid argument $downloadAction: string expected');
-            $lang = \Yana\Translations\Facade::getInstance();
-            $fileId = $this->_getFilenameCache()->storeFilename($filename);
-            $formatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
-            return '<a class="buttonize" title="' . $lang->getVar('title_download') . '" href="' .
-                $formatter("action={$downloadAction}&target={$fileId}", false, false) .
-                '"><span class="icon_download">&nbsp;</span></a>';
         }
+
+        assert('is_string($filename); // Invalid argument $filename: string expected');
+        assert('is_string($downloadAction); // Invalid argument $downloadAction: string expected');
+        $lang = $this->_getTranslationFacade();
+        $fileId = $this->_getFilenameCache()->storeFilename($filename);
+        $formatter = $this->_getUrlFormatter();
+        return '<a class="buttonize" title="' . $lang->getVar('title_download') . '" href="' .
+            $formatter("action={$downloadAction}&target={$fileId}", false, false) .
+            '"><span class="icon_download">&nbsp;</span></a>';
     }
 
     /**
@@ -494,15 +534,15 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
     {
         if (empty($filename) || empty($downloadAction)) {
             return '<span class="icon_blank">&nbsp;</span>';
-        } else {
-            assert('is_string($filename); // Invalid argument $filename: string expected');
-            assert('is_string($downloadAction); // Invalid argument $downloadAction: string expected');
-            $fileId = $this->_getFilenameCache()->storeFilename($filename);
-            $formatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
-            return '<a href="' . $formatter("action={$downloadAction}&target={$fileId}&fullsize=true", false, false) . '">' .
-                '<img border="0" alt="" src="' . $formatter("action={$downloadAction}&target={$fileId}", false, false) . '"/>' .
-                '</a>';
         }
+
+        assert('is_string($filename); // Invalid argument $filename: string expected');
+        assert('is_string($downloadAction); // Invalid argument $downloadAction: string expected');
+        $fileId = $this->_getFilenameCache()->storeFilename($filename);
+        $formatter = $this->_getUrlFormatter();
+        return '<a href="' . $formatter("action={$downloadAction}&target={$fileId}&fullsize=true", false, false) . '">' .
+            '<img border="0" alt="" src="' . $formatter("action={$downloadAction}&target={$fileId}", false, false) . '"/>' .
+            '</a>';
     }
 
     /**
@@ -513,7 +553,7 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      */
     public function buildColorpicker($value)
     {
-        return $this->buildTextfield($value) . \SmartUtility::colorpicker(array('id' => $this->getId()));
+        return $this->buildTextfield($value, 'color');
     }
 
     /**
@@ -524,8 +564,7 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      */
     public function buildSpan($content)
     {
-        return '<span' . $this->getAttr() . ' id="' . $this->getId() . '" title="' . $this->getTitle() . '" class="' .
-            $this->getCssClass() . '">' . $content . '</span>';
+        return $this->_buildTag('span', $content);
     }
 
     /**
@@ -536,8 +575,7 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      */
     public function buildDiv($content)
     {
-        return '<div' . $this->getAttr() . ' id="' . $this->getId() . '" title="' . $this->getTitle() . '" class="' .
-            $this->getCssClass() . '">' . $content . '</div>';
+        return $this->_buildTag('div', $content);
     }
 
     /**
@@ -548,7 +586,7 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      */
     public function buildExternalLink($url)
     {
-        $lang = \Yana\Translations\Facade::getInstance();
+        $lang = $this->_getTranslationFacade();
 
         $class = ($this->getCssClass()) ? $this->getCssClass() : 'gui_generator_ext_link';
         $title = ($this->getTitle()) ? $this->getTitle() : $lang->getVar('ext_link');
@@ -559,8 +597,47 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
         if (mb_strlen($text) > 80) {
             $text = mb_substr($text, 0, 76) . ' ...';
         }
-        return '<a' . $this->getAttr() . ' id="' . $this->getId() . '" class="' . $class . '" onclick="' . $onclick .
-            '" title="' . $title . '" href="' . $href . '">' . $text . '</a>';
+        return '<a' . ($this->getAttr() > '' ? ' ' : '') . $this->getAttr() . ' id="' . $this->getId() . '" title="' . $title . '" class="' . $class .
+            '" onclick="' . $onclick . '" href="' . $href . '">' . $text . '</a>';
+    }
+
+    /**
+     * Create input tag of type range.
+     * 
+     * @param   float   $value      numeric value
+     * @param   float   $rangeMin   lowest accepted value
+     * @param   float   $rangeMax   highest accepted value
+     * @param   float   $rangeStep  smallest possible step
+     * @return  string
+     */
+    public function buildRange($value, $rangeMin, $rangeMax, $rangeStep)
+    {
+        assert('is_float($value); // Invalid argument $value: float expected');
+        assert('is_float($rangeMin); // Invalid argument $rangeMin: float expected');
+        assert('is_float($rangeMax); // Invalid argument $rangeMax: float expected');
+        assert('is_float($rangeStep); // Invalid argument $rangeStep: float expected');
+
+        $attr = ($this->getAttr() > '' ? ' ' : '') . $this->getAttr();
+        return '<input' . $attr .' id="' . $this->getId() . '" name="' . $this->getName() . '" ' .
+            'class="' . $this->getCssClass() . '" type="range" value="' . (float) $value .
+            '" min="' . (float) $rangeMin . '" max="' . (float) $rangeMax . '" step="' . (float) $rangeStep .
+            ' title="' . $this->getTitle() . '"' .
+            ' onchange="document.getElementById(\'' . $this->getId() . 'output\').innerHTML=this.value"/>' .
+            '<output for="' . $this->getId() . '" id="' . $this->getId() . 'output">' . (float) $value . '</output>';
+    }
+
+    /**
+     * Build simple div/span/textarea tags.
+     *
+     * @param   string  $tagName  the name of the tag
+     * @param   string  $content  the content between the opening and closing tag
+     * @param   string  $more     additional attributes (if any)
+     * @return  string
+     */
+    protected function _buildTag($tagName, $content, $more = "")
+    {
+        return '<' . $tagName . ($this->getAttr() > '' ? ' ' : '') . $this->getAttr() . ' id="' . $this->getId() . '" title="' . $this->getTitle() .
+            '" class="' . $this->getCssClass() . '"' . ($more > '' ? ' ' : '') . $more . '>' . $content . '</' . $tagName . '>';
     }
 
 }

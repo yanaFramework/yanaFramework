@@ -895,15 +895,17 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
      * Checks if the column exists and sets the source column of the query to the given value.
      *
      * @param   string  $column  column name or '*' for "all"
+     * @param   string  $alias   optional column alias
      * @throws  \Yana\Db\Queries\Exceptions\InvalidSyntaxException   if table has not been initialized
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException       if a given argument is invalid
      * @throws  \Yana\Db\Queries\Exceptions\ColumnNotFoundException  if the given column is not found in the table
      * @return  \Yana\Db\Queries\AbstractQuery
      * @ignore
      */
-    protected function setColumn($column = '*')
+    protected function setColumn($column = '*', $alias = "")
     {
         assert('is_string($column); // Wrong type for argument 1. String expected');
+        assert('is_string($alias); // Wrong type for argument 2. String expected');
         $this->resetId();
 
         /**
@@ -963,8 +965,11 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
             /*
              * 3.3) set column
              */
-            $this->column = array(array($this->tableName, mb_strtolower($column)));
-            if ($this->row !== '*' || $this->expectedResult === \Yana\Db\ResultEnumeration::ROW) {
+            assert('!isset($columnValue); // Cannot redeclare var $columnValue');
+            $this->column = array();
+            $alias = $alias > "" ? (string) $alias : 0;
+            $this->column[$alias] = array($this->tableName, mb_strtolower($column));
+            if ($this->row !== '*' || $this->getExpectedResult() === \Yana\Db\ResultEnumeration::ROW) {
                 $this->expectedResult = \Yana\Db\ResultEnumeration::CELL;
             } else {
                 if (!$this->currentTable()->getColumn($column)->isPrimaryKey()) {

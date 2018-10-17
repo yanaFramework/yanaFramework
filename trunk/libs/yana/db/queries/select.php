@@ -215,7 +215,7 @@ class Select extends \Yana\Db\Queries\SelectCount
      * Returns bool(true) on success and bool(false) on error.
      *
      * @param   string  $column  column name
-     * @param   scalar  $alias   optional column alias
+     * @param   string  $alias   optional column alias
      * @name    DbQuery::setColumns()
      * @see     DbQuery::setColumn()
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if a given argument is invalid
@@ -225,6 +225,7 @@ class Select extends \Yana\Db\Queries\SelectCount
     public function addColumn($column, $alias = "")
     {
         assert('is_string($column); // Wrong argument type argument 1. String expected');
+        assert('is_string($alias); // Wrong argument type argument 2. String expected');
 
         // reset query id
         $this->resetId();
@@ -816,13 +817,12 @@ class Select extends \Yana\Db\Queries\SelectCount
             case \Yana\Db\ResultEnumeration::ROW:
             case \Yana\Db\ResultEnumeration::CELL:
                 return (int) $this->doesExist();
-            break;
+
             case \Yana\Db\ResultEnumeration::TABLE:
                 return count($this->getResults());
-            break;
+
             default:
                 return 0;
-            break;
         }
     }
 
@@ -932,7 +932,6 @@ class Select extends \Yana\Db\Queries\SelectCount
                         default:
                             throw new \Yana\Core\Exceptions\InvalidArgumentException("Syntax error. " .
                                 "The input is not a valid key address.");
-                        break;
                     } // end switch
                     // decode cell
                     assert('$column instanceof \Yana\Db\Ddl\Column;');
@@ -957,7 +956,6 @@ class Select extends \Yana\Db\Queries\SelectCount
                     default:
                         throw new \Yana\Core\Exceptions\InvalidArgumentException("Syntax error. " .
                             "The input is not a valid key address.");
-                    break;
                 } // end switch
             } // end foreach (column)
             unset($alias, $value, $refKey);

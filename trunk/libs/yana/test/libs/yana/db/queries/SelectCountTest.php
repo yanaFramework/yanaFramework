@@ -39,7 +39,7 @@ class SelectCountTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var  \Yana\Db\Queries\AbstractQuery
+     * @var  \Yana\Db\Queries\SelectCount
      */
     protected $query;
 
@@ -81,15 +81,21 @@ class SelectCountTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Yana\Db\Queries\SelectCount::setColumn
-     * @todo   Implement testSetColumn().
+     * @test
      */
     public function testSetColumn()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->query->setTable('t');
+        $this->assertEquals('tid', $this->query->setColumn('tid')->getColumn());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetColumnWithAlias()
+    {
+        $this->query->setTable('t');
+        $this->assertEquals('tid', $this->query->setColumn('tid', 'alias')->getColumn('alias'));
     }
 
     /**
@@ -98,7 +104,7 @@ class SelectCountTest extends \PHPUnit_Framework_TestCase
     public function testGetColumn()
     {
         $this->query->setTable('t');
-        $this->assertEquals('tid', $this->query->setColumn('tid')->getColumn());
+        $this->assertEquals('*', $this->query->getColumn());
     }
 
     /**
@@ -111,15 +117,30 @@ class SelectCountTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Yana\Db\Queries\SelectCount::countResults
-     * @todo   Implement testCountResults().
+     * @test
      */
     public function testCountResults()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->query->setTable('t');
+        $this->assertSame(0, $this->query->countResults());
+    }
+
+    /**
+     * @test
+     */
+    public function testToStringTable()
+    {
+        $this->query->setTable('t');
+        $this->assertSame('SELECT count(*) FROM t', (string) $this->query);
+    }
+
+    /**
+     * @test
+     */
+    public function testToStringColumn()
+    {
+        $this->query->setTable('t')->setColumn('tid');
+        $this->assertSame('SELECT count(t.tid) FROM t', (string) $this->query);
     }
 
 }

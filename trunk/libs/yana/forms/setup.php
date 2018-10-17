@@ -158,8 +158,9 @@ class Setup extends \Yana\Core\Object implements \Yana\Forms\IsSetup
      * Returns the context settings with the specified name.
      * If the context does not exist, it is created.
      *
-     * @param   string  $name  context name
+     * @param   string  $name  describes what the form does (insert, update, search, read)
      * @return  \Yana\Forms\Setups\Context
+     * @see \Yana\Forms\Setups\ContextNameEnumeration
      */
     public function getContext($name)
     {
@@ -189,16 +190,12 @@ class Setup extends \Yana\Core\Object implements \Yana\Forms\IsSetup
      * Stores the given context settings under the specified name.
      * If the context does not exist, it is created.
      *
-     * @param   string            $name     context name
      * @param   \Yana\Forms\Setups\Context  $context  context settings
-     * @return  \Yana\Forms\Setup 
+     * @return  $this
      */
-    public function setContext($name, \Yana\Forms\Setups\Context $context)
+    public function setContext(\Yana\Forms\Setups\Context $context)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
-        if (!isset($this->_contexts[$name])) {
-            $this->_contexts[$name] = new \Yana\Forms\Setups\Context($name);
-        }
+        $this->_contexts[$context->getContextName()] = $context;
         return $this;
     }
 
@@ -219,9 +216,9 @@ class Setup extends \Yana\Core\Object implements \Yana\Forms\IsSetup
      * To do this, just add a foreign-key reference by naming the source and target column,
      * plus the column you wish to use as a label.
      *
-     * @param   string       $columnName  name of source column
-     * @param   \Yana\Db\Ddl\Reference $foreignKey  settings of source reference
-     * @return  \Yana\Forms\Setup 
+     * @param   string                  $columnName  name of source column
+     * @param   \Yana\Db\Ddl\Reference  $foreignKey  settings of source reference
+     * @return  $this
      */
     public function addForeignKeyReference($columnName, \Yana\Db\Ddl\Reference $foreignKey)
     {
@@ -450,10 +447,12 @@ class Setup extends \Yana\Core\Object implements \Yana\Forms\IsSetup
     public function getReferenceValues($columnName)
     {
         assert('is_string($columnName); // Invalid argument $name: string expected');
-        $columnName = strtoupper($columnName);
+        assert('!isset($columnNameUpper); // Cannot redeclare $columnNameUpper');
+        $columnNameUpper = strtoupper($columnName);
+        assert('!isset($values); // Cannot redeclare $values');
         $values = array();
-        if (isset($this->_referenceValues[$columnName]) && is_array($this->_referenceValues[$columnName])) {
-            $values = $this->_referenceValues[$columnName];
+        if (isset($this->_referenceValues[$columnNameUpper]) && is_array($this->_referenceValues[$columnNameUpper])) {
+            $values = $this->_referenceValues[$columnNameUpper];
         }
         return $values;
     }
@@ -610,7 +609,7 @@ class Setup extends \Yana\Core\Object implements \Yana\Forms\IsSetup
     public function setSearchAction($action)
     {
         assert('is_string($action); // Wrong type for argument 1. String expected');
-        $this->getContext('search')->setAction($action);
+        $this->getContext(\Yana\Forms\Setups\ContextNameEnumeration::SEARCH)->setAction($action);
         return $this;
     }
 
@@ -621,7 +620,7 @@ class Setup extends \Yana\Core\Object implements \Yana\Forms\IsSetup
      */
     public function getSearchAction()
     {
-        return $this->getContext('search')->getAction();
+        return $this->getContext(\Yana\Forms\Setups\ContextNameEnumeration::SEARCH)->getAction();
     }
 
     /**
@@ -633,7 +632,7 @@ class Setup extends \Yana\Core\Object implements \Yana\Forms\IsSetup
     public function setInsertAction($action)
     {
         assert('is_string($action); // Wrong type for argument 1. String expected');
-        $this->getContext('insert')->setAction($action);
+        $this->getContext(\Yana\Forms\Setups\ContextNameEnumeration::INSERT)->setAction($action);
         return $this;
     }
 
@@ -644,7 +643,7 @@ class Setup extends \Yana\Core\Object implements \Yana\Forms\IsSetup
      */
     public function getInsertAction()
     {
-        return $this->getContext('insert')->getAction();
+        return $this->getContext(\Yana\Forms\Setups\ContextNameEnumeration::INSERT)->getAction();
     }
 
     /**
@@ -656,7 +655,7 @@ class Setup extends \Yana\Core\Object implements \Yana\Forms\IsSetup
     public function setUpdateAction($action)
     {
         assert('is_string($action); // Wrong type for argument 1. String expected');
-        $this->getContext('update')->setAction($action);
+        $this->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE)->setAction($action);
         return $this;
     }
 
@@ -667,7 +666,7 @@ class Setup extends \Yana\Core\Object implements \Yana\Forms\IsSetup
      */
     public function getUpdateAction()
     {
-        return $this->getContext('update')->getAction();
+        return $this->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE)->getAction();
     }
 
     /**

@@ -81,39 +81,32 @@ class SelectExistTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Yana\Db\Queries\SelectExist::setWhere
-     * @todo   Implement testSetWhere().
+     * @test
      */
     public function testSetWhere()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->query->setTable('t');
+        $having = array('tvalue', '=', 1);
+        $this->assertSame(array(array('t', 'tvalue'), '=', '1'), $this->query->setWhere($having)->getWhere());
     }
 
     /**
-     * @covers Yana\Db\Queries\SelectExist::addWhere
-     * @todo   Implement testAddWhere().
+     * @test
      */
     public function testAddWhere()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->query->setTable('t');
+        $having = $this->query->addWhere(array('tvalue', '>', 1))->addWhere(array('tvalue', '=', 2))->getWhere();
+        $expected = array(array(array('t', 'tvalue'), '=', '2'), 'and', array(array('t', 'tvalue'), '>', '1'));
+        $this->assertEquals($expected, $having);
     }
 
     /**
-     * @covers Yana\Db\Queries\SelectExist::getWhere
-     * @todo   Implement testGetWhere().
+     * @test
      */
     public function testGetWhere()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame(array(), $this->query->getWhere());
     }
 
     /**
@@ -165,27 +158,62 @@ class SelectExistTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Yana\Db\Queries\SelectExist::getJoins
-     * @todo   Implement testGetJoins().
+     * @test
      */
     public function testGetJoins()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame(array(), $this->query->getJoins());
     }
 
     /**
-     * @covers Yana\Db\Queries\SelectExist::doesExist
-     * @todo   Implement testDoesExist().
+     * @test
      */
     public function testDoesExist()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->query->setTable('t');
+        $this->assertFalse($this->query->doesExist());
+    }
+
+    /**
+     * @test
+     */
+    public function testToString()
+    {
+        $this->query->setTable('t');
+        $this->assertSame('SELECT 1 FROM t', (string) $this->query);
+    }
+
+    /**
+     * @test
+     */
+    public function testToStringWithRow()
+    {
+        $this->query->setTable('t')->setRow('1');
+        $this->assertSame('SELECT 1 FROM t WHERE t.tid = ' . \YANA_DB_DELIMITER . '1' . \YANA_DB_DELIMITER, (string) $this->query);
+    }
+
+    /**
+     * @test
+     */
+    public function testToStringWithWhere()
+    {
+        $this->query->setTable('t')->setRow('1')->addWhere(array('tvalue', '>', '2'))->addWhere(array('tvalue', '<', '5'));
+        $expected = 'SELECT 1 FROM t WHERE t.tid = ' . \YANA_DB_DELIMITER . '1' . \YANA_DB_DELIMITER .
+            ' AND t.tvalue < ' . \YANA_DB_DELIMITER . '5' . \YANA_DB_DELIMITER .
+            ' AND t.tvalue > ' . \YANA_DB_DELIMITER . '2' . \YANA_DB_DELIMITER;
+        $this->assertSame($expected, (string) $this->query);
+    }
+
+    /**
+     * @test
+     */
+    public function testToStringWitJoin()
+    {
+        $this->query->setTable('t')->setInnerJoin('ft', 'ftid')->setRow('1')->addWhere(array('tvalue', '>', '2'))->addWhere(array('tvalue', '<', '5'));
+        $expected = 'SELECT 1 FROM t JOIN ft ON t.ftid = ft.ftid WHERE t.tid = ' . \YANA_DB_DELIMITER . '1' . \YANA_DB_DELIMITER .
+            ' AND t.tvalue < ' . \YANA_DB_DELIMITER . '5' . \YANA_DB_DELIMITER .
+            ' AND t.tvalue > ' . \YANA_DB_DELIMITER . '2' . \YANA_DB_DELIMITER;
+        $this->assertSame($expected, (string) $this->query);
     }
 
 }

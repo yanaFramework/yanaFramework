@@ -113,6 +113,34 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($columns[1], $this->query->getColumn(1));
         $this->assertEquals($columns[2], $this->query->getColumn(2));
         $this->assertEquals($columns[3], $this->query->getColumn(3));
+        $this->assertEquals(\Yana\Db\ResultEnumeration::TABLE, $this->query->getExpectedResult());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetColumnsWithAlias()
+    {
+        $this->query->setTable('t');
+        $columns = array('a' => 'tid', 'b' => 'tvalue', 'c' => 'ti', 'd' => 'ftid');
+        $this->query->setColumns($columns);
+        $this->assertEquals($columns['a'], $this->query->getColumn('A'));
+        $this->assertEquals($columns['b'], $this->query->getColumn('B'));
+        $this->assertEquals($columns['c'], $this->query->getColumn('C'));
+        $this->assertEquals($columns['d'], $this->query->getColumn('D'));
+        $this->assertEquals('*', $this->query->getColumn('a'));
+        $this->assertEquals(\Yana\Db\ResultEnumeration::TABLE, $this->query->getExpectedResult());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetColumnsWithRow()
+    {
+        $this->query->setTable('t');
+        $columns = array('tid', 'tvalue', 'ti', 'ftid');
+        $this->query->setRow('1')->setColumns($columns);
+        $this->assertEquals(\Yana\Db\ResultEnumeration::ROW, $this->query->getExpectedResult());
     }
 
     /**
@@ -155,6 +183,16 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($columns[1], $this->query->getColumn(1));
         $this->assertEquals($columns[2], $this->query->getColumn(2));
         $this->assertEquals($columns[3], $this->query->getColumn(3));
+    }
+
+    /**
+     * @test
+     */
+    public function testAddColumnWithAlias()
+    {
+        $this->query->setTable('t');
+        $this->query->addColumn('tid', 'alias');
+        $this->assertEquals('tid', $this->query->getColumn('alias'));
     }
 
     /**
@@ -255,6 +293,17 @@ class SelectTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testAddHavingWithOr()
+    {
+        $this->query->setTable('t');
+        $having = $this->query->addHaving(array('tvalue', '>', 1), false)->addHaving(array('tvalue', '=', 2), false)->getHaving();
+        $expected = array(array(array('t', 'tvalue'), '>', '1'), 'or', array(array('t', 'tvalue'), '=', '2'));
+        $this->assertSame($expected, $having);
+    }
+
+    /**
+     * @test
+     */
     public function testGetHaving()
     {
         $this->assertSame(array(), $this->query->getHaving());
@@ -324,7 +373,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $this->query->setRow('1');
         $actual = $this->query->toCSV();
         $this->assertEquals($expected, $actual, "CSV export invalid when querying row.");
-        // retriev single cell from table
+        // retrieve single cell from table
         $this->query->setColumn("tvalue");
         $actual = $this->query->toCSV();
         $expected = "\"tvalue\"\n\"1\"\n";
@@ -394,39 +443,51 @@ class SelectTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Yana\Db\Queries\Select::setNaturalJoin
-     * @todo   Implement testSetNaturalJoin().
+     * @test
      */
     public function testSetNaturalJoin()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->query->setTable('t');
+        $join = $this->query->setNaturalJoin('ft')->getJoin('ft');
+        $this->assertFalse($join->isNaturalJoin());
+        $this->assertTrue($join->isInnerJoin());
+        $this->assertEquals([['t', 'ftid'], '=', ['ft', 'ftid']], $this->query->getWhere());
     }
 
     /**
-     * @covers Yana\Db\Queries\Select::countResults
-     * @todo   Implement testCountResults().
+     * @test
+     * @expectedException \Yana\Db\Queries\Exceptions\TableNotFoundException
+     */
+    public function testSetNaturalJoinTableNotFoundException()
+    {
+        $this->query->setTable('t')->setNaturalJoin('no-such-table');
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Db\Queries\Exceptions\ConstraintException
+     */
+    public function testSetNaturalJoinConstraintException()
+    {
+        $this->query->setTable('t')->setNaturalJoin('u');
+    }
+
+    /**
+     * @test
      */
     public function testCountResults()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->query->setTable('t');
+        $this->assertSame(0, $this->query->countResults());
     }
 
     /**
-     * @covers Yana\Db\Queries\Select::getResults
-     * @todo   Implement testGetResults().
+     * @test
      */
     public function testGetResults()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->query->setTable('t');
+        $this->assertSame(array(), $this->query->getResults());
     }
 
     /**

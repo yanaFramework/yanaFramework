@@ -64,6 +64,7 @@ abstract class AbstractAlgorithm extends \Yana\Core\Object implements \Yana\Secu
      *
      * @return  \Yana\Security\Passwords\IsAlgorithm
      * @throws  \Yana\Core\Exceptions\NotImplementedException  when no algorithm is set
+     * @codeCoverageIgnore
      */
     protected function _getFallback()
     {

@@ -69,6 +69,7 @@ class UrlFormatterTest extends \PHPUnit_Framework_TestCase
         \Yana\Views\Helpers\Formatters\UrlFormatter::setBaseUrl('test');
         $_SERVER['PHP_SELF'] = "";
         $this->assertSame('http://test?&amp;a=1&amp;b=2', $this->object->__invoke('a=1&b=2'));
+        \Yana\Views\Helpers\Formatters\UrlFormatter::setBaseUrl('');
     }
 
 }

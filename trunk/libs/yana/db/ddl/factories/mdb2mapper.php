@@ -25,160 +25,18 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Db\Ddl;
+namespace Yana\Db\Ddl\Factories;
 
 /**
- * Database structure.
+ * MDB2 to database mapper.
  *
- * This wrapper class represents the structure of a database.
- *
- * "Database" is the root level element of a XDDL document.
- * It may contain several child elements.
- * Those may be seperated to 5 basic groups: Tables, Views, Forms, Functions and
- * Change-logs.
- *
- * The database element defines basic properties of the database itself, as well
- * as information for the client and applications that may connect with the
- * database.
+ * Maps MDB2 table info arrays to a database object.
  *
  * @package     yana
  * @subpackage  db
  */
-class DatabaseFactory extends \Yana\Db\Ddl\Database
+class Mdb2Mapper extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories\IsMdb2Mapper
 {
-
-    /**
-     * create database from tableInfo
-     *
-     * Try to extract some information on the structure of a database from the
-     * information provided by PEAR-MDB2's Reverse module.
-     *
-     * @param   \MDB2_Driver_Common  $connection  MDB2 database connection
-     * @return  \Yana\Db\Ddl\Database
-     * @throws  \Yana\Db\ConnectionException  when unable to open connection to database
-     */
-    public static function createDatabase(\MDB2_Driver_Common $connection)
-    {
-        $connection->loadModule('Manager');
-        $connection->loadModule('Reverse');
-
-        /*
-         * build database
-         */
-        $name = $connection->getDatabase();
-        if ($name instanceof \MDB2_Error) {
-            throw new \Yana\Db\ConnectionException($name->getMessage());
-        }
-        $database = new \Yana\Db\Ddl\Database($name);
-        unset($name);
-
-        /*
-         * build sequences
-         */
-        $sequences = $connection->listSequences();
-        if ($sequences instanceof \MDB2_Error) {
-            throw new \Yana\Db\DatabaseException($sequences->getMessage());
-        }
-        foreach($sequences as $name)
-        {
-            $info = $connection->getSequenceDefinition($name);
-            if ($info instanceof \MDB2_Error) {
-                throw new \Yana\Db\DatabaseException($info->getMessage());
-            }
-            assert('is_array($info);');
-            self::createSequence($database, $info, $name);
-        }
-        unset($sequences, $info, $name);
-
-        /*
-         * build tables
-         */
-        $tables = $connection->listTables();
-        if ($tables instanceof \MDB2_Error) {
-            throw new \Yana\Db\DatabaseException($tables->getMessage());
-        }
-
-        foreach ($tables as $tableName)
-        {
-            // remove prefix
-            $name = preg_replace('/^' . preg_quote(YANA_DATABASE_PREFIX, '/') . '/', '', $tableName);
-            $table = $database->addTable($name); // get \Yana\Db\Ddl\Table object
-            unset($name);
-
-            /*
-             * get column information
-             */
-            assert('!isset($columns); // Cannot redeclare var $columns');
-            $columns = $connection->listTableFields($tableName);
-            if ($columns instanceof \MDB2_Error) {
-                throw new \Yana\Db\DatabaseException($columns->getMessage());
-            }
-            assert('!isset($info); // Cannot redeclare var $info');
-            assert('!isset($name); // Cannot redeclare var $name');
-            /* @var $name string */
-            foreach ($columns as $name)
-            {
-                $info = $connection->getTableFieldDefinition($tableName, $name);
-                if ($info instanceof \MDB2_Error) {
-                    throw new \Yana\Db\DatabaseException($info->getMessage());
-                }
-                /* MDB2 "suggests" multiple options for data-types.
-                 * Since we don't know which is the best guess we simply take the first one.
-                 */
-                $info = array_shift($info);
-                assert('is_array($info);');
-                self::createColumn($table, $info, $name);
-            }
-            unset($info, $name, $columns);
-
-            /*
-             * get index information
-             */
-            assert('!isset($indexes); // Cannot redeclare var $indexes');
-            $indexes = $connection->listTableIndexes($tableName);
-            if ($indexes instanceof \MDB2_Error) {
-                throw new \Yana\Db\DatabaseException($indexes->getMessage());
-            }
-            assert('!isset($info); // Cannot redeclare var $info');
-            assert('!isset($name); // Cannot redeclare var $name');
-            /* @var $name string */
-            foreach ($indexes as $name)
-            {
-                $info = $connection->getTableIndexDefinition($tableName, $name);
-                if ($info instanceof \MDB2_Error) {
-                    throw new \Yana\Db\DatabaseException($info->getMessage());
-                }
-                assert('is_array($info);');
-                self::createIndex($table, $info, $name);
-            }
-            unset($info, $name, $indexes);
-
-            /*
-             * get constraint/foreign key information
-             */
-            assert('!isset($constraints); // Cannot redeclare var $constraints');
-            $constraints = $connection->listTableConstraints($tableName);
-            if ($constraints instanceof \MDB2_Error) {
-                throw new \Yana\Db\DatabaseException($constraints->getMessage());
-            }
-            assert('!isset($info); // Cannot redeclare var $info');
-            assert('!isset($name); // Cannot redeclare var $name');
-            /* @var $name string */
-            foreach ($constraints as $name)
-            {
-                $info = $connection->getTableConstraintDefinition($tableName, $name);
-                if ($info instanceof \MDB2_Error) {
-                    throw new \Yana\Db\DatabaseException($info->getMessage());
-                }
-                assert('is_array($info);');
-                self::createConstraint($table, $info, $name);
-            }
-            unset($info, $name, $constraints);
-
-        } // end foreach
-
-        return $database;
-    }
 
     /**
      * Add a sequence to database.
@@ -193,15 +51,16 @@ class DatabaseFactory extends \Yana\Db\Ddl\Database
      * @param   \Yana\Db\Ddl\Database  $database  database to add sequence to
      * @param   array        $info      sequence information
      * @param   string       $name      sequence name
-     * @ignore
+     * @return  $this
      */
-    protected static function createSequence(\Yana\Db\Ddl\Database $database, array $info, $name)
+    public function createSequence(\Yana\Db\Ddl\Database $database, array $info, $name)
     {
         $sequence = $database->addSequence($name);
         if (isset($info['start'])) {
             $sequence->setStart($info['start']);
         }
-        /* These seem to be currently not supported by MDB2:
+        // These seem to be currently not supported by MDB2:
+        // @codeCoverageIgnoreStart
         if (isset($info['min'])) {
             $sequence->setMin((int) $info['min']);
         }
@@ -214,7 +73,8 @@ class DatabaseFactory extends \Yana\Db\Ddl\Database
         if (!empty($info['cycle'])) {
             $sequence->setCycle(true);
         }
-        */
+        // @codeCoverageIgnoreEnd
+        return $this;
     }
 
     /**
@@ -233,9 +93,9 @@ class DatabaseFactory extends \Yana\Db\Ddl\Database
      * @param   \Yana\Db\Ddl\Table  $table  table to add index to
      * @param   array     $info   index information
      * @param   string    $name   index name
-     * @ignore
+     * @return  $this
      */
-    protected static function createIndex(\Yana\Db\Ddl\Table $table, array $info, $name)
+    public function createIndex(\Yana\Db\Ddl\Table $table, array $info, $name)
     {
         $index = $table->addIndex($name);
         foreach ($info['fields'] as $fieldName => $sorting)
@@ -247,6 +107,7 @@ class DatabaseFactory extends \Yana\Db\Ddl\Database
             }
             $index->addColumn($fieldName, $isAscending);
         }
+        return $this;
     }
 
     /**
@@ -287,9 +148,9 @@ class DatabaseFactory extends \Yana\Db\Ddl\Database
      * @param   string    $name   constraint name
      * @throws  \Yana\Core\Exceptions\NotImplementedException  when trying to use a compound primary key
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException   when number of source and target columns in constraint is different
-     * @ignore
+     * @return  $this
      */
-    protected static function createConstraint(\Yana\Db\Ddl\Table $table, array $info, $name)
+    public function createConstraint(\Yana\Db\Ddl\Table $table, array $info, $name)
     {
         switch (true)
         {
@@ -398,6 +259,7 @@ class DatabaseFactory extends \Yana\Db\Ddl\Database
                 throw new \Yana\Core\Exceptions\NotImplementedException();
             break;
         } // end switch(true)
+        return $this;
     }
 
 
@@ -421,9 +283,9 @@ class DatabaseFactory extends \Yana\Db\Ddl\Database
      * @param   array     $info   column information
      * @param   string    $name   column name
      * @throws  \Yana\Core\Exceptions\NotImplementedException  when the given 'type' of column is unknwon
-     * @ignore
+     * @return  $this
      */
-    protected static function createColumn(\Yana\Db\Ddl\Table $table, array $info, $name)
+    public function createColumn(\Yana\Db\Ddl\Table $table, array $info, $name)
     {
         /*
          * set type
@@ -545,6 +407,7 @@ class DatabaseFactory extends \Yana\Db\Ddl\Database
         if (isset($info['default']) && $info['default'] != "") {
             $column->setDefault($info['default']);
         }
+        return $this;
     }
 }
 

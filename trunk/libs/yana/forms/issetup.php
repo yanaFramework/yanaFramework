@@ -65,11 +65,10 @@ interface IsSetup
      * Stores the given context settings under the specified name.
      * If the context does not exist, it is created.
      *
-     * @param   string            $name     context name
      * @param   \Yana\Forms\Setups\Context  $context  context settings
-     * @return  \Yana\Forms\Setup 
+     * @return  $this
      */
-    public function setContext($name, \Yana\Forms\Setups\Context $context);
+    public function setContext(\Yana\Forms\Setups\Context $context);
 
     /**
      * This returns an array of foreign-key reference settings.
@@ -87,7 +86,7 @@ interface IsSetup
      *
      * @param   string       $columnName  name of source column
      * @param   \Yana\Db\Ddl\Reference $foreignKey  settings of source reference
-     * @return  \Yana\Forms\Setup 
+     * @return  $this
      */
     public function addForeignKeyReference($columnName, \Yana\Db\Ddl\Reference $foreignKey);
 

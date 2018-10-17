@@ -180,27 +180,34 @@ class Builder extends \Yana\Core\Object implements \Yana\Forms\Setups\IsBuilder
      */
     public function updateValues(array $request = array())
     {
+        assert('!isset($setup); // Cannot redeclare var $setup');
         $setup = $this->object;
 
+        assert('!isset($contextNames); // Cannot redeclare var $contextNames');
         $contextNames = array();
         if ($setup->getInsertAction()) {
-            $contextNames[] = 'insert';
+            $contextNames[] = \Yana\Forms\Setups\ContextNameEnumeration::INSERT;
         }
         if ($setup->getSearchAction()) {
-            $contextNames[] = 'search';
+            $contextNames[] = \Yana\Forms\Setups\ContextNameEnumeration::SEARCH;
         }
         if ($setup->getUpdateAction()) {
-            $contextNames[] = 'update';
+            $contextNames[] = \Yana\Forms\Setups\ContextNameEnumeration::UPDATE;
         }
 
+        assert('!isset($name); // Cannot redeclare var $name');
         foreach ($contextNames as $name)
         {
             if (!isset($request[$name]) || !is_array($request[$name])) {
                 continue;
             }
+        assert('!isset($context); // Cannot redeclare var $context');
+        assert('!isset($columnNames); // Cannot redeclare var $columnNames');
             $context = $setup->getContext($name);
-            if ($name == 'update') {
-                $columnNames = array_flip($setup->getContext('editable')->getColumnNames());
+            if ($name === \Yana\Forms\Setups\ContextNameEnumeration::UPDATE) {
+                $columnNames = array_flip($setup->getContext(\Yana\Forms\Setups\ContextNameEnumeration::EDITABLE)->getColumnNames());
+                assert('!isset($key); // Cannot redeclare var $key');
+                assert('!isset($row); // Cannot redeclare var $row');
                 foreach ($request[$name] as $key => $row)
                 {
                     if (is_array($row)) {
@@ -209,13 +216,19 @@ class Builder extends \Yana\Core\Object implements \Yana\Forms\Setups\IsBuilder
                         $context->updateRow($key, $row);
                     }
                 }
+                unset($key, $row);
             } else {
                 $columnNames = array_flip($context->getColumnNames());
+                assert('!isset($values); // Cannot redeclare var $values');
                 // security check: allow only fields, that exist in the form
                 $values = array_intersect_key($request[$name], $columnNames);
                 $context->setValues($values);
+                unset($values);
             }
+            unset($context, $columnNames);
         }
+        unset($name);
+
         return $this;
     }
 
@@ -227,7 +240,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Forms\Setups\IsBuilder
      */
     public function setRows(array $rows = array())
     {
-        $this->object->getContext('update')->setRows($rows);
+        $this->object->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE)->setRows($rows);
         $this->_buildHeader();
         $this->_buildFooter();
         return $this;
@@ -253,7 +266,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Forms\Setups\IsBuilder
             'LAST_PAGE' => $lastPage
         );
         $header = \Yana\Util\Strings::replaceToken($this->_getDependencyContainer()->getLanguage()->getVar("DESCR_SHOW"), $params);
-        $this->object->getContext('update')->setHeader($header);
+        $this->object->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE)->setHeader($header);
         return $this;
     }
 
@@ -264,7 +277,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Forms\Setups\IsBuilder
      */
     private function _buildFooter()
     {
-        $context = $this->object->getContext('update');
+        $context = $this->object->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE);
         $entriesPerPage = $this->object->getEntriesPerPage();
         $pageCount = $this->object->getPageCount();
         $lastPage = $pageCount - 1;
@@ -526,10 +539,10 @@ class Builder extends \Yana\Core\Object implements \Yana\Forms\Setups\IsBuilder
                 }
             }
         }
-        $this->object->getContext('editable')->setColumnNames(array_keys($updateCollection->toArray()));
-        $this->object->getContext('update')->setColumnNames(array_keys($readCollection->toArray()));
-        $this->object->getContext('insert')->setColumnNames(array_keys($insertCollection->toArray()));
-        $this->object->getContext('search')->setColumnNames(array_keys($searchCollection->toArray()));
+        $this->object->getContext(\Yana\Forms\Setups\ContextNameEnumeration::EDITABLE)->setColumnNames(array_keys($updateCollection->toArray()));
+        $this->object->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE)->setColumnNames(array_keys($readCollection->toArray()));
+        $this->object->getContext(\Yana\Forms\Setups\ContextNameEnumeration::INSERT)->setColumnNames(array_keys($insertCollection->toArray()));
+        $this->object->getContext(\Yana\Forms\Setups\ContextNameEnumeration::SEARCH)->setColumnNames(array_keys($searchCollection->toArray()));
         $this->_applyWhitelistColumnNames();
         $this->_buildForeignKeyReferences($readCollection);
         return $this;

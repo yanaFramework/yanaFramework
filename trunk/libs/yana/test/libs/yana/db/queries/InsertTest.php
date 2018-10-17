@@ -89,27 +89,12 @@ class InsertTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Yana\Db\Queries\Insert::__clone
-     * @todo   Implement test__clone().
-     */
-    public function test__clone()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers Yana\Db\Queries\Insert::resetQuery
-     * @todo   Implement testResetQuery().
+     * @test
      */
     public function testResetQuery()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->query->setSanitizer(new \Yana\Db\Helpers\NullSanitizer());
+        $this->assertNull($this->query->setTable('t')->setValues(array('tid' => 1))->resetQuery()->getValues());
     }
 
     /**
@@ -154,18 +139,6 @@ class InsertTest extends \PHPUnit_Framework_TestCase
     public function testGetValues()
     {
         $this->assertNull($this->query->getValues());
-    }
-
-    /**
-     * @covers Yana\Db\Queries\Insert::sendQuery
-     * @todo   Implement testSendQuery().
-     */
-    public function testSendQuery()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
     }
 
     /**

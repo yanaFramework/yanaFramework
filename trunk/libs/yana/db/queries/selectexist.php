@@ -281,9 +281,6 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery
         if (!empty($this->joins)) {
             $table = $this->db->quoteId(YANA_DATABASE_PREFIX . $this->getTable());
 
-            assert('!isset($_where); // cannot redeclare variable $_where   ');
-            $_where = array();
-
             assert('!isset($tableName); // cannot redeclare variable $tableName');
             assert('!isset($join); // cannot redeclare variable $join');
             foreach ($this->joins as $tableName => $join)
@@ -316,22 +313,6 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery
                 }
             } /* end foreach */
             unset($tableName, $join);
-
-            if (count($_where) > 0) {
-                assert('!isset($clause); // Cannot redeclare $clause');
-                foreach ($_where as $clause)
-                {
-                    if ($where === '') {
-                        $where = 'WHERE ';
-                    } else {
-                        $where .= ' AND ';
-                    }
-                    $where .= YANA_DATABASE_PREFIX.$clause[0] . ' = ' . YANA_DATABASE_PREFIX.$clause[1] . ' ';
-
-                }
-                unset($clause);
-            }
-            unset($_where);
 
             $stmt = str_replace('%TABLE%', $table, $stmt);
         }

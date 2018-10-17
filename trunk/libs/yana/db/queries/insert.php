@@ -127,6 +127,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
      * Note: the cloned object will use the same database connection, since
      * connection are resources, which may not be cloned.
      *
+     * @codeCoverageIgnore
      */
     public function __clone()
     {
@@ -286,11 +287,13 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
 
             // UPDATE statements only
             default:
+                // @codeCoverageIgnoreStart
                 if ($isInsert) {
                     // this point should be impossible to reach
                     $_message = "You may only insert rows - not cells or columns.";
                     throw new \Yana\Db\Queries\Exceptions\InvalidResultTypeException($_message);
                 }
+                // @codeCoverageIgnoreEnd
                 assert('!$isInsert; // May only insert rows, not tables, cells or columns');
                 if (empty($this->arrayAddress) && isset($this->column[0]) && is_array($this->column[0])) {
                     assert('count($this->column) === 1;');

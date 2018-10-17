@@ -112,19 +112,19 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
         $setup = $field->getForm()->getSetup();
         switch ($field->getContext()->getContextName())
         {
-            case 'update':
+            case \Yana\Forms\Setups\ContextNameEnumeration::UPDATE:
                 if ($field->isUpdatable() && $field->getForm()->getSetup()->getUpdateAction()) {
                     $this->_setIdByRow($field);
                     return $this->buildByTypeUpdatable($field, $setup) . $this->createLink($field);
                 }
             // fall through
-            case 'read':
+            case \Yana\Forms\Setups\ContextNameEnumeration::READ:
                 $this->_setCssClass($field);
                 return $this->buildByTypeNonUpdatable($field, $setup) . $this->createLink($field);
-            case 'search':
+            case \Yana\Forms\Setups\ContextNameEnumeration::SEARCH:
                 $this->_setId($field);
                 return $this->buildByTypeSearchfield($field, $setup);
-            case 'insert':
+            case \Yana\Forms\Setups\ContextNameEnumeration::INSERT:
                 $this->_setId($field);
                 return $this->buildByTypeUpdatable($field, $setup);
             default:
@@ -218,23 +218,13 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
             case 'range':
                 $rangeStep = $column->getRangeStep();
                 if (empty($rangeStep)) {
-                    $rangeStep = 1;
+                    $rangeStep = 1.0;
                 }
                 if (empty($value)) {
                     $value = $column->getRangeMin();
                 }
                 $this->setMaxLength(4);
-                return $this->buildTextfield($value) .
-                    '<script type="text/javascript">yanaSlider("' . $this->getId() . '", ' . (int) $column->getRangeMin() .
-                     ', ' . (int) $column->getRangeMax() . ', ' . (int) $rangeStep . ', ' . (int) $value . ');</script>';
-                /* HTML 5 version for later use
-                return '<input' . $this->getAttr() .' id="' . $this->getId() . '" name="' . $this->getName() . '" ' .
-                    'class="' . $this->getCssClass() . '" type="range" value="' . $value .
-                    '" min="' . $column->getRangeMin() . '" max="' . $column->getRangeMax() . '" step="' . $rangeStep .
-                    ' title="' . $this->getTitle() . '"' .
-                    ' onchange="document.getElementById(\'' . $this->getId() . 'output\').innerHTML=this.value"/>' .
-                    '<output for="' . $this->getId() . '" id="' . $this->getId() . 'output">' . $value . '</output>';
-                 */
+                return $this->buildRange((float) $value, (float) $column->getRangeMin(), (float) $column->getRangeMax(), $rangeStep);
             case 'reference':
                 $null = "";
                 if ($column->isNullable()) {

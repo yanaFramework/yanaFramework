@@ -71,6 +71,15 @@ class SetupTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
+     */
+    public function testSetPageInvalidArgumentException()
+    {
+        $this->object->setPage(-1);
+    }
+
+    /**
+     * @test
      */
     public function testGetPage()
     {
@@ -313,6 +322,113 @@ class SetupTest extends \PHPUnit_Framework_TestCase
     public function testGetExportAction()
     {
         $this->assertEquals('', $this->object->getExportAction());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetForeignKeys()
+    {
+        $this->assertEquals(array(), $this->object->getForeignKeys());
+    }
+
+    /**
+     * @test
+     */
+    public function testAddForeignKeyReference()
+    {
+        $reference = new \Yana\Db\Ddl\Reference('table', 'column', 'label');
+        $this->assertEquals(array('column' => $reference), $this->object->addForeignKeyReference('column', $reference)->getForeignKeys());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetEntryCount()
+    {
+        $this->assertSame(0, $this->object->getEntryCount());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetEntryCount()
+    {
+        $this->assertSame(5, $this->object->setEntryCount(5)->getEntryCount());
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
+     */
+    public function testSetEntryCountInvalidArgumentException()
+    {
+        $this->object->setEntryCount(-1);
+    }
+
+    /**
+     * Test with 5 entries showing 5 entries per page: trying to show entries 6-10 (that are not there) should reset the current page to the first page.
+     *
+     * @test
+     */
+    public function testSetEntryCountLastPage()
+    {
+        $this->assertSame(0, $this->object->setEntriesPerPage(5)->setPage(1)->setEntryCount(5)->getPage());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetPageCount()
+    {
+        $this->assertSame(0, $this->object->getPageCount());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetContexts()
+    {
+        $this->assertEquals(array(), $this->object->getContexts());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetContext()
+    {
+        $expected = new \Yana\Forms\Setups\Context(\Yana\Forms\Setups\ContextNameEnumeration::READ);
+        $this->assertEquals($expected, $this->object->getContext(\Yana\Forms\Setups\ContextNameEnumeration::READ));
+    }
+
+    /**
+     * @test
+     */
+    public function testSetContext()
+    {
+        $name = \Yana\Forms\Setups\ContextNameEnumeration::READ;
+        $expected = new \Yana\Forms\Setups\Context($name);
+        $expected->setFooter('footer')->setHeader('header');
+        $this->assertSame($expected, $this->object->setContext($expected)->getContext($name));
+    }
+
+    /**
+     * @test
+     */
+    public function testGetReferenceValues()
+    {
+        $this->assertSame(array(), $this->object->getReferenceValues('column'));
+    }
+
+    /**
+     * @test
+     */
+    public function testSetReferenceValues()
+    {
+        $references = array(
+            'Column' => array('test')
+        );
+        $this->assertEquals(array('test'), $this->object->setReferenceValues($references)->getReferenceValues('column'));
     }
 
 }

@@ -130,8 +130,8 @@ class QueryBuilder extends \Yana\Core\Object
                 }
                 $this->_processFilters($query);
                 // set output columns
-                if ($setup->getContext('update')->getColumnNames()) {
-                    $query->setColumns($setup->getContext('update')->getColumnNames()); // throws NotFoundException
+                if ($setup->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE)->getColumnNames()) {
+                    $query->setColumns($setup->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE)->getColumnNames()); // throws NotFoundException
                     $query->addColumn($this->_form->getTable()->getPrimaryKey());
                 }
                 $query = $this->_buildSelectForSubForm($query);
@@ -216,7 +216,7 @@ class QueryBuilder extends \Yana\Core\Object
      */
     protected function _processSearchValues(\Yana\Db\Queries\Select $select)
     {
-        if ($this->_form->getSetup()->getContext('search')->getValues()) {
+        if ($this->_form->getSetup()->getContext(\Yana\Forms\Setups\ContextNameEnumeration::SEARCH)->getValues()) {
             $clause = $select->getWhere();
             // determine new where clause
             /* @var $field \Yana\Forms\Fields\IsFacade */
@@ -276,7 +276,7 @@ class QueryBuilder extends \Yana\Core\Object
         // copy foreign key from parent query
         if ($parentForm instanceof \Yana\Forms\Facade) {
 
-            $parentResults = $parentForm->getSetup()->getContext('update')->getRows();
+            $parentResults = $parentForm->getSetup()->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE)->getRows();
             if ($parentForm->getBaseForm()->getTable() === $this->_form->getBaseForm()->getTable()) {
                 $select->setRow($parentResults->key());
                 $this->_form->getSetup()->setEntriesPerPage(1);

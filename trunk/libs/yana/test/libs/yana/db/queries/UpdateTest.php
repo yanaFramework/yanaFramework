@@ -39,7 +39,7 @@ class UpdateTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var  \Yana\Db\Queries\AbstractQuery
+     * @var  \Yana\Db\Queries\Update
      */
     protected $query;
 
@@ -81,123 +81,78 @@ class UpdateTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Yana\Db\Queries\Update::setColumn
-     * @todo   Implement testSetColumn().
+     * @test
      */
     public function testSetColumn()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame('tvalue', $this->query->setTable('t')->setColumn('tvalue')->getColumn());
     }
 
     /**
-     * @covers Yana\Db\Queries\Update::getColumn
-     * @todo   Implement testGetColumn().
+     * @test
      */
     public function testGetColumn()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame('*', $this->query->getColumn());
     }
 
     /**
-     * @covers Yana\Db\Queries\Update::getArrayAddress
-     * @todo   Implement testGetArrayAddress().
+     * @test
      */
     public function testGetArrayAddress()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame('', $this->query->getArrayAddress());
     }
 
     /**
-     * @covers Yana\Db\Queries\Update::setOrderBy
-     * @todo   Implement testSetOrderBy().
+     * @test
      */
     public function testSetOrderBy()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame(array(array('t', 'tvalue')), $this->query->setTable('t')->setOrderBy(array('tvalue'))->getOrderBy());
     }
 
     /**
-     * @covers Yana\Db\Queries\Update::getOrderBy
-     * @todo   Implement testGetOrderBy().
+     * @test
      */
     public function testGetOrderBy()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame(array(), $this->query->getOrderBy());
     }
 
     /**
-     * @covers Yana\Db\Queries\Update::getDescending
-     * @todo   Implement testGetDescending().
+     * @test
      */
     public function testGetDescending()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame(array(), $this->query->getDescending());
     }
 
     /**
-     * @covers Yana\Db\Queries\Update::setWhere
-     * @todo   Implement testSetWhere().
+     * @test
      */
     public function testSetWhere()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->query->setTable('t');
+        $having = array('tvalue', '=', 1);
+        $this->assertSame(array(array('t', 'tvalue'), '=', '1'), $this->query->setWhere($having)->getWhere());
     }
 
     /**
-     * @covers Yana\Db\Queries\Update::getWhere
-     * @todo   Implement testGetWhere().
+     * @test
      */
     public function testGetWhere()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame(array(), $this->query->getWhere());
     }
 
     /**
-     * @covers Yana\Db\Queries\Update::getOldValues
-     * @todo   Implement testGetOldValues().
+     * @test
      */
     public function testGetOldValues()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers Yana\Db\Queries\Update::sendQuery
-     * @todo   Implement testSendQuery().
-     */
-    public function testSendQuery()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->query->setTable('t');
+        $this->assertSame(array(), $this->query->getOldValues());
     }
 
 }

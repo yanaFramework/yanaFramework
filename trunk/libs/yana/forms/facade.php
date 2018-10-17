@@ -304,7 +304,7 @@ class Facade extends \Yana\Core\Object
     public function getSearchForm()
     {
         if (!isset($this->_searchForm)) {
-            $context = $this->_setup->getContext('search');
+            $context = $this->_setup->getContext(\Yana\Forms\Setups\ContextNameEnumeration::SEARCH);
             $this->_searchForm = new \Yana\Forms\ContextSensitiveWrapper($this, $context);
         }
         return $this->_searchForm;
@@ -318,7 +318,7 @@ class Facade extends \Yana\Core\Object
     public function getUpdateForm()
     {
         if (!isset($this->_updateForm)) {
-            $context = $this->_setup->getContext('update');
+            $context = $this->_setup->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE);
             $this->_updateForm = new \Yana\Forms\ContextSensitiveWrapper($this, $context);
         }
         return $this->_updateForm;
@@ -332,7 +332,7 @@ class Facade extends \Yana\Core\Object
     public function getInsertForm()
     {
         if (!isset($this->_insertForm)) {
-            $context = $this->_setup->getContext('insert');
+            $context = $this->_setup->getContext(\Yana\Forms\Setups\ContextNameEnumeration::INSERT);
             $this->_insertForm = new \Yana\Forms\ContextSensitiveWrapper($this, $context);
         }
         return $this->_insertForm;
@@ -347,7 +347,7 @@ class Facade extends \Yana\Core\Object
      */
     public function getUpdateValues()
     {
-        return $this->_setup->getContext('update')->getRows()->toArray();
+        return $this->_setup->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE)->getRows()->toArray();
     }
 
     /**
@@ -359,7 +359,7 @@ class Facade extends \Yana\Core\Object
      */
     public function getInsertValues()
     {
-        return $this->_setup->getContext('insert')->getValues();
+        return $this->_setup->getContext(\Yana\Forms\Setups\ContextNameEnumeration::INSERT)->getValues();
     }
 
     /**
@@ -371,7 +371,7 @@ class Facade extends \Yana\Core\Object
      */
     public function getSearchValues()
     {
-        return $this->_setup->getContext('search')->getValues();
+        return $this->_setup->getContext(\Yana\Forms\Setups\ContextNameEnumeration::SEARCH)->getValues();
     }
 
     /**
