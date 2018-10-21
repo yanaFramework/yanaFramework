@@ -311,7 +311,8 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
     {
         // retrieve search arguments
         $value = $field->getValue();
-        if (empty($value) && $value !== false) {
+        // Convert "NULL"-values to dash
+        if (is_null($value) || $value === array() || $value === "") {
             return '&ndash;';
         }
 
@@ -330,8 +331,8 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                 $this->setCssClass("gui_generator_bool icon_" . $value);
                 return $this->buildSpan('&nbsp;');
             case 'color':
-                $this->setAttr(' style="background-color: ' . $value . '"')->setCssClass("gui_generator_color");
-                return $this->buildSpan($value);
+                $this->setAttr('style="background-color: ' . \htmlspecialchars($value) . '"')->setCssClass("gui_generator_color");
+                return $this->buildSpan(\htmlspecialchars($value));
             case 'file':
                 $this->setCssClass('gui_generator_file_download');
                 if (!is_string($value)) {
@@ -340,7 +341,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                 return $this->buildSpan($this->buildFileDownload($value, $setup->getDownloadAction()));
             case 'text':
                 $textFormatter = new \Yana\Views\Helpers\Formatters\TextFormatterCollection();
-                $value = $textFormatter($value);
+                $value = $textFormatter(\htmlspecialchars($value));
             // fall through
             case 'html':
                 if (mb_strlen($value) > 25) {
@@ -366,23 +367,34 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
             case 'password':
                 return '&ndash;'; // never show password
             case 'reference':
-                $references = $field->getColumn()->getReferenceSettings();
-                $row = $field->getContext()->getRow();
-                $label = mb_strtoupper($references->getLabel());
-                if (!empty($label) && isset($row[$label])) {
-                    $value = $row[$label];
+                $label = mb_strtoupper($field->getColumn()->getReferenceSettings()->getLabel());
+                if ($label !== "") {
+                    $row = $field->getContext()->getRow();
+                    $value = isset($row[$label]) ? $row[$label] : (string) $value;
                 }
-                return $this->buildSpan($value);
+                if (!is_string($value)) {
+                    $value = "";
+                }
+                return $this->buildSpan(\htmlspecialchars($value));
             case 'date':
             case 'time':
             case 'timestamp':
                 $dateFormatter = new \Yana\Views\Helpers\Formatters\DateFormatter();
                 return $this->buildSpan($dateFormatter($value));
             case 'url':
+                if (!is_string($value)) {
+                    return "&ndash;";
+                }
                 return $this->buildExternalLink($value);
             default:
-                if (mb_strlen($value) > 80) {
-                    $value = mb_substr($value, 0, 76) . '&nbsp;...';
+                if (!is_scalar($value)) {
+                    $value = "&ndash;";
+
+                } elseif (mb_strlen($value) > 80) {
+                    $value = \htmlspecialchars(mb_substr((string) $value, 0, 76)) . '&nbsp;...';
+
+                } else {
+                    $value = \htmlspecialchars((string) $value);
                 }
                 return $this->buildSpan($value);
         }
@@ -457,7 +469,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                 }
                 $name = $this->getName();
                 $this->setName($name . '[active]');
-                $result = $this->buildBoolCheckbox($value['active'] === "true");
+                $result = $this->buildBoolCheckbox(is_array($value) && isset($value['active']) && $value['active'] === "true");
                 $this->setName($name);
                 $result .= $this->buildDateSelector($startTime) . '&nbsp;&ndash;&nbsp;' . $this->buildDateSelector($endTime);
                 $this->setCssClass("gui_generator_date");
@@ -474,7 +486,10 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                 $this->setId($id)->setName($name);
                 return $result;
             default:
-                return $this->buildTextfield($value);
+                if (!is_scalar($value)) {
+                    $value = "";
+                }
+                return $this->buildTextfield(\htmlentities($value));
         }
     }
 
@@ -490,7 +505,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
     protected function createLink(\Yana\Forms\Fields\IsFacade $field)
     {
         $result = "";
-        if ($field->getField() instanceof \Yana\Db\Ddl\Field) {
+        if ($field->getField() instanceof \Yana\Db\Ddl\Field && count($field->getField()->getEvents()) > 0) {
             $value = $field->getValue();
             if (empty($value) && $value !== false) {
                 return '';
@@ -523,7 +538,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                         $actionParam = "action=" . $event->getName();
                         $targetParam = "target[" . $table->getPrimaryKey() . "]=" . $form->getPrimaryKey() .
                             "&target[" . $field->getName() . "]=" . $value;
-                        $href = 'href="' . $urlFormatter("$actionParam&$targetParam") . '"';
+                        $href = 'href="' . $urlFormatter($actionParam . "&" . $targetParam) . '"';
                         if (empty($title)) {
                             $title = $lang->getVar('DB_ENTITY_LINK');
                         }
@@ -574,7 +589,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                 }
                 $name = $event->getName();
                 $code = \Yana\Util\Strings::htmlSpecialChars($event->getAction());
-                $eventsAsHtml .= " $name=\"$code\"";
+                $eventsAsHtml .= "$name=\"$code\"";
             } // end foreach
         }
         return $eventsAsHtml;

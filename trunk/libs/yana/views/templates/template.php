@@ -33,31 +33,14 @@ namespace Yana\Views\Templates;
  * This implements a decorator class for Smarty templates.
  * It provides a cleaned up, simple interface targeted for ease of use.
  *
+ * @internal It makes little sense to include this class in unit-tests, as we would end up testing Smarty functionality rather than our own.
+ *
  * @package     yana
  * @subpackage  views
+ * @codeCoverageIgnore
  */
-class Template extends \Yana\Core\Object implements \Yana\Views\Templates\IsTemplate
+class Template extends \Yana\Views\Templates\AbstractTemplate implements \Yana\Views\Templates\IsTemplate
 {
-
-    /**
-     * local Smarty instance
-     *
-     * @var  \Smarty_Internal_Template
-     * @ignore
-     */
-    protected $template = null;
-
-    /**
-     * create an instance
-     *
-     * You may enter a filename of a template you want to use.
-     *
-     * @param  \Smarty_Internal_Template $template
-     */
-    public function __construct(\Smarty_Internal_Template $template)
-    {
-        $this->template = $template;
-    }
 
     /**
      * fetch a template
@@ -74,7 +57,7 @@ class Template extends \Yana\Core\Object implements \Yana\Views\Templates\IsTemp
      */
     public function fetch()
     {
-        return $this->template->fetch();
+        return $this->_getTemplate()->fetch();
     }
 
     /**
@@ -101,7 +84,7 @@ class Template extends \Yana\Core\Object implements \Yana\Views\Templates\IsTemp
      */
     public function getVars()
     {
-        return $this->template->getTemplateVars();
+        return $this->_getTemplate()->getTemplateVars();
     }
 
     /**
@@ -146,7 +129,7 @@ class Template extends \Yana\Core\Object implements \Yana\Views\Templates\IsTemp
     public function setVar($varName, $var)
     {
         assert('is_string($varName); // Wrong argument type for argument 1. String expected.');
-        $this->template->assign($varName, $var);
+        $this->_getTemplate()->assign($varName, $var);
         return $this;
     }
 
@@ -160,7 +143,7 @@ class Template extends \Yana\Core\Object implements \Yana\Views\Templates\IsTemp
      */
     public function setVars(array $vars)
     {
-        $this->template->assign((array) $vars);
+        $this->_getTemplate()->assign((array) $vars);
         return $this;
     }
 
@@ -178,7 +161,7 @@ class Template extends \Yana\Core\Object implements \Yana\Views\Templates\IsTemp
     {
         assert('is_string($varName); // Invalid argument $varName: string expected');
 
-        $this->template->assignByRef($varName, $var);
+        $this->_getTemplate()->assignByRef($varName, $var);
         return $this;
     }
 
@@ -196,7 +179,7 @@ class Template extends \Yana\Core\Object implements \Yana\Views\Templates\IsTemp
     {
         foreach (array_keys((array) $vars) as $key)
         {
-            $this->template->assignByRef($key, $vars[$key]); // assign contents to global namespace
+            $this->_getTemplate()->assignByRef($key, $vars[$key]); // assign contents to global namespace
         }
         return $this;
     }

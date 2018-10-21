@@ -132,7 +132,8 @@ class Manager extends \Yana\Views\Managers\AbstractManager
      * If a base-layout is defined already, it will be set up as the parent template.
      *
      * @param   string  $filename  path to template file
-     * @return  \Yana\Views\Templates\IsTemplate 
+     * @return  \Yana\Views\Templates\IsTemplate
+     * @codeCoverageIgnore
      */
     public function createContentTemplate($filename)
     {
@@ -148,11 +149,12 @@ class Manager extends \Yana\Views\Managers\AbstractManager
      * @param   string                     $filename  path to template file or template id (which will be resolved)
      * @param   \Smarty_Internal_Template  $parent     parent template (if any)
      * @return  \Smarty_Internal_Template
+     * @codeCoverageIgnore
      */
     private function _createTemplate($filename, \Smarty_Internal_Template $parent = null)
     {
         $compileId = $this->_getTemplateId();
-        return $this->_smarty->createTemplate($filename, $compileId, $compileId, $parent);
+        return $this->getSmarty()->createTemplate($filename, $compileId, $compileId, $parent);
     }
 
     /**
@@ -160,6 +162,7 @@ class Manager extends \Yana\Views\Managers\AbstractManager
      *
      * @param   \Smarty_Internal_Template  $internalTemplate  smarty template instance
      * @return  \Yana\Views\Templates\Template
+     * @codeCoverageIgnore
      */
     private function _wrapTemplate(\Smarty_Internal_Template $internalTemplate)
     {
@@ -214,6 +217,7 @@ class Manager extends \Yana\Views\Managers\AbstractManager
      * Delete all temporary files in 'cache/' directory.
      *
      * @ignore
+     * @codeCoverageIgnore
      */
     public function clearCache()
     {
@@ -257,6 +261,7 @@ class Manager extends \Yana\Views\Managers\AbstractManager
      * @param   string  $name  name of the function
      * @param   mixed   $code  a callable resource
      * @return  self
+     * @codeCoverageIgnore
      */
     public function setFunction($name, $code)
     {
@@ -280,6 +285,7 @@ class Manager extends \Yana\Views\Managers\AbstractManager
      * @param   string  $name  name of the function
      * @param   mixed   $code  a callable resource
      * @return  self
+     * @codeCoverageIgnore
      */
     public function setModifier($name, $code)
     {
@@ -303,6 +309,7 @@ class Manager extends \Yana\Views\Managers\AbstractManager
      * @param   string  $name  name of the function
      * @param   mixed   $code  a callable resource
      * @return  self
+     * @codeCoverageIgnore
      */
     public function setBlockFunction($name, $code)
     {
@@ -323,6 +330,7 @@ class Manager extends \Yana\Views\Managers\AbstractManager
      *
      * @param   string  $name  name of the function
      * @return  self
+     * @codeCoverageIgnore
      */
     public function unsetFunction($name)
     {
@@ -363,6 +371,7 @@ class Manager extends \Yana\Views\Managers\AbstractManager
      *
      * @param   string  $name  name of the function
      * @return  self
+     * @codeCoverageIgnore
      */
     public function unsetBlockFunction($name)
     {
@@ -381,6 +390,7 @@ class Manager extends \Yana\Views\Managers\AbstractManager
      * access to the smarty template engine is necessary.
      *
      * @return  \Smarty
+     * @codeCoverageIgnore
      */
     public function getSmarty()
     {

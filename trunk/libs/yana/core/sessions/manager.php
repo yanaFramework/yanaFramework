@@ -47,6 +47,7 @@ class Manager extends \Yana\Core\Object implements \Yana\Core\Sessions\IsManager
      * Returns the registered custom save handler or NULL if there is none.
      * 
      * @return  \Yana\Core\Sessions\IsSessionSaveHandler
+     * @codeCoverageIgnore
      */
     protected static function _getSaveHandler()
     {
@@ -72,9 +73,11 @@ class Manager extends \Yana\Core\Object implements \Yana\Core\Sessions\IsManager
          * Note: this may not be necessary as PHP by default does it itself, however it can be deactivated in the php.ini,
          *       thus making this option very usefull to enforce the intended behavior.
          */
+        // @codeCoverageIgnoreStart
         if ($autoSave) {
             \register_shutdown_function('session_write_close');
         }
+        // @codeCoverageIgnoreEnd        
 
         return $this;
     }

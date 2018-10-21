@@ -106,7 +106,8 @@ class DbToolsPlugin extends \Yana\Plugins\AbstractPlugin
         $errorReporting = error_reporting(E_ERROR | E_WARNING); // suppress MDB2 Notices
         $db = new \Yana\Db\Mdb2\ConnectionFactory();
         error_reporting($errorReporting);
-        $xml = (string) \Yana\Db\Ddl\DatabaseFactory::createDatabase($db->getConnection());
+        $factory = new \Yana\Db\Ddl\Factories\DatabaseFactory();
+        $xml = (string) $factory->createDatabase(new \Yana\Db\Ddl\Factories\Mdb2Wrapper($db->getConnection()));
         $filename = 'database.db.xml';
         if (empty($xml)) {
             $message = "Did not create '{$filename}' because the file is empty.";
