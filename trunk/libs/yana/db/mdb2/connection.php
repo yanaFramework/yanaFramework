@@ -171,12 +171,7 @@ class Connection extends \Yana\Db\AbstractConnection
         }
 
         $connection = $this->_getConnection();
-
-        if ($offset > 0 || $limit > 0) {
-            $connection->setLimit($limit, $offset);
-        }
-
-        $mdb2Result = $connection->sendQueryString($sqlStmt);
+        $mdb2Result = $connection->sendQueryString($sqlStmt, $limit, $offset);
 
         if ($mdb2Result instanceof \MDB2_Error) {
             throw $this->_getExceptionFactory()->toException($mdb2Result);

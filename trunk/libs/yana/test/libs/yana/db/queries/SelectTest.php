@@ -337,6 +337,15 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
+     */
+    public function testSetLimitInvalidArgumentException()
+    {
+        $this->query->setLimit(-1);
+    }
+
+    /**
+     * @test
      */
     public function testGetOffset()
     {
@@ -349,6 +358,15 @@ class SelectTest extends \PHPUnit_Framework_TestCase
     public function testSetOffset()
     {
         $this->assertEquals(20, $this->query->setOffset(20)->getOffset());
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
+     */
+    public function testSetOffsetInvalidArgumentException()
+    {
+        $this->query->setOffset(-1);
     }
 
     /**

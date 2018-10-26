@@ -1908,23 +1908,6 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     }
 
     /**
-     * get the currently selected offset
-     *
-     * Note: This setting will not be part of the sql statement produced by __toString().
-     * Use the API's $limit and $offset parameter instead when sending the query.
-     *
-     * This restriction does not apply if you use sendQuery().
-     *
-     * @return  int
-     * @since   2.9.3
-     */
-    public function getOffset()
-    {
-        assert('is_int($this->offset); // Expecting member "offset" to be an integer');
-        return (int) $this->offset;
-    }
-
-    /**
      * Set a limit for this query.
      *
      * Note: This setting will not be part of the sql statement produced by __toString().
@@ -1949,6 +1932,23 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
         }
         $this->limit = (int) $limit;
         return $this;
+    }
+
+    /**
+     * Get the currently selected offset.
+     *
+     * Note: This setting will not be part of the sql statement produced by __toString().
+     * Use the API's $limit and $offset parameter instead when sending the query.
+     *
+     * This restriction does not apply if you use sendQuery().
+     *
+     * @return  int
+     * @since   2.9.3
+     */
+    public function getOffset()
+    {
+        assert('is_int($this->offset); // Expecting member "offset" to be an integer');
+        return (int) $this->offset;
     }
 
     /**

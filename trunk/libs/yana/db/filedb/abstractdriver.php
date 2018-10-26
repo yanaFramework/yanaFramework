@@ -88,16 +88,6 @@ abstract class AbstractDriver extends \Yana\Core\Object implements \Yana\Db\IsDr
     private $_query = null;
 
     /**
-     * @var int
-     */
-    private $_limit = 0;
-
-    /**
-     * @var int
-     */
-    private $_offset = 0;
-
-    /**
      * Return auto-increment sequence counter.
      *
      * @return  \Yana\Db\FileDb\Sequence
@@ -185,26 +175,6 @@ abstract class AbstractDriver extends \Yana\Core\Object implements \Yana\Db\IsDr
     protected function _getQuery()
     {
         return $this->_query;
-    }
-
-    /**
-     * Get limit of rows in result set.
-     *
-     * @return  int
-     */
-    protected function _getLimit()
-    {
-        return $this->_limit;
-    }
-
-    /**
-     * Get offset of rows in result set.
-     *
-     * @return  int
-     */
-    protected function _getOffset()
-    {
-        return $this->_offset;
     }
 
     /**
@@ -319,40 +289,6 @@ abstract class AbstractDriver extends \Yana\Core\Object implements \Yana\Db\IsDr
     protected function _setQuery(\Yana\Db\Queries\AbstractQuery $query)
     {
         $this->_query = $query;
-        return $this;
-    }
-
-    /**
-     * Reset offest and limit to zero for next query.
-     *
-     * return  self
-     */
-    protected function _resetOffsetAndLimit()
-    {
-        $this->setLimit(0, 0);
-        return $this;
-    }
-
-    /**
-     * Set the limit and offset for next query.
-     *
-     * This sets the limit and offset values for the next query.
-     * After the query is executed, these values will be reset to 0.
-     *
-     * @param   int $limit  set the limit for query
-     * @param   int $offset set the offset for query
-     * @return  self
-     */
-    public function setLimit($limit, $offset = null)
-    {
-        assert('is_string($limit); // Wrong type for argument 1. Integer expected');
-        assert('is_null($offset) || is_int($offset); // Wrong type for argument 2. Integer expected');
-        if ($limit >= 0) {
-            $this->_limit = (int) $limit;
-        }
-        if (!is_null($offset) && $offset >= 0) {
-            $this->_offset = (int) $offset;
-        }
         return $this;
     }
 

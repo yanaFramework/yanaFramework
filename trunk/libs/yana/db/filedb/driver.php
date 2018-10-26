@@ -942,38 +942,15 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
     /**
      * Execute a single query.
      *
-     * @param   string  $sqlStmt  one SQL statement to execute
-     * @param   int     $offset   the row to start from
-     * @param   int     $limit    the maximum number of rows in the resultset
-     * @return  \Yana\Db\FileDb\Result
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if the query is invalid or could not be parsed
-     */
-    public function limitQuery($sqlStmt, $offset = 0, $limit = 0)
-    {
-        // parse SQL
-        $dbQuery = $this->_getSqlParser()->parseSQL((string) $sqlStmt); // throws exception
-
-        // route to query handling
-        $dbQuery->setOffset((int) $offset);
-        $dbQuery->setLimit((int) $limit);
-        return $this->sendQueryObject($dbQuery);
-    }
-
-    /**
-     * Execute a single query.
-     *
-     * Alias of limitQuery() with $offset and $limit params stripped.
-     *
      * @param   string  $sqlStmt  some SQL statement
+     * @param   int     $limit    the maximum number of rows in the resultset
+     * @param   int     $offset   the row to start from
      * @return  \Yana\Db\FileDb\Result
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if the query is invalid or could not be parsed
      */
-    public function sendQueryString($sqlStmt)
+    public function sendQueryString($sqlStmt, $limit = 0, $offset = 0)
     {
         assert('is_string($sqlStmt); // Wrong type for argument 1. String expected');
-        $offset = (int) $this->_getOffset();
-        $limit = (int) $this->_getLimit();
-        $this->_resetOffsetAndLimit();
 
         // parse SQL
         $dbQuery = $this->_getSqlParser()->parseSQL($sqlStmt); // throws exception

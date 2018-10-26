@@ -73,12 +73,6 @@ class Select extends \Yana\Db\Queries\SelectCount
     protected $having = array();
 
     /**
-     * @var int
-     * @ignore
-     */
-    protected $offset = 0;
-
-    /**
      * Reset query.
      *
      * Resets all properties of the query object, except
@@ -504,21 +498,22 @@ class Select extends \Yana\Db\Queries\SelectCount
      * produced by __toString(). Use the API's $limit and
      * $offset parameter instead when sending the query.
      *
-     * This restriction does not apply if you use {link DbQuery::sendQuery()}.
-     *
-     * Note: For security reasons all delete queries will automatically
-     * have an offset of 0.
+     * This restriction does not apply if you use sendQuery().
      *
      * @param   int  $offset  offset for this query
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when offset is not positive
      * @return  $this
      */
     public function setOffset($offset)
     {
         assert('is_int($offset); // Wrong argument type for argument 1. Integer expected.');
         $this->resetId();
-        if ($offset >= 0) {
-            $this->offset = (int) $offset;
+        if ($offset < 0) {
+            $message = "Offset must not be negative: '$offset'";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
         }
+        $this->offset = (int) $offset;
         return $this;
     }
 

@@ -120,24 +120,12 @@ interface IsDriver extends \Yana\Core\IsObject
     /**
      * Execute a single query.
      *
-     * Alias of limitQuery() with $offset and $limit params stripped.
-     *
-     * @param   string  $sqlStmt    sql statement
+     * @param   string  $sqlStmt  SQL statement
+     * @param   int     $limit    the maximum number of rows in the resultset
+     * @param   int     $offset   the row to start from
      * @return  \Yana\Db\IsResult
      */
-    public function sendQueryString($sqlStmt);
-
-    /**
-     * Set the limit and offset for next query
-     *
-     * This sets the limit and offset values for the next query.
-     * After the query is executed, these values will be reset to 0.
-     *
-     * @param   int $limit  set the limit for query
-     * @param   int $offset set the offset for query
-     * @return  self
-     */
-    public function setLimit($limit, $offset = null);
+    public function sendQueryString($sqlStmt, $limit = 0, $offset = 0);
 
     /**
      * quote a value

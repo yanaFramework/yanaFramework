@@ -124,7 +124,7 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsCon
     {
         if (!class_exists('\MDB2')) {
             /* error handling */
-            $message = "Unable to open connection to database using PEAR-DB. Might not be installed.";
+            $message = "Unable to open connection to database using PEAR MDB2. Might not be installed.";
             $level = \Yana\Log\TypeEnumeration::ERROR;
             throw new \Yana\Db\Mdb2\PearDbException($message, $level);
         }
@@ -216,7 +216,7 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsCon
          * Restoring the error handler and then reseting it somehow makes things right
          * for PEAR.
          *
-         * The returned object is an instance of \MDB2_Driver_Common or an instance of \MDB2_E.
+         * The returned object is an instance of \MDB2_Driver_Common or an instance of \MDB2_Error.
          *
          * }}
          */
@@ -225,7 +225,7 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsCon
         }
         @$connection = \MDB2::connect($dsn);
         if (defined('YANA_ERROR_REPORTING')) {
-            ErrorUtility::setErrorReporting(YANA_ERROR_REPORTING);
+            $builder->setErrorReporting(YANA_ERROR_REPORTING);
         }
 
         /* error handling */

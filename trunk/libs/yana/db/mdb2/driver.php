@@ -228,8 +228,7 @@ class Driver extends \Yana\Core\AbstractDecorator implements \Yana\Db\IsDriver
      */
     public function sendQueryObject(\Yana\Db\Queries\AbstractQuery $dbQuery)
     {
-        $this->setLimit($dbQuery->getLimit(), $dbQuery->getOffset());
-        $resultObject = $this->_checkReturnValue($this->sendQueryString((string) $dbQuery));
+        $resultObject = $this->_checkReturnValue($this->sendQueryString((string) $dbQuery, $dbQuery->getLimit(), $dbQuery->getOffset()));
         return new \Yana\Db\Mdb2\Result($resultObject);
     }
 
@@ -238,38 +237,19 @@ class Driver extends \Yana\Core\AbstractDecorator implements \Yana\Db\IsDriver
      *
      * Alias of limitQuery() with $offset and $limit params stripped.
      *
-     * @param   string  $sqlStmt    sql statement
+     * @param   string  $sqlStmt  SQL statement
+     * @param   int     $limit    the maximum number of rows in the resultset
+     * @param   int     $offset   the row to start from
      * @return  \Yana\Db\Mdb2\Result
      * @throws  \Yana\Db\DatabaseException  on failure
      */
-    public function sendQueryString($sqlStmt)
+    public function sendQueryString($sqlStmt, $limit = 0, $offset = 0)
     {
         assert('is_string($sqlStmt); // Invalid argument $sqlStmt: string expected');
 
+        $this->_getDecoratedObject()->setLimit($limit, $offset > 0 ? $offset : null);
         $resultObject = $this->_checkReturnValue($this->_getDecoratedObject()->query($sqlStmt));
         return new \Yana\Db\Mdb2\Result($resultObject);
-    }
-
-    /**
-     * Set the limit and offset for next query
-     *
-     * This sets the limit and offset values for the next query.
-     * After the query is executed, these values will be reset to 0.
-     *
-     * @param   int $limit  set the limit for query
-     * @param   int $offset set the offset for query
-     * @return  bool
-     * @throws  \Yana\Db\DatabaseException  on failure
-     */
-    public function setLimit($limit, $offset = null)
-    {
-        assert('is_string($limit); // Wrong type for argument 1. Integer expected');
-        assert('is_null($offset) || is_int($offset); // Wrong type for argument 2. Integer expected');
-
-        if ($offset > 0 || $limit > 0) {
-            return $this->_checkReturnValue($this->_getDecoratedObject()->setLimit($limit, $offset)) === \MDB2_OK;
-        }
-        return false;
     }
 
     /**
@@ -312,7 +292,7 @@ class Driver extends \Yana\Core\AbstractDecorator implements \Yana\Db\IsDriver
      *
      * Two instances are considered equal if and only if
      * they are both objects of the same class and they both
-     * refer to the same structure file.
+     * refer to the same connection.
      *
      * @param    \Yana\Core\IsObject  $anotherObject object to compare
      * @return   string
@@ -320,10 +300,7 @@ class Driver extends \Yana\Core\AbstractDecorator implements \Yana\Db\IsDriver
     public function equals(\Yana\Core\IsObject $anotherObject)
     {
         if ($anotherObject instanceof $this) {
-            if (!isset($this->_schema) || !isset($anotherObject->_schema)) {
-                return isset($this->_schema) === isset($anotherObject->_schema);
-            }
-            return (bool) $this->_schema->equals($anotherObject->_schema);
+            return $this->_getDecoratedObject() == $anotherObject->_getDecoratedObject();
         }
         return false;
     }

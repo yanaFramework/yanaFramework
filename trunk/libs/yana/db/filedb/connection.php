@@ -118,8 +118,7 @@ class Connection extends \Yana\Db\AbstractConnection
 
         // send query to database
         $connection = $this->_getConnection();
-        $connection->setLimit($limit, $offset);
-        return $connection->sendQueryString($sqlStmt); // may throw exception
+        return $connection->sendQueryString($sqlStmt, $limit, $offset); // may throw exception
     }
 
     /**

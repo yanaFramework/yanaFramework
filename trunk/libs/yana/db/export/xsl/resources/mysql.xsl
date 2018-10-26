@@ -243,8 +243,6 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
     <xsl:value-of select="'&#10;)'"/><!-- End of columns -->
 
-    <xsl:call-template name="engine"/>
-
     <xsl:value-of select="';&#10;'"/><!-- End of table -->
 
 </xsl:template>
@@ -385,17 +383,6 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
         <xsl:when test="@length"><xsl:value-of select="@length"/></xsl:when>
         <!-- 767 bytes is MySQL's maximum key length -->
         <xsl:otherwise>0</xsl:otherwise>
-    </xsl:choose>
-</xsl:template>
-
-<!-- Handle column length -->
-<xsl:template name="engine">
-    <xsl:variable name="tableName" select="@name"/>
-    <xsl:choose>
-        <xsl:when test="foreign or ../table/foreign[@table = $tableName]">
-            <xsl:text> TYPE=InnoDB</xsl:text>
-        </xsl:when>
-        <xsl:otherwise> TYPE=MyISAM</xsl:otherwise>
     </xsl:choose>
 </xsl:template>
 
