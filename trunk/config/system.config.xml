@@ -259,7 +259,6 @@
         <!-- Database driver information -->
     	<database>
     		<options>
-    			<autofree>true</autofree>
     			<persistent>true</persistent>
     			<ssl>false</ssl>
     		</options>

@@ -70,8 +70,7 @@
 <!ELEMENT directory (#PCDATA)>
 <!ELEMENT language (#PCDATA)>
 <!ELEMENT database (require_odbc|options)*>
-<!ELEMENT options (ssl|persistent|autofree)*>
-<!ELEMENT autofree (#PCDATA)>
+<!ELEMENT options (ssl|persistent)*>
 <!ELEMENT persistent (#PCDATA)>
 <!ELEMENT ssl (#PCDATA)>
 <!ELEMENT require_odbc (#PCDATA)>
