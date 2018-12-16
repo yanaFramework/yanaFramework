@@ -268,7 +268,7 @@ class Select extends \Yana\Db\Queries\SelectCount
 
         // check if column definition is valid
         if (YANA_DB_STRICT) {
-            $dbSchema = $this->db->getSchema();
+            $dbSchema = $this->getDatabase()->getSchema();
             if (!$dbSchema->isTable($tableName)) {
                 throw new \Yana\Db\Queries\Exceptions\TableNotFoundException("Table not found '" . $tableName . "'.", \Yana\Log\TypeEnumeration::WARNING);
 
@@ -694,7 +694,7 @@ class Select extends \Yana\Db\Queries\SelectCount
      */
     public function getColumnTitles()
     {
-        $dbSchema = $this->db->getSchema();
+        $dbSchema = $this->getDatabase()->getSchema();
         $titles = array(); // array of column titles
         foreach ($this->getColumns() as $column)
         {
@@ -835,7 +835,7 @@ class Select extends \Yana\Db\Queries\SelectCount
         $result = $this->sendQuery();
 
         $returnedType = $this->getExpectedResult();
-        $table = $this->db->getSchema()->getTable($this->getTable());
+        $table = $this->getDatabase()->getSchema()->getTable($this->getTable());
         assert('$table instanceof \Yana\Db\Ddl\Table;');
 
         assert('!isset($output); // Cannot redeclare var $output');
@@ -930,7 +930,7 @@ class Select extends \Yana\Db\Queries\SelectCount
                     } // end switch
                     // decode cell
                     assert('$column instanceof \Yana\Db\Ddl\Column;');
-                    $value = $column->interpretValue($value, $arrayAddress, $this->db->getDBMS());
+                    $value = $column->interpretValue($value, $arrayAddress, $this->getDatabase()->getDBMS());
                     unset($columnName, $arrayAddress, $currentTable, $column);
                 }
                 // handle results

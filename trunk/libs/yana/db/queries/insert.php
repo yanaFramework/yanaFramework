@@ -434,7 +434,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
                 // Values are invalid
                 $this->setValues($values);
                 // submit query
-                $result = $this->db->sendQueryObject($this);
+                $result = $this->getDatabase()->sendQueryObject($this);
             }
             unset($table, $values);
             // re-activate inheritance
@@ -510,7 +510,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
                 if ($keys != "") {
                     $keys .= ", ";
                 }
-                $keys .= $this->db->quoteId($value);
+                $keys .= $this->getDatabase()->quoteId($value);
             }
             unset($value);
             $values = '';
@@ -519,9 +519,9 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
             {
                 $values .= (($values !== '') ? ', ' : '' );
                 if (is_array($value)) {
-                    $values .= $this->db->quote(json_encode($value));
+                    $values .= $this->getDatabase()->quote(json_encode($value));
                 } else {
-                    $values .= $this->db->quote($value);
+                    $values .= $this->getDatabase()->quote($value);
                 }
             }
             unset($value);

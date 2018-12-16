@@ -112,7 +112,7 @@ class Transaction extends \Yana\Core\Object implements \Yana\Db\IsTransaction
             assert('isset($this->_queue[$i][0]);');
             assert('isset($this->_queue[$i][1]);');
             $dbQuery = $this->_queue[$i][0];
-            assert('$dbQuery instanceof \Yana\Db\Queries\AbstractQuery;');
+            assert('$dbQuery instanceof \Yana\Db\Queries\AbstractConnectionWrapper;');
             $triggerCollection = $this->_queue[$i][1];
             assert('$triggerCollection instanceof \Yana\Db\Helpers\Triggers\TriggerCollection;');
 
@@ -172,11 +172,10 @@ class Transaction extends \Yana\Core\Object implements \Yana\Db\IsTransaction
          * the same data.
          */
         if (!$driver->commit()) {
-            $level = \Yana\Log\TypeEnumeration::WARNING;
             // commit failed
-            \Yana\Log\LogManager::getLogger()->addLog("Failed: $dbQuery", $level, $result->getMessage());
+            \Yana\Log\LogManager::getLogger()->addLog("Failed: $dbQuery", \Yana\Log\TypeEnumeration::WARNING);
             $message = "Unable to commit changes.";
-            throw new \Yana\Db\CommitFailedException($message, $level);
+            throw new \Yana\Db\CommitFailedException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
         $this->_queue = array();
         return $this;
@@ -316,6 +315,30 @@ class Transaction extends \Yana\Core\Object implements \Yana\Db\IsTransaction
         $this->_queue[] = array($deleteQuery, $triggerCollection);
 
         return $this;
+    }
+
+    /**
+     * Add a SQL string to execute.
+     *
+     * Note that the string is not checked for validity.
+     *
+     * @param \Yana\Db\Queries\Sql $statement  one single SQL statement
+     * @return  $this
+     */
+    public function sql(\Yana\Db\Queries\Sql $statement)
+    {
+        $this->_queue[] = array($statement, new \Yana\Db\Helpers\Triggers\TriggerCollection());
+        return $this;
+    }
+
+    /**
+     * Check if the transaction queue is empty.
+     *
+     * @return  bool
+     */
+    public function isEmpty()
+    {
+        return 0 === count($this->_queue);
     }
 
     /**

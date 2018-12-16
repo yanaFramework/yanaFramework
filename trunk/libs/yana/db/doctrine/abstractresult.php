@@ -41,6 +41,35 @@ abstract class AbstractResult extends \Yana\Core\Object implements \Yana\Db\IsRe
 {
 
     /**
+     * @var array
+     */
+    private $_cache = array();
+
+    /**
+     * Get row from result set.
+     *
+     * We can't just iterate over the result set. The reason is the Doctrine implements \Traverseable but not \Iterator.
+     * Therefore we cannot rewind the iterator.
+     *
+     * @param   int  $rowNumber  position number of row within the result set, first row = 0
+     * @return  array
+     */
+    protected function _getRow($rowNumber)
+    {
+        assert('is_int($rowNumber); // Invalid argument $rowNumber: Integer expected');
+
+        if (!isset($this->_cache[$rowNumber])) {
+            $result = $this->_getResult();
+            for ($i = count($this->_cache); $i < $result->rowCount() && $i <= $rowNumber; $i++)
+            {
+                $this->_cache[$i] = $result->fetch(\Doctrine\DBAL\FetchMode::ASSOCIATIVE);
+            }
+            unset($i);
+        }
+        return (isset($this->_cache[$rowNumber])) ? $this->_cache[$rowNumber] : array();
+    }
+
+    /**
      * Returns resultset.
      *
      * @return  \Doctrine\DBAL\Statement
@@ -67,7 +96,8 @@ abstract class AbstractResult extends \Yana\Core\Object implements \Yana\Db\IsRe
      */
     public function fetchRow($rowNumber)
     {
-        return $this->_getResult()->fetch(\Doctrine\DBAL\FetchMode::ASSOCIATIVE);
+        assert('is_int($rowNumber); // Invalid argument $rowNumber: Integer expected');
+        return $this->_getRow((int) $rowNumber);
     }
 
     /**
@@ -77,7 +107,8 @@ abstract class AbstractResult extends \Yana\Core\Object implements \Yana\Db\IsRe
      */
     public function fetchAll()
     {
-        return $this->_getResult()->fetchAll(\Doctrine\DBAL\FetchMode::ASSOCIATIVE);
+        $this->_cache = $this->_getResult()->fetchAll(\Doctrine\DBAL\FetchMode::ASSOCIATIVE);
+        return $this->_cache;
     }
 
     /**
@@ -88,20 +119,23 @@ abstract class AbstractResult extends \Yana\Core\Object implements \Yana\Db\IsRe
      */
     public function fetchColumn($column = 0)
     {
-        return $this->_getResult()->fetchColumn($column);
+        return $this->_getResult()->fetchColumn((int) $column);
     }
 
     /**
      * Fetch single column from the next row from a result set.
      *
-     * @param   int|string  $column  the column number (or name) to fetch
-     * @param   int         $row     number of the row where the data can be found
+     * @param   int|string  $column     the column number (or name) to fetch
+     * @param   int         $rowNumber  number of the row where the data can be found
      * @return  mixed
      */
     public function fetchOne($column = 0, $rowNumber = 0)
     {
-        $row = $this->fetchRow($rowNumber);
-        return isset($row[$column]) ? $row[$column] : null;
+        assert('is_int($column); // Invalid argument $column: Integer expected');
+        assert('is_int($rowNumber); // Invalid argument $rowNumber: Integer expected');
+        $row = $this->fetchRow((int) $rowNumber);
+        $numberedRow = \array_values($row);
+        return isset($numberedRow[$column]) ? $numberedRow[$column] : null;
     }
 
 }

@@ -71,10 +71,9 @@ interface IsDriver extends \Yana\Core\IsObject
     /**
      * get list of tables in current database
      *
-     * @param   string  $database  dummy for compatibility
      * @return  array
      */
-    public function listTables($database = null);
+    public function listTables();
 
     /**
      * get list of functions

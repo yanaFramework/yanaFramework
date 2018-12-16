@@ -58,7 +58,7 @@ namespace Yana\Db\Queries;
  * @subpackage  db
  * @since       2.9 RC1
  */
-abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
+abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
 {
 
     /**#@+
@@ -131,11 +131,6 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     protected $offset = 0;
 
     /**
-     * @var \Yana\Db\IsConnection
-     */
-    protected $db = null;
-
-    /**
      * @var \Yana\Db\Queries\IsJoinCondition[]
      */
     protected $joins = array();
@@ -178,34 +173,6 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     /** #@- */
 
     /**
-     * create a new instance
-     *
-     * This creates and initializes a new instance of this class.
-     *
-     * The argument $database can be an instance of class Connection or
-     * any derived sub-class (e.g. FileDb).
-     *
-     * @param  \Yana\Db\IsConnection  $database  a database resource
-     */
-    public function __construct(\Yana\Db\IsConnection $database)
-    {
-        $this->db = $database;
-    }
-
-    /**
-     * magic function
-     *
-     * This is automatically used to create copies of the object when using the "clone" keyword.
-     * This creates a shallow copy and thus overwrites the default behavior of the parent class.
-     *
-     * @ignore
-     */
-    public function __clone()
-    {
-        // overwrite parent
-    }
-
-    /**
      * magic get
      *
      * Returns a database object definition from the schema.
@@ -220,7 +187,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     public function __get($name)
     {
         assert('is_string($name); // Wrong type for argument 1. String expected');
-        return $this->db->getSchema()->{$name};
+        return $this->getDatabase()->getSchema()->{$name};
     }
 
     /**
@@ -235,7 +202,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     public function __call($name, array $arguments)
     {
         assert('is_string($name); // Wrong type for argument 1. String expected');
-        return call_user_func_array(array($this->db->getSchema(), $name), $arguments);
+        return call_user_func_array(array($this->getDatabase()->getSchema(), $name), $arguments);
     }
 
     /**
@@ -520,7 +487,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     {
         assert('is_string($columnName); // Wrong type for argument 1. String expected');
         $columnName = $this->getColumnByAlias($columnName);
-        $dbSchema = $this->db->getSchema();
+        $dbSchema = $this->getDatabase()->getSchema();
 
         $table = null;
         // lazy loading: resolve source tables for requested column
@@ -604,7 +571,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     {
         $tableName = $table->getName();
         $parents = array($tableName); /* to detect circular refrences */
-        $dbSchema = $this->db->getSchema();
+        $dbSchema = $this->getDatabase()->getSchema();
         /**
          * recursively detect parents
          *
@@ -821,7 +788,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
         $this->resetId();
 
         $tableName = mb_strtolower($table);
-        $table = $this->db->getSchema()->getTable($tableName);
+        $table = $this->getDatabase()->getSchema()->getTable($tableName);
 
         if (!($table instanceof \Yana\Db\Ddl\Table)) {
             $message = "The table '$tableName' is unknown.";
@@ -884,7 +851,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     protected function currentTable()
     {
         if (!isset($this->table)) {
-            $this->table = $this->db->getSchema()->getTable($this->getTable());
+            $this->table = $this->getDatabase()->getSchema()->getTable($this->getTable());
         }
         return $this->table;
     }
@@ -1125,16 +1092,6 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     }
 
     /**
-     * Returns the query's database connection object.
-     *
-     * @return \Yana\Db\IsConnection
-     */
-    public function getDatabase()
-    {
-        return $this->db;
-    }
-
-    /**
      * Set source row.
      *
      * Returns bool(true) on success and bool(false) on error.
@@ -1257,7 +1214,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
         $key = preg_replace("/\.(\*)?$/", '', $key);
         $array = explode(".", $key);
         assert('!empty($array); // Invalid argument $key');
-        $dbSchema = $this->db->getSchema();
+        $dbSchema = $this->getDatabase()->getSchema();
 
         // get table definition
         assert('!isset($table); // cannot redeclare variable $table');
@@ -1288,7 +1245,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
             assert('!isset($foreignTable); // cannot redeclare variable $foreignTable');
             while (!$isArray && count($array) > 3 && $column->isForeignKey())
             {
-                $a = $this->db->select($array[0] . "." . $array[1] . "." . $array[2]);
+                $a = $this->getDatabase()->select($array[0] . "." . $array[1] . "." . $array[2]);
                 if (empty($a)) {
                     throw new \Yana\Db\Queries\Exceptions\InconsistencyException("Operation aborted due to invalid foreign key." .
                         " Unable to resolve foreign key '{$key}'." .
@@ -1378,7 +1335,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
         } else {
             $tableName = $this->tableName;
         }
-        $table = $this->db->getSchema()->getTable($tableName);
+        $table = $this->getDatabase()->getSchema()->getTable($tableName);
         if (!($table instanceof \Yana\Db\Ddl\Table)) {
             $message = "No such table '" . $tableName . "'.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
@@ -1495,7 +1452,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
          */
         // left operand
         if (is_array($leftOperand)) {
-            $leftOperand = $this->db->quoteId(YANA_DATABASE_PREFIX.$leftOperand[0]) . '.' . $leftOperand[1];
+            $leftOperand = $this->getDatabase()->quoteId(YANA_DATABASE_PREFIX.$leftOperand[0]) . '.' . $leftOperand[1];
         }
         // right operand
         if ($operator === 'exists' || $operator === 'not exists') {
@@ -1515,7 +1472,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
                         $list .= ", ";
                     }
                     if (is_string($value)) {
-                        $value = $this->db->quote($value);
+                        $value = $this->getDatabase()->quote($value);
                     }
                     $list .= $value;
                 }
@@ -1523,9 +1480,9 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
             $rightOperand = "($list)";
             unset($value, $list);
         } elseif (is_array($rightOperand)) {
-            $rightOperand = $this->db->quoteId(YANA_DATABASE_PREFIX.$rightOperand[0]) . '.' . $rightOperand[1];
+            $rightOperand = $this->getDatabase()->quoteId(YANA_DATABASE_PREFIX.$rightOperand[0]) . '.' . $rightOperand[1];
         } elseif (is_string($rightOperand)) {
-            $rightOperand = $this->db->quote($rightOperand);
+            $rightOperand = $this->getDatabase()->quote($rightOperand);
         } elseif (is_null($rightOperand)) {
             if ($operator == '=') {
                 return $leftOperand . ' is null ';
@@ -1605,7 +1562,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
          * check if table - column pair is valid
          */
         if (YANA_DB_STRICT) {
-            $table = $this->db->getSchema()->getTable($tableName);
+            $table = $this->getDatabase()->getSchema()->getTable($tableName);
             assert('is_string($column); // Unexpected result: $column. String expected.');
 
             if (! $table instanceof \Yana\Db\Ddl\Table) {
@@ -1664,7 +1621,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
                  * check if table - column pair is valid
                  */
                 if (YANA_DB_STRICT) {
-                    $table = $this->db->getSchema()->getTable($tableName);
+                    $table = $this->getDatabase()->getSchema()->getTable($tableName);
                     if (! $table instanceof \Yana\Db\Ddl\Table) {
                         throw new \Yana\Db\Queries\Exceptions\TableNotFoundException("Invalid where clause. " .
                             "The name '{$tableName}' is not a table.", \Yana\Log\TypeEnumeration::WARNING);
@@ -1988,13 +1945,13 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     protected function getOldValues()
     {
         if (!isset($this->_oldValues)) {
-            $query = new \Yana\Db\Queries\Select($this->db);
+            $query = new \Yana\Db\Queries\Select($this->getDatabase());
             $query->setTable($this->getTable());
             $query->setRow($this->getRow());
             if ($this->getRow() === '*') {
                 $query->setWhere($this->getWhere());
             }
-            $oldValues = $this->db->select($query);
+            $oldValues = $this->getDatabase()->select($query);
             if ($query->getExpectedResult() === \Yana\Db\ResultEnumeration::ROW) {
                 $oldValues = array($oldValues);
             }
@@ -2014,7 +1971,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
      */
     public function sendQuery()
     {
-        return $this->db->sendQueryObject($this);
+        return $this->getDatabase()->sendQueryObject($this);
     }
 
     /**
@@ -2094,7 +2051,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
             if (!is_string($table)) {
                 return false;
             }
-            $table = $this->db->quoteId(YANA_DATABASE_PREFIX.$this->getTable());
+            $table = $this->getDatabase()->quoteId(YANA_DATABASE_PREFIX.$this->getTable());
             $stmt = str_replace('%TABLE%', $table, $stmt);
         }
 
@@ -2153,38 +2110,6 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
         }
 
         return $stmt;
-    }
-
-    /**
-     * Returns the serialized object as a string.
-     *
-     * @return  string
-     */
-    public function serialize()
-    {
-        // returns a list of key => value pairs
-        $properties = get_object_vars($this);
-        // remove the table object (it is redundant)
-        unset($properties['table']);
-        $properties['db'] = $this->db->getName();
-        return serialize($properties);
-    }
-
-    /**
-     * Reinitializes the object.
-     *
-     * @param   string  $string  string to unserialize
-     */
-    public function unserialize($string)
-    {
-        foreach (unserialize($string) as $key => $value)
-        {
-            $this->$key = $value;
-        }
-        if (is_string($this->db)) {
-            $builder = new \Yana\ApplicationBuilder();
-            $this->db = $builder->buildApplication()->connect($this->db);
-        }
     }
 
 }

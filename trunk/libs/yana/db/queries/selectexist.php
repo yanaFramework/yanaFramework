@@ -184,7 +184,7 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery
         assert('is_string($table); // Wrong type for argument 1. String expected');
         $table = mb_strtolower($table);
 
-        if (YANA_DB_STRICT && !$this->db->getSchema()->isTable($table)) {
+        if (YANA_DB_STRICT && !$this->getDatabase()->getSchema()->isTable($table)) {
             throw new \Yana\Core\Exceptions\NotFoundException("The table '$table' is unknown.", \Yana\Log\TypeEnumeration::WARNING);
         }
 
@@ -279,7 +279,7 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery
 
         /* 1. replace %TABLE% */
         if (!empty($this->joins)) {
-            $table = $this->db->quoteId(YANA_DATABASE_PREFIX . $this->getTable());
+            $table = $this->getDatabase()->quoteId(YANA_DATABASE_PREFIX . $this->getTable());
 
             assert('!isset($tableName); // cannot redeclare variable $tableName');
             assert('!isset($join); // cannot redeclare variable $join');
@@ -289,10 +289,10 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery
                 switch (true)
                 {
                     case $join->isLeftJoin():
-                        $table .= ' LEFT JOIN ' . $this->db->quoteId(YANA_DATABASE_PREFIX . $tableName);
+                        $table .= ' LEFT JOIN ' . $this->getDatabase()->quoteId(YANA_DATABASE_PREFIX . $tableName);
                     break;
                     case $join->isInnerJoin():
-                        $table .= ' JOIN ' . $this->db->quoteId(YANA_DATABASE_PREFIX . $tableName);
+                        $table .= ' JOIN ' . $this->getDatabase()->quoteId(YANA_DATABASE_PREFIX . $tableName);
                     break;
                 };
                 if ($join->getForeignKey() === "" || $join->getTargetKey() === "") {
@@ -304,11 +304,11 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery
                     case $join->isLeftJoin():
                     case $join->isInnerJoin():
                         $table .= ' ON ' .
-                            ($join->getSourceTableName() > "" ? $this->db->quoteId(YANA_DATABASE_PREFIX . $join->getSourceTableName()) . '.' : "") .
-                            $this->db->quoteId($join->getForeignKey()) .
+                            ($join->getSourceTableName() > "" ? $this->getDatabase()->quoteId(YANA_DATABASE_PREFIX . $join->getSourceTableName()) . '.' : "") .
+                            $this->getDatabase()->quoteId($join->getForeignKey()) .
                             ' = ' .
-                            ($join->getJoinedTableName() > "" ? $this->db->quoteId(YANA_DATABASE_PREFIX . $join->getJoinedTableName()) . '.' : "") .
-                            $this->db->quoteId($join->getTargetKey());
+                            ($join->getJoinedTableName() > "" ? $this->getDatabase()->quoteId(YANA_DATABASE_PREFIX . $join->getJoinedTableName()) . '.' : "") .
+                            $this->getDatabase()->quoteId($join->getTargetKey());
                     break;
                 }
             } /* end foreach */

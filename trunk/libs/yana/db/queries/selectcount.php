@@ -141,9 +141,9 @@ class SelectCount extends \Yana\Db\Queries\SelectExist
                     if ($column !== "") {
                         $column .= ', ';
                     }
-                    $column .= $this->db->quoteId(YANA_DATABASE_PREFIX.$item[0]) . '.' . $this->db->quoteId($item[1]);
+                    $column .= $this->getDatabase()->quoteId(YANA_DATABASE_PREFIX.$item[0]) . '.' . $this->getDatabase()->quoteId($item[1]);
                     if (is_string($alias)) {
-                        $column .= " as " .$this->db->quoteId($alias);
+                        $column .= " as " .$this->getDatabase()->quoteId($alias);
                     }
                     /* When selecting a column, the framework automaticall adds the primary key as second column.
                      * This second column must be dropped for sub-queries or otherwise the query will fail.
@@ -180,12 +180,12 @@ class SelectCount extends \Yana\Db\Queries\SelectExist
         } catch (\Yana\Db\Queries\Exceptions\QueryException $e) {
 
             $message = "Statement '$this' on database failed: " . \get_class($e) . ' ' . $e->getMessage();
-            \Yana\Log\LogManager::getLogger()->addLog($message, E_USER_WARNING, $result);
+            \Yana\Log\LogManager::getLogger()->addLog($message, E_USER_WARNING, $e);
             return 0;
         }
 
         $rowCount = $result->fetchOne();
-        assert('is_numeric($rowCount)');
+        assert('is_null($rowCount) || is_numeric($rowCount)');
 
         return (int) $rowCount;
     }

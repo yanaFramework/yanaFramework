@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Db\Doctrine;
+namespace Yana\Db\Mdb2;
 
 /**
  * @ignore
@@ -39,7 +39,7 @@ class ConnectionFactoryTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Db\Doctrine\ConnectionFactory
+     * @var \Yana\Db\Mdb2\ConnectionFactory
      */
     protected $object;
 
@@ -56,32 +56,15 @@ class ConnectionFactoryTest extends \PHPUnit_Framework_TestCase
     );
 
     /**
-     * @var bool
-     */
-    private $_isAvailable = null;
-
-    /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
     protected function setUp()
     {
-        if (!$this->isAvailable()) {
-            $this->markTestSkipped();
+        if (!isset($GLOBALS['_MDB2_dsninfo_default'])) {
+            $GLOBALS['_MDB2_dsninfo_default'] = array();
         }
-        $this->object = new \Yana\Db\Doctrine\ConnectionFactory($this->_dsn);
-    }
-
-    /**
-     * @return bool
-     */
-    protected function isAvailable()
-    {
-        if (!isset($this->_isAvailable)) {
-            $factory = new \Yana\Db\Doctrine\ConnectionFactory();
-            $this->_isAvailable = $factory->isAvailable($this->_dsn);
-        }
-        return $this->_isAvailable;
+        $this->object = new \Yana\Db\Mdb2\ConnectionFactory($this->_dsn);
     }
 
     /**
@@ -98,7 +81,7 @@ class ConnectionFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetConnection()
     {
-        $this->assertTrue($this->object->getConnection() instanceof \Doctrine\DBAL\Connection);
+        $this->assertTrue($this->object->getConnection() instanceof \MDB2_Driver_Common);
     }
 
     /**

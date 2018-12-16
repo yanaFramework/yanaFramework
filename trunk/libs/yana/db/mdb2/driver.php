@@ -139,17 +139,16 @@ class Driver extends \Yana\Core\AbstractDecorator implements \Yana\Db\IsDriver
     /**
      * get list of tables in current database
      *
-     * @param   string  $database  database nasme
      * @return  array
      * @throws  \Yana\Db\DatabaseException  on failure
      */
-    public function listTables($database = null)
+    public function listTables()
     {
         $connection = $this->_getDecoratedObject();
         /* @var $connection \MDB2_Driver_Manager_Common */
         $connection->loadModule('Manager');
         $connection->loadModule('Reverse');
-        return $this->_checkReturnValue($connection->listTables($database));
+        return $this->_checkReturnValue($connection->listTables());
     }
 
     /**

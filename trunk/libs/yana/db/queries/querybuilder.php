@@ -46,9 +46,9 @@ class QueryBuilder extends \Yana\Core\Object implements \Yana\Db\Queries\IsQuery
     private $_connection = null;
 
     /**
-     * Create a new instance.
+     * <<construct>> Create a new instance.
      *
-     * @param  \Yana\Db\Ddl\Database  $schema  schema in database definition language
+     * @param  \Yana\Db\IsConnection $connection  open database connection
      */
     public function __construct(\Yana\Db\IsConnection $connection)
     {
@@ -243,11 +243,10 @@ class QueryBuilder extends \Yana\Core\Object implements \Yana\Db\Queries\IsQuery
     public function exists($key, array $where = array())
     {
         assert('is_string($key); // Wrong argument type for argument 1. String expected');
-        $key = \mb_strtolower($key);
 
         // build query to check key
         $existQuery = new \Yana\Db\Queries\SelectExist($this->_connection);
-        $existQuery->setKey($key);
+        $existQuery->setKey(\mb_strtolower($key));
         if (!empty($where)) {
             $existQuery->setWhere($where);
         }

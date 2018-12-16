@@ -244,7 +244,7 @@ class Update extends \Yana\Db\Queries\Insert
          * build query: select profile_id from table where id = "foo"
          */
         assert('!isset($select); // Cannot redeclare variable $select');
-        $select = new \Yana\Db\Queries\Select($this->db);
+        $select = new \Yana\Db\Queries\Select($this->getDatabase());
         $select->setTable($table);
         $select->setRow($row);
         $select->setColumn("profile_id");
@@ -360,10 +360,10 @@ class Update extends \Yana\Db\Queries\Insert
                         }
                         if (is_array($value)) {
                             $set .= $this->getDatabase()->quoteId($this->getTable()) . '.' . $this->getDatabase()->quoteId($column)
-                                . ' = ' . $this->db->quote(json_encode($value));
+                                . ' = ' . $this->getDatabase()->quote(json_encode($value));
                         } else {
                             $set .= $this->getDatabase()->quoteId($this->getTable()) . '.' . $this->getDatabase()->quoteId($column)
-                                . ' = ' . $this->db->quote($value);
+                                . ' = ' . $this->getDatabase()->quote($value);
                         }
                     }
                     unset($column, $value);
@@ -375,13 +375,11 @@ class Update extends \Yana\Db\Queries\Insert
                     throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
                 }
             } elseif ($this->expectedResult === \Yana\Db\ResultEnumeration::CELL) {
-                if (is_array($this->values)) {
-                    $set = $this->getDatabase()->quoteId($this->getTable()) . '.' . $this->getDatabase()->quoteId($column)
-                        . ' = ' . $this->db->quote(json_encode($this->values));
-                } else {
-                    $set = $this->getDatabase()->quoteId($this->getTable()) . '.' . $this->getDatabase()->quoteId($column)
-                        . ' = ' . $this->db->quote($this->values);
-                }
+                assert('!isset($values); // Cannot redeclare $values');
+                $values = is_scalar($this->values) ? (string) $this->values : json_encode($this->values);
+                $set = $this->getDatabase()->quoteId($this->getTable()) . '.' . $this->getDatabase()->quoteId($this->getColumn()) .
+                    ' = ' . $this->getDatabase()->quote($values);
+                unset($values);
             } else {
                 assert('!isset($message); // Cannot redeclare $message');
                 assert('!isset($level); // Cannot redeclare $level');

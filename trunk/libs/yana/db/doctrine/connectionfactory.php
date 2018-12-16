@@ -199,7 +199,7 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\Doctrine\I
      *
      * @return  array
      */
-    private function _getDoctrineDsn()
+    protected function _getDsnForDoctrine()
     {
         assert('is_array($this->_dsn);');
         $dsn = array();
@@ -236,7 +236,7 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\Doctrine\I
     {
         if (!isset($this->_connection)) {
             try {
-                $connection = \Doctrine\DBAL\DriverManager::getConnection($this->_getDoctrineDsn(), new \Doctrine\DBAL\Configuration());
+                $connection = \Doctrine\DBAL\DriverManager::getConnection($this->_getDsnForDoctrine(), new \Doctrine\DBAL\Configuration());
 
             } catch (\Doctrine\DBAL\DBALException $e) {
                 $_message = "DATABASE NOT AVAILABLE: Unable to establish connection with database server.\n\t\t".

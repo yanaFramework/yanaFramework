@@ -23,47 +23,32 @@
  *
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
- *
- * @ignore
  */
 
-namespace Yana\Db\Doctrine;
+namespace Yana\Db\Queries;
 
 /**
- * <<wrapper>> Represents a Doctrine DBAL resultset.
+ * Database query builder
+ *
+ * This class is a query builder that can be used to build SQL statements to update existing
+ * rows or cells in a database-table.
+ *
+ * Note: this class does NOT untaint input data for you.
  *
  * @package     yana
  * @subpackage  db
- *
- * @ignore
- * @codeCoverageIgnore
  */
-class Result extends \Yana\Db\Doctrine\AbstractResult
+class Sql extends \Yana\Db\Queries\AbstractSql
 {
 
     /**
-     * @var \Doctrine\DBAL\Statement
-     */
-    private $_result = null;
-
-    /**
-     * Creates a new resultset.
+     * Sends the query to the database server and returns a result-object.
      *
-     * @param  Doctrine\DBAL\Driver\Statement  $result  resultset
+     * @return  \Yana\Db\IsResult
      */
-    public function __construct(\Doctrine\DBAL\Driver\Statement $result)
+    public function sendQuery()
     {
-        $this->_result = $result;
-    }
-
-    /**
-     * Returns resultset.
-     *
-     * @return  \Doctrine\DBAL\Statement
-     */
-    protected function _getResult()
-    {
-        return $this->_result;
+        return $this->getDatabase()->sendQueryString($this->_getSqlStatement());
     }
 
 }

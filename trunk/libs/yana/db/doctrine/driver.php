@@ -89,7 +89,7 @@ class Driver extends \Yana\Db\Doctrine\AbstractDriver
     public function commit()
     {
         try {
-            return $this->_getDecoratedObject()->commit();
+            $this->_getDecoratedObject()->commit();
 
         } catch (\Exception $e) {
             throw new \Yana\Db\DatabaseException($e->getMessage(), \Yana\Log\TypeEnumeration::WARNING, $e);
@@ -250,7 +250,8 @@ class Driver extends \Yana\Db\Doctrine\AbstractDriver
      * @param   int     $limit    the number of rows to return for this query
      * @param   int     $offset   the first row to return for this query
      * @return  \Yana\Db\IsResult
-     * @throws  \Yana\Db\DatabaseException  on failure
+     * @throws  \Yana\Db\DatabaseException                       on failure
+     * @throws  \Yana\Db\Queries\Exceptions\ConstraintException  when a constraint was violated
      */
     public function sendQueryString($sqlStmt, $limit = 0, $offset = 0)
     {
@@ -263,11 +264,17 @@ class Driver extends \Yana\Db\Doctrine\AbstractDriver
             $connection = $this->_getDecoratedObject();
             if ($limit > 0 || $offset > 0) {
 
-                $connection->getDatabasePlatform()->modifyLimitQuery($sqlStmt, (int) $limit, (int) $offset);
+                $sqlStmt = $connection->getDatabasePlatform()->modifyLimitQuery($sqlStmt, (int) $limit, (int) $offset);
             }
             /* @var $statement \Doctrine\DBAL\Statement */
             $statement = $connection->query($sqlStmt);
             return new \Yana\Db\Doctrine\Result($statement);
+
+        } catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $e) {
+            throw new \Yana\Db\Queries\Exceptions\ConstraintException($e->getMessage(), \Yana\Log\TypeEnumeration::WARNING, $e);
+
+        } catch (\Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException $e) {
+            throw new \Yana\Db\Queries\Exceptions\ConstraintException($e->getMessage(), \Yana\Log\TypeEnumeration::WARNING, $e);
 
         } catch (\Exception $e) {
             throw new \Yana\Db\DatabaseException($e->getMessage(), \Yana\Log\TypeEnumeration::WARNING, $e);

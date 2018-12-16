@@ -39,9 +39,9 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsCon
 {
 
     /**
-     * @var mixed
+     * @var \MDB2_Driver_Common
      */
-    private $_database = null;
+    private $_connection = null;
 
     /**
      * @var array
@@ -118,7 +118,6 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsCon
      *
      * @param  array  $dsn  for a description of the $dsn parameter see the text above
      * @throws \Yana\Db\Mdb2\PearDbException  when Pear MDB2 is not available
-     * @throws \Yana\Db\ConnectionException   when the DSN-settings are invalid
      */
     public function __construct(array $dsn = null)
     {
@@ -130,37 +129,11 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsCon
         }
 
         /*
-         * 1 retrieve default settings for fall back
-         */
-
-        // get list of ODBC-settings
-        $builder = new \Yana\ApplicationBuilder();
-        $application = $builder->buildApplication();
-        $requireOdbc = $application->getDefault('database.require_odbc');
-        if (!is_array($requireOdbc)) {
-            // no ODBC-settings available
-            $requireOdbc = array();
-        }
-
-        // get list of default connection options
-        $this->_options = $application->getDefault('database.options');
-        if (!is_array($this->_options)) {
-            // no default options available
-            $this->_options = array();
-        }
-        assert('is_array($this->_options);');
-
-        /*
-         * 1.2 auto-detect MySQL port for Server2Go application
+         * 1 auto-detect MySQL port for Server2Go application
          */
         if (isset($_ENV["S2G_MYSQL_PORT"]) && empty($this->_dsn["PORT"]) && strpos(\YANA_DATABASE_DBMS, 'mysql') !== false) {
             $this->_dsn["PORT"] = $_ENV["S2G_MYSQL_PORT"];
         }
-
-        /*
-         * 1.3 there are some static options that always have to be there and can't be changed
-         */
-        $this->_options['portability'] = \MDB2_PORTABILITY_ALL;
 
         /*
          * 2 process settings provided by the user
@@ -169,93 +142,64 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsCon
             $dsn = \Yana\Util\Hashtable::changeCase($dsn, CASE_UPPER);
             $this->_dsn = \Yana\Util\Hashtable::merge($this->_dsn, $dsn);
         }
-        assert('is_array($this->_dsn);');
-        $dsn = array();
-
-        /*
-         * 3 create PEAR-DB compatible dsn-array
-         */
-        /* 3.1 determine if odbc is required to connect to this dbms */
-        if (!empty($this->_dsn['DBMS'])) {
-            if (!empty($this->_dsn['USE_ODBC']) || in_array(mb_strtolower($this->_dsn['DBMS']), $requireOdbc)) {
-                $dsn['phptype']  = 'ODBC';
-                $dsn['dbsyntax'] = $this->_dsn['DBMS'];
-            } else {
-                $dsn['phptype']  = $this->_dsn['DBMS'];
-            }
-        }
-        /* 3.2 now for the database host */
-        if (!empty($this->_dsn['HOST'])) {
-            $dsn['hostspec'] = $this->_dsn['HOST'];
-            if (is_numeric($this->_dsn['PORT']) && $this->_dsn['PORT'] > 0) {
-                $dsn['hostspec'] .= ':'.$this->_dsn['PORT'];
-            }
-        }
-        /* 3.3 database name */
-        if (!empty($this->_dsn['DATABASE'])) {
-            $dsn['database'] = $this->_dsn['DATABASE'];
-        }
-        /* 3.4 collect login information */
-        if (!empty($this->_dsn['USERNAME'])) {
-            $dsn['username'] = $this->_dsn['USERNAME'];
-        }
-        if (!empty($this->_dsn['PASSWORD'])) {
-            $dsn['password'] = $this->_dsn['PASSWORD'];
-        }
-        assert('is_array($dsn);');
-
-        /**
-         * 4 if PEAR-DB is available try to connect using the collected settings
-         *
-         * {@internal
-         *
-         * Note:
-         * Might be a bug - might be a "feature".
-         * PEAR-DB does not accept foreign error handlers to be used - at least not
-         * while establishing a database connection.
-         * Restoring the error handler and then reseting it somehow makes things right
-         * for PEAR.
-         *
-         * The returned object is an instance of \MDB2_Driver_Common or an instance of \MDB2_Error.
-         *
-         * }}
-         */
-        if (defined('YANA_ERROR_REPORTING')) {
-            restore_error_handler();
-        }
-        @$connection = \MDB2::connect($dsn);
-        if (defined('YANA_ERROR_REPORTING')) {
-            $builder->setErrorReporting(YANA_ERROR_REPORTING);
-        }
-
-        /* error handling */
-        if (!$connection instanceof \MDB2_Driver_Common) {
-            $_message = "DATABASE NOT AVAILABLE: Unable to establish connection with database server.\n\t\t".
-                        "Open administration panel and choose \"database administration\" to edit settings";
-
-            /* Don't output passwords */
-            $dsn['password'] = (empty($dsn['password'])) ? 'NO' : 'YES';
-
-            $data = $connection->getMessage() . "\nUsing DSN:\n" . print_r($dsn, true);
-
-            // add an entry to the logs
-            $application->getLogger()->addLog($_message, \Yana\Log\TypeEnumeration::ERROR, $data);
-
-            $exception = new \Yana\Db\ConnectionException($_message . ': ' . $data, \Yana\Log\TypeEnumeration::ERROR);
-            $exception->setData($data);
-            throw $exception;
-        }
-        $this->_database = $connection;
     }
 
     /**
      * Returns an open database connection via PEAR-DB.
      *
      * @return  \MDB2_Driver_Common
+     * @throws  \Yana\Db\ConnectionException  when the DSN-settings are invalid
      */
     public function getConnection()
     {
-        return $this->_database;
+        if (!isset($this->_connection)) {
+            $dsn = $this->_getDsnForMdb2();
+            /**
+             * 4 if PEAR-DB is available try to connect using the collected settings
+             *
+             * {@internal
+             *
+             * Note:
+             * Might be a bug - might be a "feature".
+             * PEAR-DB does not accept foreign error handlers to be used - at least not
+             * while establishing a database connection.
+             * Restoring the error handler and then reseting it somehow makes things right
+             * for PEAR.
+             *
+             * The returned object is an instance of \MDB2_Driver_Common or an instance of \MDB2_Error.
+             *
+             * }}
+             */
+            if (defined('YANA_ERROR_REPORTING')) {
+                restore_error_handler();
+            }
+            @$connection = \MDB2::connect($dsn, $this->_getOptionsForMdb2());
+            if (defined('YANA_ERROR_REPORTING')) {
+                $builder = new \Yana\ApplicationBuilder();
+                $builder->setErrorReporting(YANA_ERROR_REPORTING);
+                unset($builder);
+            }
+
+            /* error handling */
+            if (!$connection instanceof \MDB2_Driver_Common) {
+                $_message = "DATABASE NOT AVAILABLE: Unable to establish connection with database server.\n\t\t".
+                            "Open administration panel and choose \"database administration\" to edit settings";
+
+                /* Don't output passwords */
+                $dsn['password'] = (empty($dsn['password'])) ? 'NO' : 'YES';
+
+                $data = $connection->getMessage() . "\nUsing DSN:\n" . print_r($dsn, true);
+
+                // add an entry to the logs
+                \Yana\Log\LogManager::getLogger()->addLog($_message, \Yana\Log\TypeEnumeration::ERROR, $data);
+
+                $exception = new \Yana\Db\ConnectionException($_message . ': ' . $data, \Yana\Log\TypeEnumeration::ERROR);
+                $exception->setData($data);
+                throw $exception;
+            }
+            $this->_connection = $connection;
+        }
+        return $this->_connection;
     }
 
     /**
@@ -282,6 +226,108 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsCon
     }
 
     /**
+     * Create and return PEAR-MDB2 compatible dsn-array.
+     *
+     * Returns an associative array containing information on the current connection:
+     *
+     * <ul>
+     *   <li>phptype: name of database driver</li>
+     *   <li>dbsyntax: database type for ODBC</li>
+     *   <li>hostspec: host name, e.g. localhost including port number of database server (where applicable)</li>
+     *   <li>username</li>
+     *   <li>password</li>
+     *   <li>database: name of database to connect to</li>
+     * </ul>
+     *
+     * @return  array
+     */
+    protected function _getDsnForMdb2()
+    {
+        assert('!isset($dsn); // Cannot redeclare var $dsn');
+        $dsn = $this->getDsn();
+        assert('!isset($dsnForMdb2); // Cannot redeclare var $dsnForMdb2');
+        $dsnForMdb2 = array();
+        assert('!isset($requireOdbc); // Cannot redeclare var $requireOdbc');
+        $requireOdbc = $this->_getOdbcSettings();
+
+        /* 1 determine if odbc is required to connect to this dbms */
+        if (!empty($dsn['DBMS'])) {
+            if (!empty($dsn['USE_ODBC']) || in_array(mb_strtolower($dsn['DBMS']), $requireOdbc)) {
+                $dsnForMdb2['phptype']  = 'ODBC';
+                $dsnForMdb2['dbsyntax'] = (string) $dsn['DBMS'];
+            } else {
+                $dsnForMdb2['phptype']  = (string) $dsn['DBMS'];
+            }
+        }
+        /* 2 now for the database host */
+        if (!empty($dsn['HOST'])) {
+            $dsnForMdb2['hostspec'] = (string) $dsn['HOST'];
+            if (is_numeric($dsn['PORT']) && $dsn['PORT'] > 0) {
+                $dsnForMdb2['hostspec'] .= ':' . (string) $dsn['PORT'];
+            }
+        }
+        /* 3 database name */
+        if (!empty($dsn['DATABASE'])) {
+            $dsnForMdb2['database'] = (string) $dsn['DATABASE'];
+        }
+        /* 4 collect login information */
+        if (!empty($dsn['USERNAME'])) {
+            $dsnForMdb2['username'] = (string) $dsn['USERNAME'];
+        }
+        if (!empty($dsn['PASSWORD'])) {
+            $dsnForMdb2['password'] = (string) $dsn['PASSWORD'];
+        }
+        assert('is_array($dsnForMdb2);');
+        return $dsnForMdb2;
+    }
+
+    /**
+     * Create and return connection options for PEAR-MDB2 connections.
+     *
+     * @return  array
+     */
+    protected function _getOptionsForMdb2()
+    {
+        if (empty($this->_options)) {
+            // get list of ODBC-settings
+            $builder = new \Yana\ApplicationBuilder();
+            $application = $builder->buildApplication();
+
+            // get list of default connection options
+            $this->_options = $application->getDefault('database.options');
+            if (!is_array($this->_options)) {
+                // no default options available
+                $this->_options = array();
+            }
+            assert('is_array($this->_options);');
+
+            // there are some static options that always have to be there and can't be changed
+            $this->_options['portability'] = \MDB2_PORTABILITY_ALL;
+        }
+        return $this->_options;
+    }
+
+    /**
+     * Get list of database systems that required ODBC to connect.
+     *
+     * @return  array
+     */
+    private function _getOdbcSettings()
+    {
+        assert('!isset($builder); // Cannot redeclare var $builder');
+        $builder = new \Yana\ApplicationBuilder();
+        assert('!isset($application); // Cannot redeclare var $application');
+        $application = $builder->buildApplication();
+        assert('!isset($requireOdbc); // Cannot redeclare var $requireOdbc');
+        $requireOdbc = $application->getDefault('database.require_odbc');
+        if (!is_array($requireOdbc)) {
+            // no ODBC-settings available
+            $requireOdbc = array();
+        }
+        return $requireOdbc;
+    }
+
+    /**
      * Test if a connection is available.
      *
      * Returns bool(true) if a connection to a db-server could be established via the provided parameters,
@@ -297,12 +343,18 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsCon
         if (!class_exists("MDB2")) {
             return false;
         }
-        $db = new self($dsn);
-        /*
-         * NOTE: the constructor already created a log-entry if the connection failed,
-         * so there's no need to do this again
-         */
-        return \MDB2::isConnection($db->_database);
+        try {
+            $db = new self($dsn);
+            /*
+             * NOTE: the constructor already created a log-entry if the connection failed,
+             * so there's no need to do this again
+             */
+            return \MDB2::isConnection($db->getConnection());
+
+        } catch (\Yana\Db\ConnectionException $e) {
+            unset($e);
+        }
+        return false;
     }
 
 }

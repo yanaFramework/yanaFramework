@@ -177,10 +177,9 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
     /**
      * get list of tables in current database
      *
-     * @param   string  $database  dummy for compatibility
      * @return  array
      */
-    public function listTables($database = null)
+    public function listTables()
     {
         return $this->_getSchema()->getTableNames();
     }

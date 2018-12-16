@@ -25,10 +25,10 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Db\Mdb2;
+namespace Yana\Db\Doctrine;
 
 /**
- * <<decorator>> A database abstraction api, that uses PEAR MDB2.
+ * <<decorator>> A database abstraction api, that uses Doctrine DBAL.
  *
  * @package     yana
  * @subpackage  db
@@ -57,21 +57,20 @@ class Connection extends \Yana\Db\AbstractConnection
      * Each database connection depends on a schema file describing the database.
      * These files are to be found in config/db/*.db.xml
      *
-     * @param   \Yana\Db\Ddl\Database              $schema  schema name or schema in database definition language
-     * @param   \Yana\Db\Mdb2\IsConnectionFactory  $server  Connection to a database server
-     * @throws  \Yana\Db\Mdb2\PearDbException      when Pear MDB2 is not available
-     * @throws  \Yana\Db\ConnectionException       when connection to database failed
+     * @param   \Yana\Db\Ddl\Database                  $schema   schema name or schema in database definition language
+     * @param   \Yana\Db\Doctrine\IsConnectionFactory  $factory  Connection to a database server
+     * @throws  \Yana\Db\ConnectionException           when connection to database failed
      */
-    public function __construct(\Yana\Db\Ddl\Database $schema, \Yana\Db\Mdb2\IsConnectionFactory $server = null)
+    public function __construct(\Yana\Db\Ddl\Database $schema, \Yana\Db\Doctrine\IsConnectionFactory $factory = null)
     {
         // fall back to default connection
-        if (is_null($server)) {
-            $server = new \Yana\Db\Mdb2\ConnectionFactory(); // may throw \Yana\Db\ConnectionException
+        if (is_null($factory)) {
+            $factory = new \Yana\Db\Doctrine\ConnectionFactory(); // may throw \Yana\Db\ConnectionException
         }
 
         // open database connection
-        $this->_setConnection($server->getConnection());
-        $this->_dsn = $server->getDsn();
+        $this->_setConnection($factory->getConnection());
+        $this->_dsn = $factory->getDsn();
 
         parent::__construct($schema);
     }
@@ -79,12 +78,12 @@ class Connection extends \Yana\Db\AbstractConnection
     /**
      * Wrap and set the database connection.
      *
-     * @param   \MDB2_Driver_Common  $connection  MDB2 database connection
+     * @param   \Doctrine\DBAL\Connection  $connection  Doctrine database connection
      * @return  $this
      */
-    protected function _setConnection(\MDB2_Driver_Common $connection)
+    protected function _setConnection(\Doctrine\DBAL\Connection $connection)
     {
-        $this->_connection = new \Yana\Db\Mdb2\Driver($connection);
+        $this->_connection = new \Yana\Db\Doctrine\Driver($connection);
         return $this;
     }
 
@@ -104,19 +103,28 @@ class Connection extends \Yana\Db\AbstractConnection
         {
             // Mapping aliases (driver names) to real DBMS names
             case 'mysqli':
+            case 'mysql2':
+            case 'pdo_mysql':
+            case 'drizzle_pdo_mysql':
                 return "mysql";
+            case 'ibm_db2':
+                return "db2";
+            case 'pdo_sqlsrv':
+            case 'sqlsrv':
+                return "mssql";
             case 'pgsql':
+            case 'postgres':
+            case 'pdo_pgsql':
                 return "postgresql";
-            case 'fbsql':
-                return "frontbase";
-            case 'ifx':
-                return "informix";
-            case 'ibase':
-                return "interbase";
-            case 'access':
-                return "msaccess";
+            case 'sqlite3':
+            case 'pdo_sqlite':
+                return "sqlite";
+            case 'pdo_oci':
+            case 'oci':
             case 'oci8':
                 return "oracle";
+            case 'sqlanywhere':
+                return "sybase";
             // any other
             default:
                 return $dbms;
@@ -185,10 +193,10 @@ class Connection extends \Yana\Db\AbstractConnection
         }
 
         $connection = $this->_getConnection();
-        $mdb2Result = $connection->sendQueryString($sqlStmt, $limit, $offset);
-        assert($mdb2Result instanceof \Yana\Db\IsResult);
+        $result = $connection->sendQueryString($sqlStmt, $limit, $offset);
+        assert($result instanceof \Yana\Db\IsResult);
 
-        return $mdb2Result;
+        return $result;
     }
 
     /**
@@ -399,7 +407,7 @@ class Connection extends \Yana\Db\AbstractConnection
     {
         if (!isset($this->_connection)) {
             // @codeCoverageIgnoreStart
-            $dbServer = new \Yana\Db\Mdb2\ConnectionFactory($this->_dsn);
+            $dbServer = new \Yana\Db\Doctrine\ConnectionFactory($this->_dsn);
             $this->_setConnection($dbServer->getConnection());
             // @codeCoverageIgnoreEnd
         }
