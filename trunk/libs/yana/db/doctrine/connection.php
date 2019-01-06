@@ -44,12 +44,12 @@ class Connection extends \Yana\Db\AbstractConnection
     /**
      * @var  array
      */
-    private $_reservedSqlKeywords = null;
+    private $_dsn = array();
 
     /**
-     * @var  array
+     * @var  \Yana\Db\Helpers\SqlKeywordChecker
      */
-    private $_dsn = array();
+    private $_sqlKeywordChecker = null;
 
     /**
      * Create a new instance.
@@ -85,6 +85,20 @@ class Connection extends \Yana\Db\AbstractConnection
     {
         $this->_connection = new \Yana\Db\Doctrine\Driver($connection);
         return $this;
+    }
+
+    /**
+     * Get instance of SQL keyword checker.
+     *
+     * @return  \Yana\Db\Helpers\SqlKeywordChecker
+     * @codeCoverageIgnore
+     */
+    protected function _getSqlKeywordChecker()
+    {
+        if (!isset($this->_sqlKeywordChecker)) {
+            $this->_sqlKeywordChecker = \Yana\Db\Helpers\SqlKeywordChecker::createFromApplicationDefault();
+        }
+        return $this->_sqlKeywordChecker;
     }
 
     /**
@@ -253,14 +267,16 @@ class Connection extends \Yana\Db\AbstractConnection
     {
         assert('is_string($sqlFile) || is_array($sqlFile); // Wrong argument type: $sqlFile. String or array expected');
         assert('!empty($sqlFile); // Argument \$sqlFile must not be empty.');
+
+        if ($this->getSchema()->isReadonly()) {
+            throw new \Yana\Core\Exceptions\NotWriteableException("Database is readonly. SQL import aborted.", \Yana\Log\TypeEnumeration::INFO);
+        }
+
         $transaction = $this->_getTransaction();
         if (!$transaction->isEmpty()) {
             $message = "Cannot import SQL statements.\n\t\tThere is a pending transaction that needs to be committed " .
                 "before proceeding.";
             throw new \Yana\Db\DatabaseException($message, \Yana\Log\TypeEnumeration::INFO);
-        }
-        if ($this->getSchema()->isReadonly()) {
-            throw new \Yana\Core\Exceptions\NotWriteableException("Database is readonly. SQL import aborted.", \Yana\Log\TypeEnumeration::INFO);
         }
 
         $success = true;
@@ -351,51 +367,13 @@ class Connection extends \Yana\Db\AbstractConnection
              * Note that "isSqlKeyword()" has O(log(n)) running time.
              */
             default:
-                if (strpos($value, ' ') !== false || $this->_isSqlKeyword($value) === true) {
+                if (strpos($value, ' ') !== false || $this->_getSqlKeywordChecker()->isSqlKeyword($value) === true) {
                     return $this->_getConnection()->quoteIdentifier($value);
                 }
 
                 return $value;
         } // end switch
         // @codeCoverageIgnoreEnd
-    }
-
-    /**
-     * returns true if $name is a known SQL keyword and false otherwise
-     *
-     * implements quick-search
-     * + assume that the input is sorted
-     * + assume that the input is upper case
-     *
-     * this algorithm has O(log(n)) running time
-     *
-     * @param   string  $name  SQL keyword
-     * @return  bool
-     */
-    private function _isSqlKeyword($name)
-    {
-        assert('is_string($value); // Wrong argument type for argument 1. String expected.');
-
-        if (is_null($this->_reservedSqlKeywords)) {
-
-            $builder = new \Yana\ApplicationBuilder();
-            $application = $builder->buildApplication();
-            /* Load list of reserved SQL keywords (required for smart id quoting) */
-            if (isset($application)) {
-                $file = $application->getResource('system:/config/reserved_sql_keywords.file');
-                $this->_reservedSqlKeywords = file($file->getPath());
-            } else {
-                $this->_reservedSqlKeywords = array();
-            }
-            if (!is_array($this->_reservedSqlKeywords)) {
-                $this->_reservedSqlKeywords = array();
-            }
-        } elseif (empty($this->_reservedSqlKeywords)) {
-            return false;
-        }
-
-        $nameUpperCase = mb_strtoupper($name);
-        return (bool) (\Yana\Util\Hashtable::quickSearch($this->_reservedSqlKeywords, $nameUpperCase) !== false);
     }
 
     /**

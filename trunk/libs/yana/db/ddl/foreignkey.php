@@ -296,11 +296,15 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractObject
                 $message = "No such column '$source' in table '{$this->getSourceTable()}'.";
                 throw new \Yana\Core\Exceptions\NotFoundException($message, \Yana\Log\TypeEnumeration::WARNING);
             }
-            $database = $this->parent->getParent();
             $targetTable = $this->getTargetTable();
             if (!is_string($targetTable)) {
                 $message = "Target table is undefined.";
                 throw new \Yana\Core\Exceptions\NotFoundException($message, \Yana\Log\TypeEnumeration::WARNING);
+            }
+            $database = $this->parent->getParent();
+            if (is_null($database)) {
+                $message = "Database is undefined.";
+                throw new \Yana\Core\Exceptions\NotFoundException($message, \Yana\Log\TypeEnumeration::ERROR);
             }
             $table = $database->getTable($targetTable);
             if (! $table instanceof \Yana\Db\Ddl\Table) {

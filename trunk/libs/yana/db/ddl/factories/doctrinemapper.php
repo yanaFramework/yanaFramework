@@ -28,135 +28,87 @@
 namespace Yana\Db\Ddl\Factories;
 
 /**
- * MDB2 to database mapper.
+ * Doctrine to database mapper.
  *
- * Maps MDB2 table info arrays to a database object.
+ * Maps Doctrine table info objects to a database object.
  *
  * @package     yana
  * @subpackage  db
  */
-class Mdb2Mapper extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories\IsMdb2Mapper
+class DoctrineMapper extends \Yana\Core\Object
 {
 
     /**
      * Add a sequence to database.
      *
-     * Info contains these elements:
-     * <code>
-     * array(
-     *   [start] => int
-     * );
-     * </code>
-     *
-     * @param   \Yana\Db\Ddl\Database  $database  database to add sequence to
-     * @param   array        $info      sequence information
-     * @param   string       $name      sequence name
+     * @param   \Yana\Db\Ddl\Database           $database  database to add sequence to
+     * @param   \Doctrine\DBAL\Schema\Sequence  $info      sequence information
+     * @param   string                          $name      sequence name
      * @return  $this
      */
-    public function createSequence(\Yana\Db\Ddl\Database $database, array $info, $name)
+    public function createSequence(\Yana\Db\Ddl\Database $database, \Doctrine\DBAL\Schema\Sequence $info, $name)
     {
         $sequence = $database->addSequence($name);
-        if (isset($info['start'])) {
-            $sequence->setStart($info['start']);
-        }
-        // These seem to be currently not supported by MDB2:
-        // @codeCoverageIgnoreStart
-        if (isset($info['min'])) {
-            $sequence->setMin((int) $info['min']);
-        }
-        if (isset($info['max'])) {
-            $sequence->setMax((int) $info['max']);
-        }
-        if (isset($info['step'])) {
-            $sequence->setIncrement((int) $info['step']);
-        }
-        if (!empty($info['cycle'])) {
-            $sequence->setCycle(true);
-        }
-        // @codeCoverageIgnoreEnd
+        $sequence->setStart($info->getInitialValue());
+        // That's all Doctrine supports at the moment. Min/max, cycle, and step are apparently unsupported :-(
         return $this;
     }
 
     /**
-     * Add a index to table.
+     * Add an index to table.
      *
-     * Info contains these elements:
-     * <code>
-     * array(
-     *   [fields] => array(
-     *     [fieldname] => array( [sorting] => ascending )
-     *     // more fields
-     *   )
-     * );
-     * </code>
-     *
-     * @param   \Yana\Db\Ddl\Table  $table  table to add index to
-     * @param   array               $info   index information
-     * @param   string              $name   index name
+     * @param   \Yana\Db\Ddl\Table           $table  table to add index to
+     * @param   \Doctrine\DBAL\Schema\Index  $info   index information
+     * @param   string                       $name   index name
      * @return  $this
+     * @throws  \Yana\Core\Exceptions\NotImplementedException   when trying to use a compound primary key
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when no "fields" entry is given in index information
      */
-    public function createIndex(\Yana\Db\Ddl\Table $table, array $info, $name)
+    public function createIndex(\Yana\Db\Ddl\Table $table, \Doctrine\DBAL\Schema\Index $info, $name)
     {
-        if (!isset($info['fields'])) {
-            throw new \Yana\Core\Exceptions\InvalidArgumentException();
+        if ($info->isPrimary()) {
+            $this->_createPrimaryKey($table, $info); // may throw exception
+            return $this;
         }
-
+        assert('!isset($index); // Cannot redeclare var $index');
         $index = $table->addIndex($name);
-        foreach ($info['fields'] as $fieldName => $sorting)
+        $index->setUnique($info->isUnique());
+        foreach ($info->getColumns() as $fieldName)
         {
-            if (!empty($sorting['sorting'])) {
-                $isAscending = $sorting['sorting'] === 'ascending';
-            } else {
-                $isAscending = true;
-            }
-            $index->addColumn($fieldName, $isAscending);
+            $index->addColumn($fieldName);
+            // Sort order is not supported by Doctrine
         }
         return $this;
+    }
+
+    /**
+     * Map Doctrine primary index to primary key.
+     *
+     * @param   \Yana\Db\Ddl\Table           $table  table to add index to
+     * @param   \Doctrine\DBAL\Schema\Index  $info   index information
+     * @throws  \Yana\Core\Exceptions\NotImplementedException   when trying to use a compound primary key
+     */
+    private function _createPrimaryKey(\Yana\Db\Ddl\Table $table, \Doctrine\DBAL\Schema\Index $info)
+    {
+        $columns = $info->getColumns();
+        if (count($columns) !== 1) {
+            throw new \Yana\Core\Exceptions\NotImplementedException("Compound primary keys are not supported.");
+        }
+        $table->setPrimaryKey(current($columns));
     }
 
     /**
      * Add a constraint to table.
      *
-     * Info contains these elements:
-     * <code>
-     *  array(
-     *      [primary] => 0
-     *      [unique]  => 0
-     *      [foreign] => 1
-     *      [check]   => 0
-     *      [fields] => array(
-     *          [field1name] => array()
-     *          [field2name] => array()
-     *          [field3name] => array(
-     *              [sorting]  => ascending
-     *              [position] => 3
-     *          )
-     *      )
-     *      [references] => array(
-     *          [table] => name
-     *          [fields] => array(
-     *              [fieldname] => array( [position] => 1 )
-     *              // more fields
-     *          )
-     *      )
-     *      [deferrable] => 0
-     *      [initiallydeferred] => 0
-     *      [onupdate] => CASCADE|RESTRICT|SET NULL|SET DEFAULT|NO ACTION
-     *      [ondelete] => CASCADE|RESTRICT|SET NULL|SET DEFAULT|NO ACTION
-     *      [match] => SIMPLE|PARTIAL|FULL
-     *  );
-     * </code>
-     *
-     * @param   \Yana\Db\Ddl\Table  $table  table to add constraint to
-     * @param   array     $info   constraint information
-     * @param   string    $name   constraint name
+     * @param   \Yana\Db\Ddl\Table                          $table  table to add constraint to
+     * @param   \Doctrine\DBAL\Schema\ForeignKeyConstraint  $info   constraint information
+     * @param   string                                      $name   constraint name
      * @throws  \Yana\Core\Exceptions\NotImplementedException  when trying to use a compound primary key
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException   when number of source and target columns in constraint is different
      * @throws  \Yana\Core\Exceptions\NotFoundException        when target database/table/column not found
      * @return  $this
      */
-    public function createConstraint(\Yana\Db\Ddl\Table $table, array $info, $name)
+    public function createConstraint(\Yana\Db\Ddl\Table $table, \Doctrine\DBAL\Schema\ForeignKeyConstraint $info, $name)
     {
         switch (true)
         {

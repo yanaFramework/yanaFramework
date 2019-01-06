@@ -78,24 +78,57 @@ abstract class AbstractXmlAdapter extends \Yana\Core\Object implements \Yana\Dat
             $this->_collection = new \Yana\Views\Icons\Collection();
             if ($this->_file->exists()) {
                 $this->_file->read();
-                assert('!isset($file); // Cannot redeclare var $file');
-                assert('!isset($entity); // Cannot redeclare var $entity');
-                foreach (\simplexml_load_string($this->_file->getContent()) as $file)
-                {
-                    if (empty($file['id']) || empty($file['path']) || empty($file['regex'])) {
-                        continue;
-                    }
-                    $entity = new \Yana\Views\Icons\File();
-                    $this->_collection[] = $entity
-                            ->setId((string) $file['id'])
-                            ->setPath((string) $this->_directory . '/' . (string) $file['path'])
-                            ->setRegularExpression((string) $file['regex'])
-                            ->setDataAdapter($this);
-                }
-                unset($directory, $entity, $file);
+                $this->_collection = $this->_buildIconFileCollection($this->_file->getContent());
             }
         }
         return $this->_collection;
+    }
+
+    /**
+     * Build icon file collection and return it.
+     *
+     * @param   string  $fileContent  XML file containing icon definitions
+     * @return  \Yana\Views\Icons\Collection
+     */
+    private function _buildIconFileCollection($fileContent)
+    {
+        assert('is_string($fileContent); // Cannot redeclare var $fileContent');
+
+        $collection = new \Yana\Views\Icons\Collection();
+        assert('!isset($file); // Cannot redeclare var $file');
+        foreach (\simplexml_load_string((string) $fileContent) as $file)
+        {
+            if (!empty($file['id']) && !empty($file['path']) && !empty($file['regex'])) {
+                $collection[] = $this->_buildIconFile((string) $file['id'], (string) $file['path'], (string) $file['regex']);
+            }
+        }
+        unset($file);
+
+        return $collection;
+    }
+
+    /**
+     * Build icon file entity and return it.
+     *
+     * @param   string  $id     
+     * @param   string  $path   
+     * @param   string  $regex  
+     * @return  \Yana\Views\Icons\IsFile
+     */
+    private function _buildIconFile($id, $path, $regex)
+    {
+        assert('is_string($id); // Cannot redeclare var $id');
+        assert('is_string($path); // Cannot redeclare var $path');
+        assert('is_string($regex); // Cannot redeclare var $regex');
+
+        assert('!isset($entity); // Cannot redeclare var $entity');
+        $entity = new \Yana\Views\Icons\File();
+        $entity
+                ->setId((string) $id)
+                ->setPath((string) $this->_directory . '/' . (string) $path)
+                ->setRegularExpression((string) $regex)
+                ->setDataAdapter($this);
+        return $entity;
     }
 
     /**

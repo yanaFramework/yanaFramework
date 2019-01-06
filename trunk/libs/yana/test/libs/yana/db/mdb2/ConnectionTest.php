@@ -91,12 +91,22 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         if ($this->object instanceof \Yana\Db\Mdb2\Connection) {
             // drop all previous entries
             $this->object->reset();
+            $this->object->getSchema()->setReadonly(false);
             $this->object->remove('i', array(), 0);
             $this->object->remove('t', array(), 0);
             $this->object->remove('ft', array(), 0);
             $this->object->commit();
         }
         chdir(CWD);
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Db\Queries\Exceptions\SecurityException
+     */
+    public function testSendQueryStringSecurityException()
+    {
+        $this->object->sendQueryString(";--\n\tselect");
     }
 
     /**
@@ -128,14 +138,6 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
     public function testQuoteInvalidArgument()
     {
         $this->object->quote(array());
-    }
-
-    /**
-     * @test
-     */
-    public function testIsEmpty()
-    {
-        $this->assertTrue($this->object->isEmpty('T'));
     }
 
     /**
@@ -262,6 +264,26 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @expectedException \Yana\Db\DatabaseException
+     */
+    public function testImportSqlDatabaseException()
+    {
+        $this->object->insert('ft.1', array());
+        $this->assertTrue($this->object->importSQL(CWD . 'resources/foo.sql'));
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\NotWriteableException
+     */
+    public function testImportSqlNotWriteableException()
+    {
+        $this->object->getSchema()->setReadonly(true);
+        $this->assertTrue($this->object->importSQL(CWD . 'resources/foo.sql'));
+    }
+
+    /**
+     * @test
      */
     public function testImportSql()
     {
@@ -295,11 +317,44 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * insert and update
-     *
      * @test
+     * @expectedException Yana\Db\Queries\Exceptions\ConstraintException
      */
-    public function testInsertAndUpdate()
+    public function testInsertAndUpdateConstraintException()
+    {
+        // init database
+        $this->object->insert('ft.1', array('ftvalue' => 1));
+        $this->object->insert('t.foo', array('tvalue' => 1, 'ftid' => 1, 'tb' => true ));
+        $this->object->insert('t.foo3', array('tvalue' => 3, 'ftid' => 1, 'tb' => false ));
+        $this->object->insert('i.foo', array('ta' => array('1' => '1' ) ));
+        $this->object->update('i.foo.ta.1.a', 2);
+        $this->object->commit();
+        $this->object->insert('i.foo', array('ta' => array('1' => '1')));
+        $this->object->commit();
+    }
+
+    /**
+     * @test
+     * @expectedException Yana\Db\Queries\Exceptions\ConstraintException
+     */
+    public function testInsertAndUpdateConstraintException2()
+    {
+        // init database
+        $this->object->insert('ft.1', array('ftvalue' => 1));
+        $this->object->insert('t.foo', array('tvalue' => 1, 'ftid' => 1, 'tb' => true ));
+        $this->object->insert('t.foo3', array('tvalue' => 3, 'ftid' => 1, 'tb' => false ));
+        $this->object->insert('i.foo', array('ta' => array('1' => '1' ) ));
+        $this->object->update('i.foo.ta.1.a', 2);
+        $this->object->commit();
+        $this->object->insert('i', array('iid' => 'foo', 'ta' => array('1' => '1')));
+        $this->object->commit();
+    }
+
+    /**
+     * @test
+     * @expectedException Yana\Db\Queries\Exceptions\ConstraintException
+     */
+    public function testInsertAndUpdateConstraintException3()
     {
         // init database
         $this->object->insert('ft.1', array('ftvalue' => 1));
@@ -309,51 +364,71 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         $this->object->update('i.foo.ta.1.a', 2);
         $this->object->commit();
 
-        // supposed to fail
-        try {
-            $this->object->insert('i.foo', array('ta' => array('1' => '1')));
-            $this->object->commit();
-            $this->fail('duplicate key test (1) failed');
-        } catch (\Exception $ex) {
-            // success
-        }
+        $this->object->insertOrUpdate('t.foo.ftid', 2);
+        $this->object->commit();
+    }
 
-        // supposed to fail
-        try {
-            $this->object->insert('i', array('iid' => 'foo', 'ta' => array('1' => '1')));
-            $this->object->commit();
-            $this->fail('duplicate key test (2) failed');
-        } catch (\Exception $ex) {
-            // success
-        }
+    /**
+     * @test
+     */
+    public function testExists()
+    {
+        // init database
+        $this->object->insert('ft.1', array('ftvalue' => 1));
+        $this->object->insert('t.foo', array('tvalue' => 1, 'ftid' => 1, 'tb' => true ));
+        $this->object->insert('t.foo3', array('tvalue' => 3, 'ftid' => 1, 'tb' => false ));
+        $this->object->insert('i.foo', array('ta' => array('1' => '1' ) ));
+        $this->object->update('i.foo.ta.1.a', 2);
+        $this->object->commit();
 
         // exists table
-        $test = $this->object->exists('t');
-        $this->assertTrue($test, '"exists table" test failed');
+        $this->assertTrue($this->object->exists('t'), '"exists table" test failed');
 
         // exists row
-        $test = $this->object->exists('t.fOo');
-        $this->assertTrue($test, '"exists row" test failed');
-
+        $this->assertTrue($this->object->exists('t.fOo'), '"exists row" test failed');
 
         // exists cell
-        $test = $this->object->exists('t.fOo.tid');
-        $this->assertTrue($test, '"exists cell" test failed');
+        $this->assertTrue($this->object->exists('t.fOo.tid'));
 
         // exists column
-        $test = $this->object->exists('i.*.ta');
-        $this->assertTrue($test, '"exists column" test failed');
+        $this->assertTrue($this->object->exists('i.*.ta'));
 
-        // exists (supposed to fail)
-        $test = @$this->object->exists('t.fooBar.tid');
-        $this->assertFalse($test, '"exists failure" test failed');
+        $this->assertFalse($this->object->exists('t.fooBar.tid'));
+    }
+
+    /**
+     * @test
+     */
+    public function testLength()
+    {
+        // init database
+        $this->object->insert('ft.1', array('ftvalue' => 1));
+        $this->object->insert('t.foo', array('tvalue' => 1, 'ftid' => 1, 'tb' => true ));
+        $this->object->insert('t.foo3', array('tvalue' => 3, 'ftid' => 1, 'tb' => false ));
+        $this->object->commit();
+
+        $this->assertEquals($this->object->length('T'), 2, '"get column" test failed');
+        $this->assertEquals($this->object->length('t'), 2, '"get column" test failed');
+    }
+
+    /**
+     * @test
+     */
+    public function testSelect2()
+    {
+        // init database
+        $this->object->insert('ft.1', array('ftvalue' => 1));
+        $this->object->insert('t.foo', array('tvalue' => 1, 'ftid' => 1, 'tb' => true ));
+        $this->object->insert('t.foo3', array('tvalue' => 3, 'ftid' => 1, 'tb' => false ));
+        $this->object->insert('i.foo', array('ta' => array('1' => '1' ) ));
+        $this->object->update('i.foo.ta.1.a', 2);
+        $this->object->commit();
 
         // get table
         $test = $this->object->select('T');
         $this->assertInternalType('array', $test, '"get table" the value should be of type array');
         $this->assertTrue(in_array('FOO', array_keys($test)), '"get table" the value should be contain the string name "FOO"');
         $this->assertInternalType('array', $test['FOO'], '"get table" the value should be of type array');
-
 
         // get row
         $test = $this->object->select('t.fOo');
@@ -364,57 +439,81 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         $test = $this->object->select('T.Foo.TValue');
         $this->assertEquals($test, 1, '"get cell 1" test failed');
 
-
         // get cell (2)
         $test = $this->object->select('t.fOo.tB');
         $this->assertTrue($test, '"get cell 2" test failed');
-
 
         // resolve foreign key
         $test = $this->object->select('t.fOo.ftid.ftvalue');
         $this->assertEquals($test, 1, '"resolving foreign key" test failed');
 
-
         // get column
         $test = $this->object->select('T.*.fTid');
-        $test2 = $this->object->length('t');
         $this->assertInternalType('array', $test, '"get column" test failed');
-        $this->assertEquals(count($test), $test2, '"get column" test failed');
+        $this->assertEquals(2, count($test));
+        $this->assertEquals(array('FOO' => '1', 'FOO3' => '1'), $test);
 
         // get primary key column
         $test = $this->object->select('T.*.tid');
-        $test2 = $this->object->length('t');
         $this->assertInternalType('array', $test, '"get column" test failed');
-        $this->assertEquals(count($test), $test2, '"get column" test failed');
+        $this->assertEquals(count($test), 2, '"get column" test failed');
+        $this->assertEquals(array('FOO' => 'FOO', 'FOO3' => 'FOO3'), $test);
+    }
 
+    /**
+     * @test
+     */
+    public function testSelectLast()
+    {
+        // init database
+        $this->object->insert('ft.1', array('ftvalue' => 1));
+        $this->object->insert('t.foo', array('tvalue' => 1, 'ftid' => 1, 'tb' => true ));
+        $this->object->insert('t.foo3', array('tvalue' => 3, 'ftid' => 1, 'tb' => false ));
+        $this->object->insert('i.foo', array('ta' => array('1' => '1' ) ));
+        $this->object->update('i.foo.ta.1.a', 2);
+        $this->object->commit();
 
         // get last entry
         $test = $this->object->select('t.?.tValue');
         $this->assertEquals($test, 3, '"get last entry" test failed');
+    }
 
-        // test foreign key constraint
-        try {
-            $this->object->insertOrUpdate('t.foo.ftid', 2); // supposed to fail
-            $this->fail('"foreign key" test failed');
-        } catch (\Exception $e) {
-            // success
-        }
+    /**
+     * @test
+     */
+    public function testIsEmpty()
+    {
+        $this->assertTrue($this->object->isEmpty('t'));
+        $this->assertTrue($this->object->isEmpty('T'));
+
+        // init database
+        $this->object->insert('ft.1', array('ftvalue' => 1));
+        $this->object->insert('t.foo', array('tvalue' => 1, 'ftid' => 1, 'tb' => true ));
+        $this->object->insert('t.foo3', array('tvalue' => 3, 'ftid' => 1, 'tb' => false ));
+        $this->object->commit();
+
+        $this->assertFalse($this->object->isEmpty('t'));
+        $this->assertFalse($this->object->isEmpty('T'));
+    }
+
+    /**
+     * @test
+     */
+    public function testSelect()
+    {
+        // init database
+        $this->object->insert('ft.1', array('ftvalue' => 1));
+        $this->object->insert('t.foo', array('tvalue' => 1, 'ftid' => 1, 'tb' => true ));
+        $this->object->insert('t.foo3', array('tvalue' => 3, 'ftid' => 1, 'tb' => false ));
+        $this->object->insert('i.foo', array('ta' => array('1' => '1' ) ));
+        $this->object->update('i.foo.ta.1.a', 2);
+        $this->object->commit();
 
         // test buffer
         $this->object->update('ft.3', array('ftvalue' => 3 ));
-
         $this->object->update('t.FOO3.ftid', 3); // supposed to succeed
-
         $test = $this->object->select('i.foo.ta.1.a'); // supposed to succeed
         $this->assertEquals($test, 2, '"get array content" failed');
-
-        // length table
-        $test = $this->object->length('T');
-        $this->assertEquals($test, 2, '"get length" test failed');
-
-        // isEmpty
-        $test = $this->object->isEmpty('T');
-        $this->assertFalse($test, '"isEmpty" test failed, the expected result is false - 2 entries are inside the table');
 
         // rollback
         $this->object->reset();

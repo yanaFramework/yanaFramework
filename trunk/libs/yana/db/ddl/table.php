@@ -103,6 +103,8 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
     /**
      * Get parent database.
      *
+     * May return NULL if there is none.
+     *
      * @return  \Yana\Db\Ddl\Database
      */
     public function getParent()

@@ -121,6 +121,7 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsCon
      */
     public function __construct(array $dsn = null)
     {
+        // @codeCoverageIgnoreStart
         if (!class_exists('\MDB2')) {
             /* error handling */
             $message = "Unable to open connection to database using PEAR MDB2. Might not be installed.";
@@ -134,6 +135,7 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsCon
         if (isset($_ENV["S2G_MYSQL_PORT"]) && empty($this->_dsn["PORT"]) && strpos(\YANA_DATABASE_DBMS, 'mysql') !== false) {
             $this->_dsn["PORT"] = $_ENV["S2G_MYSQL_PORT"];
         }
+        // @codeCoverageIgnoreEnd
 
         /*
          * 2 process settings provided by the user
@@ -171,13 +173,17 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsCon
              * }}
              */
             if (defined('YANA_ERROR_REPORTING')) {
+                // @codeCoverageIgnoreStart
                 restore_error_handler();
+                // @codeCoverageIgnoreEnd
             }
             @$connection = \MDB2::connect($dsn, $this->_getOptionsForMdb2());
             if (defined('YANA_ERROR_REPORTING')) {
+                // @codeCoverageIgnoreStart
                 $builder = new \Yana\ApplicationBuilder();
                 $builder->setErrorReporting(YANA_ERROR_REPORTING);
                 unset($builder);
+                // @codeCoverageIgnoreEnd
             }
 
             /* error handling */

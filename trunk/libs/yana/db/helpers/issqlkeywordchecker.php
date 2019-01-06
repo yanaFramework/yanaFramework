@@ -23,46 +23,26 @@
  *
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
- *
- * @ignore
  */
 
-namespace Yana\Security\Passwords;
+namespace Yana\Db\Helpers;
 
 /**
- * Password hashing algorithm.
+ * <<interface>> Checks whether the given string is a known SQL keyword.
  *
  * @package     yana
- * @subpackage  security
- *
- * @ignore
+ * @subpackage  db
  */
-class Sha256Algorithm extends \Yana\Security\Passwords\AbstractCryptAlgorithm
+interface IsSqlKeywordChecker
 {
 
     /**
-     * Calculate password.
+     * Return bool(true) if the string is a reserved keyword.
      *
-     * This function takes user name and password phrase as clear text and returns the
-     * hash-code for this password.
-     *
-     * @param   string  $password  password (clear text)
-     * @return  string
+     * @param   string  $id  to test
+     * @return  bool
      */
-    public function __invoke($password)
-    {
-        assert('is_scalar($password); // Wrong argument type for argument 2. String expected.');
-
-        if (CRYPT_SHA256 === 1) {
-            $hashString = crypt($password, '$5$rounds=5000$' . $this->_createSalt() . '$');
-        } else {
-            // @codeCoverageIgnoreStart
-            $hashString = $this->_getFallback()->__invoke($password);
-            // @codeCoverageIgnoreEnd
-        }
-
-        return $hashString;
-    }
+    public function isSqlKeyword($id);
 
 }
 

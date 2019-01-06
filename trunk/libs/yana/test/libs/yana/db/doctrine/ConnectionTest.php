@@ -82,12 +82,22 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         if ($this->object instanceof \Yana\Db\Doctrine\Connection) {
             // drop all previous entries
             $this->object->reset();
+            $this->object->getSchema()->setReadonly(false);
             $this->object->remove('i', array(), 0);
             $this->object->remove('t', array(), 0);
             $this->object->remove('ft', array(), 0);
             $this->object->commit();
         }
         chdir(CWD);
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Db\Queries\Exceptions\SecurityException
+     */
+    public function testSendQueryStringSecurityException()
+    {
+        $this->object->sendQueryString(";--\n\tselect");
     }
 
     /**
@@ -241,6 +251,28 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
     public function testImportSqlConstraintFailed()
     {
         $this->assertFalse($this->object->importSQL(CWD . 'resources/foo.sql'));
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Db\DatabaseException
+     */
+    public function testImportSqlDatabaseException()
+    {
+        $this->object->insert('ft.1', array());
+        $this->assertTrue($this->object->importSQL(CWD . 'resources/foo.sql'));
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\NotWriteableException
+     */
+    public function testImportSqlNotWriteableException()
+    {
+        $this->object->insert('ft.1', array());
+        $this->object->reset();
+        $this->object->getSchema()->setReadonly(true);
+        $this->assertTrue($this->object->importSQL(CWD . 'resources/foo.sql'));
     }
 
     /**

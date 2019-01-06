@@ -56,7 +56,9 @@ class Sha512Algorithm extends \Yana\Security\Passwords\AbstractCryptAlgorithm
         if (CRYPT_SHA512 === 1) {
             $hashString = crypt($password, '$6$rounds=5000$' . $this->_createSalt() . '$');
         } else {
+            // @codeCoverageIgnoreStart
             $hashString = $this->_getFallback()->__invoke($password);
+            // @codeCoverageIgnoreEnd
         }
 
         return $hashString;
