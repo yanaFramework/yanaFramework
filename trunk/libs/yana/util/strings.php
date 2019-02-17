@@ -1095,14 +1095,17 @@ class Strings extends \Yana\Core\AbstractUtility
      * @assert  ("test", "st") == true
      * @assert  ("test", "T") == false
      * @assert  ("test", "a") == false
+     * @assert  ("test", "tester") == false
      */
     public static function endsWith($string, $needle)
     {
         assert('is_string($string); // Invalid argument $string: string expected');
         assert('is_string($needle); // Invalid argument $needle: string expected');
 
+        assert('!isset($needleLength); // Cannot redeclare var $needleLength');
+        $needleLength = strlen($needle);
         // No need to check for Unicode here, binary comparison will be fine.
-        return strrpos($string, $needle, strlen($needle)) !== false;
+        return strlen($string) >= $needleLength && strrpos($string, $needle, $needleLength) !== false;
     }
 
     /**
