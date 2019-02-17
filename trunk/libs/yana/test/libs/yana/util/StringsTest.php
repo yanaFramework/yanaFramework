@@ -865,6 +865,16 @@ class StringsTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Generated from @assert ("test", "tester") == false.
+     */
+    public function testEndsWith4()
+    {
+        $this->assertFalse(
+            \Yana\Util\Strings::endsWith("test", "tester")
+        );
+    }
+
+    /**
      * @test
      */
     public function testEncode()
