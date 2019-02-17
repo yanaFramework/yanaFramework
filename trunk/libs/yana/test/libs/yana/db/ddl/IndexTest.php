@@ -267,4 +267,21 @@ class IndexTest extends \PHPUnit_Framework_TestCase
         $this->index->setName('invalid name');
     }
 
+    /**
+     * @test
+     */
+    public function testIsFulltext()
+    {
+        $this->assertFalse($this->index->isFulltext());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetFulltext()
+    {
+        $this->assertTrue($this->index->setFulltext(true)->isFulltext());
+        $this->assertFalse($this->index->setFulltext(false)->isFulltext());
+    }
+
 }

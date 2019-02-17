@@ -108,6 +108,7 @@ class Connection extends \Yana\Db\AbstractConnection
      */
     public function getDBMS()
     {
+        assert('!isset($dbms); // Cannot redeclare var $dbms');
         $dbms = "generic";
         if (!empty($this->_dsn['DBMS'])) {
             $dbms = strtolower($this->_dsn['DBMS']);
@@ -160,8 +161,14 @@ class Connection extends \Yana\Db\AbstractConnection
      */
     public function equals(\Yana\Core\IsObject $anotherObject)
     {
-        return (bool) parent::equals($anotherObject) && $anotherObject instanceof $this
-            && $this->_connection->equals($anotherObject->_connection);
+        switch (true)
+        {
+            case !$anotherObject instanceof $this:
+            case !parent::equals($anotherObject):
+            case !$this->_connection->equals($anotherObject->_connection):
+                return false;
+        }
+        return true;
     }
 
     /**

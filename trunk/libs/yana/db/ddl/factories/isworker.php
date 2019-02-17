@@ -28,44 +28,21 @@
 namespace Yana\Db\Ddl\Factories;
 
 /**
- * <<abstract>> Database object factory.
+ * <<interface>> A worker object that executes the reverse engineering task.
  *
  * @package     yana
  * @subpackage  db
- * @codeCoverageIgnore
  */
-abstract class AbstractDatabaseFactory extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories\IsDatabaseFactory
+interface IsWorker
 {
 
     /**
-     * Wrapped MDB2 database connection.
+     * Create database object.
      *
-     * @var  \Yana\Db\Ddl\Factories\IsMdb2Mapper
+     * @return  \Yana\Db\Ddl\Database
+     * @throws  \Yana\Db\ConnectionException  when unable to open connection to database
      */
-    private $_mapper = null;
-
-    /**
-     * <<constructor>> Initialize instance.
-     *
-     * @param  \Yana\Db\Ddl\Factories\IsMdb2Mapper  $mapper  implements the functions that map MDB2 table info to a database object
-     */
-    public function __construct(\Yana\Db\Ddl\Factories\IsMdb2Mapper $mapper = null)
-    {
-        if (\is_null($mapper)) {
-            $mapper = new \Yana\Db\Ddl\Factories\Mdb2Mapper();
-        }
-        $this->_mapper = $mapper;
-    }
-
-    /**
-     * Returns the MDB2 to database object mapper.
-     *
-     * @return  \Yana\Db\Ddl\Factories\IsMdb2Mapper
-     */
-    protected function _getMapper()
-    {
-        return $this->_mapper;
-    }
+    public function createDatabase();
 
 }
 

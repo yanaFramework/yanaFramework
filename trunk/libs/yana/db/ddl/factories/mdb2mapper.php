@@ -99,7 +99,7 @@ class Mdb2Mapper extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories\IsM
     public function createIndex(\Yana\Db\Ddl\Table $table, array $info, $name)
     {
         if (!isset($info['fields'])) {
-            throw new \Yana\Core\Exceptions\InvalidArgumentException();
+            throw new \Yana\Core\Exceptions\InvalidArgumentException("Index must contain at least one column", \Yana\Log\TypeEnumeration::WARNING);
         }
 
         $index = $table->addIndex($name);
@@ -226,15 +226,11 @@ class Mdb2Mapper extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories\IsM
     {
         if (!empty($mdb2ForeignKeyInfo['onupdate'])) {
             $strategy = $this->_mapKeyUpdateStrategy((string) $mdb2ForeignKeyInfo['onupdate']);
-            if ($strategy > "") {
-               $foreign->setOnUpdate($strategy);
-            }
+            $foreign->setOnUpdate($strategy);
         }
         if (!empty($mdb2ForeignKeyInfo['ondelete'])) {
             $strategy = $this->_mapKeyUpdateStrategy((string) $mdb2ForeignKeyInfo['ondelete']);
-            if ($strategy > "") {
-               $foreign->setOnDelete($strategy);
-            }
+            $foreign->setOnDelete($strategy);
         }
         if (!empty($mdb2ForeignKeyInfo['match'])) {
             switch ($mdb2ForeignKeyInfo['match'])
@@ -279,12 +275,12 @@ class Mdb2Mapper extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories\IsM
      * Maps MDB2 trigger update strategy to internal constant.
      *
      * @param   string  $mdb2Strategy  as given by MDB2 reverse module
-     * @return  string
+     * @return  int
      */
     private function _mapKeyUpdateStrategy($mdb2Strategy)
     {
         assert('is_string($mdb2Strategy); // Invalid argument type: $mdb2Strategy. String expected.');
-        $strategy = "";
+        $strategy = \Yana\Db\Ddl\KeyUpdateStrategyEnumeration::NOACTION;
         switch ($mdb2Strategy)
         {
             case 'CASCADE':
@@ -298,9 +294,6 @@ class Mdb2Mapper extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories\IsM
             break;
             case 'SET DEFAULT':
                 $strategy = \Yana\Db\Ddl\KeyUpdateStrategyEnumeration::SETDEFAULT;
-            break;
-            case 'NO ACTION':
-                $strategy = \Yana\Db\Ddl\KeyUpdateStrategyEnumeration::NOACTION;
             break;
         }
         return $strategy;
@@ -323,8 +316,8 @@ class Mdb2Mapper extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories\IsM
      * </code>
      *
      * @param   \Yana\Db\Ddl\Table  $table  table to add column to
-     * @param   array     $info   column information
-     * @param   string    $name   column name
+     * @param   array               $info   column information
+     * @param   string              $name   column name
      * @throws  \Yana\Core\Exceptions\NotImplementedException   when the given 'type' of column is missing or unknwon
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when no "type" entry is given in column information
      * @return  $this

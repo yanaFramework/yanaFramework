@@ -28,9 +28,7 @@
 namespace Yana\Db\Ddl\Factories;
 
 /**
- * <<interface>> Database structure.
- *
- * This wrapper class represents the structure of a database.
+ * <<interface>> Produces database objects.
  *
  * "Database" is the root level element of a XDDL document.
  * It may contain several child elements.
@@ -43,22 +41,34 @@ namespace Yana\Db\Ddl\Factories;
  *
  * @package     yana
  * @subpackage  db
- * @codeCoverageIgnore
  */
 interface IsDatabaseFactory
 {
 
     /**
-     * Create database from tableInfo.
+     * Autoselect reverse engineering module and build suitable worker.
      *
-     * Try to extract some information on the structure of a database from the
-     * information provided by PEAR-MDB2's Reverse module.
-     *
-     * @param   \Yana\Db\Ddl\Factories\IsMdb2Wrapper  $connection  MDB2 database connection
-     * @return  \Yana\Db\Ddl\Database
-     * @throws  \Yana\Db\ConnectionException  when unable to open connection to database
+     * @param   array  $dsn  leave empty to use default
+     * @return  \Yana\Db\Ddl\Factories\IsWorker
+     * @throws  \Yana\Db\Ddl\Factories\NotAvailableException  When no applicable DB layer is available to connect to the database.
      */
-    public function createDatabase(\Yana\Db\Ddl\Factories\IsMdb2Wrapper $connection);
+    public function buildWorker(array $dsn = null);
+
+    /**
+     * Build a database refactory worker based on Doctrine DBAL schema.
+     *
+     * @param   \Doctrine\DBAL\Connection  $connection  Doctrine DBAL database connection
+     * @return  \Yana\Db\Ddl\Factories\IsWorker
+     */
+    public function buildDoctrineWorker(\Doctrine\DBAL\Connection $connection);
+
+    /**
+     * Build a database refactory worker based on MDB2.
+     *
+     * @param   \MDB2_Driver_Common  $connection  MDB2 database connection
+     * @return  \Yana\Db\Ddl\Factories\IsWorker
+     */
+    public function buildMdb2Worker(\MDB2_Driver_Common $connection);
 
 }
 

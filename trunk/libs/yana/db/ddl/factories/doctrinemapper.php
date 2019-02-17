@@ -35,7 +35,7 @@ namespace Yana\Db\Ddl\Factories;
  * @package     yana
  * @subpackage  db
  */
-class DoctrineMapper extends \Yana\Core\Object
+class DoctrineMapper extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories\IsDoctrineMapper
 {
 
     /**
@@ -66,6 +66,9 @@ class DoctrineMapper extends \Yana\Core\Object
      */
     public function createIndex(\Yana\Db\Ddl\Table $table, \Doctrine\DBAL\Schema\Index $info, $name)
     {
+        if (count($info->getColumns()) === 0) {
+            throw new \Yana\Core\Exceptions\InvalidArgumentException("Index must contain at least one column", \Yana\Log\TypeEnumeration::WARNING);
+        }
         if ($info->isPrimary()) {
             $this->_createPrimaryKey($table, $info); // may throw exception
             return $this;
@@ -73,11 +76,21 @@ class DoctrineMapper extends \Yana\Core\Object
         assert('!isset($index); // Cannot redeclare var $index');
         $index = $table->addIndex($name);
         $index->setUnique($info->isUnique());
+
+        assert('!isset($flags); // Cannot redeclare var $flags');
+        $flags = $info->getFlags();
+        if (!empty($flags['fulltext'])) {
+            $index->setFulltext(true);
+        }
+
+        assert('!isset($fieldName); // Cannot redeclare var $fieldName');
         foreach ($info->getColumns() as $fieldName)
         {
             $index->addColumn($fieldName);
             // Sort order is not supported by Doctrine
         }
+        unset($fieldName);
+
         return $this;
     }
 
@@ -98,120 +111,53 @@ class DoctrineMapper extends \Yana\Core\Object
     }
 
     /**
-     * Add a constraint to table.
+     * Add a foreign key constraint to table.
+     *
+     * Check constraints seem to be unsupported by Doctrine at this time.
      *
      * @param   \Yana\Db\Ddl\Table                          $table  table to add constraint to
      * @param   \Doctrine\DBAL\Schema\ForeignKeyConstraint  $info   constraint information
      * @param   string                                      $name   constraint name
-     * @throws  \Yana\Core\Exceptions\NotImplementedException  when trying to use a compound primary key
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException   when number of source and target columns in constraint is different
      * @throws  \Yana\Core\Exceptions\NotFoundException        when target database/table/column not found
      * @return  $this
      */
     public function createConstraint(\Yana\Db\Ddl\Table $table, \Doctrine\DBAL\Schema\ForeignKeyConstraint $info, $name)
     {
-        switch (true)
-        {
-            // add primary key
-            case !empty($info['primary']):
-                if (!isset($info['fields']) || count($info['fields']) > 1) {
-                    throw new \Yana\Core\Exceptions\NotImplementedException("Compound primary keys are not supported.");
-                }
-                reset($info['fields']);
-                $field = key($info['fields']);
-                $table->setPrimaryKey($field);
-            break;
-            // add unique constraint
-            case !empty($info['unique']):
-                foreach ($info['fields'] as $field)
-                {
-                    if (is_string($field) && $table->isColumn($field)) {
-                        $table->getColumn($field)->setUnique(true);
-                    }
-                }
-            break;
-            // add check constraint
-            case !empty($info['check']):
-                /* This is not really implemented by MDB2.
-                 * It just delivers the name but not the contents!
-                 * Except for MS-SQL: where it reports enumerations as check constraints.
-                 * Thus we have to ignore it for now.
-                 */
-            break;
-            // add foreign key constraint
-            case !empty($info['foreign']):
-                // While this case is documented it does not really seem to be implemented just yet.
-                if (empty($info['fields']) || empty($info['references']['fields'])) {
-                    $message = "Field list in foreign key constraint must not be empty.";
-                    throw new \Yana\Core\Exceptions\InvalidSyntaxException($message);
-                }
-                if (empty($info['fields']) || empty($info['references']['fields']) || count($info['fields']) !== count($info['references']['fields'])) {
-                    $message = "Number of source fields in foreign key constraint " .
-                        "must match number of target fields.";
-                    throw new \Yana\Core\Exceptions\InvalidSyntaxException($message);
-                }
-                if (empty($info['references']['table'])) {
-                    $message = "The foreign key must reference a foreign table.";
-                    throw new \Yana\Core\Exceptions\InvalidSyntaxException($message);
-                }
-                assert('!isset($targetTable); // Cannot redeclare var $targetTable');
-                $targetTable = $info['references']['table'];
-                assert('!isset($foreign); // Cannot redeclare var $foreign');
-                $foreign = $table->addForeignKey($targetTable, $name);
-                $this->_mapForeignKey($foreign, $info);
-                
-            break;
-            default:
-                throw new \Yana\Core\Exceptions\NotImplementedException();
-        } // end switch(true)
-        return $this;
-    }
-
-    /**
-     * Maps MDB2 foreign key to internal foreign key object.
-     *
-     * @param   \Yana\Db\Ddl\ForeignKey  $foreign             instance to be mapped
-     * @param   array                    $mdb2ForeignKeyInfo  as given by MDB2 reverse module
-     * @throws  \Yana\Core\Exceptions\NotFoundException  when target database/table/column not found
-     */
-    private function _mapForeignKey(\Yana\Db\Ddl\ForeignKey $foreign, array $mdb2ForeignKeyInfo)
-    {
-        if (!empty($mdb2ForeignKeyInfo['onupdate'])) {
-            $strategy = $this->_mapKeyUpdateStrategy((string) $mdb2ForeignKeyInfo['onupdate']);
-            if ($strategy > "") {
-               $foreign->setOnUpdate($strategy);
-            }
+        if ($info->getForeignTableName() == "") {
+            $message = "The foreign key must reference a foreign table.";
+            throw new \Yana\Core\Exceptions\InvalidSyntaxException($message);
         }
-        if (!empty($mdb2ForeignKeyInfo['ondelete'])) {
-            $strategy = $this->_mapKeyUpdateStrategy((string) $mdb2ForeignKeyInfo['ondelete']);
+        assert('!isset($targetTable); // Cannot redeclare var $targetTable');
+        $targetTable = $info->getForeignTableName();
+        assert('!isset($foreign); // Cannot redeclare var $foreign');
+        $foreign = $table->addForeignKey($targetTable, $name);
+
+        $strategy = $this->_mapKeyUpdateStrategy((string) $info->onUpdate());
+        if ($strategy > "") {
+           $foreign->setOnUpdate($strategy);
+        }
+        if ($info->onDelete() > "") {
+            $strategy = $this->_mapKeyUpdateStrategy((string) $info->onDelete());
             if ($strategy > "") {
                $foreign->setOnDelete($strategy);
             }
         }
-        if (!empty($mdb2ForeignKeyInfo['match'])) {
-            switch ($mdb2ForeignKeyInfo['match'])
-            {
-                case 'SIMPLE':
-                    $foreign->setMatch(\Yana\Db\Ddl\KeyMatchStrategyEnumeration::SIMPLE);
-                break;
-                case 'PARTIAL':
-                    $foreign->setMatch(\Yana\Db\Ddl\KeyMatchStrategyEnumeration::PARTIAL);
-                break;
-                case 'FULL':
-                    $foreign->setMatch(\Yana\Db\Ddl\KeyMatchStrategyEnumeration::FULL);
-                break;
-            }
-        }
-        // Deferrable means that the checks of the foreign keys can be opportunistic and thus "deferred" to a later time.
-        // In layman's terms it means: "Insert values first, ask questions later."
-        if (!empty($mdb2ForeignKeyInfo['deferrable'])) {
-            $foreign->setDeferrable(true);
-        }
 
         assert('!isset($sourceFieldNames); // Cannot redeclare var $sourceFieldNames');
         assert('!isset($targetFieldNames); // Cannot redeclare var $targetFieldNames');
-        $sourceFieldNames = array_keys($mdb2ForeignKeyInfo['fields']);
-        $targetFieldNames = array_keys($mdb2ForeignKeyInfo['references']['fields']);
+        $sourceFieldNames = $info->getColumns();
+        $targetFieldNames = $info->getForeignColumns();
+
+        if (empty($sourceFieldNames) || empty($targetFieldNames)) {
+            $message = "Field list in foreign key constraint must not be empty.";
+            throw new \Yana\Core\Exceptions\InvalidSyntaxException($message);
+        }
+        if (count($sourceFieldNames) !== count($targetFieldNames)) {
+            $message = "Number of source fields in foreign key constraint " .
+                "must match number of target fields.";
+            throw new \Yana\Core\Exceptions\InvalidSyntaxException($message);
+        }
 
         assert('!isset($i); // Cannot redeclare var $i');
         assert('!isset($sourceFieldName); // Cannot redeclare var $sourceFieldName');
@@ -225,34 +171,30 @@ class DoctrineMapper extends \Yana\Core\Object
             $foreign->setColumn((string) $sourceFieldName, (string) $targetFieldName); // may throw exception
         }
         unset($i, $sourceFieldNames, $sourceFieldName, $targetFieldNames, $targetFieldName);
+
+        return $this;
     }
 
     /**
      * Maps MDB2 trigger update strategy to internal constant.
      *
      * @param   string  $mdb2Strategy  as given by MDB2 reverse module
-     * @return  string
+     * @return  int
      */
     private function _mapKeyUpdateStrategy($mdb2Strategy)
     {
         assert('is_string($mdb2Strategy); // Invalid argument type: $mdb2Strategy. String expected.');
-        $strategy = "";
+        $strategy =  \Yana\Db\Ddl\KeyUpdateStrategyEnumeration::NOACTION;
         switch ($mdb2Strategy)
         {
             case 'CASCADE':
                 $strategy = \Yana\Db\Ddl\KeyUpdateStrategyEnumeration::CASCADE;
-            break;
-            case 'RESTRICT':
-                $strategy = \Yana\Db\Ddl\KeyUpdateStrategyEnumeration::RESTRICT;
             break;
             case 'SET NULL':
                 $strategy = \Yana\Db\Ddl\KeyUpdateStrategyEnumeration::SETNULL;
             break;
             case 'SET DEFAULT':
                 $strategy = \Yana\Db\Ddl\KeyUpdateStrategyEnumeration::SETDEFAULT;
-            break;
-            case 'NO ACTION':
-                $strategy = \Yana\Db\Ddl\KeyUpdateStrategyEnumeration::NOACTION;
             break;
         }
         return $strategy;
@@ -261,121 +203,82 @@ class DoctrineMapper extends \Yana\Core\Object
     /**
      * Add a column to table.
      *
-     * Info contains these elements:
-     * <code>
-     *  array(
-     *      [notnull] => 1
-     *      [nativetype] => int
-     *      [length] => 10
-     *      [fixed] => 0
-     *      [default] => 0
-     *      [type] =>
-     *      [mdb2type] => integer
-     *  );
-     * </code>
-     *
-     * @param   \Yana\Db\Ddl\Table  $table  table to add column to
-     * @param   array     $info   column information
-     * @param   string    $name   column name
+     * @param   \Yana\Db\Ddl\Table            $table  table to add column to
+     * @param   \Doctrine\DBAL\Schema\Column  $info   column information
+     * @param   string                        $name   column name
      * @throws  \Yana\Core\Exceptions\NotImplementedException   when the given 'type' of column is missing or unknwon
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when no "type" entry is given in column information
      * @return  $this
      */
-    public function createColumn(\Yana\Db\Ddl\Table $table, array $info, $name)
+    public function createColumn(\Yana\Db\Ddl\Table $table, \Doctrine\DBAL\Schema\Column $info, $name)
     {
-        if (!isset($info['type'])) {
-            throw new \Yana\Core\Exceptions\InvalidArgumentException();
-        }
-        $type = $this->_mapColumnType((string) $info['type']); // may throw \Yana\Core\Exceptions\NotImplementedException
+        assert('!isset($type); // Cannot redeclare var $type');
+        $type = $this->_mapColumnType($info->getType()->getName()); // may throw \Yana\Core\Exceptions\NotImplementedException
         /*
          * set type
          */
         switch ($type)
         {
+            case 'text':
             case 'string':
-                if (stripos($name, 'html') !== false) {
+                assert('!isset($lowerCaseName); // Cannot redeclare var $lowerCaseName');
+                $lowerCaseName = \Yana\Util\Strings::toLowerCase($name);
+                if (\Yana\Util\Strings::startsWith($lowerCaseName, 'array') || \Yana\Util\Strings::endsWith($lowerCaseName, 'array')) {
+                    $type = "array";
+
+                } elseif (\Yana\Util\Strings::startsWith($lowerCaseName, 'html') || \Yana\Util\Strings::endsWith($lowerCaseName, 'html')) {
                     $type = "html";
-                } elseif (!empty($info['length']) && $info['length'] > 256) {
+
+                } elseif ($info->getLength() > 256) {
                     $type = "text";
                 }
+                unset($lowerCaseName);
             break;
 
             case 'integer':
-                if (isset($info['length']) && $info['length'] == 1) {
+                if ($info->getLength() == 1) {
                     $type = "bool";
                 }
             break;
-
-            case 'timestamp':
-                if (isset($info['nativetype']) && $info['nativetype'] === "datetime") {
-                    $type = "time";
-                } else {
-                    $type = "timestamp";
-                }
-            break;
-
         } // end switch
 
         $column = $table->addColumn($name, $type);
 
-        /*
-         * set visibility
-         * /
-        if ($info['primarykey'] && $info['auto']) {
-            $this->setVisible(false, $table, $name);
-        }
+        // Set column properties
+        if (!is_null($info->getLength()) && $info->getLength() > 0) {
 
-        /*
-         * set length
-         */
-        if (!empty($info['length'])) {
-            if (strpos($info['length'], ',') !== false) {
-                $info['length'] = explode(',', $info['length']);
-                if (count($info['length']) === 2) {
-                    // 'length' => array( 0 => precision, 1 => length )
-                    $column->setLength((int) $info['length'][1], (int) $info['length'][0]);
-                }
-            } elseif (is_numeric($info['length'])) {
-                $column->setLength((int) $info['length']);
+            if ($column->getType() === 'float' && !is_null($info->getPrecision()) && $info->getPrecision() > 0) {
+                $column->setLength((int) $info->getLength(), (int) $info->getPrecision());
+
+            } else {
+                $column->setLength((int) $info->getLength());
             }
         }
 
-        /*
-         * set nullable
-         */
-        if (!empty($info['notnull'])) {
+        // These properties are universally applicable
+        if ($info->getNotnull() != false) {
             $column->setNullable(false);
-        } else {
-            $column->setNullable(true);
         }
-
-        /*
-         * set unsigned
-         */
-        if (!empty($info['unsigned'])) {
-            $column->setUnsigned(true);
+        if (!is_null($info->getDefault())) {
+            $column->setDefault($info->getDefault());
         }
-
-        /*
-         * set fixed
-         */
-        if (!empty($info['fixed'])) {
+        // Applicable to both texts and numbers with a given length, has no effect on date values.
+        if ($info->getFixed() != false) {
             $column->setFixed(true);
         }
-
-        /*
-         * set auto-increment
-         */
-        if (!empty($info['autoincrement'])) {
-            $column->setAutoIncrement(true);
+        if (is_string($info->getComment())) {
+            $column->setDescription($info->getComment());
         }
 
-        /*
-         * set auto-increment
-         */
-        if (isset($info['default']) && $info['default'] != "") {
-            $column->setDefault($info['default']);
+        if ($column->isNumber()) {
+            // These properties apply to numeric values only
+            if ($info->getUnsigned() != false) {
+                $column->setUnsigned(true);
+            }
+            if ($info->getAutoincrement() != false) {
+                $column->setAutoIncrement(true);
+            }
         }
+
         return $this;
     }
 
@@ -391,21 +294,23 @@ class DoctrineMapper extends \Yana\Core\Object
         assert('is_string($mdb2Type); // Invalid argument type: $mdb2Type. String expected.');
         switch ($mdb2Type)
         {
+            case 'binary':
             case 'blob':
-            case 'clob':
+            case 'text':
                 $type = "text";
             break;
 
-            case 'text':
+            case 'guid':
+            case 'string':
                 $type = "string";
             break;
 
-            case 'bool':
             case 'boolean':
                 $type = "bool";
             break;
 
-            case 'int':
+            case 'bigint':
+            case 'smallint':
             case 'integer':
                 $type = "integer";
             break;
@@ -415,19 +320,38 @@ class DoctrineMapper extends \Yana\Core\Object
                 $type = "float";
             break;
 
-            case 'timestamp':
-                $type = "timestamp";
-            break;
-
             case 'date':
+            case 'date_immutable':
                 $type = "date";
             break;
 
+            case 'datetime_immutable':
+            case 'datetime':
+            case 'datetimetz':
+            case 'datetimetz_immutable':
+                $type = "time";
+            break;
+
+            case 'time_immutable':
             case 'time':
                 $type = "string";
             break;
 
+            case 'array':
+            case 'object':
+                $type = "string";
+            break;
+
+            case 'simple_array':
+                $type = "list";
+            break;
+
+            case 'json':
+                $type = "array";
+            break;
+
             /* more ? */
+            case 'dateinterval':
             default:
                 throw new \Yana\Core\Exceptions\NotImplementedException();
         } // end switch

@@ -43,89 +43,55 @@ namespace Yana\Db\Ddl\Factories;
  * @subpackage  db
  * @codeCoverageIgnore
  */
-class DatabaseFactory extends \Yana\Db\Ddl\Factories\AbstractDatabaseFactory
+class DatabaseFactory extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories\IsDatabaseFactory
 {
 
     /**
-     * Create database from tableInfo.
+     * Autoselect reverse engineering module and build suitable worker.
      *
-     * Try to extract some information on the structure of a database from the
-     * information provided by PEAR-MDB2's Reverse module.
-     *
-     * @param   \Yana\Db\Ddl\Factories\IsMdb2Wrapper  $connection  MDB2 database connection
-     * @return  \Yana\Db\Ddl\Database
-     * @throws  \Yana\Db\ConnectionException  when unable to open connection to database
+     * @param   array  $dsn  leave empty to use default
+     * @return  \Yana\Db\Ddl\Factories\IsWorker
+     * @throws  \Yana\Db\Ddl\Factories\NotAvailableException  When no applicable DB layer is available to connect to the database.
      */
-    public function createDatabase(\Yana\Db\Ddl\Factories\IsMdb2Wrapper $connection)
+    public function buildWorker(array $dsn = null)
     {
-        $mapper = $this->_getMapper();
+        if (\Yana\Db\Doctrine\ConnectionFactory::isDoctrineAvailable()) {
+            $db = new \Yana\Db\Doctrine\ConnectionFactory($dsn);
+            return $this->buildDoctrineWorker($db->getConnection());
 
-        /*
-         * build database
-         */
-        $database = new \Yana\Db\Ddl\Database($connection->getDatabaseName());
-
-        /*
-         * build sequences
-         */
-        assert('!isset($sequenceName); // Cannot redeclare var $sequenceName');
-        assert('!isset($sequenceInfo); // Cannot redeclare var $sequenceInfo');
-        foreach($connection->listSequences() as $sequenceName => $sequenceInfo)
-        {
-            $mapper->createSequence($database, $sequenceInfo, $sequenceName);
+        } elseif (\Yana\Db\Mdb2\ConnectionFactory::isMdb2Available()) {
+            $errorReporting = error_reporting(E_ERROR | E_WARNING); // suppress MDB2 Notices
+            $db = new \Yana\Db\Mdb2\ConnectionFactory($dsn);
+            error_reporting($errorReporting);
+            return $this->buildMdb2Worker($db->getConnection());
         }
-        unset($sequenceInfo, $sequenceName);
+        throw new \Yana\Db\Ddl\Factories\NotAvailableException("No applicable DB layer is available to connect to the database.");
+    }
 
-        /*
-         * build tables
-         */
-        assert('!isset($tableName); // Cannot redeclare var $tableName');
-        foreach ($connection->listTables() as $tableName)
-        {
-            /*
-             * remove prefix
-             */
-            $name = preg_replace('/^' . preg_quote(YANA_DATABASE_PREFIX, '/') . '/', '', $tableName);
-            $table = $database->addTable($name); // get \Yana\Db\Ddl\Table object
-            unset($name);
+    /**
+     * Build a database refactory worker based on Doctrine DBAL schema.
+     *
+     * @param   \Doctrine\DBAL\Connection  $connection  Doctrine DBAL database connection
+     * @return  \Yana\Db\Ddl\Factories\IsWorker
+     */
+    public function buildDoctrineWorker(\Doctrine\DBAL\Connection $connection)
+    {
+        $mapper = new \Yana\Db\Ddl\Factories\DoctrineMapper();
+        $wrapper = new \Yana\Db\Ddl\Factories\DoctrineWrapper($connection);
+        return new \Yana\Db\Ddl\Factories\DoctrineWorker($mapper, $wrapper);
+    }
 
-            /*
-             * get column information
-             */
-            assert('!isset($columnInfo); // Cannot redeclare var $columnInfo');
-            assert('!isset($columnName); // Cannot redeclare var $columnName');
-            foreach ($connection->listTableColumns($tableName) as $columnName => $columnInfo)
-            {
-                $mapper->createColumn($table, $columnInfo, $columnName);
-            }
-            unset($columnInfo, $columnName);
-
-            /*
-             * get index information
-             */
-            assert('!isset($indexInfo); // Cannot redeclare var $indexInfo');
-            assert('!isset($indexName); // Cannot redeclare var $indexName');
-            foreach ($connection->listTableIndexes($tableName) as $indexName => $indexInfo)
-            {
-                $mapper->createIndex($table, $indexInfo, $indexName);
-            }
-            unset($indexInfo, $indexName);
-
-            /*
-             * get constraint/foreign key information
-             */
-            assert('!isset($contraintInfo); // Cannot redeclare var $contraintInfo');
-            assert('!isset($contraintName); // Cannot redeclare var $contraintName');
-            foreach ($connection->listTableConstraints($tableName) as $contraintName => $contraintInfo)
-            {
-                $mapper->createConstraint($table, $contraintInfo, $contraintName);
-            }
-            unset($contraintInfo, $contraintName);
-
-        } // end foreach
-        unset($tableName);
-
-        return $database;
+    /**
+     * Build a database refactory worker based on MDB2.
+     *
+     * @param   \MDB2_Driver_Common  $connection  MDB2 database connection
+     * @return  \Yana\Db\Ddl\Factories\IsWorker
+     */
+    public function buildMdb2Worker(\MDB2_Driver_Common $connection)
+    {
+        $mapper = new \Yana\Db\Ddl\Factories\Mdb2Mapper();
+        $wrapper = new \Yana\Db\Ddl\Factories\Mdb2Wrapper($connection);
+        return new \Yana\Db\Ddl\Factories\Mdb2Worker($mapper, $wrapper);
     }
 
 }

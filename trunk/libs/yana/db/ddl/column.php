@@ -281,7 +281,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * The default is "auto" (as in the CSS element display: auto).
      *
      * @param   string  $value  new value of this property
-     * @return  \Yana\Db\Ddl\Column 
+     * @return  $this 
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if the parameter is empty
      */
     public function setType($value)
@@ -323,7 +323,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * To reset the property, leave the parameter empty.
      *
      * @param   string  $title  set title for display in User Interface
-     * @return  \Yana\Db\Ddl\Column
+     * @return  $this
      */
     public function setTitle($title = "")
     {
@@ -373,7 +373,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * To reset this property, leave the parameter empty.
      *
      * @param   string  $pattern  regular expression pattern
-     * @return  \Yana\Db\Ddl\Column
+     * @return  $this
      */
     public function setPattern($pattern = "")
     {
@@ -423,7 +423,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * To reset the property, leave the parameter $description empty.
      *
      * @param   string  $description  new value of this property
-     * @return  \Yana\Db\Ddl\Column
+     * @return  $this
      */
     public function setDescription($description = "")
     {
@@ -465,7 +465,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * If at least one grant is set, any user that does not match the given
      * restrictions is not permitted to access the form.
      *
-     * @return  \Yana\Db\Ddl\Column
+     * @return  $this
      */
     public function dropGrants()
     {
@@ -481,7 +481,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * This function adds a new grant to the configuration.
      *
      * @param   \Yana\Db\Ddl\Grant  $grant set a new grant object
-     * @return  \Yana\Db\Ddl\Column 
+     * @return  $this 
      */
     public function setGrant(\Yana\Db\Ddl\Grant $grant)
     {
@@ -560,7 +560,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * bool(true).
      *
      * @param   bool  $isReadonly   set read-only access
-     * @return  \Yana\Db\Ddl\Column
+     * @return  $this
      */
     public function setReadonly($isReadonly = false)
     {
@@ -593,7 +593,8 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * The default is bool(true).
      *
-     * @param  bool  $isNullable  new value of this property
+     * @param   bool  $isNullable  new value of this property
+     * @return  $this
      */
     public function setNullable($isNullable = true)
     {
@@ -646,7 +647,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * should use an unique index.
      *
      * @param   bool  $isUnique  new value
-     * @return  \Yana\Db\Ddl\Column
+     * @return  $this
      */
     public function setUnique($isUnique = true)
     {
@@ -688,7 +689,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * If the type of this column is not numeric, the function throws a NotImplementedException.
      *
      * @param   bool    $isUnsigned      true: unsigned number, false: signed number
-     * @return  \Yana\Db\Ddl\Column
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\NotImplementedException  if column is not a number
      */
     public function setUnsigned($isUnsigned)
@@ -715,8 +716,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * For zerofill, the number is always expanded to the maximum number of digits, defined by the
      * maximum length of the number. If length is not set, it is to be ignored.
      *
-     * Important note: if zerofill is not supported by your DBMS, it is emulated by the framework's
-     * database API.
+     * Important note: some DBMS don't support zerofill.
      *
      * @return  bool
      */
@@ -737,14 +737,16 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * database API.
      *
      * @param   bool  $isFixed  new value
-     * @return  \Yana\Db\Ddl\Column
+     * @return  $this
      */
     public function setFixed($isFixed)
     {
         assert('is_bool($isFixed); // Wrong type for argument 1. Boolean expected');
         if ($isFixed) {
             $this->fixed = true;
-            $this->unsigned = true;
+            if ($this->isNumber()) {
+                $this->setUnsigned(true);
+            }
         } else {
             $this->fixed = false;
         }
@@ -780,7 +782,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * If the type of this column is not numeric, the function throws a NotImplementedException.
      *
      * @param   bool   $isAutoIncrement  new value of this property
-     * @return  \Yana\Db\Ddl\Column
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\NotImplementedException  if column is not a number
      */
     public function setAutoIncrement($isAutoIncrement)
@@ -847,7 +849,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * chosen type.
      *
      * @param   bool  $isAutoFill        new value of this property
-     * @return  \Yana\Db\Ddl\Column
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\NotImplementedException  when auto-fill is not available for this column type
      */
     public function setAutoFill($isAutoFill)
@@ -983,7 +985,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * @param   int  $length     a positive integer
      * @param   int  $precision  applies to type float only
-     * @return  \Yana\Db\Ddl\Column
+     * @return  $this
      * @see     \Yana\Db\Ddl\Column::setSize()
      * @throws  InvalidArgumentExpection  if precission is greater than length
      */
@@ -1040,7 +1042,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * precedence other anything you specify here.
      *
      * @param   int  $size  maximum size in byte
-     * @return  \Yana\Db\Ddl\Column
+     * @return  $this
      */
     public function setSize($size = -1)
     {
@@ -1089,7 +1091,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * @param   int     $height      vertical dimension in px
      * @param   bool    $ratio       keep aspect-ratio (true=yes, false=no)
      * @param   string  $background  hex-color of canvas (#RRGGBB)
-     * @return  \Yana\Db\Ddl\Column 
+     * @return  $this 
      */
     public function setImageSettings($width = null, $height = null, $ratio = null, $background = null)
     {
@@ -1131,7 +1133,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * @param   string   $table   table name
      * @param   string   $column  column name
      * @param   string   $label   label
-     * @return  \Yana\Db\Ddl\Column
+     * @return  $this
      */
     public function setReferenceSettings($table = null, $column = null, $label = null)
     {
@@ -1201,7 +1203,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * @param   mixed   $value  new value of this property
      * @param   string  $dbms   target DBMS, defaults to "generic"
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when parameter is empty
-     * @return  \Yana\Db\Ddl\Column
+     * @return  $this
      */
     public function setDefault($value = null, $dbms = "generic")
     {
@@ -1313,7 +1315,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
     /**
      * Drops the list of all defined constraints.
      *
-     * @return  \Yana\Db\Ddl\Column
+     * @return  $this
      */
     public function dropConstraints()
     {
@@ -1341,7 +1343,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * @param   scalar  $name   name of the enum
      * @param   string  $value  value
-     * @return  \Yana\Db\Ddl\Column
+     * @return  $this
      */
     public function setEnumerationItem($name, $value = null)
     {
@@ -1371,7 +1373,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * </code>
      *
      * @param   array  $options expected an array with options for the enumeration column.
-     * @return  \Yana\Db\Ddl\Column
+     * @return  $this
      */
     public function setEnumerationItems(array $options)
     {
@@ -1387,7 +1389,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * Removes all previously set options and resets the property.
      *
-     * @return  \Yana\Db\Ddl\Column
+     * @return  $this
      */
     public function dropEnumerationItems()
     {
@@ -1557,7 +1559,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * @param   float  $min   lower boundary
      * @param   float  $max   upper boundary
      * @param   float  $step  step value (defaults to 1.0)
-     * @return  \Yana\Db\Ddl\Column
+     * @return  $this
      */
     public function setRange($min, $max, $step = 1.0)
     {
@@ -1672,7 +1674,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
     /**
      * Get referenced target column for columns of type "reference".
      *
-     * @return  \Yana\Db\Ddl\Column
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\NotFoundException  when the database definition is not found
      */
     public function getReferenceColumn()

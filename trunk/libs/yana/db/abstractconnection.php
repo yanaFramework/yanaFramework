@@ -802,7 +802,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      */
     protected function _getName()
     {
-        if (!isset($this->_name)) {
+        if ($this->_name === "") {
             $this->_name = $this->getSchema()->getName();
         }
         return $this->_name;

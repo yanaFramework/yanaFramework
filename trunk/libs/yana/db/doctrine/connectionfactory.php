@@ -168,7 +168,7 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\Doctrine\I
      */
     public function __construct(array $dsn = null)
     {
-        if (!class_exists('\Doctrine\DBAL\DriverManager')) {
+        if (!self::isDoctrineAvailable()) {
             /* error handling */
             $message = "Unable to open connection to database using Doctrine DBAL. Might not be installed.";
             $level = \Yana\Log\TypeEnumeration::ERROR;
@@ -275,6 +275,18 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\Doctrine\I
     {
         assert('is_array($this->_dsn);');
         return (array) $this->_dsn;
+    }
+
+    /**
+     * Return bool(true) if Doctribe DBAL module is available.
+     *
+     * Returns bool(false) otherwise.
+     *
+     * @return  bool
+     */
+    public static function isDoctrineAvailable()
+    {
+        return class_exists('\Doctrine\DBAL\DriverManager');
     }
 
     /**

@@ -122,7 +122,7 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsCon
     public function __construct(array $dsn = null)
     {
         // @codeCoverageIgnoreStart
-        if (!class_exists('\MDB2')) {
+        if (!self::isMdb2Available()) {
             /* error handling */
             $message = "Unable to open connection to database using PEAR MDB2. Might not be installed.";
             $level = \Yana\Log\TypeEnumeration::ERROR;
@@ -334,6 +334,20 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsCon
     }
 
     /**
+     * Return bool(true) if MDB2 is available.
+     *
+     * Returns bool(false) otherwise.
+     *
+     * @return  bool
+     */
+    public static function isMdb2Available()
+    {
+        /* load PEAR-DB */
+        @include_once "MDB2.php";
+        return class_exists("MDB2");
+    }
+
+    /**
      * Test if a connection is available.
      *
      * Returns bool(true) if a connection to a db-server could be established via the provided parameters,
@@ -344,9 +358,7 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsCon
      */
     public static function isAvailable(array $dsn)
     {
-        /* load PEAR-DB */
-        @include_once "MDB2.php";
-        if (!class_exists("MDB2")) {
+        if (!self::isMdb2Available()) {
             return false;
         }
         try {

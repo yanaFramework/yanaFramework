@@ -80,12 +80,10 @@ class Counter extends \Yana\Db\FileDb\Sequence
         assert('is_string($name); // Invalid argument type argument 1. String expected.');
 
         // establish datbase connection
-        if (empty(parent::$db)) {
-            parent::_connect();
-        }
+        $db = self::_getDb();
 
         parent::__construct($name);
-        $row = parent::$db->select("counter.$name");
+        $row = $db->select("counter.$name");
         if (empty($row)) {
             throw new \Yana\Core\Exceptions\NotFoundException("No such counter '$name'.", \Yana\Log\TypeEnumeration::WARNING);
         }
@@ -119,7 +117,7 @@ class Counter extends \Yana\Db\FileDb\Sequence
                 'ip' => $this->ip,
                 'info' => $this->info
             );
-            parent::$db->update("counter.{$this->name}", $row)
+            self::_getDb()->update("counter.{$this->name}", $row)
                 ->commit(); // may throw exception
         } catch (\Exception $e) {
             unset($e); // Destructor may not throw exceptions
@@ -153,11 +151,6 @@ class Counter extends \Yana\Db\FileDb\Sequence
         assert('is_string($name); // Invalid argument type argument 1. String expected.');
         assert('is_bool($useIP); // Invalid argument type argument 2. Boolean expected.');
 
-        // establish datbase connection
-        if (empty(parent::$db)) {
-            parent::_connect();
-        }
-
         if (parent::create($name, $increment, $start, $min, $max, $cycle)) {
 
             // create datbase entry
@@ -169,7 +162,7 @@ class Counter extends \Yana\Db\FileDb\Sequence
             );
 
             try {
-                parent::$db->insert("counter.$name", $row)
+                self::_getDb()->insert("counter.$name", $row)
                     ->commit(); // may throw exception
             } catch (\Exception $e) {
                 unset($e);
@@ -194,12 +187,7 @@ class Counter extends \Yana\Db\FileDb\Sequence
     {
         assert('is_string($name); // Invalid argument type argument 1. String expected.');
 
-        // establish datbase connection
-        if (empty(parent::$db)) {
-            parent::_connect();
-        }
-
-        return (parent::$db->exists("counter.$name") === true);
+        return (self::_getDb()->exists("counter.$name") === true);
     }
 
     /**
@@ -214,14 +202,9 @@ class Counter extends \Yana\Db\FileDb\Sequence
     {
         assert('is_string($name); // Invalid argument type argument 1. String expected.');
 
-        // establish database connection
-        if (empty(parent::$db)) {
-            parent::_connect();
-        }
-
         // remove database entry
         try {
-            parent::$db->remove("counter.$name")
+            self::_getDb()->remove("counter.$name")
                 ->commit(); // may throw exception
             $success = parent::drop($name);
         } catch (\Exception $e) {

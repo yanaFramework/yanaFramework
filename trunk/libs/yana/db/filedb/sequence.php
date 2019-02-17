@@ -83,9 +83,8 @@ class Sequence extends \Yana\Core\Object
 
     /**
      * @var \Yana\Db\IsConnection
-     * @ignore
      */
-    protected static $db = null;
+    private static $db = null;
 
     /**
      * Reads all sequence information from the database and initializes a new instance.
@@ -97,11 +96,7 @@ class Sequence extends \Yana\Core\Object
     {
         assert('is_string($name); // Invalid argument type argument 1. String expected.');
 
-        // establish datbase connection
-        if (empty(self::$db)) {
-            self::_connect();
-        }
-        $query = new \Yana\Db\Queries\Select(self::$db);
+        $query = new \Yana\Db\Queries\Select(self::_getDb());
         $query->setTable("sequences")
             ->setRow($name);
         $row = $query->getResults();
@@ -135,11 +130,20 @@ class Sequence extends \Yana\Core\Object
      */
     protected static function _connect(\Yana\Db\IsConnection $db = null)
     {
-        if (!is_null($db)) {
-            self::$db = $db;
-        } else {
+        if (is_null($db)) {
             $builder = new \Yana\ApplicationBuilder();
-            self::$db = $builder->buildApplication()->connect("sequences");
+            $db = $builder->buildApplication()->connect("sequences");
+        }
+        return $db;
+    }
+
+    /**
+     * @return  \Yana\Db\IsConnection
+     */
+    protected static function _getDb()
+    {
+        if (!isset(self::$db)) {
+            self::$db = self::_connect();
         }
         return self::$db;
     }
@@ -160,7 +164,7 @@ class Sequence extends \Yana\Core\Object
                 'max' => $this->max,
                 'cycle' => $this->cycle
             );
-            self::$db->update("sequences.{$this->name}", $row)
+            self::_getDb()->update("sequences.{$this->name}", $row)
                 ->commit(); // may throw exception
         } catch (\Exception $e) { // Destructor may not throw exceptions
             unset($e);
@@ -291,11 +295,6 @@ class Sequence extends \Yana\Core\Object
         assert('is_null($max) || is_int($max); // Invalid argument type argument 5. Integer expected.');
         assert('is_bool($cycle); // Invalid argument type argument 6. Boolean expected.');
 
-        // establish datbase connection
-        if (empty(self::$db)) {
-            self::_connect();
-        }
-
         // ascending sequence
         if ($increment > 0) {
             if (is_null($min)) {
@@ -332,12 +331,13 @@ class Sequence extends \Yana\Core\Object
         );
 
         try {
-            $query = new \Yana\Db\Queries\Insert(self::$db);
+            $db = self::_getDb();
+            $query = new \Yana\Db\Queries\Insert($db);
             $query->setTable("sequences");
             $query->setRow($name);
             $query->setValues($row);
             $query->sendQuery();
-            self::$db->commit(); // may throw exception
+            $db->commit(); // may throw exception
             return true;
         } catch (\Yana\Db\DatabaseException $e) {
             return false;
@@ -356,14 +356,9 @@ class Sequence extends \Yana\Core\Object
     {
         assert('is_string($name); // Invalid argument type argument 1. String expected.');
 
-        // establish datbase connection
-        if (empty(self::$db)) {
-            self::_connect();
-        }
-
         // remove datbase entry
         try {
-            self::$db->remove("sequences.$name")
+            self::_getDb()->remove("sequences.$name")
                 ->commit(); // may throw exception
             $success = true;
         } catch (\Exception $e) {
@@ -428,12 +423,7 @@ class Sequence extends \Yana\Core\Object
     {
         assert('is_string($name); // Invalid argument type argument 1. String expected.');
 
-        // establish datbase connection
-        if (empty(self::$db)) {
-            self::_connect();
-        }
-
-        return (self::$db->exists("sequence.$name") === true);
+        return (self::_getDb()->exists("sequence.$name") === true);
     }
 
     /**

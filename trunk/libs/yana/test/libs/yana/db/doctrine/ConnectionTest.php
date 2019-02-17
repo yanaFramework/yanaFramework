@@ -216,6 +216,35 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     */
+    public function testEqualsFalse()
+    {
+        $this->assertFalse($this->object->equals(new \Yana\Core\Object()), 'assert failed, there are two different objects');
+    }
+
+    /**
+     * @test
+     */
+    public function testEqualsSame()
+    {
+        $this->assertTrue($this->object->equals($this->object), 'assert failed, there are the same objects');
+    }
+
+    /**
+     * test for equality
+     *
+     * @test
+     */
+    public function testEqualsFalse2()
+    {
+        // create another object of this class
+        $schema = \Yana\Files\XDDL::getDatabase('user');
+        $anotherObject = new \Yana\Db\Doctrine\Connection($schema);
+        $this->assertFalse($this->object->equals($anotherObject));
+    }
+
+    /**
      * test for equality
      *
      * @test
@@ -224,17 +253,8 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
     {
         // create another object of this class
         $schema = \Yana\Files\XDDL::getDatabase('check');
-        $anotherObject = new \Yana\Db\Mdb2\Connection($schema);
-        $test = $this->object->equals($anotherObject);
-        $this->assertFalse($test, 'assert failed, there are two different objects of dbstrem');
-
-        $anotherObject = new \Yana\Core\Object();
-        $test = $this->object->equals($anotherObject);
-        $this->assertFalse($test, 'assert failed, there are two different objects');
-
-        $sameObj = $this->object;
-        $test = $this->object->equals($sameObj);
-        $this->assertTrue($test, 'assert failed, there are the same objects');
+        $anotherObject = new \Yana\Db\Doctrine\Connection($schema);
+        $this->assertTrue($this->object->equals($anotherObject));
     }
 
     /**

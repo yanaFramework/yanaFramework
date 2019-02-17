@@ -96,6 +96,12 @@ class Index extends \Yana\Db\Ddl\AbstractObject
      * @var  bool
      * @ignore
      */
+    protected $fulltext = null;
+
+    /**
+     * @var  bool
+     * @ignore
+     */
     protected $unique = null;
 
     /**
@@ -392,6 +398,46 @@ class Index extends \Yana\Db\Ddl\AbstractObject
             $this->clustered = false;
         }
         return $this;
+    }
+
+    /**
+     * Set wether this is a fulltext index.
+     *
+     * This works differently on database drivers.
+     * Microsoft SQL-Server allows only 1 fulltext index (we don't check).
+     * In MySQL, however, you can have as many as you want.
+     * PostgreSQL doesn't support them, but IBM DB2 does with a different syntax.
+     * Also the list of supported data types may vary.
+     *
+     * Furthermore, IBM DB2 allows the index to be created on a view.
+     * MySQL doesn't and neither does MSSQL (AFAIK).
+     *
+     * @param   bool  $isFulltext  new value of this property
+     * @return  \Yana\Db\Ddl\Index
+     */
+    public function setFulltext($isFulltext)
+    {
+        assert('is_bool($isFulltext); // Invalid argument $isFulltext: Boolean expected');
+
+        if ($isFulltext) {
+            $this->fulltext = true;
+
+        } else {
+            $this->fulltext = false;
+        }
+        return $this;
+    }
+
+    /**
+     * Check wether this is a fulltext index.
+     *
+     * Returns bool(true) if it is, and bool(false) if it isn't.
+     *
+     * @return  bool
+     */
+    public function isFulltext()
+    {
+        return !empty($this->fulltext);
     }
 
     /**

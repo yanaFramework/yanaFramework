@@ -72,7 +72,7 @@ class Mdb2Wrapper extends \Yana\Db\Ddl\Factories\AbstractMdb2Wrapper
         $connection = $this->_getConnection();
 
         assert('!isset($sequences); // Cannot redeclare var $sequences');
-        $sequences = $connection->listSequences();
+        $sequences = @$connection->listSequences(); // Muted since this call will otherwise raise deprecated warning
         if ($sequences instanceof \MDB2_Error) {
             throw new \Yana\Db\DatabaseException($sequences->getMessage());
         }
@@ -106,7 +106,7 @@ class Mdb2Wrapper extends \Yana\Db\Ddl\Factories\AbstractMdb2Wrapper
         $connection = $this->_getConnection();
 
         assert('!isset($tables); // Cannot redeclare var $tables');
-        $tables = $connection->listTables();
+        $tables = @$connection->listTables(); // Muted since this call will otherwise raise deprecated warning
         if ($tables instanceof \MDB2_Error) {
             throw new \Yana\Db\DatabaseException($tables->getMessage());
         }
@@ -129,7 +129,7 @@ class Mdb2Wrapper extends \Yana\Db\Ddl\Factories\AbstractMdb2Wrapper
         $connection = $this->_getConnection();
 
         assert('!isset($columns); // Cannot redeclare var $columns');
-        $columns = $connection->listTableFields($tableName);
+        $columns = @$connection->listTableFields($tableName); // Muted since this call will otherwise raise deprecated warning
 
         assert('!isset($list); // Cannot redeclare var $list');
         $list = array();
@@ -138,7 +138,7 @@ class Mdb2Wrapper extends \Yana\Db\Ddl\Factories\AbstractMdb2Wrapper
         foreach ($columns as $name)
         {
             assert('!isset($info); // Cannot redeclare var $info');
-            $info = $connection->getTableFieldDefinition($tableName, $name);
+            $info = @$connection->getTableFieldDefinition($tableName, $name); // Muted since this call will otherwise raise deprecated warning
             if ($info instanceof \MDB2_Error) {
                 throw new \Yana\Db\DatabaseException($info->getMessage());
             }
@@ -169,7 +169,7 @@ class Mdb2Wrapper extends \Yana\Db\Ddl\Factories\AbstractMdb2Wrapper
         $connection = $this->_getConnection();
 
         assert('!isset($indexes); // Cannot redeclare var $indexes');
-        $indexes = $connection->listTableIndexes($tableName);
+        $indexes = @$connection->listTableIndexes($tableName); // Muted since this call will otherwise raise deprecated warning
         if ($indexes instanceof \MDB2_Error) {
             throw new \Yana\Db\DatabaseException($indexes->getMessage());
         }
@@ -181,7 +181,7 @@ class Mdb2Wrapper extends \Yana\Db\Ddl\Factories\AbstractMdb2Wrapper
         /* @var $name string */
         foreach ($indexes as $name)
         {
-            $info = $connection->getTableIndexDefinition($tableName, $name);
+            $info = @$connection->getTableIndexDefinition($tableName, $name); // Muted since this call will otherwise raise deprecated warning
             if ($info instanceof \MDB2_Error) {
                 throw new \Yana\Db\DatabaseException($info->getMessage());
             }
@@ -209,7 +209,7 @@ class Mdb2Wrapper extends \Yana\Db\Ddl\Factories\AbstractMdb2Wrapper
 
         // get constraint/foreign key information
         assert('!isset($constraints); // Cannot redeclare var $constraints');
-        $constraints = $connection->listTableConstraints($tableName);
+        $constraints = @$connection->listTableConstraints($tableName); // Muted since this call will otherwise raise deprecated warning
         if ($constraints instanceof \MDB2_Error) {
             throw new \Yana\Db\DatabaseException($constraints->getMessage());
         }
@@ -221,7 +221,7 @@ class Mdb2Wrapper extends \Yana\Db\Ddl\Factories\AbstractMdb2Wrapper
         /* @var $name string */
         foreach ($constraints as $name)
         {
-            $info = $connection->getTableConstraintDefinition($tableName, $name);
+            $info = @$connection->getTableConstraintDefinition($tableName, $name); // Muted since this call will otherwise raise deprecated warning
             if ($info instanceof \MDB2_Error) {
                 throw new \Yana\Db\DatabaseException($info->getMessage());
             }
@@ -231,6 +231,23 @@ class Mdb2Wrapper extends \Yana\Db\Ddl\Factories\AbstractMdb2Wrapper
         unset($info, $name, $constraints);
 
         return $list;
+    }
+
+    /**
+     * @test
+     */
+    public function listViews()
+    {
+        assert('!isset($connection); // Cannot redeclare var $connection');
+        $connection = $this->_getConnection();
+
+        assert('!isset($views); // Cannot redeclare var $views');
+        $views = @$connection->listViews(); // Muted since this call will otherwise raise deprecated warning
+        if ($views instanceof \MDB2_Error) {
+            throw new \Yana\Db\DatabaseException($views->getMessage());
+        }
+
+        return $views;
     }
 
 }

@@ -45,6 +45,7 @@
             <integer
                 name="ti"
                 length="4"
+                unsigned="yes"
                 fixed="yes"
             />
             <reference
@@ -81,4 +82,9 @@
             />
         </declaration>
     </table>
+    <view name="v" checkoption="local" tables="t" readonly="no">
+        <field table="t" column="tid" alias="id"/>
+        <field table="t" column="tvalue" alias="val"/>
+        <select dbms="mysql">SELECT t.tid as id, t.tvalue as val FROM t</select>
+    </view>
 </database>
