@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case.
+ * PHPUnit test-case
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -25,21 +25,22 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Db;
+namespace Yana\Db\Ddl;
 
 /**
  * @ignore
  */
-require_once __DIR__ . '/../../../include.php';
+require_once __DIR__ . '/../../../../include.php';
+
 
 /**
  * @package  test
  */
-class NullTransactionTest extends \PHPUnit_Framework_TestCase
+class NoTagNameExceptionTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Db\NullTransaction
+     * @var \Yana\Db\Ddl\NoTagNameException
      */
     protected $object;
 
@@ -49,7 +50,7 @@ class NullTransactionTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Db\NullTransaction();
+        $this->object = new \Yana\Db\Ddl\NoTagNameException();
     }
 
     /**
@@ -64,45 +65,9 @@ class NullTransactionTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testCommit()
+    public function testException()
     {
-        $driver = new \Yana\Db\FileDb\NullDriver(new \Yana\Db\Queries\Parser(new \Yana\Db\NullConnection()));
-        $this->assertSame($this->object, $this->object->commit($driver));
-    }
-
-    /**
-     * @test
-     */
-    public function testUpdate()
-    {
-        $query = new \Yana\Db\Queries\Update(new \Yana\Db\NullConnection());
-        $this->assertSame($this->object, $this->object->update($query));
-    }
-
-    /**
-     * @test
-     */
-    public function testInsert()
-    {
-        $query = new \Yana\Db\Queries\Insert(new \Yana\Db\NullConnection());
-        $this->assertSame($this->object, $this->object->insert($query));
-    }
-
-    /**
-     * @test
-     */
-    public function testRemove()
-    {
-        $query = new \Yana\Db\Queries\Delete(new \Yana\Db\NullConnection());
-        $this->assertSame($this->object, $this->object->remove($query));
-    }
-
-    /**
-     * @test
-     */
-    public function testRollback()
-    {
-        $this->assertSame($this->object, $this->object->rollback());
+        $this->assertTrue($this->object instanceof \Yana\Db\Ddl\NoTagNameException);
     }
 
 }

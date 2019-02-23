@@ -69,6 +69,16 @@ class Parser extends \Yana\Core\Object implements \Yana\Db\Queries\IsParser
     }
 
     /**
+     * Get database schema.
+     *
+     * @return  \Yana\Db\Ddl\Database
+     */
+    public function getSchema()
+    {
+        return $this->_getDatabase()->getSchema();
+    }
+
+    /**
      * Parse SQL query into query object.
      *
      * This is the opposite of __toString().

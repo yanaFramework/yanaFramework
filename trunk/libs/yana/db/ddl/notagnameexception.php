@@ -25,29 +25,18 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Db\FileDb;
+namespace Yana\Db\Ddl;
 
 /**
- * <<decorator>> For testing purposes only.
+ * <<exception>> Thrown when a XDDL node misses a tag name.
  *
  * @package     yana
  * @subpackage  db
- * @ignore
- * @codeCoverageIgnore
  */
-class NullConnection extends \Yana\Db\FileDb\Connection
+class NoTagNameException extends \Yana\Db\Ddl\XddlException
 {
 
-    /**
-     * Creates a new instance of this class.
-     *
-     * @param  \Yana\Db\Ddl\Database  $schema  schema in database definition language
-     */
-    public function __construct(\Yana\Db\Ddl\Database $schema)
-    {
-        parent::__construct($schema);
-        $this->_setConnection(new \Yana\Db\FileDb\NullDriver(new \Yana\Db\Queries\Parser($this)));
-    }
+    // intentionally left blank
 
 }
 

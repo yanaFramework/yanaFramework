@@ -42,11 +42,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Db\Ddl\Column
-     */
-    protected $column;
-
-    /**
      * @var \Yana\Db\Ddl\Database
      */
     protected $database;
@@ -176,7 +171,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
 
         $this->database = new \Yana\Db\Ddl\Database();
         $this->table = new \Yana\Db\Ddl\Table('table');
-        $this->column = new \Yana\Db\Ddl\Column('column');
         $this->field = new \Yana\Db\Ddl\Field('field');
         $this->foreignkey = new \Yana\Db\Ddl\ForeignKey('foreignkey');
         $this->form = new \Yana\Db\Ddl\Form('form');
@@ -207,7 +201,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        unset($this->column);
         unset($this->database);
         unset($this->field);
         unset($this->foreignkey);
@@ -239,7 +232,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     public function dataTitle()
     {
         return array(
-            array('column'),
             array('database'),
             array('form'),
             array('function'),
@@ -270,36 +262,12 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * range
-     *
-     * @test
-     */
-    public function testRange()
-    {
-        $this->assertNull($this->column->getRangeMin(), "Min must default to null.");
-        $this->assertNull($this->column->getRangeMax(), "Max must default to null.");
-        $this->assertNull($this->column->getRangeStep(), "Step must default to null.");
-
-        $this->column->setRange(0.0, 100.0, 0.5);
-        $rangeMin = $this->column->getRangeMin();
-        $rangeMax = $this->column->getRangeMax();
-        $rangeStep = $this->column->getRangeStep();
-        $this->assertEquals(0.0, $rangeMin, "Unable to set min attribute.");
-        $this->assertEquals(100.0, $rangeMax, "Unable to set max attribute.");
-        $this->assertEquals(0.5, $rangeStep, "Unable to set step attribute.");
-    }
-
-    /**
      * get type
      *
      * @test
      */
     public function testGetType()
     {
-        // \Yana\Db\Ddl\Logs\Create
-        $get = $this->column->getType();
-        $this->assertNull($get, '\Yana\Db\Ddl\Column should return Null, if not defined');
-
         // \Yana\Db\Ddl\Logs\Create
         $get = $this->logcreate->getType();
         $this->assertEquals('create', $get, 'assert failed, "\Yana\Db\Ddl\Logs\Create" : expected value "create" - the values should be equal.');
@@ -370,30 +338,12 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * get supported type
-     *
-     * @test
-     */
-    public function getSupportedTypes()
-    {
-        $getSupported = $this->column->getSupportedTypes();
-        $this->assertContains("bool", $getSupported, "supported types should at least contain bool, integer and text");
-        $this->assertContains("integer", $getSupported, "supported types should at least contain bool, integer and text");
-        $this->assertContains("text", $getSupported, "supported types should at least contain bool, integer and text");
-    }
-
-    /**
      * set type
      *
      * @test
      */
     public function testSetType()
     {
-        // DDL Column
-        $this->column->setType('string');
-        $validate = $this->column->getType();
-        $this->assertEquals('string', $validate, '\Yana\Db\Ddl\Column : the expecting value of getType should be "string" - the values should be equal');
-
         // DDL FunctionParameter
         $this->functionparameter->setType('integer');
         $result = $this->functionparameter->getType();
@@ -435,7 +385,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     public function dataDescription()
     {
         return array(
-            array('column'),
             array('field'),
             array('database'),
             array('form'),
@@ -461,11 +410,11 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $object = $this->$propertyName;
         $object->setDescription('description');
         $result = $object->getDescription();
-        $this->assertEquals('description', $result, 'assert failed, \Yana\Db\Ddl\Column : expected value is "description"  - the values should be equal');
+        $this->assertEquals('description', $result, 'expected value is "description"  - the values should be equal');
 
         $object->setDescription('');
         $result = $object->getDescription();
-        $this->assertNull($result, 'assert failed, \Yana\Db\Ddl\Column : the description is expected null');
+        $this->assertNull($result, 'the description is expected null');
     }
 
     /**
@@ -498,14 +447,14 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
 
         $this->view->setCheckOption(\Yana\Db\Ddl\Views\ConstraintEnumeration::CASCADED);
         $result = $this->view->getCheckOption();
-        $this->assertEquals(\Yana\Db\Ddl\Views\ConstraintEnumeration::CASCADED, $result, 'assert failed, \Yana\Db\Ddl\Column : expected "1" as value - the values should be equal');
+        $this->assertEquals(\Yana\Db\Ddl\Views\ConstraintEnumeration::CASCADED, $result, 'expected "1" as value - the values should be equal');
 
         $hasChecked = $this->view->hasCheckOption();
         $this->assertTrue($hasChecked, 'assert failed, "\Yana\Db\Ddl\Views\View" : true expected - checkOption is set ');
 
         $this->view->setCheckOption(\Yana\Db\Ddl\Views\ConstraintEnumeration::LOCAL);
         $result = $this->view->getCheckOption();
-        $this->assertEquals(\Yana\Db\Ddl\Views\ConstraintEnumeration::LOCAL, $result, 'assert failed, \Yana\Db\Ddl\Column : expected "2" as value - the values should be equal');
+        $this->assertEquals(\Yana\Db\Ddl\Views\ConstraintEnumeration::LOCAL, $result, 'expected "2" as value - the values should be equal');
 
         $this->view->setCheckOption(\Yana\Db\Ddl\Views\ConstraintEnumeration::NONE);
         $result = $this->view->getCheckOption();
@@ -579,15 +528,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
      */
     public function testReadonly()
     {
-       //ddl column
-       $this->column->setReadonly(true);
-       $result = $this->column->isReadonly();
-       $this->assertTrue($result, 'assert failed, \Yana\Db\Ddl\Column : expected true - setReadonly was set with true');
-
-       $this->column->setReadonly(false);
-       $result = $this->column->isReadonly();
-       $this->assertFalse($result, 'assert failed, \Yana\Db\Ddl\Column : expected false - setReadonly was set with false');
-
        // ddl database
        $this->database->setReadonly(true);
        $result = $this->database->isReadonly();
@@ -677,164 +617,12 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * nullable
-     *
-     * @test
-     */
-    public function testNullable()
-    {
-       // expected value is true
-       $this->column->setNullable(true);
-       $result = $this->column->isNullable();
-       $this->assertTrue($result, 'assert failed, \Yana\Db\Ddl\Column : expected true - setNullable was set with true');
-
-       // expected value is false
-       $this->column->setNullable(false);
-       $result = $this->column->isNullable();
-       $this->assertFalse($result, 'assert failed, \Yana\Db\Ddl\Column : expected false - setNullable was set with false');
-    }
-
-    /**
-     * unique
-     *
-     * @test
-     */
-    public function testUnique()
-    {
-       // DDL Column
-       $this->column->setUnique(true);
-       $result = $this->column->isUnique();
-       $this->assertTrue($result, 'assert failed, \Yana\Db\Ddl\Column : expected true - setUnique was set with true');
-
-       $this->column->setUnique(false);
-       $result = $this->column->isUnique();
-       $this->assertFalse($result, 'assert failed, \Yana\Db\Ddl\Column : expected false - setUnique was set with false');
-    }
-
-    /**
-     * unsigned
-     *
-     * @test
-     */
-    public function testUnsigned()
-    {
-       // expected value is true
-       $this->column->setType('integer');
-       $this->column->setUnsigned(true);
-       $result = $this->column->isUnsigned();
-       $this->assertTrue($result, 'assert failed, \Yana\Db\Ddl\Column : expected true - setUnsigned was set with true');
-
-       // expected value is false
-       $this->column->setUnsigned(false);
-       $result = $this->column->isUnsigned();
-       $this->assertFalse($result, 'assert failed, \Yana\Db\Ddl\Column : expected false - setUnsigned was set with false');
-    }
-
-    /**
-     * fixed
-     *
-     * @test
-     */
-    public function testFixed()
-    {
-       // expected value is true
-       $this->column->setFixed(true);
-       $result = $this->column->isFixed();
-       $this->assertTrue($result, 'assert failed, \Yana\Db\Ddl\Column : expected true - setFixed was set with true');
-
-       // expected value is false
-       $this->column->setFixed(false);
-       $result = $this->column->isFixed();
-       $this->assertFalse($result, 'assert failed, \Yana\Db\Ddl\Column : expected false - setFixed was set with false');
-    }
-
-    /**
-     * Auto-increment
-     *
-     * @test
-     */
-    public function testAutoIncrement()
-    {
-       // expected value is true
-       $this->column->setType('integer');
-       $this->column->setAutoIncrement(true);
-       $result = $this->column->isAutoIncrement();
-       $this->assertTrue($result, 'assert failed, \Yana\Db\Ddl\Column : expected true - setAutoIncrement was set with true');
-
-       // expected value is false
-       $this->column->setAutoIncrement(false);
-       $result = $this->column->isAutoIncrement();
-       $this->assertFalse($result, 'assert failed, \Yana\Db\Ddl\Column : expected false - setAutoIncrement was set with false');
-    }
-
-    /**
-     * Auto-fill
-     *
-     * @test
-     */
-    public function testSetAutoFill()
-    {
-        // expected value is true
-        $this->column->setType('integer');
-        $this->column->setAutoFill(true);
-        $result = $this->column->isAutoFill();
-        $this->assertTrue($result, 'assert failed, \Yana\Db\Ddl\Column : expected true - setAutoFill was set with true');
-
-        // expected value is true
-        $this->column->setType('inet');
-        $this->column->setDefault('REMOTE_ADDR');
-        $this->column->setAutoFill(true);
-        $result = $this->column->isAutoFill();
-        $this->assertTrue($result, 'assert failed, \Yana\Db\Ddl\Column : expected true - setAutoFill was set with true');
-
-        // expected value is true
-        $this->column->setType('time');
-        $this->column->setDefault('CURRENT_TIMESTAMP');
-        $this->column->setAutoFill(true);
-        $result = $this->column->isAutoFill();
-        $this->assertTrue($result, 'assert failed, \Yana\Db\Ddl\Column : expected true - setAutoFill was set with true');
-
-        // expected value is true
-        $this->column->setAutoFill(true);
-        $this->column->setDefault('Fake');
-        $this->column->setType('image');
-        $result = $this->column->isAutoFill();
-        $this->assertFalse($result, 'assert failed, \Yana\Db\Ddl\Column : expected false - setAutoFill was set with true');
-
-        // expect an Exception, image has no autofill
-        try {
-            $this->column->setAutoFill(false);
-            $this->fail("\Yana\Db\Ddl\Column::setAutoFill for an image-column should raise an exception");
-        } catch (\Exception $e) {
-            //success
-        }
-    }
-
-    /**
-     * Auto-fill with invalid argument
-     *
-     * @expectedException \Yana\Core\Exceptions\NotImplementedException
-     *
-     * @test
-     */
-    public function testSetAutoFillInvalidArgumentException()
-    {
-        // \Yana\Db\Ddl\Column
-        $this->column->setType('string');
-        $this->column->setAutoFill(true);
-    }
-
-    /**
      * is foreign-key
      *
      * @test
      */
     public function testIsForeignKey()
     {
-        // DDL Column
-        $valid = $this->column->isForeignKey();
-        $this->assertFalse($valid, 'assert false, "\Yana\Db\Ddl\Column" : expected "false" - no foreign key found');
-
         // create a target-table
         $newTableA = $this->database->addTable("someTable");
         $newTableB = $this->database->addTable("otherTable");
@@ -849,35 +637,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $valid = $ColumnC->isForeignKey();
         $this->assertFalse($valid, '\Yana\Db\Ddl\Column::isForeignKey - key expected ');
 
-    }
-
-    /**
-     * isPrimaryKey
-     *
-     * @test
-     */
-    public function testIsPrimaryKey()
-    {
-        // DDL Column
-        $valid = $this->column->isPrimaryKey();
-        $this->assertFalse($valid, 'assert false, "\Yana\Db\Ddl\Column" : expected "false" - no primary key found');
-    }
-
-    /**
-     * is number
-     *
-     * @test
-     */
-    public function testIsNumber()
-    {
-        // DDL Column
-        $this->column->setType('string');
-        $valid = $this->column->isNumber();
-        $this->assertFalse($valid, 'expecting column of type string not to be a number');
-        // DDL Column
-        $this->column->setType('integer');
-        $valid = $this->column->isNumber();
-        $this->assertTrue($valid, 'expecting column of type int to be a number');
     }
 
     /**
@@ -898,230 +657,12 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Size and precision
-     *
-     * @test
-     */
-    public function testSetSize()
-    {
-        // DDL Column
-        $this->column->setSize(5);
-        $precision = $this->column->getPrecision();
-        $this->assertNull($precision, 'assert faield, "\Yana\Db\Ddl\Column" : expected "-1"');
-        $get = $this->column->getSize();
-        $this->assertEquals(5, $get, 'assert faield, "\Yana\Db\Ddl\Column" : expected "5"');
-
-        $this->column->setLength(10, 2);
-        $get = $this->column->getLength();
-        $this->assertEquals(10, $get, 'assert faield, "\Yana\Db\Ddl\Column" : expected "10"');
-        $precision = $this->column->getPrecision();
-        $this->assertEquals(2, $precision, 'assert faield, "\Yana\Db\Ddl\Column" : expected "2"');
-    }
-
-    /**
-     * Size and precision with invalid argument
-     *
-     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
-     *
-     * @test
-     */
-    public function testSetSizeInvalidArgumentException()
-    {
-        // \Yana\Db\Ddl\Column
-        $this->column->setLength(1, 2);
-    }
-
-    /**
-     * Image-settings
-     *
-     * @test
-     */
-    public function testImageSettings()
-    {
-        // DDL Column
-        $width = 30;
-        $height = 15;
-        $ratio = true;
-        $background = 'description';
-        $expected = array('width' => $width, 'height' => $height, 'ratio' => $ratio, 'background' => $background);
-        $this->column->setImageSettings($width, $height, $ratio, $background);
-        $get = $this->column->getImageSettings();
-
-        $expected = array('width' => $width, 'height' => $height, 'ratio' => $ratio, 'background' => $background);
-        $this->assertInternalType('array', $get, 'assert failed, \Yana\Db\Ddl\Column : the value is not from type Array');
-        $this->assertEquals($expected, $get, 'assert failed, \Yana\Db\Ddl\Column : the image settings are not set');
-
-        $expected = array('width' => '', 'height' => '', 'ratio' => '', 'background' => '');
-        $this->column->setImageSettings();
-        $get = $this->column->getImageSettings();
-        $this->assertInternalType('array', $get, 'assert failed, \Yana\Db\Ddl\Column : the value is not from type Array');
-        $this->assertEquals($expected, $get, 'assert failed, \Yana\Db\Ddl\Column : the image settings are not set');
-    }
-
-    /**
-     * Reference-settings
-     *
-     * @test
-     */
-    public function testSetReferenceSettings()
-    {
-        // DDL Column
-        $table = 'sometable';
-        $column = 'somecolumn';
-        $label = 'somelabel';
-
-        $expected = new \Yana\Db\Ddl\Reference($table, $column, $label);
-        $this->column->setReferenceSettings($table, $column, $label);
-        $get = $this->column->getReferenceSettings();
-        $this->assertTrue($get instanceof \Yana\Db\Ddl\Reference, 'Instance of \Yana\Db\Ddl\Reference expected');
-        $this->assertEquals($expected, $get, 'Expected values not found in returned \Yana\Db\Ddl\Reference');
-    }
-
-    /**
-     * Default
-     *
-     * @test
-     */
-    public function testSetDefault()
-    {
-        // \Yana\Db\Ddl\Column
-        $this->column->setDefault('a');
-        $this->column->setDefault('b', 'mysql');
-        $getAll = $this->column->getDefaults();
-        $this->assertInternalType('array', $getAll, 'assert failed, \Yana\Db\Ddl\Column : the value is not from type array');
-        $this->assertEquals(2, count($getAll), 'assert failed, \Yana\Db\Ddl\Column :the values should be equal - expected number 2');
-        $get = $this->column->getDefault('mysql');
-        $this->assertInternalType('string', $get, 'assert failed, \Yana\Db\Ddl\Column : the value is not from type string');
-        $this->assertEquals('b', $get, 'assert failed, \Yana\Db\Ddl\Column : the variables should be equal - expected key of value "mysql"');
-
-        $get = $this->column->getDefault('oracle');
-        $this->assertEquals('a', $get, 'Function getDefault() must fall back to "generic" if setting is not found.');
-        $this->column->setDefault('');
-        $get = $this->column->getDefault('oracle');
-        $this->assertEquals(0, strlen($get), 'assert failed, \Yana\Db\Ddl\Column : the values should be equal - 0 expected when value does not exist in array');
-    }
-
-    /**
-     * Enumeration-items
-     *
-     * @test
-     */
-    public function testEnumerationItems()
-    {
-        // DDL Column
-        $array = array('aa' => '20', 'bb' => '30', 'cc' => '50');
-        $this->column->setEnumerationItems($array);
-        $get = $this->column->getEnumerationItems();
-        $this->assertEquals($array, $get, 'assert failed, \Yana\Db\Ddl\Column : the values should be equal - expected the same array which is set');
-
-        $this->column->setEnumerationItem('cc', '90');
-        $get = $this->column->getEnumerationItems();
-        $this->assertNotEquals($array, $get, 'assert failed, \Yana\Db\Ddl\Column : the values should not be equal, the key "cc" was manipulate with other value');
-
-        $validate = array('aa' => '20', 'bb' => '30', 'cc' => '90');
-        $this->assertEquals($validate, $get, 'assert failed, \Yana\Db\Ddl\Column : the values should be equal, expected the same array which is set with the manipulated value');
-
-        $getItemNames = $this->column->getEnumerationItemNames();
-        $valid = array('aa', 'bb', 'cc');
-        $this->assertEquals($valid, $getItemNames, 'assert failed, the values should be equal, expected the keys from array');
-
-        $this->column->dropEnumerationItem('bb');
-        $get = $this->column->getEnumerationItems();
-        $this->assertNotEquals($validate, $get, 'assert failed, \Yana\Db\Ddl\Column : the values should not be equal, the key "bb" is dropt');
-        $get = $this->column->getEnumerationItem('bb');
-        $this->assertNull($get, 'assert failed, \Yana\Db\Ddl\Column : the enumeration item should not be exist, key "bb" was dropt before');
-
-        $get = $this->column->getEnumerationItem('cc');
-        $this->assertEquals(90, (int) $get, 'assert failed, \Yana\Db\Ddl\Column : the enumeration item should be match the expected value');
-
-        $this->column->dropEnumerationItems();
-        $get = $this->column->getEnumerationItems();
-        $this->assertInternalType('array', $get, 'assert failed, \Yana\Db\Ddl\Column : the value should be from type array');
-        $this->assertEquals(0, count($get), 'assert failed, \Yana\Db\Ddl\Column : the values should be equal, all entries are removed before');
-    }
-
-    /**
-     * drop non-existing enumeration item
-     *
-     * @expectedException \Yana\Core\Exceptions\NotFoundException
-     *
-     * @test
-     */
-    public function testDropEnumerationItemNotFoundException()
-    {
-        // \Yana\Db\Ddl\Column
-        $array = array('1' => '2');
-        $this->column->setEnumerationItems($array);
-        $this->column->dropEnumerationItem('no_item');
-    }
-
-    /**
      * getConstraint
      *
      * @test
      */
     public function testConstraint()
     {
-        // \Yana\Db\Ddl\Column::addConstraint parameter constraint
-        $result = true;
-        try {
-            $this->column->addConstraint(4711, "someName", "mysql");
-        } catch (\Exception $e) {
-            $result = false;
-        }
-        $this->assertFalse($result, "\Yana\Db\Ddl\Column::addConstraint should not accept an Integer as Constraint");
-
-        // \Yana\Db\Ddl\Column::addConstraint parameter name
-        $result = true;
-        try {
-            $this->column->addConstraint("someConstraints", 4711, "mysql");
-        } catch (\Exception $e) {
-            $result = false;
-        }
-        $this->assertFalse($result, "\Yana\Db\Ddl\Column::addConstraint should not accept an Integer as Name");
-
-        // \Yana\Db\Ddl\Column::getConstraint parameter name
-        $result = true;
-        try {
-            $this->column->addConstraint(4711, "mysql");
-        } catch (\Exception $e) {
-            $result = false;
-        }
-        $this->assertFalse($result, "\Yana\Db\Ddl\Column::getConstraint should not accept an Integer as Name");
-
-        // \Yana\Db\Ddl\Column::getConstraint default
-        $constraint1 = new \Yana\Db\Ddl\Constraint();
-        $constraint1->setConstraint("1");
-        $constraint2 = new \Yana\Db\Ddl\Constraint();
-        $constraint2->setConstraint("2");
-        $constraint3 = new \Yana\Db\Ddl\Constraint();
-        $constraint3->setConstraint("3");
-        $testArray1 = array($constraint1, $constraint2, $constraint3);
-        $this->column->addConstraint("1");
-        $this->column->addConstraint("2");
-        $this->column->addConstraint("3");
-        $result1 = $this->column->getConstraints();
-        $this->assertEquals($result1, $testArray1, '\Yana\Db\Ddl\Column::getConstraints failed');
-
-        $this->column->dropConstraints();
-        $result1 = $this->column->getConstraints();
-        $this->assertEquals(count($result1), 0, '\Yana\Db\Ddl\Column::dropConstraints failed');
-
-        $constraint1->setDBMS("mysql");
-        $constraint2->setDBMS("mysql");
-        $constraint3->setDBMS("mysql");
-        $this->column->addConstraint("1", "", "mysql");
-        $this->column->addConstraint("2", "", "mysql");
-        $this->column->addConstraint("3", "", "mysql");
-        $result1 = $this->column->getConstraints("mysql");
-        $this->assertEquals($result1, $testArray1, '\Yana\Db\Ddl\Column::getConstraints failed');
-
-        $result1 = $this->column->getConstraint("name2", "mysql");
-        $this->assertNull($result1);
-
-        $get = $this->column->getConstraints('odbc');
-        $this->assertInternalType('array', $get, 'assert failed, the value should be from type array');
-
         // DDL Table
         $testArray1 = array("someConstraints 1", "someConstraints 2", "someConstraints 3");
         $this->table->addConstraint($testArray1[0]);
@@ -2803,7 +2344,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         return array(
             array('form'),
             array('field'),
-            array('column'),
             array('view'),
             array('table')
         );

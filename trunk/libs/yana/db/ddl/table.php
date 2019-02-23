@@ -1444,9 +1444,9 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * Returns the unserialized object.
      *
      * @param   \SimpleXMLElement  $node    XML node
-     * @param   mixed             $parent  parent node (if any)
+     * @param   mixed              $parent  parent node (if any)
      * @return  \Yana\Db\Ddl\Table
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the name attribute is missing
+     * @throws  \Yana\Db\Ddl\NoNameException  when the name attribute is missing
      */
     public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)
     {
@@ -1454,7 +1454,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
         if (!isset($attributes['name'])) {
             $message = "Missing name attribute.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
-            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
+            throw new \Yana\Db\Ddl\NoNameException($message, $level);
         }
         $ddl = new self((string) $attributes['name'], $parent);
         $ddl->_unserializeFromXDDL($node);

@@ -1,6 +1,6 @@
 <?php
 /**
- * YANA library
+ * PHPUnit test-case
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -21,34 +21,44 @@
  *
  * This notice MAY NOT be removed.
  *
- * @package  yana
+ * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Db\FileDb;
+namespace Yana\Db\Ddl;
 
 /**
- * <<decorator>> For testing purposes only.
- *
- * @package     yana
- * @subpackage  db
  * @ignore
- * @codeCoverageIgnore
  */
-class NullConnection extends \Yana\Db\FileDb\Connection
+require_once __DIR__ . '/../../../../include.php';
+
+
+/**
+ * @package  test
+ */
+class NoNameExceptionTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * Creates a new instance of this class.
-     *
-     * @param  \Yana\Db\Ddl\Database  $schema  schema in database definition language
+     * @var \Yana\Db\Ddl\NoNameException
      */
-    public function __construct(\Yana\Db\Ddl\Database $schema)
+    protected $object;
+
+    /**
+     * Sets up the fixture, for example, opens a network connection.
+     * This method is called before a test is executed.
+     */
+    protected function setUp()
     {
-        parent::__construct($schema);
-        $this->_setConnection(new \Yana\Db\FileDb\NullDriver(new \Yana\Db\Queries\Parser($this)));
+        $this->object = new \Yana\Db\Ddl\NoNameException();
+    }
+
+    /**
+     * @test
+     */
+    public function testException()
+    {
+        $this->assertTrue($this->object instanceof \Yana\Db\Ddl\NoNameException);
     }
 
 }
-
-?>

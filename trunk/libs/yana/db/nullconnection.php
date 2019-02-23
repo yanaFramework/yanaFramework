@@ -47,7 +47,7 @@ class NullConnection extends \Yana\Core\Object implements \Yana\Db\IsConnection
      */
     public function __construct()
     {
-        $this->_schema = new \Yana\Db\Ddl\Database();
+        $this->_schema = new \Yana\Db\Ddl\Database('null');
     }
 
     /**

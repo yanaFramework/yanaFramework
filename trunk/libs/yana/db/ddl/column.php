@@ -167,9 +167,9 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      */
     public static function getSupportedTypes()
     {
-        return array('array','bool','color','date','enum','file','float','html','image','list',
-            'inet','integer','list','mail','password','range','reference','set','string','tel',
-            'text','time','timestamp','url');
+        return array('array', 'bool', 'color', 'date', 'enum', 'file', 'float', 'html', 'image', 'list',
+            'inet', 'integer', 'list', 'mail', 'password', 'range', 'reference', 'set', 'string', 'tel',
+            'text', 'time', 'timestamp', 'url');
     }
 
     /**
@@ -1202,20 +1202,19 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * @param   mixed   $value  new value of this property
      * @param   string  $dbms   target DBMS, defaults to "generic"
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when parameter is empty
      * @return  $this
      */
     public function setDefault($value = null, $dbms = "generic")
     {
-        $dbms = strtolower($dbms);
         assert('is_string($dbms); // Wrong type for argument 1. String expected');
         assert('in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS()); // Unsupported DBMS');
+
+        $lcDbms = strtolower($dbms);
         if (is_null($value)) {
-            unset($this->default[$dbms]);
-        } elseif (!empty($dbms)) {
-            $this->default[$dbms] = $value;
-        } else {
-            throw new \Yana\Core\Exceptions\InvalidArgumentException("Parameter with the name '\$dbms' can not be empty.");
+            unset($this->default[$lcDbms]);
+
+        } elseif ($lcDbms > "") {
+            $this->default[$lcDbms] = $value;
         }
         return $this;
     }
@@ -1263,14 +1262,15 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
     {
         assert('is_string($name); // Invalid argument $name: string expected');
         assert('is_string($dbms); // Invalid argument $dbms: string expected');
-        $dbms = strtolower($dbms);
+        $lcDbms = strtolower($dbms);
+        $lcName = mb_strtolower($name);
 
         foreach ((array) $this->constraints as $constraint)
         {
             /* @var $constraint \Yana\Db\Ddl\Constraint */
             assert($constraint instanceof \Yana\Db\Ddl\Constraint);
 
-            if ($constraint->getDBMS() === $dbms && $constraint->getName() === $name) {
+            if ($constraint->getDBMS() === $lcDbms && $constraint->getName() === $lcName) {
                 return $constraint;
             }
         }
@@ -1286,7 +1286,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * The syntax depends on the target DBMS. For type "generic" the feature is emulated using PHP
      * code.
      *
-     * BE WARNED: As always - do NOT use this function with any unchecked user input.
+     * BE WARNED: As always, do NOT use this function with any unchecked user input.
      *
      * Note that the name should be unique for each DBMS.
      * You may however have several constraints with the same name for different DBMS.
@@ -1299,17 +1299,20 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * @param   string  $constraint  Code
      * @param   string  $name        optional constraint-name
      * @param   string  $dbms        target DBMS, defaults to "generic"
+     * @return  \Yana\Db\Ddl\Constraint
      */
     public function addConstraint($constraint, $name = "", $dbms = "generic")
     {
         assert('is_string($constraint); // Wrong type for argument 1. String expected');
         assert('is_string($name); // Wrong type for argument 2. String expected');
         assert('is_string($dbms); // Wrong type for argument 3. String expected');
-        $dbms = strtolower($dbms);
+
         $object = new \Yana\Db\Ddl\Constraint($name);
-        $object->setDBMS($dbms);
+        $object->setDBMS(strtolower($dbms));
         $object->setConstraint($constraint);
         $this->constraints[] = $object;
+
+        return $object;
     }
 
     /**
@@ -1674,7 +1677,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
     /**
      * Get referenced target column for columns of type "reference".
      *
-     * @return  $this
+     * @return  \Yana\Db\Ddl\Column
      * @throws  \Yana\Core\Exceptions\NotFoundException  when the database definition is not found
      */
     public function getReferenceColumn()
@@ -1683,27 +1686,29 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
          * if (is foreign-key) then { get target column }
          */
         $refrenceColumn = $this;
-        if ($this->getType() === 'reference' && isset($this->parent)) {
+        if ($this->getType() === 'reference' && !is_null($this->getParent())) {
             $referenceSettings = $this->getReferenceSettings();
             $tableName = $referenceSettings->getTable();
             if (empty($tableName)) {
-                $tableName = $this->parent->getTableByForeignKey($this->name);
+                $tableName = $this->getParent()->getTableByForeignKey($this->getName());
                 $this->referenceTable = $tableName;
             }
             $columnName = $referenceSettings->getColumn();
             if (empty($columnName)) {
-                $columnName = $this->parent->getColumnByForeignKey($this->name);
+                $columnName = $this->getParent()->getColumnByForeignKey($this->getName())->getName();
                 $this->referenceColumn = $columnName;
             }
             try {
                 /* @var $column \Yana\Db\Ddl\Column */
-                $refrenceColumn = $this->getParent()->getParent()->{$tableName}->{$columnName};
+                $refrenceColumn = $this->getParent()->getParent()->getTable($tableName)->getColumn($columnName);
                 if ($refrenceColumn->getType() === 'reference') {
                     $refrenceColumn = $refrenceColumn->getReferenceColumn();
                 }
+                // @codeCoverageIgnoreStart
             } catch (\Exception $e) {
-                throw new \Yana\Core\Exceptions\NotFoundException("Database definition not found: " . $e->getMessage());
+                throw new \Yana\Core\Exceptions\NotFoundException($e->getMessage());
             }
+            // @codeCoverageIgnoreEnd
             unset($tableName, $columnName);
         }
         return $refrenceColumn;
@@ -1749,6 +1754,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
                 return (!empty($value));
 
             case 'date':
+            case 'time':
                 if (!is_string($value)) {
                     return null;
                 }
@@ -1759,20 +1765,6 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
                     return "";
                 }
                 return htmlspecialchars_decode($value);
-
-            case 'color':
-            case 'enum':
-            case 'inet':
-            case 'mail':
-            case 'password':
-            case 'string':
-            case 'tel':
-            case 'text':
-            case 'url':
-                if (!is_scalar($value)) {
-                    return "";
-                }
-                return "$value";
 
             case 'file':
             case 'image':
@@ -1788,7 +1780,9 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
                 if (!\is_file($filename)) {
                     return null;
                 }
+                // @codeCoverageIgnoreStart
                 return $filename;
+                // @codeCoverageIgnoreEnd
 
             case 'range':
             case 'float':
@@ -1802,7 +1796,6 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
                 if ($precision > 0) {
                     $value = round($value, $precision);
                 }
-                unset($precision);
                 /* apply unsigned */
                 if ($column->isUnsigned()) {
                     $value = abs($value);
@@ -1816,11 +1809,13 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
                     $length = $column->getLength();
                     // fixed length columns are always unsigned
                     $value = (string) abs($value);
-                    $digits = preg_replace('/(\d+)\.(\d+)/', '{$1}{$2}', $value, $number);
+                    $number = array();
+                    preg_match('/^(\d+)\.(\d+)$/s', $value, $number);
+                    $digits = $number[1] . $number[2];
                     if ($length > 0 && strlen($digits) < $length) {
                         $value = str_pad($number[1], $length - $precision, '0', STR_PAD_LEFT);
                         $value .= '.';
-                        $value = str_pad($number[2], $precision, '0', STR_PAD_RIGHT);
+                        $value .= str_pad($number[2], $precision, '0', STR_PAD_RIGHT);
                     }
                 }
                 return $value;
@@ -1849,12 +1844,6 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
                 }
                 return $value;
 
-            case 'time':
-                if (!is_string($value)) {
-                    return null;
-                }
-                return strtotime($value);
-
             case 'timestamp':
                 if (!is_numeric($value)) {
                     return null;
@@ -1862,10 +1851,11 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
                 return (int) $value;
 
             default:
-                \Yana\Log\LogManager::getLogger()->addLog("Unknown column type '{$column->getType()}'.");
-                return null;
+                if (!is_scalar($value)) {
+                    return "";
+                }
+                return "$value";
         }
-        throw null;
     }
 
     /**
@@ -1881,21 +1871,14 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * @param   \SimpleXMLElement $parentNode  parent node
      * @return  \SimpleXMLElement
+     * @throws  \Yana\Db\Ddl\NoTagNameException  when no type was given for this node
      */
     public function serializeToXDDL(\SimpleXMLElement $parentNode = null)
     {
         if ($this->xddlTag === 'file' || $this->xddlTag === 'image') {
-            if (isset($this->size)) {
-                $this->_maxsize = $this->size;
-            } else {
-                $this->_maxsize = null;
-            }
+            $this->_maxsize = isset($this->size) ? $this->size : null;
         } else {
-            if (isset($this->size)) {
-                $this->_length = $this->size;
-            } else {
-                $this->_length = null;
-            }
+            $this->_length = isset($this->size) ? $this->size : null;
         }
         // parent is given, but is not declaration tag
         if (!is_null($parentNode)) {
@@ -1914,10 +1897,12 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
             unset($name);
         }
         $node = parent::serializeToXDDL($parentNode);
+        assert($node instanceof \SimpleXMLElement);
         // add enumeration items if there are any
         if (!empty($this->enumerationItems)) {
             self::_serializeOptions($node, $this->enumerationItems);
         }
+        assert($node instanceof \SimpleXMLElement);
         return $node;
     }
 
@@ -1954,6 +1939,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed              $parent  parent node (if any)
      * @return  \Yana\Db\Ddl\Table
+     * @throws  \Yana\Db\Ddl\NoNameException  when the given tag doesn't have a mandatory name attribute
      */
     public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)
     {
@@ -1961,7 +1947,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
         if ($node->getName() !== 'declaration') {
             $attributes = $node->attributes();
             if (!isset($attributes['name'])) {
-                throw new \Yana\Core\Exceptions\InvalidArgumentException("Missing name attribute.", \Yana\Log\TypeEnumeration::WARNING);
+                throw new \Yana\Db\Ddl\NoNameException("Missing name attribute.", \Yana\Log\TypeEnumeration::WARNING);
             }
             $ddl = new self((string) $attributes['name'], $parent);
             $ddl->_unserializeFromXDDL($node);
@@ -1979,6 +1965,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
             } elseif (isset($ddl->_length)) {
                 $ddl->size = $ddl->_length;
             }
+            $ddl->enumerationItems = self::_unserializeOptions($node);
             return $ddl;
 
         // unserialize list of columns
@@ -1986,9 +1973,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
             $columns = array();
             foreach ($node->children() as $child)
             {
-                $column = self::unserializeFromXDDL($child, $parent);
-                $column->enumerationItems = self::_unserializeOptions($child);
-                $columns[] = $column;
+                $columns[] = self::unserializeFromXDDL($child, $parent);
             }
             unset($child);
             return $columns;

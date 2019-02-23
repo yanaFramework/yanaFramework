@@ -138,12 +138,13 @@ abstract class DDL extends \Yana\Core\Object
      *
      * @param   \SimpleXMLElement $parentNode  parent node
      * @return  \SimpleXMLElement
+     * @throws  \Yana\Db\Ddl\NoTagNameException  when no tag name was given for this node
      */
     public function serializeToXDDL(\SimpleXMLElement $parentNode = null)
     {
-        // is not serializable - need tag name!
         if (empty($this->xddlTag)) {
-            return "";
+            $message = "This node cannot be serialized to XDDL format because no tag name was given.";
+            throw new \Yana\Db\Ddl\NoTagNameException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
 
         $xddl = null;
@@ -172,6 +173,7 @@ abstract class DDL extends \Yana\Core\Object
         if (!empty($this->xddlTags)) {
             $this->_serializeChildren($xddl);
         }
+        assert($xddl instanceof \SimpleXMLElement);
         return $xddl;
     }
 

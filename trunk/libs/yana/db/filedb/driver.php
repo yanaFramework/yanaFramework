@@ -33,8 +33,6 @@ namespace Yana\Db\FileDb;
  * FileDb-Driver.
  *
  * Mapper for sql statements to SML-file commands.
- * It implements only a required subset of the interface
- * of PEAR MDB2 as needed by the DbStream class.
  *
  * @package     yana
  * @subpackage  db
@@ -69,10 +67,9 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
     /**
      * constructor
      *
-     * @param  \Yana\Db\Ddl\Database      $schema  database schema
      * @param  \Yana\Db\Queries\IsParser  $parser  to handle SQL statements
      */
-    public function __construct(\Yana\Db\Ddl\Database $schema, \Yana\Db\Queries\IsParser $parser)
+    public function __construct(\Yana\Db\Queries\IsParser $parser)
     {
         if (!isset(self::$_baseDir)) {
             // if no directory given load default directory from config
@@ -80,8 +77,8 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
         }
         $this->_setSqlParser($parser);
 
-        $this->_setSchema($schema);
-        $databaseName = $schema->getName();
+        $this->_setSchema($parser->getSchema());
+        $databaseName = $this->_getSchema()->getName();
         assert('$databaseName > ""; // database name must not be empty');
         $this->_setDatabaseName($databaseName);
 

@@ -37,6 +37,13 @@ interface IsParser
 {
 
     /**
+     * Get database schema.
+     *
+     * @return  \Yana\Db\Ddl\Database
+     */
+    public function getSchema();
+
+    /**
      * Parse SQL query into query object.
      *
      * @param   string     $sqlStmt   SQL statement
