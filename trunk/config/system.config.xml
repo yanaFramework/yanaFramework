@@ -138,7 +138,6 @@
         -->
         <outputfilter>\Yana\Views\Helpers\OutputFilters\RssFilter</outputfilter>
         <outputfilter>\Yana\Views\Helpers\OutputFilters\CssFilter</outputfilter>
-        <outputfilter>\Yana\Views\Helpers\OutputFilters\MicrosummaryFilter</outputfilter>
         <outputfilter>\Yana\Views\Helpers\OutputFilters\JsFilter</outputfilter>
         <outputfilter>\Yana\Views\Helpers\OutputFilters\LanguageTokenFilter</outputfilter>
         <!--
