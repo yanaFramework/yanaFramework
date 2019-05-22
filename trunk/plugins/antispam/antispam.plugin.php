@@ -63,6 +63,7 @@ class AntiSpamPlugin extends \Yana\Plugins\AbstractPlugin
          */
         $settings = $yana->getVar('PROFILE.SPAM');
         $permission = $yana->getVar('PERMISSION');
+        $yana->setVar('PROFILE.SPAM.AVAILABLE', true);
 
         /**
          * Register ouput filter if option has been activated
@@ -78,7 +79,7 @@ class AntiSpamPlugin extends \Yana\Plugins\AbstractPlugin
              * behaviour for both versions.
              */
             $smarty = $yana->getView()->getSmarty();
-            $smarty->registerFilter(Smarty::FILTER_OUTPUT, array(__CLASS__, '_outputFilter'));
+            $smarty->registerFilter(\Smarty::FILTER_OUTPUT, array($this, '_outputFilter'));
         }
 
         /**
@@ -317,24 +318,21 @@ class AntiSpamPlugin extends \Yana\Plugins\AbstractPlugin
     /**
      * <<smarty outputfilter>> outputfilter
      *
-     * @access  public
-     * @static
      * @param   string  $source  source
      * @return  string
-     *
      * @ignore
      */
-    public static function _outputFilter($source)
+    public function _outputFilter($source)
     {
         $YANA = $this->_getApplication();
         /* Create form id */
         if ($YANA->getVar('DISABLE_FORM_ID') !== true) {
-            $yana_form_id = uniqid();
+            $yanaFormId = uniqid();
             if (strpos($source, "</form>") !== false) {
                 /* insert form id */
                 $source   = str_replace("</form>", "<span class=\"yana_button\"><input type=\"text\"".
-                        "name=\"yana_form_id\" value=\"$yana_form_id\" /></span>\n</form>", $source);
-                $_SESSION['yana_form_id'] = $yana_form_id;
+                        "name=\"yana_form_id\" value=\"$yanaFormId\" /></span>\n</form>", $source);
+                $_SESSION['yana_form_id'] = $yanaFormId;
                 $YANA->setVar('DISABLE_FORM_ID', true);
             }
         }
@@ -358,10 +356,9 @@ class AntiSpamPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function security_get_image($security_image_index)
     {
-        $YANA = $this->_getApplication();
-        $imagesrc = __DIR__ . "captchas/security_image" . rand(0, 9) . ".png";
+        $imagesrc = __DIR__ . "/captchas/security_image" . rand(0, 9) . ".png";
         /* @var $file \Yana\Files\Dat */
-        $file = $YANA->getPlugins()->default_library->getResource('antispam:/security.dat');
+        $file = $this->_getPluginsFacade()->getFileObjectFromVirtualDrive('antispam:/security.dat');
         $contents = array();
 
         if (!$file->exists()) {
@@ -457,14 +454,12 @@ class AntiSpamPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function security_check_image($security_image_index, $security_image)
     {
-        $YANA = $this->_getApplication();
-
-        $permission = $YANA->getVar("PERMISSION");
+        $permission = $this->_getApplication()->getVar("PERMISSION");
         if (is_int($permission) && $permission > 0) {
             return true;
         }
 
-        $file = $YANA->getPlugins()->default_library->getResource('antispam:/security.dat');
+        $file = $this->_getPluginsFacade()->getFileObjectFromVirtualDrive('antispam:/security.dat');
         $file->read();
 
         $contents = array();
