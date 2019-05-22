@@ -53,10 +53,11 @@
 }
 #index_header_center
 {
-    display: block;
+    display: flex;
     background-position: top left;
     padding-top: 10px;
     height: 75px;
+    justify-content: space-between;
 }
 #index_header_center.index_default_logo
 {
@@ -96,42 +97,6 @@ a#index_title:hover
     text-decoration: none;
     background: none;
     color: inherit;
-}
-#index_header_appbar,
-#index_header_appbar a
-{
-    display: inline-block;
-    line-height: 50px;
-    height: 50px;
-    /* work-around for IE7 inline-block-bug */
-    zoom: 1;
-    *display: inline;
-}
-#index_header_appbar .applicationBar img
-{
-    opacity: 0.6;
-    width: 40px;
-    height: 40px;
-    margin-top: 10px;
-    /* work-around for IE8 opacity-bug */
-    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=60)";
-}
-#index_header_appbar .applicationBar:hover img
-{
-    padding-left: 7px;
-    padding-right: 7px;
-    width: 50px;
-    height: 50px;
-    margin-top: 0px;
-    opacity: 1.0;
-    /* work-around for IE8 opacity-bug */
-    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
-}
-#index_header_appbar .applicationBar:hover + a img
-{
-    width: 45px;
-    height: 45px;
-    margin-top: 5px;
 }
 #index_language, #index_language a
 {

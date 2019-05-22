@@ -242,9 +242,3 @@ a.embtag_tag_hide:hover, .embtag_tag_hide a:hover, .embtag_tag_hide:hover
     background: #A3C0D7 url("menu_bgd.gif") repeat-y top left;
     border: 1px solid #ace;
 }
-.applicationBar img
-{
-    border-style: none;
-    padding-left: 1px;
-    padding-right: 1px;
-}

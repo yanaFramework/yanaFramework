@@ -1,0 +1,36 @@
+#index_header_appbar .applicationBar img
+{
+    margin: 0;
+    padding: 0;
+    opacity: 0.6;
+    width: 40px;
+    height: 40px;
+    margin: auto;
+    -webkit-transition: width .5s, height .5s, opacity .5s; /* For Safari 3.1 to 6.0 */
+    transition: width .5s, height .5s, opacity .5s;
+}
+
+#index_header_appbar .applicationBar img:hover
+{
+    opacity: 1;
+    width: 50px;
+    height: 50px;
+}
+
+#index_header_appbar .applicationBar
+{
+    height: 50px;
+    width: 56px;
+    display: table-cell;
+    vertical-align: top;
+}
+#index_header_appbar .applicationBar:hover + a img
+{
+    width: 45px;
+    height: 45px;
+}
+#index_header_appbar .applicationBar:hover + a + a img
+{
+    width: 42px;
+    height: 42px;
+}
