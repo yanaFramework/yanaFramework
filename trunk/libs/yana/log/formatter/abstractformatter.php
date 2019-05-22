@@ -260,12 +260,14 @@ abstract class AbstractFormatter extends \Yana\Core\Object implements \Yana\Log\
                     $backtrace[$i] .= $temp['function'];
                     $backtrace[$i] .= '(';
                     if (isset($temp['args']) && is_array($temp['args'])) {
-                        for ($j = 0; $j < count($temp['args']); $j++)
+                        $j = 0;
+                        foreach ($temp['args'] as $tempArg)
                         {
                             if ($j > 0) {
                                 $backtrace[$i] .= ', ';
                             }
-                            $backtrace[$i] .= gettype($temp['args'][$j]);
+                            $backtrace[$i] .= gettype($tempArg);
+                            $j++;
                         }
                         unset($j);
                     }
