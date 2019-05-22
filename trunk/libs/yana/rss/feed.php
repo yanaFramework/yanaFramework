@@ -164,7 +164,6 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
         $language = \Yana\Translations\Facade::getInstance();
         $this->_title = (string) $language->getVar('program_title');
         $this->_language = (string) $language->getLocale();
-        $this->_link = \Yana\Http\Uris\CanonicalUrlBuilder::buildFromSuperGlobals();
     }
 
     /**
@@ -180,8 +179,8 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
     /**
      * Set the name/title of the channel.
      *
-     * @param  string  $title  e.g. title of the website the channel refers to
-     * @return Feed
+     * @param   string  $title  e.g. title of the website the channel refers to
+     * @return  $this
      */
     public function setTitle($title)
     {
@@ -204,8 +203,8 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
     /**
      * Set URL for link to the channel's website.
      *
-     * @param  string  $link  link that points to the originating website of the feed
-     * @return Feed
+     * @param   string  $link  link that points to the originating website of the feed
+     * @return  $this
      */
     public function setLink($link)
     {
@@ -228,8 +227,8 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
     /**
      * Set a channel description.
      *
-     * @param  string  $description  a text to describe context and purpose of this channel
-     * @return \Yana\RSS\Feed
+     * @param   string  $description  a text to describe context and purpose of this channel
+     * @return  $this
      */
     public function setDescription($description)
     {
@@ -261,7 +260,7 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      * This settings is auto-detected from the currently used locale. Only change it if needed.
      *
      * @param   string  $language  valid language/locale string, e.g. en, en-US
-     * @return  \Yana\RSS\Feed
+     * @return  $this
      * @see     \Yana\Translations\Facade
      */
     public function setLanguage($language)
@@ -288,8 +287,8 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      *
      * Use this if you wish or need to set up copyright information on the channel.
      *
-     * @param  string  $copyright  an URL or other reference to a license text
-     * @return Feed
+     * @param   string  $copyright  an URL or other reference to a license text
+     * @return  $this
      */
     public function setCopyright($copyright)
     {
@@ -321,8 +320,8 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      *
      * The webmaster and the managing editor may be the same person in practice, in wich case you should name it twice.
      *
-     * @param  string  $managingEditor  valid e-mail address
-     * @return Feed
+     * @param   string  $managingEditor  valid e-mail address
+     * @return  $this
      */
     public function setManagingEditor($managingEditor)
     {
@@ -353,8 +352,8 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      *
      * The webmaster and the managing editor may be the same person in practice, in wich case you should name it twice.
      *
-     * @param  string  $webMaster  valid e-mail address
-     * @return Feed
+     * @param   string  $webMaster  valid e-mail address
+     * @return  $this
      */
     public function setWebMaster($webMaster)
     {
@@ -382,8 +381,8 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      *
      * Indicates how long a channel can be cached before refreshing from the source.
      *
-     * @param  int  $ttl  number of minutes, must be >= 0
-     * @return Feed
+     * @param   int  $ttl  number of minutes, must be >= 0
+     * @return  $this
      */
     public function setTimeToLive($ttl)
     {
@@ -409,8 +408,8 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      *
      * URL to *.jpg, *.gif, or *.png image to display with the feed, e.g. a website logo.
      *
-     * @param  string  $image  must be a valid URL.
-     * @return Feed
+     * @param   string  $image  must be a valid URL.
+     * @return  $this
      */
     public function setImage($image)
     {
@@ -441,8 +440,8 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      * It identifies a key-word or name, to aggregate channels of similar types.
      * E.g. "private", "news" aso.
      *
-     * @param  array  $category  list of strings
-     * @return Feed
+     * @param   array  $category  list of strings
+     * @return  $this
      */
     public function setCategory(array $category)
     {
@@ -465,8 +464,8 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      *
      * You may set an URL to either a CSS or XSLT file that the browser can use to render the RSS-file.
      *
-     * @param  string  $css  must be a valid URL
-     * @return Feed
+     * @param   string  $css  must be a valid URL
+     * @return  $this
      */
     public function setCss($css)
     {
@@ -492,8 +491,8 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      *
      * You may set an URL to either a CSS or XSLT file that the browser can use to render the RSS-file.
      *
-     * @param  string  $xslt  must be a valid URL
-     * @return Feed
+     * @param   string  $xslt  must be a valid URL
+     * @return  $this
      */
     public function setXslt($xslt)
     {
@@ -508,8 +507,8 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      *
      * Note: this function does not check for duplicate guid's.
      *
-     * @param   \Yana\RSS\Item  $item  new RSSitem
-     * @return  Feed
+     * @param   \Yana\RSS\Item  $item  new RSS item
+     * @return  $this
      */
     public function addItem(Item $item)
     {
@@ -535,8 +534,7 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      */
     public function __toString()
     {
-        $xmlString = $this->toSimpleXml()->asXML();
-        $xmlString = preg_replace('/<\?xml.*?\?>/', '', $xmlString);
+        $xmlString = preg_replace('/<\?xml.*?\?>/', '', $this->toSimpleXml()->asXML());
         $string = '<?xml version="1.0"?>' . "\n";
         if ($this->getXslt()) {
             $string .= '<?xml-stylesheet type="text/xsl" href="' . $this->getXslt() . '" version="1.0"?>' . "\n";
@@ -561,7 +559,11 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
         $channel->addChild('docs', 'http://blogs.law.harvard.edu/tech/rss');
         // The following fields are mandatory, as stated at http://blogs.law.harvard.edu/tech/rss
         $channel->addChild('title', $this->getTitle());
-        $channel->addChild('link', $this->getLink());
+        if ($this->getLink() > "") {
+            $channel->addChild('link', $this->getLink());
+        } else {
+            $channel->addChild('link', \Yana\Http\Uris\CanonicalUrlBuilder::buildFromSuperGlobals()->__invoke());
+        }
         $channel->addChild('description', $this->getDescription());
         // The following fields are optional
         $channel->addChild('language', $this->getLanguage());

@@ -47,7 +47,7 @@ interface IsFeed
      * Set the name/title of the channel.
      *
      * @param   string  $title  e.g. title of the website the channel refers to
-     * @return  \Yana\RSS\IsFeed
+     * @return  $this
      */
     public function setTitle($title);
 
@@ -62,7 +62,7 @@ interface IsFeed
      * Set URL for link to the channel's website.
      *
      * @param   string  $link  link that points to the originating website of the feed
-     * @return  \Yana\RSS\IsFeed
+     * @return  $this
      */
     public function setLink($link);
 
@@ -76,8 +76,8 @@ interface IsFeed
     /**
      * Set a channel description.
      *
-     * @param  string  $description  a text to describe context and purpose of this channel
-     * @return \Yana\RSS\Feed
+     * @param   string  $description  a text to describe context and purpose of this channel
+     * @return  $this
      */
     public function setDescription($description);
 
@@ -100,7 +100,7 @@ interface IsFeed
      * This settings is auto-detected from the currently used locale. Only change it if needed.
      *
      * @param   string  $language  valid language/locale string, e.g. en, en-US
-     * @return  \Yana\RSS\IsFeed
+     * @return  $this
      * @see     \Yana\Translations\Facade
      */
     public function setLanguage($language);
@@ -118,7 +118,7 @@ interface IsFeed
      * Use this if you wish or need to set up copyright information on the channel.
      *
      * @param   string  $copyright  an URL or other reference to a license text
-     * @return  \Yana\RSS\IsFeed
+     * @return  $this
      */
     public function setCopyright($copyright);
 
@@ -142,7 +142,7 @@ interface IsFeed
      * The webmaster and the managing editor may be the same person in practice, in wich case you should name it twice.
      *
      * @param   string  $managingEditor  valid e-mail address
-     * @return  \Yana\RSS\IsFeed
+     * @return  $this
      */
     public function setManagingEditor($managingEditor);
 
@@ -165,7 +165,7 @@ interface IsFeed
      * The webmaster and the managing editor may be the same person in practice, in wich case you should name it twice.
      *
      * @param   string  $webMaster  valid e-mail address
-     * @return  \Yana\RSS\IsFeed
+     * @return  $this
      */
     public function setWebMaster($webMaster);
 
@@ -185,7 +185,7 @@ interface IsFeed
      * Indicates how long a channel can be cached before refreshing from the source.
      *
      * @param   int  $ttl  number of minutes, must be >= 0
-     * @return  \Yana\RSS\IsFeed
+     * @return  $this
      */
     public function setTimeToLive($ttl);
 
@@ -202,7 +202,7 @@ interface IsFeed
      * URL to *.jpg, *.gif, or *.png image to display with the feed, e.g. a website logo.
      *
      * @param   string  $image  must be a valid URL.
-     * @return  \Yana\RSS\IsFeed
+     * @return  $this
      */
     public function setImage($image);
 
@@ -225,7 +225,7 @@ interface IsFeed
      * E.g. "private", "news" aso.
      *
      * @param   array  $category  list of strings
-     * @return  \Yana\RSS\IsFeed
+     * @return  $this
      */
     public function setCategory(array $category);
 
@@ -242,7 +242,7 @@ interface IsFeed
      * You may set an URL to either a CSS or XSLT file that the browser can use to render the RSS-file.
      *
      * @param   string  $css  must be a valid URL
-     * @return  \Yana\RSS\IsFeed
+     * @return  $this
      */
     public function setCss($css);
 
@@ -259,7 +259,7 @@ interface IsFeed
      * You may set an URL to either a CSS or XSLT file that the browser can use to render the RSS-file.
      *
      * @param   string  $xslt  must be a valid URL
-     * @return  \Yana\RSS\IsFeed
+     * @return  $this
      */
     public function setXslt($xslt);
 
@@ -269,7 +269,7 @@ interface IsFeed
      * Note: this function does not check for duplicate guid's.
      *
      * @param   \Yana\RSS\Item  $item  new RSSitem
-     * @return  \Yana\RSS\IsFeed
+     * @return  $this
      */
     public function addItem(Item $item);
 
