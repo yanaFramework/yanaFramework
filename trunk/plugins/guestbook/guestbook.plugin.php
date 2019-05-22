@@ -298,10 +298,9 @@ class GuestbookPlugin extends \Yana\Plugins\AbstractPlugin
         assert('is_array($rows); /* unexpected result: $rows */');
 
         /* create RSS feed */
-        $rss = new \Yana\RSS\Feed();
-        $rss->description = $YANA->getLanguage()->getVar('RSS_DESCRIPTION');
-        if (empty($rss->description)) {
-            $rss->description = 'the 10 most recent guestbook entries';
+        $rss = new \Yana\RSS\Feed($YANA->getLanguage()->getVar('RSS_DESCRIPTION'));
+        if ($rss->getDescription() == "") {
+            $rss->setDescription('the 10 most recent guestbook entries');
         }
         $urlFormatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
         $textFormatter = new \Yana\Views\Helpers\Formatters\TextFormatterCollection();
@@ -310,7 +309,7 @@ class GuestbookPlugin extends \Yana\Plugins\AbstractPlugin
             $item = new \Yana\RSS\Item($row['GUESTBOOK_NAME']);
             // process link
             $id = $row['GUESTBOOK_ID'];
-            $link = $urlFormatter('action=guestbook_read&target=' . $id, true);
+            $link = $urlFormatter->__invoke('action=guestbook_read&target=' . $id, true);
             /**
              * {@internal
              * Note: guid is ignored by some aggregators and link is used instead
@@ -439,7 +438,6 @@ class GuestbookPlugin extends \Yana\Plugins\AbstractPlugin
             $template = $YANA->getView()->createContentTemplate($templateFile->getPath());
             $this->_sendMail($template, $entry);
         }
-        $this->_getMicrosummary()->setText(__CLASS__, 'Guestbook, update ' . date('d M y G:s', time()));
     }
 
     /**
@@ -500,7 +498,6 @@ class GuestbookPlugin extends \Yana\Plugins\AbstractPlugin
         $YANA = $this->_getApplication();
         $this->_securityCheck(); // throws \Yana\Core\Exceptions\Files\NotFoundException
 
-        $this->_getMicrosummary()->publishSummary(__CLASS__);
         \Yana\RSS\Publisher::publishFeed('guestbook_read_rss');
 
         /* get entries */

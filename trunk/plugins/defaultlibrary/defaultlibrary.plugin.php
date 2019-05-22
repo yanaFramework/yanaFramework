@@ -241,67 +241,6 @@ class DefaultLibraryPlugin extends \Yana\Plugins\AbstractPlugin
     }
 
     /**
-     * Create a microsummary for a page.
-     *
-     * Note: this function terminates program execution.
-     *
-     * Semantic description:
-     *
-     * "Microsummaries" are a Firefox 2.0 feature that allows users
-     * to create dynamic bookmark titles that automatically updates
-     * when the content of the bookmarked page changes.
-     *
-     * Have a look at what microsummaries can be:
-     * <ul>
-     *   <li> the numbers of downloads of a file on a download site </li>
-     *   <li> the latest news on a news page </li>
-     *   <li> current number of unread e-mail in the inbox of a webmail service </li>
-     *   <li> current total of donations to a project </li>
-     *   <li> the date of latest updates on a database </li>
-     *   <li> the latest submission to a guestbook or forum </li>
-     *   <li> the number of visitors currently online in a chat room </li>
-     *   <li> the latest stock values aso. </li>
-     * </ul>
-     *
-     * Examples of usage:
-     * <ol>
-     *  <li> Setting a microsummary from a plugin:
-     *       <code>\Yana\Util\Microsummary::setText($id, 'Summary text');</code>
-     *  </li>
-     *  <li> Retrieving a microsummary in a plugin:
-     *       <code>$microsummary = \Yana\Util\Microsummary::getText($id);</code>
-     *  </li>
-     *  <li> To indicate that a microsummary exists for your plugin
-     *       add this as the last line in your plugin constructor
-     *       <code>\Yana\Util\Microsummary::publishSummary($id);</code>
-     *  </li>
-     *  <li> Calling a microsummary from a browser:
-     *       <code>index.php?action=get_microsummary&target=guestbook</code>
-     *       (where 'guestbook' is the name of the plugin)
-     *  </li>
-     * </ol>
-     * Note: you may want to use the name of your plugin as value for $id.
-     *
-     * @type        read
-     * @template    null
-     *
-     * @access      public
-     * @param       string  $target  identifies summary to get
-     */
-    public function get_microsummary($target)
-    {
-        if (empty($target)) {
-            exit('Error: illegal request');
-        }
-        $microsummary = $this->_getMicrosummary()->getText($target);
-        if (empty($microsummary)) {
-            exit('No summary available');
-        }
-        print $microsummary;
-        exit(0);
-    }
-
-    /**
      * Show color-picker.
      *
      * @type        primary

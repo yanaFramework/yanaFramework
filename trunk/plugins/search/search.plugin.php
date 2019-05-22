@@ -62,7 +62,6 @@ class SearchPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function search_stats()
     {
-        $this->_getMicrosummary()->publishSummary(__CLASS__);
         $numbers = $this->_connectToDatabase('search')->select('searchstats');
         if (!empty($numbers)) {
             uasort($numbers, array($this, "_sortStatistics"));
@@ -115,15 +114,7 @@ class SearchPlugin extends \Yana\Plugins\AbstractPlugin
                 $counterInfo = $temp[$i];
                 $statistics = (array) $db->select("searchstats.$counterId");
                 $statistics['SEARCHTERM'] = $counterInfo;
-                $counterValue = @$statistics['SEARCHCOUNT']++;
-                /* update Microsummary */
-                assert('!isset($mostWanted);');
-                $mostWanted = $db->select("searchstats", array(), 'searchcount', 0, 1, true);
-                if ($mostWanted <= $counterValue) {
-                    $this->_getMicrosummary()->setText(__CLASS__,
-                        'Search most wanted: '.$counterInfo.'('.$counterValue.')');
-                }
-                unset($mostWanted);
+                $statistics['SEARCHCOUNT'] = (isset($statistics['SEARCHCOUNT']) ? $statistics['SEARCHCOUNT'] : 0) + 1;
                 // Update search statistics
                 try {
                     $db->insertOrUpdate("searchstats.{$counterId}", $statistics);
@@ -135,7 +126,7 @@ class SearchPlugin extends \Yana\Plugins\AbstractPlugin
                     \Yana\Log\LogManager::getLogger()->addLog($message, $level);
                     unset($e, $message, $level);
                 }
-                unset($counterId, $counterInfo, $counterValue, $statistics);
+                unset($counterId, $counterInfo, $statistics);
             } // end for
             unset($temp, $db);
 
