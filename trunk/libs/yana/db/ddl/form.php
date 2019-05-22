@@ -684,6 +684,19 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
     }
 
     /**
+     * Get list of field names.
+     *
+     * Returns the unique names of the fields.
+     * If no field has been defined, the returned array will be empty.
+     *
+     * @return  array
+     */
+    public function getFieldNames()
+    {
+        return \array_keys($this->fields);
+    }
+
+    /**
      * Add field by name.
      *
      * Adds a field element by the given name and returns it.

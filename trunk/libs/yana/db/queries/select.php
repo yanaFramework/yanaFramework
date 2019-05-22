@@ -798,27 +798,15 @@ class Select extends \Yana\Db\Queries\SelectCount
     }
 
     /**
-     * get the number of entries
+     * Get the number of entries.
      *
-     * This sends the query statement to the database and returns the results.
-     * The return type depends on the query settings, see {@see DbQuery::getExpectedResult()}.
+     * This sends the query statement to the database and returns how many rows the result set would have.
      *
      * @return  int
      */
     public function countResults()
     {
-        switch ($this->expectedResult)
-        {
-            case \Yana\Db\ResultEnumeration::ROW:
-            case \Yana\Db\ResultEnumeration::CELL:
-                return (int) $this->doesExist();
-
-            case \Yana\Db\ResultEnumeration::TABLE:
-                return count($this->getResults());
-
-            default:
-                return 0;
-        }
+        return $this->sendQuery()->countRows();
     }
 
     /**

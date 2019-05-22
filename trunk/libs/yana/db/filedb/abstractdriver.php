@@ -161,6 +161,7 @@ abstract class AbstractDriver extends \Yana\Core\Object implements \Yana\Db\IsDr
      * Returns bool(true) if all queries should be committed automatically.
      *
      * @return  bool
+     * @codeCoverageIgnore
      */
     protected function _isAutoCommit()
     {

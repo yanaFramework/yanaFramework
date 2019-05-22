@@ -248,6 +248,7 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery
     {
         try {
             $result = $this->sendQuery();
+
         } catch (\Yana\Db\Queries\Exceptions\QueryException $e) {
             return false;
         }

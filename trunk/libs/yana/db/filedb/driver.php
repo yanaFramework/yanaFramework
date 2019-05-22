@@ -126,6 +126,17 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
     }
 
     /**
+     * Get directory where database files are to be stored.
+     *
+     * @return  string
+     * @ignore
+     */
+    public static function getBaseDirectory()
+    {
+        return self::$_baseDir;
+    }
+
+    /**
      * begin transaction
      *
      * This deactives auto-commit, so the following statements will wait for commit or rollback.
@@ -158,7 +169,8 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
      */
     public function commit()
     {
-        return $this->_write(true);
+        $this->_write(true);
+        return true;
     }
 
     /**
@@ -984,7 +996,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
      */
     public function quoteIdentifier($value)
     {
-        assert('is_string($value); // Invalid argument 1 in ' . __METHOD__ . '(). String expected.');
+        assert('is_string($value); // Wrong type for argument 1. String expected');
         return (string) $value;
     }
 
@@ -1378,6 +1390,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
      * @param   bool  $commit on / off
      * @return  \Yana\Db\FileDb\Result
      * @throws  \Yana\Db\DatabaseException  when changes have not been saved
+     * @codeCoverageIgnore
      */
     protected function _write($commit = false)
     {

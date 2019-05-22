@@ -164,6 +164,19 @@ class SelectCount extends \Yana\Db\Queries\SelectExist
     }
 
     /**
+     * Returns bool(true) if the result set is not empty.
+     *
+     * This sends the query statement to the database and returns bool(true)
+     * if the requested database object exists and bool(false) otherwise.
+     *
+     * @return  bool
+     */
+    public function doesExist()
+    {
+        return $this->countResults() > 0;
+    }
+
+    /**
      * Get the number of entries.
      *
      * This sends the query statement to the database and returns the results.
@@ -180,7 +193,7 @@ class SelectCount extends \Yana\Db\Queries\SelectExist
         } catch (\Yana\Db\Queries\Exceptions\QueryException $e) {
 
             $message = "Statement '$this' on database failed: " . \get_class($e) . ' ' . $e->getMessage();
-            \Yana\Log\LogManager::getLogger()->addLog($message, E_USER_WARNING, $e);
+            \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING, $e);
             return 0;
         }
 
