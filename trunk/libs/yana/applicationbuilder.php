@@ -321,6 +321,7 @@ class ApplicationBuilder extends \Yana\Core\Object
         \Yana\Log\LogManager::setLoggers(new \Yana\Log\LoggerCollection()); // reset
         \Yana\Log\LogManager::attachLogger($this->_getErrorLogger()); // add default logger
         \Yana\Core\Exceptions\AbstractException::setDependencyContainer($dependencyContainer);
+        $this->_setBaseUrl($dependencyContainer);
         return $dependencyContainer;
     }
 
@@ -351,6 +352,20 @@ class ApplicationBuilder extends \Yana\Core\Object
         }
 
         return $configuration;
+    }
+
+    /**
+     * Returns the prefix for the generated URL.
+     *
+     * @return string
+     */
+    private function _setBaseUrl(\Yana\Core\Dependencies\Container $container)
+    {
+        $baseUrl = $container->getUrlBuilder()->getPhpSelf() . "?id=" . $container->getProfileId();
+        if (empty($_COOKIE) && @session_id() != "") {
+            $baseUrl .= "&" . session_name() . "=" . session_id();
+        }
+        \Yana\Views\Helpers\Formatters\UrlFormatter::setBaseUrl($baseUrl);
     }
 
 }
