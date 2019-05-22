@@ -197,8 +197,8 @@ class ContextTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetColumnNames()
     {
-        $columnNames = array('a', 'B', 'Ä');
-        $this->assertEquals($columnNames, $this->object->setColumnNames($columnNames)->getColumnNames());
+        $columnNames = array('a', 'B', 'ä');
+        $this->assertEquals(array('A', 'B', 'Ä'), $this->object->setColumnNames($columnNames)->getColumnNames());
     }
 
     /**
@@ -233,6 +233,34 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     {
         $test = "ä\n'<\"Äß#.";
         $this->assertEquals($test, $this->object->setHeader($test)->getHeader());
+    }
+
+    /**
+     * @test
+     */
+    public function testAddColumnName()
+    {
+        $this->assertSame(array('Ä', 'B'), $this->object->addColumnName('ä')->addColumnName('b')->getColumnNames());
+    }
+
+    /**
+     * @test
+     */
+    public function testHasColumnNames()
+    {
+        $this->assertFalse($this->object->hasColumnNames());
+        $this->assertTrue($this->object->addColumnName('test')->hasColumnNames());
+    }
+
+    /**
+     * @test
+     */
+    public function testHasColumnName()
+    {
+        $this->assertFalse($this->object->addColumnName('Ä')->hasColumnName('b'));
+        $this->assertTrue($this->object->addColumnName('b')->hasColumnName('B'));
+        $this->assertTrue($this->object->hasColumnName('b'));
+        $this->assertTrue($this->object->hasColumnName('ä'));
     }
 
 }

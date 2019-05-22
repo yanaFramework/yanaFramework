@@ -388,13 +388,61 @@ class HashtableTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     */
+    public function testToXMLWithNull()
+    {
+        $this->assertSame("", \Yana\Util\Hashtable::toXML(null));
+    }
+
+    /**
+     * @test
+     */
+    public function testToXMLUpperCase()
+    {
+        $array = array(
+            'a' => 1,
+            'B' => array(
+                'b',
+                'c'
+            ),
+            'cD' => 4
+        );
+        $encoding = iconv_get_encoding("internal_encoding");
+        $expected = '<?xml version="1.0" encoding="' . $encoding . '"?><array id="XML"><integer id="A">1</integer>' .
+            '<array id="B"><string id="0">b</string><string id="1">c</string></array><integer id="CD">4</integer></array>';
+        $xml = Hashtable::toXML($array, 'xml', CASE_UPPER);
+        $this->assertSame($expected, \preg_replace('/[\r\f\n\t]/s', '', $xml));
+    }
+
+    /**
+     * @test
+     */
+    public function testToXMLLowerCase()
+    {
+        $array = array(
+            'a' => 1,
+            'B' => array(
+                'b',
+                'c'
+            ),
+            'cD' => 4
+        );
+        $encoding = iconv_get_encoding("internal_encoding");
+        $expected = '<?xml version="1.0" encoding="' . $encoding . '"?><array id="xml"><integer id="a">1</integer>' .
+            '<array id="b"><string id="0">b</string><string id="1">c</string></array><integer id="cd">4</integer></array>';
+        $xml = Hashtable::toXML($array, 'xml', CASE_LOWER);
+        $this->assertSame($expected, \preg_replace('/[\r\f\n\t]/s', '', $xml));
+    }
+
+    /**
      * Array to XML conversion
      *
      * Calls function Hashtable::toXML().
      *
      * @test
      */
-    public function testArrayToXML()
+    public function testToXML()
     {
         // read file and write to an array
         $array = array(
@@ -420,44 +468,92 @@ class HashtableTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * qSearchArray
-     * @todo problem with searching with follow example: qSearchArray(array('test'), 'test');
      * @test
      */
-    public function testqSearchArray()
+    public function testToXMLBool()
     {
-        // try search for a word in a array with 1 entrie
+        // read file and write to an array
+        $array = array(
+            'Bool1' => true,
+            'Bool2' => false
+        );
+
+        $encoding = iconv_get_encoding("internal_encoding");
+        $expected = '<?xml version="1.0" encoding="' . $encoding . '"?><array id="xml"><boolean id="Bool1">true</boolean>' .
+            '<boolean id="Bool2">false</boolean></array>';
+        $xml = Hashtable::toXML($array, 'xml');
+        $this->assertSame($expected, \preg_replace('/[\r\f\n\t]/s', '', $xml));
+    }
+
+    /**
+     * @test
+     */
+    public function testToXMLObject()
+    {
+        $object = new \stdClass();
+        $object->string = 'test';
+        $object->BOOL = true;
+        $object->Integer = 1;
+        $array = array(
+            'o' => $object
+        );
+
+        $encoding = iconv_get_encoding("internal_encoding");
+        $expected = '<?xml version="1.0" encoding="' . $encoding . '"?><array id="xml"><object id="o" class="stdClass">' .
+            '<string id="string">test</string><boolean id="BOOL">true</boolean><integer id="Integer">1</integer></object></array>';
+        $xml = Hashtable::toXML($array, 'xml');
+        $this->assertSame($expected, \preg_replace('/[\r\f\n\t]/s', '', $xml));
+    }
+
+    /**
+     * @test
+     */
+    public function testQuickSearch()
+    {
         $array = array('test');
-        $array1 = array('abcd', 'abc');
-        $array2 = array('abcdabcd', 'abc');
-        $array3 = array('c', 'y');
+        $this->assertSame(0, Hashtable::quickSearch($array, 'test'));
+    }
 
-        // expecting result is "test"
-        $result = Hashtable::quickSearch($array, 'test');
-        $this->assertEquals($result, 0, 'Testing array with 1 element. Needle expected to be found at index 0.');
+    /**
+     * @test
+     */
+    public function testQuickSearch2()
+    {
+        $array = array('test');
+        $this->assertFalse(Hashtable::quickSearch($array, 'no such key'));
+    }
 
-        // expecting result is "test"
-        $result = Hashtable::quickSearch($array, 'non existing key');
-        $this->assertFalse($result, 'Testing array with 1 element. Needle should not be found.');
+    /**
+     * @test
+     */
+    public function testQuickSearch3()
+    {
+        $array = array('abcd', 'abc');
 
-        $result = Hashtable::quickSearch($array1, 'abcd');
-        $this->assertInternalType('integer', $result);
-        //expected integer 0 - searching word is in the row[0]
-        $this->assertEquals($result, 0);
-        $this->assertEquals('abcd', $array1[$result]);
+        $result = Hashtable::quickSearch($array, 'abcd');
+        $this->assertSame(0, $result);
+    }
 
-        $result = Hashtable::quickSearch($array2, 'abcdabcd');
-        $this->assertInternalType('integer', $result);
-        // expected integer 0
-        $this->assertEquals(0, $result);
-        $this->assertEquals('abcdabcd', $array2[$result]);
+    /**
+     * @test
+     */
+    public function testQuickSearch4()
+    {
+        $array = array('abcdabcd', 'abc');
 
+        $result = Hashtable::quickSearch($array, 'abcdabcd');
+        $this->assertSame(0, $result);
 
-        $result = Hashtable::quickSearch($array3, 'y');
-        $this->assertInternalType('integer', $result);
-        //expected integer 1
-        $this->assertEquals($result, 1);
-        $this->assertEquals('y', $array3[$result]);
+    }
+
+    /**
+     * @test
+     */
+    public function testQuickSearch5()
+    {
+        $array = array('c', 'y', 'd');
+        $result = Hashtable::quickSearch($array, 'y');
+        $this->assertSame(1, $result);
     }
 
 }

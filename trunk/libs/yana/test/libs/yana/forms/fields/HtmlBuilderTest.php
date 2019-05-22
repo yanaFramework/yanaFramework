@@ -170,7 +170,7 @@ class HtmlBuilderTest extends \PHPUnit_Framework_TestCase
             '(?:<option value="\d+"(?: selected="selected")?>\d+<\/option>){12}<\/select>' .
             '<select class="Class" id="Id_year" name="Name\[year\]" test="test">' .
             '(<option value="\d+"(?: selected="selected")?>\d+<\/option>)+<\/select>' .
-            '<script type="text\/javascript">yanaAddCalendar\("Id_year", "Id_year_year", \d+, \d+, \d{4}\);<\/script>' .
+            '<script type="text\/javascript">yanaAddCalendar\("Id", "Id_year", \d+, \d+, \d{4}\);<\/script>' .
             '<script type="text\/javascript" src=\'default\/scripts\/calendar\/calendar(?:-[a-z]{2})?.js\'><\/script>/';
         $this->assertRegExp($expected, $this->object->buildDateSelector());
     }

@@ -64,7 +64,7 @@ class AutomatedHtmlBuilderTest extends \PHPUnit_Framework_TestCase
     private $_context = null;
 
     /**
-     * @var \Yana\Forms\ContextSensitiveWrapper
+     * @var \Yana\Forms\Fields\FieldCollectionWrapper
      */
     private $_wrapper = null;
 
@@ -79,7 +79,7 @@ class AutomatedHtmlBuilderTest extends \PHPUnit_Framework_TestCase
     private $_column = null;
 
     /**
-     * @var \Yana\Forms\Fields\Facade
+     * @var \Yana\Forms\Fields\IsField
      */
     private $_field = null;
 
@@ -97,12 +97,12 @@ class AutomatedHtmlBuilderTest extends \PHPUnit_Framework_TestCase
         $this->_facade->setBaseForm($this->_form);
         $this->_context = new \Yana\Forms\Setups\Context($this->_contextName);
         $this->_context->setAction('action');
-        $this->_wrapper = new \Yana\Forms\ContextSensitiveWrapper($this->_facade, $this->_context);
+        $this->_wrapper = new \Yana\Forms\Fields\FieldCollectionWrapper($this->_facade, $this->_context);
         $this->_setup = new \Yana\Forms\Setup();
         $this->_setup->setContext($this->_context);
         $this->_facade->setSetup($this->_setup);
         $this->_column = new \Yana\Db\Ddl\Column('column');
-        $this->_field = new \Yana\Forms\Fields\Facade($this->_wrapper, $this->_column);
+        $this->_field = new \Yana\Forms\Fields\Field($this->_wrapper, $this->_column);
         $this->object = new \Yana\Forms\Fields\AutomatedHtmlBuilder();
     }
 
@@ -122,9 +122,9 @@ class AutomatedHtmlBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $facade = new \Yana\Forms\Facade();
         $context = new \Yana\Forms\Setups\Context('context');
-        $wrapper = new \Yana\Forms\ContextSensitiveWrapper($facade, $context);
+        $wrapper = new \Yana\Forms\Fields\FieldCollectionWrapper($facade, $context);
         $column = new \Yana\Db\Ddl\Column('column');
-        $field = new \Yana\Forms\Fields\Facade($wrapper, $column);
+        $field = new \Yana\Forms\Fields\Field($wrapper, $column);
         $this->assertEmpty($this->object->__invoke($field));
     }
 

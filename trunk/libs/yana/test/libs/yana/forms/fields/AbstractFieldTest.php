@@ -35,16 +35,16 @@ require_once __DIR__ . '/../../../../include.php';
 /**
  * @package  test
  */
-class AbstractFacadeTest extends \PHPUnit_Framework_TestCase
+class AbstractFieldTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Forms\Fields\Facade
+     * @var \Yana\Forms\Fields\IsField
      */
     protected $object;
 
     /**
-     * @var \Yana\Forms\ContextSensitiveWrapper
+     * @var \Yana\Forms\Fields\IsFieldCollectionWrapper
      */
     protected $form;
 
@@ -64,10 +64,10 @@ class AbstractFacadeTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->form = new \Yana\Forms\ContextSensitiveWrapper(new \Yana\Forms\Facade(), new \Yana\Forms\Setups\Context('Test Context'));
+        $this->form = new \Yana\Forms\Fields\FieldCollectionWrapper(new \Yana\Forms\Facade(), new \Yana\Forms\Setups\Context('Test Context'));
         $this->column = new \Yana\Db\Ddl\Column('TestColumn');
         $this->field = new \Yana\Db\Ddl\Field('TestField');
-        $this->object = new \Yana\Forms\Fields\Facade($this->form, $this->column, $this->field);
+        $this->object = new \Yana\Forms\Fields\Field($this->form, $this->column, $this->field);
     }
 
     /**
@@ -84,7 +84,7 @@ class AbstractFacadeTest extends \PHPUnit_Framework_TestCase
      */
     public function test__construct()
     {
-        $this->object = new \Yana\Forms\Fields\Facade($this->form, $this->column); // auto-generates a dummy field based on given column
+        $this->object = new \Yana\Forms\Fields\Field($this->form, $this->column); // auto-generates a dummy field based on given column
         $this->assertSame($this->column->getName(), $this->object->getField()->getName());
     }
 
@@ -99,7 +99,7 @@ class AbstractFacadeTest extends \PHPUnit_Framework_TestCase
         /* @var $fieldWrapper \Yana\Db\Ddl\Field */
         $fieldWrapper = $this->object;
         $this->assertSame('testfield', $fieldWrapper->getName()); // field name is lower-case
-        /* @var $formWrapper \Yana\Forms\ContextSensitiveWrapper */
+        /* @var $formWrapper \Yana\Forms\Fields\FieldCollectionWrapper */
         $formWrapper = $this->object;
         $this->assertSame(false, $formWrapper->hasRows());
     }

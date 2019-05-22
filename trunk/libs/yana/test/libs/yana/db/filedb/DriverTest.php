@@ -39,9 +39,14 @@ class DriverTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Db\FileDb\Driver
+     * @var \Yana\Db\FileDb\NullDriver
      */
     protected $object;
+
+    /**
+     * @var \Yana\Db\Ddl\Database
+     */
+    protected $schema;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -49,9 +54,9 @@ class DriverTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $schema = \Yana\Files\XDDL::getDatabase('check');
-        $parser = new \Yana\Db\Queries\Parser(new \Yana\Db\FileDb\Connection($schema));
-        $this->object = new \Yana\Db\FileDb\Driver($parser);
+        $this->schema = \Yana\Files\XDDL::getDatabase('check');
+        $parser = new \Yana\Db\Queries\Parser(new \Yana\Db\FileDb\Connection($this->schema));
+        $this->object = new \Yana\Db\FileDb\NullDriver($parser);
     }
 
     /**
@@ -60,175 +65,140 @@ class DriverTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        
+        \Yana\Db\FileDb\Driver::setBaseDirectory(\Yana\Db\Ddl\DDL::getDirectory());
     }
 
     /**
-     * @covers Yana\Db\FileDb\Driver::setBaseDirectory
-     * @todo   Implement testSetBaseDirectory().
+     * @test
      */
     public function testSetBaseDirectory()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertNull(\Yana\Db\FileDb\Driver::setBaseDirectory(__DIR__));
+        $this->assertSame(__DIR__, \Yana\Db\FileDb\Driver::getBaseDirectory());
     }
 
     /**
-     * @covers Yana\Db\FileDb\Driver::beginTransaction
-     * @todo   Implement testBeginTransaction().
+     * @test
+     */
+    public function testGetBaseDirectory()
+    {
+        $this->assertSame(\Yana\Db\Ddl\DDL::getDirectory(), \Yana\Db\FileDb\Driver::getBaseDirectory());
+    }
+
+    /**
+     * @test
      */
     public function testBeginTransaction()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertTrue($this->object->beginTransaction());
     }
 
     /**
-     * @covers Yana\Db\FileDb\Driver::rollback
-     * @todo   Implement testRollback().
+     * @test
      */
     public function testRollback()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertTrue($this->object->rollback());
     }
 
     /**
-     * @covers Yana\Db\FileDb\Driver::commit
-     * @todo   Implement testCommit().
+     * @test
      */
     public function testCommit()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertTrue($this->object->commit());
     }
 
     /**
-     * @covers Yana\Db\FileDb\Driver::listDatabases
-     * @todo   Implement testListDatabases().
+     * @test
      */
     public function testListDatabases()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame(\Yana\Db\Ddl\DDL::getListOfFiles(), $this->object->listDatabases());
     }
 
     /**
-     * @covers Yana\Db\FileDb\Driver::listTables
-     * @todo   Implement testListTables().
+     * @test
      */
     public function testListTables()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame($this->schema->getTableNames(), $this->object->listTables());
     }
 
     /**
-     * @covers Yana\Db\FileDb\Driver::listFunctions
-     * @todo   Implement testListFunctions().
+     * @test
      */
     public function testListFunctions()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame($this->schema->getFunctionNames(), $this->object->listFunctions());
     }
 
     /**
-     * @covers Yana\Db\FileDb\Driver::listSequences
-     * @todo   Implement testListSequences().
+     * @test
      */
     public function testListSequences()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame($this->schema->getSequenceNames(), $this->object->listSequences());
     }
 
     /**
-     * @covers Yana\Db\FileDb\Driver::listTableFields
-     * @todo   Implement testListTableFields().
+     * @test
      */
     public function testListTableFields()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame($this->schema->getTable('t')->getColumnNames(), $this->object->listTableFields('t'));
     }
 
     /**
-     * @covers Yana\Db\FileDb\Driver::listTableIndexes
-     * @todo   Implement testListTableIndexes().
+     * @test
      */
     public function testListTableIndexes()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $indexes = array();
+        foreach ($this->schema->getTable('t')->getIndexes() as $index)
+        {
+            if (is_string($index->getName())) {
+                $indexes[] = $index->getName();
+            }
+        }
+        $this->assertSame($this->schema->getTable('t')->getIndexes(), $this->object->listTableIndexes('t'));
     }
 
     /**
-     * @covers Yana\Db\FileDb\Driver::sendQueryObject
-     * @todo   Implement testSendQueryObject().
+     * @test
      */
     public function testSendQueryObject()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $connection = new \Yana\Db\FileDb\Connection($this->schema);
+        $selectQuery = new \Yana\Db\Queries\Select($connection);
+        $selectQuery->setTable('t');
+        $resultObject = new \Yana\Db\FileDb\Result(array(array('tvalue' => 1, 'tb' => true, 'ftid' => 1, 'tid' => 1)));
+        $this->assertEquals($resultObject, $this->object->sendQueryObject($selectQuery));
     }
 
     /**
-     * @covers Yana\Db\FileDb\Driver::sendQueryString
-     * @todo   Implement testSendQueryString().
+     * @test
      */
     public function testSendQueryString()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $resultObject = new \Yana\Db\FileDb\Result(array(array('tvalue' => 1, 'tb' => true, 'ftid' => 1, 'tid' => 1)));
+        $this->assertEquals($resultObject, $this->object->sendQueryString('select * from t'));
     }
 
     /**
-     * @covers Yana\Db\FileDb\Driver::quote
-     * @todo   Implement testQuote().
+     * @test
      */
     public function testQuote()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame('"string"', $this->object->quote('string'));
     }
 
     /**
-     * @covers Yana\Db\FileDb\Driver::quoteIdentifier
-     * @todo   Implement testQuoteIdentifier().
+     * @test
      */
     public function testQuoteIdentifier()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame('t', $this->object->quoteIdentifier('t'));
     }
 
 }

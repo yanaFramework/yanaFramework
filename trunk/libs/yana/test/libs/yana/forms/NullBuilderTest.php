@@ -25,21 +25,21 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Views\Helpers\Formatters;
+namespace Yana\Forms;
 
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/../../../../../include.php';
+require_once __DIR__ . '/../../../include.php';
 
 /**
  * @package  test
  */
-class UrlFormatterTest extends \PHPUnit_Framework_TestCase
+class NullBuilderTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Views\Helpers\Formatters\UrlFormatter
+     * @var \Yana\Forms\NullBuilder
      */
     protected $object;
 
@@ -49,7 +49,7 @@ class UrlFormatterTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Views\Helpers\Formatters\UrlFormatter();
+        $this->object = new \Yana\Forms\NullBuilder();
     }
 
     /**
@@ -58,7 +58,15 @@ class UrlFormatterTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        
+
+    }
+
+    /**
+     * @test
+     */
+    public function testSetFile()
+    {
+        $this->assertSame("Test", $this->object->setFile("Test")->getFile());
     }
 
     /**
@@ -66,19 +74,7 @@ class UrlFormatterTest extends \PHPUnit_Framework_TestCase
      */
     public function test__invoke()
     {
-        \Yana\Views\Helpers\Formatters\UrlFormatter::setBaseUrl('test');
-        $_SERVER['PHP_SELF'] = "";
-        $this->assertSame('http://test?&amp;a=1&amp;b=2', $this->object->__invoke('a=1&b=2'));
-        \Yana\Views\Helpers\Formatters\UrlFormatter::setBaseUrl('');
-    }
-
-    /**
-     * @test
-     */
-    public function testSetBaseUrl()
-    {
-        \Yana\Views\Helpers\Formatters\UrlFormatter::setBaseUrl('test');
-        $this->assertSame('test', \Yana\Views\Helpers\Formatters\UrlFormatter::getBaseUrl());
+        $this->assertTrue($this->object->__invoke() instanceof \Yana\Forms\Facade);
     }
 
 }

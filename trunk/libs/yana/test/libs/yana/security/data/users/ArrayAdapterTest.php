@@ -65,8 +65,7 @@ class ArrayAdapterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Yana\Security\Data\Users\ArrayAdapter::findUserByMail
-     * @todo   Implement testFindUserByMail().
+     * @test
      */
     public function testFindUserByMail()
     {

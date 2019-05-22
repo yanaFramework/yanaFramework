@@ -25,21 +25,21 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Views\Helpers\Formatters;
+namespace Yana\Forms\Fields;
 
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/../../../../../include.php';
+require_once __DIR__ . '/../../../../include.php';
 
 /**
  * @package  test
  */
-class UrlFormatterTest extends \PHPUnit_Framework_TestCase
+class FieldCollectionTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Views\Helpers\Formatters\UrlFormatter
+     * @var \Yana\Forms\Fields\IsFieldCollection
      */
     protected $object;
 
@@ -49,7 +49,7 @@ class UrlFormatterTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Views\Helpers\Formatters\UrlFormatter();
+        $this->object = new \Yana\Forms\Fields\FieldCollection();
     }
 
     /**
@@ -64,21 +64,21 @@ class UrlFormatterTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function test__invoke()
+    public function testOffsetSet()
     {
-        \Yana\Views\Helpers\Formatters\UrlFormatter::setBaseUrl('test');
-        $_SERVER['PHP_SELF'] = "";
-        $this->assertSame('http://test?&amp;a=1&amp;b=2', $this->object->__invoke('a=1&b=2'));
-        \Yana\Views\Helpers\Formatters\UrlFormatter::setBaseUrl('');
+        $wrapper = new \Yana\Forms\Fields\FieldCollectionWrapper(new \Yana\Forms\Facade(), new \Yana\Forms\Setups\Context('test'));
+        $item = new \Yana\Forms\Fields\Field($wrapper, new \Yana\Db\Ddl\Column('test'), new \Yana\Db\Ddl\Field('test'));
+        $this->object['test'] = $item;
+        $this->assertEquals($item, $this->object['test']);
     }
 
     /**
      * @test
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      */
-    public function testSetBaseUrl()
+    public function testOffsetSetInvalidArgumentException()
     {
-        \Yana\Views\Helpers\Formatters\UrlFormatter::setBaseUrl('test');
-        $this->assertSame('test', \Yana\Views\Helpers\Formatters\UrlFormatter::getBaseUrl());
+        $this->object->offsetSet('test', 'invalid value');
     }
 
 }

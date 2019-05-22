@@ -35,16 +35,16 @@ require_once __DIR__ . '/../../../../include.php';
 /**
  * @package  test
  */
-class FacadeTest extends \PHPUnit_Framework_TestCase
+class FieldTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Forms\Fields\Facade
+     * @var \Yana\Forms\Fields\IsField
      */
     protected $object;
 
     /**
-     * @var \Yana\Forms\ContextSensitiveWrapper
+     * @var \Yana\Forms\Fields\FieldCollectionWrapper
      */
     protected $form;
 
@@ -59,7 +59,7 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
     protected $field;
 
     /**
-     * @var \Yana\Forms\Setups\Context
+     * @var \Yana\Forms\Setups\IsContext
      */
     protected $context;
 
@@ -70,10 +70,10 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->context = new \Yana\Forms\Setups\Context('Test Context');
-        $this->form = new \Yana\Forms\ContextSensitiveWrapper(new \Yana\Forms\Facade(), $this->context);
+        $this->form = new \Yana\Forms\Fields\FieldCollectionWrapper(new \Yana\Forms\Facade(), $this->context);
         $this->column = new \Yana\Db\Ddl\Column('TestColumn');
         $this->field = new \Yana\Db\Ddl\Field('TestField');
-        $this->object = new \Yana\Forms\Fields\Facade($this->form, $this->column, $this->field);
+        $this->object = new \Yana\Forms\Fields\Field($this->form, $this->column, $this->field);
     }
 
     /**
@@ -126,7 +126,7 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertTrue($this->object->refersToTable());
         $this->field = \Yana\Db\Ddl\Field::unserializeFromXDDL(new \SimpleXMLElement('<input name="TestField"><bool name="TestColumn"/></input>'));
-        $this->object = new \Yana\Forms\Fields\Facade($this->form, $this->column, $this->field);
+        $this->object = new \Yana\Forms\Fields\Field($this->form, $this->column, $this->field);
         $this->assertFalse($this->object->refersToTable());
     }
 
@@ -206,7 +206,7 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->object->getValueAsWhereClause());
         $this->form->getBaseForm()->setTable('Test');
         $this->context->setRows(array(array('TestField' => 'Test')));
-        $this->assertSame(array(array('Test', 'testcolumn'), 'LIKE', 'Test'), $this->object->getValueAsWhereClause());
+        $this->assertSame(array(array('test', 'testcolumn'), 'LIKE', 'Test'), $this->object->getValueAsWhereClause());
     }
 
 }

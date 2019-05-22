@@ -569,7 +569,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
 
         // test for property "unsigned"
         // column t.tf has unsigned constraint
-        try{
+        try {
             $this->object->update('t.foo.tf', -1);
             $this->fail('"unsigned" test failed');
         } catch (\Yana\Core\Exceptions\Forms\InvalidValueException $e) {

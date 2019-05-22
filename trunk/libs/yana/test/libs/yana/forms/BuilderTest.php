@@ -25,21 +25,26 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Views\Helpers\Formatters;
+namespace Yana\Forms;
 
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/../../../../../include.php';
+require_once __DIR__ . '/../../../include.php';
 
 /**
  * @package  test
  */
-class UrlFormatterTest extends \PHPUnit_Framework_TestCase
+class BuilderTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Views\Helpers\Formatters\UrlFormatter
+     * @var \Yana\Core\Dependencies\Container
+     */
+    protected $container;
+
+    /**
+     * @var \Yana\Forms\Builder
      */
     protected $object;
 
@@ -49,7 +54,13 @@ class UrlFormatterTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Views\Helpers\Formatters\UrlFormatter();
+        $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+        );
+        $configuration = $configurationFactory->loadConfiguration(CWD . 'resources/system.config.xml');
+        $configuration->configdrive = YANA_INSTALL_DIR . 'config/system.drive.xml';
+        $this->container = new \Yana\Core\Dependencies\Container($configuration);
+        $this->object = new \Yana\Forms\Builder($file, $this->container);
     }
 
     /**
@@ -62,23 +73,15 @@ class UrlFormatterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test
+     * @covers Yana\Forms\Builder::__invoke
+     * @todo   Implement test__invoke().
      */
     public function test__invoke()
     {
-        \Yana\Views\Helpers\Formatters\UrlFormatter::setBaseUrl('test');
-        $_SERVER['PHP_SELF'] = "";
-        $this->assertSame('http://test?&amp;a=1&amp;b=2', $this->object->__invoke('a=1&b=2'));
-        \Yana\Views\Helpers\Formatters\UrlFormatter::setBaseUrl('');
-    }
-
-    /**
-     * @test
-     */
-    public function testSetBaseUrl()
-    {
-        \Yana\Views\Helpers\Formatters\UrlFormatter::setBaseUrl('test');
-        $this->assertSame('test', \Yana\Views\Helpers\Formatters\UrlFormatter::getBaseUrl());
+        // Remove the following lines when you implement this test.
+        $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+        );
     }
 
 }

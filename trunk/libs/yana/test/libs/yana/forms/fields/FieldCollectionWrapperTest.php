@@ -25,17 +25,17 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Forms;
+namespace Yana\Forms\Fields;
 
 /**
  * @ignore
  */
-require_once __DIR__ . '/../../../include.php';
+require_once __DIR__ . '/../../../../include.php';
 
 /**
  * @package  test
  */
-class ContextSensitiveWrapperTest extends \PHPUnit_Framework_TestCase
+class FieldCollectionWrapperTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
@@ -49,7 +49,7 @@ class ContextSensitiveWrapperTest extends \PHPUnit_Framework_TestCase
     protected $form;
 
     /**
-     * @var \Yana\Forms\ContextSensitiveWrapper
+     * @var \Yana\Forms\Fields\FieldCollectionWrapper
      */
     protected $object;
 
@@ -61,7 +61,7 @@ class ContextSensitiveWrapperTest extends \PHPUnit_Framework_TestCase
     {
         $this->context = new \Yana\Forms\Setups\Context('Test Context');
         $this->form = new \Yana\Forms\Facade();
-        $this->object = new \Yana\Forms\ContextSensitiveWrapper($this->form, $this->context);
+        $this->object = new \Yana\Forms\Fields\FieldCollectionWrapper($this->form, $this->context);
     }
 
     /**
@@ -130,10 +130,11 @@ class ContextSensitiveWrapperTest extends \PHPUnit_Framework_TestCase
      */
     public function testNextRow()
     {
-        $this->assertSame($this->object, $this->object->nextRow());
+        $this->object->nextRow();
         $this->object->getContext()->setRows(array('a' => array('key' => 'value')));
         $this->assertSame('A', $this->object->getContext()->getRows()->key());
-        $this->assertNull($this->object->nextRow()->getRows()->key());
+        $this->object->nextRow();
+        $this->assertNull($this->object->getRows()->key());
     }
 
 }

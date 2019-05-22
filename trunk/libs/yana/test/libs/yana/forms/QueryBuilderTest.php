@@ -76,75 +76,122 @@ class QueryBuilderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Yana\Forms\QueryBuilder::setForm
-     * @todo   Implement testSetForm().
+     * @test
      */
     public function testSetForm()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $form = new \Yana\Forms\Facade();
+        $this->assertSame($form, $this->object->setForm($form)->getForm());
     }
 
     /**
-     * @covers Yana\Forms\QueryBuilder::getForm
-     * @todo   Implement testGetForm().
+     * @test
      */
     public function testGetForm()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertNull($this->object->getForm());
     }
 
     /**
-     * @covers Yana\Forms\QueryBuilder::getDatabase
-     * @todo   Implement testGetDatabase().
+     * @test
      */
     public function testGetDatabase()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame($this->db, $this->object->getDatabase());
     }
 
     /**
-     * @covers Yana\Forms\QueryBuilder::buildSelectQuery
-     * @todo   Implement testBuildSelectQuery().
+     * @test
+     */
+    public function testBuildSelectQueryEmpty()
+    {
+        $query = $this->object->setForm(new \Yana\Forms\Facade())->buildSelectQuery();
+        $this->assertTrue($query instanceof \Yana\Db\Queries\Select);
+        $this->assertSame($query, $this->object->buildSelectQuery());
+        $this->assertSame($this->db, $query->getDatabase());
+    }
+
+    /**
+     * @test
      */
     public function testBuildSelectQuery()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $form = new \Yana\Db\Ddl\Form('test', $this->db->getSchema());
+        $form->setTable('t');
+        $facade = new \Yana\Forms\Facade();
+        $facade->setBaseForm($form);
+        $setup = $facade->getSetup();
+        $setup->setPage(1)->setEntriesPerPage(10)->setOrderByField('tid');
+        $query = $this->object->setForm($facade)->buildSelectQuery();
+        $this->assertTrue($query instanceof \Yana\Db\Queries\Select);
+        $this->assertSame($query, $this->object->buildSelectQuery());
+        $this->assertSame($this->db, $query->getDatabase());
+        $this->assertSame($form->getTable(), $query->getTable());
+        $this->assertSame($setup->getEntriesPerPage(), $query->getLimit());
+        $this->assertSame($setup->getPage() * $setup->getEntriesPerPage(), $query->getOffset());
+        $this->assertSame(array(array($form->getTable(), $setup->getOrderByField())), $query->getOrderBy());
     }
 
     /**
-     * @covers Yana\Forms\QueryBuilder::buildAutocompleteQuery
-     * @todo   Implement testBuildAutocompleteQuery().
+     * @test
+     */
+    public function testBuildSelectQuerySearchTerm()
+    {
+        $table = 't';
+        $form = new \Yana\Db\Ddl\Form('test', $this->db->getSchema());
+        $form->setTable($table);
+        $form->setAllInput(false);
+        $form->addField('tid');
+        $formFacade = new \Yana\Forms\Facade();
+        $formFacade->setBaseForm($form);
+        $setup = $formFacade->getSetup();
+        $setup->setSearchTerm("test");
+        $this->object->setForm($formFacade);
+        $formFacade->getUpdateForm()->getContext()->addColumnName('tid');
+        $query = $this->object->buildSelectQuery();
+        $this->assertSame($table, $query->getTable());
+        $this->assertSame(array(array($table, 'tid')), $query->getColumns());
+        $this->assertSame(array(array($table, 'tid'), 'like', '%test%'), $query->getWhere());
+    }
+
+    /**
+     * @test
      */
     public function testBuildAutocompleteQuery()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $table = 't';
+        $column = 'tid';
+        $label = 'tvalue';
+        $searchTerm = 'Search Term';
+        $limit = 123;
+        $targetReference = new \Yana\Db\Ddl\Reference($table, $column, $label);
+        $query = $this->object->buildAutocompleteQuery($targetReference, $searchTerm, $limit);
+        $this->assertSame($table, $query->getTable());
+        $this->assertSame(array('VALUE' => array($table, $column), 'LABEL' => array($table, $label)), $query->getColumns());
+        $this->assertSame(array(array($table, $label), 'like', $searchTerm . '%'), $query->getWhere());
+        $this->assertSame($limit, $query->getLimit());
+        $this->assertSame(array(array($table, $label)), $query->getOrderBy());
     }
 
     /**
-     * @covers Yana\Forms\QueryBuilder::buildCountQuery
-     * @todo   Implement testBuildCountQuery().
+     * @test
      */
     public function testBuildCountQuery()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $form = new \Yana\Db\Ddl\Form('test', $this->db->getSchema());
+        $form->setTable('t');
+        $facade = new \Yana\Forms\Facade();
+        $facade->setBaseForm($form);
+        $setup = $facade->getSetup();
+        $setup->setPage(1)->setEntriesPerPage(10)->setOrderByField('tid');
+        $query = $this->object->setForm($facade)->buildCountQuery();
+        $this->assertTrue($query instanceof \Yana\Db\Queries\Select);
+        $this->assertSame($query, $this->object->buildCountQuery());
+        $this->assertSame($this->db, $query->getDatabase());
+        $this->assertSame($form->getTable(), $query->getTable());
+        $this->assertSame(array(array($form->getTable(), $setup->getOrderByField())), $query->getOrderBy());
+        $this->assertSame(0, $query->getLimit());
+        $this->assertSame(0, $query->getOffset());
     }
 
 }

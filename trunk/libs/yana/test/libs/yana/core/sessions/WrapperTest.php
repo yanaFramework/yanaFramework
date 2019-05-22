@@ -51,7 +51,7 @@ class WrapperTest extends \PHPUnit_Framework_TestCase
     {
         // We will need the @runInSeparateProcess annotation or else PHPUnit will complain
         // that cookies can't be modified because headers have already been sent: by PHPUnit itself!
-        // @runInSeparateProcess makes sure, that the test runs on its ow
+        // @runInSeparateProcess makes sure, that the test runs on its own
         // and may thus modify headers to its heart's content!
         $_SESSION = array();
         $this->object = new \Yana\Core\Sessions\Wrapper();
