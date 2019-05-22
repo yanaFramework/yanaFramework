@@ -38,7 +38,7 @@ namespace Yana\Core\Dependencies;
 class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsApplicationContainer
 {
 
-    use \Yana\Core\Dependencies\HasSecurity, \Yana\Core\Dependencies\HasPlugin;
+    use \Yana\Core\Dependencies\HasSecurity, \Yana\Core\Dependencies\HasPlugin, \Yana\Core\Dependencies\HasRequest;
 
     /**
      * System configuration file
@@ -128,11 +128,6 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
     private $_isSafeMode = null;
 
     /**
-     * @var  \Yana\Http\Facade
-     */
-    private $_request = null;
-
-    /**
      * @var  \Yana\Plugins\Menus\Builder
      */
     private $_menuBuilder = null;
@@ -165,21 +160,6 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
     public function __construct(\Yana\Util\Xml\IsObject $configuration)
     {
         $this->_configuration = $configuration;
-    }
-
-    /**
-     * Builds and returns request object.
-     *
-     * By default this will be done by using the respective super-globals like $_GET, $_POST aso.
-     *
-     * @return  \Yana\Http\Facade
-     */
-    public function getRequest()
-    {
-        if (!isset($this->_request)) {
-            $this->_request = new \Yana\Http\Facade();
-        }
-        return $this->_request;
     }
 
     /**
@@ -499,7 +479,7 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
         }
         try {
             $translationFacade->loadTranslations('default');
-        } catch (\Yana\Core\Exceptions\InvalidArgumentException $e){
+        } catch (\Yana\Core\Exceptions\Translations\LanguageFileNotFoundException $e){
             unset($session['language']);
         }
         $array = array();

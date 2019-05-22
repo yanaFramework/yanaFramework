@@ -122,7 +122,7 @@ interface IsViewContainer
      * This returns the view component. If none exists, a new instance is created.
      * This is an auxiliary class that provides access to output-specific functions.
      *
-     * @return  \Yana\Views\Managers\IsManager
+     * @return  \Yana\Views\Managers\IsSmartyManager
      */
     public function getView();
 

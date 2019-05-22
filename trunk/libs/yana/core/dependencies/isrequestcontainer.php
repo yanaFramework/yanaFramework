@@ -35,43 +35,38 @@ namespace Yana\Core\Dependencies;
  * @package     yana
  * @subpackage  core
  */
-interface IsFormContainer extends \Yana\Core\Dependencies\IsRequestContainer
+interface IsRequestContainer
 {
 
     /**
-     * Returns a ready-to-use factory to create open database connections.
+     * Builds and returns request object.
      *
-     * @return  \Yana\Db\IsConnectionFactory
+     * By default this will be done by using the respective super-globals like $_GET, $_POST aso.
+     *
+     * @return  \Yana\Http\IsFacade
      */
-    public function getConnectionFactory();
+    public function getRequest();
 
     /**
-     * Get language translation-repository.
+     * Builds and returns request helper object.
      *
-     * This returns the language component. If none exists, a new instance is created.
-     *
-     * @return  \Yana\Translations\IsFacade
+     * @return  \Yana\Http\Requests\IsRequest
      */
-    public function getLanguage();
+    public function getRequestBuilder();
 
     /**
-     * Get plugin-manager.
+     * Builds and returns upload helper object.
      *
-     * This returns the plugin manager. If none exists, a new instance is created.
-     * The pluginManager holds repositories for interfaces and implementations of plugins.
-     *
-     * @return  \Yana\Plugins\Facade
+     * @return  \Yana\Http\Uploads\IsUploadWrapper
      */
-    public function getPlugins();
+    public function getUploadBuilder();
 
     /**
-     * Get security facade.
+     * Builds and returns URL helper object.
      *
-     * This facade is used to manage user information and check permissions.
-     * 
-     * @return \Yana\Security\IsFacade
+     * @return  \Yana\Http\Uris\IsUrlBuilder
      */
-    public function getSecurity();
+    public function getUrlBuilder();
 
 }
 

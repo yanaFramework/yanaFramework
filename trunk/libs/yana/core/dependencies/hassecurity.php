@@ -33,7 +33,7 @@ namespace Yana\Core\Dependencies;
  * <<trait>> Security sub-system dependencies.
  *
  * @package     yana
- * @subpackage  security
+ * @subpackage  core
  *
  * @ignore
  */

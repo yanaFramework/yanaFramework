@@ -2,6 +2,8 @@
 /**
  * YANA library
  *
+ * Primary controller class
+ *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
  * License:   GNU GPL  http://www.gnu.org/licenses/
@@ -23,53 +25,20 @@
  *
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
- *
- * @ignore
  */
 
 namespace Yana\Core\Dependencies;
 
 /**
- * <<trait>> Plugin sub-system dependencies.
+ * Dependency container for classes that require just the request object.
  *
  * @package     yana
  * @subpackage  core
- *
- * @ignore
  */
-trait HasPlugin
+class RequestContainer extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsRequestContainer
 {
 
-    /**
-     * @var \Yana\Plugins\Events\IsDispatcher
-     */
-    private $_dispatcher = null;
-
-    /**
-     * Get instance of event dispatcher.
-     *
-     * @return  \Yana\Plugins\Events\IsDispatcher
-     */
-    public function getDispatcher()
-    {
-        if (!isset($this->_dispatcher)) {
-            $this->_dispatcher = new \Yana\Plugins\Events\Dispatcher();
-        }
-        return $this->_dispatcher;
-    }
-
-    /**
-     * Set event dispatcher.
-     *
-     * @param   \Yana\Plugins\Events\IsDispatcher  $dispatcher  will distribute events to subscribing plugins
-     * @return  $this
-     */
-    public function setDispatcher(\Yana\Plugins\Events\IsDispatcher $dispatcher)
-    {
-        $this->_dispatcher = $dispatcher;
-        return $this;
-    }
-
+    use \Yana\Core\Dependencies\HasRequest;
 }
 
 ?>
