@@ -42,6 +42,16 @@ class Wrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWrapper
 {
 
     /**
+     * <<constructor>> Initialize session vars.
+     */
+    public function __construct()
+    {
+        if (!isset($_SESSION)) {
+            $_SESSION = array();
+        }
+    }
+
+    /**
      * Returns bool(true) if the session has a value at the given offset.
      *
      * Returns bool(false) otherwise.
