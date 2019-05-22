@@ -17,7 +17,7 @@
       <div class="guestbook_head" id="guestbook_form_new_head">{lang id="20"}</div>
       
       <div class="guestbook_form_content" id="guestbook_form_new_content">
-    <!-- {if $USE_CAPTCHA} -->
+    <!-- {if $PROFILE.SPAM.AVAILABLE && $USE_CAPTCHA} -->
           <div class="label" style="display: block; height: 30px;">
             <span class="gui_generator_mandatory">*&nbsp;</span>
             {lang id="SECURITY_IMAGE.TITLE"}, {lang id="SECURITY_IMAGE.DESCRIPTION"}:
