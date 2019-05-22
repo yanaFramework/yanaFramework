@@ -92,7 +92,10 @@ p
 {
     width: 35px;
     height: 35px;
+    margin-right: 5px;
     margin-top: 15px;
+    transition: width .5s, height .5s, margin-top .5s, padding-left .5s, padding-right .5s;
+    -webkit-transition: width .5s, height .5s, margin-top .5s, padding-left .5s, padding-right .5s; /* For Safari 3.1 to 6.0 */
 }
 .header .applicationBar:hover img
 {
