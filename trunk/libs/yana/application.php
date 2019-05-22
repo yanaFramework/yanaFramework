@@ -283,7 +283,7 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
      * This returns the view component. If none exists, a new instance is created.
      * This is an auxiliary class that provides access to output-specific functions.
      *
-     * @return  \Yana\Views\Managers\IsManager
+     * @return  \Yana\Views\Managers\IsSmartyManager
      */
     public function getView()
     {
@@ -345,6 +345,18 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
     public function getProfileId()
     {
         return $this->_getDependencyContainer()->getProfileId();
+    }
+
+    /**
+     * Builds and returns request object.
+     *
+     * By default this will be done by using the respective super-globals like $_GET, $_POST aso.
+     *
+     * @return  \Yana\Http\IsFacade
+     */
+    public function getRequest()
+    {
+        return $this->_getDependencyContainer()->getRequest();
     }
 
     /**
@@ -1007,6 +1019,27 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
     public function buildApplicationMenu()
     {
         return $this->_getDependencyContainer()->getMenuBuilder()->buildMenu();
+    }
+
+    /**
+     * Builds and returns a form object.
+     *
+     * Forms are defined in XML database definition language files (*.db.xml) stored in the config/db/ directory.
+     * You can identify them by the opening "form" tag. This form tag always has a "name" attribute.
+     *
+     * Call this function to build a form object that corresponds to the form of the same name.
+     *
+     * The form object returned will allow you to access the structure of the form as well as values entered into it,
+     * and any rows retrieved from the database to be displayed therein.
+     * It also enables you to store the provided changes to the database, or change settings like the number of rows shown per page.
+     * In short: everything you can do with a form, you can do here.
+     *
+     * @return  \Yana\Forms\IsBuilder
+     */
+    public function buildForm($formName)
+    {
+        $builder = new \Yana\Forms\Builder($formName, $this->_getDependencyContainer());
+        return $builder->setId($formName);
     }
 
 }
