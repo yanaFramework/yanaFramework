@@ -27,12 +27,14 @@
 
 namespace Yana\Util;
 
+// @codeCoverageIgnoreStart
 if (!defined('CASE_MIXED')) {
     /**
      * @ignore
      */
     define('CASE_MIXED', -1);
 }
+// @codeCoverageIgnoreEnd
 
 /**
  * <<utility>> Hashtable
@@ -195,11 +197,7 @@ class Hashtable extends \Yana\Core\AbstractUtility
     {
         assert('is_string($type)&& !empty($type); // Wrong type for argument 1. String expected');
         $field =& self::get($hash, $key);
-        if (!is_null($field)) {
-            return settype($field, $type);
-        } else {
-            return false;
-        }
+        return !is_null($field) && settype($field, $type);
     }
 
     /**
@@ -235,39 +233,39 @@ class Hashtable extends \Yana\Core\AbstractUtility
         if ($key == '*') {
             unset($hash);
             return true;
-        } else {
-            $list_of_keys = explode(".", $key);
-            assert('is_array($list_of_keys) && count($list_of_keys) > 0;');
-            $stack = array();
-            $stack[0] = &$hash;
-            $result = &$hash;
-            for ($i = 0; $i < (count($list_of_keys) -1); $i++)
-            {
-                if (!isset($result[$list_of_keys[$i]])) {
-                    return false;
-                } else {
-                    $result = &$result[$list_of_keys[$i]];
-                    $stack[count($stack)] = &$result;
-                }
-            }
-            $j = array_pop($list_of_keys);
-            if (!isset($stack[count($stack)-1][$j])) {
+        }
+
+        $listOfKeys = explode(".", $key);
+        assert('is_array($listOfKeys) && count($listOfKeys) > 0;');
+        $stack = array();
+        $stack[0] = &$hash;
+        $result = &$hash;
+        for ($i = 0; $i < (count($listOfKeys) -1); $i++)
+        {
+            if (!isset($result[$listOfKeys[$i]])) {
                 return false;
             } else {
-                unset($stack[count($stack)-1][$j]);
-                array_pop($stack);
-                for ($i = (count($stack) -1); $i > -1; $i--)
-                {
-                    $j = array_pop($list_of_keys);
-                    if (is_array($stack[$i][$j]) && count($stack[$i][$j])==0) {
-                        unset($stack[$i][$j]);
-                    } else {
-                        break;
-                    }
-                }
-                return true;
+                $result = &$result[$listOfKeys[$i]];
+                $stack[count($stack)] = &$result;
             }
         }
+        $j = array_pop($listOfKeys);
+        if (!isset($stack[count($stack)-1][$j])) {
+            return false;
+        }
+
+        unset($stack[count($stack)-1][$j]);
+        array_pop($stack);
+        for ($i = (count($stack) -1); $i > -1; $i--)
+        {
+            $j = array_pop($listOfKeys);
+            if (is_array($stack[$i][$j]) && count($stack[$i][$j])==0) {
+                unset($stack[$i][$j]);
+            } else {
+                break;
+            }
+        }
+        return true;
     }
 
     /**
@@ -437,18 +435,10 @@ class Hashtable extends \Yana\Core\AbstractUtility
          * detect encoding
          */
         if (empty(self::$_inputEncoding)) {
-            if (function_exists('iconv_get_encoding')) {
-                self::$_inputEncoding = iconv_get_encoding("internal_encoding");
-            } else {
-                self::$_inputEncoding = "UTF-8";
-            }
+            self::$_inputEncoding = function_exists('iconv_get_encoding') ? iconv_get_encoding("internal_encoding") : "UTF-8";
         }
         if (empty(self::$_outputEncoding)) {
-            if (function_exists('iconv_get_encoding')) {
-                self::$_outputEncoding = iconv_get_encoding("output_encoding");
-            } else {
-                self::$_outputEncoding = "UTF-8";
-            }
+            self::$_outputEncoding = function_exists('iconv_get_encoding') ? iconv_get_encoding("output_encoding") : "UTF-8";
         }
 
         /*
@@ -478,13 +468,10 @@ class Hashtable extends \Yana\Core\AbstractUtility
         switch ($caseSensitive)
         {
             case CASE_UPPER:
-                $name = srttoupper($name);
+                $name = \Yana\Util\Strings::toUpperCase($name);
             break;
             case CASE_LOWER:
-                $name = srttolower($name);
-            break;
-            default:
-                /* intentionally left blank */
+                $name = \Yana\Util\Strings::toLowerCase($name);
             break;
         }
 
@@ -558,7 +545,7 @@ class Hashtable extends \Yana\Core\AbstractUtility
             if (is_object($b)) {
                 $result[$a] = clone $b;
             } elseif (is_array($b)) {
-                $result[$a] = Hashtable::cloneArray($b);
+                $result[$a] = self::cloneArray($b);
             } else {
                 $result[$a] = $b;
             }
@@ -591,7 +578,7 @@ class Hashtable extends \Yana\Core\AbstractUtility
      * // E.g. a file where each line is representing a value.
      * $list = file('large_file.txt');
      * if (is_array($list)) {
-     *     $i = qSearchArray($list, 'foo');
+     *     $i = Hashtable::quickSearch($list, 'foo');
      *     if ($i === false) {
      *         print "Value 'foo' not found!\n";
      *     } else {
