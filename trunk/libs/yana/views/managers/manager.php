@@ -46,7 +46,7 @@ namespace Yana\Views\Managers;
  * @package     yana
  * @subpackage  views
  */
-class Manager extends \Yana\Views\Managers\AbstractManager
+class Manager extends \Yana\Views\Managers\AbstractManager implements \Yana\Views\Managers\IsSmartyManager
 {
 
     /**
@@ -93,36 +93,76 @@ class Manager extends \Yana\Views\Managers\AbstractManager
         assert('is_string($filename); // Invalid argument $filename: string expected');
         assert('is_string($mainContentTemplateName); // Invalid argument $mainContentTemplate: string expected');
 
-        $isAjaxRequest = \Yana\Http\Requests\Builder::buildFromSuperGlobals()->isAjaxRequest();
-
         /**
          * If this is an AJAX request we should only output the content, leaving off the frame.
          */
-        if ($isAjaxRequest) {
-            if (!empty($mainContentTemplateName)) {
-                $filename = $mainContentTemplateName; // We drop the layout and just use the content template
-                $mainContentTemplateName = '';
-            }
+        if (\Yana\Http\Requests\Builder::buildFromSuperGlobals()->isAjaxRequest() === true) {
+            // We drop the layout and just use the content template
+            $internalTemplate = $this->_createLayoutTemplateForAjaxRequest($mainContentTemplateName > "" ? $mainContentTemplateName : $filename);
+        } else {
+            $internalTemplate = $this->_createLayoutTemplateForStandardRequest($filename, $mainContentTemplateName);
         }
-
-        $internalTemplate = $this->_createTemplate($filename);
         $internalTemplate->assign($templateVars); // Initialize template variables
 
-        if ($isAjaxRequest) {
-            if (headers_sent() === false) {
-                header('Content-Type: text/html; charset=UTF-8');
-            }
-            /**
-             * For AJAX-Requests we leave off the layout and just output the template's body-tag (if any).
-             * This is done by the output post-processor that will look for the $FILE_IS_INCLUDE flag.
-             */
-            $internalTemplate->assign('FILE_IS_INCLUDE', true);
-        }
+        $this->_layoutTemplate = $internalTemplate;
+
+        // We wrap the template, so that the choice of template engine remains transparent.
+        return $this->_wrapTemplate($internalTemplate);
+    }
+
+    /**
+     * This creates and returns a new template to be used for AJAX requests.
+     *
+     * @param   string  $filename  path to template file or template id (which will be resolved)
+     * @return  \Smarty_Internal_Template
+     * @ignore
+     */
+    protected function _createLayoutTemplateForAjaxRequest($filename)
+    {
+        assert('is_string($filename); // Invalid argument $filename: string expected');
+
+        /**
+         * For AJAX-Requests we leave off the layout and just output the template's body-tag (if any).
+         * This is done by the output post-processor that will look for the $FILE_IS_INCLUDE flag.
+         */
+        $internalTemplate = $this->_createTemplate($filename);
+        $internalTemplate->assign('FILE_IS_INCLUDE', true);
+        $internalTemplate->assign('SYSTEM_TEMPLATE', $filename);
+        $internalTemplate->assign('SYSTEM_INSERT', '');
+
+        return $internalTemplate;
+    }
+
+    /**
+     * This creates and returns a new template to be used for standard requests.
+     *
+     * @param   string  $filename  path to template file or template id (which will be resolved)
+     * @return  \Smarty_Internal_Template
+     * @ignore
+     */
+    protected function _createLayoutTemplateForStandardRequest($filename, $mainContentTemplateName)
+    {
+        assert('is_string($filename); // Invalid argument $filename: string expected');
+
+        $internalTemplate = $this->_createTemplate($filename);
+        $internalTemplate->assign('FILE_IS_INCLUDE', false);
         $internalTemplate->assign('SYSTEM_TEMPLATE', $filename);
         $internalTemplate->assign('SYSTEM_INSERT', $mainContentTemplateName);
 
-        $this->_layoutTemplate = $internalTemplate;
-        return $this->_wrapTemplate($internalTemplate);
+        return $internalTemplate;
+    }
+
+    /**
+     * Set return content type to text/html with charset UTF-8.
+     *
+     * @codeCoverageIgnore
+     * @ignore
+     */
+    protected function _sendHeadersForAjaxRequest()
+    {
+        if (headers_sent() === false) {
+            header('Content-Type: text/html; charset=UTF-8');
+        }
     }
 
     /**
@@ -133,7 +173,6 @@ class Manager extends \Yana\Views\Managers\AbstractManager
      *
      * @param   string  $filename  path to template file
      * @return  \Yana\Views\Templates\IsTemplate
-     * @codeCoverageIgnore
      */
     public function createContentTemplate($filename)
     {
@@ -149,7 +188,6 @@ class Manager extends \Yana\Views\Managers\AbstractManager
      * @param   string                     $filename  path to template file or template id (which will be resolved)
      * @param   \Smarty_Internal_Template  $parent     parent template (if any)
      * @return  \Smarty_Internal_Template
-     * @codeCoverageIgnore
      */
     private function _createTemplate($filename, \Smarty_Internal_Template $parent = null)
     {
@@ -162,7 +200,6 @@ class Manager extends \Yana\Views\Managers\AbstractManager
      *
      * @param   \Smarty_Internal_Template  $internalTemplate  smarty template instance
      * @return  \Yana\Views\Templates\Template
-     * @codeCoverageIgnore
      */
     private function _wrapTemplate(\Smarty_Internal_Template $internalTemplate)
     {
@@ -261,14 +298,20 @@ class Manager extends \Yana\Views\Managers\AbstractManager
      * @param   string  $name  name of the function
      * @param   mixed   $code  a callable resource
      * @return  self
-     * @codeCoverageIgnore
+     * @throws  \Yana\Views\Managers\RegistrationException  when another function of the same name was already registered
      */
     public function setFunction($name, $code)
     {
         assert('is_string($name); // Wrong type for argument $name. String expected.');
         assert('is_callable($code); // Wrong type for argument $code. Not a callable resource.');
 
-        $this->getSmarty()->registerPlugin(\Smarty::PLUGIN_FUNCTION, $name, $code);
+        try {
+            $this->getSmarty()->registerPlugin(\Smarty::PLUGIN_FUNCTION, $name, $code);
+
+        } catch (\SmartyException $e) {
+            $message = "Function " . $name . " cannot be registered. Perhaps another function with the same name already exists?";
+            throw new \Yana\Views\Managers\RegistrationException($message, \Yana\Log\TypeEnumeration::EXCEPTION, $e);
+        }
         return $this;
     }
 
@@ -285,14 +328,20 @@ class Manager extends \Yana\Views\Managers\AbstractManager
      * @param   string  $name  name of the function
      * @param   mixed   $code  a callable resource
      * @return  self
-     * @codeCoverageIgnore
+     * @throws  \Yana\Views\Managers\RegistrationException  when another modifier of the same name was already registered
      */
     public function setModifier($name, $code)
     {
         assert('is_string($name); // Wrong type for argument $name. String expected.');
         assert('is_callable($code); // Wrong type for argument $code. Not a callable resource.');
 
-        $this->getSmarty()->registerPlugin(\Smarty::PLUGIN_MODIFIER, $name, $code);
+        try {
+            $this->getSmarty()->registerPlugin(\Smarty::PLUGIN_MODIFIER, $name, $code);
+
+        } catch (\SmartyException $e) {
+            $message = "Modifier " . $name . " cannot be registered. Perhaps another modifier with the same name already exists?";
+            throw new \Yana\Views\Managers\RegistrationException($message, \Yana\Log\TypeEnumeration::EXCEPTION, $e);
+        }
         return $this;
     }
 
@@ -309,14 +358,20 @@ class Manager extends \Yana\Views\Managers\AbstractManager
      * @param   string  $name  name of the function
      * @param   mixed   $code  a callable resource
      * @return  self
-     * @codeCoverageIgnore
+     * @throws  \Yana\Views\Managers\RegistrationException  when another function of the same name was already registered
      */
     public function setBlockFunction($name, $code)
     {
         assert('is_string($name); // Wrong type for argument $name. String expected.');
         assert('is_callable($code); // Wrong type for argument $code. Not a callable resource.');
 
-        $this->getSmarty()->registerPlugin(\Smarty::PLUGIN_BLOCK, $name, $code);
+        try {
+            $this->getSmarty()->registerPlugin(\Smarty::PLUGIN_BLOCK, $name, $code);
+
+        } catch (\SmartyException $e) {
+            $message = "Block function " . $name . " cannot be registered. Perhaps another function with the same name already exists?";
+            throw new \Yana\Views\Managers\RegistrationException($message, \Yana\Log\TypeEnumeration::EXCEPTION, $e);
+        }
         return $this;
     }
 
@@ -330,7 +385,6 @@ class Manager extends \Yana\Views\Managers\AbstractManager
      *
      * @param   string  $name  name of the function
      * @return  self
-     * @codeCoverageIgnore
      */
     public function unsetFunction($name)
     {
@@ -365,13 +419,12 @@ class Manager extends \Yana\Views\Managers\AbstractManager
      * Unregister block function.
      *
      * By using this, the function named $name will no longer be
-     * available in template. Be cautious: If the unregistered funciton is
+     * available in templates. Be cautious: If the unregistered funciton is
      * still used inside the template, this will issue a template error
      * and possibly cause your application to exit.
      *
      * @param   string  $name  name of the function
      * @return  self
-     * @codeCoverageIgnore
      */
     public function unsetBlockFunction($name)
     {
@@ -390,7 +443,6 @@ class Manager extends \Yana\Views\Managers\AbstractManager
      * access to the smarty template engine is necessary.
      *
      * @return  \Smarty
-     * @codeCoverageIgnore
      */
     public function getSmarty()
     {

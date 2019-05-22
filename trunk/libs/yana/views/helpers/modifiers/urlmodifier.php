@@ -37,7 +37,7 @@ namespace Yana\Views\Helpers\Modifiers;
  * @package     yana
  * @subpackage  views
  */
-class UrlModifier extends \Yana\Views\Helpers\Formatters\UrlFormatter implements \Yana\Views\Helpers\IsModifier
+class UrlModifier extends \Yana\Core\Object implements \Yana\Views\Helpers\IsModifier
 {
 
     /**

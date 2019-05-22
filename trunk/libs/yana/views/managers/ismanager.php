@@ -64,32 +64,32 @@ interface IsManager
     /**
      * Add path to CSS stylesheet file.
      *
-     * @param  string  $file  path and file name
-     * @return \Yana\Views\Managers\IsManager
+     * @param   string  $file  path and file name
+     * @return  $this
      */
     public function addStyle($file);
 
     /**
      * Add path to javascript file.
      *
-     * @param  string  $file  path and file name
-     * @return \Yana\Views\Managers\IsManager
+     * @param   string  $file  path and file name
+     * @return  $this
      */
     public function addScript($file);
 
     /**
      * Add multiple CSS files.
      *
-     * @param  array  $files  path and file names
-     * @return \Yana\Views\Managers\IsManager
+     * @param   array  $files  path and file names
+     * @return  $this
      */
     public function addStyles(array $files);
 
     /**
      * Add multiple JavaScript files.
      *
-     * @param  array  $files  path and file names
-     * @return \Yana\Views\Managers\IsManager
+     * @param   array  $files  path and file names
+     * @return  $this
      */
     public function addScripts(array $files);
 
@@ -150,7 +150,7 @@ interface IsManager
      *
      * @param   string  $name  name of the function
      * @param   mixed   $code  a callable resource
-     * @return  self
+     * @return  $this
      */
     public function setFunction($name, $code);
 
@@ -166,7 +166,7 @@ interface IsManager
      *
      * @param   string  $name  name of the function
      * @param   mixed   $code  a callable resource
-     * @return  self
+     * @return  $this
      */
     public function setModifier($name, $code);
 
@@ -182,7 +182,7 @@ interface IsManager
      *
      * @param   string  $name  name of the function
      * @param   mixed   $code  a callable resource
-     * @return  self
+     * @return  $this
      */
     public function setBlockFunction($name, $code);
 
@@ -195,7 +195,7 @@ interface IsManager
      * and possibly cause your application to exit.
      *
      * @param   string  $name  name of the function
-     * @return  self
+     * @return  $this
      */
     public function unsetFunction($name);
 
@@ -208,7 +208,7 @@ interface IsManager
      * and possibly cause your application to exit.
      *
      * @param   string  $name  name of the function
-     * @return  self
+     * @return  $this
      */
     public function unsetModifier($name);
 
@@ -221,20 +221,9 @@ interface IsManager
      * and possibly cause your application to exit.
      *
      * @param   string  $name  name of the function
-     * @return  self
+     * @return  $this
      */
     public function unsetBlockFunction($name);
-
-    /**
-     * Bypass manager class.
-     *
-     * This function is used to unbox the smarty instance inside the object.
-     * It may be used to bypass the template class in cases where direct
-     * access to the smarty template engine is necessary.
-     *
-     * @return  \Smarty
-     */
-    public function getSmarty();
 
 }
 

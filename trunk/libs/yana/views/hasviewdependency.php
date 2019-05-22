@@ -73,7 +73,7 @@ trait HasViewDependency
      *
      * You may use this to modify settings of the view layer and access the template engine.
      *
-     * @return  \Yana\Views\Managers\IsManager
+     * @return  \Yana\Views\Managers\IsSmartyManager
      */
     protected function _getViewManager()
     {

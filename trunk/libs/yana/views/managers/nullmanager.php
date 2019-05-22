@@ -36,7 +36,7 @@ namespace Yana\Views\Managers;
  * @subpackage  views
  * @ignore
  */
-class NullManager extends \Yana\Views\Managers\AbstractManager implements \Yana\Views\Managers\IsManager
+class NullManager extends \Yana\Views\Managers\AbstractManager implements \Yana\Views\Managers\IsSmartyManager
 {
 
     /**

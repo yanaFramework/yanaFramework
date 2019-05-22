@@ -103,7 +103,7 @@ class Form extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Views
         }
 
         // create database query
-        $smartForm = new \Yana\Forms\Builder($params['file']);
+        $smartForm = new \Yana\Forms\Builder($params['file'], $this->_getDependencyContainer());
 
         if (isset($params['id'])) {
             $smartForm->setId($params['id']);

@@ -35,7 +35,7 @@ namespace Yana\Views\Managers;
  * @package     yana
  * @subpackage  views
  */
-abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Views\Managers\IsManager
+abstract class AbstractManager extends \Yana\Core\Object
 {
 
     /**

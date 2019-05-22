@@ -57,21 +57,9 @@ class UrlFormatter extends \Yana\Views\Helpers\Formatters\AbstractFormatter
      * Returns the prefix for the generated URL.
      *
      * @return string
-     * @codeCoverageIgnore
      */
-    protected function _getBaseUrl()
+    public static function getBaseUrl()
     {
-        if (self::$_baseUrl === "") {
-            assert('!isset($builder); // Cannot redeclare var $builder');
-            $builder = new \Yana\ApplicationBuilder();
-            assert('!isset($application); // Cannot redeclare var $application');
-            $application = $builder->buildApplication();
-            unset($builder);
-            self::$_baseUrl = $application->getVar('PHP_SELF')  . "?id=" . $application->getProfileId();
-            if (empty($_COOKIE) && @session_id() != "") {
-                self::$_baseUrl .= "&" . session_name() . "=" . session_id();
-            }
-        }
         return self::$_baseUrl;
     }
 
@@ -170,7 +158,7 @@ class UrlFormatter extends \Yana\Views\Helpers\Formatters\AbstractFormatter
          * depending on the $asString argument.
          */
         assert('!isset($urlPath); // Cannot redeclare var $urlPath');
-        $baseUrl = $this->_getBaseUrl();
+        $baseUrl = self::getBaseUrl();
         if (\strpos($baseUrl, '?') === false) {
             $baseUrl .= '?';
         }
