@@ -463,7 +463,20 @@ class Facade extends \Yana\Core\Object implements \Yana\Report\IsReportable, \Ya
     public function __get($name)
     {
         assert('is_string($name); // Wrong type for argument 1. String expected');
-        return $this->_getRegistryLoader()->$name;
+        return $this->getFileObjectFromVirtualDrive($name);
+    }
+
+    /**
+     * Access the drive of a plugin by using it's name.
+     *
+     * @param   string  $virtualPath  name of plugin
+     * @return  \Yana\Files\IsReadable
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when no such file is defined
+     */
+    public function getFileObjectFromVirtualDrive($virtualPath)
+    {
+        assert('is_string($virtualPath); // Wrong type for argument 1. String expected');
+        return $this->_getRegistryLoader()->getFileObjectFromRegistry($virtualPath);
     }
 
     /**

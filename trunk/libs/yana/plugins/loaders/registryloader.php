@@ -41,8 +41,6 @@ class RegistryLoader extends \Yana\Plugins\Loaders\AbstractRegistryLoader
     /**
      * Load a registry definition.
      *
-     * Loaded instances are cached. Therefore calling this function twice returns the same instance.
-     *
      * @param   string  $name  Must be valid identifier. Consists of chars, numbers and underscores.
      * @throws  \Yana\Core\Exceptions\NotFoundException     when a VDrive definition does not exist
      * @throws  \Yana\Core\Exceptions\NotReadableException  when an existing VDrive definition is not readable

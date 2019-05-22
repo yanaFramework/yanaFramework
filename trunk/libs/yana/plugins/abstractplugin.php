@@ -53,11 +53,6 @@ abstract class AbstractPlugin extends \stdClass implements \Yana\IsPlugin
     private $_dependencyContainer = null;
 
     /**
-     * @var  \Yana\Util\Microsummary
-     */
-    private $_microsummary;
-
-    /**
      * <<construct>> Empty constructor.
      *
      * This is only here so that derived classes get a warning when they overwrite this and introduce new mandatory parameters.
@@ -158,20 +153,6 @@ abstract class AbstractPlugin extends \stdClass implements \Yana\IsPlugin
     protected function _getPluginsFacade()
     {
         return $this->_getApplication()->getPlugins();
-    }
-
-    /**
-     * Create and return microsummary.
-     *
-     * @return \Yana\Util\Microsummary
-     */
-    protected function _getMicrosummary()
-    {
-        if (!isset($this->_microsummary)) {
-            $connection = $this->_connectToDatabase('microsummary');
-            $this->_microsummary = new \Yana\Util\Microsummary($connection);
-        }
-        return $this->_microsummary;
     }
 
     /**

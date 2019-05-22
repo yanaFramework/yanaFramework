@@ -95,24 +95,51 @@ abstract class AbstractRegistryLoader extends \Yana\Core\Object implements \Seri
     {
         assert('is_string($name); // Wrong type for argument 1. String expected');
 
+        return $this->getFileObjectFromRegistry($name);
+    }
+
+    /**
+     * Access the drive of a plugin by using it's name.
+     *
+     * @param   string  $name  name of plugin
+     * @return  \Yana\Files\IsReadable
+     * @throws  \Yana\Core\Exceptions\NotFoundException     when no such file is defined
+     * @throws  \Yana\Core\Exceptions\NotReadableException  when an existing virtual drive definition is not readable
+     */
+    public function getFileObjectFromRegistry($name)
+    {
+        assert('is_string($name); // Wrong type for argument 1. String expected');
+
         $collection = $this->_getRegistries();
 
         $resource = $collection[$name];
         if (!$resource instanceof \Yana\Files\IsReadable) {
             // recursive search
-            $drive = substr($name, 0, strpos($name, ':/'));
-            if (!isset($collection[$drive])) {
-                throw new \Yana\Core\Exceptions\NotFoundException("No virtual file found with name '$name'.", \Yana\Log\TypeEnumeration::WARNING);
+            $registryName = substr($name, 0, strpos($name, ':/'));
+            if (!isset($collection[$registryName])) {
+                $this->_cacheRegistryObject($this->loadRegistry($registryName)); // may throw Exception
             }
             /* @var $registry \Yana\VDrive\IsRegistry */
-            $registry = $collection->offsetGet($drive);
+            $registry = $collection->offsetGet($registryName);
             $resource = $registry->getResource($name); // may throw NotFoundException
         }
         return $resource;
     }
 
     /**
+     * Store object in registry collection.
+     *
+     * @param \Yana\VDrive\IsRegistry $registry
+     */
+    private function _cacheRegistryObject(\Yana\VDrive\IsRegistry $registry)
+    {
+        $this->_getRegistries()->offsetSet($registry->getDriveName(), $registry);
+    }
+
+    /**
      * Loads registry definitions from a list of names.
+     *
+     * Loaded instances are cached. Therefore calling this function twice returns the same instances.
      *
      * @param   array  $registries  list of registry identifiers
      * @throws  \Yana\Core\Exceptions\NotReadableException  when an existing VDrive definition is not readable
@@ -131,8 +158,7 @@ abstract class AbstractRegistryLoader extends \Yana\Core\Object implements \Seri
 
             try {
                 $registry = $this->loadRegistry($name);
-                $driveName = $registry->getDriveName();
-                $collection[$driveName] = $registry;
+                $this->_cacheRegistryObject($registry);
             } catch (\Yana\Core\Exceptions\NotFoundException $e) {
                 // skip file
             }

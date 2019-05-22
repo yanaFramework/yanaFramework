@@ -39,6 +39,15 @@ interface IsRegistryLoader
 {
 
     /**
+     * Access the drive of a plugin by using it's name.
+     *
+     * @param   string  $name  name of plugin
+     * @return  \Yana\Files\IsReadable
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when no such file is defined
+     */
+    public function getFileObjectFromRegistry($name);
+
+    /**
      * Loads registry definitions from a list of names.
      *
      * @param   array  $registries  list of registry identifiers
@@ -49,8 +58,6 @@ interface IsRegistryLoader
 
     /**
      * Load a registry definition.
-     *
-     * Loaded instances are cached. Therefore calling this function twice returns the same instance.
      *
      * @param   string  $name  Must be valid identifier. Consists of chars, numbers and underscores.
      * @throws  \Yana\Core\Exceptions\NotFoundException     when a VDrive definition does not exist
