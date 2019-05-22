@@ -45,12 +45,12 @@
             <style id="btn">default/styles/btn.css</style>
             <style id="menu">default/styles/menu.css</style>
             <style id="skin">default/styles/default_local.css</style>
+            <style id="applicationbar">default/styles/applicationbar.css</style>
             <style id="jquery_theme">default/scripts/jquery/css/smoothness/jquery-ui-1.8.custom.css</style>
             <script id="default">default/scripts/default.js</script>
             <script id="ajax">default/scripts/ajax.js</script>
             <script id="configuration">default/configuration/index.js</script>
             <script id="jquery">default/scripts/jquery/jquery-1.6.1.min.js</script>
-            <script id="applicationbar">default/scripts/applicationbar.js</script>
         </template>
         <template id="GUI_FORM" file="default/gui_generator/form.html.tpl">
             <style>default/styles/gui_defaultform.css</style>
