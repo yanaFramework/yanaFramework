@@ -85,7 +85,7 @@ class Loader extends \Yana\Core\Autoloaders\AbstractLoader
     protected function _includeFile($fileName)
     {
         assert('is_string($fileName); // $className expected to be String');
-        @include_once $fileName;
+        include_once $fileName;
     }
 
 }
