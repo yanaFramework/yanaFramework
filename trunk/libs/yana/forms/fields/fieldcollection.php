@@ -35,20 +35,20 @@ namespace Yana\Forms\Fields;
  * @package     yana
  * @subpackage  form
  */
-class FacadeCollection extends \Yana\Core\AbstractCollection
+class FieldCollection extends \Yana\Core\AbstractCollection
 {
 
     /**
      * Insert or replace item.
      *
-     * @param   string                       $offset  index of item to replace
-     * @param   \Yana\Forms\Fields\IsFacade  $value   new value of item
+     * @param   string                      $offset  index of item to replace
+     * @param   \Yana\Forms\Fields\IsField  $value   new value of item
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the given value is not valid
-     * @return  \Yana\Forms\Fields\IsFacade
+     * @return  \Yana\Forms\Fields\IsField
      */
     public function offsetSet($offset, $value)
     {
-        if (!$value instanceof \Yana\Forms\Fields\IsFacade) {
+        if (!$value instanceof \Yana\Forms\Fields\IsField) {
             $message = "Instance of IsFacade expected. Found " . gettype($value) . "(" .
                 ((is_object($value)) ? get_class($value) : $value) . ") instead.";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message);

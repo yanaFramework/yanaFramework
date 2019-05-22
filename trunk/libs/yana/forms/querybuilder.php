@@ -72,7 +72,7 @@ class QueryBuilder extends \Yana\Core\Object
      * Set form object.
      *
      * @param   \Yana\Forms\Facade  $form  configuring the contents of the form
-     * @return  \Yana\Forms\QueryBuilder
+     * @return  $this
      */
     public function setForm(\Yana\Forms\Facade $form)
     {
@@ -114,38 +114,71 @@ class QueryBuilder extends \Yana\Core\Object
     {
         if (!isset($this->_cache[__FUNCTION__])) {
             $query = new \Yana\Db\Queries\Select($this->_db);
-            if ($this->_form) {
-                $setup = $this->_form->getSetup();
-                $query->setTable($this->_form->getBaseForm()->getTable());
-                $query->setLimit($setup->getEntriesPerPage());
-                $query->setOffset($setup->getPage() * $setup->getEntriesPerPage());
-                if ($setup->getOrderByField()) {
-                    $query->setOrderBy((array) $setup->getOrderByField(), (array) $setup->isDescending());
-                }
-                // apply filters
-                if ($setup->getSearchTerm()) {
-                    $this->_processSearchTerm($query);
-                } else {
-                    $this->_processSearchValues($query);
-                }
-                $this->_processFilters($query);
-                // set output columns
-                if ($setup->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE)->getColumnNames()) {
-                    $query->setColumns($setup->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE)->getColumnNames()); // throws NotFoundException
-                    $query->addColumn($this->_form->getTable()->getPrimaryKey());
-                }
-                $query = $this->_buildSelectForSubForm($query);
-                /* @var $reference \Yana\Db\Ddl\Reference */
-                foreach ($this->_form->getSetup()->getForeignKeys() as $columnName => $reference)
-                {
-                    $query->setLeftJoin($reference->getTable(), $reference->getColumn(), null, $columnName);
-                    $query->addColumn($reference->getTable() . '.' . $reference->getColumn());
-                    $query->addColumn($reference->getTable() . '.' . $reference->getLabel());
-                }
+            $form = $this->getForm();
+            if ($form instanceof \Yana\Forms\Facade && $form->getBaseForm()->getTable() > "") {
+                $this->_applyFormProperties($query, $form);
+                $this->_applySetupSettings($query, $form->getSetup());
+                $this->_applySetupFilters($query, $form->getSetup());
             }
             $this->_cache[__FUNCTION__] = $query;
         }
         return $this->_cache[__FUNCTION__];
+    }
+
+    /**
+     * Sets the source table aso of the query based on the given form.
+     *
+     * @param   \Yana\Db\Queries\Select  $query  set table and so on on this
+     * @param   \Yana\Forms\Facade       $form   use this form as template for query
+     * @return  \Yana\Db\Queries\Select
+     */
+    private function _applyFormProperties(\Yana\Db\Queries\Select $query, \Yana\Forms\Facade $form)
+    {
+        $query->setTable($form->getBaseForm()->getTable());
+        // apply filters
+        if ($form->getSetup()->getSearchTerm()) {
+            $this->_processSearchTerm($query, $form->getSetup()->getSearchTerm(), $form->getUpdateForm());
+        } else {
+            $this->_processSearchValues($query, $form->getSearchForm());
+        }
+
+        // set output columns
+        assert('!isset($columnNames); // Cannot redeclare var $columnNames');
+        $columnNames = $form->getUpdateForm()->getColumnNames();
+        if (count($columnNames) > 0) {
+            $query->setColumns($columnNames); // throws NotFoundException
+            $primaryKey = $form->getTable()->getPrimaryKey();
+            if (\in_array($primaryKey, $columnNames)) {
+                $query->addColumn($form->getTable()->getPrimaryKey());
+            }
+        }
+        unset($columnNames);
+
+        $this->_buildSelectForSubForm($query);
+        /* @var $reference \Yana\Db\Ddl\Reference */
+        foreach ($form->getSetup()->getForeignKeys() as $columnName => $reference)
+        {
+            $query->setLeftJoin($reference->getTable(), $reference->getColumn(), null, $columnName);
+            $query->addColumn($reference->getTable() . '.' . $reference->getColumn());
+            $query->addColumn($reference->getTable() . '.' . $reference->getLabel());
+        }
+    }
+
+    /**
+     * Apply settings to select query obect.
+     *
+     * This sets the limit, offset, and order-by clauses.
+     *
+     * @param   \Yana\Db\Queries\Select  $query  apply settings to this object
+     * @param   \Yana\Forms\IsSetup      $setup  settings to apply
+     */
+    private function _applySetupSettings(\Yana\Db\Queries\Select $query, \Yana\Forms\IsSetup $setup)
+    {
+        $query->setLimit($setup->getEntriesPerPage());
+        $query->setOffset($setup->getPage() * $setup->getEntriesPerPage());
+        if ($setup->getOrderByField()) {
+            $query->setOrderBy((array) $setup->getOrderByField(), (array) $setup->isDescending());
+        }
     }
 
     /**
@@ -170,33 +203,65 @@ class QueryBuilder extends \Yana\Core\Object
         $query->setOrderBy((array) $targetReference->getLabel());
         $query->addColumn($targetReference->getColumn(), 'VALUE');
         $query->addColumn($targetReference->getLabel(), 'LABEL');
+        $query->setWhere(array($targetReference->getLabel(), 'LIKE' , (string) $searchTerm . '%'));
         return $query;
     }
 
     /**
      * This processes a global search-term submitted via the search-form.
      *
-     * It creates a new having clause and adds it to the select query.
+     * This function creates a new having clause and adds it to the select query.
      * The new clause will use fuzzy-search with wildcards and be appended using the "OR" operator.
      *
-     * @param  \Yana\Db\Queries\Select $select  query that is to be modified
+     * So, how do we find the table columns we need to search in?
+     * And why the hell do we get the "search form" and then iterate through it?
+     *
+     * Well: The "search form" is a facade and a field collection.
+     * It contains the form DDL object + the search "context".
+     * If we iterate over it, we iterate over the fields of the form.
+     *
+     * So what is a "context"? A "context" object contains the parameters the form generator was called with.
+     * And these parameters may include a field list.
+     *
+     * If the list is provided, the fields the form should contain when displayed in this context are restricted to those in the list.
+     * If the list is omitted, there is no restriction; any field can be displayed in this context.
+     *
+     * The form object itself says which fields CAN or CANNOT be displayed on principle, INDEPENDENT of any context.
+     *
+     * It does this in one of two ways:
+     *
+     * - Either it has "all input", in which case ALL fields are allowed UNLESS they are explicitly listed as "invisible".
+     * - Or it doesn't have "all input", in which case ONLY the fields listed by the form object are allowed.
+     *
+     * So in short: the form object provides either a blacklist, or a whitelist.
+     *
+     * Finally, these form fields must be related to an actual column in an actual table.
+     *
+     * This means a column should be searched if, and only if:
+     * - It is included in the search context, or the context is empty AND
+     * - The form object has "all input" and doesn't explicitly mark the field as "invisible", OR
+     * - The form object doesn't have "all input" and lists the field as "visible" AND
+     * - The associated table actually does have the column in question AND that column is "visible".
+     *
+     * Aaand guess what? The search form facade object already does all of this for us.
+     * So: if we ask the search form for its field lists, we are all good :-)
+     *
+     * And THAT's why we DON'T ask the table, the context, or the form for the field list.
+     * Understood? Great!
+     *
+     * @param  \Yana\Db\Queries\Select              $select      query that is to be modified
+     * @param  string                               $searchTerm  the string for which to search the files
+     * @param  \Yana\Forms\Fields\FieldCollectionWrapper  $columnList  use this form as template for the query
      */
-    protected function _processSearchTerm(\Yana\Db\Queries\Select $select)
+    private function _processSearchTerm(\Yana\Db\Queries\Select $select, $searchTerm, \Yana\Forms\Fields\FieldCollectionWrapper $columnList)
     {
-        $setup = $this->_form->getSetup();
-        $searchTerm = $setup->getSearchTerm();
+        assert('is_string($searchTerm); // Invalid argument type: $searchTerm. String expected.');
         if (!empty($searchTerm)) {
+
             $searchTerm = preg_replace('/\s+/', '%', $searchTerm);
-            $form = $this->_form->getBaseForm();
-            $fields = array();
-            if ($form->hasAllInput()) {
-                $fields = $this->_form->getUpdateForm();
-            } else {
-                $fields = $form->getFields();
-            }
             $clause = array();
             // process fields
-            foreach ($fields as $field)
+            foreach ($columnList as $field)
             {
                 $_clause = array($field->getName(), 'like', "%$searchTerm%");
                 $clause = (empty($clause)) ? $_clause : array($clause, 'OR', $_clause);
@@ -212,15 +277,16 @@ class QueryBuilder extends \Yana\Core\Object
      * It creates a new where clause and adds it to the select query.
      * The new clause will be appended using the "AND" operator.
      *
-     * @param  \Yana\Db\Queries\Select $select  query that is to be modified
+     * @param  \Yana\Db\Queries\Select              $select      query that is to be modified
+     * @param  \Yana\Forms\Fields\FieldCollectionWrapper  $columnList  contains user input (search values)
      */
-    protected function _processSearchValues(\Yana\Db\Queries\Select $select)
+    private function _processSearchValues(\Yana\Db\Queries\Select $select, \Yana\Forms\Fields\FieldCollectionWrapper $columnList)
     {
-        if ($this->_form->getSetup()->getContext(\Yana\Forms\Setups\ContextNameEnumeration::SEARCH)->getValues()) {
+        if ($columnList->getContext()->getValues()) {
             $clause = $select->getWhere();
             // determine new where clause
-            /* @var $field \Yana\Forms\Fields\IsFacade */
-            foreach ($this->_form->getSearchForm() as $field)
+            /* @var $field \Yana\Forms\Fields\IsField */
+            foreach ($columnList as $field)
             {
                 $test = $field->getValueAsWhereClause();
                 if (is_null($test)) {
@@ -243,11 +309,11 @@ class QueryBuilder extends \Yana\Core\Object
      * It creates a new having clause and adds it to the select query.
      * The new clause will be appended using the "AND" operator.
      *
-     * @param  \Yana\Db\Queries\Select $select  query that is to be modified
+     * @param  \Yana\Db\Queries\Select  $select  query that is to be modified
+     * @param  \Yana\Forms\IsSetup      $setup   contains filter settings that need to be applied
      */
-    protected function _processFilters(\Yana\Db\Queries\Select $select)
+    private function _applySetupFilters(\Yana\Db\Queries\Select $select, \Yana\Forms\IsSetup $setup)
     {
-        $setup = $this->_form->getSetup();
         if ($setup->hasFilter()) {
             assert('!isset($updateForm); // Cannot redeclare var $updateForm');
             $updateForm = $this->_form->getUpdateForm();
@@ -268,7 +334,6 @@ class QueryBuilder extends \Yana\Core\Object
      * Checks if a parent form exists and modifies the query accordingly.
      *
      * @param   \Yana\Db\Queries\Select $select  base query for current form
-     * @return  \Yana\Db\Queries\Select
      */
     private function _buildSelectForSubForm(\Yana\Db\Queries\Select $select)
     {
@@ -300,7 +365,6 @@ class QueryBuilder extends \Yana\Core\Object
                 }
             }
         }
-        return $select;
     }
 
     /**
@@ -308,13 +372,13 @@ class QueryBuilder extends \Yana\Core\Object
      *
      * This returns a query object bound to the form, that can be used to count the pages.
      *
-     * @return  \Yana\Db\Queries\SelectCount
+     * @return  \Yana\Db\Queries\Select
      */
     public function buildCountQuery()
     {
         if (!isset($this->_cache[__FUNCTION__])) {
             $query = clone $this->buildSelectQuery();
-            assert('$query instanceof \Yana\Db\Queries\SelectCount;');
+            assert($query instanceof \Yana\Db\Queries\SelectCount);
             $query->setLimit(0);
             $query->setOffset(0);
             $this->_cache[__FUNCTION__] = $query;

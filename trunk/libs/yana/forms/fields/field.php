@@ -34,7 +34,7 @@ namespace Yana\Forms\Fields;
  * @subpackage  form
  * @ignore
  */
-class Facade extends \Yana\Forms\Fields\AbstractFacade
+class Field extends \Yana\Forms\Fields\AbstractField
 {
 
     /**
@@ -47,7 +47,7 @@ class Facade extends \Yana\Forms\Fields\AbstractFacade
     /**
      * Get form context.
      *
-     * @return  FormSetupContext
+     * @return  \Yana\Forms\Setups\IsContext
      */
     public function getContext()
     {
@@ -236,7 +236,7 @@ class Facade extends \Yana\Forms\Fields\AbstractFacade
      */
     public function getValue()
     {
-        $name = strtoupper($this->getName()); // returns either field or column name
+        $name = \Yana\Util\Strings::toUpperCase($this->getName()); // returns either field or column name
         $context = $this->getContext();
         $collection = $context->getRows();
         $value = null;

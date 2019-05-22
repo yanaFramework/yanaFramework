@@ -41,14 +41,16 @@ interface IsBuilder
      *
      * Set your own predefined setup, to modify it.
      *
-     * @param  \Yana\Forms\Setup  $setup  basic setup to modify
+     * @param   \Yana\Forms\IsSetup  $setup  basic setup to modify
+     * @return  $this
      */
-    public function setSetup(\Yana\Forms\Setup $setup);
+    public function setSetup(\Yana\Forms\IsSetup $setup);
 
     /**
      * Build facade object.
      * 
-     * @return  \Yana\Forms\Setup
+     * @return  \Yana\Forms\IsSetup
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when the database, or table was not found
      */
     public function __invoke();
 
@@ -102,6 +104,15 @@ interface IsBuilder
     public function setColumnsWhitelist(array $columnNames);
 
     /**
+     * Get list of visible columns.
+     *
+     * If empty, all columns are visible. Otherwise only those in the list can be viewed.
+     *
+     * @return  array
+     */
+    public function getColumnsWhitelist();
+
+    /**
      * Select hidden columns.
      *
      * Limits the visible columns to entries not on this list.
@@ -110,6 +121,13 @@ interface IsBuilder
      * @return  $this
      */
     public function setColumnsBlacklist(array $columnNames);
+
+    /**
+     * Get list of hidden columns.
+     *
+     * @return  array
+     */
+    public function getColumnsBlacklist();
 
     
 }

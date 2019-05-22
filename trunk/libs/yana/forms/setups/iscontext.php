@@ -63,7 +63,7 @@ interface IsContext
      *
      * @param   string  $key    id of value to set
      * @param   mixed   $value  new value
-     * @return  self
+     * @return  $this
      */
     public function setValue($key, $value);
 
@@ -71,7 +71,7 @@ interface IsContext
      * Set form values.
      *
      * @param   array  $values  new values
-     * @return  self
+     * @return  $this
      */
     public function setValues(array $values);
 
@@ -81,7 +81,7 @@ interface IsContext
      * Replaces existing values, adds new values and keeps values that haven't been changed in the request.
      *
      * @param   array  $values  new values
-     * @return  self
+     * @return  $this
      */
     public function addValues(array $values);
 
@@ -93,7 +93,7 @@ interface IsContext
      *
      * @param   string  $key  valid identifier
      * @param   array   $row  new values
-     * @return  self
+     * @return  $this
      */
     public function updateRow($key, array $row);
 
@@ -101,7 +101,7 @@ interface IsContext
      * Replace form rows.
      *
      * @param   array  $rows  new values
-     * @return  self
+     * @return  $this
      */
     public function setRows(array $rows);
 
@@ -123,7 +123,7 @@ interface IsContext
      * Set footer text.
      *
      * @param   string  $footer  any text or HTML
-     * @return  \Yana\Forms\Setups\Context
+     * @return  $this
      */
     public function setFooter($footer);
 
@@ -138,7 +138,7 @@ interface IsContext
      * Set header text.
      *
      * @param   string  $header  any text or HTML
-     * @return  \Yana\Forms\Setups\Context
+     * @return  $this
      */
     public function setHeader($header);
 
@@ -153,7 +153,7 @@ interface IsContext
      * set export action
      *
      * @param   string  $action action name
-     * @return  self
+     * @return  $this
      */
     public function setAction($action);
 
@@ -163,6 +163,22 @@ interface IsContext
      * @return  string
      */
     public function getAction();
+
+    /**
+     * Get unique list of column names.
+     *
+     * @return  bool
+     */
+    public function hasColumnName($columnName);
+
+    /**
+     * Returns bool(true) if the list of column names is not empty.
+     *
+     * Returns bool(false) if there are no names in the list.
+     *
+     * @return  bool
+     */
+    public function hasColumnNames();
 
     /**
      * Get unique list of column names.
@@ -178,9 +194,19 @@ interface IsContext
      * If the list is left empty. The form is meant to auto-detect the abvailable columns.
      *
      * @param   array  $columnNames  list of identifiers
-     * @return  self
+     * @return  $this
      */
     public function setColumnNames(array $columnNames);
+
+    /**
+     * Add name of column to list.
+     *
+     * Note that the name will be changed to lower case.
+     *
+     * @param   string  $columnName  must be valid identifier
+     * @return  $this
+     */
+    public function addColumnName($columnName);
 
 }
 

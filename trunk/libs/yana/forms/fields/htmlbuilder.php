@@ -153,7 +153,7 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
         $string = $this->setId($id . "_day")->setName($name . "[day]")->_getSelect($days, array($day))
             . $this->setId($id . "_month")->setName($name . "[month]")->_getSelect($months, array($month))
             . $this->setId($id . "_year")->setName($name . "[year]")->_getSelect($years, array($year))
-            . '<script type="text/javascript">yanaAddCalendar("' . $this->getId() . '", "' . $this->getId() . '_year", '
+            . '<script type="text/javascript">yanaAddCalendar("' . $id . '", "' . $id . '_year", '
             . $day . ', ' . ($month - 1) . ', ' . $year . ');</script>'.
             '<script type="text/javascript" src=\'' . \Yana\Views\Skins\Skin::getSkinDirectory('default')
             . 'scripts/calendar/' . $this->_getTranslationFacade()->getVar('calendar.js') . "'></script>";

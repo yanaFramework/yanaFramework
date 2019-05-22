@@ -34,13 +34,13 @@ namespace Yana\Forms\Fields;
  * @subpackage  form
  * @ignore
  */
-abstract class AbstractFacade extends \Yana\Core\Object implements \Yana\Forms\Fields\IsFacade
+abstract class AbstractField extends \Yana\Core\Object implements \Yana\Forms\Fields\IsField
 {
 
     /**
      * Form in which the field is defined.
      *
-     * @var  \Yana\Forms\ContextSensitiveWrapper
+     * @var  \Yana\Forms\Fields\FieldCollectionWrapper
      */
     private $_form = null;
 
@@ -61,11 +61,11 @@ abstract class AbstractFacade extends \Yana\Core\Object implements \Yana\Forms\F
     /**
      * Create new instance.
      *
-     * @param  \Yana\Forms\ContextSensitiveWrapper  $parentForm  form structure of configuration
-     * @param  \Yana\Db\Ddl\Column                  $column      base column definition
-     * @param  \Yana\Db\Ddl\Field                   $field       wrapped field instance
+     * @param  \Yana\Forms\Fields\FieldCollectionWrapper  $parentForm  form structure of configuration
+     * @param  \Yana\Db\Ddl\Column                        $column      base column definition
+     * @param  \Yana\Db\Ddl\Field                         $field       wrapped field instance
      */
-    public function __construct(\Yana\Forms\ContextSensitiveWrapper $parentForm, \Yana\Db\Ddl\Column $column, \Yana\Db\Ddl\Field $field = null)
+    public function __construct(\Yana\Forms\Fields\FieldCollectionWrapper $parentForm, \Yana\Db\Ddl\Column $column, \Yana\Db\Ddl\Field $field = null)
     {
         $this->_form = $parentForm;
         $this->_column = $column;

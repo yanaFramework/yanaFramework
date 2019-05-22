@@ -34,33 +34,8 @@ namespace Yana\Forms\Fields;
  * @subpackage  form
  * @ignore
  */
-class WhereClauseCreator extends \Yana\Core\Object
+class WhereClauseCreator extends \Yana\Forms\Fields\AbstractWhereClauseCreator
 {
-
-    /**
-     * @var  \Yana\Db\Ddl\Column
-     */
-    private $_column = null;
-
-    /**
-     * @var  string
-     */
-    private $_tableName = "";
-
-    /**
-     * @var  mixed
-     */
-    private $_value = null;
-
-    /**
-     * @var  mixed
-     */
-    private $_minValue = array('MONTH' => 1, 'DAY' => 1, 'YEAR' => 1970);
-
-    /**
-     * @var  mixed
-     */
-    private $_maxValue = array('MONTH' => 31, 'DAY' => 12, 'YEAR' => 2040);
 
     /**
      * <<constructor>> Create new instance.
@@ -71,94 +46,8 @@ class WhereClauseCreator extends \Yana\Core\Object
     public function __construct(\Yana\Db\Ddl\Column $column, $tableName)
     {
         assert('is_string($tableName); // Invalid argument $tableName: string expected');
-        $this->_column = $column;
-        $this->_tableName = (string) $tableName;
-    }
-
-    /**
-     * Get column definition.
-     *
-     * @return  \Yana\Db\Ddl\Column
-     */
-    public function getColumn()
-    {
-        return $this->_column;
-    }
-
-    /**
-     * Get table definition.
-     *
-     * @return  string
-     */
-    public function getTableName()
-    {
-        return $this->_tableName;
-    }
-
-    /**
-     * Get column value.
-     *
-     * @return  mixed
-     */
-    public function getValue()
-    {
-        return $this->_value;
-    }
-
-    /**
-     * Set column value.
-     *
-     * @param   mixed  $value  of column
-     * @return  $this
-     */
-    public function setValue($value)
-    {
-        $this->_value = $value;
-        return $this;
-    }
-
-    /**
-     * Get min value for range.
-     *
-     * @return  array
-     */
-    public function getMinValue()
-    {
-        return $this->_minValue;
-    }
-
-    /**
-     * Get max value for range.
-     *
-     * @return  mixed
-     */
-    public function getMaxValue()
-    {
-        return $this->_maxValue;
-    }
-
-    /**
-     * Set start value for range.
-     *
-     * @param   mixed  $minValue  of range
-     * @return  $this
-     */
-    public function setMinValue($minValue)
-    {
-        $this->_minValue = $minValue;
-        return $this;
-    }
-
-    /**
-     * Set end value for range.
-     *
-     * @param   mixed  $maxValue  of range
-     * @return  $this
-     */
-    public function setMaxValue($maxValue)
-    {
-        $this->_maxValue = $maxValue;
-        return $this;
+        $this->_setColumn($column);
+        $this->_setTableName($tableName);
     }
 
     /**
@@ -208,7 +97,7 @@ class WhereClauseCreator extends \Yana\Core\Object
         $validItems = $this->getColumn()->getEnumerationItemNames();
         // prevent use of invalid items (possible injection)
         $rightOperand = array_intersect($value, $validItems);
-        if (!empty($rightOperand)) {
+        if (empty($rightOperand)) {
             return null;
         }
         assert('is_array($rightOperand);');
@@ -217,6 +106,8 @@ class WhereClauseCreator extends \Yana\Core\Object
 
     /**
      * Build where clause for time/date ranges.
+     *
+     * The range is created ONLY if the client has provided the argument "ACTIVE" with the string value "true".
      *
      * @return  array
      */
@@ -228,7 +119,7 @@ class WhereClauseCreator extends \Yana\Core\Object
         switch (true)
         {
             case !is_array($value):
-            case !isset($value['ACTIVE']):
+            case !isset($value['ACTIVE']): // this is a parameter provided by the FRONTEND. Be aware of this dependency!
             case $value['ACTIVE'] !== 'true':
             case !is_array($min):
             case !isset($min['MONTH']):
@@ -258,20 +149,28 @@ class WhereClauseCreator extends \Yana\Core\Object
         $leftOperand = $this->_buildLeftOperand();
         $min = $this->getMinValue();
         $max = $this->getMaxValue();
-        if ($min != '') {
-            $rightOperand = $min;
-            if ($min === $max) {
+        if (\is_numeric($min) && \is_numeric($max) && $min <= $max) {
+            $minOperand = (float) $min;
+            $maxOperand = (float) $max;
+
+            if ($minOperand === $maxOperand) {
                 $operator = '=';
-            } elseif ($min < $max) {
-                $operator = 'AND';
-                $rightOperand = array($leftOperand, '<=', $max);
-                $leftOperand = array($leftOperand, '>=', $min);
+                $rightOperand = (float) $min;
+
             } else {
-                $operator = '>=';
+                $operator = 'AND';
+                $rightOperand = array($leftOperand, '<=', $maxOperand);
+                $leftOperand = array($leftOperand, '>=', $minOperand);
+
             }
-        } elseif ($max != '') {
-            $rightOperand = $max;
+        } elseif (\is_numeric($min)) {
+            $operator = '>=';
+            $rightOperand = (float) $min;
+
+        } elseif (\is_numeric($max)) {
             $operator = '<=';
+            $rightOperand = (float) $max;
+
         } else {
             return null;
         }
@@ -310,11 +209,11 @@ class WhereClauseCreator extends \Yana\Core\Object
          */
         switch ($this->getColumn()->getType())
         {
-            case 'bool':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::BOOL:
                 return $this->_buildBoolClause();
 
-            case 'enum':
-            case 'set':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::ENUM:
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::SET:
                 return $this->_buildListClause();
 
             case 'time':
@@ -322,9 +221,9 @@ class WhereClauseCreator extends \Yana\Core\Object
             case 'date':
                 return $this->_buildTimeRangeClause();
 
-            case 'integer':
-            case 'float':
-            case 'range':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::INT:
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::FLOAT:
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::RANGE:
                 return $this->_buildNumberRangeClause();
         }
         return $this->_buildStringClause();

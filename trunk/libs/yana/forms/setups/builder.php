@@ -91,17 +91,20 @@ class Builder extends \Yana\Core\Object implements \Yana\Forms\Setups\IsBuilder
      *
      * Set your own predefined setup, to modify it.
      *
-     * @param  \Yana\Forms\Setup  $setup  basic setup to modify
+     * @param   \Yana\Forms\IsSetup  $setup  basic setup to modify
+     * @return  $this
      */
-    public function setSetup(\Yana\Forms\Setup $setup)
+    public function setSetup(\Yana\Forms\IsSetup $setup)
     {
         $this->object = $setup;
+        return $this;
     }
 
     /**
      * Build facade object.
-     * 
-     * @return  \Yana\Forms\Setup
+     *
+     * @return  \Yana\Forms\IsSetup
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when the database, or table was not found
      */
     public function __invoke()
     {
@@ -201,31 +204,23 @@ class Builder extends \Yana\Core\Object implements \Yana\Forms\Setups\IsBuilder
             if (!isset($request[$name]) || !is_array($request[$name])) {
                 continue;
             }
-        assert('!isset($context); // Cannot redeclare var $context');
-        assert('!isset($columnNames); // Cannot redeclare var $columnNames');
+            assert('!isset($requestValues); // Cannot redeclare var $requestValues');
+            $requestValues = \Yana\Util\Hashtable::changeCase($request[$name], \CASE_UPPER);
+            assert('!isset($context); // Cannot redeclare var $context');
+            assert('!isset($columnNames); // Cannot redeclare var $columnNames');
             $context = $setup->getContext($name);
             if ($name === \Yana\Forms\Setups\ContextNameEnumeration::UPDATE) {
-                $columnNames = array_flip($setup->getContext(\Yana\Forms\Setups\ContextNameEnumeration::EDITABLE)->getColumnNames());
-                assert('!isset($key); // Cannot redeclare var $key');
-                assert('!isset($row); // Cannot redeclare var $row');
-                foreach ($request[$name] as $key => $row)
-                {
-                    if (is_array($row)) {
-                        // security check: allow only fields, that exist in the form
-                        $row = array_intersect_key($row, $columnNames);
-                        $context->updateRow($key, $row);
-                    }
-                }
-                unset($key, $row);
+                $this->_setUpdateContextRows($requestValues);
+
             } else {
                 $columnNames = array_flip($context->getColumnNames());
                 assert('!isset($values); // Cannot redeclare var $values');
                 // security check: allow only fields, that exist in the form
-                $values = array_intersect_key($request[$name], $columnNames);
+                $values = array_intersect_key($requestValues, $columnNames);
                 $context->setValues($values);
                 unset($values);
             }
-            unset($context, $columnNames);
+            unset($context, $columnNames, $requestValues);
         }
         unset($name);
 
@@ -240,9 +235,49 @@ class Builder extends \Yana\Core\Object implements \Yana\Forms\Setups\IsBuilder
      */
     public function setRows(array $rows = array())
     {
-        $this->object->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE)->setRows($rows);
+        $this->_resetUpdateContextRows()->_setUpdateContextRows($rows);
         $this->_buildHeader();
         $this->_buildFooter();
+        return $this;
+    }
+
+    /**
+     * Reset (empty) all rows in the update context.
+     *
+     * @return  $this
+     */
+    private function _resetUpdateContextRows()
+    {
+        $this->object->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE)->setRows(array());
+        return $this;
+    }
+
+    /**
+     * Merges the given rows with the existing values.
+     *
+     * @param   array  $rows  array of rows to update
+     * @return  $this
+     */
+    private function _setUpdateContextRows(array $rows)
+    {
+        assert('!isset($columnNames); // Cannot redeclare var $columnNames');
+        $columnNames = array_flip($this->object->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE)->getColumnNames());
+        assert('!isset($context); // Cannot redeclare var $context');
+        $context = $this->object->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE);
+
+        assert('!isset($key); // Cannot redeclare var $key');
+        assert('!isset($row); // Cannot redeclare var $row');
+        foreach ($rows as $key => $row)
+        {
+            if (is_array($row)) {
+                $upperCaseRow = \array_change_key_case($row, \CASE_UPPER);
+                // security check: allow only fields, that exist in the form
+                $row = array_intersect_key($upperCaseRow, $columnNames);
+                $context->updateRow($key, $row);
+            }
+        }
+        unset($key, $row);
+
         return $this;
     }
 
@@ -395,23 +430,24 @@ class Builder extends \Yana\Core\Object implements \Yana\Forms\Setups\IsBuilder
         $setup->setSearchAction($searchAction);
         $setup->setExportAction($exportAction);
 
-        $action = "";
+        $insertAction = "";
         if ($form->isInsertable()) {
-            $action = $this->_resolveAction('insert');
+            $insertAction = $this->_resolveAction('insert');
         }
-        $setup->setInsertAction($action);
+        $setup->setInsertAction($insertAction);
 
-        $action = "";
+        $updateAction = "";
         if ($form->isUpdatable()) {
-            $action = $this->_resolveAction('update');
+            $updateAction = $this->_resolveAction('update');
         }
-        $setup->setUpdateAction($action);
+        $setup->setUpdateAction($updateAction);
 
-        $action = "";
+        $deleteAction = "";
         if ($form->isDeletable()) {
-            $action = $this->_resolveAction('delete');
+            $deleteAction = $this->_resolveAction('delete');
         }
-        $setup->setDeleteAction($action);
+        $setup->setDeleteAction($deleteAction);
+
         return $this;
     }
 
@@ -419,7 +455,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Forms\Setups\IsBuilder
      * Get the handler-function name for the defined form-action.
      *
      * @param   string  $name  'download', 'insert', 'update', 'delete', 'export'
-     * @return  string 
+     * @return  string
      */
     private function _resolveAction($name)
     {
@@ -428,7 +464,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Forms\Setups\IsBuilder
         if (empty($action)) {
             $event = $this->getForm()->getEvent($name);
             if ($event instanceof \Yana\Db\Ddl\Event) {
-                $action = $event->getAction();
+                $action = (string) $event->getAction();
             }
         }
         $security = $this->_getDependencyContainer()->getSecurity();
@@ -457,6 +493,10 @@ class Builder extends \Yana\Core\Object implements \Yana\Forms\Setups\IsBuilder
                 $message = "Error in form '" . $form->getName() . "'. No parent database defined.";
                 throw new \Yana\Core\Exceptions\NotFoundException($message);
             }
+            if ($name == "") {
+                $message = "Error in form '" . $form->getName() . "'. No parent table defined.";
+                throw new \Yana\Core\Exceptions\NotFoundException($message);
+            }
             $tableDefinition = $database->getTable($name);
             if (!($tableDefinition instanceof \Yana\Db\Ddl\Table)) {
                 $message = "Error in form '" . $form->getName() . "'. Parent table '$name' not found.";
@@ -475,6 +515,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Forms\Setups\IsBuilder
      * and form settings.
      *
      * @return  $this
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when the database, or table was not found
      */
     private function _buildSetupContext()
     {
@@ -487,7 +528,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Forms\Setups\IsBuilder
         if ($form->hasAllInput()) {
             $columnNames = $table->getColumnNames();
         } else {
-            $columnNames = array_keys($form->getFields());
+            $columnNames = $form->getFieldNames();
         }
         /** @var $column \Yana\Db\Ddl\Column */
         foreach ($columnNames as $columnName)
@@ -540,9 +581,10 @@ class Builder extends \Yana\Core\Object implements \Yana\Forms\Setups\IsBuilder
             }
         }
         $this->object->getContext(\Yana\Forms\Setups\ContextNameEnumeration::EDITABLE)->setColumnNames(array_keys($updateCollection->toArray()));
-        $this->object->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE)->setColumnNames(array_keys($readCollection->toArray()));
+        $this->object->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE)->setColumnNames(array_keys($updateCollection->toArray()));
         $this->object->getContext(\Yana\Forms\Setups\ContextNameEnumeration::INSERT)->setColumnNames(array_keys($insertCollection->toArray()));
         $this->object->getContext(\Yana\Forms\Setups\ContextNameEnumeration::SEARCH)->setColumnNames(array_keys($searchCollection->toArray()));
+        $this->object->getContext(\Yana\Forms\Setups\ContextNameEnumeration::READ)->setColumnNames(array_keys($readCollection->toArray()));
         $this->_applyWhitelistColumnNames();
         $this->_buildForeignKeyReferences($readCollection);
         return $this;
@@ -591,6 +633,18 @@ class Builder extends \Yana\Core\Object implements \Yana\Forms\Setups\IsBuilder
     }
 
     /**
+     * Get list of visible columns.
+     *
+     * If empty, all columns are visible. Otherwise only those in the list can be viewed.
+     *
+     * @return  array
+     */
+    public function getColumnsWhitelist()
+    {
+        return $this->_whitelistColumnNames;
+    }
+
+    /**
      * Select hidden columns.
      *
      * Limits the visible columns to entries not on this list.
@@ -606,6 +660,16 @@ class Builder extends \Yana\Core\Object implements \Yana\Forms\Setups\IsBuilder
     }
 
     /**
+     * Get list of hidden columns.
+     *
+     * @return  array
+     */
+    public function getColumnsBlacklist()
+    {
+        return $this->_blacklistColumnNames;
+    }
+
+    /**
      * Apply selected whitelist of column names, if there is any.
      *
      * This function filters out all columns not apparent in the whitelist on all contexts.
@@ -614,18 +678,22 @@ class Builder extends \Yana\Core\Object implements \Yana\Forms\Setups\IsBuilder
      */
     private function _applyWhitelistColumnNames()
     {
+        assert('!isset($whiteList); // Cannot redeclare var $whiteList');
+        $whiteList = \array_change_key_case($this->getColumnsWhitelist(), CASE_UPPER);
+        assert('!isset($blackList); // Cannot redeclare var $blackList');
+        $blackList = \array_change_key_case($this->getColumnsBlacklist(), CASE_UPPER);
         foreach ($this->object->getContexts() as $context)
         {
             $columns = $context->getColumnNames();
-            if (!empty($this->_whitelistColumnNames)) {
+            if (!empty($whiteList)) {
                 if (!empty($columns)) {
-                    $columns = array_intersect($columns, $this->_whitelistColumnNames);
+                    $columns = array_intersect($columns, $whiteList);
                 } else {
-                    $columns = $this->_whitelistColumnNames;
+                    $columns = $whiteList;
                 }
             }
-            if (!empty($this->_blacklistColumnNames)) {
-                $columns = array_diff($columns, $this->_blacklistColumnNames);
+            if (!empty($blackList)) {
+                $columns = array_diff($columns, $blackList);
             }
             $context->setColumnNames($columns);
         }

@@ -220,10 +220,11 @@ class Worker extends \Yana\Forms\QueryBuilder
             if ($parentForm && $parentForm->getBaseForm()->getTable() !== $this->_form->getBaseForm()->getTable()) {
                 $results = $parentForm->getUpdateValues();
                 if (count($results) === 1) {
-                    $foreignKey = array_shift($this->getForeignKey());
+                    $foreignKeyArray = $this->getForeignKey(); // Returns array, where the first entry is the source column in the sub-form
+                    $foreignKey = \array_shift($foreignKeyArray);
                     $newEntry[$foreignKey] = key($results);
                 }
-                unset($results, $foreignKey);
+                unset($results, $foreignKey, $foreignKeyArray);
             }
 
             $tableName = $this->_form->getBaseForm()->getTable();

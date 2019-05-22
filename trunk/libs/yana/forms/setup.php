@@ -159,7 +159,7 @@ class Setup extends \Yana\Core\Object implements \Yana\Forms\IsSetup
      * If the context does not exist, it is created.
      *
      * @param   string  $name  describes what the form does (insert, update, search, read)
-     * @return  \Yana\Forms\Setups\Context
+     * @return  \Yana\Forms\Setups\IsContext
      * @see \Yana\Forms\Setups\ContextNameEnumeration
      */
     public function getContext($name)
@@ -566,7 +566,7 @@ class Setup extends \Yana\Core\Object implements \Yana\Forms\IsSetup
      *
      * Returns an empty string if no search term was set.
      *
-     * @return  bool
+     * @return  string
      */
     public function getSearchTerm()
     {

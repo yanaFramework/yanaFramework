@@ -47,21 +47,21 @@ class Facade extends \Yana\Core\Object
     /**
      * List of searchable fields.
      *
-     * @var  \Yana\Forms\Fields\FacadeCollection
+     * @var  \Yana\Forms\Fields\IsFieldCollectionWrapper
      */
     private $_searchForm = null;
 
     /**
      * List of updatable fields.
      *
-     * @var  \Yana\Forms\Fields\FacadeCollection
+     * @var  \Yana\Forms\Fields\IsFieldCollectionWrapper
      */
     private $_updateForm = null;
 
     /**
      * List of insertable fields.
      *
-     * @var  \Yana\Forms\Fields\FacadeCollection
+     * @var  \Yana\Forms\Fields\IsFieldCollectionWrapper
      */
     private $_insertForm = null;
 
@@ -82,7 +82,7 @@ class Facade extends \Yana\Core\Object
     /**
      * Form setup
      *
-     * @var  \Yana\Forms\Setup
+     * @var  \Yana\Forms\IsSetup
      */
     private $_setup = null;
 
@@ -96,14 +96,6 @@ class Facade extends \Yana\Core\Object
     private $_parent = null;
 
     /**
-     * <<constructor>> Initialize name and setup.
-     */
-    public function __construct()
-    {
-        $this->_setup = new \Yana\Forms\Setup();
-    }
-
-    /**
      * Relay function call to wrapped object.
      *
      * @param   string  $name       method name
@@ -115,11 +107,12 @@ class Facade extends \Yana\Core\Object
     {
         if (isset($this->_form) && method_exists($this->_form, $name)) {
             return call_user_func_array(array($this->_form, $name), $arguments);
-        } elseif (method_exists($this->_setup, $name)) {
-            return call_user_func_array(array($this->_setup, $name), $arguments);
-        } else {
-            return parent::__call($name, $arguments);
         }
+        $setup = $this->getSetup();
+        if (method_exists($setup, $name)) {
+            return call_user_func_array(array($setup, $name), $arguments);
+        }
+        return parent::__call($name, $arguments);
     }
 
     /**
@@ -207,20 +200,23 @@ class Facade extends \Yana\Core\Object
     /**
      * Get the setup configuration of this form.
      *
-     * @return  \Yana\Forms\Setup
+     * @return  \Yana\Forms\IsSetup
      */
     public function getSetup()
     {
+        if (!isset($this->_setup)) {
+            $this->_setup = new \Yana\Forms\Setup();
+        }
         return $this->_setup;
     }
 
     /**
      * Set form setup.
      *
-     * @param   \Yana\Forms\Setup  $setup  configuring the behavior of the form
+     * @param   \Yana\Forms\IsSetup  $setup  configuring the behavior of the form
      * @return  \Yana\Forms\Facade
      */
-    public function setSetup(\Yana\Forms\Setup $setup)
+    public function setSetup(\Yana\Forms\IsSetup $setup)
     {
         $this->_setup = $setup;
         return $this;
@@ -299,13 +295,13 @@ class Facade extends \Yana\Core\Object
     /**
      * Get searchable form.
      *
-     * @return  \Yana\Forms\ContextSensitiveWrapper
+     * @return  \Yana\Forms\Fields\IsFieldCollectionWrapper
      */
     public function getSearchForm()
     {
         if (!isset($this->_searchForm)) {
-            $context = $this->_setup->getContext(\Yana\Forms\Setups\ContextNameEnumeration::SEARCH);
-            $this->_searchForm = new \Yana\Forms\ContextSensitiveWrapper($this, $context);
+            $context = $this->getSetup()->getContext(\Yana\Forms\Setups\ContextNameEnumeration::SEARCH);
+            $this->_searchForm = new \Yana\Forms\Fields\FieldCollectionWrapper($this, $context);
         }
         return $this->_searchForm;
     }
@@ -313,13 +309,13 @@ class Facade extends \Yana\Core\Object
     /**
      * Get updatable form.
      *
-     * @return  \Yana\Forms\ContextSensitiveWrapper
+     * @return  \Yana\Forms\Fields\IsFieldCollectionWrapper
      */
     public function getUpdateForm()
     {
         if (!isset($this->_updateForm)) {
-            $context = $this->_setup->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE);
-            $this->_updateForm = new \Yana\Forms\ContextSensitiveWrapper($this, $context);
+            $context = $this->getSetup()->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE);
+            $this->_updateForm = new \Yana\Forms\Fields\FieldCollectionWrapper($this, $context);
         }
         return $this->_updateForm;
     }
@@ -327,13 +323,13 @@ class Facade extends \Yana\Core\Object
     /**
      * Get insertable form.
      *
-     * @return  \Yana\Forms\ContextSensitiveWrapper
+     * @return  \Yana\Forms\Fields\IsFieldCollectionWrapper
      */
     public function getInsertForm()
     {
         if (!isset($this->_insertForm)) {
-            $context = $this->_setup->getContext(\Yana\Forms\Setups\ContextNameEnumeration::INSERT);
-            $this->_insertForm = new \Yana\Forms\ContextSensitiveWrapper($this, $context);
+            $context = $this->getSetup()->getContext(\Yana\Forms\Setups\ContextNameEnumeration::INSERT);
+            $this->_insertForm = new \Yana\Forms\Fields\FieldCollectionWrapper($this, $context);
         }
         return $this->_insertForm;
     }
@@ -347,7 +343,7 @@ class Facade extends \Yana\Core\Object
      */
     public function getUpdateValues()
     {
-        return $this->_setup->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE)->getRows()->toArray();
+        return $this->getSetup()->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE)->getRows()->toArray();
     }
 
     /**
@@ -359,7 +355,7 @@ class Facade extends \Yana\Core\Object
      */
     public function getInsertValues()
     {
-        return $this->_setup->getContext(\Yana\Forms\Setups\ContextNameEnumeration::INSERT)->getValues();
+        return $this->getSetup()->getContext(\Yana\Forms\Setups\ContextNameEnumeration::INSERT)->getValues();
     }
 
     /**
@@ -371,7 +367,7 @@ class Facade extends \Yana\Core\Object
      */
     public function getSearchValues()
     {
-        return $this->_setup->getContext(\Yana\Forms\Setups\ContextNameEnumeration::SEARCH)->getValues();
+        return $this->getSetup()->getContext(\Yana\Forms\Setups\ContextNameEnumeration::SEARCH)->getValues();
     }
 
     /**

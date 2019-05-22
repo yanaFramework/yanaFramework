@@ -36,8 +36,10 @@ namespace Yana\Forms;
  * @subpackage  form
  * @ignore
  */
-abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheable
+abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Forms\IsBuilder
 {
+
+    use \Yana\Forms\Dependencies\HasContainer;
 
     /**
      * Cache adapter.
@@ -201,17 +203,18 @@ abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Data\A
     private $_form = null;
 
     /**
-     * <<constructor>> Initialize instance.
+     * Set name of database file.
      *
-     * @param  string                                   $file       name of database to connect to
-     * @param  \Yana\Core\Dependencies\IsFormContainer  $container  dependencies
+     * Schema the form is based upon.
+     * 
+     * @param   string  $file  name of database file
+     * @return  $this
      */
-    public function __construct($file, \Yana\Core\Dependencies\IsFormContainer $container)
+    protected function _setFile($file)
     {
         assert('is_string($file); // Invalid argument $file: String expected');
-
         $this->_file = (string) $file;
-        $this->_setDependencyContainer($container);
+        return $this;
     }
 
     /**
@@ -460,6 +463,8 @@ abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Data\A
 
     /**
      * Get number of entries to view per page.
+     *
+     * The default is 20.
      *
      * @return  int
      */
@@ -769,6 +774,7 @@ abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Data\A
      * Provides a shallow-copy (not a deep-copy as by default).
      *
      * @ignore
+     * @codeCoverageIgnore
      */
     public function __clone()
     {

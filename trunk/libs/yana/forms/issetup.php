@@ -45,7 +45,7 @@ interface IsSetup
      * If the context does not exist, it is created.
      *
      * @param   string  $name  context name
-     * @return  \Yana\Forms\Setups\Context
+     * @return  \Yana\Forms\Setups\IsContext
      */
     public function getContext($name);
 
@@ -305,7 +305,7 @@ interface IsSetup
      *
      * Returns an empty string if no search term was set.
      *
-     * @return  bool
+     * @return  string
      */
     public function getSearchTerm();
 

@@ -34,7 +34,7 @@ namespace Yana\Forms\Fields;
  * @subpackage  form
  * @ignore
  */
-interface IsFacade
+interface IsField
 {
 
     /**
@@ -54,7 +54,7 @@ interface IsFacade
     /**
      * Get form context.
      *
-     * @return  \Yana\Forms\Setups\Context
+     * @return  \Yana\Forms\Setups\IsContext
      */
     public function getContext();
 

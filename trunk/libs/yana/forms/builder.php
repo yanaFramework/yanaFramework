@@ -42,6 +42,20 @@ class Builder extends \Yana\Forms\AbstractBuilder
 {
 
     /**
+     * <<constructor>> Initialize instance.
+     *
+     * @param  string                                   $file       name of database to connect to
+     * @param  \Yana\Core\Dependencies\IsFormContainer  $container  dependencies
+     */
+    public function __construct($file, \Yana\Core\Dependencies\IsFormContainer $container)
+    {
+        assert('is_string($file); // Invalid argument $file: String expected');
+
+        $this->_setFile($file);
+        $this->_setDependencyContainer($container);
+    }
+
+    /**
      * <<magic>> Invoke the function.
      *
      * @return  \Yana\Forms\Facade
@@ -50,9 +64,12 @@ class Builder extends \Yana\Forms\AbstractBuilder
      */
     public function __invoke()
     {
+        assert('!isset($formName); // Cannot redeclare var $formName');
         $formName = $this->_getForm()->getName();
+        assert('!isset($formSetup); // Cannot redeclare var $formSetup');
         $formSetup = null;
 
+        assert('!isset($cache); // Cannot redeclare var $cache');
         $cache = $this->_getCache();
         if (isset($cache[$formName])) {
             $formSetup = $cache[$formName];
@@ -67,8 +84,12 @@ class Builder extends \Yana\Forms\AbstractBuilder
             $formSetup->setSearchTerm($this->_getFacade()->getParent()->getSetup()->getSearchTerm());
         }
 
+        assert('!isset($request); // Cannot redeclare var $request');
         $request = (array) $this->_getDependencyContainer()->getRequest()->all()->value($formName)->all()->asArrayOfStrings();
+        assert('!isset($uploadWrapper); // Cannot redeclare var $uploadWrapper');
         $uploadWrapper = $this->_getDependencyContainer()->getRequest()->files();
+        assert('!isset($files); // Cannot redeclare var $files');
+        $files = array();
         if ($uploadWrapper->has($formName) && $uploadWrapper->isListOfFiles($formName)) {
             $files = (array) $uploadWrapper->all($formName);
         }
@@ -82,28 +103,37 @@ class Builder extends \Yana\Forms\AbstractBuilder
 
         $this->_getQueryBuilder()->setForm($this->_getFacade());
 
+        assert('!isset($countQuery); // Cannot redeclare var $countQuery');
         $countQuery = $this->_getQueryBuilder()->buildCountQuery();
+        assert('!isset($where); // Cannot redeclare var $where');
         $where = $this->getWhere();
         if (!empty($where)) {
             $countQuery->addWhere($where);
         }
         $formSetup->setEntryCount($countQuery->countResults());
 
+        assert('!isset($selectQuery); // Cannot redeclare var $selectQuery');
         $selectQuery = $this->_getQueryBuilder()->buildSelectQuery();
         if (!empty($where)) {
             $selectQuery->addWhere($where);
         }
         $selectQuery->setOffset($formSetup->getPage() * $formSetup->getEntriesPerPage());
+        assert('!isset($values); // Cannot redeclare var $values');
         $values = $selectQuery->getResults();
         if ($selectQuery->getExpectedResult() === \Yana\Db\ResultEnumeration::ROW) {
             $values = array($values);
         }
         $this->_getSetupBuilder()->setRows($values);
+
+        assert('!isset($referenceValues); // Cannot redeclare var $referenceValues');
         $referenceValues = array();
+        assert('!isset($name); // Cannot redeclare var $name');
+        assert('!isset($reference); // Cannot redeclare var $reference');
         foreach ($formSetup->getForeignKeys() as $name => $reference)
         {
             $referenceValues[$name] = $this->_getQueryBuilder()->autocomplete($name,  "", 0);
         }
+        unset($name, $reference);
         $formSetup->setReferenceValues($referenceValues);
 
         // This needs to be done after the rows have been set. Otherwise the user input would be overwritten.

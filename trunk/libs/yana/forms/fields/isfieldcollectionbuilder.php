@@ -23,36 +23,26 @@
  *
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
- *
- * @ignore
  */
 
-namespace Yana\Forms;
+namespace Yana\Forms\Fields;
 
 /**
- * <<builder>> HTML Form builder.
- *
- * This class is meant to create HTML fields for forms.
+ * <<interface>> Builds a field collection based on a given context.
  *
  * @package     yana
  * @subpackage  form
  */
-class HtmlBuilder extends \Yana\Forms\AbstractHtmlBuilder
+interface IsFieldCollectionBuilder
 {
 
     /**
-     * Create a form from the current instance and return it.
+     * Build a field collection from a given context.
      *
-     * Returns the HTML-code for this form.
-     *
-     * @return  string
+     * @param   \Yana\Forms\Fields\IsFieldCollectionWrapper  $parentForm  source of context and setup
+     * @return  \Yana\Forms\Fields\FieldCollection
      */
-    public function __invoke()
-    {
-        $template = $this->_getTemplate();
-        $template->setVar('form', $this->_getFacade());
-        return $template->fetch();
-    }
+    public function __invoke(\Yana\Forms\Fields\IsFieldCollectionWrapper $parentForm);
 
 }
 

@@ -30,28 +30,56 @@
 namespace Yana\Forms;
 
 /**
- * <<builder>> HTML Form builder.
- *
- * This class is meant to create HTML fields for forms.
+ * <<command>> For unit tests only.
  *
  * @package     yana
  * @subpackage  form
+ * @ignore
  */
-class HtmlBuilder extends \Yana\Forms\AbstractHtmlBuilder
+class NullBuilder extends \Yana\Forms\AbstractBuilder
 {
 
     /**
-     * Create a form from the current instance and return it.
+     * <<magic>> Doesn't do anything, just returns an empty facade.
      *
-     * Returns the HTML-code for this form.
-     *
-     * @return  string
+     * @return  \Yana\Forms\Facade
      */
     public function __invoke()
     {
-        $template = $this->_getTemplate();
-        $template->setVar('form', $this->_getFacade());
-        return $template->fetch();
+        return $this->_getFacade();
+    }
+
+    /**
+     * Set name of database file.
+     *
+     * Schema the form is based upon.
+     *
+     * @param   string  $file  name of database file
+     * @return  $this
+     */
+    public function setFile($file)
+    {
+        return $this->_setFile($file);
+    }
+
+    /**
+     * Returns the cache adapter.
+     *
+     * @return  \Yana\Data\Adapters\IsDataAdapter
+     */
+    public function getCache()
+    {
+        return $this->_getCache();
+    }
+
+    /**
+     * Build \Yana\Db\Ddl\Form object.
+     *
+     * @return  \Yana\Db\Ddl\Form
+     */
+    protected function _buildForm()
+    {
+        return new \Yana\Db\Ddl\Form('form');
     }
 
 }

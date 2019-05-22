@@ -141,7 +141,7 @@ class Context extends \Yana\Core\Object implements \Yana\Forms\Setups\IsContext
      *
      * @param   string  $key    id of value to set
      * @param   mixed   $value  new value
-     * @return  self
+     * @return  $this
      */
     public function setValue($key, $value)
     {
@@ -154,7 +154,7 @@ class Context extends \Yana\Core\Object implements \Yana\Forms\Setups\IsContext
      * Set form values.
      *
      * @param   array  $values  new values
-     * @return  self
+     * @return  $this
      */
     public function setValues(array $values)
     {
@@ -168,7 +168,7 @@ class Context extends \Yana\Core\Object implements \Yana\Forms\Setups\IsContext
      * Replaces existing values, adds new values and keeps values that haven't been changed in the request.
      *
      * @param   array  $values  new values
-     * @return  self
+     * @return  $this
      */
     public function addValues(array $values)
     {
@@ -184,7 +184,7 @@ class Context extends \Yana\Core\Object implements \Yana\Forms\Setups\IsContext
      *
      * @param   string  $key  valid identifier
      * @param   array   $row  new values
-     * @return  self
+     * @return  $this
      */
     public function updateRow($key, array $row)
     {
@@ -197,7 +197,7 @@ class Context extends \Yana\Core\Object implements \Yana\Forms\Setups\IsContext
      * Replace form rows.
      *
      * @param   array  $rows  new values
-     * @return  self
+     * @return  $this
      */
     public function setRows(array $rows)
     {
@@ -229,7 +229,7 @@ class Context extends \Yana\Core\Object implements \Yana\Forms\Setups\IsContext
      * Set footer text.
      *
      * @param   string  $footer  any text or HTML
-     * @return  \Yana\Forms\Setups\Context
+     * @return  $this
      */
     public function setFooter($footer)
     {
@@ -252,7 +252,7 @@ class Context extends \Yana\Core\Object implements \Yana\Forms\Setups\IsContext
      * Set header text.
      *
      * @param   string  $header  any text or HTML
-     * @return  \Yana\Forms\Setups\Context
+     * @return  $this
      */
     public function setHeader($header)
     {
@@ -275,7 +275,7 @@ class Context extends \Yana\Core\Object implements \Yana\Forms\Setups\IsContext
      * set export action
      *
      * @param   string  $action action name
-     * @return  self
+     * @return  $this
      */
     public function setAction($action)
     {
@@ -297,6 +297,32 @@ class Context extends \Yana\Core\Object implements \Yana\Forms\Setups\IsContext
     /**
      * Get unique list of column names.
      *
+     * @return  bool
+     */
+    public function hasColumnName($columnName)
+    {
+        assert('is_string($columnName); // Wrong type for argument 1. String expected');
+        $upperCaseColumnName = \Yana\Util\Strings::toUpperCase((string) $columnName);
+        return \in_array($upperCaseColumnName, $this->getColumnNames());
+    }
+
+    /**
+     * Returns bool(true) if the list of column names is not empty.
+     *
+     * Returns bool(false) if there are no names in the list.
+     *
+     * @return  bool
+     */
+    public function hasColumnNames()
+    {
+        return count($this->_columnNames) > 0;
+    }
+
+    /**
+     * Get unique list of column names.
+     *
+     * The column names will be upper case.
+     *
      * @return  array
      */
     public function getColumnNames()
@@ -311,11 +337,30 @@ class Context extends \Yana\Core\Object implements \Yana\Forms\Setups\IsContext
      * If the list is left empty. The form is meant to auto-detect the abvailable columns.
      *
      * @param   array  $columnNames  list of identifiers
-     * @return  self
+     * @return  $this
      */
     public function setColumnNames(array $columnNames)
     {
-        $this->_columnNames = $columnNames;
+        $this->_columnNames = array();
+        foreach ($columnNames as $columnName)
+        {
+            $this->addColumnName($columnName);
+        }
+        return $this;
+    }
+
+    /**
+     * Add name of column to list.
+     *
+     * Note that the name will be changed to upper case.
+     *
+     * @param   string  $columnName  must be valid identifier
+     * @return  $this
+     */
+    public function addColumnName($columnName)
+    {
+        assert('is_string($columnName); // Wrong type for argument 1. String expected');
+        $this->_columnNames[] = \Yana\Util\Strings::toUpperCase((string) $columnName);
         return $this;
     }
 
