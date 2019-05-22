@@ -90,7 +90,7 @@
                         {import file="layout4.html.tpl" form=$form->getInsertForm()}
                     {/if}
                     {* Spam protection: Captcha *}
-                    {if $PROFILE.SPAM.CAPTCHA && ($PROFILE.SPAM.PERMISSION || !$PERMISSION)}
+                    {if $PROFILE.SPAM.AVAILABLE && $PROFILE.SPAM.CAPTCHA && ($PROFILE.SPAM.PERMISSION || !$PERMISSION)}
                         <label class="gui_generator_captcha" title='{lang id="SECURITY_IMAGE.DESCRIPTION"}'>
                             <span class="gui_generator_mandatory" title='{lang id="MANDATORY"}'>*</span>
                             {lang id="SECURITY_IMAGE.TITLE"}
@@ -137,7 +137,7 @@
                     {if $form->isUpdatable() && $form->getUpdateAction() && $updateForm->getRowCount()}
                         <div class="gui_generator_buttons">
                             {* Spam protection: Captcha *}
-                            {if $PROFILE.SPAM.CAPTCHA && ($PROFILE.SPAM.PERMISSION || !$PERMISSION)}
+                            {if $PROFILE.SPAM.AVAILABLE && $PROFILE.SPAM.CAPTCHA && ($PROFILE.SPAM.PERMISSION || !$PERMISSION)}
                                 <label class="gui_generator_captcha" title='{lang id="SECURITY_IMAGE.DESCRIPTION"}'>
                                     <span class="gui_generator_mandatory" title='{lang id="MANDATORY"}'>*</span>
                                     {lang id="SECURITY_IMAGE.TITLE"}

@@ -22,10 +22,13 @@
           <label>
               <input type="text" title="email" size="16" name="user" maxlength="20"/>
           </label>
-          <label>
+          {* Spam protection: Captcha *}
+          {if $PROFILE.SPAM.AVAILABLE && $PROFILE.SPAM.CAPTCHA}
+            <label>
               {lang id="security_image.title"} :
               {captcha}
-          </label>
+            </label>
+          {/if}
       </div>
 
       <div style="margin: 20px;">
