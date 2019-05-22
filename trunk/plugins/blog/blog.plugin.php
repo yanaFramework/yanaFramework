@@ -44,7 +44,7 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
      *
      * @return  \Yana\Db\IsConnection
      */
-    protected static function getDatabase()
+    protected function _getDatabase()
     {
         if (!isset(self::$database)) {
             self::$database = $this->_connectToDatabase("blog");
@@ -55,12 +55,12 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
     /**
      * get form definition
      *
-     * @return  FormFacade
+     * @return  \Yana\Forms\Facade
      */
-    protected static function getBlogForm()
+    protected function _getBlogForm()
     {
-        $builder = new \Yana\Forms\Builder('blog');
-        return $builder->setId('blog')->__invoke();
+        $builder = $this->_getApplication()->buildForm('blog');
+        return $builder->__invoke();
     }
 
     /**
@@ -68,9 +68,9 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
      *
      * @return  FormFacade
      */
-    protected static function getCommentForm()
+    protected function _getCommentForm()
     {
-        $form = self::getBlogForm();
+        $form = $this->_getBlogForm();
         return $form->getForm('blogcmt');
     }
 
@@ -85,7 +85,6 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
     public function blog()
     {
         \Yana\RSS\Publisher::publishFeed('blog_rss');
-        $this->_getMicrosummary()->publishSummary(__CLASS__);
     }
 
     /**
@@ -120,8 +119,8 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function blog_edit_blog()
     {
-        $form = self::getBlogForm();
-        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
+        $form = $this->_getBlogForm();
+        $worker = new \Yana\Forms\Worker($this->_getDatabase(), $form);
         return $worker->update();
     }
 
@@ -143,8 +142,8 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function blog_delete_blog(array $selected_entries)
     {
-        $form = self::getBlogForm();
-        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
+        $form = $this->_getBlogForm();
+        $worker = new \Yana\Forms\Worker($this->_getDatabase(), $form);
         return $worker->delete($selected_entries);
     }
 
@@ -165,13 +164,9 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function blog_new_blog()
     {
-        $form = self::getBlogForm();
-        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
-        $success = (bool) $worker->create();
-        if ($success) {
-            $this->_getMicrosummary()->setText(__CLASS__, 'Blog, update '.date('d M y G:s', time()));
-        }
-        return $success;
+        $form = $this->_getBlogForm();
+        $worker = new \Yana\Forms\Worker($this->_getDatabase(), $form);
+        return (bool) $worker->create();
     }
 
     /**
@@ -206,8 +201,8 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
                 }
             }
         }
-        $form = self::getCommentForm();
-        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
+        $form = $this->_getCommentForm();
+        $worker = new \Yana\Forms\Worker($this->_getDatabase(), $form);
         return $worker->create();
     }
 
@@ -228,8 +223,8 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function blog_edit_blogcmt()
     {
-        $form = self::getCommentForm();
-        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
+        $form = $this->_getCommentForm();
+        $worker = new \Yana\Forms\Worker($this->_getDatabase(), $form);
         return $worker->update();
     }
 
@@ -251,8 +246,8 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function blog_delete_blogcmt (array $selected_entries)
     {
-        $form = self::getCommentForm();
-        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
+        $form = $this->_getCommentForm();
+        $worker = new \Yana\Forms\Worker($this->_getDatabase(), $form);
         return $worker->delete($selected_entries);
     }
 
@@ -278,13 +273,12 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
         $offset = 0;
         $limit = 10;
         $desc = true;
-        $database = self::getDatabase();
+        $database = $this->_getDatabase();
         $rows = $database->select($key, $where, $orderBy, $offset, $limit, $desc);
         /*
          * create RSS feed
          */
-        $rss = new \Yana\RSS\Feed();
-        $rss->description = $YANA->getLanguage()->getVar('RSS_DESCRIPTION');
+        $rss = new \Yana\RSS\Feed($YANA->getLanguage()->getVar('RSS_DESCRIPTION'));
         $urlFormatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
         $textFormatter = new \Yana\Views\Helpers\Formatters\TextFormatterCollection();
         /*

@@ -44,9 +44,9 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
      *
      * @return  \Yana\Forms\Facade
      */
-    protected static function getAccessForm()
+    protected function _getAccessForm()
     {
-        return self::getUserForm()->getForm('securityrules');
+        return $this->_getUserForm()->getForm('securityrules');
     }
 
     /**
@@ -54,9 +54,9 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
      *
      * @return  \Yana\Forms\Facade
      */
-    protected static function getLevelForm()
+    protected function _getLevelForm()
     {
-        return self::getUserForm()->getForm('securitylevel');
+        return $this->_getUserForm()->getForm('securitylevel');
     }
 
     /**
@@ -64,9 +64,9 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
      *
      * @return  \Yana\Forms\Facade
      */
-    protected static function getUserForm()
+    protected function _getUserForm()
     {
-        $builder = new \Yana\Forms\Builder('user_admin');
+        $builder = $this->_getApplication()->buildForm('user_admin');
         return $builder->setId('user')->__invoke();
     }
 
@@ -173,7 +173,7 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function set_user_edit()
     {
-        $form = self::getUserForm();
+        $form = $this->_getUserForm();
         $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
         $visibleColumns = $this->visibleColumns;
         $securityFacade = $this->_getSecurityFacade();
@@ -252,7 +252,7 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
         $YANA->setVar('ID', $YANA->getProfileId());
 
         assert('!isset($user); // $user already declared');
-        $user = $this->_getSecurityFacade()->createUserByFormData(self::getUserForm()->getInsertValues());
+        $user = $this->_getSecurityFacade()->createUserByFormData($this->_getUserForm()->getInsertValues());
         try {
             $user->saveChanges();
             return $this->_generateRandomPassword($user);
@@ -279,7 +279,7 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function set_access_edit()
     {
-        $form = self::getAccessForm();
+        $form = $this->_getAccessForm();
         $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
         return $worker->update();
     }
@@ -301,7 +301,7 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function set_access_delete(array $selected_entries)
     {
-        $form = self::getAccessForm();
+        $form = $this->_getAccessForm();
         $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
         return $worker->delete($selected_entries);
     }
@@ -322,7 +322,7 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function set_access_new()
     {
-        $form = self::getAccessForm();
+        $form = $this->_getAccessForm();
         $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
         return $worker->create();
     }
@@ -343,7 +343,7 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function set_securitylevel_edit()
     {
-        $form = self::getLevelForm();
+        $form = $this->_getLevelForm();
         $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
         return $worker->update();
     }
@@ -365,7 +365,7 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function set_securitylevel_delete(array $selected_entries)
     {
-        $form = self::getLevelForm();
+        $form = $this->_getLevelForm();
         $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
         return $worker->delete($selected_entries);
     }
@@ -386,7 +386,7 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function set_securitylevel_new()
     {
-        $form = self::getLevelForm();
+        $form = $this->_getLevelForm();
         $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
         return $worker->create();
     }

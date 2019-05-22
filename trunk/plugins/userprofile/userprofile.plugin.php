@@ -40,10 +40,12 @@ class UserProfilePlugin extends \Yana\Plugins\AbstractPlugin
      *
      * @return  \Yana\Forms\Facade
      */
-    protected static function getProfileForm()
+    protected function _getProfileForm()
     {
-        $builder = new \Yana\Forms\Builder('user_admin');
-        return $builder->setId('userprofile')->__invoke();
+        $builder = $this->_getApplication()->buildForm('user_admin'); // use database definition file "user_admin"
+        return $builder
+            ->setId('userprofile') // use form "userprofile"
+            ->__invoke(); // build the form
     }
 
     /**
@@ -51,10 +53,12 @@ class UserProfilePlugin extends \Yana\Plugins\AbstractPlugin
      *
      * @return  \Yana\Forms\Facade
      */
-    protected static function getDetailForm()
+    protected function _getDetailForm()
     {
-        $builder = new \Yana\Forms\Builder('user_admin');
-        return $builder->setId('userdetails')->__invoke();
+        $builder = $this->_getApplication()->buildForm('user_admin'); // use database definition file "user_admin"
+        return $builder
+            ->setId('userdetails') // use form "userdetails"
+            ->__invoke(); // build the form
     }
 
     /**
@@ -73,7 +77,7 @@ class UserProfilePlugin extends \Yana\Plugins\AbstractPlugin
         $YANA = $this->_getApplication();
         $YANA->setVar("DESCRIPTION", $YANA->getLanguage()->getVar("DESCR_USER_EDIT"));
         $YANA->setVar("USERNAME", $this->_getSession()->getCurrentUserName());
-        $builder = new \Yana\Forms\Builder('user_admin');
+        $builder = $this->_getApplication()->buildForm('user_admin');
         $builder->setId('userdetails')
             ->setEntries(1)
             ->setLayout(4)
@@ -96,10 +100,7 @@ class UserProfilePlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function set_profile_edit()
     {
-        // build form
-        $builder = new \Yana\Forms\Builder('user_admin'); // use database definition file "user_admin"
-        $builder->setId('userdetails'); // use form "userdetails"
-        $form = $builder->__invoke(); // build the form
+        $form = $this->_getDetailForm();
 
         $updateContext = $form->getUpdateForm()->getContext(); // switch to update context
         $rows = $updateContext->getRows(); // and get the updated rows
@@ -133,7 +134,7 @@ class UserProfilePlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function set_profiles_edit()
     {
-        $form = self::getProfileForm();
+        $form = $this->_getProfileForm();
 
         if (count($form->getUpdateValues()) !== 1) {
             $message = "Input is invalid";

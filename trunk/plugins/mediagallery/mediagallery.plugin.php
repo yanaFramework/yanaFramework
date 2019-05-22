@@ -74,8 +74,7 @@ class MediaGalleryPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function mediagallery()
     {
-        $builder = new \Yana\Forms\Builder('mediagallery');
-        $builder->setId('mediagallery');
+        $builder = $this->_getApplication()->buildForm('mediagallery');
         $builder->setEntries(25);
         $builder->setLayout(6);
         $where = array(

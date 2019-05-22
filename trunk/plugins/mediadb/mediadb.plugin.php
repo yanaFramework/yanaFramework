@@ -71,7 +71,7 @@ class MediaDbPlugin extends \Yana\Plugins\AbstractPlugin
      */
     protected static function getMediafolderForm()
     {
-        $builder = new \Yana\Forms\Builder('mediadb');
+        $builder = $this->_getApplication()->buildForm('mediadb');
         return $builder->setId('mediafolder')->setWhere(self::_getWhere())->__invoke();
     }
 

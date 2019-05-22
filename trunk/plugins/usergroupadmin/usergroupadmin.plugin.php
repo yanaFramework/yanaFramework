@@ -38,9 +38,9 @@ class UserGroupAdminPlugin extends \Yana\Plugins\AbstractPlugin
      *
      * @return  \Yana\Forms\Facade
      */
-    protected static function getActionForm()
+    protected function _getActionForm()
     {
-        $builder = new \Yana\Forms\Builder('user_admin');
+        $builder = $this->_getApplication()->buildForm('user_admin');
         return $builder->setId('securityactionrules')->__invoke();
     }
 
@@ -49,9 +49,9 @@ class UserGroupAdminPlugin extends \Yana\Plugins\AbstractPlugin
      *
      * @return  \Yana\Forms\Facade
      */
-    protected static function getGroupForm()
+    protected function _getGroupForm()
     {
-        $builder = new \Yana\Forms\Builder('user_admin');
+        $builder = $this->_getApplication()->buildForm('user_admin');
         return $builder->setId('securitygroup')->__invoke();
     }
 
@@ -60,9 +60,9 @@ class UserGroupAdminPlugin extends \Yana\Plugins\AbstractPlugin
      *
      * @return  \Yana\Forms\Facade
      */
-    protected static function getRoleForm()
+    protected function _getRoleForm()
     {
-        $builder = new \Yana\Forms\Builder('user_admin');
+        $builder = $this->_getApplication()->buildForm('user_admin');
         return $builder->setId('securityrole')->__invoke();
     }
 
@@ -109,7 +109,7 @@ class UserGroupAdminPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function set_user_action_settings_edit()
     {
-        $form = self::getActionForm();
+        $form = $this->_getActionForm();
         $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
         $worker->beforeUpdate(
             function (&$id, &$entry)
@@ -170,7 +170,7 @@ class UserGroupAdminPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function set_user_action_settings_new()
     {
-        $form = self::getActionForm();
+        $form = $this->_getActionForm();
         $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
         $worker->beforeCreate(
             function (&$newEntry)
@@ -198,7 +198,7 @@ class UserGroupAdminPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function set_usergroup_edit()
     {
-        $form = self::getGroupForm();
+        $form = $this->_getGroupForm();
         $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
         $worker->beforeUpdate(
             function (&$id)
@@ -222,7 +222,7 @@ class UserGroupAdminPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function set_usergroup_delete(array $selected_entries)
     {
-        $form = self::getGroupForm();
+        $form = $this->_getGroupForm();
         $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
         return $worker->delete($selected_entries);
     }
@@ -239,7 +239,7 @@ class UserGroupAdminPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function set_usergroup_new()
     {
-        $form = self::getGroupForm();
+        $form = $this->_getGroupForm();
         $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
         return $worker->create();
     }
@@ -270,7 +270,7 @@ class UserGroupAdminPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function set_userrole_edit()
     {
-        $form = self::getRoleForm();
+        $form = $this->_getRoleForm();
         $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
         $worker->beforeUpdate(
             function (&$id)
@@ -294,7 +294,7 @@ class UserGroupAdminPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function set_userrole_delete(array $selected_entries)
     {
-        $form = self::getRoleForm();
+        $form = $this->_getRoleForm();
         $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
         return $worker->delete($selected_entries);
     }
@@ -313,7 +313,7 @@ class UserGroupAdminPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function set_userrole_new()
     {
-        $form = self::getRoleForm();
+        $form = $this->_getRoleForm();
         $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
         return $worker->create();
     }

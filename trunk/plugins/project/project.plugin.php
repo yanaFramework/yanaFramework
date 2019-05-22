@@ -43,8 +43,8 @@ class ProjectPlugin extends \Yana\Plugins\AbstractPlugin
      */
     protected static function getProjectForm()
     {
-        $builder = new \Yana\Forms\Builder('project');
-        return $builder->setId('project')->__invoke();
+        $builder = $this->_getApplication()->buildForm('project');
+        return $builder->__invoke();
     }
 
     /**
