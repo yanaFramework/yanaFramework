@@ -361,7 +361,7 @@ class ApplicationBuilder extends \Yana\Core\Object
      */
     private function _setBaseUrl(\Yana\Core\Dependencies\Container $container)
     {
-        $baseUrl = $container->getUrlBuilder()->getPhpSelf() . "?id=" . $container->getProfileId();
+        $baseUrl = "?id=" . $container->getProfileId();
         if (empty($_COOKIE) && @session_id() != "") {
             $baseUrl .= "&" . session_name() . "=" . session_id();
         }
