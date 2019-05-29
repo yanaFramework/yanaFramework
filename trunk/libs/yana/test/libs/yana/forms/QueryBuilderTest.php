@@ -48,7 +48,7 @@ class QueryBuilderTest extends \PHPUnit_Framework_TestCase
     /**
      * @var \Yana\Forms\QueryBuilder
      */
-    protected $object;
+    protected $object = null;
 
     /**
      * Sets up the fixture, for example, opens a network connection.

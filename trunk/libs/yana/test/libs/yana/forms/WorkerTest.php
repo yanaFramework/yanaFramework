@@ -39,9 +39,23 @@ class WorkerTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
+     * form facade
+     *
+     * @var \Yana\Forms\Facade
+     */
+    public $form = null;
+
+    /**
+     * database connection
+     *
+     * @var \Yana\Db\FileDb\Connection
+     */
+    public $db = null;
+
+    /**
      * @var \Yana\Forms\Worker
      */
-    protected $object;
+    protected $object = null;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -49,10 +63,10 @@ class WorkerTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
-        $this->object = new \Yana\Forms\Worker($db, $form);
+        $schema = \Yana\Files\XDDL::getDatabase('check');
+        $this->db = new \Yana\Db\FileDb\NullConnection($schema);
+        $this->form = new \Yana\Forms\Facade();
+        $this->object = new \Yana\Forms\Worker($this->db, $this->form);
     }
 
     /**
@@ -65,135 +79,257 @@ class WorkerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Yana\Forms\Worker::beforeCreate
-     * @todo   Implement testBeforeCreate().
+     * @test
+     */
+    public function testBeforeCreateEmpty()
+    {
+        $array = $this->object->beforeCreate();
+        $this->assertSame(array(), $array);
+    }
+
+    /**
+     * @test
      */
     public function testBeforeCreate()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $f1 = function() {};
+        $f2 = function() {};
+        $this->object->beforeCreate($f1);
+        $array = $this->object->beforeCreate($f2);
+        $this->assertSame(array($f1, $f2), $array);
     }
 
     /**
-     * @covers Yana\Forms\Worker::afterCreate
-     * @todo   Implement testAfterCreate().
+     * @test
+     */
+    public function testAfterCreateEmpty()
+    {
+        $this->assertSame(array(), $this->object->afterCreate());
+    }
+
+    /**
+     * @test
      */
     public function testAfterCreate()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $f1 = function() {};
+        $f2 = function() {};
+        $this->object->afterCreate($f1);
+        $array = $this->object->afterCreate($f2);
+        $this->assertSame(array($f1, $f2), $array);
     }
 
     /**
-     * @covers Yana\Forms\Worker::beforeUpdate
-     * @todo   Implement testBeforeUpdate().
+     * @test
+     */
+    public function testBeforeUpdateEmpty()
+    {
+        $this->assertSame(array(), $this->object->beforeUpdate());
+    }
+
+    /**
+     * @test
      */
     public function testBeforeUpdate()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $f1 = function() {};
+        $f2 = function() {};
+        $this->object->beforeUpdate($f1);
+        $array = $this->object->beforeUpdate($f2);
+        $this->assertSame(array($f1, $f2), $array);
+        $this->assertSame(array($f1, $f2), $this->object->beforeUpdate());
     }
 
     /**
-     * @covers Yana\Forms\Worker::afterUpdate
-     * @todo   Implement testAfterUpdate().
+     * @test
+     */
+    public function testAfterUpdateEmpty()
+    {
+        $this->assertSame(array(), $this->object->afterUpdate());
+    }
+
+    /**
+     * @test
      */
     public function testAfterUpdate()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $f1 = function() {};
+        $f2 = function() {};
+        $this->object->afterUpdate($f1);
+        $array = $this->object->afterUpdate($f2);
+        $this->assertSame(array($f1, $f2), $array);
+        $this->assertSame(array($f1, $f2), $this->object->afterUpdate());
     }
 
     /**
-     * @covers Yana\Forms\Worker::beforeDelete
-     * @todo   Implement testBeforeDelete().
+     * @test
+     */
+    public function testBeforeDeleteEmpty()
+    {
+        $this->assertSame(array(), $this->object->beforeDelete());
+    }
+
+    /**
+     * @test
      */
     public function testBeforeDelete()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $f1 = function() {};
+        $f2 = function() {};
+        $this->object->beforeDelete($f1);
+        $array = $this->object->beforeDelete($f2);
+        $this->assertSame(array($f1, $f2), $array);
+        $this->assertSame(array($f1, $f2), $this->object->beforeDelete());
     }
 
     /**
-     * @covers Yana\Forms\Worker::afterDelete
-     * @todo   Implement testAfterDelete().
+     * @test
+     */
+    public function testAfterDeleteEmpty()
+    {
+        $this->assertSame(array(), $this->object->afterDelete());
+    }
+
+    /**
+     * @test
      */
     public function testAfterDelete()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $f1 = function() {};
+        $f2 = function() {};
+        $this->object->afterDelete($f1);
+        $array = $this->object->afterDelete($f2);
+        $this->assertSame(array($f1, $f2), $array);
+        $this->assertSame(array($f1, $f2), $this->object->afterDelete());
     }
 
     /**
-     * @covers Yana\Forms\Worker::create
-     * @todo   Implement testCreate().
+     * @test
      */
     public function testCreate()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->form->getBaseForm()->setTable('ft');
+        $values = array('ftId' => 123, 'ftValue' => 234);
+        $this->form->getSetup()->getContext(\Yana\Forms\Setups\ContextNameEnumeration::INSERT)->setValues($values);
+        $this->assertTrue($this->object->create());
     }
 
     /**
-     * @covers Yana\Forms\Worker::autocomplete
-     * @todo   Implement testAutocomplete().
+     * @test
+     */
+    public function testCreateWithBefore()
+    {
+        $this->form->getBaseForm()->setTable('ft');
+        $values = array('ftId' => 123, 'ftValue' => 234);
+        $this->form->getSetup()->getContext(\Yana\Forms\Setups\ContextNameEnumeration::INSERT)->setValues($values);
+        $f1 = function() {static $a = 0; $a++; return $a;};
+        $f2 = function() {static $b = 0; $b--; return $b;};
+        $this->object->beforeCreate($f1);
+        $this->object->beforeCreate($f2);
+        $this->assertTrue($this->object->create());
+        $this->assertSame(2, $f1());
+        $this->assertSame(-2, $f2());
+    }
+
+    /**
+     * @test
+     */
+    public function testCreateWithAfter()
+    {
+        $this->form->getBaseForm()->setTable('ft');
+        $values = array('ftId' => 123, 'ftValue' => 234);
+        $this->form->getSetup()->getContext(\Yana\Forms\Setups\ContextNameEnumeration::INSERT)->setValues($values);
+        $f1 = function() {static $a = 0; $a++; return $a;};
+        $f2 = function() {static $b = 0; $b--; return $b;};
+        $this->object->afterCreate($f1);
+        $this->object->afterCreate($f2);
+        $this->assertTrue($this->object->create());
+        $this->assertSame(2, $f1());
+        $this->assertSame(-2, $f2());
+    }
+
+    /**
+     * @test
+     */
+    public function testCreateWithBeforeAndAfter()
+    {
+        $this->form->getBaseForm()->setTable('ft');
+        $values = array('ftId' => 123, 'ftValue' => 234);
+        $this->form->getSetup()->getContext(\Yana\Forms\Setups\ContextNameEnumeration::INSERT)->setValues($values);
+        $f1 = function() {static $a = 0; $a++; return $a;};
+        $f2 = function() {static $b = 0; $b--; return $b;};
+        $this->object->afterCreate($f1);
+        $this->object->beforeCreate($f2);
+        $this->assertTrue($this->object->create());
+        $this->assertSame(2, $f1());
+        $this->assertSame(-2, $f2());
+    }
+
+    /**
+     * @test
+     */
+    public function testCreateFalse()
+    {
+        $this->db->getSchema()->setReadonly(true);
+        $this->form->getBaseForm()->setTable('ft');
+        $values = array('ftId' => 123, 'ftValue' => 234);
+        $this->form->getSetup()->getContext(\Yana\Forms\Setups\ContextNameEnumeration::INSERT)->setValues($values);
+        $this->assertFalse($this->object->create());
+    }
+
+    /**
+     * @test
+     */
+    public function testCreateFalse2()
+    {
+        $this->form->getBaseForm()->setTable('ft');
+        $values = array('ftId' => 123, 'ftValue' => 234, 'Test' => 'nope');
+        $this->form->getSetup()->getContext(\Yana\Forms\Setups\ContextNameEnumeration::INSERT)->setValues($values);
+        $this->assertFalse($this->object->create());
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\Forms\MissingInputException
+     */
+    public function testCreateMissingInputException()
+    {
+        $this->object->create();
+    }
+
+    /**
+     * @test
      */
     public function testAutocomplete()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame(array(), $this->object->autocomplete('tvalue'));
     }
 
     /**
-     * @covers Yana\Forms\Worker::export
-     * @todo   Implement testExport().
+     * @test
+     * @todo implement this
      */
     public function testExport()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame("", $this->object->export());
     }
 
     /**
-     * @covers Yana\Forms\Worker::update
-     * @todo   Implement testUpdate().
+     * @test
+     * @expectedException \Yana\Core\Exceptions\Forms\MissingInputException
      */
-    public function testUpdate()
+    public function testUpdateMissingInputException()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->object->update();
     }
 
     /**
-     * @covers Yana\Forms\Worker::delete
-     * @todo   Implement testDelete().
+     * @test
+     * @expectedException \Yana\Core\Exceptions\Forms\MissingInputException
      */
-    public function testDelete()
+    public function testDeleteMissingInputException()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->object->delete(array());
     }
 
 }

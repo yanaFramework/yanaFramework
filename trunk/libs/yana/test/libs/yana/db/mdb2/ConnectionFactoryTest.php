@@ -61,10 +61,22 @@ class ConnectionFactoryTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
+        if (!$this->isAvailable()) {
+            $this->markTestSkipped();
+        }
         if (!isset($GLOBALS['_MDB2_dsninfo_default'])) {
             $GLOBALS['_MDB2_dsninfo_default'] = array();
         }
         $this->object = new \Yana\Db\Mdb2\ConnectionFactory($this->_dsn);
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isAvailable()
+    {
+        $factory = new \Yana\Db\Mdb2\ConnectionFactory();
+        return $factory->isAvailable($factory->getDsn());
     }
 
     /**
