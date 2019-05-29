@@ -25,38 +25,15 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 namespace Yana\Forms;
+
 /**
  * <<builder>> Build a queries based on a given form.
  *
  * @package     yana
  * @subpackage  form
  */
-class QueryBuilder extends \Yana\Core\Object
+class QueryBuilder extends \Yana\Forms\AbstractQueryBuilder
 {
-
-    /**
-     * Database connection used to create the querys.
-     *
-     * @var  \Yana\Db\IsConnection
-     * @ignore
-     */
-    protected $_db = null;
-
-    /**
-     * Definition of form.
-     *
-     * @var  \Yana\Forms\Facade
-     * @ignore
-     */
-    protected $_form = null;
-
-    /**
-     * Object cache.
-     *
-     * @var  array
-     * @ignore
-     */
-    protected $_cache = array();
 
     /**
      * Initialize instance.
@@ -65,40 +42,7 @@ class QueryBuilder extends \Yana\Core\Object
      */
     public function __construct(\Yana\Db\IsConnection $db)
     {
-        $this->_db = $db;
-    }
-
-    /**
-     * Set form object.
-     *
-     * @param   \Yana\Forms\Facade  $form  configuring the contents of the form
-     * @return  $this
-     */
-    public function setForm(\Yana\Forms\Facade $form)
-    {
-        $this->_form = $form;
-        $this->_cache = array();
-        return $this;
-    }
-
-    /**
-     * Get form object.
-     *
-     * @return  \Yana\Forms\Facade
-     */
-    public function getForm()
-    {
-        return $this->_form;
-    }
-
-    /**
-     * Get database connection
-     *
-     * @return  \Yana\Db\IsConnection
-     */
-    public function getDatabase()
-    {
-        return $this->_db;
+        $this->_setDatabase($db);
     }
 
     /**
@@ -112,17 +56,17 @@ class QueryBuilder extends \Yana\Core\Object
      */
     public function buildSelectQuery()
     {
-        if (!isset($this->_cache[__FUNCTION__])) {
-            $query = new \Yana\Db\Queries\Select($this->_db);
+        if (!$this->_isCached([__FUNCTION__])) {
+            $query = new \Yana\Db\Queries\Select($this->getDatabase());
             $form = $this->getForm();
             if ($form instanceof \Yana\Forms\Facade && $form->getBaseForm()->getTable() > "") {
                 $this->_applyFormProperties($query, $form);
                 $this->_applySetupSettings($query, $form->getSetup());
                 $this->_applySetupFilters($query, $form->getSetup());
             }
-            $this->_cache[__FUNCTION__] = $query;
+            $this->_setCache(__FUNCTION__, $query);
         }
-        return $this->_cache[__FUNCTION__];
+        return $this->_getCache(__FUNCTION__);
     }
 
     /**
@@ -197,7 +141,7 @@ class QueryBuilder extends \Yana\Core\Object
         assert('is_string($searchTerm); // Invalid argument $searchTerm: string expected');
         assert('is_int($limit); // Invalid argument $limit: int expected');
 
-        $query = new \Yana\Db\Queries\Select($this->_db);
+        $query = new \Yana\Db\Queries\Select($this->getDatabase());
         $query->setTable($targetReference->getTable());
         $query->setLimit((int) $limit);
         $query->setOrderBy((array) $targetReference->getLabel());
@@ -316,7 +260,7 @@ class QueryBuilder extends \Yana\Core\Object
     {
         if ($setup->hasFilter()) {
             assert('!isset($updateForm); // Cannot redeclare var $updateForm');
-            $updateForm = $this->_form->getUpdateForm();
+            $updateForm = $this->getForm()->getUpdateForm();
             foreach ($setup->getFilters() as $columnName => $filter)
             {
                 /* @var $field FormFieldFacade */
@@ -337,16 +281,20 @@ class QueryBuilder extends \Yana\Core\Object
      */
     private function _buildSelectForSubForm(\Yana\Db\Queries\Select $select)
     {
-        $parentForm = $this->_form->getParent();
+        assert('!isset($form); // Cannot redeclare var $form');
+        $form = $this->getForm();
+        assert('!isset($parentForm); // Cannot redeclare var $parentForm');
+        $parentForm = $form->getParent();
         // copy foreign key from parent query
         if ($parentForm instanceof \Yana\Forms\Facade) {
 
             $parentResults = $parentForm->getSetup()->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE)->getRows();
-            if ($parentForm->getBaseForm()->getTable() === $this->_form->getBaseForm()->getTable()) {
+            if ($parentForm->getBaseForm()->getTable() === $form->getBaseForm()->getTable()) {
                 $select->setRow($parentResults->key());
-                $this->_form->getSetup()->setEntriesPerPage(1);
+                $form->getSetup()->setEntriesPerPage(1);
             } else {
-                $sourceColumnName = $targetColumnName = "";
+                assert('!isset($sourceColumnName); // Cannot redeclare var $sourceColumnName');
+                assert('!isset($targetColumnName); // Cannot redeclare var $targetColumnName');
                 list($sourceColumnName, $targetColumnName) = $this->getForeignKey();
                 $targetColumnName = strtoupper($targetColumnName);
                 $results = $parentResults->toArray();
@@ -376,14 +324,14 @@ class QueryBuilder extends \Yana\Core\Object
      */
     public function buildCountQuery()
     {
-        if (!isset($this->_cache[__FUNCTION__])) {
+        if (!$this->_isCached(__FUNCTION__)) {
             $query = clone $this->buildSelectQuery();
             assert($query instanceof \Yana\Db\Queries\SelectCount);
             $query->setLimit(0);
             $query->setOffset(0);
-            $this->_cache[__FUNCTION__] = $query;
+            $this->_setCache(__FUNCTION__, $query);
         }
-        return $this->_cache[__FUNCTION__];
+        return $this->_getCache(__FUNCTION__);
     }
 
     /**
@@ -402,17 +350,26 @@ class QueryBuilder extends \Yana\Core\Object
      */
     protected function getForeignKey()
     {
-        assert('$this->_form instanceof \Yana\Forms\Facade;');
-        $form = $this->_form->getBaseForm();
-        $parentForm = $form->getParent();
+        assert('!isset($form); // Cannot redeclare var $form');
+        $form = $this->getForm();
+        assert('$form instanceof \Yana\Forms\Facade;');
+        assert('!isset($baseForm); // Cannot redeclare var $baseForm');
+        $baseForm = $form->getBaseForm();
+        assert('!isset($parentForm); // Cannot redeclare var $parentForm');
+        $parentForm = $baseForm->getParent();
         if (!$parentForm instanceof \Yana\Db\Ddl\Form) {
             return null;
         }
-        $db = $form->getDatabase();
+        assert('!isset($db); // Cannot redeclare var $db');
+        $db = $baseForm->getDatabase();
 
+        assert('!isset($targetTable); // Cannot redeclare var $targetTable');
         $targetTable = $parentForm->getTable();
-        $sourceTable = $this->_form->getTable();
-        $keyName = $form->getKey();
+        assert('!isset($sourceTable); // Cannot redeclare var $sourceTable');
+        $sourceTable = $form->getTable();
+        assert('!isset($keyName); // Cannot redeclare var $keyName');
+        $keyName = $baseForm->getKey();
+        assert('!isset($columnName); // Cannot redeclare var $columnName');
         $columnName = "";
         /* @var $foreign \Yana\Db\Ddl\ForeignKey */
         foreach ($sourceTable->getForeignKeys() as $foreign)
@@ -441,7 +398,7 @@ class QueryBuilder extends \Yana\Core\Object
             break;
         }
         if (empty($keyName) || empty($columnName)) {
-            $message = "No suitable foreign-key found in form '" . $form->getName() . "'.";
+            $message = "No suitable foreign-key found in form '" . $baseForm->getName() . "'.";
             $level = \Yana\Log\TypeEnumeration::ERROR;
             throw new \Yana\Db\Queries\Exceptions\NotFoundException($message, $level);
         }

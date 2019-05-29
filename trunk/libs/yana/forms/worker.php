@@ -40,6 +40,11 @@ class Worker extends \Yana\Forms\QueryBuilder
 {
 
     /**
+     * @var array
+     */
+    private $_callbackCache = array();
+
+    /**
      * Initialize instance.
      *
      * @param   \Yana\Db\IsConnection  $db    database connection used to create the querys
@@ -47,7 +52,7 @@ class Worker extends \Yana\Forms\QueryBuilder
      */
     public function __construct(\Yana\Db\IsConnection $db, \Yana\Forms\Facade $form)
     {
-        $this->_db = $db;
+        $this->_setDatabase($db);
         $this->setForm($form);
     }
 
@@ -66,9 +71,10 @@ class Worker extends \Yana\Forms\QueryBuilder
         assert('is_null($callback) || is_callable($callback); // Invalid argument $callback: callable function expected');
         $cachedCallbacks = array();
         if (!empty($callback)) {
-            $cachedCallbacks = $this->_cache['callback'][$event][] = $callback;
-        } elseif (!empty($this->_cache['callback'][$event])) {
-            $cachedCallbacks = $this->_cache['callback'][$event];
+            $this->_callbackCache[$event][] = $callback;
+            $cachedCallbacks = $this->_callbackCache[$event];
+        } elseif (!empty($this->_callbackCache[$event])) {
+            $cachedCallbacks = $this->_callbackCache[$event];
         }
         return (array) $cachedCallbacks;
     }
@@ -208,16 +214,19 @@ class Worker extends \Yana\Forms\QueryBuilder
      */
     public function create()
     {
+        assert('!isset($result); // Cannot redeclare var $result');
         $result = false;
-        if ($this->_form) {
-            $newEntry = $this->_form->getSetup()->getContext(\Yana\Forms\Setups\ContextNameEnumeration::INSERT)->getValues();
+        assert('!isset($form); // Cannot redeclare var $form');
+        $form = $this->getForm();
+        if ($form) {
+            $newEntry = $form->getSetup()->getContext(\Yana\Forms\Setups\ContextNameEnumeration::INSERT)->getValues();
 
             /**
              * We need to copy the primary key of the parent form to the foreign key column of the child form.
              * Otherwise the inserted row would get rejected for a foreign key constraint mismatch.
              */
-            $parentForm = $this->_form->getParent();
-            if ($parentForm && $parentForm->getBaseForm()->getTable() !== $this->_form->getBaseForm()->getTable()) {
+            $parentForm = $form->getParent();
+            if ($parentForm && $parentForm->getBaseForm()->getTable() !== $form->getBaseForm()->getTable()) {
                 $results = $parentForm->getUpdateValues();
                 if (count($results) === 1) {
                     $foreignKeyArray = $this->getForeignKey(); // Returns array, where the first entry is the source column in the sub-form
@@ -227,13 +236,16 @@ class Worker extends \Yana\Forms\QueryBuilder
                 unset($results, $foreignKey, $foreignKeyArray);
             }
 
-            $tableName = $this->_form->getBaseForm()->getTable();
+            $tableName = $form->getBaseForm()->getTable();
 
-            if (empty($newEntry)) {
+            if (empty($newEntry) || !is_string($tableName)) {
                 $message = 'No data has been provided.';
                 $level = \Yana\Log\TypeEnumeration::WARNING;
                 throw new \Yana\Core\Exceptions\Forms\MissingInputException($message, $level);
             }
+
+            assert('!isset($database); // Cannot redeclare var $database');
+            $database = $this->getDatabase();
 
             // execute hooks
             foreach ($this->beforeCreate() as $callback)
@@ -242,8 +254,9 @@ class Worker extends \Yana\Forms\QueryBuilder
             }
 
             try {
-                $this->_db->insert($tableName, $newEntry); // may throw exception
+                $database->insert($tableName, $newEntry); // may throw exception
             } catch (\Yana\Core\Exceptions\NotWriteableException $e) {
+                $database->rollback();
                 return false; // error - unable to perform update - possibly readonly
             }
 
@@ -252,12 +265,15 @@ class Worker extends \Yana\Forms\QueryBuilder
             {
                 $callback($newEntry); // may throw exception
             }
+            // @codeCoverageIgnoreStart
             try {
-                $this->_db->commit(); // may throw exception
+                $database->commit(); // may throw exception
                 $result = true;
             } catch (\Exception $e) {
+                $database->rollback();
                 $result = false;
             }
+            // @codeCoverageIgnoreEnd
         }
         return $result;
     }
@@ -286,9 +302,13 @@ class Worker extends \Yana\Forms\QueryBuilder
     {
         assert('is_string($columnName); // Invalid argument $columnName: string expected');
         assert('is_string($searchTerm); // Invalid argument $searchTerm: string expected');
+
+        assert('!isset($referenceValues); // Cannot redeclare var $referenceValues');
         $referenceValues = array();
-        if ($this->_form) {
-            $references = $this->_form->getSetup()->getForeignKeys();
+        assert('!isset($form); // Cannot redeclare var $form');
+        $form = $this->getForm();
+        if ($form) {
+            $references = $form->getSetup()->getForeignKeys();
             if (isset($references[$columnName])) {
                 $query = $this->buildAutocompleteQuery($references[$columnName], $searchTerm, $limit);
                 $referenceValues = array();
@@ -304,14 +324,19 @@ class Worker extends \Yana\Forms\QueryBuilder
     /**
      * Returns the contents of the form as CSV string.
      *
-     * @return  bool
+     * @return  string
+     *
+     * @todo implement this
      */
     public function export()
     {
+        assert('!isset($csv); // Cannot redeclare var $csv');
         $csv = "";
-        if ($this->_form) {
-            $updatedEntries = $this->_form->getSetup()->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE)->getRows()->toArray();
-            // @todo implement this
+        assert('!isset($form); // Cannot redeclare var $form');
+        $form = $this->getForm();
+        if ($form) {
+            $updatedEntries = $form->getSetup()->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE)->getRows()->toArray();
+            // @todo implement this here
         }
         return $csv;
     }
@@ -329,23 +354,28 @@ class Worker extends \Yana\Forms\QueryBuilder
      */
     public function update()
     {
+        assert('!isset($result); // Cannot redeclare var $result');
         $result = false;
-        if ($this->_form) {
-            $updatedEntries = $this->_form->getUpdateValues();
-            $tableName = $this->_form->getBaseForm()->getTable();
+        assert('!isset($form); // Cannot redeclare var $form');
+        $form = $this->getForm();
+        if ($form) {
+            $updatedEntries = $form->getUpdateValues();
+            $tableName = $form->getBaseForm()->getTable();
 
             if (empty($updatedEntries)) {
                 $message = 'No data has been provided.';
                 $level = \Yana\Log\TypeEnumeration::WARNING;
                 throw new \Yana\Core\Exceptions\Forms\MissingInputException($message, $level);
             }
+            assert('!isset($database); // Cannot redeclare var $database');
+            $database = $this->getDatabase();
 
             foreach ($updatedEntries as $id => $entry)
             {
                 $id = mb_strtolower($id);
 
                 /* before doing anything, check if entry exists */
-                if (!$this->_db->exists("{$tableName}.{$id}")) {
+                if (!$database->exists("{$tableName}.{$id}")) {
                 $message = 'Entry not found';
                     $level = \Yana\Log\TypeEnumeration::WARNING;
                     throw new \Yana\Core\Exceptions\NotFoundException($message, $level);
@@ -358,7 +388,7 @@ class Worker extends \Yana\Forms\QueryBuilder
                 }
 
                 try {
-                    $this->_db->update("{$tableName}.{$id}", $entry); // update the row
+                    $database->update("{$tableName}.{$id}", $entry); // update the row
                 } catch (\Yana\Core\Exceptions\NotWriteableException $e) {
                     return false; // error - unable to perform update - possibly readonly
                 }
@@ -369,7 +399,7 @@ class Worker extends \Yana\Forms\QueryBuilder
                     $callback($id, $entry); // may throw exception
                 }
             } // end for
-            $this->_db->commit(); // may throw exception
+            $database->commit(); // may throw exception
             $result = true;
         }
         return $result;
@@ -388,14 +418,19 @@ class Worker extends \Yana\Forms\QueryBuilder
      */
     public function delete(array $selectedEntries)
     {
+        assert('!isset($result); // Cannot redeclare var $result');
         $result = false;
-        if ($this->_form) {
+        assert('!isset($form); // Cannot redeclare var $form');
+        $form = $this->getForm();
+        if ($form) {
             if (empty($selectedEntries)) {
                 $message = 'No row has been selected.';
                 $level = \Yana\Log\TypeEnumeration::WARNING;
                 throw new \Yana\Core\Exceptions\Forms\MissingInputException($message, $level);
             }
-            $tableName = $this->_form->getBaseForm()->getTable();
+            assert('!isset($database); // Cannot redeclare var $database');
+            $database = $this->getDatabase();
+            $tableName = $form->getBaseForm()->getTable();
             // remove entry from database
             foreach ($selectedEntries as $id)
             {
@@ -406,7 +441,7 @@ class Worker extends \Yana\Forms\QueryBuilder
                     $callback($id); // may throw exception
                 }
                 try {
-                    $this->_db->remove("{$tableName}.{$id}");
+                    $database->remove("{$tableName}.{$id}");
                 } catch (\Yana\Core\Exceptions\NotWriteableException $e) {
                     return false;
                 }
@@ -418,7 +453,7 @@ class Worker extends \Yana\Forms\QueryBuilder
                 }
             }
             try {
-                $this->_db->commit(); // may throw exception
+                $database->commit(); // may throw exception
                 $result = true;
             } catch (\Exception $e) {
                 unset($e);
