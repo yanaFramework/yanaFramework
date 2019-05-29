@@ -128,7 +128,7 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
                     if (empty($title)) {
                         $title = $column->getName();
                     }
-                    $message = "A mandatory column has not been provided.";
+                    $message = "A mandatory column has not been provided: " . $title;
                     $level = \Yana\Log\TypeEnumeration::WARNING;
                     $warning = new \Yana\Core\Exceptions\Forms\MissingFieldException($message, $level);
                     throw $warning->setField($title);

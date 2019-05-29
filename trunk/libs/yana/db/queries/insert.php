@@ -279,7 +279,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
                 assert('is_array($values); // Row must be an array');
                 // upper-case primary key
                 if (isset($values[$primaryKey])) {
-                    $values[$primaryKey] = mb_strtoupper($values[$primaryKey]);
+                    $values[$primaryKey] = mb_strtoupper((string) $values[$primaryKey]);
                 }
                 // check if row is valid
                 $values = $this->_getSanitizer()->sanitizeRowByTable($table, $values, $isInsert, $this->files);
