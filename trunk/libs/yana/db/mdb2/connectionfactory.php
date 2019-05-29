@@ -129,16 +129,27 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsCon
             throw new \Yana\Db\Mdb2\PearDbException($message, $level);
         }
 
-        /*
-         * 1 auto-detect MySQL port for Server2Go application
+        /**
+         * {@internal{
+         *
+         * There is a bug in MDB2 version 2.5 where $GLOBALS['_MDB2_dsninfo_default'] is used
+         * without checking whether or not it was initialized.
+         * If it is not, the DSN is discarded and no connection can be established.
+         *
+         * Even though the problem should occur only in unit tests using MDB2,
+         * it's better to be safe than sorry.
+         *
+         * The following code thus works around the issue.
+         * To initialize it with an empty array is sufficient to fix the problem.
+         * }}
          */
-        if (isset($_ENV["S2G_MYSQL_PORT"]) && empty($this->_dsn["PORT"]) && strpos(\YANA_DATABASE_DBMS, 'mysql') !== false) {
-            $this->_dsn["PORT"] = $_ENV["S2G_MYSQL_PORT"];
+        if (!isset($GLOBALS['_MDB2_dsninfo_default'])) {
+            $GLOBALS['_MDB2_dsninfo_default'] = array();
         }
         // @codeCoverageIgnoreEnd
 
-        /*
-         * 2 process settings provided by the user
+        /**
+         * process settings provided by the user
          */
         if (is_array($dsn)) {
             $dsn = \Yana\Util\Hashtable::changeCase($dsn, CASE_UPPER);
