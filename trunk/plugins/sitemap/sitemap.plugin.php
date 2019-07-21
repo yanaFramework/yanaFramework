@@ -40,8 +40,6 @@ class SitemapPlugin extends \Yana\Plugins\AbstractPlugin
      * @type        primary
      * @template    sitemap
      * @menu        group: start
-     *
-     * @access      public
      */
     public function sitemap()
     {
@@ -52,7 +50,14 @@ class SitemapPlugin extends \Yana\Plugins\AbstractPlugin
             $application->getLanguage()
         );
 
-        $this->_getApplication()->getView()->setFunction('sitemap', array($viewHelper, '__invoke'));
+        try {
+            $this->_getApplication()->getView()->setFunction('sitemap', array($viewHelper, '__invoke'));
+
+        } catch (\Yana\Views\Managers\RegistrationException $e) {
+            $this->_getApplication()->getView()->unsetFunction('sitemap');
+            $this->_getApplication()->getView()->setFunction('sitemap', array($viewHelper, '__invoke'));
+            unset($e);
+        }
     }
 
 }
