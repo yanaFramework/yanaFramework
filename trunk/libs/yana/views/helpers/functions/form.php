@@ -70,8 +70,8 @@ class Form extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Views
      *                                  that should be shown in the form
      * string  $hide        (optional)  comma seperated list of columns,
      *                                  that should NOT be shown in the form
-     * string  $where       (optional)  sequence for SQL-where clause
-     *                                  <FIELDNAME1>=<VALUE1>[,<FIELDNAME2>=<VALUE2>[,...]]
+     * array   $where       (optional)  for SQL-where clause containing: left operand, operator, right operand.
+     *                                  Example: [ ["col1", "=", "val1"], "and", [ ["col2", "!=", 1], "or", ["col2", "!=", 3] ]
      * string  $sort        (optional)  name of column to sort entries by
      * boolean $desc        (optional)  sort entries in descending (true) or ascending (false) order
      * integer $page        (optional)  number of 1st entry to show
@@ -94,6 +94,7 @@ class Form extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Views
      * @param   array                      $params  any list of arguments
      * @param   \Smarty_Internal_Template  $smarty  reference to currently rendered template
      * @return  scalar
+     * @codeCoverageIgnore
      */
     public function __invoke(array $params, \Smarty_Internal_Template $smarty)
     {
@@ -105,6 +106,33 @@ class Form extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Views
         // create database query
         $smartForm = new \Yana\Forms\Builder($params['file'], $this->_getDependencyContainer());
 
+        $this->_mapParameters($smartForm, $params);
+
+        return $this->_formToString($smartForm);
+    }
+
+    /**
+     * Invokes the form builder and returns the form as a string.
+     *
+     * @param   \Yana\Forms\IsBuilder  $smartForm  the form builder
+     * @return  string
+     * @codeCoverageIgnore
+     */
+    protected function _formToString(\Yana\Forms\IsBuilder $smartForm)
+    {
+        $facade = $smartForm->__invoke();
+        return (string) $facade->__toString();
+    }
+
+    /**
+     * Map parameters to form builder.
+     *
+     * @param   \Yana\Forms\IsBuilder  $smartForm  object to apply parameters to
+     * @param   array                  $params     key-value set of parameters to apply
+     * @return  $this
+     */
+    protected function _mapParameters(\Yana\Forms\IsBuilder $smartForm, array $params)
+    {
         if (isset($params['id'])) {
             $smartForm->setId($params['id']);
         }
@@ -159,9 +187,7 @@ class Form extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Views
         if (isset($params['layout'])) {
             $smartForm->setLayout($params['layout']);
         }
-
-        $facade = $smartForm->__invoke();
-        return $facade->__toString();
+        return $this;
     }
 
 }

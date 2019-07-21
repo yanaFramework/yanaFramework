@@ -61,6 +61,7 @@ class Slider extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vie
      * @param   array                      $params  any list of arguments
      * @param   \Smarty_Internal_Template  $smarty  reference to currently rendered template
      * @return  scalar
+     * @codeCoverageIgnore
      */
     public function __invoke(array $params, \Smarty_Internal_Template $smarty)
     {
@@ -73,50 +74,69 @@ class Slider extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vie
             $document = $this->_getViewManager()->createContentTemplate("id:gui_slider");
             $sliderId = uniqid(__FUNCTION__ . '_');
             $document->setVar('sliderId', $sliderId);
-            // check if the width is set, otherwise the min width will be set to default
-            if (isset($params['width'])) {
-                $width = (int) $params['width'];
-            } else {
-                $width = 0;
-            }
-            $document->setVar('width', $width);
-            // if the minimum value does not set, 0 will be choosen
-            if (isset($params['min'])) {
-                $min = (float) $params['min'];
-            } else {
-                $min = 0;
-            }
-            $document->setVar('min', $min);
-            // if the maximum value does not set, 1 will be choosen
-            if (isset($params['max'])) {
-                $max = (float) $params['max'];
-            } else {
-                $max = 1;
-            }
-            $document->setVar('max', $max);
-            if (isset($params['step'])) {
-                $step = (float) $params['step'];
-            } else {
-                $step = 1;
-            }
-            $document->setVar('step', $step);
-            if (isset($params['backgroundColor'])) {
-                $backgroundColor = (string) $params['backgroundColor'];
-            } else {
-                $backgroundColor = '';
-            }
-            $document->setVar('background', $backgroundColor);
-            if (isset($params['value'])) {
-                $value = (float) $params['value'];
-            } else {
-                $value = $min;
-            }
-            $document->setVar('value', $value);
-            $inputName = (string) $params['inputName'];
-            $document->setVar('inputName', $inputName);
+
+            $this->_mapParameters($document, $params);
+
             $htmlResult = (string) $document;
         }
         return $htmlResult;
+    }
+
+    /**
+     * Map parameters to template.
+     *
+     * @param   \Yana\Core\IsVarContainer  $document  object to apply parameters to
+     * @param   array                      $params     key-value set of parameters to apply
+     * @return  $this
+     */
+    protected function _mapParameters(\Yana\Core\IsVarContainer $document, array $params)
+    {
+        // check if the width is set, otherwise the min width will be set to default
+        $width = 0;
+        if (isset($params['width'])) {
+            $width = (int) $params['width'];
+        }
+        $document->setVar('width', $width);
+
+        // if the minimum value does not set, 0 will be choosen
+        $min = 0;
+        if (isset($params['min'])) {
+            $min = (float) $params['min'];
+        }
+        $document->setVar('min', $min);
+
+        // if the maximum value does not set, 1 will be choosen
+        $max = 1;
+        if (isset($params['max'])) {
+            $max = (float) $params['max'];
+        }
+        $document->setVar('max', $max);
+
+        $step = 1;
+        if (isset($params['step'])) {
+            $step = (float) $params['step'];
+        }
+        $document->setVar('step', $step);
+
+        $backgroundColor = '';
+        if (isset($params['backgroundColor'])) {
+            $backgroundColor = (string) $params['backgroundColor'];
+        }
+        $document->setVar('background', $backgroundColor);
+
+        $value = $min;
+        if (isset($params['value'])) {
+            $value = (float) $params['value'];
+        }
+        $document->setVar('value', $value);
+
+        $inputName = '';
+        if (isset($params['inputName'])) {
+            $inputName = (string) $params['inputName'];
+        }
+        $document->setVar('inputName', $inputName);
+
+        return $this;
     }
 
 }
