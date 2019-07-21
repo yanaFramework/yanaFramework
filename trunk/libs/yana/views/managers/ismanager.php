@@ -151,6 +151,7 @@ interface IsManager
      * @param   string  $name  name of the function
      * @param   mixed   $code  a callable resource
      * @return  $this
+     * @throws  \Yana\Views\Managers\RegistrationException  when another function of the same name was already registered
      */
     public function setFunction($name, $code);
 

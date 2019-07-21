@@ -49,6 +49,7 @@ abstract class AbstractResource extends \Smarty_Resource_Custom
      *
      * @param   string  $name  template name
      * @return  int
+     * @codeCoverageIgnore
      */
     protected function fetchTimestamp($name)
     {

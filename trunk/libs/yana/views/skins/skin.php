@@ -198,11 +198,13 @@ class Skin extends \Yana\Core\Object implements \Yana\Views\Skins\IsSkin
 
         $templateId = mb_strtoupper("$templateId");
         $templatesFound = array();
+        /* @var $templatesFound \Yana\Views\MetaData\TemplateMetaData[] */
 
         assert('!isset($templates); // Cannot redeclare var $templates');
         foreach ($this->_getConfigurations() as $config)
         {
             $templates = $config->getTemplates();
+            /* @var $templates \Yana\Views\MetaData\TemplateMetaData[] */
             if (isset($templates[$templateId])) {
                 assert($templates[$templateId] instanceof \Yana\Views\MetaData\TemplateMetaData);
                 $templatesFound[] = $templates[$templateId];
@@ -218,15 +220,17 @@ class Skin extends \Yana\Core\Object implements \Yana\Views\Skins\IsSkin
 
         // inherit settings from parent templates
         $templateData = \array_shift($templatesFound);
-        while (!empty($templatesFound)) {
+        /* @var $templateData \Yana\Views\MetaData\TemplateMetaData */
+        while (!empty($templatesFound))
+        {
             $newData = new \Yana\Views\MetaData\TemplateMetaData();
             $moreData = \array_shift($templatesFound);
             /* @var $moreData \Yana\Views\MetaData\TemplateMetaData */
             $newData->setId($templateId)
-                ->setFile((!$moreData->getFile()) ? $templateData->getFile() : $moreData->getFile())
-                ->setLanguages(\array_merge($templateData->getLanguages(), $moreData->getLanguages()))
-                ->setScripts(\array_merge($templateData->getScripts(), $moreData->getScripts()))
-                ->setStyles(\array_merge($templateData->getStyles(), $moreData->getStyles()));
+                    ->setFile((!$moreData->getFile()) ? $templateData->getFile() : $moreData->getFile())
+                    ->setLanguages(\array_merge($templateData->getLanguages(), $moreData->getLanguages()))
+                    ->setScripts(\array_merge($templateData->getScripts(), $moreData->getScripts()))
+                    ->setStyles(\array_merge($templateData->getStyles(), $moreData->getStyles()));
             $templateData = $newData;
         }
         return $templateData;
