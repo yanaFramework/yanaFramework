@@ -39,7 +39,7 @@ interface IsDriver extends \Yana\Core\IsObject
 {
 
     /**
-     * begin transaction
+     * begin transaction.
      *
      * This deactives auto-commit, so the following statements will wait for commit or rollback.
      *
@@ -48,42 +48,42 @@ interface IsDriver extends \Yana\Core\IsObject
     public function beginTransaction();
 
     /**
-     * rollback current transaction
+     * rollback current transaction.
      *
      * @return  bool
      */
     public function rollback();
 
     /**
-     * commit current transaction
+     * commit current transaction.
      *
      * @return  bool
      */
     public function commit();
 
     /**
-     * get list of databases
+     * get list of databases.
      *
      * @return  array
      */
     public function listDatabases();
 
     /**
-     * get list of tables in current database
+     * get list of tables in current database.
      *
      * @return  array
      */
     public function listTables();
 
     /**
-     * get list of functions
+     * get list of functions.
      *
      * @return  array
      */
     public function listFunctions();
 
     /**
-     * get list of functions
+     * get list of sequences.
      *
      * @param   string  $database  dummy for compatibility
      * @return  array
@@ -91,7 +91,7 @@ interface IsDriver extends \Yana\Core\IsObject
     public function listSequences($database = null);
 
     /**
-     * get list of columns
+     * get list of columns.
      *
      * @param   string  $table  table name
      * @return  array
@@ -99,7 +99,7 @@ interface IsDriver extends \Yana\Core\IsObject
     public function listTableFields($table);
 
     /**
-     * get list of indexes
+     * get list of indexes.
      *
      * @param   string  $table  table name
      * @return  array
@@ -127,7 +127,7 @@ interface IsDriver extends \Yana\Core\IsObject
     public function sendQueryString($sqlStmt, $limit = 0, $offset = 0);
 
     /**
-     * quote a value
+     * quote a value.
      *
      * Returns the quoted values as a string
      * surrounded by double-quotes.
@@ -139,7 +139,7 @@ interface IsDriver extends \Yana\Core\IsObject
     public function quote($value);
 
     /**
-     * quote an identifier
+     * quote an identifier.
      *
      * Returns the quotes Id as a string
      * surrounded by double-quotes.

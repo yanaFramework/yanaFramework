@@ -38,7 +38,7 @@ namespace Yana\Db\Export\Xsl;
  * @property-read \DOMDocument $mysql      MySQL XSL-Template
  * @property-read \DOMDocument $postgresql PostGreSQL XSL-Template
  */
-class Provider extends \Yana\Core\Object implements \Yana\Db\Export\IsXslProvider
+class Provider extends \Yana\Core\Object implements \Yana\Db\Export\Xsl\IsProvider
 {
 
     /**
@@ -49,24 +49,26 @@ class Provider extends \Yana\Core\Object implements \Yana\Db\Export\IsXslProvide
     /**
      * Creates a new \DOMDocument of an XSL-template.
      *
-     * @param string $name
-     * @return \DOMDocument
-     * @throws \Yana\Db\Export\Xsl\InvalidNameException
+     * @param   int  $name  of dbms
+     * @return  \DOMDocument
+     * @throws  \Yana\Db\Export\Xsl\InvalidNameException
      */
-    public function __get($name)
+    public function getXslDocument($name)
     {
-        $name = strtolower($name);
+        assert('is_int($name); // Invalid argument type: $name. Integer expected');
+
         if (!isset(self::$_instances[$name])) {
 
-            $xslFilename = __DIR__ . '/resources/';
             switch ($name)
             {
-                case \Yana\Db\Export\IsXslProvider::MYSQL:
-                case \Yana\Db\Export\IsXslProvider::POSTGRESQL:
-                    $xslFilename .= $name . ".xsl";
+                case \Yana\Db\Export\Xsl\IsProvider::MYSQL:
+                    $xslFilename = \Yana\Db\Export\Xsl\ResourceEnumeration::MYSQL;
+                    break;
+                case \Yana\Db\Export\Xsl\IsProvider::POSTGRESQL:
+                    $xslFilename = \Yana\Db\Export\Xsl\ResourceEnumeration::POSTGRESQL;
                     break;
                 default:
-                    throw new \Yana\Db\Export\Xsl\InvalidNameException($name);
+                    throw new \Yana\Db\Export\Xsl\InvalidNameException("The selected DBMS is not currently supported.");
             }
             // Stylesheet
             $xsl = new \DOMDocument();

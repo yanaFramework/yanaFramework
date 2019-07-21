@@ -52,22 +52,24 @@ class Mdb2Mapper extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories\IsM
      * @param   array        $info      sequence information
      * @param   string       $name      sequence name
      * @return  $this
+     * @throws  \Yana\Core\Exceptions\AlreadyExistsException    when a sequence with the same name already exists
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if given an invalid name
      */
     public function createSequence(\Yana\Db\Ddl\Database $database, array $info, $name)
     {
-        $sequence = $database->addSequence($name);
-        if (isset($info['start'])) {
-            $sequence->setStart($info['start']);
+        $sequence = $database->addSequence($name); // may throw exception
+        if (isset($info['start']) && is_numeric($info['start'])) {
+            $sequence->setStart((int) $info['start']);
         }
         // These seem to be currently not supported by MDB2:
         // @codeCoverageIgnoreStart
-        if (isset($info['min'])) {
+        if (isset($info['min']) && is_numeric($info['min'])) {
             $sequence->setMin((int) $info['min']);
         }
-        if (isset($info['max'])) {
+        if (isset($info['max']) && is_numeric($info['max'])) {
             $sequence->setMax((int) $info['max']);
         }
-        if (isset($info['step'])) {
+        if (isset($info['step']) && is_numeric($info['step'])) {
             $sequence->setIncrement((int) $info['step']);
         }
         if (!empty($info['cycle'])) {
@@ -327,31 +329,29 @@ class Mdb2Mapper extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories\IsM
         if (!isset($info['type'])) {
             throw new \Yana\Core\Exceptions\InvalidArgumentException();
         }
-        $type = $this->_mapColumnType((string) $info['type']); // may throw \Yana\Core\Exceptions\NotImplementedException
+        // may throw \Yana\Core\Exceptions\NotImplementedException
+        $type = $this->_mapColumnType((string) $info['type'], isset($info['length']) ? (int) $info['length'] : 0);
         /*
          * set type
          */
         switch ($type)
         {
             case 'string':
-                if (stripos($name, 'html') !== false) {
-                    $type = "html";
-                } elseif (!empty($info['length']) && $info['length'] > 256) {
-                    $type = "text";
-                }
-            break;
+            case 'text':
+                assert('!isset($lowerCaseName); // Cannot redeclare var $lowerCaseName');
+                $lowerCaseName = \Yana\Util\Strings::toLowerCase($name);
+                if (\Yana\Util\Strings::startsWith($lowerCaseName, 'array') || \Yana\Util\Strings::endsWith($lowerCaseName, 'array')) {
+                    $type = "array";
 
-            case 'integer':
-                if (isset($info['length']) && $info['length'] == 1) {
-                    $type = "bool";
+                } elseif (\Yana\Util\Strings::startsWith($lowerCaseName, 'html') || \Yana\Util\Strings::endsWith($lowerCaseName, 'html')) {
+                    $type = "html";
                 }
+                unset($lowerCaseName);
             break;
 
             case 'timestamp':
                 if (isset($info['nativetype']) && $info['nativetype'] === "datetime") {
                     $type = "time";
-                } else {
-                    $type = "timestamp";
                 }
             break;
 
@@ -424,21 +424,27 @@ class Mdb2Mapper extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories\IsM
      * Maps MDB2 column type to internal column type.
      *
      * @param   string  $mdb2Type  as given by MDB2 reverse module
+     * @param   int     $length    length of column, or 0 if none was given
      * @return  string
      * @throws  \Yana\Core\Exceptions\NotImplementedException  when the type cannot be matched
      */
-    private function _mapColumnType($mdb2Type)
+    private function _mapColumnType($mdb2Type, $length)
     {
         assert('is_string($mdb2Type); // Invalid argument type: $mdb2Type. String expected.');
         switch ($mdb2Type)
         {
+
             case 'blob':
             case 'clob':
                 $type = "text";
             break;
 
             case 'text':
-                $type = "string";
+                if ($length === 0 || $length > 256) {
+                    $type = "text";
+                } else {
+                    $type = "string";
+                }
             break;
 
             case 'bool':
@@ -448,7 +454,11 @@ class Mdb2Mapper extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories\IsM
 
             case 'int':
             case 'integer':
-                $type = "integer";
+                if ($length == 1) {
+                    $type = "bool";
+                } else {
+                    $type = "integer";
+                }
             break;
 
             case 'decimal':

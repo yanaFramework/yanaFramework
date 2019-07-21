@@ -26,7 +26,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Db\Export;
+namespace Yana\Db\Export\Xsl;
 
 /**
  * <<interface>> A XSL-DOMDocument provider.
@@ -34,52 +34,44 @@ namespace Yana\Db\Export;
  * It creates and returns an instance of DOMDocument,
  * containing the XSL-Template for the requested DBMS.
  *
- * <code>
- * $domDocument = $isXslProvider->mysql;
- * // or
- * $domDocument = $isXslProvider->{IsXslProvider::MYSQL};
- * // or
- * $domDocument = $isXslProvider->__get(IsXslProvider::MYSQL);
- * </code>
- *
  * @package     yana
  * @subpackage  core
  */
-interface IsXslProvider
+interface IsProvider
 {
     /**
      * MySQL
      */
-    const MYSQL = 'mysql';
+    const MYSQL = 1;
 
     /**
      * PostGreSQL
      */
-    const POSTGRESQL = 'postgresql';
+    const POSTGRESQL = 2;
 
     /**
      * Microsoft SQL-Server
      */
-    const MSSQL = 'mssql';
+    const MSSQL = 3;
 
     /**
      * Oracle Database
      */
-    const ORACLEDB = 'oracle';
+    const ORACLEDB = 4;
 
     /**
      * IBM DB2
      */
-    const DB2 = 'db2';
+    const DB2 = 5;
 
     /**
      * Creates a new \DOMDocument of an XSL-template.
      *
-     * @param string $name
-     * @return \DOMDocument
-     * @throws \Yana\Db\Export\Xsl\InvalidNameException  if no document with the given name is found
+     * @param   int  $name  of dbms
+     * @return  \DOMDocument
+     * @throws  \Yana\Db\Export\Xsl\InvalidNameException
      */
-    public function __get($name);
+    public function getXslDocument($name);
 
 }
 

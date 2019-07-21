@@ -71,10 +71,12 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
      */
     public function __construct(\Yana\Db\Queries\IsParser $parser)
     {
+        // @codeCoverageIgnoreStart
         if (!isset(self::$_baseDir)) {
             // if no directory given load default directory from config
             self::setBaseDirectory(\Yana\Db\Ddl\DDL::getDirectory());
         }
+        // @codeCoverageIgnoreEnd
         $this->_setSqlParser($parser);
 
         $this->_setSchema($parser->getSchema());
@@ -83,8 +85,10 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
         $this->_setDatabaseName($databaseName);
 
         if (!is_dir(self::$_baseDir . $this->_getDatabaseName())) {
+            // @codeCoverageIgnoreStart
             mkdir(self::$_baseDir . $this->_getDatabaseName());
             chmod(self::$_baseDir . $this->_getDatabaseName(), 0700);
+            // @codeCoverageIgnoreEnd
         }
         $this->rollback();
     }
@@ -241,11 +245,9 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
         $table = $this->_getSchema()->getTable($table);
         $indexes = array();
         if ($table instanceof \Yana\Db\Ddl\Table) {
-            foreach ($table->getIndexes() as $name)
+            foreach ($table->getIndexes() as $index)
             {
-                if (is_string($name)) {
-                    $indexes[] = $name;
-                }
+                $indexes[] = $index->getName();
             }
         }
         return $indexes;

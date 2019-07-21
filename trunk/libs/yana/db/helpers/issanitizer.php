@@ -50,7 +50,14 @@ interface IsSanitizer
      * @param   bool    $isInsert  type of operation (true = insert, false = update)
      * @param   array   &$files    list of modified or inserted columns of type file or image
      * @return  array
-     * @throws  \Yana\Core\Exceptions\NotWriteableException  if a target column or table is not writeable
+     * @throws  \Yana\Core\Exceptions\NotWriteableException         when a target column or table is not writeable
+     * @throws  \Yana\Core\Exceptions\NotFoundException             when the column definition is invalid
+     * @throws  \Yana\Core\Exceptions\NotImplementedException       when a column was encountered that has an unknown datatype
+     * @throws  \Yana\Core\Exceptions\Forms\InvalidValueException   when a given value is not valid
+     * @throws  \Yana\Core\Exceptions\Forms\InvalidSyntaxException  when a value does not match a required pattern or syntax
+     * @throws  \Yana\Core\Exceptions\Forms\MissingFieldException   when a not-nullable column is missing
+     * @throws  \Yana\Core\Exceptions\Forms\FieldNotFoundException  when a value was provided but no corresponding column exists
+     * @throws  \Yana\Core\Exceptions\Files\SizeException           when an uploaded file is too large
      */
     public function sanitizeRowByTable(\Yana\Db\Ddl\Table $table, array $row, $isInsert = true, array &$files = array());
 
@@ -67,8 +74,11 @@ interface IsSanitizer
      * @param   mixed               $value   value of the inserted/updated row
      * @param   array               &$files  list of modified or inserted columns of type file or image
      * @return  mixed
-     * @throws  \Yana\Core\Exceptions\NotFoundException        if the column definition is invalid
-     * @throws  \Yana\Core\Exceptions\NotImplementedException  when the column has an unknown datatype
+     * @throws  \Yana\Core\Exceptions\NotFoundException            if the column definition is invalid
+     * @throws  \Yana\Core\Exceptions\Forms\InvalidValueException  if an invalid value is encountered, that could not be sanitized
+     * @throws  \Yana\Core\Exceptions\Forms\InvalidSyntaxException if a value does not match a required pattern or syntax
+     * @throws  \Yana\Core\Exceptions\NotImplementedException      when the column has an unknown datatype
+     * @throws  \Yana\Core\Exceptions\Files\SizeException          when uploaded file is too large
      */
     public function sanitizeValueByColumn(\Yana\Db\Ddl\Column $column, $value, array &$files = array());
 

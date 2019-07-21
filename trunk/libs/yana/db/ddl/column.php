@@ -158,21 +158,6 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
     private $_enumValues = null;
 
     /**
-     * Get list of column types.
-     *
-     * Returns a list with all supported column types as a numeric array.
-     *
-     * @return  array
-     * @ignore
-     */
-    public static function getSupportedTypes()
-    {
-        return array('array', 'bool', 'color', 'date', 'enum', 'file', 'float', 'html', 'image', 'list',
-            'inet', 'integer', 'list', 'mail', 'password', 'range', 'reference', 'set', 'string', 'tel',
-            'text', 'time', 'timestamp', 'url');
-    }
-
-    /**
      * Initialize instance.
      *
      * @param  string  $name  foreign key name
@@ -220,6 +205,16 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
     }
 
     /**
+     * Returns bool(true) if the column has the type reference.
+     *
+     * @return  bool
+     */
+    public function isReference()
+    {
+        return $this->getType() === \Yana\Db\Ddl\ColumnTypeEnumeration::REFERENCE;
+    }
+
+    /**
      * Check if column is a type containing a file.
      *
      * This function returns bool(true) if the column is of type 'file' or 'image'
@@ -230,7 +225,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      */
     public function isFile()
     {
-        return ($this->type == 'file' || $this->type == 'image');
+        return ($this->type == \Yana\Db\Ddl\ColumnTypeEnumeration::FILE || $this->type == \Yana\Db\Ddl\ColumnTypeEnumeration::IMAGE);
     }
 
     /**
@@ -292,7 +287,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
         }
 
         $lowerCaseValue = strtolower((string) $value);
-        assert('in_array($lowerCaseValue, self::getSupportedTypes()); // Undefined column type "' . $lowerCaseValue . '". ');
+        assert('in_array($lowerCaseValue, \Yana\Db\Ddl\ColumnTypeEnumeration::getSupportedTypes()); // Undefined column type "' . $lowerCaseValue . '". ');
 
         $this->type = $lowerCaseValue;
         return $this;
@@ -904,7 +899,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
     {
         if (!isset($this->isForeignKey)) {
             $this->isForeignKey = false;
-            if ($this->type === 'reference') {
+            if ($this->type === \Yana\Db\Ddl\ColumnTypeEnumeration::REFERENCE) {
                 $this->isForeignKey = true;
             } elseif (isset($this->parent)) {
                 // get list of foreign key constraints
@@ -1114,6 +1109,25 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
     public function getReferenceSettings()
     {
         return new \Yana\Db\Ddl\Reference((string) $this->referenceTable, (string) $this->referenceColumn, (string) $this->referenceLabel);
+    }
+
+    /**
+     * Create the reference settings and return them.
+     *
+     * Find the corresponding table and columns, return them as a reference object.
+     *
+     * If the column is NOT a reference, the returned reference object will refer to the column itself.
+     *
+     * @return  \Yana\Db\Ddl\Reference
+     */
+    public function autoFillReferenceSettings()
+    {
+        $referenceColum = $this->referenceColumn ? (string) $this->referenceColumn : $this->getReferenceColumn()->getName();
+        $referenceLabel = $this->referenceLabel ? (string) $this->referenceLabel : $referenceColum;
+        $referenceTable = $this->referenceTable || !$this->getReferenceColumn()->getParent() ?
+                (string) $this->referenceTable : $this->getReferenceColumn()->getParent()->getName();
+        $reference = new \Yana\Db\Ddl\Reference($referenceTable, $referenceColum, $referenceLabel);
+        return $reference;
     }
 
     /**
@@ -1686,7 +1700,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
          * if (is foreign-key) then { get target column }
          */
         $refrenceColumn = $this;
-        if ($this->getType() === 'reference' && !is_null($this->getParent())) {
+        if ($this->getType() === \Yana\Db\Ddl\ColumnTypeEnumeration::REFERENCE && !is_null($this->getParent())) {
             $referenceSettings = $this->getReferenceSettings();
             $tableName = $referenceSettings->getTable();
             if (empty($tableName)) {
@@ -1701,7 +1715,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
             try {
                 /* @var $column \Yana\Db\Ddl\Column */
                 $refrenceColumn = $this->getParent()->getParent()->getTable($tableName)->getColumn($columnName);
-                if ($refrenceColumn->getType() === 'reference') {
+                if ($refrenceColumn->getType() === \Yana\Db\Ddl\ColumnTypeEnumeration::REFERENCE) {
                     $refrenceColumn = $refrenceColumn->getReferenceColumn();
                 }
                 // @codeCoverageIgnoreStart

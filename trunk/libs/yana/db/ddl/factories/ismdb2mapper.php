@@ -52,6 +52,8 @@ interface IsMdb2Mapper
      * @param   array        $info      sequence information
      * @param   string       $name      sequence name
      * @return  $this
+     * @throws  \Yana\Core\Exceptions\AlreadyExistsException    when a sequence with the same name already exists
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if given an invalid name
      */
     public function createSequence(\Yana\Db\Ddl\Database $database, array $info, $name);
 

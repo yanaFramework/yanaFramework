@@ -28,18 +28,18 @@
 namespace Yana\Db\Export;
 
 /**
- * <<decorator>>  database Extractor
+ * <<decorator>> Database extractor.
  *
- * This decorator class is intended to create SQL DDL (data definition language)
- * statements, and DML (data manipulation language) statements from
- * YANA Framework databases and structure files.
+ * This class creates database exports and backups from Yana FileDb.
+ * It will output "create table" statements followed by "insert" statements,
+ * that may then be pushed to a database.
  *
- * For this task it provides functions which create specific SQL for various DBMS.
+ * For this task it provides functions which create specific SQL for various target DBMS.
  *
  * Example of usage:
  * <code>
  * // open new database connection
- * $db = \Yana\Application::connect('guestbook');
+ * $db = $yana->connect('guestbook');
  * // create new instance
  * $dbe = new \Yana\Db\Export\DataExporter($db);
  * // extract contents (here: use MySQL syntax)
@@ -100,16 +100,18 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
      */
     public function createMySQL($extractStructure = true, $extractData = true)
     {
+        $sql = array();
         if ($extractStructure) {
             $sql = parent::createMySQL();
-        } else {
-            $sql = array();
         }
 
         if ($extractData) {
-            @set_time_limit(500);
+            @set_time_limit(500); // this may take a while: increase time limit so we don't run into a timeout
+
+            // Loop through all tables in the database and extract each one
             foreach ($this->schema->getTableNames() as $table)
             {
+                // Select * From table
                 foreach($this->_db->select($table) as $row)
                 {
                     /* quote values */
@@ -119,7 +121,7 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
                     }
 
                     /* build statement */
-                    $stmt = $this->_tpl;
+                    $stmt = $this->_tpl; // Copy the template
                     $stmt = str_replace('%TABLE%', "`" . YANA_DATABASE_PREFIX . $table .  "`", $stmt);
                     $stmt = str_replace('%KEYS%', "`" . mb_strtolower(implode("`, `", array_keys($row))) .  "`", $stmt);
                     $stmt = str_replace('%VALUES%', implode(", ", $row), $stmt);

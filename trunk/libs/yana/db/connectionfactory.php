@@ -97,7 +97,8 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\IsConnecti
      *                                                       or instance of \Yana\Db\Ddl\Database
      * @param   bool                          $ignoreFileDb  set to bool(true) if you DON'T want to use the fallback File-DB driver
      * @return  \Yana\Db\IsConnection
-     * @throws  \Yana\Db\ConnectionException  when connection to database failed
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when no such database was found
+     * @throws  \Yana\Db\ConnectionException             when connection to database failed
      */
     public function createConnection($schema, $ignoreFileDb = YANA_DATABASE_ACTIVE)
     {

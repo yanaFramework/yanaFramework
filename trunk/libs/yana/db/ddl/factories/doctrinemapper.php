@@ -79,7 +79,7 @@ class DoctrineMapper extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories
 
         assert('!isset($flags); // Cannot redeclare var $flags');
         $flags = $info->getFlags();
-        if (!empty($flags['fulltext'])) {
+        if (array_search('fulltext', $flags) !== false) {
             $index->setFulltext(true);
         }
 

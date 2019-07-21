@@ -73,7 +73,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
      * }
      * </code>
      *
-     * @param  \Yana\Db\Ddl\Database  $schema  expected \Yana\Db\Ddl\Database object
+     * @param   \Yana\Db\Ddl\Database  $schema  contains the XDDL source
      */
     public function __construct(\Yana\Db\Ddl\Database $schema)
     {
@@ -81,64 +81,24 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
     }
 
     /**
-     * Create SQL.
+     * Transform the schema XDDL source to an array of SQL statements.
      *
-     * Returns a numeric array of SQL statements.
-     * Each element is a single statement.
-     * If you want to send the result to a SQL file
-     * you should "implode()" the array to a string.
+     * The function returns a numeric array of SQL statements.
+     * If you want to send the result to a SQL file you should "implode()" the array to a string.
      *
-     * @param string $name
-     * @param array  $arguments 
+     * @param   int  $dbmsType  index of DBMS to use
+     * @return  array
      */
-    public function __call($name, array $arguments)
+    private function _transformToSql($dbmsType)
     {
-        if (strpos($name, 'create') === 0) { // expect "createDbmsName"
-            $id = substr($name, 6); // extract "DbmsName"
-
-            $xmlDocument = new \DOMDocument();
-            $xmlDocument->loadXML((string) $this->schema);
-
-            $xslDocument = $this->_getProvider()->$id;
-            return self::_transformToSql($xmlDocument, $xslDocument);
-        }
-        return parent__call($name, $arguments);
+        $xslDocument = $this->_getProvider()->getXslDocument($dbmsType);
+        $xmlDocument = new \DOMDocument();
+        $xmlDocument->loadXML((string) $this->schema); // Source file
+        return $this->_getProcessor()->transformDocument($xmlDocument, $xslDocument);
     }
 
     /**
-     * Transform XML source to SQL statements via XSLT.
-     *
-     * This function uses the DOM-extension and the XSLT processor to
-     * transform a XDDL soure string to a list of SQL commands by using
-     * a XSL template.
-     *
-     * Note: due to restrictions of this XSLT processor, you are limited
-     * to XSL version 1.0. Using XSL 2.0 will cause an error to be thrown.
-     *
-     * @param  \DOMDocument $xmlDocument   XML source to transform
-     * @param  \DOMDocument $xslDocument   XSL template that will do the transformation
-     * @return array list of SQL commands
-     */
-    private static function _transformToSql(\DOMDocument $xmlDocument, \DOMDocument $xslDocument)
-    {
-        // XSLT processor
-        if (!\class_exists('\XSLTProcessor')) {
-            $message = "The PHP XSL extension was not found. Windows users: add 'extension=php_xsl.dll' to your php.ini file." .
-                " On Linux please use 'apt-get install php5-xsl' on your console.";
-            throw new \Yana\Db\Export\ExportException($message, \Yana\Log\TypeEnumeration::ERROR);
-        }
-        $xsltProcessor = new \XSLTProcessor();
-        $xsltProcessor->importStyleSheet($xslDocument); // attach the xsl rules
-
-        // Transform to SQL
-        $sql = trim($xsltProcessor->transformToXml($xmlDocument));
-        $array = preg_split('/(?<=;)$/m', $sql);
-        assert('is_array($array);');
-        return $array;
-    }
-
-    /**
-     * create SQL for PostgreSQL
+     * Create SQL for MySQL.
      *
      * Returns a numeric array of SQL statements.
      * Each element is a single statement.
@@ -147,95 +107,26 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
      *
      * @return  array
      */
-    private function _createPostgreSQL()
+    public function createMySQL()
     {
-        $xslFilename = \Yana\Db\Ddl\DDL::getDirectory() . '/.xsl/dbcreator_postgresql.xsl'; // Stylesheet
-        $xmlString = (string) $this->schema; // Source file
-        return self::_transformToSql($xmlString, $xslFilename);
+        $sqlStatements = $this->_transformToSql(\Yana\Db\Export\Xsl\IsProvider::MYSQL);
+        return $sqlStatements;
+    }
 
-        foreach ($this->schema->getTables() as $table)
-        {
-            $listOfColumns = $table->getColumns();
-            $listOfIndexes = $table->getIndexes();
-
-            /*
-             *  Create Column
-             */
-            assert('!isset($i); // cannot redeclare variable $i');
-            for ($i = 0; $i < count($listOfColumns); $i++)
-            {
-                /* @var $column \Yana\Db\Ddl\Column */
-                $column = $listOfColumns[$i];
-
-                $columnName = $column->getName();
-                $type = $column->getType();
-                $length = $column->getLength();
-                $precision = $column->getPrecision();
-                $default = $column->getDefault('postgresql');
-                $comment = $column->getDescription();
-                $stmt .= "\t\"{$columnName}\" ";
-
-                /*  PostgreSQL:
-                 *  Add Unique Constraint
-                 */
-                if ($this->structure->isUnique($table, $column) === true) {
-                    $stmt .= " UNIQUE";
-                }
-
-                /*  PostgreSQL:
-                 *  Add Primary Key
-                 */
-                if ($this->structure->isPrimaryKey($table, $column) === true) {
-                    $stmt .= " PRIMARY KEY";
-                }
-
-                /*  PostgreSQL:
-                 *  Create Foreign Key Constraints
-                 */
-                if ($this->structure->isForeignKey($table, $column) === true) {
-                    $ftable = $this->structure->getTableByForeignKey($table, $column);
-                    assert('is_array($lastSQL);');
-                    $lastSQL[] = "ALTER TABLE \"" . YANA_DATABASE_PREFIX . "{$table}\" " .
-                        "ADD FOREIGN KEY (\"{$column}\") REFERENCES \"" . YANA_DATABASE_PREFIX .
-                        $this->structure->getTableByForeignKey($table, $column) . "\";";
-                }
-
-                /*  PostgreSQL:
-                 *  Add Comment
-                 */
-                if (!empty($comment)) {
-                    assert('is_array($lastSQL);');
-                    $lastSQL[] = "COMMENT ON COLUMN \"" . YANA_DATABASE_PREFIX . "{$table}\"." .
-                        "\"{$column}\" IS '".addcslashes($comment, "'")."';";
-                }
-
-                if ($i<count($listOfColumns) - 1) {
-                    $stmt .= ",";
-                }
-                $stmt .= "\n";
-
-            } /* end foreach column */
-            unset($i);
-
-            assert('is_array($SQL);');
-            $SQL[] = $stmt.");";
-            unset($stmt);
-
-            /*  PostgreSQL:
-             *  Create Indexes
-             */
-            if (!empty($listOfIndexes)) {
-                assert('!isset($index); // cannot redeclare variable $index');
-                foreach ($listOfIndexes as $index)
-                {
-                    assert('is_array($SQL);');
-                    $SQL[] = "CREATE INDEX {$table}_{$index}_idx ON \"" .
-                        YANA_DATABASE_PREFIX . "{$table}\" (\"{$index}\");";
-                }
-                unset($index);
-            }
-
-        }
+    /**
+     * Create SQL for PostgreSQL.
+     *
+     * Returns a numeric array of SQL statements.
+     * Each element is a single statement.
+     * If you want to send the result to a SQL file
+     * you should "implode()" the array to a string.
+     *
+     * @return  array
+     */
+    public function createPostgreSQL()
+    {
+        $sqlStatements = $this->_transformToSql(\Yana\Db\Export\Xsl\IsProvider::POSTGRESQL);
+        return $sqlStatements;
     }
 
     /**
@@ -247,10 +138,12 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
      * you should "implode()" the array to a string.
      *
      * @return  array
+     * @codeCoverageIgnore
      */
     public function createMSSQL()
     {
-        throw new \Yana\Core\Exceptions\NotImplementedException();
+        $sqlStatements = $this->_transformToSql(\Yana\Db\Export\Xsl\IsProvider::MSSQL);
+        return $sqlStatements;
         /* this is the result var that will be returned when finished */
         $SQL = array();
 
@@ -482,6 +375,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
      *
      * @return  array
      * @see     \Yana\Db\Export\SqlFactory::createMSSQL()
+     * @codeCoverageIgnore
      */
     public function createMSAccess()
     {
@@ -497,10 +391,12 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
      * you should "implode()" the array to a string.
      *
      * @return  array
+     * @codeCoverageIgnore
      */
     public function createDB2()
     {
-        throw new \Yana\Core\Exceptions\NotImplementedException();
+        $sqlStatements = $this->_transformToSql(\Yana\Db\Export\Xsl\IsProvider::DB2);
+        return $sqlStatements;
         /* this is the result var that will be returned when finished */
         $SQL = array();
 
@@ -794,10 +690,12 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
      * you should "implode()" the array to a string.
      *
      * @return  array
+     * @codeCoverageIgnore
      */
     public function createOracleDB()
     {
-        throw new \Yana\Core\Exceptions\NotImplementedException();
+        $sqlStatements = $this->_transformToSql(\Yana\Db\Export\Xsl\IsProvider::ORACLEDB);
+        return $sqlStatements;
         /* this is the result var that will be returned when finished */
         $SQL = array();
 

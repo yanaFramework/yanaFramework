@@ -58,6 +58,18 @@ interface IsQueryBuilder
      * @param   string  $key    the address of the row that should be updated
      * @param   mixed   $value  value
      * @return  \Yana\Db\Queries\Update
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException          when a given argument is invalid
+     * @throws  \Yana\Db\Queries\Exceptions\InvalidPrimaryKeyException  when the primary key is invalid or ambigious
+     * @throws  \Yana\Db\Queries\Exceptions\ConstraintException         when a constraint violation is detected
+     * @throws  \Yana\Db\Queries\Exceptions\InvalidResultTypeException  when trying to insert anything but a row.
+     * @throws  \Yana\Core\Exceptions\NotWriteableException             when a target column or table is not writeable
+     * @throws  \Yana\Core\Exceptions\NotFoundException                 when the column definition is invalid
+     * @throws  \Yana\Core\Exceptions\NotImplementedException           when a column was encountered that has an unknown datatype
+     * @throws  \Yana\Core\Exceptions\Forms\InvalidValueException       when a given value is not valid
+     * @throws  \Yana\Core\Exceptions\Forms\InvalidSyntaxException      when a value does not match a required pattern or syntax
+     * @throws  \Yana\Core\Exceptions\Forms\MissingFieldException       when a not-nullable column is missing
+     * @throws  \Yana\Core\Exceptions\Forms\FieldNotFoundException      when a value was provided but no corresponding column exists
+     * @throws  \Yana\Core\Exceptions\Files\SizeException               when an uploaded file is too large
      */
     public function update($key, $value = array());
 
@@ -67,6 +79,10 @@ interface IsQueryBuilder
      * @param   string  $key    the address of the row that should be inserted
      * @param   mixed   $value  value
      * @return  \Yana\Db\Queries\Insert
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException          if a given argument is invalid
+     * @throws  \Yana\Db\Queries\Exceptions\InvalidPrimaryKeyException  when the primary key is invalid or ambigious
+     * @throws  \Yana\Db\Queries\Exceptions\ConstraintException         when a constraint violation is detected
+     * @throws  \Yana\Db\Queries\Exceptions\InvalidResultTypeException  when trying to insert anything but a row.
      */
     public function insert($key, $value = array());
 

@@ -82,7 +82,7 @@ class Mdb2Worker extends \Yana\Db\Ddl\Factories\AbstractMdb2Worker
     /**
      * Build sequences.
      *
-     * @param  \Yana\Db\Ddl\Database  $database  to add sequences to
+     * @param   \Yana\Db\Ddl\Database  $database  to add sequences to
      */
     protected function _createSequences(\Yana\Db\Ddl\Database $database)
     {
@@ -91,9 +91,13 @@ class Mdb2Worker extends \Yana\Db\Ddl\Factories\AbstractMdb2Worker
 
         assert('!isset($sequenceName); // Cannot redeclare var $sequenceName');
         assert('!isset($sequenceInfo); // Cannot redeclare var $sequenceInfo');
-        foreach($this->_getWrapper()->listSequences() as $sequenceName => $sequenceInfo)
+        foreach ($this->_getWrapper()->listSequences() as $sequenceName => $sequenceInfo)
         {
-            $mapper->createSequence($database, $sequenceInfo, $sequenceName);
+            try {
+                $mapper->createSequence($database, $sequenceInfo, $sequenceName);
+            } catch (\Yana\Core\Exceptions\AlreadyExistsException $e) {
+                // skip
+            }
         }
         unset($sequenceInfo, $sequenceName);
     }

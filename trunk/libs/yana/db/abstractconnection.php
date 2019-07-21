@@ -431,8 +431,9 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
                 assert('!isset($_value); // Cannot redeclare var $_value');
                 assert('!isset($_col); // Cannot redeclare var $_col');
                 $_col = mb_strtoupper($column);
+                $cache = $this->_cache;
                 if (isset($this->_cache[$tableName][$row][$_col])) {
-                    $_value = \Yana\Util\Hashtable::get($this->_cache[$tableName][$row][$_col], $arrayAddress);
+                    $_value = $this->_cache[$tableName][$row][$_col];
                 } else {
                     $_value = $this->select("$tableName.$row.$column");
                 }
@@ -454,7 +455,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
         if ($column === '*') {
             $this->_cache[$tableName][$row] = $value;
         } else {
-            $this->_cache[$tableName][$row][$column] = $value;
+            $this->_cache[$tableName][$row][mb_strtoupper($column)] = $value;
         }
 
         $transaction->update($updateQuery);
@@ -591,7 +592,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
             assert('is_string($key); // Invalid argument $key: string expected');
 
             $queryBuilder = $this->_getQueryBuilder();
-            $insertQuery = $queryBuilder->insert($key, $row);
+            $insertQuery = $queryBuilder->insert($key, $row); // may throw exception
 
         }
 

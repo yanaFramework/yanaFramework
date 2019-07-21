@@ -57,9 +57,11 @@ class Driver extends \Yana\Db\Doctrine\AbstractDriver
         try {
             $this->_getDecoratedObject()->beginTransaction();
 
+            // @codeCoverageIgnoreStart
         } catch (\Exception $e) {
             throw new \Yana\Db\DatabaseException($e->getMessage(), \Yana\Log\TypeEnumeration::WARNING, $e);
         }
+        // @codeCoverageIgnoreEnd
         return true;
     }
 
@@ -72,11 +74,15 @@ class Driver extends \Yana\Db\Doctrine\AbstractDriver
     public function rollback()
     {
         try {
-            $this->_getDecoratedObject()->rollBack();
+            if ($this->_getDecoratedObject()->isTransactionActive()) {
+                $this->_getDecoratedObject()->rollBack();
+            }
 
+            // @codeCoverageIgnoreStart
         } catch (\Exception $e) {
             throw new \Yana\Db\DatabaseException($e->getMessage(), \Yana\Log\TypeEnumeration::WARNING, $e);
         }
+        // @codeCoverageIgnoreEnd
         return true;
     }
 
@@ -89,11 +95,15 @@ class Driver extends \Yana\Db\Doctrine\AbstractDriver
     public function commit()
     {
         try {
-            $this->_getDecoratedObject()->commit();
+            if ($this->_getDecoratedObject()->isTransactionActive()) {
+                $this->_getDecoratedObject()->commit();
+            }
 
+            // @codeCoverageIgnoreStart
         } catch (\Exception $e) {
             throw new \Yana\Db\DatabaseException($e->getMessage(), \Yana\Log\TypeEnumeration::WARNING, $e);
         }
+        // @codeCoverageIgnoreEnd
         return true;
     }
 
@@ -110,9 +120,11 @@ class Driver extends \Yana\Db\Doctrine\AbstractDriver
             $manager = $this->_getDecoratedObject()->getSchemaManager();
             return $manager->listDatabases();
 
+            // @codeCoverageIgnoreStart
         } catch (\Exception $e) {
             throw new \Yana\Db\DatabaseException($e->getMessage(), \Yana\Log\TypeEnumeration::WARNING, $e);
         }
+        // @codeCoverageIgnoreEnd
         return true;
     }
 
@@ -129,17 +141,21 @@ class Driver extends \Yana\Db\Doctrine\AbstractDriver
             $manager = $this->_getDecoratedObject()->getSchemaManager();
             return $manager->listTableNames();
 
+            // @codeCoverageIgnoreStart
         } catch (\Exception $e) {
             throw new \Yana\Db\DatabaseException($e->getMessage(), \Yana\Log\TypeEnumeration::WARNING, $e);
         }
+        // @codeCoverageIgnoreEnd
         return true;
     }
 
     /**
      * Get list of functions.
      *
+     * Doctrine doesn't support auto-discovery of functions. When called, this will always throw an exception.
+     *
      * @return  array
-     * @throws  \Yana\Db\DatabaseException  on failure
+     * @throws  \Yana\Db\DatabaseException  always
      */
     public function listFunctions()
     {
@@ -152,6 +168,7 @@ class Driver extends \Yana\Db\Doctrine\AbstractDriver
      * @param   string  $database  name of database to query
      * @return  array
      * @throws  \Yana\Db\DatabaseException  on failure
+     * @codeCoverageIgnore
      */
     public function listSequences($database = null)
     {
@@ -163,15 +180,23 @@ class Driver extends \Yana\Db\Doctrine\AbstractDriver
             assert('!isset($manager); // Cannot redeclare var $manager');
             /* @var $manager \Doctrine\DBAL\Schema\AbstractSchemaManager */
             $manager = $connection->getSchemaManager();
-            assert('!isset($platform); // Cannot redeclare var $platform');
-            /* @var $platform \Doctrine\DBAL\Platforms\AbstractPlatform */
-            $platform = $connection->getDatabasePlatform();
 
-            return $manager->listSequences(is_string($database) ? $platform->quoteIdentifier($database) : null);
+            assert('!isset($sequencesNames); // Cannot redeclare var $sequencesNames');
+            $sequencesNames = array();
+            foreach ($manager->listSequences() as $sequence)
+            {
+                /* @var $sequence \Doctrine\DBAL\Schema\Sequence */
+                $sequencesNames[] = $sequence->getName();
+            }
+            unset($sequence);
 
+            return $sequencesNames;
+
+            // @codeCoverageIgnoreStart
         } catch (\Exception $e) {
             throw new \Yana\Db\DatabaseException($e->getMessage(), \Yana\Log\TypeEnumeration::WARNING, $e);
         }
+        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -191,15 +216,24 @@ class Driver extends \Yana\Db\Doctrine\AbstractDriver
             assert('!isset($manager); // Cannot redeclare var $manager');
             /* @var $manager \Doctrine\DBAL\Schema\AbstractSchemaManager */
             $manager = $connection->getSchemaManager();
-            assert('!isset($platform); // Cannot redeclare var $platform');
-            /* @var $platform \Doctrine\DBAL\Platforms\AbstractPlatform */
-            $platform = $connection->getDatabasePlatform();
 
-            return $manager->listTableColumns($platform->quoteIdentifier($table));
+            assert('!isset($columnNames); // Cannot redeclare var $columnNames');
+            $columnNames = array();
+            assert('!isset($column); // Cannot redeclare var $column');
+            foreach ($manager->listTableColumns($table) as $column)
+            {
+                /* @var $column \Doctrine\DBAL\Schema\Column */
+                $columnNames[] = $column->getName();
+            }
+            unset($column);
 
+            return $columnNames;
+
+            // @codeCoverageIgnoreStart
         } catch (\Exception $e) {
             throw new \Yana\Db\DatabaseException($e->getMessage(), \Yana\Log\TypeEnumeration::WARNING, $e);
         }
+        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -220,15 +254,24 @@ class Driver extends \Yana\Db\Doctrine\AbstractDriver
             assert('!isset($manager); // Cannot redeclare var $manager');
             /* @var $manager \Doctrine\DBAL\Schema\AbstractSchemaManager */
             $manager = $connection->getSchemaManager();
-            assert('!isset($platform); // Cannot redeclare var $platform');
-            /* @var $platform \Doctrine\DBAL\Platforms\AbstractPlatform */
-            $platform = $connection->getDatabasePlatform();
 
-            return $manager->listTableIndexes($platform->quoteIdentifier($table));
+            assert('!isset($indexNames); // Cannot redeclare var $indexNames');
+            $indexNames = array();
+            assert('!isset($index); // Cannot redeclare var $index');
+            foreach ($manager->listTableIndexes($table) as $index)
+            {
+                /* @var $index \Doctrine\DBAL\Schema\Index */
+                $indexNames[] = $index->getName();
+            }
+            unset($index);
 
+            return $indexNames;
+
+            // @codeCoverageIgnoreStart
         } catch (\Exception $e) {
             throw new \Yana\Db\DatabaseException($e->getMessage(), \Yana\Log\TypeEnumeration::WARNING, $e);
         }
+        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -270,6 +313,7 @@ class Driver extends \Yana\Db\Doctrine\AbstractDriver
             $statement = $connection->query($sqlStmt);
             return new \Yana\Db\Doctrine\Result($statement);
 
+            // @codeCoverageIgnoreStart
         } catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $e) {
             throw new \Yana\Db\Queries\Exceptions\ConstraintException($e->getMessage(), \Yana\Log\TypeEnumeration::WARNING, $e);
 
@@ -279,6 +323,7 @@ class Driver extends \Yana\Db\Doctrine\AbstractDriver
         } catch (\Exception $e) {
             throw new \Yana\Db\DatabaseException($e->getMessage(), \Yana\Log\TypeEnumeration::WARNING, $e);
         }
+        // @codeCoverageIgnoreEnd
         return true;
     }
 
@@ -290,6 +335,7 @@ class Driver extends \Yana\Db\Doctrine\AbstractDriver
      *
      * @param   mixed  $value value too qoute
      * @return  string
+     * @codeCoverageIgnore
      */
     public function quote($value)
     {
@@ -304,6 +350,7 @@ class Driver extends \Yana\Db\Doctrine\AbstractDriver
      *
      * @param   string  $value  value
      * @return  string
+     * @codeCoverageIgnore
      */
     public function quoteIdentifier($value)
     {
@@ -327,12 +374,13 @@ class Driver extends \Yana\Db\Doctrine\AbstractDriver
      */
     public function equals(\Yana\Core\IsObject $anotherObject)
     {
+        $isEqual = false;
         if ($anotherObject instanceof $this) {
             $thisDsn = $this->_getDecoratedObject()->getParams();
             $otherDsn = $anotherObject->_getDecoratedObject()->getParams();
-            return $thisDsn === $otherDsn;
+            $isEqual = $thisDsn === $otherDsn;
         }
-        return false;
+        return $isEqual;
     }
 
 }

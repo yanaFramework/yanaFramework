@@ -25,28 +25,22 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Db;
+namespace Yana\Db\Export\Xsl;
 
 /**
- * <<interface>> Aids in opening and keeping connections.
+ * <<enumeration>> SQL transform file resources enumeration.
+ *
+ * This is a list of file paths consumed by the SqlFactory class.
+ * Each item points to an XSL file that 
  *
  * @package     yana
  * @subpackage  db
+ * @ignore
  */
-interface IsConnectionFactory
+class ResourceEnumeration extends \Yana\Core\AbstractEnumeration
 {
-
-    /**
-     * <<factory>> Returns a ready-to-use database connection.
-     *
-     * @param   string|\Yana\Db\Ddl\Database  $schema  name of the database schema file (see config/db/*.xml),
-     *                                                 or instance of \Yana\Db\Ddl\Database
-     * @return  \Yana\Db\IsConnection
-     * @throws  \Yana\Core\Exceptions\NotFoundException  when no such database was found
-     * @throws  \Yana\Db\ConnectionException             when connection to database failed
-     */
-    public function createConnection($schema);
-
+    const MYSQL = __DIR__ . '/resources/mysql.xsl';
+    const POSTGRESQL = __DIR__ . '/resources/postgresql.xsl';
 }
 
 ?>

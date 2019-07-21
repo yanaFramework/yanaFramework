@@ -270,7 +270,8 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
      * Returns bool(true) on success and bool(false) on error.
      *
      * @param   int  $type  set the kind of statement
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when argument is not a valid constant
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException    when argument is not a valid constant
+     * @throws  \Yana\Db\Queries\Exceptions\TableNotSetException  if table has not been initialized
      * @return  \Yana\Db\Queries\AbstractQuery
      * @ignore
      */
@@ -376,7 +377,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
      * Otherwise it will have no effect.
      *
      * @param   bool  $state  true = on, false = off
-     * @return  \Yana\Db\Queries\AbstractQuery
+     * @return  $this
      */
     public function useInheritance($state)
     {
@@ -394,7 +395,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
      * @param   \Yana\Db\Ddl\Table  $table          table definition
      * @param   \Yana\Db\Ddl\Table  $parentTable    parent table
      * @since   2.9.6
-     * @return  \Yana\Db\Queries\AbstractQuery
+     * @return  $this
      */
     private function _setParentTable(\Yana\Db\Ddl\Table $table, \Yana\Db\Ddl\Table $parentTable)
     {
@@ -481,6 +482,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
      *
      * @param   string  $columnName  name of a column
      * @return  \Yana\Db\Ddl\Table
+     * @throws  \Yana\Db\Queries\Exceptions\TableNotSetException     if table has not been initialized
      * @throws  \Yana\Db\Queries\Exceptions\ColumnNotFoundException  if no column with the given name has been found
      */
     public function getTableByColumn($columnName)
@@ -492,10 +494,10 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
         $table = null;
         // lazy loading: resolve source tables for requested column
         if (isset($this->tableByColumn[$columnName])) {
-            $table = $dbSchema->getTable($this->tableByColumn[$columnName]);
+            $table = $dbSchema->getTable($this->tableByColumn[$columnName]); // When we are auto-resolving inheritance between tables
 
         } elseif ($this->currentTable()->isColumn($columnName)) {
-            $table = $this->currentTable();
+            $table = $this->currentTable(); // may throw exception
 
         } elseif (!empty($this->joins)) {
             assert('!isset($joinedTable); // Cannot redeclare var $joinedTable');
@@ -512,7 +514,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
             unset($joinCondition);
         }
 
-        if (! $table instanceof \Yana\Db\Ddl\Table) {
+        if (! $table instanceof \Yana\Db\Ddl\Table) { // happens when getTable() returned bool(false)
             $message = "Column '" . $columnName . "' is undefined.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Db\Queries\Exceptions\ColumnNotFoundException($message, $level);
@@ -657,10 +659,12 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
 
             if (!self::_findForeignKey($sourceTable, $joinedTable, $foreignKey, $targetKey)) {
                 if (!self::_findForeignKey($joinedTable, $sourceTable, $foreignKey, $targetKey)) {
-                    throw new \Yana\Db\Queries\Exceptions\ConstraintException(
-                        "Cannot join tables '" . $sourceTableName . "' and '" . $joinedTableName . "'. " .
-                        "No foreign key constraint has been found."
-                    );
+                    $message = "Cannot join tables '" . $sourceTableName . "' and '" . $joinedTableName . "'. " .
+                        "No foreign key constraint has been found.";
+                    throw new \Yana\Db\Queries\Exceptions\ConstraintException($message, \Yana\Log\TypeEnumeration::WARNING);
+                } else {
+                    $message = "Wrong join order. Please swap source and target table.";
+                    throw new \Yana\Db\Queries\Exceptions\ConstraintException($message, \Yana\Log\TypeEnumeration::WARNING);
                 }
             }
         }
@@ -779,7 +783,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
      * If your query uses multiple tables (via a join) this is the name of the base-table (the first table in the list).
      *
      * @param   string  $table  table name to use in query
-     * @throws  \Yana\Db\Exceptions\TableNotFoundException  when the table does not exist
+     * @throws  \Yana\Db\Queries\Exceptions\TableNotFoundException  when the table does not exist
      * @return  \Yana\Db\Queries\AbstractQuery
      */
     public function setTable($table)
@@ -793,7 +797,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
         if (!($table instanceof \Yana\Db\Ddl\Table)) {
             $message = "The table '$tableName' is unknown.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
-            throw new \Yana\Db\Exceptions\TableNotFoundException($message, $level);
+            throw new \Yana\Db\Queries\Exceptions\TableNotFoundException($message, $level);
         }
 
         // Auto-attach profile check to where clause if profile constraint is present.
@@ -847,10 +851,14 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
      * Get current table.
      *
      * @return  \Yana\Db\Ddl\Table
+     * @throws  \Yana\Db\Queries\Exceptions\TableNotSetException  if table has not been initialized
      */
     protected function currentTable()
     {
         if (!isset($this->table)) {
+            if (!$this->getTable()) {
+                throw new \Yana\Db\Queries\Exceptions\TableNotSetException("Need to set table first!");
+            }
             $this->table = $this->getDatabase()->getSchema()->getTable($this->getTable());
         }
         return $this->table;
@@ -863,7 +871,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
      *
      * @param   string  $column  column name or '*' for "all"
      * @param   string  $alias   optional column alias
-     * @throws  \Yana\Db\Queries\Exceptions\InvalidSyntaxException   if table has not been initialized
+     * @throws  \Yana\Db\Queries\Exceptions\TableNotSetException     if table has not been initialized
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException       if a given argument is invalid
      * @throws  \Yana\Db\Queries\Exceptions\ColumnNotFoundException  if the given column is not found in the table
      * @return  \Yana\Db\Queries\AbstractQuery
@@ -881,7 +889,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
      *
      * @param   string  $column  column name or '*' for "all"
      * @param   string  $alias   optional column alias
-     * @throws  \Yana\Db\Queries\Exceptions\InvalidSyntaxException   if table has not been initialized
+     * @throws  \Yana\Db\Queries\Exceptions\TableNotSetException     if table has not been initialized
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException       if a given argument is invalid
      * @throws  \Yana\Db\Queries\Exceptions\ColumnNotFoundException  if the given column is not found in the table
      * @return  \Yana\Db\Queries\AbstractQuery
@@ -897,7 +905,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
          * 1) wrong order of commands, need to set up table first
          */
         if (empty($this->tableName)) {
-            throw new \Yana\Db\Queries\Exceptions\InvalidSyntaxException("Cannot set column - need to set table first!");
+            throw new \Yana\Db\Queries\Exceptions\TableNotSetException("Cannot set column - need to set table first!");
         }
 
         /**
@@ -981,7 +989,8 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
      * the resultset will be empty.
      *
      * @param   string  $arrayAddress   array address
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if a given argument is invalid
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException    if a given argument is invalid
+     * @throws  \Yana\Db\Queries\Exceptions\TableNotSetException  if table has not been initialized (Only in STRICT mode!)
      * @return  \Yana\Db\Queries\AbstractQuery
      * @ignore
      */
@@ -1102,7 +1111,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
      * To search for all rows, use the wildcard '*'.
      *
      * @param   scalar  $row  set source row
-     * @throws  \Yana\Db\Queries\Exceptions\InvalidSyntaxException  if table has not been initialized
+     * @throws  \Yana\Db\Queries\Exceptions\TableNotSetException     if table has not been initialized
      * @return  \Yana\Db\Queries\AbstractQuery
      */
     public function setRow($row)
@@ -1114,7 +1123,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
          * 1) wrong order of commands, need to set up table first
          */
         if (empty($this->tableName)) {
-            throw new \Yana\Db\Queries\Exceptions\InvalidSyntaxException("Cannot set row - need to set table first!");
+            throw new \Yana\Db\Queries\Exceptions\TableNotSetException("Cannot set row - need to set table first!");
         }
         $table = $this->currentTable();
 
@@ -2010,14 +2019,24 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
             // delete old files
             if (isset($values[$columnName]) && $values[$columnName] > "") {
                 assert('is_string($values[$columnName]);');
+
                 try {
                     \Yana\Db\Binaries\File::removeFile($values[$columnName]);
+
                 } catch (\Yana\Core\Exceptions\NotFoundException $e) {
-                    /* Create a database event log entry for each
-                     * file the was not found.
-                     */
-                    \Yana\Log\LogManager::getLogger()->addLog("Error while trying to delete a row in table " .
-                        "'{$this->currentTable()->getName()}': {$e->getMessage()}");
+                    // @codeCoverageIgnoreStart
+
+                    // Create a database event log entry for each file that was not found.
+                    assert('!isset($message); // Cannot redeclare var $message');
+                    $message = $e->getMessage();
+                    try {
+                        $message = "Error while trying to delete a row in table '" .
+                        $this->currentTable()->getName() . "': " . $message;
+                    } catch (Exception $ex) {
+                        $message = "Error while trying to delete a row: " . $message;
+                    }
+                    \Yana\Log\LogManager::getLogger()->addLog($message);
+                    // @codeCoverageIgnoreEnd
                 }
             }
         }
@@ -2026,6 +2045,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
 
     /**
      * @return  string
+     * @codeCoverageIgnore
      */
     public function __toString()
     {

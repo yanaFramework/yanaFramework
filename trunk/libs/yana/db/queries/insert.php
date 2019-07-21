@@ -165,10 +165,18 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
      *
      * @param   mixed  $values  value(s) for current query
      * @return  $this
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException          if a given argument is invalid
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException          when a given argument is invalid
      * @throws  \Yana\Db\Queries\Exceptions\InvalidPrimaryKeyException  when the primary key is invalid or ambigious
      * @throws  \Yana\Db\Queries\Exceptions\ConstraintException         when a constraint violation is detected
      * @throws  \Yana\Db\Queries\Exceptions\InvalidResultTypeException  when trying to insert anything but a row.
+     * @throws  \Yana\Core\Exceptions\NotWriteableException             when a target column or table is not writeable
+     * @throws  \Yana\Core\Exceptions\NotFoundException                 when the column definition is invalid
+     * @throws  \Yana\Core\Exceptions\NotImplementedException           when a column was encountered that has an unknown datatype
+     * @throws  \Yana\Core\Exceptions\Forms\InvalidValueException       when a given value is not valid
+     * @throws  \Yana\Core\Exceptions\Forms\InvalidSyntaxException      when a value does not match a required pattern or syntax
+     * @throws  \Yana\Core\Exceptions\Forms\MissingFieldException       when a not-nullable column is missing
+     * @throws  \Yana\Core\Exceptions\Forms\FieldNotFoundException      when a value was provided but no corresponding column exists
+     * @throws  \Yana\Core\Exceptions\Files\SizeException               when an uploaded file is too large
      */
     public function setValues($values)
     {
@@ -216,7 +224,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
                 assert('!isset($columnName); // Cannot redeclare var $columnName');
                 $columnName = $column[1];
                 $parent = $this->getParentByColumn($columnName);
-                if (false !== $parent && isset($values[$columnName])) {
+                if (false !== $parent) {
                     $this->_appendValue($parent, $columnName, $values[$columnName]);
                     unset($values[$columnName]);
                 }
@@ -253,6 +261,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
                 if ($column->isAutoIncrement()) {
                     /* ignore - is to be inserted automatically by database */
                 } elseif ($this->row !== '*') {
+                    // may throw exception
                     $values[$primaryKey] = $this->_getSanitizer()->sanitizeValueByColumn($column, $this->row, $this->files);
                 } else {
                     $message = "Cannot insert a row without a primary key. Operation aborted.";
@@ -281,7 +290,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
                 if (isset($values[$primaryKey])) {
                     $values[$primaryKey] = mb_strtoupper((string) $values[$primaryKey]);
                 }
-                // check if row is valid
+                // check if row is valid (may throw exception)
                 $values = $this->_getSanitizer()->sanitizeRowByTable($table, $values, $isInsert, $this->files);
             break;
 
@@ -304,6 +313,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
                     assert('!isset($column); // Cannot redeclare var $column');
                     $column = $table->getColumn($this->column[0][1]);
                     assert('$column instanceof \Yana\Db\Ddl\Column;');
+                    // check if value is valid (may throw exception)
                     $values = $this->_getSanitizer()->sanitizeValueByColumn($column, $values, $this->files);
                     unset($column);
                 }
@@ -325,7 +335,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
         /*
          * 4) input is valid - update values
          */
-        $this->values =& $values;
+        $this->values = $values;
         return $this;
     }
 

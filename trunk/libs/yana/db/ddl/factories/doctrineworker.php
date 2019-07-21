@@ -105,12 +105,15 @@ class DoctrineWorker extends \Yana\Db\Ddl\Factories\AbstractDoctrineWorker
         $mapper = $this->_getMapper();
 
         assert('!isset($sequenceName); // Cannot redeclare var $sequenceName');
-        assert('!isset($sequenceInfo); // Cannot redeclare var $sequenceInfo');
-        foreach($this->_getWrapper()->listSequences() as $sequenceName => $sequenceInfo)
+        assert('!isset($sequence); // Cannot redeclare var $sequence');
+        foreach($this->_getWrapper()->listSequences() as $sequence)
         {
-            $mapper->createSequence($database, $sequenceInfo, $sequenceName);
+            $sequenceName = (string) $sequence->getName();
+            if (!$database->isSequence($sequenceName)) {
+                $mapper->createSequence($database, $sequence, $sequence->getName());
+            }
         }
-        unset($sequenceInfo, $sequenceName);
+        unset($sequence, $sequenceName);
     }
 
     /**

@@ -25,27 +25,18 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Db;
+namespace Yana\Db\Queries\Exceptions;
 
 /**
- * <<interface>> Aids in opening and keeping connections.
+ * <<exception>> Thrown when the table has not been found because no table was selected.
  *
  * @package     yana
  * @subpackage  db
  */
-interface IsConnectionFactory
+class TableNotSetException extends \Yana\Db\Queries\Exceptions\TableNotFoundException
 {
 
-    /**
-     * <<factory>> Returns a ready-to-use database connection.
-     *
-     * @param   string|\Yana\Db\Ddl\Database  $schema  name of the database schema file (see config/db/*.xml),
-     *                                                 or instance of \Yana\Db\Ddl\Database
-     * @return  \Yana\Db\IsConnection
-     * @throws  \Yana\Core\Exceptions\NotFoundException  when no such database was found
-     * @throws  \Yana\Db\ConnectionException             when connection to database failed
-     */
-    public function createConnection($schema);
+    // intentionally left blank
 
 }
 

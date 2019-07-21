@@ -79,13 +79,19 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
      * @param   bool    $isInsert  type of operation (true = insert, false = update)
      * @param   array   &$files    list of modified or inserted columns of type file or image
      * @return  array
-     * @throws  \Yana\Core\Exceptions\NotWriteableException        if a target column or table is not writeable
-     * @throws  \Yana\Core\Exceptions\Forms\InvalidValueException  if a given value is not valid
-     * @throws  \Yana\Core\Exceptions\Forms\MissingFieldException  when a not-nullable column is missing
+     * @throws  \Yana\Core\Exceptions\NotWriteableException         when a target column or table is not writeable
+     * @throws  \Yana\Core\Exceptions\NotFoundException             when the column definition is invalid
+     * @throws  \Yana\Core\Exceptions\NotImplementedException       when a column was encountered that has an unknown datatype
+     * @throws  \Yana\Core\Exceptions\Forms\InvalidValueException   when a given value is not valid
+     * @throws  \Yana\Core\Exceptions\Forms\InvalidSyntaxException  when a value does not match a required pattern or syntax
+     * @throws  \Yana\Core\Exceptions\Forms\MissingFieldException   when a not-nullable column is missing
+     * @throws  \Yana\Core\Exceptions\Forms\FieldNotFoundException  when a value was provided but no corresponding column exists
+     * @throws  \Yana\Core\Exceptions\Files\SizeException           when an uploaded file is too large
      */
     public function sanitizeRowByTable(\Yana\Db\Ddl\Table $table, array $row, $isInsert = true, array &$files = array())
     {
         assert('is_bool($isInsert); // Wrong type for argument 2. Boolean expected');
+        $outputRow = array();
         /* @var $column \Yana\Db\Ddl\Column */
         foreach ($table->getColumns() as $column)
         {
@@ -93,14 +99,14 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
             /*
              * error - not writeable
              */
-            if (!$isInsert && $column->isReadonly() && isset($row[$columnName])) {
+            if (!$isInsert && $column->isReadonly() && !array_key_exists($columnName, $row)) {
                 throw new \Yana\Core\Exceptions\NotWriteableException("Database is readonly. " .
                     "Update operation on table '{$table->getName()}' aborted.");
             }
             /*
              * valid - value may be empty for update-queries
              */
-            if (!$isInsert && !isset($row[$columnName])) {
+            if (!$isInsert && !array_key_exists($columnName, $row)) {
                 continue;
             }
             /*
@@ -114,9 +120,12 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
                  * autofill column
                  */
                 if (!is_null($default)) {
-                    $row[$columnName] = $default;
+                    $outputRow[$columnName] = $default;
+                    unset($row[$columnName]);
                     continue;
+
                 } elseif ($column->isAutoIncrement()) {
+                    unset($row[$columnName]);
                     continue;
                 }
 
@@ -133,18 +142,23 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
                     $warning = new \Yana\Core\Exceptions\Forms\MissingFieldException($message, $level);
                     throw $warning->setField($title);
 
-                } elseif (isset($row[$columnName]) && $row[$columnName] === "") {
-                    $row[$columnName] = null; // Don't set values to NULL if they are not given
+                } elseif (array_key_exists($columnName, $row)) {
+                    $outputRow[$columnName] = null; // Don't set values to NULL if they are not given
                 }
             /*
              * 4) this input is valid - move to next
              */
             } elseif (isset($row[$columnName])) {
-                $row[$columnName] = $this->sanitizeValueByColumn($column, $row[$columnName], $files); // may throw exception
+                $outputRow[$columnName] = $this->sanitizeValueByColumn($column, $row[$columnName], $files); // may throw exception
             } // end if
+            unset($row[$columnName]);
         } // end for
 
-        return $row;
+        if (count($row) !== 0) {
+            throw new \Yana\Core\Exceptions\Forms\FieldNotFoundException("Unknown column(s): " . implode(', ', array_keys($row)));
+        }
+
+        return $outputRow;
     }
 
     /**
@@ -186,23 +200,23 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
 
         switch ($refColumn->getType())
         {
-            case 'array':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::ARR:
                 return $worker->asArray();
 
-            case 'bool':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::BOOL:
                 return $worker->asBool();
 
-            case 'color':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::COLOR:
                 return $worker->asColor();
 
-            case 'date':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::DATE:
                 return $worker->asDateString();
 
-            case 'enum':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::ENUM:
                 return $worker->asEnumeration($refColumn->getEnumerationItemNames());
 
-            case 'image':
-            case 'file':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::IMAGE:
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::FILE:
                 try {
                     $fileId = $worker->asFileId((int) $refColumn->getSize());
 
@@ -222,51 +236,51 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
                 $idGenerator = new \Yana\Db\Helpers\IdGenerator();
                 return $idGenerator($column);
 
-            case 'range':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::RANGE:
                 return $worker->asRangeValue((int) $refColumn->getRangeMax(), (int) $refColumn->getRangeMin());
 
-            case 'float':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::FLOAT:
                 return $worker->asFloat((int) $refColumn->getLength(), (int) $refColumn->getPrecision(), (bool) $refColumn->isUnsigned());
 
-            case 'html':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::HTML:
                 return $worker->asHtmlString((int) $refColumn->getLength());
 
-            case 'inet':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::INET:
                 return $worker->asIpAddress();
 
-            case 'integer':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::INT:
                 return $worker->asInteger((int) $refColumn->getLength(), (bool) $refColumn->isUnsigned());
 
-            case 'list':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::LST:
                 return $worker->asListOfValues();
 
-            case 'mail':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::MAIL:
                 return $worker->asMailAddress((int) $refColumn->getLength());
 
-            case 'password':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::PASSWORD:
                 return $worker->asPassword();
 
-            case 'set':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::SET:
                 return $worker->asSetOfEnumerationItems($refColumn->getEnumerationItemNames());
 
-            case 'reference':
-            case 'string':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::REFERENCE:
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::STRING:
                 return $worker->asString((int) $refColumn->getLength());
 
-            case 'text':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::TEXT:
                 return $worker->asText((int) $refColumn->getLength());
 
-            case 'time':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::TIME:
                 return $worker->asTimeString();
 
-            case 'timestamp':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::TIMESTAMP:
                 return $worker->asTimestamp();
 
-            case 'url':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::URL:
                 return $worker->asUrl((int) $refColumn->getLength());
 
             default:
-                assert('!in_array($value, self::getSupportedTypes()); // Unhandled column type. ');
+                assert('!in_array($value, \Yana\Db\Ddl\ColumnTypeEnumeration::getSupportedTypes()); // Unhandled column type. ');
                 throw new \Yana\Core\Exceptions\NotImplementedException(
                     "Type '" . $refColumn->getType() . "' not implemented.", \Yana\Log\TypeEnumeration::ERROR
                 );

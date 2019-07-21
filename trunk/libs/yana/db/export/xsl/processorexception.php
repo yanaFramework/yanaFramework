@@ -25,27 +25,18 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Db;
+namespace Yana\Db\Export\Xsl;
 
 /**
- * <<interface>> Aids in opening and keeping connections.
+ * <<exception>> For exceptions related to the XSL processor.
  *
  * @package     yana
  * @subpackage  db
  */
-interface IsConnectionFactory
+class ProcessorException extends \Yana\Db\Export\ExportException
 {
 
-    /**
-     * <<factory>> Returns a ready-to-use database connection.
-     *
-     * @param   string|\Yana\Db\Ddl\Database  $schema  name of the database schema file (see config/db/*.xml),
-     *                                                 or instance of \Yana\Db\Ddl\Database
-     * @return  \Yana\Db\IsConnection
-     * @throws  \Yana\Core\Exceptions\NotFoundException  when no such database was found
-     * @throws  \Yana\Db\ConnectionException             when connection to database failed
-     */
-    public function createConnection($schema);
+    // intentionally left blank
 
 }
 

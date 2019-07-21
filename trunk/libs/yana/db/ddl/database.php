@@ -239,11 +239,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function isModified()
     {
-        if ($this->modified) {
-            return true;
-        } else {
-            return false;
-        }
+        return (bool) $this->modified;
     }
 
     /**
@@ -268,10 +264,8 @@ class Database extends \Yana\Db\Ddl\AbstractObject
             if (isset(self::$instances[$this->path])) {
                 unset(self::$instances[$this->path]);
             }
-            $this->modified = true;
-        } else {
-            $this->modified = false;
         }
+        $this->modified = (bool) $isModified;
         return $this;
     }
 
@@ -415,9 +409,6 @@ class Database extends \Yana\Db\Ddl\AbstractObject
             }
             // get file
             $database = self::$instances[$path];
-
-            // get properties of included database
-            $dataSource = $database->getDataSource();
 
             // include tables
             foreach ($database->getTables() as $object)
@@ -700,11 +691,11 @@ class Database extends \Yana\Db\Ddl\AbstractObject
     public function getTable($name)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
-        $name = mb_strtolower($name);
+        $lowerCaseName = mb_strtolower($name);
 
         $table = null;
-        if (isset($this->tables[$name])) {
-            $table = $this->tables[$name];
+        if (isset($this->tables[$lowerCaseName])) {
+            $table = $this->tables[$lowerCaseName];
         }
         return $table;
     }
@@ -727,18 +718,18 @@ class Database extends \Yana\Db\Ddl\AbstractObject
     public function addTable($name)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
-        $name = mb_strtolower($name);
-        if (isset($this->tables[$name])) {
-            $message = "Another table with the name '$name' is already defined.";
+        $lowerCaseName = mb_strtolower($name);
+        if (isset($this->tables[$lowerCaseName])) {
+            $message = "Another table with the name '$lowerCaseName' is already defined.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
-            $exception->setId($name);
+            $exception->setId($lowerCaseName);
             throw $exception;
             
         }
 
-        $this->tables[$name] = new \Yana\Db\Ddl\Table($name, $this);
-        return $this->tables[$name];
+        $this->tables[$lowerCaseName] = new \Yana\Db\Ddl\Table($lowerCaseName, $this);
+        return $this->tables[$lowerCaseName];
     }
 
     /**
@@ -785,11 +776,11 @@ class Database extends \Yana\Db\Ddl\AbstractObject
     public function getView($name)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
-        $name = mb_strtolower($name);
+        $lowerCaseName = mb_strtolower($name);
 
         $view = null;
-        if (isset($this->views[$name])) {
-            $view = $this->views[$name];
+        if (isset($this->views[$lowerCaseName])) {
+            $view = $this->views[$lowerCaseName];
             assert($view instanceof \Yana\Db\Ddl\Views\View);
         }
 
@@ -814,17 +805,17 @@ class Database extends \Yana\Db\Ddl\AbstractObject
     public function addView($name)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
-        $name = mb_strtolower($name);
-        if (isset($this->views[$name])) {
-            $message = "Another view with the name '$name' is already defined.";
+        $lowerCaseName = mb_strtolower($name);
+        if (isset($this->views[$lowerCaseName])) {
+            $message = "Another view with the name '$lowerCaseName' is already defined.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
-            $exception->setId($name);
+            $exception->setId($lowerCaseName);
             throw $exception;
         }
 
-        $this->views[$name] = new \Yana\Db\Ddl\Views\View($name, $this);
-        return $this->views[$name];
+        $this->views[$lowerCaseName] = new \Yana\Db\Ddl\Views\View($lowerCaseName, $this);
+        return $this->views[$lowerCaseName];
     }
 
     /**
@@ -869,11 +860,11 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function getFunction($name)
     {
-        $name = mb_strtolower($name);
+        $lowerCaseName = mb_strtolower($name);
 
         $function = null;
-        if (isset($this->functions[$name])) {
-            $function = $this->functions[$name];
+        if (isset($this->functions[$lowerCaseName])) {
+            $function = $this->functions[$lowerCaseName];
             assert($function instanceof \Yana\Db\Ddl\Functions\Object);
         }
 
@@ -898,17 +889,17 @@ class Database extends \Yana\Db\Ddl\AbstractObject
     public function addFunction($name)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
-        $name = mb_strtolower($name);
-        if (isset($this->functions[$name])) {
-            $message = "Another function with the name '$name' is already defined.";
+        $lowerCaseName = mb_strtolower($name);
+        if (isset($this->functions[$lowerCaseName])) {
+            $message = "Another function with the name '$lowerCaseName' is already defined.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
-            $exception->setId($name);
+            $exception->setId($lowerCaseName);
             throw $exception;
         }
 
-        $this->functions[$name] = new \Yana\Db\Ddl\Functions\Object($name);
-        return $this->functions[$name];
+        $this->functions[$lowerCaseName] = new \Yana\Db\Ddl\Functions\Object($lowerCaseName);
+        return $this->functions[$lowerCaseName];
     }
 
     /**
@@ -954,11 +945,11 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function getSequence($name)
     {
-        $name = mb_strtolower($name);
+        $lowerCaseName = mb_strtolower($name);
 
         $sequence = null;
-        if (isset($this->sequences[$name])) {
-            $sequence = $this->sequences[$name];
+        if (isset($this->sequences[$lowerCaseName])) {
+            $sequence = $this->sequences[$lowerCaseName];
             assert($sequence instanceof \Yana\Db\Ddl\Sequence);
         }
 
@@ -983,17 +974,17 @@ class Database extends \Yana\Db\Ddl\AbstractObject
     public function addSequence($name)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
-        $name = mb_strtolower($name);
-        if (isset($this->sequences[$name])) {
-            $message = "Another sequence with the name '$name' is already defined.";
+        $lowerCaseName = mb_strtolower($name);
+        if (isset($this->sequences[$lowerCaseName])) {
+            $message = "Another sequence with the name '$lowerCaseName' is already defined.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
-            $exception->setId($name);
+            $exception->setId($lowerCaseName);
             throw $exception;
         }
 
-        $this->sequences[$name] = new \Yana\Db\Ddl\Sequence($name);
-        return $this->sequences[$name];
+        $this->sequences[$lowerCaseName] = new \Yana\Db\Ddl\Sequence($lowerCaseName);
+        return $this->sequences[$lowerCaseName];
     }
 
     /**
@@ -1039,8 +1030,8 @@ class Database extends \Yana\Db\Ddl\AbstractObject
     public function getInit($dbms = "generic")
     {
         assert('is_string($dbms); // Wrong type for argument 1. String expected');
-        $dbms = strtolower($dbms);
-        assert('in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS()); // Unsupported DBMS');
+        $lowerCaseDbms = strtolower($dbms);
+        assert('in_array($lowerCaseDbms, \Yana\Db\Ddl\Database::getSupportedDBMS()); // Unsupported DBMS');
         if (empty($this->initialization)) {
             return array();
         }
@@ -1053,7 +1044,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
 
             // target DBMS does not match
             $initDbms = $entry->getDBMS();
-            if ($initDbms !== 'generic' && $initDbms !== $dbms) {
+            if ($initDbms !== 'generic' && $initDbms !== $lowerCaseDbms) {
                 continue;
             }
 
@@ -1088,12 +1079,12 @@ class Database extends \Yana\Db\Ddl\AbstractObject
     public function dropTable($name)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
-        $name = mb_strtolower($name);
-        if (!isset($this->tables[$name])) {
-            throw new \Yana\Core\Exceptions\NotFoundException("No such table '$name'.");
+        $lowerCaseName = mb_strtolower($name);
+        if (!isset($this->tables[$lowerCaseName])) {
+            throw new \Yana\Core\Exceptions\NotFoundException("No such table '$lowerCaseName'.");
         }
 
-        $this->tables[$name] = null;
+        $this->tables[$lowerCaseName] = null;
         return $this;
     }
 
@@ -1109,12 +1100,12 @@ class Database extends \Yana\Db\Ddl\AbstractObject
     public function dropView($name)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
-        $name = mb_strtolower($name);
-        if (!isset($this->views[$name])) {
-            throw new \Yana\Core\Exceptions\NotFoundException("No such view '$name'.");
+        $lowerCaseName = mb_strtolower($name);
+        if (!isset($this->views[$lowerCaseName])) {
+            throw new \Yana\Core\Exceptions\NotFoundException("No such view '$lowerCaseName'.");
         }
 
-        $this->views[$name] = null;
+        $this->views[$lowerCaseName] = null;
         return $this;
     }
 
@@ -1130,12 +1121,12 @@ class Database extends \Yana\Db\Ddl\AbstractObject
     public function dropForm($name)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
-        $name = mb_strtolower($name);
-        if (!isset($this->forms[$name])) {
-            throw new \Yana\Core\Exceptions\NotFoundException("No such form '$name'.");
+        $lowerCaseName = mb_strtolower($name);
+        if (!isset($this->forms[$lowerCaseName])) {
+            throw new \Yana\Core\Exceptions\NotFoundException("No such form '$lowerCaseName'.");
         }
 
-        $this->forms[$name] = null;
+        $this->forms[$lowerCaseName] = null;
         return $this;
     }
 
@@ -1151,12 +1142,12 @@ class Database extends \Yana\Db\Ddl\AbstractObject
     public function dropFunction($name)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
-        $name = mb_strtolower($name);
-        if (!isset($this->functions[$name])) {
-            throw new \Yana\Core\Exceptions\NotFoundException("No such function '$name'.");
+        $lowerCaseName = mb_strtolower($name);
+        if (!isset($this->functions[$lowerCaseName])) {
+            throw new \Yana\Core\Exceptions\NotFoundException("No such function '$lowerCaseName'.");
         }
 
-        $this->functions[$name] = null;
+        $this->functions[$lowerCaseName] = null;
         return $this;
     }
 
@@ -1172,12 +1163,12 @@ class Database extends \Yana\Db\Ddl\AbstractObject
     public function dropSequence($name)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
-        $name = mb_strtolower($name);
-        if (!isset($this->sequences[$name])) {
-            throw new \Yana\Core\Exceptions\NotFoundException("No such sequence '$name'.");
+        $lowerCaseName = mb_strtolower($name);
+        if (!isset($this->sequences[$lowerCaseName])) {
+            throw new \Yana\Core\Exceptions\NotFoundException("No such sequence '$lowerCaseName'.");
         }
 
-        $this->sequences[$name] = null;
+        $this->sequences[$lowerCaseName] = null;
         return $this;
     }
 
@@ -1197,12 +1188,12 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function addInit($sql, $dbms = "generic")
     {
-        $dbms = strtolower($dbms);
         assert('is_string($dbms); // Wrong type for argument 2. String expected');
+        $lowerCaseDbms = strtolower($dbms);
         assert('preg_match("/^db2|dbase|frontbase|informix|interbase|msaccess|mssql|mysql|oracle|postgresql|sybase|' .
-            'sqlite|generic$/s", $dbms); // Unsupported DBMS');
+            'sqlite|generic$/s", $lowerCaseDbms); // Unsupported DBMS');
         $init = new \Yana\Db\Ddl\DatabaseInit();
-        $init->setDBMS($dbms);
+        $init->setDBMS($lowerCaseDbms);
         $init->setSQL($sql);
         $this->initialization[] = $init;
         return $this;
@@ -1220,8 +1211,8 @@ class Database extends \Yana\Db\Ddl\AbstractObject
     public function isTable($name)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
-        $name = mb_strtolower($name);
-        return isset($this->tables[$name]);
+        $lowerCaseName = mb_strtolower($name);
+        return isset($this->tables[$lowerCaseName]);
     }
 
     /**
@@ -1236,8 +1227,8 @@ class Database extends \Yana\Db\Ddl\AbstractObject
     public function isView($name)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
-        $name = mb_strtolower($name);
-        return isset($this->views[$name]);
+        $lowerCaseName = mb_strtolower($name);
+        return isset($this->views[$lowerCaseName]);
     }
 
     /**
@@ -1252,8 +1243,8 @@ class Database extends \Yana\Db\Ddl\AbstractObject
     public function isFunction($name)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
-        $name = mb_strtolower($name);
-        return isset($this->functions[$name]);
+        $lowerCaseName = mb_strtolower($name);
+        return isset($this->functions[$lowerCaseName]);
     }
 
     /**
@@ -1268,8 +1259,8 @@ class Database extends \Yana\Db\Ddl\AbstractObject
     public function isSequence($name)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
-        $name = mb_strtolower($name);
-        return isset($this->sequences[$name]);
+        $lowerCaseName = mb_strtolower($name);
+        return isset($this->sequences[$lowerCaseName]);
     }
 
     /**
@@ -1284,8 +1275,8 @@ class Database extends \Yana\Db\Ddl\AbstractObject
     public function isForm($name)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
-        $name = mb_strtolower($name);
-        return isset($this->forms[$name]);
+        $lowerCaseName = mb_strtolower($name);
+        return isset($this->forms[$lowerCaseName]);
     }
 
     /**
@@ -1301,11 +1292,11 @@ class Database extends \Yana\Db\Ddl\AbstractObject
     public function getForm($name)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
-        $name = mb_strtolower($name);
+        $lowerCaseName = mb_strtolower($name);
 
         $form = null;
-        if (isset($this->forms[$name])) {
-            $form = $this->forms[$name];
+        if (isset($this->forms[$lowerCaseName])) {
+            $form = $this->forms[$lowerCaseName];
             assert($form instanceof \Yana\Db\Ddl\Form);
         }
 
@@ -1329,17 +1320,17 @@ class Database extends \Yana\Db\Ddl\AbstractObject
     public function addForm($name)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
-        $name = mb_strtolower($name);
-        if (isset($this->forms[$name])) {
-            $message = "Another form with the name '$name' already exists in database '{$this->getName()}'.";
+        $lowerCaseName = mb_strtolower($name);
+        if (isset($this->forms[$lowerCaseName])) {
+            $message = "Another form with the name '$lowerCaseName' already exists in database '{$this->getName()}'.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
             $exception->setId($this->getName());
             throw $exception;
         }
         // add element to list of defined forms
-        $this->forms[$name] = new \Yana\Db\Ddl\Form($name, $this);
-        return $this->forms[$name];
+        $this->forms[$lowerCaseName] = new \Yana\Db\Ddl\Form($lowerCaseName, $this);
+        return $this->forms[$lowerCaseName];
     }
 
     /**
@@ -1431,19 +1422,19 @@ class Database extends \Yana\Db\Ddl\AbstractObject
     public function __get($name)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
-        $name = mb_strtolower($name);
+        $lowerCaseName = mb_strtolower($name);
         switch (true)
         {
-            case isset($this->tables[$name]):
-                return $this->tables[$name];
-            case isset($this->views[$name]):
-                return $this->views[$name];
-            case isset($this->forms[$name]):
-                return $this->forms[$name];
-            case isset($this->functions[$name]):
-                return $this->functions[$name];
-            case isset($this->sequences[$name]):
-                return $this->sequences[$name];
+            case isset($this->tables[$lowerCaseName]):
+                return $this->tables[$lowerCaseName];
+            case isset($this->views[$lowerCaseName]):
+                return $this->views[$lowerCaseName];
+            case isset($this->forms[$lowerCaseName]):
+                return $this->forms[$lowerCaseName];
+            case isset($this->functions[$lowerCaseName]):
+                return $this->functions[$lowerCaseName];
+            case isset($this->sequences[$lowerCaseName]):
+                return $this->sequences[$lowerCaseName];
             default:
                 return null;
         }

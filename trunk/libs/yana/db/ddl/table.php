@@ -260,7 +260,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
     public function getColumnsByType($type)
     {
         assert('is_string($type); // Wrong type for argument 1. String expected');
-        assert('in_array($type, \Yana\Db\Ddl\Column::getSupportedTypes()); // Undefined column type "' . $type . '". ');
+        assert('in_array($type, \Yana\Db\Ddl\ColumnTypeEnumeration::getSupportedTypes()); // Undefined column type "' . $type . '". ');
         assert('is_array($this->columns); // Member "columns" is expected to be an array.');
         $columns = array();
         foreach ($this->columns as $column)
@@ -420,7 +420,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
     public function addColumn($columnName, $type)
     {
         assert('is_string($columnName); // Wrong type for argument 1. String expected');
-        assert('in_array($type, \Yana\Db\Ddl\Column::getSupportedTypes()); // Undefined column type "' . $type . '". ');
+        assert('in_array($type, \Yana\Db\Ddl\ColumnTypeEnumeration::getSupportedTypes()); // Undefined column type "' . $type . '". ');
         $columnName = mb_strtolower($columnName);
         if (isset($this->columns[$columnName])) {
             $message = "Another column with the name '$columnName' already exists in table '{$this->getName()}'.";
@@ -798,9 +798,9 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
     public function getIndex($name)
     {
         assert('is_string($name); // Wrong type for argument 1. String expected');
-        $name = mb_strtolower($name);
-        if (isset($this->indexes[$name])) {
-            return $this->indexes[$name];
+        $lowerCaseName = mb_strtolower($name);
+        if (isset($this->indexes[$lowerCaseName])) {
+            return $this->indexes[$lowerCaseName];
         } else {
             return null;
         }
