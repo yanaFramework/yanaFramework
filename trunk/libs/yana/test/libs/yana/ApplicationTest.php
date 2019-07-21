@@ -73,6 +73,38 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers Yana\Application::exitTo
+     * @todo   Implement testExitTo().
+     */
+    public function testExitTo()
+    {
+        // Remove the following lines when you implement this test.
+        $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function testBuildForm()
+    {
+        $this->assertTrue($this->object->buildForm('test') instanceof \Yana\Forms\Builder);
+    }
+
+    /**
+     * @test
+     */
+    public function testClearCache()
+    {
+        $cache = $this->object->getCache();
+        $cache->offsetSet('test', 1);
+        $this->assertCount(1, $cache);
+        $this->assertNull($this->object->clearCache());
+        $this->assertCount(0, $cache);
+    }
+
+    /**
      * @test
      */
     public function testGetReport()
@@ -107,11 +139,22 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * This must run in a separate process since it has side-effects, i.e. it modifies the list of recently run actions.
+     *
      * @test
+     * @runInSeparateProcess
      */
     public function testExecute()
     {
         $this->assertTrue($this->object->execute());
+    }
+
+    /**
+     * @test
+     */
+    public function testExecuteNoSuchAction()
+    {
+        $this->assertFalse($this->object->execute('No such action'));
     }
 
     /**
@@ -261,30 +304,6 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Yana\Application::exitTo
-     * @todo   Implement testExitTo().
-     */
-    public function testExitTo()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers Yana\Application::outputResults
-     * @todo   Implement testOutputResults().
-     */
-    public function testOutputResults()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
-    }
-
-    /**
      * @test
      */
     public function testGetDefault()
@@ -294,35 +313,11 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Yana\Application::clearCache
-     * @todo   Implement testClearCache().
-     */
-    public function testClearCache()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
-    }
-
-    /**
      * @test
      */
     public function testGetLogger()
     {
         $this->assertSame($this->container->getLogger(), $this->object->getLogger());
-    }
-
-    /**
-     * @covers Yana\Application::refreshSettings
-     * @todo   Implement testRefreshSettings().
-     */
-    public function testRefreshSettings()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
     }
 
     /**
