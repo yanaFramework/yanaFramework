@@ -40,9 +40,9 @@ class Worker extends \Yana\Forms\QueryBuilder
 {
 
     /**
-     * @var array
+     * @var \Yana\Forms\IsCallbackSet
      */
-    private $_callbackCache = array();
+    private $_callbackCache = null;
 
     /**
      * Initialize instance.
@@ -54,29 +54,7 @@ class Worker extends \Yana\Forms\QueryBuilder
     {
         $this->_setDatabase($db);
         $this->setForm($form);
-    }
-
-    /**
-     * Register a callback-function for a given event.
-     *
-     * Registers the new callback (if provided) and returns all known callbacks for the requested event.
-     *
-     * @param   string    $event     name of event to trigger
-     * @param   callable  $callback  some call-back function
-     * @return  array
-     */
-    private function _registerCallback($event, $callback = null)
-    {
-        assert('is_string($event); // Invalid argument $event: string expected');
-        assert('is_null($callback) || is_callable($callback); // Invalid argument $callback: callable function expected');
-        $cachedCallbacks = array();
-        if (!empty($callback)) {
-            $this->_callbackCache[$event][] = $callback;
-            $cachedCallbacks = $this->_callbackCache[$event];
-        } elseif (!empty($this->_callbackCache[$event])) {
-            $cachedCallbacks = $this->_callbackCache[$event];
-        }
-        return (array) $cachedCallbacks;
+        $this->_callbackCache = new \Yana\Forms\CallbackSet();
     }
 
     /**
@@ -92,11 +70,11 @@ class Worker extends \Yana\Forms\QueryBuilder
      * the execution will be terminated and the changes are not written to the database.
      *
      * @param   callable  $callback  some call-back function
-     * @return  array 
+     * @return  array
      */
     public function beforeCreate($callback = null)
     {
-        return $this->_registerCallback(__FUNCTION__, $callback);
+        return $this->_callbackCache->addBeforeCreate($callback)->getBeforeCreate()->toArray();
     }
 
     /**
@@ -112,11 +90,11 @@ class Worker extends \Yana\Forms\QueryBuilder
      * the execution will be terminated and the changes are not written to the database.
      *
      * @param   callable  $callback  some call-back function
-     * @return  array 
+     * @return  array
      */
     public function afterCreate($callback = null)
     {
-        return $this->_registerCallback(__FUNCTION__, $callback);
+        return $this->_callbackCache->addAfterCreate($callback)->getAfterCreate()->toArray();
     }
 
     /**
@@ -132,11 +110,11 @@ class Worker extends \Yana\Forms\QueryBuilder
      * the execution will be terminated and the changes are not written to the database.
      *
      * @param   callable  $callback  some call-back function
-     * @return  array 
+     * @return  array
      */
     public function beforeUpdate($callback = null)
     {
-        return $this->_registerCallback(__FUNCTION__, $callback);
+        return $this->_callbackCache->addBeforeUpdate($callback)->getBeforeUpdate()->toArray();
     }
 
     /**
@@ -152,11 +130,11 @@ class Worker extends \Yana\Forms\QueryBuilder
      * the execution will be terminated and the changes are not written to the database.
      *
      * @param   callable  $callback  some call-back function
-     * @return  \Yana\Forms\Worker 
+     * @return  array
      */
     public function afterUpdate($callback = null)
     {
-        return $this->_registerCallback(__FUNCTION__, $callback);
+        return $this->_callbackCache->addBeforeCreate($callback)->getBeforeCreate()->toArray();
     }
 
     /**
@@ -172,11 +150,11 @@ class Worker extends \Yana\Forms\QueryBuilder
      * the execution will be terminated and the changes are not written to the database.
      *
      * @param   callable  $callback  some call-back function
-     * @return  \Yana\Forms\Worker 
+     * @return  array
      */
     public function beforeDelete($callback = null)
     {
-        return $this->_registerCallback(__FUNCTION__, $callback);
+        return $this->_callbackCache->addBeforeDelete($callback)->getBeforeDelete()->toArray();
     }
 
     /**
@@ -192,11 +170,11 @@ class Worker extends \Yana\Forms\QueryBuilder
      * the execution will be terminated and the changes are not written to the database.
      *
      * @param   callable  $callback  some call-back function
-     * @return  \Yana\Forms\Worker 
+     * @return  array
      */
     public function afterDelete($callback = null)
     {
-        return $this->_registerCallback(__FUNCTION__, $callback);
+        return $this->_callbackCache->addAfterDelete($callback)->getAfterDelete()->toArray();
     }
 
     /**
@@ -248,20 +226,20 @@ class Worker extends \Yana\Forms\QueryBuilder
             $database = $this->getDatabase();
 
             // execute hooks
-            foreach ($this->beforeCreate() as $callback)
+            foreach ($this->_callbackCache->getBeforeCreate() as $callback)
             {
                 $callback($newEntry); // may throw exception
             }
 
             try {
                 $database->insert($tableName, $newEntry); // may throw exception
-            } catch (\Yana\Core\Exceptions\NotWriteableException $e) {
+            } catch (\Exception $e) {
                 $database->rollback();
                 return false; // error - unable to perform update - possibly readonly
             }
 
             // execute hooks
-            foreach ($this->afterCreate() as $callback)
+            foreach ($this->_callbackCache->getAfterCreate() as $callback)
             {
                 $callback($newEntry); // may throw exception
             }
@@ -382,7 +360,7 @@ class Worker extends \Yana\Forms\QueryBuilder
                 }
 
                 // execute hooks
-                foreach ($this->beforeUpdate() as $callback)
+                foreach ($this->_callbackCache->getBeforeUpdate() as $callback)
                 {
                     $callback($id, $entry); // may throw exception
                 }
@@ -394,7 +372,7 @@ class Worker extends \Yana\Forms\QueryBuilder
                 }
 
                 // execute hooks
-                foreach ($this->afterUpdate() as $callback)
+                foreach ($this->_callbackCache->getAfterUpdate() as $callback)
                 {
                     $callback($id, $entry); // may throw exception
                 }
@@ -436,7 +414,7 @@ class Worker extends \Yana\Forms\QueryBuilder
             {
 
                 // execute hooks
-                foreach ($this->beforeDelete() as $callback)
+                foreach ($this->_callbackCache->getBeforeDelete() as $callback)
                 {
                     $callback($id); // may throw exception
                 }
@@ -447,7 +425,7 @@ class Worker extends \Yana\Forms\QueryBuilder
                 }
 
                 // execute hooks
-                foreach ($this->afterDelete() as $callback)
+                foreach ($this->_callbackCache->getAfterDelete() as $callback)
                 {
                     $callback($id); // may throw exception
                 }
