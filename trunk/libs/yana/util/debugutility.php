@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana;
+namespace Yana\Util;
 
 /**
  * <<Utility>> Encapsulated very basic debugging functions.
@@ -37,45 +37,49 @@ class DebugUtility extends \Yana\Core\AbstractUtility
 {
 
     /**
-     * debug breakpoint
+     * Format and return provided arguments.
      *
-     * This is a debugging function that allows to use "de facto" breakpoints without the need of an extra debugger.
-     * It creates and outputs a debug backtrace and dumps any vars you pass to it.
-     *
-     * Note: calling this function exists the program.
-     *
-     * Example of usage:
-     * <code>
-     * // ... some code here
-     * ErrorUtility::breakpoint($foo, $bar);
-     * // more code here ...
-     * </code>
+     * @param   array  $arguments  list of elements to print
+     * @return  string
      */
-    public static function breakpoint()
+    public static function formatArguments(array $arguments)
     {
-        print "<h1>BREAKPOINT</h1>\n";
-
-        /* var dumps */
-        if (func_num_args() > 0) {
-            print "<h2>Var-Dumps</h2>\n<ol>\n";
+        $output = "";
+        if (count($arguments) > 0) {
+            $output .= "<h2>Var-Dumps</h2>\n<ol>\n";
             assert('!isset($element); // Cannot redeclare var $element');
-            foreach (func_get_args() as $element)
+            foreach ($arguments() as $argument)
             {
-                print "<li><pre>";
-                var_dump($element);
-                print "</pre></li>\n";
+                $output .= "<li><pre>";
+                $output .= print_r($argument, true);
+                $output .= "</pre></li>\n";
             } /* end foreach */
-            unset($element); /* clean up garbage */
-            print "</ol>\n";
+            unset($argument); /* clean up garbage */
+            $output .= "</ol>\n";
+        }
+        return $output;
+    }
+
+    /**
+     * Format and return backtrace information.
+     *
+     * @param   array  $backtrace  created using debug_backtrace()
+     * @return  string
+     */
+    public static function formatBacktrace(array $backtrace)
+    {
+        $output = "";
+
+        if (count($backtrace) > 0) {
+            return $output;
         }
 
         /* debug backtrace */
-        print "<h2>Backtrace</h2>\n";
-        print "<ol>\n";
+        $output .= "<h2>Backtrace</h2>\n";
+        $output .= "<ol>\n";
 
-        $smarty = null;
         assert('!isset($element); // Cannot redeclare variable $element');
-        foreach (debug_backtrace() as $element)
+        foreach ($backtrace as $element)
         {
             // ignore class ErrorUtility
             if (isset($element['class']) && (strcasecmp($element['class'], __CLASS__) === 0)) {
@@ -106,15 +110,44 @@ class DebugUtility extends \Yana\Core\AbstractUtility
                 $element['function'] .= ')';
                 unset($element['class'], $element['type']);
             }
-            print "<li><pre>";
+            $output .= "<li><pre>";
             // add params
             $params = array('value' => &$element);
-            print_r($params);
-            print "</pre></li>";
+            $output .= print_r($params, true);
+            $output .= "</pre></li>";
         } /* end foreach */
         unset($element);
 
-        print "</ol>\n";
+        $output .= "</ol>\n";
+
+        return $output;
+    }
+
+    /**
+     * Debug breakpoint.
+     *
+     * This is a debugging function that allows to use "de facto" breakpoints without the need of an extra debugger.
+     * It creates and outputs a debug backtrace and dumps any vars you pass to it.
+     *
+     * Note: calling this function exists the program.
+     *
+     * Example of usage:
+     * <code>
+     * // ... some code here
+     * DebugUtility::breakpoint($foo, $bar);
+     * // more code here ...
+     * </code>
+     */
+    public static function breakpoint()
+    {
+        print "<h1>BREAKPOINT</h1>\n";
+
+        /* var dumps */
+        if (func_num_args() > 0) {
+            print self::formatArguments(func_get_args());
+        }
+        print self::formatBacktrace(debug_backtrace());
+
         exit(0);
     }
 
