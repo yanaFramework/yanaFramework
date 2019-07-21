@@ -72,7 +72,9 @@ abstract class AbstractBehavior extends \Yana\Core\Object implements \Yana\Secur
     protected function _getSession()
     {
         if (!isset($this->_session)) {
+            // @codeCoverageIgnoreStart
             $this->_session = new \Yana\Security\Sessions\Wrapper();
+            // @codeCoverageIgnoreEnd
         }
         return $this->_session;
     }

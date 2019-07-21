@@ -71,7 +71,9 @@ abstract class AbstractAdapter extends \Yana\Data\Adapters\AbstractDatabaseAdapt
     protected function _getEntityMapper()
     {
         if (!isset($this->_entityMapper)) {
+            // @codeCoverageIgnoreStart
             $this->_entityMapper = new \Yana\Security\Data\Users\Mapper();
+            // @codeCoverageIgnoreEnd
         }
         return $this->_entityMapper;
     }
