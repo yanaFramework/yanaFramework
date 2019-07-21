@@ -45,38 +45,29 @@ namespace Yana;
  *
  * @package     yana
  * @subpackage  core
- * @todo        Add Dependency container from Yana\Core\Dependencies\Container
  */
 final class Application extends \Yana\Core\Object implements \Yana\Report\IsReportable, \Yana\Core\IsVarContainer
 {
+    use \Yana\Core\Dependencies\HasApplicationContainer;
 
     /**
-     * Contains code to initialize and return sub-modules.
      *
-     * @var  \Yana\Core\Dependencies\IsApplicationContainer
+     * @var  \Yana\Core\Output\IsBehavior
      */
-    private $_dependencyContainer = null;
+    private $_outputBehavior = null;
 
     /**
-     * <<constructor>> Inject dependencies.
+     * Creates and returns output behavior object.
      *
-     * @param  \Yana\Core\Dependencies\IsApplicationContainer  $container  injected dependencies
+     * @return  \Yana\Core\Output\IsBehavior
+     * @codeCoverageIgnore
      */
-    public function __construct(\Yana\Core\Dependencies\IsApplicationContainer $container)
+    protected function _getOutputBehavior()
     {
-        $this->_dependencyContainer = $container;
-    }
-
-    /**
-     * Returns the container.
-     *
-     * The dependency container contains code to initialize and return sub-modules.
-     *
-     * @return  \Yana\Core\Dependencies\IsApplicationContainer
-     */
-    protected function _getDependencyContainer()
-    {
-        return $this->_dependencyContainer;
+        if (!isset($this->_outputBehavior)) {
+            $this->_outputBehavior = new \Yana\Core\Output\DefaultBehavior();
+        }
+        return $this->_outputBehavior;
     }
 
     /**
@@ -599,171 +590,15 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
 
     /**
      * Provides GUI from current data.
+     *
+     * @codeCoverageIgnore
      */
     public function outputResults()
     {
-        /* 0 initialize vars */
-        $plugins = $this->getPlugins();
-        $event = $plugins->getFirstEvent();
-        $result = $plugins->getLastResult();
-        $eventConfiguration = $plugins->getEventConfiguration($event);
-        if (! $eventConfiguration instanceof \Yana\Plugins\Configs\IsMethodConfiguration) {
-            return; // error - unable to continue
+        $targetAction = $this->_getOutputBehavior()->outputResults();
+        if (!\is_null($targetAction)) {
+            $this->exitTo($targetAction);
         }
-        $template = $eventConfiguration->getTemplate();
-        unset($eventConfiguration);
-
-        switch (strtolower($template))
-        {
-            /**
-             * 1) the reserved template 'NULL' is an alias for 'no template' and will prevent the use of HTML template files.
-             *
-             * This may mean the plugin has created some output itself using print(),
-             * or it is a triggered cron-job that is not meant to produce any output at all,
-             * or it has returned a value, that will be sent as a JSON encoded string.
-             */
-            case 'null':
-                $this->_outputAsJson($result);
-                break;
-            /**
-             * 2) the reserved template 'MESSAGE' is a special template that produces a text message.
-             *
-             * The text usually is an ID of some text.
-             * The actual message is stored in the language files and the translated message will be read from there
-             * depending on the user's prefered language setting.
-             */
-            case 'message':
-                $this->_outputAsMessage();
-                break;
-            /**
-             * 3) all other template settings go here
-             */
-            default:
-                if ($result === false && $this->_getDependencyContainer()->getExceptionLogger()->getMessages()->count() === 0) {
-                    $this->_outputAsMessage();
-                    return;
-                }
-                $this->_outputAsTemplate($template);
-                break;
-        }
-
-    }
-
-    /**
-     * Output results as JSON.
-     *
-     * If the function returned a result, it will be printed as a JSON string.
-     *
-     * @param  mixed  $result  whatever the last called action returned
-     */
-    private function _outputAsJson($result)
-    {
-        $json = "";
-        if (!headers_sent()) {
-            header('Content-Type: text/plain');
-            header('Content-Encoding: UTF-8');
-            header("Expires: " . gmdate("D, d M Y H:i:s") . " GMT");
-            header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-            header("Cache-Control: no-store, no-cache, must-revalidate");
-            header("Cache-Control: post-check=0, pre-check=0", false);
-            header("Pragma: no-cache");
-        }
-        if (!is_null($result)) {
-            $json = json_encode($result);
-        }
-        print $json;
-    }
-
-    /**
-     * Output a text message and relocate to next event.
-     */
-    private function _outputAsMessage()
-    {
-        $route = $this->getPlugins()->getNextEvent();
-        $target = "";
-
-        $logger = $this->_getDependencyContainer()->getExceptionLogger();
-        if ($route instanceof \Yana\Plugins\Configs\EventRoute) {
-            // create default message if there is none
-            if ($logger->getMessages()->count() === 0) {
-
-                $this->_logExecutionResult($route, $logger);
-            }
-
-            $target = $route->getTarget();
-        }
-        if (empty($target)) {
-            // if no other destination is defined, route back to default homepage
-            $target = $this->getDefault("homepage");
-            assert('!empty($target); // Configuration error: No default homepage set.');
-            assert('is_string($target); // Configuration error: Default homepage invalid.');
-        }
-        $this->setVar('STDOUT', $logger->getMessages());
-
-        $this->exitTo($target);
-    }
-
-    /**
-     * Create a log entry to report the result of the execution.
-     *
-     * This function is called when an executed action did not throw any exception and did not yield any success message of its own.
-     *
-     * In this case, this function will create a default success or error message and push it to the log-stack.
-     *
-     * @param  \Yana\Plugins\Configs\EventRoute  $route   holds information about the action that has been executed
-     * @param  \Yana\Log\ExceptionLogger         $logger  the logger to send the log to
-     */
-    private function _logExecutionResult(\Yana\Plugins\Configs\EventRoute $route, \Yana\Log\ExceptionLogger $logger)
-    {
-        $level = \Yana\Log\TypeEnumeration::ERROR;
-        $message = 'Action was not successfully';
-        if ($route->getCode() === \Yana\Plugins\Configs\ReturnCodeEnumeration::SUCCESS) {
-            $level = \Yana\Log\TypeEnumeration::SUCCESS;
-            $message = 'Action carried out successfully';
-        }
-
-        $messageClass = $route->getMessage();
-        if ($messageClass && class_exists($messageClass)) {
-            $logger->addException(new $messageClass($message, $level));
-        } else {
-            $logger->addLog($message, $level);
-        }
-    }
-
-    /**
-     * Select the given template as output target and print the result page.
-     *
-     * @param  string  $template  a valid template identifier
-     */
-    private function _outputAsTemplate($template)
-    {
-        assert('is_string($template); // Invalid argument $template: string expected');
-        $view = $this->getView();
-
-        // Find base template
-        $baseTemplate = 'id:INDEX';
-        $_template = mb_strtoupper(\Yana\Plugins\Annotations\Enumeration::TEMPLATE);
-        $defaultEvent = $this->_getDependencyContainer()->getDefault('event');
-        if ($defaultEvent instanceof \Yana\Util\IsXmlArray && !empty($defaultEvent->$_template)) {
-            $baseTemplate = (string) $defaultEvent->$_template;
-        }
-        unset($defaultEvent);
-
-        if (!is_file($template) && !\Yana\Util\Strings::startsWith($template, 'id:')) {
-            $template = "id:{$template}";
-        }
-        /* register templates with view sub-system */
-        $template = $view->createLayoutTemplate($baseTemplate, $template, $this->getVars());
-        /* there is a special var called 'STDOUT' that is used to output messages */
-        if (isset($_SESSION['STDOUT'])) {
-            $template->setVar('STDOUT', $_SESSION['STDOUT']);
-            unset($_SESSION['STDOUT']);
-        } else {
-            $template->setVar('STDOUT', $this->_getDependencyContainer()->getExceptionLogger()->getMessages());
-        }
-
-        /* print the page to the client */
-        print $template->fetch();
     }
 
     /**
@@ -901,11 +736,12 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
      * Clears the cache, scans the plugin directory for new plugins,
      * and loads the security settings for the plugins found.
      *
-     * @return  self
      * @throws  \Yana\Core\Exceptions\NotReadableException       when the plugin repository source is not readable
      * @throws  \Yana\Core\Exceptions\NotWriteableException      when the plugin repository target is not writeable
      * @throws  \Yana\Db\Queries\Exceptions\NotCreatedException  when new security entries could not be inserted
      * @throws  \Yana\Db\Queries\Exceptions\NotDeletedException  when outdated security entries could not be deleted
+     *
+     * @codeCoverageIgnore
      */
     public function refreshSettings()
     {
