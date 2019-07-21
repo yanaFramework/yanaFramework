@@ -39,9 +39,11 @@ interface IsVarContainer
 {
 
     /**
-     * Returns the var identified by $key or bool(false) on error.
+     * Returns the var identified by $key.
      *
-     * Note: this function may return false but also other values that evaluates to false.
+     * Returns NULL if there is no such key.
+     *
+     * Note: this function may return false but also other values that evaluate to false.
      * To check for an error use: is_null($result).
      * To check for bool(false) use: $result === false.
      *
