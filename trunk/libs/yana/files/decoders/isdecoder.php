@@ -39,7 +39,7 @@ interface IsDecoder
     /**
      * Read a file and return its contents.
      *
-     * The argument $input can wether be a filename or a numeric array
+     * The argument $input can either be a filename or a numeric array
      * of strings created by file($filename).
      *
      * The argument $caseSensitive can be used to decide how keys should be treated.

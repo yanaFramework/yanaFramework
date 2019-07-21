@@ -35,7 +35,7 @@ namespace Yana\Files\Decoders;
  * @package     yana
  * @subpackage  files
  */
-class Json extends \Yana\Core\Object implements IsDecoder
+class Json extends \Yana\Core\Object implements \Yana\Files\Decoders\IsDecoder
 {
 
     /**
@@ -65,9 +65,9 @@ class Json extends \Yana\Core\Object implements IsDecoder
         assert('$caseSensitive === CASE_MIXED || $caseSensitive === CASE_LOWER || $caseSensitive === CASE_UPPER;');
 
         if (is_string($input) && is_file($input)) {
-            $result = json_decode(file_get_contents($input), true);
+            $result = (array) json_decode(file_get_contents($input), true);
         } elseif (is_array($input)) {
-            $result = json_decode(implode("", $input), true);
+            $result = (array) json_decode(implode("", $input), true);
         } else {
             $message = "Argument 1 is expected to be a filename or an array " .
                 "created with file().\n\t\tInstead found " . gettype($input) .

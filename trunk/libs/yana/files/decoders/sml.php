@@ -33,7 +33,7 @@ namespace Yana\Files\Decoders;
  * @package     yana
  * @subpackage  files
  */
-class SML extends \Yana\Core\Object implements IsDecoder
+class SML extends \Yana\Core\Object implements \Yana\Files\Decoders\IsDecoder
 {
 
     /**

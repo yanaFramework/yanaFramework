@@ -34,7 +34,7 @@ namespace Yana\Files\Decoders;
  * @subpackage  files
  * @ignore
  */
-class NullDecoder extends \Yana\Core\Object implements IsDecoder
+class NullDecoder extends \Yana\Core\Object implements \Yana\Files\Decoders\IsDecoder
 {
 
     /**
@@ -50,9 +50,9 @@ class NullDecoder extends \Yana\Core\Object implements IsDecoder
     public function getFile($input, $caseSensitive = CASE_MIXED)
     {
         if (is_string($input) && is_file($input)) {
-            $result = (array) \unserialize(\file($input));
+            $result = (array) unserialize(file_get_contents($input));
         } elseif (is_array($input)) {
-            $result = unserialize(implode("", $input));
+            $result = (array) unserialize(implode("", $input));
         } else {
             $message = "Argument 1 is expected to be a filename or an array " .
                 "created with file().\n\t\tInstead found " . gettype($input) .
