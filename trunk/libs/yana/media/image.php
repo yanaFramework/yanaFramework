@@ -229,7 +229,7 @@ class Image extends \Yana\Core\Object
      * If all this fails it writes an entry to the logs
      * and creates an error image instead.
      *
-     * NOTE: it DOES NOT produces an error message, as this
+     * NOTE: It DOES NOT produce an error message, as this
      * would result in a broken image, if the image was printed!
      *
      * To check wether or not an image is broken, use
@@ -358,11 +358,16 @@ class Image extends \Yana\Core\Object
                     $this->_createErrorImage();
 
                 /* make image truecolor */
-                } elseif (!$this->isTruecolor() && function_exists('imagecreatetruecolor')) {
+                } elseif (!$this->isTruecolor()) {
 
-                    $oldImage = $this->_image;
                     $width    = $this->getWidth();
                     $height   = $this->getHeight();
+
+                    if (!\is_int($height) || !\is_int($width)) {
+                        $this->_createErrorImage();
+                        return;
+                    }
+                    $oldImage = $this->_image;
                     $this->_createImage($width, $height);
                     imagecopy($this->_image, $oldImage, 0, 0, 0, 0, $width, $height);
                     imagedestroy($oldImage);
@@ -444,13 +449,9 @@ class Image extends \Yana\Core\Object
          */
         if ($this->isBroken()) {
             return false;
-
-        } elseif (!function_exists('imageistruecolor')) {
-            return false;
-
-        } else {
-            return imageistruecolor($this->_image);
         }
+
+        return imageistruecolor($this->_image);
     }
 
     /**
@@ -470,13 +471,7 @@ class Image extends \Yana\Core\Object
             $height = $this->getHeight();
 
             /* create new image */
-            if (function_exists('imagecreatetruecolor')) {
-                $copiedImage = imagecreatetruecolor($width, $height);
-            } elseif (function_exists('imagecreate')) {
-                $copiedImage = imagecreate($width, $height);
-            } else {
-                return false;
-            }
+            $copiedImage = imagecreatetruecolor($width, $height);
 
             imagecopy($copiedImage, $this->_image, 0, 0, 0, 0, $width, $height);
             $this->_image = $copiedImage;
@@ -512,11 +507,7 @@ class Image extends \Yana\Core\Object
     public function equalsResoure($resource)
     {
         assert('is_resource($resource); // Wrong type for argument 1. Resource expected');
-        if (is_resource($resource) && $this->_image === $resource) {
-            return true;
-        } else {
-            return false;
-        }
+        return (is_resource($resource) && $this->_image === $resource);
     }
 
     /**
@@ -534,10 +525,9 @@ class Image extends \Yana\Core\Object
          */
         if (!is_resource($this->_image) || $this->isBroken()) {
             return false;
-
-        } else {
-            return $this->_image;
         }
+
+        return $this->_image;
     }
 
     /**
@@ -555,30 +545,25 @@ class Image extends \Yana\Core\Object
         assert('$height > 0; // Height must be greater 0.');
 
         /* backup background color */
+        assert('!isset($backgroundColor); // Cannot redeclare var $backgroundColor');
+        $backgroundColor = null;
         if (!is_null($this->_backgroundColor)) {
             $backgroundColor = $this->getColorValues($this->_backgroundColor);
-        } else {
-            $backgroundColor = null;
         }
 
         /* backup transparency color */
-        if (is_resource($this->_image) && is_null($this->_transparency) && function_exists('imagecolortransparent')) {
-            $this->_transparency = imagecolortransparent($this->_image);
-            if ($this->_transparency === -1) {
-                $this->_transparency = null;
-            } else {
-                $this->_transparency = imagecolorsforindex($this->_image, $this->_transparency);
+        if (is_resource($this->_image) && is_null($this->_transparency)) {
+            assert('!isset($transparentColor); // Cannot redeclare var $transparentColor');
+            $transparentColor = imagecolortransparent($this->_image);
+            $this->_transparency = null;
+            if ($transparentColor !== -1) {
+                $this->_transparency = imagecolorsforindex($this->_image, $transparentColor);
             }
+            unset($transparentColor);
         }
 
         /* create new image */
-        if (function_exists('imagecreatetruecolor')) {
-            $this->_image = imagecreatetruecolor($width, $height);
-        } elseif (function_exists('imagecreate')) {
-            $this->_image = imagecreate($width, $height);
-        } else {
-            return false;
-        }
+        $this->_image = imagecreatetruecolor($width, $height);
 
         /* copy line width */
         if ($this->_lineWidth > 1) {
@@ -660,14 +645,12 @@ class Image extends \Yana\Core\Object
      */
     public function clearCanvas()
     {
-        if (!function_exists('imagedestroy')) {
-            /* intentionally left blank */
-        } elseif (is_null($this->_image)) {
+        if (is_null($this->_image)) {
             $this->_createImage();
         } else {
             $oldImage = $this->_image;
-            $width    = $this->getWidth();
-            $height   = $this->getHeight();
+            $width = $this->getWidth();
+            $height = $this->getHeight();
             $this->_createImage($width, $height);
             imagedestroy($oldImage);
         }
@@ -679,12 +662,10 @@ class Image extends \Yana\Core\Object
     private function _createErrorImage()
     {
         $this->_isBroken = true;
-        if (function_exists('imagefilledrectangle')) {
 
-            $this->_createImage(100, 30);
-            imagefilledrectangle($this->_image, 0, 0, 150, 30, $this->white);
-            imagestring($this->_image, 1, 5, 5, "Error loading image", $this->black);
-        }
+        $this->_createImage(100, 30);
+        imagefilledrectangle($this->_image, 0, 0, 150, 30, $this->white);
+        imagestring($this->_image, 1, 5, 5, "Error loading image", $this->black);
     }
 
     /**
@@ -701,13 +682,9 @@ class Image extends \Yana\Core\Object
          */
         if ($this->isBroken()) {
             return false;
-
-        } elseif (!function_exists('imagesx')) {
-            return false;
-
-        } else {
-            return imagesx($this->_image);
         }
+
+        return imagesx($this->_image);
     }
 
     /**
@@ -724,13 +701,9 @@ class Image extends \Yana\Core\Object
          */
         if ($this->isBroken()) {
             return false;
-
-        } elseif (!function_exists('imagesy')) {
-            return false;
-
-        } else {
-            return imagesy($this->_image);
         }
+
+        return imagesy($this->_image);
     }
 
     /**
@@ -756,22 +729,14 @@ class Image extends \Yana\Core\Object
          */
         if ($this->isBroken()) {
             return false;
-
-        } else {
-
-            /* argument 3 */
-            if (is_null($color)) {
-                $color = $this->black;
-            }
-
-            if (!function_exists('imagesetpixel')) {
-                return false;
-            } elseif (imagesetpixel($this->_image, $x, $y, $color)) {
-                return true;
-            } else {
-                return false;
-            }
         }
+
+        /* argument 3 */
+        if (is_null($color)) {
+            $color = $this->black;
+        }
+
+        return (bool) imagesetpixel($this->_image, $x, $y, $color);
     }
 
     /**
@@ -806,22 +771,14 @@ class Image extends \Yana\Core\Object
          */
         if ($this->isBroken()) {
             return false;
-
-        } else {
-
-            /* argument 5 */
-            if (is_null($color)) {
-                $color = $this->black;
-            }
-
-            if (!function_exists('imageline')) {
-                return false;
-            } elseif (imageline($this->_image, $x1, $y1, $x2, $y2, $color)) {
-                return true;
-            } else {
-                return false;
-            }
         }
+
+        /* argument 5 */
+        if (is_null($color)) {
+            $color = $this->black;
+        }
+
+        return (bool) imageline($this->_image, $x1, $y1, $x2, $y2, $color);
     }
 
     /**
@@ -880,46 +837,38 @@ class Image extends \Yana\Core\Object
          */
         if ($this->isBroken()) {
             return false;
-
-        } else {
-
-            /* argument 2 */
-            if (is_null($x)) {
-                $x = 0;
-            }
-
-            /* argument 3 */
-            if (is_null($y)) {
-                $y = 0;
-            }
-
-            /* argument 4 */
-            if (is_null($color)) {
-                $color = $this->black;
-            }
-
-            /* argument 5 */
-            if (is_null($font)) {
-                $font = 2;
-            }
-
-            /* argument 6 */
-            if (is_null($asVerticalString)) {
-                $asVerticalString = false;
-            } elseif ($asVerticalString) {
-                $functionName = 'imagestringup';
-            } else {
-                $functionName = 'imagestring';
-            }
-
-            if (!function_exists($functionName)) {
-                return false;
-            } elseif ($functionName($this->_image, $font, $x, $y, $text, $color)) {
-                return true;
-            } else {
-                return false;
-            }
         }
+
+        /* argument 2 */
+        if (is_null($x)) {
+            $x = 0;
+        }
+
+        /* argument 3 */
+        if (is_null($y)) {
+            $y = 0;
+        }
+
+        /* argument 4 */
+        if (is_null($color)) {
+            $color = $this->black;
+        }
+
+        /* argument 5 */
+        if (is_null($font)) {
+            $font = 2;
+        }
+
+        /* argument 6 */
+        if (is_null($asVerticalString)) {
+            $asVerticalString = false;
+        } elseif ($asVerticalString) {
+            $functionName = 'imagestringup';
+        } else {
+            $functionName = 'imagestring';
+        }
+
+        return (bool) $functionName($this->_image, $font, $x, $y, $text, $color);
     }
 
     /**
@@ -968,47 +917,35 @@ class Image extends \Yana\Core\Object
          */
         if ($this->isBroken()) {
             return false;
-
-        /*
-         * error - not supported
-         */
-        } elseif (!function_exists('imagettftext')) {
-            return false;
-
-        } else {
-
-            /* argument 2 */
-            if (is_null($x)) {
-                $x = 0;
-            }
-
-            /* argument 3 */
-            if (is_null($y)) {
-                $y = $fontsize;
-            }
-
-            /* argument 4 */
-            if (is_null($color)) {
-                $color = $this->black;
-            }
-
-            /* argument 5 */
-            if (is_null($fontfile)) {
-                $fontfile = 'tahoma';
-            }
-
-            /* set path on Win32-systems */
-            if (isset($_SERVER['windir']) && !is_file($fontfile)) {
-                $fontfile = $_SERVER['windir'] . DIRECTORY_SEPARATOR . 'Fonts' . DIRECTORY_SEPARATOR . $fontfile .
-                    '.ttf';
-            }
-
-            if (imagettftext($this->_image, $fontsize, $angle, $x, $y, $color, $fontfile, $text) !== false) {
-                return true;
-            } else {
-                return false;
-            }
         }
+
+        /* argument 2 */
+        if (is_null($x)) {
+            $x = 0;
+        }
+
+        /* argument 3 */
+        if (is_null($y)) {
+            $y = $fontsize;
+        }
+
+        /* argument 4 */
+        if (is_null($color)) {
+            $color = $this->black;
+        }
+
+        /* argument 5 */
+        if (is_null($fontfile)) {
+            $fontfile = 'tahoma';
+        }
+
+        /* set path on Win32-systems */
+        if (isset($_SERVER['windir']) && !is_file($fontfile)) {
+            $fontfile = $_SERVER['windir'] . DIRECTORY_SEPARATOR . 'Fonts' . DIRECTORY_SEPARATOR . $fontfile .
+                '.ttf';
+        }
+
+        return (imagettftext($this->_image, $fontsize, $angle, $x, $y, $color, $fontfile, $text) !== false);
     }
 
     /**
@@ -1067,64 +1004,47 @@ class Image extends \Yana\Core\Object
          */
         if ($this->isBroken()) {
             return false;
+        }
 
+        /* argument 4 */
+        if (is_null($height)) {
+            $height = $width;
+        }
+
+        /* argument 5 */
+        if (is_null($color) && is_null($fillColor)) {
+            $color = $this->black;
+        }
+
+        /* create ellipse */
+        if (is_null($start) || is_null($end)) {
+
+            /* filling */
+            if (!is_null($fillColor)) {
+                imagefilledellipse($this->_image, $x, $y, $width, $height, $fillColor);
+            }
+
+            /* contour */
+            if (!is_null($color)) {
+                imageellipse($this->_image, $x, $y, $width, $height, $color);
+            }
+
+            return true;
+
+        /* create arc */
         } else {
 
-            /* argument 4 */
-            if (is_null($height)) {
-                $height = $width;
+            /* filling */
+            if (!is_null($fillColor)) {
+                imagefilledarc($this->_image, $x, $y, $width, $height, $start, $end, $fillColor, IMG_ARC_PIE);
             }
 
-            /* argument 5 */
-            if (is_null($color)) {
-                if (is_null($fillColor)) {
-                    $color = $this->black;
-                }
+            /* contour */
+            if (!is_null($color)) {
+                imagearc($this->_image, $x, $y, $width, $height, $start, $end, $color);
             }
 
-            /* argument 6 */
-            if (is_null($fillColor)) {
-                /* intentionally left blank */
-            }
-
-            /* create ellipse */
-            if (is_null($start) || is_null($end)) {
-
-                /* filling */
-                if (!function_exists('imagefilledellipse')) {
-                    return false;
-                } elseif (!is_null($fillColor)) {
-                    imagefilledellipse($this->_image, $x, $y, $width, $height, $fillColor);
-                }
-
-                /* contour */
-                if (!function_exists('imageellipse')) {
-                    return false;
-                } elseif (!is_null($color)) {
-                    imageellipse($this->_image, $x, $y, $width, $height, $color);
-                }
-
-                return true;
-
-            /* create arc */
-            } else {
-
-                /* filling */
-                if (!function_exists('imagefilledarc')) {
-                    return false;
-                } elseif (!is_null($fillColor)) {
-                    imagefilledarc($this->_image, $x, $y, $width, $height, $start, $end, $fillColor, IMG_ARC_PIE);
-                }
-
-                /* contour */
-                if (!function_exists('imagearc')) {
-                    return false;
-                } elseif (!is_null($color)) {
-                    imagearc($this->_image, $x, $y, $width, $height, $start, $end, $color);
-                }
-
-                return true;
-            }
+            return true;
         }
     }
 
@@ -1174,41 +1094,33 @@ class Image extends \Yana\Core\Object
          */
         if ($this->isBroken()) {
             return false;
-
-        } else {
-
-            /* argument 4 */
-            if (is_null($height)) {
-                $height = $width;
-            }
-
-            /* argument 5 */
-            if (is_null($color)) {
-                if (is_null($fillColor)) {
-                    $color = $this->black;
-                }
-            }
-
-            /* calculation */
-            $width  += $x;
-            $height += $y;
-
-            /* filling */
-            if (!function_exists('imagefilledrectangle')) {
-                return false;
-            } elseif (!is_null($fillColor)) {
-                imagefilledrectangle($this->_image, $x, $y, $width, $height, $fillColor);
-            }
-
-            /* contour */
-            if (!function_exists('imagerectangle')) {
-                return false;
-            } elseif (!is_null($color)) {
-                imagerectangle($this->_image, $x, $y, $width, $height, $color);
-            }
-
-            return true;
         }
+
+        /* argument 4 */
+        if (is_null($height)) {
+            $height = $width;
+        }
+
+        /* argument 5 */
+        if (is_null($color) && is_null($fillColor)) {
+            $color = $this->black;
+        }
+
+        /* calculation */
+        $width  += $x;
+        $height += $y;
+
+        /* filling */
+        if (!is_null($fillColor)) {
+            imagefilledrectangle($this->_image, $x, $y, $width, $height, $fillColor);
+        }
+
+        /* contour */
+        if (!is_null($color)) {
+            imagerectangle($this->_image, $x, $y, $width, $height, $color);
+        }
+
+        return true;
     }
 
     /**
@@ -1264,50 +1176,44 @@ class Image extends \Yana\Core\Object
          */
         if ($this->isBroken()) {
             return false;
-
-        } else {
-
-            /* argument 4 */
-            if (is_null($color)) {
-                if (is_null($fillColor)) {
-                    $color = $this->black;
-                }
-            }
-
-            $mergedPoints = array();
-            /* calculation */
-            assert('!isset($point); // cannot redeclare variable $point');
-            foreach ($points as $point)
-            {
-                assert('is_array($point) && count($point) === 2 && is_int($point[0]) && is_int($point[1]); /* '.
-                    'Invalid value for argument 1. */');
-                $mergedPoints[] = $point[0] + $x;
-                $mergedPoints[] = $point[1] + $y;
-            }
-            $count = count($points);
-            unset($points, $point);
-
-            /* need at least 3 vertices */
-            if ($count < 3) {
-                return false;
-            }
-
-            /* filling */
-            if (!function_exists('imagefilledpolygon')) {
-                return false;
-            } elseif (!is_null($fillColor)) {
-                imagefilledpolygon($this->_image, $mergedPoints, $count, $fillColor);
-            }
-
-            /* contour */
-            if (!function_exists('imagepolygon')) {
-                return false;
-            } elseif (!is_null($color)) {
-                imagepolygon($this->_image, $mergedPoints, $count, $color);
-            }
-
-            return true;
         }
+
+        /* argument 4 */
+        if (is_null($color)) {
+            if (is_null($fillColor)) {
+                $color = $this->black;
+            }
+        }
+
+        $mergedPoints = array();
+        /* calculation */
+        assert('!isset($point); // cannot redeclare variable $point');
+        foreach ($points as $point)
+        {
+            assert('is_array($point) && count($point) === 2 && is_int($point[0]) && is_int($point[1]); /* ' .
+                    'Invalid value for argument 1. */');
+            $mergedPoints[] = $point[0] + $x;
+            $mergedPoints[] = $point[1] + $y;
+        }
+        $count = count($points);
+        unset($points, $point);
+
+        /* need at least 3 vertices */
+        if ($count < 3) {
+            return false;
+        }
+
+        /* filling */
+        if (!is_null($fillColor)) {
+            imagefilledpolygon($this->_image, $mergedPoints, $count, $fillColor);
+        }
+
+        /* contour */
+        if (!is_null($color)) {
+            imagepolygon($this->_image, $mergedPoints, $count, $color);
+        }
+
+        return true;
     }
 
     /**
@@ -1351,21 +1257,12 @@ class Image extends \Yana\Core\Object
         if ($this->isBroken()) {
             return false;
 
-        } else {
+        }
 
-            if (is_null($borderColor)) {
-                if (!function_exists('imagefill')) {
-                    return false;
-                } else {
-                    return imagefill($this->_image, $x, $y, $fillColor);
-                }
-            } else {
-                if (!function_exists('imagefilltoborder')) {
-                    return false;
-                } else {
-                    return imagefilltoborder($this->_image, $x, $y, $borderColor, $fillColor);
-                }
-            }
+        if (is_null($borderColor)) {
+            return imagefill($this->_image, $x, $y, $fillColor);
+        } else {
+            return imagefilltoborder($this->_image, $x, $y, $borderColor, $fillColor);
         }
     }
 
@@ -1405,43 +1302,17 @@ class Image extends \Yana\Core\Object
          */
         if ($this->isBroken()) {
             return false;
+        }
 
-        } elseif (!function_exists('imagealphablending')) {
-            return false;
+        /* Enable/Disable Alpha-blending */
+        if (imagealphablending($this->_image, (bool) $isEnabled)) {
+
+            imagesavealpha($this->_image, $saveAlpha);
+            $this->_alpha = (bool) $isEnabled;
+            return true;
 
         } else {
-
-            if ($isEnabled === true) {
-
-                /* Enable Alpha-blending */
-                if (imagealphablending($this->_image, true)) {
-
-                    if (function_exists('imagesavealpha')) {
-                        imagesavealpha($this->_image, $saveAlpha);
-                    }
-                    $this->_alpha = true;
-                    return true;
-
-                } else {
-                    return false;
-                }
-
-            } else {
-
-                /* Disable Alpha-blending */
-                if (imagealphablending($this->_image, false)) {
-
-                    if (function_exists('imagesavealpha')) {
-                        imagesavealpha($this->_image, $saveAlpha);
-                    }
-                    $this->_alpha = false;
-                    return true;
-
-                } else {
-                    return false;
-                }
-
-            }
+            return false;
         }
     }
 
@@ -1465,19 +1336,11 @@ class Image extends \Yana\Core\Object
         /**
          * error - broken image
          */
-        if ($this->isBroken()) {
+        if ($this->isBroken() || !\function_exists('imageantialias')) { // prior to PHP 7.2 this function wasn't always available
             return false;
-
-        } elseif (!function_exists('imageantialias')) {
-            return false;
-        } else {
-
-            if ($isEnabled) {
-                return imageantialias($this->_image, true);
-            } else {
-                return imageantialias($this->_image, false);
-            }
         }
+
+        return imageantialias($this->_image, (bool) $isEnabled);
     }
 
     /**
@@ -1503,11 +1366,7 @@ class Image extends \Yana\Core\Object
     {
         assert('is_int($font); // Wrong type for argument 1. Integer expected');
 
-        if (!function_exists('imagefontwidth')) {
-            return false;
-        } else {
-            return imagefontwidth($font);
-        }
+        return imagefontwidth($font);
     }
 
     /**
@@ -1533,11 +1392,7 @@ class Image extends \Yana\Core\Object
     {
         assert('is_int($font); // Wrong type for argument 1. Integer expected');
 
-        if (!function_exists('imagefontheight')) {
-            return false;
-        } else {
-            return imagefontheight($font);
-        }
+        return imagefontheight($font);
     }
 
     /**
@@ -1574,12 +1429,9 @@ class Image extends \Yana\Core\Object
          */
         if ($this->isBroken()) {
             return false;
-
-        } elseif (!function_exists('imagecolorsforindex')) {
-            return false;
-        } else {
-            return imagecolorsforindex($this->_image, $color);
         }
+
+        return imagecolorsforindex($this->_image, $color);
     }
 
     /**
@@ -1603,9 +1455,6 @@ class Image extends \Yana\Core\Object
          * error - broken image
          */
         if ($this->isBroken()) {
-            return false;
-
-        } elseif (!function_exists('imagecolorat')) {
             return false;
 
         } elseif ($x < 0 || $y < 0) {
@@ -1652,16 +1501,7 @@ class Image extends \Yana\Core\Object
     {
         assert('is_string($filename); // Wrong type for argument 1. String expected');
 
-        if (!function_exists('getimagesize')) {
-            return false;
-
-        } elseif (!function_exists('getimagesize')) {
-            return false;
-
-        } else {
-            return getimagesize("$filename");
-
-        }
+        return getimagesize("$filename");
     }
 
     /**
@@ -1702,39 +1542,37 @@ class Image extends \Yana\Core\Object
         assert('is_null($opacity) || is_numeric($opacity); // Wrong type for argument 4. Float expected');
         assert('!$opacity || ($opacity >= 0.0 && $opacity <= 1.0); // Invalid argument $opacity: must be in range [0.0,1.0].');
 
-        if ($this->isBroken() || !function_exists('imagecolorallocate')) {
+        if ($this->isBroken()) {
             return false;
+        }
+
+        if (!is_null($opacity) && is_numeric($opacity) && $opacity > 0 && $opacity <= 1) {
+            $opacity = (int) floor($opacity * 127);
+
+            /* check if color already exists */
+            $color = imagecolorexactalpha($this->_image, $r, $g, $b, $opacity);
+
+            /* if color is found, return it */
+            if ($color > -1) {
+                return $color;
+            /* otherwise allocate a new color */
+            } else {
+                return imagecolorallocatealpha($this->_image, $r, $g, $b, $opacity);
+            }
 
         } else {
-            $exist = function_exists('imagecolorallocatealpha');
-            if (!is_null($opacity) && is_numeric($opacity) && $opacity > 0 && $opacity <= 1 && $exist) {
-                $opacity = (int) floor($opacity * 127);
 
-                /* check if color already exists */
-                $color = imagecolorexactalpha($this->_image, $r, $g, $b, $opacity);
+            /* check if color already exists */
+            $color = imagecolorexact($this->_image, $r, $g, $b);
 
-                /* if color is found, return it */
-                if ($color > -1) {
-                    return $color;
-                /* otherwise allocate a new color */
-                } else {
-                    return imagecolorallocatealpha($this->_image, $r, $g, $b, $opacity);
-                }
-
+            /* if color is found, return it */
+            if ($color > -1) {
+                return $color;
+            /* otherwise allocate a new color */
             } else {
-
-                /* check if color already exists */
-                $color = imagecolorexact($this->_image, $r, $g, $b);
-
-                /* if color is found, return it */
-                if ($color > -1) {
-                    return $color;
-                /* otherwise allocate a new color */
-                } else {
-                    return imagecolorallocate($this->_image, $r, $g, $b);
-                }
-
+                return imagecolorallocate($this->_image, $r, $g, $b);
             }
+
         }
     }
 
@@ -1750,16 +1588,11 @@ class Image extends \Yana\Core\Object
         /**
          * error - broken image
          */
-        if ($this->isBroken()) {
+        if ($this->isBroken() || !is_int($this->_lineWidth)) {
             return false;
-
-        } elseif (is_int($this->_lineWidth)) {
-            return $this->_lineWidth;
-
-        } else {
-            return false;
-
         }
+
+        return $this->_lineWidth;
     }
 
     /**
@@ -1783,23 +1616,18 @@ class Image extends \Yana\Core\Object
          */
         if ($this->isBroken()) {
             return false;
+        }
 
-        } elseif (!function_exists('imagesetthickness')) {
+        /* argument 1 */
+        if ($width < 1) {
             return false;
+        }
 
+        if (imagesetthickness($this->_image, $width)) {
+            $this->_lineWidth = $width;
+            return true;
         } else {
-
-            /* argument 1 */
-            if ($width < 1) {
-                return false;
-            }
-
-            if (imagesetthickness($this->_image, $width)) {
-                $this->_lineWidth = $width;
-                return true;
-            } else {
-                return false;
-            }
+            return false;
         }
     }
 
@@ -1830,35 +1658,30 @@ class Image extends \Yana\Core\Object
          */
         if ($this->isBroken()) {
             return false;
+        }
 
-        } elseif (!function_exists('imagesetstyle')) {
-            return false;
+        /* reset line style */
+        if (func_num_args() === 0) {
+            imagesetstyle($this->_image, array($this->black));
+            $this->_lineStyle = null;
+            return true;
+        }
 
+        /* get line style */
+        $style = array();
+        for ($i = 0; $i < func_num_args(); $i++)
+        {
+            $color = func_get_arg($i);
+            assert('is_int($color); // Wrong type for argument ' . $i . '. Integer expected');
+            $style[] = (int) $color;
+        }
+
+        /* set line style */
+        if (imagesetstyle($this->_image, $style)) {
+            $this->_lineStyle = $style;
+            return true;
         } else {
-
-            /* reset line style */
-            if (func_num_args() === 0) {
-                imagesetstyle($this->_image, array($this->black));
-                $this->_lineStyle = null;
-                return true;
-            }
-
-            /* get line style */
-            $style = array();
-            for ($i = 0; $i < func_num_args(); $i++)
-            {
-                $color = func_get_arg($i);
-                assert('is_int($color); // Wrong type for argument ' . $i . '. Integer expected');
-                $style[] = (int) $color;
-            }
-
-            /* set line style */
-            if (imagesetstyle($this->_image, $style)) {
-                $this->_lineStyle = $style;
-                return true;
-            } else {
-                return false;
-            }
+            return false;
         }
     }
 
@@ -1898,51 +1721,44 @@ class Image extends \Yana\Core\Object
         /*
          * error - broken image
          */
-        if ($this->isBroken()) {
+        if ($this->isBroken() || $this->isTruecolor()) {
             return false;
-
-        } elseif (!function_exists('imagecolorset') || !function_exists('imagecolorsforindex')) {
-            return false;
-
-        } elseif ($this->isTruecolor()) {
-            return false;
+        }
 
         /*
          *  argument 1 - index out of bounds
          */
-        } elseif ($replacedColor < 0 || $replacedColor > imagecolorstotal($this->_image)) {
+        if ($replacedColor < 0 || $replacedColor > imagecolorstotal($this->_image)) {
             throw new \Yana\Core\Exceptions\OutOfBoundsException("Replaced color is not in image palette.", \Yana\Log\TypeEnumeration::WARNING);
+        }
 
-        } else {
-
-            /* argument 2 */
-            $red = $newColor['red'];
-            $green = $newColor['green'];
-            $blue = $newColor['blue'];
-            if (is_array($newColor) && isset($red) && isset($green) && isset($blue)) {
-                $color          = array();
-                $color['red']   = (int) $newColor['red'];
-                $color['green'] = (int) $newColor['green'];
-                $color['blue']  = (int) $newColor['blue'];
-                if ($color['red'] < 0   || $color['red']   > 255) {
-                    return false;
-                } elseif ($color['green'] < 0 || $color['green'] > 255) {
-                    return false;
-                } elseif ($color['blue'] < 0  || $color['blue']  > 255) {
-                    return false;
-                } else {
-                    // intentionally left blank
-                }
-            } else {
-                $color = imagecolorsforindex($this->_image, $newColor);
-            }
-
-            if (!is_array($color)) {
+        /* argument 2 */
+        $red = $newColor['red'];
+        $green = $newColor['green'];
+        $blue = $newColor['blue'];
+        if (is_array($newColor) && isset($red) && isset($green) && isset($blue)) {
+            $color          = array();
+            $color['red']   = (int) $newColor['red'];
+            $color['green'] = (int) $newColor['green'];
+            $color['blue']  = (int) $newColor['blue'];
+            if ($color['red'] < 0   || $color['red']   > 255) {
+                return false;
+            } elseif ($color['green'] < 0 || $color['green'] > 255) {
+                return false;
+            } elseif ($color['blue'] < 0  || $color['blue']  > 255) {
                 return false;
             } else {
-                imagecolorset($this->_image, $replacedColor, $color['red'], $color['green'], $color['blue']);
-                return true;
+                // intentionally left blank
             }
+        } else {
+            $color = imagecolorsforindex($this->_image, $newColor);
+        }
+
+        if (!is_array($color)) {
+            return false;
+        } else {
+            imagecolorset($this->_image, $replacedColor, $color['red'], $color['green'], $color['blue']);
+            return true;
         }
     }
 
@@ -1975,36 +1791,31 @@ class Image extends \Yana\Core\Object
          */
         if ($this->isBroken()) {
             return false;
-
-        } elseif (!function_exists('imagecolortransparent') || !function_exists('imagecopyresized')) {
-            return false;
-
-        } else {
-
-            /**
-             * backup old values
-             */
-            $oldBackgroundColor = $this->_backgroundColor;
-            $oldImage = $this->_image;
-            $width = $this->getWidth();
-            $height = $this->getHeight();
-
-            /**
-             * replace colors
-             */
-            imagecolortransparent($oldImage, $replacedColor);
-            $this->_backgroundColor = $newColor;
-            $this->_createImage($width, $height);
-            imagecopyresized($this->_image, $oldImage, 0, 0, 0, 0, $width, $height, $width, $height);
-            imagedestroy($oldImage);
-
-            /**
-             * restore backup
-             */
-            $this->_backgroundColor = $oldBackgroundColor;
-
-            return true;
         }
+
+        /**
+         * backup old values
+         */
+        $oldBackgroundColor = $this->_backgroundColor;
+        $oldImage = $this->_image;
+        $width = $this->getWidth();
+        $height = $this->getHeight();
+
+        /**
+         * replace colors
+         */
+        imagecolortransparent($oldImage, $replacedColor);
+        $this->_backgroundColor = $newColor;
+        $this->_createImage($width, $height);
+        imagecopyresized($this->_image, $oldImage, 0, 0, 0, 0, $width, $height, $width, $height);
+        imagedestroy($oldImage);
+
+        /**
+         * restore backup
+         */
+        $this->_backgroundColor = $oldBackgroundColor;
+
+        return true;
     }
 
     /**
@@ -2029,17 +1840,13 @@ class Image extends \Yana\Core\Object
          */
         if ($this->isBroken()) {
             return false;
-
-        } elseif (!function_exists('imagesetbrush')) {
-            return false;
-
         }
 
         if (is_string($brush) && is_file($brush)) {
             $brush = new self($brush);
         }
         if (is_object($brush)) {
-            if ($brush instanceof Brush) {
+            if ($brush instanceof \Yana\Media\Brush) {
                 $resource = $brush->getResource();
             } elseif ($brush instanceof $this) {
                 if ($brush->isBroken()) {
@@ -2056,16 +1863,13 @@ class Image extends \Yana\Core\Object
 
         if (!is_resource($resource)) {
             return false;
-        } else {
-            $test = imagesetbrush($this->_image, $resource);
         }
+        $test = imagesetbrush($this->_image, $resource);
 
         if ($test) {
             $this->_brush = $resource;
-            return true;
-        } else {
-            return false;
         }
+        return (bool) $test;
     }
 
     /**
@@ -2098,44 +1902,39 @@ class Image extends \Yana\Core\Object
          */
         if ($this->isBroken()) {
             return false;
+        }
 
-        } else {
+        /* initialize background color */
+        if (is_null($backgroundColor) && is_null($this->_backgroundColor)) {
+            $color = $this->getTransparency();
 
-            /* initialize background color */
-            if (is_null($backgroundColor) && is_null($this->_backgroundColor)) {
-                $color = $this->getTransparency();
-
-                if (is_int($color) && $color > -1) {
-                    $this->_backgroundColor = $color;
-                } else {
-                    $this->_backgroundColor = $this->getColor(254, 254, 254, 1.0);
-                }
-                return true;
-
-            /* set background color */
-            } elseif (is_null($this->_backgroundColor)) {
-                $this->_backgroundColor = $backgroundColor;
-                return true;
-
-            /* get background color setting */
-            } elseif (is_null($backgroundColor)) {
-                $backgroundColor = $this->white;
-            }
-
-            /* replace background color */
-            if ($replaceOldColor) {
-                $test = $this->replaceColor($this->_backgroundColor, $backgroundColor);
-                if ($test) {
-                    $this->_backgroundColor = $backgroundColor;
-                    return true;
-                } else {
-                    return false;
-                }
+            if (is_int($color) && $color > -1) {
+                $this->_backgroundColor = $color;
             } else {
-                $this->_backgroundColor = $backgroundColor;
-                return true;
+                $this->_backgroundColor = $this->getColor(254, 254, 254, 1.0);
             }
+            return true;
 
+        /* set background color */
+        } elseif (is_null($this->_backgroundColor)) {
+            $this->_backgroundColor = $backgroundColor;
+            return true;
+
+        /* get background color setting */
+        } elseif (is_null($backgroundColor)) {
+            $backgroundColor = $this->white;
+        }
+
+        /* replace background color */
+        if ($replaceOldColor) {
+            $test = $this->replaceColor($this->_backgroundColor, $backgroundColor);
+            if ($test) {
+                $this->_backgroundColor = $backgroundColor;
+            }
+            return (bool) $test;
+        } else {
+            $this->_backgroundColor = $backgroundColor;
+            return true;
         }
     }
 
@@ -2153,10 +1952,9 @@ class Image extends \Yana\Core\Object
          */
         if ($this->isBroken() || !is_int($this->_backgroundColor)) {
             return false;
-
-        } else {
-            return $this->_backgroundColor;
         }
+
+        return $this->_backgroundColor;
     }
 
     /**
@@ -2174,10 +1972,9 @@ class Image extends \Yana\Core\Object
          */
         if ($this->isBroken() || !is_bool($this->_interlace)) {
             return false;
-
-        } else {
-            return $this->_interlace;
         }
+
+        return $this->_interlace;
     }
 
     /**
@@ -2201,26 +1998,13 @@ class Image extends \Yana\Core\Object
         /**
          * error - broken image
          */
-        if ($this->isBroken() || !function_exists('imageinterlace')) {
+        if ($this->isBroken()) {
             return false;
-
-        } else {
-
-            /* argument 1 */
-            if ($isInterlaced) {
-                $isInterlaced = 1;
-            } else {
-                $isInterlaced = 0;
-            }
-
-            if (imageinterlace($this->_image, $isInterlaced) === 1) {
-                $this->_interlace = true;
-                return true;
-            } else {
-                $this->_interlace = false;
-                return false;
-            }
         }
+
+        $interlace = imageinterlace($this->_image, $isInterlaced ? 1 : 0) === 1;
+        $this->_interlace = $interlace;
+        return $interlace;
     }
 
     /**
@@ -2242,11 +2026,9 @@ class Image extends \Yana\Core\Object
          */
         if ($this->isBroken() || !is_bool($this->_alpha)) {
             return false;
-
-        } else {
-            return $this->_alpha;
-
         }
+
+        return $this->_alpha;
     }
 
     /**
@@ -2272,24 +2054,21 @@ class Image extends \Yana\Core\Object
         /**
          * error - broken image
          */
-        if ($this->isBroken() || !function_exists('imagegammacorrect')) {
+        if ($this->isBroken()) {
             return false;
-
-        } else {
-
-            /* argument 1 */
-            if ($gamma < 0.1 || $gamma > 10.0) {
-                return false;
-            }
-
-            $test = imagegammacorrect($this->_image, $this->_gamma, $gamma);
-
-            if ($test == true) {
-                $this->_gamma = $gamma;
-            }
-            return (bool) $test;
-
         }
+
+        /* argument 1 */
+        if ($gamma < 0.1 || $gamma > 10.0) {
+            return false;
+        }
+
+        $test = imagegammacorrect($this->_image, $this->_gamma, $gamma);
+
+        if ($test == true) {
+            $this->_gamma = $gamma;
+        }
+        return (bool) $test;
     }
 
     /**
@@ -2307,26 +2086,24 @@ class Image extends \Yana\Core\Object
         /**
          * error - broken image
          */
-        if ($this->isBroken() || !function_exists('imagerotate')) {
+        if ($this->isBroken()) {
             return false;
-
-        } else {
-
-            $bgColor = $this->getBackgroundColor();
-            $newImage = imagerotate($this->_image, (float) $angle, $bgColor);
-            $width = $this->getWidth();
-            $height = $this->getHeight();
-
-            if ($this->getColorAt(0, 0) !== $this->white) {
-                $this->drawRectangle(0, 0, $width, $height, null, $this->white);
-            } else {
-                $this->drawRectangle(0, 0, $width, $height, null, $this->black);
-            }
-            $this->drawRectangle(0, 0, $width, $height, null, $bgColor);
-
-            imagecopyresized($this->_image, $newImage, 0, 0, 0, 0, $width, $height, $width, $height);
-            return true;
         }
+
+        $bgColor = $this->getBackgroundColor();
+        $newImage = imagerotate($this->_image, (float) $angle, $bgColor);
+        $width = $this->getWidth();
+        $height = $this->getHeight();
+
+        if ($this->getColorAt(0, 0) !== $this->white) {
+            $this->drawRectangle(0, 0, $width, $height, null, $this->white);
+        } else {
+            $this->drawRectangle(0, 0, $width, $height, null, $this->black);
+        }
+        $this->drawRectangle(0, 0, $width, $height, null, $bgColor);
+
+        imagecopyresized($this->_image, $newImage, 0, 0, 0, 0, $width, $height, $width, $height);
+        return true;
     }
 
     /**
@@ -2403,150 +2180,148 @@ class Image extends \Yana\Core\Object
          */
         if ($this->isBroken()) {
             return false;
+        }
+
+        $currentHeight = $this->getHeight();
+        $currentWidth  = $this->getWidth();
+
+        if (is_null($width) && is_null($height)) {
+            $width  = $currentWidth;
+            $height = $currentHeight;
+        }
+
+        /* argument 1 */
+        if (is_null($width)) {
+
+            /* proportional image scaling */
+            $width = (int) floor(($height * $currentWidth) / $currentHeight);
+            assert('is_int($width);');
+
+        }
+        if ($width < 1) {
+            \Yana\Log\LogManager::getLogger()->addLog(
+                "Invalid value for argument 1. Width cannot be 0 or negative.", \Yana\Log\TypeEnumeration::WARNING
+            );
+            return false;
+        }
+
+        /* argument 2 */
+        if (is_null($height)) {
+
+            /* proportional image scaling */
+            $height = (int) floor(($width * $currentHeight) / $currentWidth);
+            assert('is_int($height);');
+
+        }
+        if ($height < 1) {
+            \Yana\Log\LogManager::getLogger()->addLog(
+                "Invalid value for argument 2. Height cannot be 0 or negative.", \Yana\Log\TypeEnumeration::WARNING
+            );
+            return false;
+        }
+
+        /* argument 3 */
+        if (is_null($paddingLeft)) {
+
+            /* horizontally center image */
+            $paddingLeft = round(( $width - $currentWidth )  / 2);
+            assert('is_numeric($paddingLeft); // Unexpected result: $paddingLeft');
+
+        }
+        if (abs($paddingLeft) >= $width) {
+            $message = "Invalid value for argument 3. Left offset {$paddingLeft}px is bigger than image width ".
+                "{$currentWidth}px.";
+            \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
+            return false;
+        }
+
+        /* argument 4 */
+        if (is_null($paddingTop)) {
+
+            /* horizontally center image */
+            $paddingTop = round(( $height - $currentHeight ) / 2);
+            assert('is_numeric($paddingTop); // Unexpected result: $paddingTop');
+
+        }
+        if (abs($paddingTop) >= $height) {
+            $message = "Invalid value for argument 4. Top offset {$paddingTop}px is bigger than image height ".
+                "{$currentHeight}px.";
+            \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
+            return false;
+        }
+
+        if ($paddingLeft < 0) {
+            $srcLeft  = (int) abs($paddingLeft);
+            $dstLeft  = 0;
+            $srcWidth = $currentWidth - $srcLeft;
+        } elseif ($paddingLeft > 0) {
+            $srcLeft  = 0;
+            $dstLeft  = (int) abs($paddingLeft);
+            $srcWidth = $currentWidth;
+        } else {
+            $srcLeft  = 0;
+            $dstLeft  = 0;
+            $srcWidth = $currentWidth;
+        }
+
+        if ($paddingTop < 0) {
+            $srcTop    = (int) abs($paddingTop);
+            $dstTop    = 0;
+            $srcHeight = $currentHeight - $srcTop;
+        } elseif ($paddingTop > 0) {
+            $srcTop    = 0;
+            $dstTop    = (int) abs($paddingTop);
+            $srcHeight = $currentHeight;
+        } else {
+            $srcTop    = 0;
+            $dstTop    = 0;
+            $srcHeight = $currentHeight;
+        }
+
+        /* argument 5 */
+        if (is_array($canvasColor)) {
+            if (count($canvasColor) !== 3) {
+                $message = "Invalid value for argument 5. Color needs to have red, green and yellow values.";
+                \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
+                return false;
+            } else {
+                $color = $canvasColor;
+                $canvasColor = $this->getColor(array_shift($color), array_shift($color), array_shift($color));
+                unset ($color);
+            }
+            if (!is_int($canvasColor)) {
+                $message = "Invalid value for argument 5. The argument is not a color.";
+                \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
+                return false;
+            }
+        }
+
+        if ($currentWidth === $width && $currentHeight === $height && $paddingTop === 0 && $paddingLeft === 0) {
+
+            /* if image already has the expected size, then there is nothing to do here */
+            return true;
 
         } else {
 
-            $currentHeight = $this->getHeight();
-            $currentWidth  = $this->getWidth();
+            $oldImage = $this->_image;
+            $this->_createImage($width, $height);
 
-            if (is_null($width) && is_null($height)) {
-                $width  = $currentWidth;
-                $height = $currentHeight;
-            }
-
-            /* argument 1 */
-            if (is_null($width)) {
-
-                /* proportional image scaling */
-                $width = (int) floor(($height * $currentWidth) / $currentHeight);
-                assert('is_int($width);');
-
-            }
-            if ($width < 1) {
-                \Yana\Log\LogManager::getLogger()->addLog(
-                    "Invalid value for argument 1. Width cannot be 0 or negative.", \Yana\Log\TypeEnumeration::WARNING
-                );
-                return false;
-            }
-
-            /* argument 2 */
-            if (is_null($height)) {
-
-                /* proportional image scaling */
-                $height = (int) floor(($width * $currentHeight) / $currentWidth);
-                assert('is_int($height);');
-
-            }
-            if ($height < 1) {
-                \Yana\Log\LogManager::getLogger()->addLog(
-                    "Invalid value for argument 2. Height cannot be 0 or negative.", \Yana\Log\TypeEnumeration::WARNING
-                );
-                return false;
-            }
-
-            /* argument 3 */
-            if (is_null($paddingLeft)) {
-
-                /* horizontally center image */
-                $paddingLeft = round(( $width - $currentWidth )  / 2);
-                assert('is_numeric($paddingLeft); // Unexpected result: $paddingLeft');
-
-            }
-            if (abs($paddingLeft) >= $width) {
-                $message = "Invalid value for argument 3. Left offset {$paddingLeft}px is bigger than image width ".
-                    "{$currentWidth}px.";
-                \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
-                return false;
-            }
-
-            /* argument 4 */
-            if (is_null($paddingTop)) {
-
-                /* horizontally center image */
-                $paddingTop = round(( $height - $currentHeight ) / 2);
-                assert('is_numeric($paddingTop); // Unexpected result: $paddingTop');
-
-            }
-            if (abs($paddingTop) >= $height) {
-                $message = "Invalid value for argument 4. Top offset {$paddingTop}px is bigger than image height ".
-                    "{$currentHeight}px.";
-                \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
-                return false;
-            }
-
-            if ($paddingLeft < 0) {
-                $srcLeft  = (int) abs($paddingLeft);
-                $dstLeft  = 0;
-                $srcWidth = $currentWidth - $srcLeft;
-            } elseif ($paddingLeft > 0) {
-                $srcLeft  = 0;
-                $dstLeft  = (int) abs($paddingLeft);
-                $srcWidth = $currentWidth;
-            } else {
-                $srcLeft  = 0;
-                $dstLeft  = 0;
-                $srcWidth = $currentWidth;
-            }
-
-            if ($paddingTop < 0) {
-                $srcTop    = (int) abs($paddingTop);
-                $dstTop    = 0;
-                $srcHeight = $currentHeight - $srcTop;
-            } elseif ($paddingTop > 0) {
-                $srcTop    = 0;
-                $dstTop    = (int) abs($paddingTop);
-                $srcHeight = $currentHeight;
-            } else {
-                $srcTop    = 0;
-                $dstTop    = 0;
-                $srcHeight = $currentHeight;
-            }
-
-            /* argument 5 */
-            if (is_array($canvasColor)) {
-                if (count($canvasColor) !== 3) {
-                    $message = "Invalid value for argument 5. Color needs to have red, green and yellow values.";
-                    \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
+            if (is_int($canvasColor)) {
+                if (!$this->fill($canvasColor, 0, 0)) {
                     return false;
                 } else {
-                    $color = $canvasColor;
-                    $canvasColor = $this->getColor(array_shift($color), array_shift($color), array_shift($color));
-                    unset ($color);
-                }
-                if (!is_int($canvasColor)) {
-                    $message = "Invalid value for argument 5. The argument is not a color.";
-                    \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
-                    return false;
+                    /* background color set successfully  */
                 }
             }
 
-            if ($currentWidth === $width && $currentHeight === $height && $paddingTop === 0 && $paddingLeft === 0) {
-
-                /* if image already has the expected size, then there is nothing to do here */
-                return true;
-
+            if (function_exists('imagecopy')) {
+                imagecopy($this->_image, $oldImage, $dstLeft, $dstTop, $srcLeft, $srcTop, $srcWidth, $srcHeight);
             } else {
-
-                $oldImage = $this->_image;
-                $this->_createImage($width, $height);
-
-                if (is_int($canvasColor)) {
-                    if (!$this->fill($canvasColor, 0, 0)) {
-                        return false;
-                    } else {
-                        /* background color set successfully  */
-                    }
-                }
-
-                if (function_exists('imagecopy')) {
-                    imagecopy($this->_image, $oldImage, $dstLeft, $dstTop, $srcLeft, $srcTop, $srcWidth, $srcHeight);
-                } else {
-                    return false;
-                }
-                imagedestroy($oldImage);
-                return true;
-
+                return false;
             }
+            imagedestroy($oldImage);
+            return true;
+
         }
     }
 
@@ -2590,62 +2365,58 @@ class Image extends \Yana\Core\Object
 
         if ($this->isBroken() || (is_null($width) && is_null($height))) {
             return false;
+        }
+
+        $currentHeight = $this->getHeight();
+        $currentWidth  = $this->getWidth();
+
+        /* argument 1 */
+        if (is_null($width)) {
+
+            /* proportional image scaling */
+            $width = (int) floor(($height * $currentWidth) / $currentHeight);
+            assert('is_int($width);');
+
+        }
+        if ($width < 1) {
+            $message = "Invalid value for argument 1. Width cannot be 0 or negative.";
+            \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
+            return false;
+        }
+
+        /* argument 2 */
+        if (is_null($height)) {
+
+            /* proportional image scaling */
+            $height = (int) floor(($width * $currentHeight) / $currentWidth);
+            assert('is_int($height);');
+
+        }
+        if ($height < 1) {
+            $message = "Invalid value for argument 2. Height cannot be 0 or negative.";
+            \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
+            return false;
+        }
+
+        if ($currentWidth === $width && $currentHeight === $height) {
+
+            /* if image already has the expected size, then there is nothing to do here */
+            return true;
 
         } else {
 
-            $currentHeight = $this->getHeight();
-            $currentWidth  = $this->getWidth();
-
-            /* argument 1 */
-            if (is_null($width)) {
-
-                /* proportional image scaling */
-                $width = (int) floor(($height * $currentWidth) / $currentHeight);
-                assert('is_int($width);');
-
-            }
-            if ($width < 1) {
-                $message = "Invalid value for argument 1. Width cannot be 0 or negative.";
-                \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
-                return false;
-            }
-
-            /* argument 2 */
-            if (is_null($height)) {
-
-                /* proportional image scaling */
-                $height = (int) floor(($width * $currentHeight) / $currentWidth);
-                assert('is_int($height);');
-
-            }
-            if ($height < 1) {
-                $message = "Invalid value for argument 2. Height cannot be 0 or negative.";
-                \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
-                return false;
-            }
-
-            if ($currentWidth === $width && $currentHeight === $height) {
-
-                /* if image already has the expected size, then there is nothing to do here */
-                return true;
-
+            $oldImage = $this->_image;
+            $this->_createImage($width, $height);
+            $w = $width;
+            $h = $height;
+            if (is_null($this->_transparency)) {
+                imagecopyresampled($this->_image, $oldImage, 0, 0, 0, 0, $w, $h, $currentWidth, $currentHeight);
             } else {
-
-                $oldImage = $this->_image;
-                $this->_createImage($width, $height);
-                $w = $width;
-                $h = $height;
-                if (is_null($this->_transparency) && function_exists('imagecopyresampled')) {
-                    imagecopyresampled($this->_image, $oldImage, 0, 0, 0, 0, $w, $h, $currentWidth, $currentHeight);
-                } elseif (function_exists('imagecopyresized')) {
-                    imagecopyresized($this->_image, $oldImage, 0, 0, 0, 0, $w, $h, $currentWidth, $currentHeight);
-                } else {
-                    return false;
-                }
-                imagedestroy($oldImage);
-                return true;
-
+                imagecopyresized($this->_image, $oldImage, 0, 0, 0, 0, $w, $h, $currentWidth, $currentHeight);
             }
+            imagedestroy($oldImage);
+            return true;
+
         }
     }
 
@@ -2661,16 +2432,15 @@ class Image extends \Yana\Core\Object
         /*
          * error - broken image
          */
-        if ($this->isBroken() ||!function_exists('imagecolortransparent')) {
+        if ($this->isBroken()) {
             return false;
+        }
 
+        $transparency = imagecolortransparent($this->_image);
+        if ($transparency === -1) {
+            return false;
         } else {
-            $transparency = imagecolortransparent($this->_image);
-            if ($transparency === -1) {
-                return false;
-            } else {
-                return $transparency;
-            }
+            return $transparency;
         }
     }
 
@@ -2706,50 +2476,44 @@ class Image extends \Yana\Core\Object
         /*
          * error - broken image
          */
-        if ($this->isBroken() || !function_exists('imagecolortransparent')) {
+        if ($this->isBroken()) {
             return false;
+        }
 
+        /* argument 1 */
+        if (is_null($transparency)) {
+            $transparency = $this->_backgroundColor;
+        }
+        $red = $transparency['red'];
+        $green = $transparency['green'];
+        $blue =  $transparency['blue'];
+
+        if (is_int($transparency)) {
+            $color = $transparency;
+            $array = imagecolorsforindex($this->_image, $transparency);
+            if (!is_array($array)) {
+                return false;
+            }
+
+        } elseif (is_array($transparency) && isset($red) && isset($green) && isset($blue)) {
+
+            $color = imagecolorexactalpha($this->_image, $red, (int) $green, (int) $blue, 127);
+            if ($color == -1) {
+                $color = imagecolorexact($this->_image, $red, (int) $green, (int) $blue);
+            }
+            if ($color == -1) {
+                $color = $this->getColor((int) $red, (int) $green, (int) $blue);
+            }
+            $array = $transparency;
         } else {
+            return false;
+        }
 
-            /* argument 1 */
-            if (is_null($transparency)) {
-                $transparency = $this->_backgroundColor;
-            }
-            $red = $transparency['red'];
-            $green = $transparency['green'];
-            $blue =  $transparency['blue'];
-
-            if (is_int($transparency)) {
-                $color = $transparency;
-                $array = imagecolorsforindex($this->_image, $transparency);
-                if (!is_array($array)) {
-                    return false;
-                }
-            } elseif (is_array($transparency) && isset($red) && isset($green) && isset($blue)) {
-                $color = -1;
-                if (function_exists('imagecolorexactalpha')) {
-                    $color = imagecolorexactalpha($this->_image, $red, (int) $green, (int) $blue, 127);
-                }
-                if ($color == -1) {
-                    $color = imagecolorexact($this->_image, $red, (int) $green, (int) $blue);
-                }
-                if ($color == -1) {
-                    $color = $this->getColor((int) $red, (int) $green, (int) $blue);
-                }
-                $array = $transparency;
-            } else {
-                return false;
-            }
-
-            if (imagecolortransparent($this->_image) === $color) {
-                $this->_transparency = $array;
-                return true;
-            } elseif (imagecolortransparent($this->_image, $color) != -1) {
-                $this->_transparency = $array;
-                return true;
-            } else {
-                return false;
-            }
+        if (imagecolortransparent($this->_image) === $color || imagecolortransparent($this->_image, $color) != -1) {
+            $this->_transparency = $array;
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -2772,20 +2536,17 @@ class Image extends \Yana\Core\Object
         /**
          * error - broken image
          */
-        if ($this->isBroken() || !function_exists('imagecolorstotal')) {
+        if ($this->isBroken()) {
             return false;
+        }
 
+        $count = imagecolorstotal($this->_image);
+
+        /* truecolor images should have 16 mio colors - but PHP returns 0 */
+        if ($count < 1) {
+            return 16000000;
         } else {
-
-            $count = imagecolorstotal($this->_image);
-
-            /* truecolor images should have 16 mio colors - but PHP returns 0 */
-            if ($count < 1) {
-                return 16000000;
-            } else {
-                return $count;
-            }
-
+            return $count;
         }
     }
 
@@ -2812,53 +2573,49 @@ class Image extends \Yana\Core\Object
         /**
          * error - broken image
          */
-        if ($this->isBroken() || !function_exists('imagetruecolortopalette')) {
+        if ($this->isBroken()) {
             return false;
+        }
 
+        /* argument 1 */
+        if ($ammount < 2 || $ammount > 256) {
+            return false;
+        }
+
+        /* backup background color */
+        $backgroundColor = null;
+        if (!is_null($this->_backgroundColor)) {
+            $backgroundColor = $this->getColorValues($this->_backgroundColor);
+        }
+
+        /* convert palette */
+        $test = imagetruecolortopalette($this->_image, $dither, $ammount);
+
+        /* restore backup */
+        if ($test) {
+            if (!is_null($this->_transparency)) {
+                $red = $this->_transparency['red'];
+                $green = $this->_transparency['green'];
+                $blue = $this->_transparency['blue'];
+                $color = imagecolorresolve($this->_image, $red, $green, $blue);
+                $color = imagecolortransparent($this->_image, $color);
+                if ($color != -1) {
+                    $this->_transparency = $this->getColorValues($color);
+                }
+                unset ($red, $green, $blue);
+            }
+            /* copy background color */
+            if (!is_null($backgroundColor)) {
+                $red   = (int) $backgroundColor['red'];
+                $green = (int) $backgroundColor['green'];
+                $blue  = (int) $backgroundColor['blue'];
+                $alpha = (int) $backgroundColor['alpha'];
+                $this->_backgroundColor = imagecolorresolvealpha($this->_image, $red, $green, $blue, $alpha);
+            }
+            $this->_initColors();
+            return true;
         } else {
-
-            /* argument 1 */
-            if ($ammount < 2 || $ammount > 256) {
-                return false;
-            }
-
-            /* backup background color */
-            if (!is_null($this->_backgroundColor)) {
-                $backgroundColor = $this->getColorValues($this->_backgroundColor);
-            } else {
-                $backgroundColor = null;
-            }
-
-            /* convert palette */
-            $test = imagetruecolortopalette($this->_image, $dither, $ammount);
-
-            /* restore backup */
-            if ($test) {
-                if (!is_null($this->_transparency)) {
-                    $red = $this->_transparency['red'];
-                    $green = $this->_transparency['green'];
-                    $blue = $this->_transparency['blue'];
-                    $color = imagecolorresolve($this->_image, $red, $green, $blue);
-                    $color = imagecolortransparent($this->_image, $color);
-                    if ($color != -1) {
-                        $this->_transparency = $this->getColorValues($color);
-                    }
-                    unset ($red, $green, $blue);
-                }
-                /* copy background color */
-                if (!is_null($backgroundColor)) {
-                    $red   = (int) $backgroundColor['red'];
-                    $green = (int) $backgroundColor['green'];
-                    $blue  = (int) $backgroundColor['blue'];
-                    $alpha = (int) $backgroundColor['alpha'];
-                    $this->_backgroundColor = imagecolorresolvealpha($this->_image, $red, $green, $blue, $alpha);
-                }
-                $this->_initColors();
-                return true;
-            } else {
-                return false;
-            }
-
+            return false;
         }
     }
 
@@ -3012,20 +2769,7 @@ class Image extends \Yana\Core\Object
             return false;
         }
 
-        if (function_exists('imagefilter')) {
-            return imagefilter($this->_image, IMG_FILTER_GRAYSCALE);
-        } elseif (!function_exists('imagecolorset')) {
-            return false;
-        } elseif ($this->isTruecolor()) {
-            $this->reduceColorDepth(256, false);
-        }
-
-        for ($i = 0; $i < imagecolorstotal($this->_image); $i++)
-        {
-            $color = imagecolorsforindex($this->_image, $i);
-            $gray  = round(0.299 * $color['red'] + 0.587 * $color['green'] + 0.114 * $color['blue']);
-            imagecolorset($this->_image, $i, $gray, $gray, $gray);
-        }
+        return imagefilter($this->_image, IMG_FILTER_GRAYSCALE);
     }
 
     /**
@@ -3060,7 +2804,7 @@ class Image extends \Yana\Core\Object
         assert('$g >= 0 && $g <= 255; // Invalid argument $g: must be in range [0,255].');
         assert('$b >= 0 && $b <= 255; // Invalid argument $b: must be in range [0,255].');
 
-        if ($this->isBroken() || !function_exists('imagecolorset')) {
+        if ($this->isBroken()) {
             return false;
         }
 
@@ -3274,22 +3018,7 @@ class Image extends \Yana\Core\Object
             return false;
         }
 
-        if (function_exists('imagefilter')) {
-            return imagefilter($this->_image, IMG_FILTER_NEGATE);
-        } elseif (!function_exists('imagecolorset')) {
-            return false;
-        } elseif ($this->isTruecolor()) {
-            $this->reduceColorDepth(256, false);
-        }
-
-        for ($i = 0; $i < $this->getPaletteSize(); $i++)
-        {
-            $color = imagecolorsforindex($this->_image, $i);
-            $color['red']    = - $color['red']   + 255;
-            $color['green']  = - $color['green'] + 255;
-            $color['blue']   = - $color['blue']  + 255;
-            imagecolorset($this->_image, $i, $color['red'], $color['green'], $color['blue']);
-        }
+        return imagefilter($this->_image, IMG_FILTER_NEGATE);
     }
 
     /**
@@ -3397,28 +3126,10 @@ class Image extends \Yana\Core\Object
             return false;
         }
 
-        if (function_exists('imagefilter')) {
-            if ($r == $g && $g == $b) {
-                return imagefilter($this->_image, IMG_FILTER_BRIGHTNESS, $r);
-            } else {
-                return imagefilter($this->_image, IMG_FILTER_COLORIZE, $r, $g, $b);
-            }
-        } elseif (!function_exists('imagecolorset')) {
-            return false;
-        } elseif ($this->isTruecolor()) {
-            $this->reduceColorDepth(256, false);
-        }
-
-        for ($i = 0; $i < $this->getPaletteSize(); $i++)
-        {
-            $color     = imagecolorsforindex($this->_image, $i);
-            $color['red']   += $r;
-            $color['green'] += $g;
-            $color['blue']  += $b;
-            $color['red']    = (($color['red']   > 255) ? 255 : (($color['red']   < 0) ? 0 : $color['red']));
-            $color['green']  = (($color['green'] > 255) ? 255 : (($color['green'] < 0) ? 0 : $color['green']));
-            $color['blue']   = (($color['blue']  > 255) ? 255 : (($color['blue']  < 0) ? 0 : $color['blue']));
-            imagecolorset($this->_image, $i, $color['red'], $color['green'], $color['blue']);
+        if ($r == $g && $g == $b) {
+            return imagefilter($this->_image, IMG_FILTER_BRIGHTNESS, $r);
+        } else {
+            return imagefilter($this->_image, IMG_FILTER_COLORIZE, $r, $g, $b);
         }
     }
 
@@ -3462,7 +3173,7 @@ class Image extends \Yana\Core\Object
         assert('$g >= 0 && $g <= 255; // Invalid argument $g: must be in range [0,255].');
         assert('$b >= 0 && $b <= 255; // Invalid argument $b: must be in range [0,255].');
 
-        if ($this->isBroken() || !function_exists('imagecolorset')) {
+        if ($this->isBroken()) {
             return false;
         }
 
@@ -3520,37 +3231,9 @@ class Image extends \Yana\Core\Object
             return false;
         }
 
-        if (function_exists('imagefilter')) {
-
-            $pct = (int) floor(15 - ($ammount * 15));
-            imagefilter($this->_image, IMG_FILTER_SMOOTH, $pct);
-            return true;
-
-        } elseif (function_exists('imagecopymerge')) {
-
-            $width  = $this->getWidth();
-            $height = $this->getHeight();
-
-            if (function_exists('imagecreatetruecolor')) {
-                $tempImage = imagecreatetruecolor($width, $height);
-            } else {
-                $tempImage = imagecreate($width, $height);
-            }
-            imagecopy($tempImage, $this->_image, 0, 0, 1, 1, $width - 1, $height - 1);
-            imagecopymerge($tempImage, $this->_image, 1, 1, 0, 0, $width,     $height,        $ammount * 100);
-            imagecopymerge($tempImage, $this->_image, 0, 1, 1, 0, $width - 1, $height,        $ammount * 66);
-            imagecopymerge($tempImage, $this->_image, 1, 0, 0, 1, $width,     $height - 1,    $ammount * 50);
-            imagecopymerge($tempImage, $this->_image, 0, 0, 1, 0, $width - 1, $height,        $ammount * 66);
-            imagecopymerge($tempImage, $this->_image, 1, 0, 0, 0, $width,     $height,        $ammount * 50);
-            imagecopymerge($tempImage, $this->_image, 0, 0, 0, 1, $width,     $height - 1,    $ammount * 40);
-            imagecopymerge($tempImage, $this->_image, 0, 1, 0, 0, $width,     $height,        $ammount * 66);
-            imagecopymerge($tempImage, $this->_image, 0, 0, 0, 0, $width,     $height, (1.0 - $ammount)* 100);
-            imagecopy($this->_image, $tempImage, 0, 0, 0, 0, $width-1, $height-1);
-            return true;
-
-        } else {
-            return false;
-        }
+        $pct = (int) floor(15 - ($ammount * 15));
+        imagefilter($this->_image, IMG_FILTER_SMOOTH, $pct);
+        return true;
     }
 
     /**
@@ -3593,15 +3276,10 @@ class Image extends \Yana\Core\Object
          */
         if ($ammount == 0) {
             return true;
-        } elseif (function_exists('imagefilter')) {
 
-            if (function_exists('imagecreatetruecolor')) {
-                $tempImage = imagecreatetruecolor($width, $height);
-            } elseif (function_exists('imagecreate')) {
-                $tempImage = imagecreate($width, $height);
-            } else {
-                return false;
-            }
+        } else {
+
+            $tempImage = imagecreatetruecolor($width, $height);
             imagecopy($tempImage, $this->_image, 0, 0, 0, 0, $width, $height);
             imagefilter($tempImage, IMG_FILTER_EDGEDETECT);
             $pct = (int) ($ammount * 20);
@@ -3609,27 +3287,6 @@ class Image extends \Yana\Core\Object
             imagecopymerge($this->_image, $tempImage, 0, 0, 0, 0, $width, $height, $pct);
             imagefilter($this->_image, IMG_FILTER_CONTRAST, - (int) ($pct / 2));
             return true;
-
-        } elseif (function_exists('imagecopymerge')) {
-
-            $width   = $this->getWidth();
-            $height  = $this->getHeight();
-
-            $tempImage = imagecreate($width, $height);
-            imagecopy($tempImage, $this->_image, 0, 0, 1, 1, $width - 1, $height - 1);
-            imagecopymerge($tempImage, $this->_image, 1, 1, 0, 0, $width,     $height,     -15 * $ammount);
-            imagecopymerge($tempImage, $this->_image, 0, 1, 1, 0, $width - 1, $height,     -15 * $ammount);
-            imagecopymerge($tempImage, $this->_image, 1, 0, 0, 1, $width,     $height - 1, -15 * $ammount);
-            imagecopymerge($tempImage, $this->_image, 0, 0, 1, 0, $width - 1, $height,     -15 * $ammount);
-            imagecopymerge($tempImage, $this->_image, 1, 0, 0, 0, $width,     $height,     -15 * $ammount);
-            imagecopymerge($tempImage, $this->_image, 0, 0, 0, 1, $width,     $height - 1, -15 * $ammount);
-            imagecopymerge($tempImage, $this->_image, 0, 1, 0, 0, $width,     $height,     -15 * $ammount);
-            imagecopymerge($tempImage, $this->_image, 0, 0, 0, 0, $width,     $height,     -15 * (1 - $ammount));
-            imagecopy($this->_image, $tempImage, 0, 0, 0, 0, $width-1, $height-1);
-            return true;
-
-        } else {
-            return false;
         }
     }
 
@@ -3654,9 +3311,6 @@ class Image extends \Yana\Core\Object
          */
         if ($this->isBroken()) {
             return false;
-
-        } elseif (!function_exists('imagecopy')) {
-            return false;
         }
 
         $width  = $this->getWidth();
@@ -3665,16 +3319,8 @@ class Image extends \Yana\Core\Object
         /* iterate through stripes
          * and copy left to right
          */
+        $tempImage = imagecreatetruecolor(1, $height);
 
-        if (function_exists('imagecreatetruecolor')) {
-            $tempImage = imagecreatetruecolor(1, $height);
-
-        } elseif (function_exists('imagecreate')) {
-            $tempImage = imagecreate(1, $height);
-
-        } else {
-            return false;
-        }
         assert('!isset($left);');
         for ($left = 0; $left < floor($width / 2); $left++)
         {
@@ -3728,16 +3374,10 @@ class Image extends \Yana\Core\Object
          */
         if ($this->isBroken()) {
             return false;
-
-        } elseif (function_exists('imagecreatetruecolor')) {
-            $tempImage = imagecreatetruecolor($width, 1);
-
-        } elseif (function_exists('imagecreate')) {
-            $tempImage = imagecreate($width, 1);
-
-        } else {
-            return false;
         }
+
+        $tempImage = imagecreatetruecolor($width, 1);
+
         assert('!isset($top);');
         for ($top = 0; $top < floor($height / 2); $top++)
         {
@@ -3794,10 +3434,6 @@ class Image extends \Yana\Core\Object
      */
     public function copyPalette($sourceImage)
     {
-        if (!function_exists('imagepalettecopy')) {
-            return false;
-        }
-
         /* argument 1 */
         if (is_string($sourceImage) && is_file($sourceImage)) {
             $sourceImage = new self($sourceImage);
@@ -3808,9 +3444,6 @@ class Image extends \Yana\Core\Object
 
         /* argument 1 */
         if (!is_resource($sourceImage)) {
-            \Yana\Log\LogManager::getLogger()->addLog(
-                "Argument 1 is invalid. The source is not a valid image resource.", \Yana\Log\TypeEnumeration::WARNING
-            );
             return false;
         }
 
@@ -3833,6 +3466,7 @@ class Image extends \Yana\Core\Object
      *
      * @param   string  $imageType  can be on of "png", "jpg", "gif", "bmp"
      * @return  bool
+     * @codeCoverageIgnore
      */
     public function outputToScreen($imageType = null)
     {
@@ -4036,11 +3670,7 @@ class Image extends \Yana\Core\Object
          * Note: will NOT keep the proportion of width to height.
          */
         if (!$keepAspectRatio) {
-            if ($this->resizeImage($width, $height)) {
-                return true;
-            } else {
-                return false;
-            }
+            return (bool) $this->resizeImage($width, $height);
         }
 
         /**
@@ -4069,11 +3699,7 @@ class Image extends \Yana\Core\Object
          * if the image is smaller, so all images will use
          * the same size.
          */
-        if ($this->resizeCanvas($width, $height, null, null, $backgroundColor)) {
-            return true;
-        } else {
-            return false;
-        }
+        return (bool) $this->resizeCanvas($width, $height, null, null, $backgroundColor);
     }
 
     /**
