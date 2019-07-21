@@ -80,16 +80,6 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
     }
 
     /**
-     * Returns the class name of the called class.
-     *
-     * @return string
-     */
-    protected static function _getClassName()
-    {
-        return __CLASS__;
-    }
-
-    /**
      * Get the application cache.
      *
      * By default this will be a file-cache in the temporary directory of the framework.
@@ -215,7 +205,6 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
          *
          * Returns bool(true) on success and bool(false) otherwise.
          */
-        $result = false;
         try {
 
             $result = $plugins->sendEvent($action, $args, $this);
@@ -224,15 +213,19 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
                 $_SESSION['transaction_isolation_created'] = time();
             }
 
+            // @codeCoverageIgnoreStart
         } catch (\Yana\Core\Exceptions\IsException $e) {
+            $result = false;
             $this->_getDependencyContainer()->getExceptionLogger()->addException($e);
 
         } catch (\Exception $e) {
+            $result = false;
             $message = get_class($e) . ': ' . $e->getMessage() . ' Thrown in ' . $e->getFile() .
                 ' on line ' . $e->getLine();
             $this->getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
 
         }
+        // @codeCoverageIgnoreEnd
         return $result !== false;
     }
 
@@ -384,6 +377,8 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
      * print $YANA->getVar('foo.bar');
      * </code>
      *
+     * Returns NULL if there is no such key.
+     *
      * @param   string  $key  adress of data in memory (case insensitive)
      * @return  mixed
      * @name    \Yana\Application::getVar()
@@ -496,7 +491,8 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
      * the function returns bool(false) instead and issues a warning.
      *
      * @param   string  $path  virtual file path
-     * @return  \Yana\Files\AbstractResource
+     * @return  \Yana\Files\IsResource
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when the resource was not found
      */
     public function getResource($path)
     {
@@ -685,26 +681,13 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
     {
         $route = $this->getPlugins()->getNextEvent();
         $target = "";
-        $messageClass = "";
 
         $logger = $this->_getDependencyContainer()->getExceptionLogger();
         if ($route instanceof \Yana\Plugins\Configs\EventRoute) {
             // create default message if there is none
             if ($logger->getMessages()->count() === 0) {
 
-                $level = \Yana\Log\TypeEnumeration::ERROR;
-                $message = 'Action was not successfully';
-                if ($route->getCode() === \Yana\Plugins\Configs\ReturnCodeEnumeration::SUCCESS) {
-                    $level = \Yana\Log\TypeEnumeration::SUCCESS;
-                    $message = 'Action carried out successfully';
-                }
-
-                $messageClass = $route->getMessage();
-                if ($messageClass && class_exists($messageClass)) {
-                    $logger->addException(new $messageClass($message, $level));
-                } else {
-                    $logger->addLog($message, $level);
-                }
+                $this->_logExecutionResult($route, $logger);
             }
 
             $target = $route->getTarget();
@@ -718,6 +701,33 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
         $this->setVar('STDOUT', $logger->getMessages());
 
         $this->exitTo($target);
+    }
+
+    /**
+     * Create a log entry to report the result of the execution.
+     *
+     * This function is called when an executed action did not throw any exception and did not yield any success message of its own.
+     *
+     * In this case, this function will create a default success or error message and push it to the log-stack.
+     *
+     * @param  \Yana\Plugins\Configs\EventRoute  $route   holds information about the action that has been executed
+     * @param  \Yana\Log\ExceptionLogger         $logger  the logger to send the log to
+     */
+    private function _logExecutionResult(\Yana\Plugins\Configs\EventRoute $route, \Yana\Log\ExceptionLogger $logger)
+    {
+        $level = \Yana\Log\TypeEnumeration::ERROR;
+        $message = 'Action was not successfully';
+        if ($route->getCode() === \Yana\Plugins\Configs\ReturnCodeEnumeration::SUCCESS) {
+            $level = \Yana\Log\TypeEnumeration::SUCCESS;
+            $message = 'Action carried out successfully';
+        }
+
+        $messageClass = $route->getMessage();
+        if ($messageClass && class_exists($messageClass)) {
+            $logger->addException(new $messageClass($message, $level));
+        } else {
+            $logger->addLog($message, $level);
+        }
     }
 
     /**
@@ -824,6 +834,8 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
      * @param   string|\Yana\Db\Ddl\Database  $schema  name of the database schema file (see config/db/*.xml),
      *                                                 or instance of \Yana\Db\Ddl\Database
      * @return  \Yana\Db\IsConnection
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when no such database was found
+     * @throws  \Yana\Db\ConnectionException             when connection to database failed
      */
     public function connect($schema)
     {
@@ -867,114 +879,8 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
             $report = \Yana\Report\Xml::createReport(__CLASS__);
         }
 
-        /**
-         * 1) General system information
-         */
-        $report->addNotice("installed version of Yana Framework is: " . YANA_VERSION);
-        $report->addNotice("installed version of PHP is: " . PHP_VERSION);
-        $report->addNotice("current server time is: " . date("r", time()));
-        $report->addNotice("running diagnostics on profile: " . $this->getProfileId());
-
-        $subreport = $report->addReport("Testing installation");
-
-        /**
-         * 2) Check for availability of PEAR-DB
-         */
-        @include_once "MDB2.php";
-        if (!class_exists("MDB2")) {
-            $message = "PHP PEAR-MDB2 module not found. " .
-                "Database plugins require PEAR-MDB2 and will not run unless you install it.";
-            $subreport->addError($message);
-        } else {
-            $subreport->addText("PHP PEAR-MDB2 found (required to run database plugins)");
-        }
-
-        /**
-         * 3) Check availability of configuration file and configuration directory
-         */
-        if (YANA_CDROM === true) {
-            if (!is_writeable(YANA_CDROM_DIR)) {
-                $message = "Temporary directory " . YANA_CDROM_DIR . " is not writeable. " .
-                    "Set access rights for directory '" .
-                    YANA_CDROM_DIR . "' to 777, including all subdirectories and files.";
-                $subreport->addError($message);
-            }
-        } else {
-            if (!is_writeable($this->getVar('CONFIGDIR'))) {
-                $message = "Configuration directory is not writeable. " .
-                    "Set access rights for directory '" . $this->getVar('CONFIGDIR') .
-                    "' to 777, including all subdirectories and files.";
-                $subreport->addError($message);
-            }
-            if (!is_writeable($this->getVar('TEMPDIR'))) {
-                $message = "Directory for temporary files is not writeable. " .
-                    "Set access rights for directory '" . $this->getVar('TEMPDIR') .
-                    "' to 777, including all subdirectories and files.";
-                $subreport->addError($message);
-            }
-        }
-        unset($subreport);
-
-        /**
-         * 4) Add a list of MD5 checksums for several important files
-         */
-        $systemIntegrityReport = $report->addReport("System-integrity check");
-        $message = "The following list contains the MD5 checksums of several important files. " .
-            "Compare these with your own list to see, " .
-            "if any of these files have recently been modified without your knowledge.";
-        $systemIntegrityReport->addText($message);
-
-        if (is_dir('manual')) {
-            $message = "You do not need to copy the directory 'manual' to your website. " .
-                "It is not required to run the program. You might want to remove it to safe space.";
-            $systemIntegrityReport->addNotice($message);
-        }
-
-        foreach (glob('./*.php') as $root)
-        {
-            $root = basename($root);
-            if (!in_array($root, array('index.php', 'library.php', 'cli.php'))) {
-                $message = "Unexpected file '" . $root . "' found. " .
-                    "If you did'nt place this file here, " .
-                    "it might be the result of an hijacking attempt. " .
-                    "You should consider removing this file.";
-                $systemIntegrityReport->addWarning($message);
-            } else {
-                $systemIntegrityReport->addText("{$root} = " . md5_file($root));
-            }
-        } // end foreach
-
-        /**
-         *  5) Add subreports
-         */
-        foreach ($this as $name => $member)
-        {
-            if (is_object($member) && $member instanceof \Yana\Report\IsReportable) {
-                $memberReport = $report->addReport("$name");
-                $member->getReport($memberReport);
-            }
-        }
-        unset($memberReport);
-        $this->getPlugins()->getReport($report->addReport("Plugins"));
-        $this->getSkin()->getReport($report->addReport("Skins"));
-        $this->getRegistry()->getReport($report->addReport("Virtual files"));
-
-        $iconIntegrityReport = $report->addReport('Searching for icon images');
-        $registry = $this->getRegistry();
-        /* @var $dir \Dir */
-        assert('!isset($dir); // Cannot redeclare var $dir');
-        $dir = $registry->getResource('system:/smile');
-        /* @var $dir \Yana\Files\Dir */
-        $smilies = $dir->listFiles();
-        if (count($smilies)==0) {
-            $message = "No Icons found. Please check if the given directory is correct: '" .
-                $dir->getPath() . "'.";
-            $iconIntegrityReport->addWarning($message);
-        } else {
-            $iconIntegrityReport->addText(count($smilies) . " Icons found in directory '" . $dir->getPath() . "'.");
-            $iconIntegrityReport->addText("No problems found: Directory setting seems to be correct.");
-        }
-        unset($dir);
+        $reportBuilder = new \Yana\Report\ApplicationReportBuilder($report);
+        $reportBuilder->buildApplicationReport($this);
 
         return $report;
     }
