@@ -600,19 +600,10 @@ class Builder extends \Yana\Core\Object implements \Yana\Forms\Setups\IsBuilder
         /* @var $column \Yana\Db\Ddl\Column */
         foreach ($collection as $columnName => $column)
         {
-            if ($column->getType() !== 'reference') {
+            if (!$column->isReference()) {
                 continue;
             }
-            $reference = $column->getReferenceSettings();
-            if (!$reference->getColumn()) {
-                $reference->setColumn($column->getReferenceColumn()->getName());
-            }
-            if (!$reference->getLabel()) {
-                $reference->setLabel($column->getReferenceColumn()->getName());
-            }
-            if (!$reference->getTable()) {
-                $reference->setTable($column->getReferenceColumn()->getParent()->getName());
-            }
+            $reference = $column->autoFillReferenceSettings();
             $this->object->addForeignKeyReference($columnName, $reference);
         } // end foreach
     }

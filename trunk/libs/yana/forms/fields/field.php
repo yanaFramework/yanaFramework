@@ -99,26 +99,7 @@ class Field extends \Yana\Forms\Fields\AbstractField
      */
     public function isFilterable()
     {
-        switch ($this->getColumn()->getType())
-        {
-            case 'bool':
-            case 'color':
-            case 'enum':
-            case 'float':
-            case 'inet':
-            case 'integer':
-            case 'mail':
-            case 'range':
-            case 'string':
-            case 'tel':
-            case 'text':
-            case 'html':
-            case 'url':
-                return (bool) $this->refersToTable();
-
-            default:
-                return false;
-        }
+        return \Yana\Db\Ddl\ColumnTypeEnumeration::isFilterable((string) $this->getColumn()->getType()) && (bool) $this->refersToTable();
     }
 
     /**
@@ -147,28 +128,7 @@ class Field extends \Yana\Forms\Fields\AbstractField
      */
     public function isSingleLine()
     {
-        // filter fields by column type
-        switch ($this->getColumn()->getType())
-        {
-            case 'bool':
-            case 'date':
-            case 'enum':
-            case 'file':
-            case 'float':
-            case 'inet':
-            case 'integer':
-            case 'mail':
-            case 'range':
-            case 'string':
-            case 'tel':
-            case 'time':
-            case 'timestamp':
-            case 'url':
-            case 'reference':
-                return true;
-            default:
-                return false;
-        } // end switch
+        return \Yana\Db\Ddl\ColumnTypeEnumeration::isSingleLine((string) $this->getColumn()->getType());
     }
 
     /**
@@ -181,18 +141,7 @@ class Field extends \Yana\Forms\Fields\AbstractField
      */
     public function isMultiLine()
     {
-        // filter fields by column type
-        switch ($this->getColumn()->getType())
-        {
-            case 'text':
-            case 'html':
-            case 'image':
-            case 'set':
-            case 'list':
-                return true;
-            default:
-                return false;
-        } // end switch
+        return \Yana\Db\Ddl\ColumnTypeEnumeration::isMultiLine((string) $this->getColumn()->getType());
     }
 
     /**
