@@ -206,6 +206,9 @@ class TemplateMetaData extends \Yana\Core\Object implements \Yana\Views\MetaData
      */
     public function getReport(\Yana\Report\IsReport $report = null)
     {
+        if (!$report instanceof \Yana\Report\IsReport) {
+            $report = \Yana\Report\Xml::createReport(__CLASS__);
+        }
         $reportBuilder = new \Yana\Views\MetaData\Reporting\TemplateReportBuilder($report);
         $reportBuilder->setTemplateConfiguration($this);
         return $reportBuilder->buildReport();

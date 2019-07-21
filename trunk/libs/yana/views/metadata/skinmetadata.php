@@ -76,7 +76,7 @@ class SkinMetaData extends \Yana\Core\MetaData\PackageMetaData implements \Yana\
      */
     public function getReport(\Yana\Report\IsReport $report = null)
     {
-        if (!$report instanceof $report) {
+        if (!$report instanceof \Yana\Report\IsReport) {
             $report = \Yana\Report\Xml::createReport(__CLASS__);
         }
         $reportBuilder = new \Yana\Views\MetaData\Reporting\SkinReportBuilder($report);

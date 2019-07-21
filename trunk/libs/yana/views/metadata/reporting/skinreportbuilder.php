@@ -69,13 +69,11 @@ class SkinReportBuilder extends \Yana\Views\MetaData\Reporting\AbstractBuilder i
     /**
      * Builds the report.
      *
-     * Returns a \Yana\Report\Xml object, which you may print, transform or output to a file.
+     * Returns a \Yana\Report\Xml object, which you may print, transform, or output to a file.
      * Informs about configuration issues or errors.
      *
      * @param   \Yana\Report\IsReport  $report  base report
      * @return  \Yana\Report\IsReport
-     * @name    Skin::getReport()
-     * @ignore
      */
     public function buildReport()
     {
