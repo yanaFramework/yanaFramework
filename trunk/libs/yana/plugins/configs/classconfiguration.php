@@ -54,7 +54,7 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Conf
      *
      * @var  string
      */
-    private $_namespace = "\\";
+    private $_namespace = "";
 
     /**
      * Path to plugin file.
@@ -227,7 +227,7 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Conf
     public function setNamespace($namespace)
     {
         assert('is_string($namespace); // Invalid argument $namespace: string expected');
-        $this->_className = $namespace;
+        $this->_namespace = $namespace;
         return $this;
     }
 
@@ -603,9 +603,9 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Conf
          */
         switch ($this->getType())
         {
-            case 'library':
+            case \Yana\Plugins\TypeEnumeration::LIBRARY:
                 return $this->_priority + \Yana\Plugins\PriorityEnumeration::HIGHEST;
-            case 'security':
+            case \Yana\Plugins\TypeEnumeration::SECURITY:
                 return $this->_priority + (\Yana\Plugins\PriorityEnumeration::HIGHEST * 2);
             default:
                 return $this->_priority;
