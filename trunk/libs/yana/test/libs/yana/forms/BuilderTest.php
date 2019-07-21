@@ -54,13 +54,11 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $configurationFactory = new \Yana\ConfigurationFactory();
         $configuration = $configurationFactory->loadConfiguration(CWD . 'resources/system.config.xml');
         $configuration->configdrive = YANA_INSTALL_DIR . 'config/system.drive.xml';
         $this->container = new \Yana\Core\Dependencies\Container($configuration);
-        $this->object = new \Yana\Forms\Builder($file, $this->container);
+        $this->object = new \Yana\Forms\Builder('check', $this->container);
     }
 
     /**
@@ -73,15 +71,13 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Yana\Forms\Builder::__invoke
-     * @todo   Implement test__invoke().
+     * @test
      */
     public function test__invoke()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->object->setTable('t');
+        $form = $this->object->__invoke();
+        $this->assertSame('t', $form->getTable()->getName());
     }
 
 }

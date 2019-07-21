@@ -24,8 +24,7 @@
  * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
-
-namespace Yana\Plugins\Data;
+namespace Yana\Plugins\Dependencies;
 
 /**
  * @ignore
@@ -33,15 +32,18 @@ namespace Yana\Plugins\Data;
 require_once __DIR__ . '/../../../../include.php';
 
 /**
- * Test-case
- *
  * @package  test
  */
-class CollectionTest extends \PHPUnit_Framework_TestCase
+class MenuContainerTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Plugins\Data\Collection
+     * @var \Yana\Core\Dependencies\IsApplicationContainer
+     */
+    protected $container;
+
+    /**
+     * @var \Yana\Plugins\Dependencies\MenuContainer
      */
     protected $object;
 
@@ -51,7 +53,11 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Plugins\Data\Collection();
+        $configurationFactory = new \Yana\ConfigurationFactory();
+        $configuration = $configurationFactory->loadConfiguration(CWD . 'resources/system.config.xml');
+        $configuration->configdrive = YANA_INSTALL_DIR . 'config/system.drive.xml';
+        $this->container = new \Yana\Core\Dependencies\Container($configuration);
+        $this->object = new \Yana\Plugins\Dependencies\MenuContainer($this->container);
     }
 
     /**
@@ -66,32 +72,41 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testOffsetSet()
+    public function testGetTranslationFacade()
     {
-        $o = new \Yana\Plugins\Data\Entity();
-        $o->setId('test');
-        $this->assertSame($o, $this->object->offsetSet('test', $o));
-        $this->assertSame($o, $this->object['test']);
+        $this->assertSame($this->container->getLanguage(), $this->object->getTranslationFacade());
     }
 
     /**
      * @test
      */
-    public function testOffsetSetNull()
+    public function testGetSecurityFacade()
     {
-        $o = new \Yana\Plugins\Data\Entity();
-        $o->setId('test');
-        $this->assertSame($o, $this->object->offsetSet(null, $o));
-        $this->assertSame($o, $this->object['test']);
+        $this->assertSame($this->container->getSecurity(), $this->object->getSecurityFacade());
     }
 
     /**
      * @test
-     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      */
-    public function testOffsetSetInvalidArgumentException()
+    public function testIsDefaultProfile()
     {
-        $this->object[] = new \Yana\Core\Object();
+        $this->assertTrue($this->object->isDefaultProfile());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetPluginFacade()
+    {
+        $this->assertSame($this->container->getPlugins(), $this->object->getPluginFacade());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetUrlFormatter()
+    {
+        $this->assertEquals(new \Yana\Views\Helpers\Formatters\UrlFormatter(), $this->object->getUrlFormatter());
     }
 
 }

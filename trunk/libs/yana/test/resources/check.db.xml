@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!DOCTYPE database SYSTEM "../dtd/database.dtd">
+<!DOCTYPE database SYSTEM "dtd/database.dtd">
 <database>
     <table name="ft">
         <primarykey>ftid</primarykey>
@@ -55,6 +55,12 @@
                 label="ftid"
             />
         </declaration>
+        <index name="Index1" unique="yes" clustered="yes">
+            <column name="tid"/>
+        </index>
+        <index name="Index2">
+            <column name="tvalue"/>
+        </index>
     </table>
     <table name="i">
         <primarykey>iid</primarykey>

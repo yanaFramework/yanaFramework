@@ -89,6 +89,7 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @runInSeparateProcess
      */
     public function testCheckRulesNoAction()
     {

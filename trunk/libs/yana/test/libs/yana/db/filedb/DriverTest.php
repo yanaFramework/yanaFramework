@@ -161,7 +161,7 @@ class DriverTest extends \PHPUnit_Framework_TestCase
                 $indexes[] = $index->getName();
             }
         }
-        $this->assertSame($this->schema->getTable('t')->getIndexes(), $this->object->listTableIndexes('t'));
+        $this->assertSame($indexes, $this->object->listTableIndexes('t'));
     }
 
     /**

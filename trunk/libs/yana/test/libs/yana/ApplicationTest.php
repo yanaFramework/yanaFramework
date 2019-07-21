@@ -41,6 +41,11 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
+     * @var \Yana\Core\Dependencies\IsApplicationContainer
+     */
+    protected $container;
+
+    /**
      * @var \Yana\Application
      */
     protected $object;
@@ -51,10 +56,11 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
-        $this->object = new \Yana\Application($container);
+        $configurationFactory = new \Yana\ConfigurationFactory();
+        $configuration = $configurationFactory->loadConfiguration(CWD . 'resources/system.config.xml');
+        $configuration->configdrive = YANA_INSTALL_DIR . 'config/system.drive.xml';
+        $this->container = new \Yana\Core\Dependencies\Container($configuration);
+        $this->object = new \Yana\Application($this->container);
     }
 
     /**
@@ -67,219 +73,191 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Yana\Application::getCache
-     * @todo   Implement testGetCache().
+     * @test
+     */
+    public function testGetReport()
+    {
+        $report = $this->object->getReport();
+        $this->assertTrue($report instanceof \Yana\Report\IsReport);
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\NotFoundException
+     */
+    public function testConnectNotFoundException()
+    {
+        $this->object->connect('no-such-database');
+    }
+
+    /**
+     * @test
+     */
+    public function testConnect()
+    {
+        $this->assertTrue($this->object->connect('user') instanceof \Yana\Db\IsConnection);
+    }
+
+    /**
+     * @test
      */
     public function testGetCache()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame($this->container->getCache(), $this->object->getCache());
     }
 
     /**
-     * @covers Yana\Application::execute
-     * @todo   Implement testExecute().
+     * @test
      */
     public function testExecute()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertTrue($this->object->execute());
     }
 
     /**
-     * @covers Yana\Application::getSecurity
-     * @todo   Implement testGetSecurity().
+     * @test
      */
     public function testGetSecurity()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame($this->container->getSecurity(), $this->object->getSecurity());
     }
 
     /**
-     * @covers Yana\Application::getRegistry
-     * @todo   Implement testGetRegistry().
+     * @test
      */
     public function testGetRegistry()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame($this->container->getRegistry(), $this->object->getRegistry());
     }
 
     /**
-     * @covers Yana\Application::getPlugins
-     * @todo   Implement testGetPlugins().
+     * @test
      */
     public function testGetPlugins()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame($this->container->getPlugins(), $this->object->getPlugins());
     }
 
     /**
-     * @covers Yana\Application::getView
-     * @todo   Implement testGetView().
+     * @test
      */
     public function testGetView()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame($this->container->getView(), $this->object->getView());
     }
 
     /**
-     * @covers Yana\Application::getLanguage
-     * @todo   Implement testGetLanguage().
+     * @test
      */
     public function testGetLanguage()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame($this->container->getLanguage(), $this->object->getLanguage());
     }
 
     /**
-     * @covers Yana\Application::getSkin
-     * @todo   Implement testGetSkin().
+     * @test
      */
     public function testGetSkin()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame($this->container->getSkin(), $this->object->getSkin());
     }
 
     /**
-     * @covers Yana\Application::getProfileId
-     * @todo   Implement testGetProfileId().
+     * @test
      */
     public function testGetProfileId()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame($this->container->getProfileId(), $this->object->getProfileId());
     }
 
     /**
-     * @covers Yana\Application::getRequest
-     * @todo   Implement testGetRequest().
+     * @test
      */
     public function testGetRequest()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame($this->container->getRequest(), $this->object->getRequest());
     }
 
     /**
-     * @covers Yana\Application::isVar
-     * @todo   Implement testIsVar().
+     * @test
      */
     public function testIsVar()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->object->isVar('Test'));
+        $this->assertTrue($this->object->setVar('Test', false)->isVar('Test'));
     }
 
     /**
-     * @covers Yana\Application::getVar
-     * @todo   Implement testGetVar().
+     * @test
      */
     public function testGetVar()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertNull($this->object->getVar('Test'));
     }
 
     /**
-     * @covers Yana\Application::getVars
-     * @todo   Implement testGetVars().
+     * @test
      */
     public function testGetVars()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertInternalType('array', $this->object->getVars());
+        $this->assertArrayHasKey('DEFAULT', $this->object->getVars());
     }
 
     /**
-     * @covers Yana\Application::setVarByReference
-     * @todo   Implement testSetVarByReference().
+     * @test
      */
     public function testSetVarByReference()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $test = true;
+        $test = $this->object->setVarByReference('test', $test)->getVar('test');
+        $test = false;
+        $this->assertFalse($this->object->getVar('test'));
     }
 
     /**
-     * @covers Yana\Application::setVarsByReference
-     * @todo   Implement testSetVarsByReference().
+     * @test
      */
     public function testSetVarsByReference()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $test = array(1 => 1, 2 => 2);
+        $test = $this->object->setVarsByReference($test)->getVars();
+        $test[3] = 3;
+        $this->assertEquals($test, $this->object->getVars());
     }
 
     /**
-     * @covers Yana\Application::setVar
-     * @todo   Implement testSetVar().
+     * @test
      */
     public function testSetVar()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame(123, $this->object->setVar('Test', 123)->getVar('Test'));
     }
 
     /**
-     * @covers Yana\Application::setVars
-     * @todo   Implement testSetVars().
+     * @test
      */
     public function testSetVars()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $vars = array('Test1' => 123, 'Test2' => 456);
+        $this->assertSame($vars, $this->object->setVars($vars)->getVars());
     }
 
     /**
-     * @covers Yana\Application::getResource
-     * @todo   Implement testGetResource().
+     * @test
+     * @expectedException \Yana\Core\Exceptions\NotFoundException
+     */
+    public function testGetResourceNotFoundException()
+    {
+        $this->object->getResource('no.such.resource');
+    }
+
+    /**
+     * @test
      */
     public function testGetResource()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertTrue($this->object->getResource('system:/config') instanceof \Yana\Files\Dir);
     }
 
     /**
@@ -307,15 +285,12 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Yana\Application::getDefault
-     * @todo   Implement testGetDefault().
+     * @test
      */
     public function testGetDefault()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertNull($this->object->getDefault('no-such-default'));
+        $this->assertSame('default', $this->object->getDefault('profile'));
     }
 
     /**
@@ -331,39 +306,11 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Yana\Application::connect
-     * @todo   Implement testConnect().
-     */
-    public function testConnect()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers Yana\Application::getReport
-     * @todo   Implement testGetReport().
-     */
-    public function testGetReport()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers Yana\Application::getLogger
-     * @todo   Implement testGetLogger().
+     * @test
      */
     public function testGetLogger()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertSame($this->container->getLogger(), $this->object->getLogger());
     }
 
     /**
@@ -379,15 +326,11 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Yana\Application::buildApplicationMenu
-     * @todo   Implement testBuildApplicationMenu().
+     * @test
      */
     public function testBuildApplicationMenu()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->assertEquals($this->object->buildApplicationMenu(), $this->container->getMenuBuilder()->buildMenu());
     }
 
 }

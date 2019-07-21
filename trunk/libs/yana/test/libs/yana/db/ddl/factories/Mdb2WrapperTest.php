@@ -133,7 +133,7 @@ class Mdb2WrapperTest extends \PHPUnit_Framework_TestCase
     public function testListTableIndexes()
     {
         $indexes = $this->object->listTableIndexes('t');
-        $this->assertCount(1, $indexes);
+        $this->assertGreaterThanOrEqual(1, count($indexes));
         $index = current($indexes);
         $this->assertSame(array('ftid' => array('position' => 1, 'sorting' => 'ascending')), $index['fields']);
     }
@@ -144,7 +144,7 @@ class Mdb2WrapperTest extends \PHPUnit_Framework_TestCase
     public function testListTableConstraints()
     {
         $constraints = $this->object->listTableConstraints('t');
-        $this->assertCount(1, $constraints);
+        $this->assertGreaterThanOrEqual(1, count($constraints));
         $fields = $constraints['primary']['fields'];
         $this->assertCount(1, $fields);
         $this->assertArrayHasKey('tid', $fields);

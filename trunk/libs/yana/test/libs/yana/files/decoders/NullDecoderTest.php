@@ -57,7 +57,17 @@ class NullDecoderTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetFile()
     {
-        $this->assertSame(1, $this->object->getFile(array(\serialize(1))));
+        $this->assertSame(array(1), $this->object->getFile(array(\serialize(1))));
+    }
+
+    /**
+     * @test
+     */
+    public function testGetFileFromFilesystem()
+    {
+        $filePath = CWD . "/resources/nulldecoder.txt";
+        $data = array(1, 2, 3);
+        $this->assertSame($data, $this->object->getFile($filePath));
     }
 
     /**

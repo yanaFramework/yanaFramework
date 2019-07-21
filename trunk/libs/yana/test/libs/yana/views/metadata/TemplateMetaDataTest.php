@@ -146,6 +146,14 @@ class TemplateMetaDataTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($value, $this->_object->setStyles($value)->getStyles());
     }
 
+    /**
+     * @test
+     */
+    public function testGetReport()
+    {
+        $this->assertTrue($this->_object->getReport() instanceof \Yana\Report\IsReport);
+    }
+
 }
 
 ?>

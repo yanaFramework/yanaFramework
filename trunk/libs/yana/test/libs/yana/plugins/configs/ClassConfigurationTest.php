@@ -310,6 +310,9 @@ class ClassConfigurationTest extends \PHPUnit_Framework_TestCase
     public function testGetPriority()
     {
         $this->assertEquals(\Yana\Plugins\PriorityEnumeration::NORMAL, $this->object->getPriority());
+        $priority = \Yana\Plugins\PriorityEnumeration::NORMAL;
+        $this->assertEquals($priority + \Yana\Plugins\PriorityEnumeration::HIGHEST, $this->object->setType(\Yana\Plugins\TypeEnumeration::LIBRARY)->getPriority());
+        $this->assertEquals($priority + \Yana\Plugins\PriorityEnumeration::HIGHEST * 2, $this->object->setType(\Yana\Plugins\TypeEnumeration::SECURITY)->getPriority());
     }
 
     /**
@@ -463,6 +466,22 @@ class ClassConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->object->setActive(-1)->isActiveByDefault());
         $this->assertFalse($this->object->setActive(\Yana\Plugins\ActivityEnumeration::ACTIVE)->isActiveByDefault());
         $this->assertTrue($this->object->setActive(\Yana\Plugins\ActivityEnumeration::DEFAULT_ACTIVE)->isActiveByDefault());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetNamespace()
+    {
+        $this->assertSame('', $this->object->getNamespace());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetNamespace()
+    {
+        $this->assertSame(__NAMESPACE__, $this->object->setNamespace(__NAMESPACE__)->getNamespace());
     }
 
 }

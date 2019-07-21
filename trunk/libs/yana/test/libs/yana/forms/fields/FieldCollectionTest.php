@@ -74,6 +74,17 @@ class FieldCollectionTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     */
+    public function testOffsetSetNull()
+    {
+        $wrapper = new \Yana\Forms\Fields\FieldCollectionWrapper(new \Yana\Forms\Facade(), new \Yana\Forms\Setups\Context('test'));
+        $item = new \Yana\Forms\Fields\Field($wrapper, new \Yana\Db\Ddl\Column('test'), new \Yana\Db\Ddl\Field('test'));
+        $this->object[] = $item;
+        $this->assertEquals($item, $this->object['test']);
+    }
+
+    /**
+     * @test
      * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      */
     public function testOffsetSetInvalidArgumentException()

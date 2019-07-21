@@ -639,6 +639,22 @@ class DoctrineMapperTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testCreateIndexFulltext()
+    {
+        $table = new \Yana\Db\Ddl\Table('test');
+        $name = "name";
+        $table->addColumn('a', 'integer');
+        $table->addColumn('b', 'integer');
+        $table->addColumn('c', 'integer');
+        $info = new \Doctrine\DBAL\Schema\Index($name, array('a', 'b', 'c'));
+        $info->addFlag('FullText');
+        $this->assertSame($this->object, $this->object->createIndex($table, $info, $name));
+        $this->assertTrue($table->getIndex($name)->isFulltext());
+    }
+
+    /**
+     * @test
+     */
     public function testCreateSequence()
     {
         $database = new \Yana\Db\Ddl\Database('test');

@@ -448,6 +448,17 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @expectedException \Yana\Db\Queries\Exceptions\ConstraintException
+     */
+    public function testSetInnerJoinWrongJoinOrder()
+    {
+        $query = new \Yana\Db\Queries\Select($this->db);
+        $query->useInheritance(true)->setTable('t');
+        $query->setInnerJoin('i'); // Wrong join order... let's see what breaks first!
+    }
+
+    /**
+     * @test
      */
     public function testSetLeftJoin()
     {

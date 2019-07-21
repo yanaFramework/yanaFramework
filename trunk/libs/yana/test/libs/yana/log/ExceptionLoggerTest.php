@@ -85,6 +85,23 @@ class ExceptionLoggerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testAddExceptionNoEntry()
+    {
+        $this->object = new \Yana\Log\ExceptionLogger(new \Yana\Core\VarContainer());
+        $message = __FUNCTION__;
+        $data = array(1, 2);
+        $text = \Yana\Util\Strings::htmlEntities($message . "; " . print_r($data, true), true);
+        $exception = new \Yana\Core\Exceptions\Files\NotFoundException($message, 0);
+        $exception->setData($data);
+        $this->object->addException($exception);
+        $resultObject = $this->object->getMessages();
+        $this->assertEquals("", $resultObject[0]->getHeader());
+        $this->assertEquals($text, $resultObject[0]->getText());
+    }
+
+    /**
+     * @test
+     */
     public function testAddExceptionUsingParents()
     {
         $this->object->addException(new \Yana\Core\Exceptions\LogicException());

@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case
+ * YANA library
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Plugins\Data;
+namespace Yana\Views\MetaData;
 
 /**
  * @ignore
@@ -33,15 +33,13 @@ namespace Yana\Plugins\Data;
 require_once __DIR__ . '/../../../../include.php';
 
 /**
- * Test-case
- *
  * @package  test
  */
-class CollectionTest extends \PHPUnit_Framework_TestCase
+class SkinMetaDataTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Plugins\Data\Collection
+     * @var SkinMetaData
      */
     protected $object;
 
@@ -51,7 +49,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Plugins\Data\Collection();
+        $this->object = new \Yana\Views\MetaData\SkinMetaData();
     }
 
     /**
@@ -66,32 +64,30 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testOffsetSet()
+    public function testAddTemplate()
     {
-        $o = new \Yana\Plugins\Data\Entity();
-        $o->setId('test');
-        $this->assertSame($o, $this->object->offsetSet('test', $o));
-        $this->assertSame($o, $this->object['test']);
+        $template1 = new \Yana\Views\MetaData\TemplateMetaData();
+        $template1->setId('1');
+        $template2 = new \Yana\Views\MetaData\TemplateMetaData();
+        $template2->setId('2');
+        $templates = array('1' => $template1, '2' => $template2);
+        $this->assertSame($templates, $this->object->addTemplate($template1)->addTemplate($template2)->getTemplates());
     }
 
     /**
      * @test
      */
-    public function testOffsetSetNull()
+    public function testGetTemplates()
     {
-        $o = new \Yana\Plugins\Data\Entity();
-        $o->setId('test');
-        $this->assertSame($o, $this->object->offsetSet(null, $o));
-        $this->assertSame($o, $this->object['test']);
+        $this->assertEquals(array(), $this->object->getTemplates());
     }
 
     /**
      * @test
-     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      */
-    public function testOffsetSetInvalidArgumentException()
+    public function testGetReport()
     {
-        $this->object[] = new \Yana\Core\Object();
+        $this->assertTrue($this->object->getReport() instanceof \Yana\Report\IsReport);
     }
 
 }

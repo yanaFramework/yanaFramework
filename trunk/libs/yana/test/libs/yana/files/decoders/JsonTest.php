@@ -66,6 +66,45 @@ class JsonTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetFile()
     {
+        $expected = array("a" => "Test", "B" => 123);
+        $test = $this->object->getFile(\CWD . '/resources/test.json');
+        $this->assertEquals($expected, $test);
+    }
+
+    /**
+     * @test
+     */
+    public function testGetFileCaseUpper()
+    {
+        $expected = array("A" => "Test", "B" => 123);
+        $test = $this->object->getFile(\CWD . '/resources/test.json', \CASE_UPPER);
+        $this->assertEquals($expected, $test);
+    }
+
+    /**
+     * @test
+     */
+    public function testGetFileCaseLower()
+    {
+        $expected = array("a" => "Test", "b" => 123);
+        $test = $this->object->getFile(\CWD . '/resources/test.json', \CASE_LOWER);
+        $this->assertEquals($expected, $test);
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
+     */
+    public function testGetFileInvalidArgumentException()
+    {
+        $this->object->getFile('invalidArgument');
+    }
+
+    /**
+     * @test
+     */
+    public function testGetFileFromString()
+    {
         $expected = array("test" => 1);
         $input = explode("\n", json_encode($expected));
         $test = $this->object->getFile($input);
@@ -86,9 +125,33 @@ class JsonTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testEncodeWithName()
+    {
+        $name = __FUNCTION__;
+        $value = array('Test' => 1);
+        $expected = json_encode(array($name => $value));
+        $test = $this->object->encode($value, $name);
+        $this->assertEquals($expected, $test);
+    }
+
+    /**
+     * @test
+     */
+    public function testEncodeCaseUpper()
+    {
+        $name = __FUNCTION__;
+        $value = array('Test' => 1);
+        $expected = json_encode(array(\strtoupper($name) => \array_change_key_case($value, \CASE_UPPER)));
+        $test = $this->object->encode($value, $name, \CASE_UPPER);
+        $this->assertEquals($expected, $test);
+    }
+
+    /**
+     * @test
+     */
     public function testDecode()
     {
-        $expected = array("test" => 1);
+        $expected = array('Test' => 1);
         $input = json_encode($expected);
         $test = $this->object->decode($input);
         $this->assertEquals($expected, $test);

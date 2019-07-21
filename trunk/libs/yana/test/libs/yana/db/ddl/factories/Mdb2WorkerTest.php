@@ -36,19 +36,20 @@ require_once __DIR__ . '/../../../../../include.php';
  * @package  test
  * @ignore
  */
-class MyDoctrineWrapper extends \Yana\Db\Ddl\Factories\DoctrineWrapper
+class MyMdb2Wrapper extends \Yana\Db\Ddl\Factories\Mdb2Wrapper
 {
 
     /**
      * Test table has no sequences. We need to fake this.
      *
-     * @return  \Doctrine\DBAL\Schema\Sequence[]
+     * @return  array
      */
     public function listSequences()
     {
-        $result = array();
-        $result[] = new \Doctrine\DBAL\Schema\Sequence('MySequence1', 1, 2);
-        $result[] = new \Doctrine\DBAL\Schema\Sequence('MySequence2', 2, 3);
+        $result = array(
+            'MySequence1' => array('start' => '2'),
+            'MySequence2' => array('start' => '3'),
+        );
         return $result;
     }
 }
@@ -57,7 +58,7 @@ class MyDoctrineWrapper extends \Yana\Db\Ddl\Factories\DoctrineWrapper
  * @package  test
  * @ignore
  */
-class MyDoctrineWorker extends \Yana\Db\Ddl\Factories\DoctrineWorker
+class MyMdb2Worker extends \Yana\Db\Ddl\Factories\Mdb2Worker
 {
     public function createColumns(\Yana\Db\Ddl\Table $table, $tableName)
     {
@@ -84,21 +85,21 @@ class MyDoctrineWorker extends \Yana\Db\Ddl\Factories\DoctrineWorker
 /**
  * @package  test
  */
-class DoctrineWorkerTest extends \PHPUnit_Framework_TestCase
+class Mdb2WorkerTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Db\Ddl\Factories\MyDoctrineWorker
+     * @var \Yana\Db\Ddl\Factories\MyMdb2Worker
      */
     protected $object;
 
     /**
-     * @var \Yana\Db\Ddl\Factories\DoctrineWrapper
+     * @var \Yana\Db\Ddl\Factories\MyMdb2Wrapper
      */
     protected $wrapper;
 
     /**
-     * @var \Yana\Db\Ddl\Factories\DoctrineMapper
+     * @var \Yana\Db\Ddl\Factories\Mdb2Mapper
      */
     protected $mapper;
 
@@ -107,7 +108,7 @@ class DoctrineWorkerTest extends \PHPUnit_Framework_TestCase
      */
     protected function isAvailable()
     {
-        $factory = new \Yana\Db\Doctrine\ConnectionFactory();
+        $factory = new \Yana\Db\Mdb2\ConnectionFactory();
         return $factory->isAvailable($factory->getDsn());
     }
 
@@ -116,14 +117,15 @@ class DoctrineWorkerTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
+        //$this->markTestSkipped();
         if (!$this->isAvailable()) {
             $this->markTestSkipped();
         }
         try {
-            $factory = new \Yana\Db\Doctrine\ConnectionFactory();
-            $this->wrapper = new \Yana\Db\Ddl\Factories\MyDoctrineWrapper($factory->getConnection());
-            $this->mapper = new \Yana\Db\Ddl\Factories\DoctrineMapper();
-            $this->object = new \Yana\Db\Ddl\Factories\MyDoctrineWorker($this->mapper, $this->wrapper);
+            $factory = new \Yana\Db\Mdb2\ConnectionFactory();
+            $this->wrapper = new \Yana\Db\Ddl\Factories\MyMdb2Wrapper($factory->getConnection());
+            $this->mapper = new \Yana\Db\Ddl\Factories\Mdb2Mapper();
+            $this->object = new \Yana\Db\Ddl\Factories\MyMdb2Worker($this->mapper, $this->wrapper);
 
         } catch (\Exception $e) {
             $this->markTestSkipped("Unable to connect to database");
@@ -234,8 +236,9 @@ class DoctrineWorkerTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateSequences()
     {
-        $database = $this->object->createDatabase();
+        $database = new \Yana\Db\Ddl\Database(__FUNCTION__);
         $this->object->createSequences($database);
+        $this->object->createSequences($database); // Must not throw exception
         $sequences = $database->getSequences();
         $this->assertCount(2, $sequences);
         $this->assertArrayHasKey('mysequence1', $sequences);

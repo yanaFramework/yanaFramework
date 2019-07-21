@@ -140,10 +140,22 @@ class Mdb2MapperTest extends \PHPUnit_Framework_TestCase
     public function testCreateColumnString()
     {
         $table = new \Yana\Db\Ddl\Table('test');
-        $info = array('type' => 'text');
+        $info = array('type' => 'text', 'length' => '123');
         $name = "column";
         $this->assertSame($this->object, $this->object->createColumn($table, $info, $name));
         $this->assertSame('string', $table->getColumn("column")->getType());
+    }
+
+    /**
+     * @test
+     */
+    public function testCreateColumnTextWithoutLength()
+    {
+        $table = new \Yana\Db\Ddl\Table('test');
+        $info = array('type' => 'text');
+        $name = "column";
+        $this->assertSame($this->object, $this->object->createColumn($table, $info, $name));
+        $this->assertSame('text', $table->getColumn("column")->getType());
     }
 
     /**
@@ -165,9 +177,9 @@ class Mdb2MapperTest extends \PHPUnit_Framework_TestCase
     {
         $table = new \Yana\Db\Ddl\Table('test');
         $info = array('type' => 'text', 'length' => '257');
-        $name = "myHtmlColumn";
+        $name = "HtmlColumn";
         $this->assertSame($this->object, $this->object->createColumn($table, $info, $name));
-        $this->assertSame('html', $table->getColumn("myhtmlcolumn")->getType());
+        $this->assertSame('html', $table->getColumn("htmlcolumn")->getType());
     }
 
     /**

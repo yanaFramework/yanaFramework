@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -25,23 +25,21 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Plugins\Data;
+namespace Yana\Db\Export\xsl;
 
 /**
  * @ignore
  */
-require_once __DIR__ . '/../../../../include.php';
+require_once __DIR__ . '/../../../../../include.php';
 
 /**
- * Test-case
- *
  * @package  test
  */
-class CollectionTest extends \PHPUnit_Framework_TestCase
+class ProviderTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Plugins\Data\Collection
+     * @var \Yana\Db\Export\Xsl\Provider
      */
     protected $object;
 
@@ -51,7 +49,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Plugins\Data\Collection();
+        $this->object = new \Yana\Db\Export\Xsl\Provider();
     }
 
     /**
@@ -66,32 +64,30 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testOffsetSet()
+    public function testGetXslDocument()
     {
-        $o = new \Yana\Plugins\Data\Entity();
-        $o->setId('test');
-        $this->assertSame($o, $this->object->offsetSet('test', $o));
-        $this->assertSame($o, $this->object['test']);
+        $document = $this->object->getXslDocument(\Yana\Db\Export\Xsl\Provider::MYSQL);
+        $this->assertTrue($document instanceof \DOMDocument);
+        $this->assertSame($document, $this->object->getXslDocument(\Yana\Db\Export\Xsl\Provider::MYSQL));
     }
 
     /**
      * @test
      */
-    public function testOffsetSetNull()
+    public function testGetXslDocumentPostgresql()
     {
-        $o = new \Yana\Plugins\Data\Entity();
-        $o->setId('test');
-        $this->assertSame($o, $this->object->offsetSet(null, $o));
-        $this->assertSame($o, $this->object['test']);
+        $document = $this->object->getXslDocument(\Yana\Db\Export\Xsl\Provider::POSTGRESQL);
+        $this->assertTrue($document instanceof \DOMDocument);
+        $this->assertSame('file:/' . \str_replace(\DIRECTORY_SEPARATOR, '/', \Yana\Db\Export\Xsl\ResourceEnumeration::POSTGRESQL), $document->documentURI);
     }
 
     /**
      * @test
-     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
+     * @expectedException \Yana\Db\Export\Xsl\InvalidNameException
      */
-    public function testOffsetSetInvalidArgumentException()
+    public function testGetXslDocumentInvalidNameException()
     {
-        $this->object[] = new \Yana\Core\Object();
+        $this->object->getXslDocument(-1);
     }
 
 }

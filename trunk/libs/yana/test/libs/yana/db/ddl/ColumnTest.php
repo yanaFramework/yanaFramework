@@ -65,22 +65,6 @@ class ColumnTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function getSupportedTypes()
-    {
-        $getSupported = $this->column->getSupportedTypes();
-        $this->assertContains("bool", $getSupported, "supported types should at least contain bool, integer and text");
-        $this->assertContains("integer", $getSupported, "supported types should at least contain bool, integer and text");
-        $this->assertContains("text", $getSupported, "supported types should at least contain bool, integer and text");
-        foreach ($getSupported as $type)
-        {
-            $this->assertNotEmpty($type);
-            $this->assertInternalType('string', $type);
-        }
-    }
-
-    /**
-     * @test
-     */
     public function testGetParent()
     {
         $this->assertNull($this->column->getParent());
@@ -103,6 +87,17 @@ class ColumnTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->column->setType('string')->isFile());
         $this->assertTrue($this->column->setType('file')->isFile());
         $this->assertTrue($this->column->setType('image')->isFile());
+    }
+
+    /**
+     * @test
+     */
+    public function testAutoFillReferenceSettings()
+    {
+        $reference = $this->column->autoFillReferenceSettings();
+        $this->assertEquals('', $reference->getTable());
+        $this->assertEquals($this->column->getName(), $reference->getColumn());
+        $this->assertEquals($this->column->getName(), $reference->getLabel());
     }
 
     /**

@@ -25,23 +25,21 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Plugins\Data;
+namespace Yana\Core\Exceptions\Forms;
 
 /**
  * @ignore
  */
-require_once __DIR__ . '/../../../../include.php';
+require_once __DIR__ . '/../../../../../include.php';
 
 /**
- * Test-case
- *
- * @package  test
+ * @package test
  */
-class CollectionTest extends \PHPUnit_Framework_TestCase
+class FieldNotFoundExceptionTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Plugins\Data\Collection
+     * @var \Yana\Core\Exceptions\Forms\MissingFieldException
      */
     protected $object;
 
@@ -51,7 +49,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Plugins\Data\Collection();
+        $this->object = new \Yana\Core\Exceptions\Forms\FieldNotFoundException();
     }
 
     /**
@@ -66,32 +64,12 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testOffsetSet()
+    public function testSetField()
     {
-        $o = new \Yana\Plugins\Data\Entity();
-        $o->setId('test');
-        $this->assertSame($o, $this->object->offsetSet('test', $o));
-        $this->assertSame($o, $this->object['test']);
-    }
-
-    /**
-     * @test
-     */
-    public function testOffsetSetNull()
-    {
-        $o = new \Yana\Plugins\Data\Entity();
-        $o->setId('test');
-        $this->assertSame($o, $this->object->offsetSet(null, $o));
-        $this->assertSame($o, $this->object['test']);
-    }
-
-    /**
-     * @test
-     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
-     */
-    public function testOffsetSetInvalidArgumentException()
-    {
-        $this->object[] = new \Yana\Core\Object();
+        $this->object->setField('field');
+        $this->assertEquals(array('FIELD' => 'field'), $this->object->getData());
     }
 
 }
+
+?>

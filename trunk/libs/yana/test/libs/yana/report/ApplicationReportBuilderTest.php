@@ -25,25 +25,33 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Plugins\Data;
+namespace Yana\Report;
 
 /**
  * @ignore
  */
-require_once __DIR__ . '/../../../../include.php';
+require_once __DIR__ . '/../../../include.php';
 
 /**
- * Test-case
- *
  * @package  test
  */
-class CollectionTest extends \PHPUnit_Framework_TestCase
+class ApplicationReportBuilderTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Plugins\Data\Collection
+     * @var \Yana\Report\ApplicationReportBuilder
      */
     protected $object;
+
+    /**
+     * @var \Yana\Core\Dependencies\IsApplicationContainer
+     */
+    protected $container;
+
+    /**
+     * @var \Yana\Application
+     */
+    protected $application;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -51,7 +59,12 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Plugins\Data\Collection();
+        $configurationFactory = new \Yana\ConfigurationFactory();
+        $configuration = $configurationFactory->loadConfiguration(CWD . 'resources/system.config.xml');
+        $configuration->configdrive = YANA_INSTALL_DIR . 'config/system.drive.xml';
+        $this->container = new \Yana\Core\Dependencies\Container($configuration);
+        $this->application = new \Yana\Application($this->container);
+        $this->object = new \Yana\Report\ApplicationReportBuilder(\Yana\Report\Xml::createReport(__CLASS__));
     }
 
     /**
@@ -66,32 +79,9 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testOffsetSet()
+    public function testBuildApplicationReport()
     {
-        $o = new \Yana\Plugins\Data\Entity();
-        $o->setId('test');
-        $this->assertSame($o, $this->object->offsetSet('test', $o));
-        $this->assertSame($o, $this->object['test']);
-    }
-
-    /**
-     * @test
-     */
-    public function testOffsetSetNull()
-    {
-        $o = new \Yana\Plugins\Data\Entity();
-        $o->setId('test');
-        $this->assertSame($o, $this->object->offsetSet(null, $o));
-        $this->assertSame($o, $this->object['test']);
-    }
-
-    /**
-     * @test
-     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
-     */
-    public function testOffsetSetInvalidArgumentException()
-    {
-        $this->object[] = new \Yana\Core\Object();
+        $this->assertTrue($this->object->buildApplicationReport($this->application) instanceof \Yana\Report\IsReport);
     }
 
 }

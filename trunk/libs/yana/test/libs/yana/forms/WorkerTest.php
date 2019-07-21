@@ -39,6 +39,13 @@ class WorkerTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
+     * database schema
+     *
+     * @var \Yana\Db\Ddl\Database
+     */
+    public $schema = null;
+
+    /**
      * form facade
      *
      * @var \Yana\Forms\Facade
@@ -63,8 +70,8 @@ class WorkerTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $schema = \Yana\Files\XDDL::getDatabase('check');
-        $this->db = new \Yana\Db\FileDb\NullConnection($schema);
+        $this->schema = \Yana\Files\XDDL::getDatabase('check');
+        $this->db = new \Yana\Db\FileDb\NullConnection($this->schema);
         $this->form = new \Yana\Forms\Facade();
         $this->object = new \Yana\Forms\Worker($this->db, $this->form);
     }
@@ -275,6 +282,7 @@ class WorkerTest extends \PHPUnit_Framework_TestCase
         $values = array('ftId' => 123, 'ftValue' => 234);
         $this->form->getSetup()->getContext(\Yana\Forms\Setups\ContextNameEnumeration::INSERT)->setValues($values);
         $this->assertFalse($this->object->create());
+        $this->schema->setReadonly(false);
     }
 
     /**
@@ -301,6 +309,27 @@ class WorkerTest extends \PHPUnit_Framework_TestCase
      * @test
      */
     public function testAutocomplete()
+    {
+        $this->form->getBaseForm()->setTable('t');
+        $this->form->getSetup()->addForeignKeyReference('ftid', $this->db->getSchema()->getTable('t')->getColumn('ftid')->autoFillReferenceSettings());
+        $this->assertSame(array(), $this->object->autocomplete('ftid'));
+    }
+
+    /**
+     * @test
+     */
+    public function testAutocomplete2()
+    {
+        $this->db->insert('ft', array('ftid' => 1));
+        $this->form->getBaseForm()->setTable('t');
+        $this->form->getSetup()->addForeignKeyReference('ftid', $this->db->getSchema()->getTable('t')->getColumn('ftid')->autoFillReferenceSettings());
+        $this->assertSame(array(), $this->object->autocomplete('ftid'));
+    }
+
+    /**
+     * @test
+     */
+    public function testAutocompleteEmpty()
     {
         $this->assertSame(array(), $this->object->autocomplete('tvalue'));
     }

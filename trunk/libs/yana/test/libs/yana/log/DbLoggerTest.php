@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -25,23 +25,21 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Plugins\Data;
+namespace Yana\Log;
 
 /**
  * @ignore
  */
-require_once __DIR__ . '/../../../../include.php';
+require_once __DIR__ . '/../../../include.php';
 
 /**
- * Test-case
- *
  * @package  test
  */
-class CollectionTest extends \PHPUnit_Framework_TestCase
+class DbLoggerTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Plugins\Data\Collection
+     * @var \Yana\Log\DbLogger
      */
     protected $object;
 
@@ -51,7 +49,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Plugins\Data\Collection();
+        $this->object = new \Yana\Log\DbLogger(new \Yana\Db\NullConnection());
     }
 
     /**
@@ -66,32 +64,47 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testOffsetSet()
+    public function testAddLog()
     {
-        $o = new \Yana\Plugins\Data\Entity();
-        $o->setId('test');
-        $this->assertSame($o, $this->object->offsetSet('test', $o));
-        $this->assertSame($o, $this->object['test']);
+        $this->object->addLog("Test", -1, array(1, 2, 3));
+        $messages = $this->object->getMessages();
+        $this->assertArrayHasKey("log_action", $messages[0]);
+        $this->assertArrayHasKey("log_message", $messages[0]);
+        $this->assertArrayHasKey("log_data", $messages[0]);
+        $this->assertSame("Test", $messages[0]["log_message"]);
+        $this->assertSame(array(1, 2, 3), $messages[0]["log_data"]);
     }
 
     /**
      * @test
      */
-    public function testOffsetSetNull()
+    public function testSetMaxNumerOfEntries()
     {
-        $o = new \Yana\Plugins\Data\Entity();
-        $o->setId('test');
-        $this->assertSame($o, $this->object->offsetSet(null, $o));
-        $this->assertSame($o, $this->object['test']);
+        $this->assertSame(123, $this->object->setMaxNumerOfEntries(123)->getMaxNumerOfEntries());
     }
 
     /**
      * @test
-     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      */
-    public function testOffsetSetInvalidArgumentException()
+    public function testGetMaxNumerOfEntries()
     {
-        $this->object[] = new \Yana\Core\Object();
+        $this->assertSame(0, $this->object->getMaxNumerOfEntries());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetMailRecipient()
+    {
+        $this->assertSame("Test@test.tld", $this->object->setMailRecipient("Test@test.tld")->getMailRecipient());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetMailRecipient()
+    {
+        $this->assertSame('', $this->object->getMailRecipient());
     }
 
 }

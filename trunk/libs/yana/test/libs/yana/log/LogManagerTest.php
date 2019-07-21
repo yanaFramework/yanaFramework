@@ -50,7 +50,14 @@ class LogManagerTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->object = new \Yana\Log\LoggerCollection();
-        \Yana\Log\LogManager::setLoggers($this->object);
+    }
+
+    /**
+     * @test
+     */
+    public function testGetLogger()
+    {
+        $this->assertTrue(\Yana\Log\LogManager::getLogger() instanceof \Yana\Log\LoggerCollection);
     }
 
     /**
@@ -65,16 +72,9 @@ class LogManagerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testGetLogger()
-    {
-        $this->assertSame($this->object, \Yana\Log\LogManager::getLogger());
-    }
-
-    /**
-     * @test
-     */
     public function testAttachLogger()
     {
+        \Yana\Log\LogManager::setLoggers($this->object);
         $this->assertCount(0, $this->object);
         $myLogger = new \Yana\Log\NullLogger();
         \Yana\Log\LogManager::attachLogger($myLogger);

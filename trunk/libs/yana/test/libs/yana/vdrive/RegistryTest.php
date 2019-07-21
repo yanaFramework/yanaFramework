@@ -258,7 +258,7 @@ class RegistryTest extends \PHPUnit_Framework_TestCase
 
         //check if the unseted key still exist
         $getVar = $this->registry->getVar($key);
-        $this->assertFalse($getVar, 'assert failed, key does not exist');
+        $this->assertNull($getVar, 'assert failed, key does not exist');
     }
 
     /**

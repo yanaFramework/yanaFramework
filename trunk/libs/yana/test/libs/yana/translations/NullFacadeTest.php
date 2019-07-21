@@ -104,6 +104,14 @@ class NullFacadeTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testGetVars()
+    {
+        $this->assertSame(array(), $this->object->getVars());
+    }
+
+    /**
+     * @test
+     */
     public function testIsVar()
     {
         $this->assertFalse($this->object->isVar("doesn't matter"));

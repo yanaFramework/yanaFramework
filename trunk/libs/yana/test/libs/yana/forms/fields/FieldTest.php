@@ -115,7 +115,7 @@ class FieldTest extends \PHPUnit_Framework_TestCase
     public function testIsFilterable()
     {
         $this->assertFalse($this->object->isFilterable());
-        $this->column->setType('bool');
+        $this->column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::BOOL);
         $this->assertTrue($this->object->isFilterable());
     }
 
@@ -136,7 +136,7 @@ class FieldTest extends \PHPUnit_Framework_TestCase
     public function testIsSingleLine()
     {
         $this->assertFalse($this->object->isSingleLine());
-        $this->column->setType('string');
+        $this->column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::STRING);
         $this->assertTrue($this->object->isSingleLine());
     }
 
@@ -146,7 +146,7 @@ class FieldTest extends \PHPUnit_Framework_TestCase
     public function testIsMultiLine()
     {
         $this->assertFalse($this->object->isMultiLine());
-        $this->column->setType('text');
+        $this->column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::TEXT);
         $this->assertTrue($this->object->isMultiLine());
     }
 

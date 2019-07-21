@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -25,23 +25,36 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Plugins\Data;
+namespace Yana\Db;
 
 /**
  * @ignore
  */
-require_once __DIR__ . '/../../../../include.php';
+require_once __DIR__ . '/../../../include.php';
 
 /**
- * Test-case
- *
+ * @ignore
  * @package  test
  */
-class CollectionTest extends \PHPUnit_Framework_TestCase
+class MySchemaFactory extends \Yana\Db\SchemaFactory
+{
+    /**
+     * @return  \Yana\Data\Adapters\IsDataAdapter
+     */
+    public function getCache()
+    {
+        return $this->_getCache();
+    }
+}
+
+/**
+ * @package  test
+ */
+class SchemaFactoryTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Plugins\Data\Collection
+     * @var \Yana\Db\MySchemaFactory
      */
     protected $object;
 
@@ -51,7 +64,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Plugins\Data\Collection();
+        $this->object = new \Yana\Db\MySchemaFactory(new \Yana\Data\Adapters\ArrayAdapter());
     }
 
     /**
@@ -66,32 +79,20 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testOffsetSet()
+    public function testCreateSchema()
     {
-        $o = new \Yana\Plugins\Data\Entity();
-        $o->setId('test');
-        $this->assertSame($o, $this->object->offsetSet('test', $o));
-        $this->assertSame($o, $this->object['test']);
+        $schema = $this->object->createSchema('check');
+        $this->assertSame('check', $this->object->createSchema('check')->getName());
+        $this->assertSame($schema, $this->object->createSchema('check'));
     }
 
     /**
      * @test
      */
-    public function testOffsetSetNull()
+    public function testSetCache()
     {
-        $o = new \Yana\Plugins\Data\Entity();
-        $o->setId('test');
-        $this->assertSame($o, $this->object->offsetSet(null, $o));
-        $this->assertSame($o, $this->object['test']);
-    }
-
-    /**
-     * @test
-     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
-     */
-    public function testOffsetSetInvalidArgumentException()
-    {
-        $this->object[] = new \Yana\Core\Object();
+        $cache = new \Yana\Data\Adapters\ArrayAdapter();
+        $this->assertSame($cache, $this->object->setCache($cache)->getCache());
     }
 
 }

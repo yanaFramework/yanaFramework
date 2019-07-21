@@ -181,12 +181,12 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testIsBroken()
     {
-        $isbroken = $this->_brokenImage->isBroken();
-        $this->assertTrue($isbroken, 'assert failed, the image is not broken');
+        $this->assertTrue($this->_brokenImage->isBroken());
 
-        $broken = $this->_image->isBroken();
-        // expecting false
-        $this->assertFalse($broken, 'assert failed - the image is broken');
+        $invalidImageType = new \Yana\Media\Image(__FILE__, 'invalid');
+        $this->assertTrue($invalidImageType->isBroken());
+
+        $this->assertFalse($this->_image->isBroken());
     }
 
     /**
@@ -538,7 +538,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testGetFontWidth()
     {
         $fontWidth = $this->_image->getFontWidth(3);
-        $this->assertInternalType('integer', $fontWidth, 'assert failed - "$fontWidth" is not from type integer');
+        $this->assertInternalType('integer', $fontWidth);
     }
 
     /**
@@ -551,7 +551,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testGetFontHeight()
     {
         $fontHeight = $this->_image->getFontHeight(3);
-        $this->assertInternalType('integer', $fontHeight, 'assert failed, value is not from type integer');
+        $this->assertInternalType('integer', $fontHeight);
     }
 
     /**
@@ -1363,7 +1363,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($isBroken, 'assert "negate()" failed, image is broken');
 
         $negate = $this->_image->negate();
-        $this->assertTrue($negate, 'assert "negate()" failed, assert is false');
+        $this->assertTrue($negate);
     }
 
     /**
@@ -1408,7 +1408,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($isBroken, 'assert "colorize()" failed, image is broken');
 
         $colorize = $this->_image->colorize(255, 50, 150);
-        $this->assertTrue($colorize, 'assert "colorize()" failed, assert is false');
+        $this->assertTrue($colorize);
     }
 
     /**

@@ -512,24 +512,13 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testSelect()
+    public function testUpdateInheritanceTable()
     {
         // init database
         $this->object->insert('ft.1', array('ftvalue' => 1));
-        $this->object->insert('t.foo', array('tvalue' => 1, 'ftid' => 1, 'tb' => true ));
-        $this->object->insert('t.foo3', array('tvalue' => 3, 'ftid' => 1, 'tb' => false ));
-        $this->object->insert('i.foo', array('ta' => array('1' => '1' ) ));
-        $this->object->update('i.foo.ta.1.a', 2);
+        $this->object->insert('t.foo', array('tvalue' => 1, 'ftid' => 1, 'tb' => true));
+        $this->object->insert('i.foo', array('ta' => array('1' => '1')));
         $this->object->commit();
-
-        // test buffer
-        $this->object->update('ft.3', array('ftvalue' => 3 ));
-        $this->object->update('t.FOO3.ftid', 3); // supposed to succeed
-        $test = $this->object->select('i.foo.ta.1.a'); // supposed to succeed
-        $this->assertEquals($test, 2, '"get array content" failed');
-
-        // rollback
-        $this->object->reset();
 
         $test = $this->object->select('i.foo');
         $temp1 = array(1 => 2, 2 => 3);
@@ -541,31 +530,81 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($this->object->select('i.foo.ta'), $temp1, '"update inheritance 2" test failed');
         $this->assertEquals($this->object->select('t.foo.tvalue'), $temp2, '"update inheritance 2" test failed');
+    }
 
-        unset($temp1, $temp2);
+    /**
+     * @test
+     */
+    public function testSelectFromArrayContent()
+    {
+        // init database
+        $this->object->insert('ft.1', array('ftvalue' => 1));
+        $this->object->insert('t.foo', array('tvalue' => 1, 'ftid' => 1, 'tb' => true ));
+        $this->object->insert('i.foo', array('ta' => array('1' => '1' ) ));
+        $this->object->update('i.foo.ta.1.a', 2);
+        $this->object->commit();
 
-        // rollback
-        $this->object->reset();
+        $this->assertEquals(2, $this->object->select('i.foo.ta.1.a'));
+    }
+
+    /**
+     * @test
+     */
+    public function testSelectFromWithUnsubmittedQueries()
+    {
+        // init database
+        $this->object->insert('ft.1', array('ftvalue' => 1));
+        $this->object->insert('t.foo3', array('tvalue' => 3, 'ftid' => 1, 'tb' => false ));
+        $this->object->commit();
+
+        // test buffer
+        $this->object->update('ft.1', array('ftvalue' => 3 ));
+        $this->object->update('t.FOO3.tvalue', 1);
+
+        // Note that the updates above are NOT submitted!
+        $this->assertEquals(1, $this->object->select('ft.1.ftvalue'));
+        $this->assertEquals(3, $this->object->select('t.FOO3.tvalue'));
+    }
+
+    /**
+     * @test
+     */
+    public function testUpdateArrayCell()
+    {
+        // init database
+        $this->object->insert('ft.1', array('ftvalue' => 1));
+        $this->object->insert('t.foo', array('tvalue' => 1, 'ftid' => 1, 'tb' => true, 'ta' => array(1 => '2', 2 => '3')));
+        $this->object->insert('i.foo', array('ta' => array('1' => '1', '2' => '2')));
+        $this->object->commit();
+
+        $this->object->update('i.foo.ta.1.a', 2); // this value is buffered ...
+        $this->object->update('i.foo.ta.1.b', 3); // ... and merged with this update query
+        $this->object->commit();
 
         // multiple columns
         $dbQuery = new \Yana\Db\Queries\Select($this->object);
-        $dbQuery->setTable('i');
-        $dbQuery->setRow('foo');
-        $dbQuery->setInnerJoin('t');
-        $dbQuery->setColumns(array('i.iid', 'ta', 't.tvalue'));
-        $test = $this->object->select($dbQuery);
-        $test2 = array(
-             "IID" => "FOO",
-             "TA" => array(
-                   1 => "2",
-                   2 => "3"
-                 ),
-             "TVALUE" => 2
+        $dbQuery->setKey('i.foo.ta');
+        $expected = array(
+                1 => array("a" => 2, "b" => 3),
+                2 => "2"
              );
 
-        $this->assertEquals($test, $test2, '"get multiple columns" test failed');
+        $this->assertTrue($this->object->exists($dbQuery));
+        $this->assertEquals($expected, $this->object->select($dbQuery));
+    }
 
-        $this->assertTrue($this->object->exists($dbQuery), '"exists multiple columns" test failed');
+    /**
+     * @test
+     */
+    public function testSelect()
+    {
+        // init database
+        $this->object->insert('ft.1', array('ftvalue' => 1));
+        $this->object->insert('t.foo', array('tvalue' => 1, 'ftid' => 1, 'tb' => true, 'ta' => array(1 => '2', 2 => '3')));
+        $this->object->insert('t.foo3', array('tvalue' => 3, 'ftid' => 1, 'tb' => false));
+        $this->object->insert('i.foo', array('ta' => array('1' => '1')));
+        $this->object->update('i.foo.ta.1.a', 2);
+        $this->object->commit();
 
         // test for property "unsigned"
         // column t.tf has unsigned constraint
@@ -585,9 +624,6 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
 
         $test = $this->object->quote(null);
         $this->assertEquals($test, 'NULL', 'assert failed, the value should be "null"');
-
-        // Reset the object to default values
-        $this->object->rollback();
     }
 
 }

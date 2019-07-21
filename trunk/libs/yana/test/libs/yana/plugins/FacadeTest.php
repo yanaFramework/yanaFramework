@@ -57,6 +57,15 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
         return new \Yana\Plugins\Dependencies\Container(new \Yana\Security\Sessions\NullWrapper(), array());
     }
 
+    private function _builApplication()
+    {
+        $configurationFactory = new \Yana\ConfigurationFactory();
+        $configuration = $configurationFactory->loadConfiguration(CWD . 'resources/system.config.xml');
+        $configuration->configdrive = YANA_INSTALL_DIR . 'config/system.drive.xml';
+        $container = new \Yana\Core\Dependencies\Container($configuration);
+        return new \Yana\Application($container);
+    }
+
     /**
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
@@ -68,10 +77,36 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @runInSeparateProcess
+     */
+    public function testSendEvent()
+    {
+        $this->assertNull($this->object->sendEvent("sitemap", array(), $this->_builApplication()));
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\InvalidActionException
+     */
+    public function testSendEventInvalidActionException()
+    {
+        $this->object->sendEvent("", array(), $this->_builApplication());
+    }
+
+    /**
+     * @test
+     * @runInSeparateProcess
+     */
+    public function testGetLastEvent()
+    {
+        $this->assertSame("", $this->object->getLastEvent());
+    }
+
+    /**
+     * @test
      */
     public function testIsActive()
     {
-        $this->_buildDependencies();
         $this->assertFalse($this->object->isActive('noplugin'));
     }
 
@@ -136,14 +171,7 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     */
-    public function testGetLastEvent()
-    {
-        $this->assertSame("", $this->object->getLastEvent());
-    }
-
-    /**
-     * @test
+     * @runInSeparateProcess
      */
     public function testGetFirstEvent()
     {
@@ -221,6 +249,7 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @runInSeparateProcess
      */
     public function testGetEventType()
     {
@@ -293,14 +322,6 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
         $repository = $this->object->rebuildPluginRepository();
         $this->assertSame($this->object->getPluginConfigurations(), $repository->getPlugins());
         $this->assertSame($this->object->getEventConfigurations(), $repository->getEvents());
-    }
-
-    /**
-     * @test
-     */
-    public function testSendEvent()
-    {
-        $this->markTestIncomplete('');
     }
 
 }
