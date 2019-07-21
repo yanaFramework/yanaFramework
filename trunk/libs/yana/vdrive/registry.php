@@ -125,7 +125,7 @@ class Registry extends \Yana\VDrive\VDrive implements \Yana\VDrive\IsRegistry
      * Retrieve a var from registry.
      *
      * This returns the var identified by $key.
-     * Returns bool(false) on error.
+     * Returns NULL if there is no such key.
      *
      * @param   string  $key  (optional)
      * @return  mixed
@@ -136,7 +136,7 @@ class Registry extends \Yana\VDrive\VDrive implements \Yana\VDrive\IsRegistry
         assert('is_array($this->vars); // Unexpected type for instance property "vars". Array expected');
 
         if (!$this->isVar($key)) {
-            $value = false;
+            $value = null;
 
         } elseif (isset($this->vars[$key])) {
             $value = $this->vars[$key];
