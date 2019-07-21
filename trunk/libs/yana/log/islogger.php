@@ -34,7 +34,7 @@ namespace Yana\Log;
  * @package    yana
  * @subpackage log
  */
-interface IsLogger extends IsLogHandler
+interface IsLogger extends \Yana\Log\IsLogHandler
 {
 
     /**

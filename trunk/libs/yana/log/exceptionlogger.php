@@ -124,7 +124,8 @@ class ExceptionLogger extends \Yana\Log\AbstactLogger
 
         $className = get_class($exception);
 
-        while (is_string($className)) {
+        while (is_string($className))
+        {
             if ($this->_getInputContainer()->isVar($className)) {
                 $text = $this->_getInputContainer()->getVar($className);
                 if (isset($text['h'])) {
@@ -138,7 +139,7 @@ class ExceptionLogger extends \Yana\Log\AbstactLogger
             $className = \get_parent_class($className);
         }
 
-        if (empty($viewMessage)) {
+        if ($viewMessage->getHeader() === "" && $viewMessage->getText() === "") {
             $text = \Yana\Util\Strings::htmlEntities($exception->getMessage() . "; " . print_r($exception->getData(), true));
             $viewMessage->setText($text);
         }

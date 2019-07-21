@@ -56,7 +56,14 @@ class FileLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
     private $_mailRecipient = "";
 
     /**
-     * @param  \Yana\Files\IsTextFile  $database  connection object
+     * @var array
+     */
+    private $_messages = array();
+
+    /**
+     * <<constructor>> Initialize file source.
+     *
+     * @param  \Yana\Files\IsTextFile  $file  connection object
      */
     public function __construct(\Yana\Files\IsTextFile $file)
     {
@@ -96,10 +103,14 @@ class FileLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
                 }
                 $errorMessage .= $value . "\n";
             }
+            unset($label, $value);
+            $this->_messages[] = $logEntry;
 
             /* output the error message to a log file */
             if (!$this->_file->exists()) {
+                // @codeCoverageIgnoreStart
                 $this->_file->create();
+                // @codeCoverageIgnoreEnd
             }
             $this->_file->appendLine($errorMessage);
             $this->_file->write();
@@ -111,8 +122,8 @@ class FileLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
      *
      * When the max. number of rows is reached, the logger will flush the oldest entries.
      *
-     * @param  int  $max  0 means infinite
-     * @return DbLogger
+     * @param   int  $max  0 means infinite
+     * @return  $this
      */
     public function setMaxNumerOfEntries($max = 0)
     {
@@ -135,8 +146,8 @@ class FileLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
      * You may set up an e-mail recipient to which all log-entries will be sent,
      * when the log is full, instead of dumping the oldest log entries.
      *
-     * @param  string  $recipient  must be a valid e-mail address, empty string means no mail will be send
-     * @return DbLogger
+     * @param   string  $recipient  must be a valid e-mail address, empty string means no mail will be send
+     * @return  $this
      */
     public function setMailRecipient($recipient = "")
     {
@@ -160,6 +171,7 @@ class FileLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
      * Checks if the database is full and if so, removes the oldest entries.
      *
      * @param  int  $maxLogLength  maximum number of entries that will remain in the logs
+     * @codeCoverageIgnore
      */
     protected function _cleanUp($maxLogLength)
     {
@@ -196,6 +208,7 @@ class FileLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
      * Called by destructor.
      *
      * @param  string  $recipient  valid e-mail address
+     * @codeCoverageIgnore
      */
     protected function _flushToMail($recipient)
     {
@@ -214,6 +227,8 @@ class FileLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
 
     /**
      * <<destructor>> Will flush all messages to the database and send mails, where applicable.
+     *
+     * @codeCoverageIgnore
      */
     public function __destruct()
     {
@@ -224,6 +239,18 @@ class FileLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
                 $this->_cleanUp($this->getMaxNumerOfEntries());
             }
         }
+    }
+
+    /**
+     * Get list of log-messages.
+     *
+     * Each "message" is an array containing 'log_action', 'log_message', 'log_data'.
+     *
+     * @return  array
+     */
+    public function getMessages()
+    {
+        return $this->_messages;
     }
 
 }

@@ -141,6 +141,7 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
      * Called by destructor.
      *
      * @ignore
+     * @codeCoverageIgnore
      */
     protected function _flushToDatabase()
     {
@@ -196,6 +197,8 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
      *
      * @param   int  $maxLogLength  maximum number of entries that will remain in the logs
      * @throws  \Yana\Core\Exceptions\NotWriteableException  when database is set to read-only
+     *
+     * @codeCoverageIgnore
      */
     protected function _cleanUpDatabase($maxLogLength)
     {
@@ -212,6 +215,8 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
      * @return  \Yana\Mails\FormMailer
      *
      * @internal Override this method in unit-tests to inject a null mailer.
+     *
+     * @codeCoverageIgnore
      */
     protected function _getMailer()
     {
@@ -225,6 +230,8 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
      *
      * @param   string  $recipient  valid e-mail address
      * @throws  \Yana\Core\Exceptions\NotWriteableException  when database is set to read-only
+     *
+     * @codeCoverageIgnore
      */
     protected function _flushDatabaseToMail($recipient)
     {
@@ -243,6 +250,8 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
 
     /**
      * <<destructor>> Will flush all messages to the database and send mails, where applicable.
+     *
+     * @codeCoverageIgnore
      */
     public function __destruct()
     {
@@ -260,6 +269,18 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
         } catch (\Exception $e) {
             unset($e);
         }
+    }
+
+    /**
+     * Get list of log-messages.
+     *
+     * Each "message" is an array containing 'log_action', 'log_message', 'log_data'.
+     *
+     * @return  array
+     */
+    public function getMessages()
+    {
+        return $this->_messages;
     }
 
 }
