@@ -56,7 +56,7 @@ class QueryBuilder extends \Yana\Forms\AbstractQueryBuilder
      */
     public function buildSelectQuery()
     {
-        if (!$this->_isCached([__FUNCTION__])) {
+        if (!$this->_isCached(__FUNCTION__)) {
             $query = new \Yana\Db\Queries\Select($this->getDatabase());
             $form = $this->getForm();
             if ($form instanceof \Yana\Forms\Facade && $form->getBaseForm()->getTable() > "") {
