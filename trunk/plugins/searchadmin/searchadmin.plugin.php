@@ -45,8 +45,6 @@ class SearchAdminPlugin extends \Yana\Plugins\AbstractPlugin
      * @user        group: admin, level: 50
      * @template    SEARCH_SETUP
      * @menu        group: setup
-     *
-     * @access      public
      */
     public function search_setup()
     {

@@ -160,7 +160,6 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
      * @type        security
      * @template    USER_LOST_PASSWORD
      *
-     * @access      public
      * @return      bool
      */
     public function set_lost_pwd()
