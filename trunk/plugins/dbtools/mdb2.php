@@ -70,24 +70,40 @@ namespace Plugins\DbTools;
  */
 class MDB2 extends \Yana\Files\File implements \Plugins\DbTools\IsImport
 {
-    /**#@+
-     * @ignore
-     * @access  private
+
+    /**
+     * @var string
      */
+    private $name = "";
 
-    /** @var string  */ private $name = "";
-    /** @var array   */ private $info = array();
-    /** @var array   */ private $currentTable = array('columns' => array());
-    /** @var array   */ private $currentColumn = array();
-    /** @var string  */ private $currentName = "";
-    /** @var string  */ private $xPath = "";
+    /**
+     * @var array
+     */
+    private $info = array();
 
-    /**#@-*/
+    /**
+     * @var array
+     */
+    private $currentTable = array('columns' => array());
+
+    /**
+     * @var array
+     */
+    private $currentColumn = array();
+
+    /**
+     * @var string
+     */
+    private $currentName = "";
+
+    /**
+     * @var string
+     */
+    private $xPath = "";
 
     /**
      * Return table info for current data
      *
-     * @access  public
      * @param   string  $table  table name
      * @return  array
      */
@@ -649,24 +665,23 @@ class MDB2 extends \Yana\Files\File implements \Plugins\DbTools\IsImport
         {
             case isset($data['value']):
                 return \Yana\Db\Export\DataFactory::quoteValue($data['value']);
-            break;
+
             case isset($data['column']):
                 return $data['column'];
-            break;
+
             case array_key_exists('null', $data):
                 return \Yana\Db\Export\DataFactory::quoteValue(null);
-            break;
+
             case isset($data['function']):
                 $string = preg_replace('/^.*?<function>(.*?)<\/function>.*$/si', '$1', $string);
                 return $this->_handleFunction(\Yana\Files\SML::decode($string), $string);
-            break;
+
             case isset($data['expression']):
                 $string = preg_replace('/^.*?<expression>(.*?)<\/expression>.*$/si', '$1', $string);
                 return $this->_handleExpression($string);
-            break;
+
             default:
                 return false;
-            break;
         } /* end switch */
     }
 
