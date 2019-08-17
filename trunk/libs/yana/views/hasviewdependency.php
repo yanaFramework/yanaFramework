@@ -45,7 +45,6 @@ trait HasViewDependency
      */
     private $_dependencyContainer = null;
 
-
     /**
      * <<construct>> Initialize dependencies.
      *

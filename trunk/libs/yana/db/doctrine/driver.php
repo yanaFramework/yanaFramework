@@ -375,7 +375,7 @@ class Driver extends \Yana\Db\Doctrine\AbstractDriver
     public function equals(\Yana\Core\IsObject $anotherObject)
     {
         $isEqual = false;
-        if ($anotherObject instanceof $this) {
+        if ($anotherObject instanceof \Yana\Db\Doctrine\Driver) {
             $thisDsn = $this->_getDecoratedObject()->getParams();
             $otherDsn = $anotherObject->_getDecoratedObject()->getParams();
             $isEqual = $thisDsn === $otherDsn;
