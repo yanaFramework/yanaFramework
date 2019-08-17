@@ -7,9 +7,9 @@
 
 function yanaAddItem(node)
 {
-    var reference = node.parentNode;
-    var item      = reference.cloneNode(true);
-    reference.parentNode.appendChild(item);
+    var item      = node.cloneNode(true);
+    item.removeAttribute('id');
+    node.parentNode.appendChild(item);
     return item;
 }
 function yanaRemoveItem(node)
