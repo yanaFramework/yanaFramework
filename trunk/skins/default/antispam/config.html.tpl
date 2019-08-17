@@ -224,7 +224,7 @@
     {/if}{/foreach}
           </ol>
           <div style="margin-left: 5px;" class="comment">
-            <a class="buttonize" href="javascript:yanaAddItem('antispam_reference')" title="{lang id="BUTTON_NEW"}">
+            <a class="buttonize" href="javascript://add item" onclick="yanaAddItem(document.getElementById('antispam_reference'))" title="{lang id="BUTTON_NEW"}">
                 <span class="icon_new" style="vertical-align: -5px; margin-right: 5px;">&nbsp;</span>{lang id="BUTTON_NEW"}
             </a>
           </div>
