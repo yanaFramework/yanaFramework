@@ -345,4 +345,14 @@
         <!-- or use an international standard that should work on every locale -->
 		<php>r</php>
     </date>
+    <date>
+        <!-- 2020-10-01 -->
+		<js>date.getFullYear() +'-'+ (date.getMonth()+1) +'-'+ date.getDate()</js>
+		<php>Y-n-j</php>
+    </date>
+    <date>
+        <!-- 2020-10-01 19:12:34 -->
+		<js>date.getFullYear() +'-'+ (date.getMonth()+1) +'-'+ date.getDate() +' '+ date.toTimeString()</js>
+		<php>Y-n-j G:i:s O</php>
+    </date>
 </system>
