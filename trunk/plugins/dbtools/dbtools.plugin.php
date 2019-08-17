@@ -142,7 +142,12 @@ class DbToolsPlugin extends \Yana\Plugins\AbstractPlugin
             throw new \Yana\Core\Exceptions\Forms\NothingSelectedException($message, $level);
         }
 
-        $xml = \Yana\Db\Export\DataFactory::createXML(true, array_values($list));
+        $xmlFactory = new \Yana\Db\Export\XmlFactory();
+        $xmlFactory
+                ->setUsingForeignKeys(true)
+                ->setDatabaseNames(array_values($list));
+
+        $xml = $xmlFactory->createXML(new \Yana\Db\ConnectionFactory(new \Yana\Db\SchemaFactory()));
         $filename = 'database.xml';
         if (empty($xml)) {
             $message = "Did not create '{$filename}' because the file is empty.";
