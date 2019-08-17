@@ -34,45 +34,42 @@ class MediaDbPlugin extends \Yana\Plugins\AbstractPlugin
 {
 
     /**
-     * get where clause as array
+     * Get form definition.
      *
-     * @access  private
-     * @static
-     * @return  array
+     * @return  \Yana\Forms\Facade
      */
-    private static function _getWhere()
+    private function _getMediaForm()
     {
-        return array(
-            array('user_created', '=', $this->_getSession()->getCurrentUserName()),
-            'or',
-            array('public', '=', true)
-        );
-    }
-
-    /**
-     * get form definition
-     *
-     * @access  protected
-     * @static
-     * @return  FormFacade
-     */
-    protected static function getMediaForm()
-    {
-        $form = self::getMediafolderForm();
+        $form = $this->_getMediafolderForm()->__invoke();
         return $form->getForm('media');
     }
 
     /**
-     * get form definition
+     * Get form definition.
      *
-     * @access  protected
-     * @static
-     * @return  FormFacade
+     * @return  \Yana\Forms\IsBuilder
      */
-    protected static function getMediafolderForm()
+    private function _getMediafolderForm()
     {
         $builder = $this->_getApplication()->buildForm('mediadb');
-        return $builder->setId('mediafolder')->setWhere(self::_getWhere())->__invoke();
+        $where = array(
+            array('user_created', '=', $this->_getSession()->getCurrentUserName()),
+            'or',
+            array('public', '=', true)
+        );
+        return $builder->setId('mediafolder')->setWhere($where);
+    }
+
+    /**
+     * Get form worker.
+     *
+     * @return  \Yana\Forms\Worker
+     */
+    private function _getMediafolderFormWorker()
+    {
+        $form = $this->_getMediafolderForm()->__invoke();
+        $worker = new \Yana\Forms\Worker($this->_connectToDatabase('mediadb'), $form);
+        return $worker;
     }
 
     /**
@@ -85,12 +82,11 @@ class MediaDbPlugin extends \Yana\Plugins\AbstractPlugin
      * @language   mediadb
      * @onsuccess  goto: mediadb
      * @onerror    goto: mediadb
-     * @access     public
      * @return     bool
      */
     public function mediadb_edit_media()
     {
-        $form = self::getMediaForm();
+        $form = $this->_getMediaForm();
         $worker = new \Yana\Forms\Worker($this->_connectToDatabase('mediadb'), $form);
         return $worker->update();
     }
@@ -107,13 +103,12 @@ class MediaDbPlugin extends \Yana\Plugins\AbstractPlugin
      * @language   mediadb
      * @onsuccess  goto: mediadb
      * @onerror    goto: mediadb
-     * @access     public
      * @param      array  $selected_entries  array of entries to delete
      * @return     bool
      */
     public function mediadb_delete_media(array $selected_entries)
     {
-        $form = self::getMediaForm();
+        $form = $this->_getMediaForm();
         $worker = new \Yana\Forms\Worker($this->_connectToDatabase('mediadb'), $form);
         return $worker->delete($selected_entries);
     }
@@ -130,12 +125,11 @@ class MediaDbPlugin extends \Yana\Plugins\AbstractPlugin
      * @language   mediadb
      * @onsuccess  goto: mediadb
      * @onerror    goto: mediadb
-     * @access     public
      * @return     bool
      */
     public function mediadb_new_media()
     {
-        $form = self::getMediaForm();
+        $form = $this->_getMediaForm();
         $worker = new \Yana\Forms\Worker($this->_connectToDatabase('mediadb'), $form);
         return $worker->create();
     }
@@ -149,23 +143,20 @@ class MediaDbPlugin extends \Yana\Plugins\AbstractPlugin
      * @menu      group: start
      * @template  templates/mediafolder.html.tpl
      * @language  mediadb
-     * @access    public
      */
     public function mediadb()
     {
-        $this->_getApplication()->getView()->setFunction('folderList', 'plugin_mediadb::smartyFolderList');
-    }
+        $viewHelper = new \Plugins\MediaDb\ViewHelper($this->_getMediafolderForm());
 
-    /**
-     * <<smarty function>> Create a folder list from a data table.
-     *
-     * @access    public
-     * @static
-     * @return  string
-     */
-    public static function smartyFolderList()
-    {
-        return (string) self::getMediafolderForm();
+        $view = $this->_getApplication()->getView();
+        try {
+            $view->setFunction('folderList', $viewHelper);
+
+        } catch (\Yana\Views\Managers\RegistrationException $e) {
+            $view->unsetFunction('folderList');
+            $view->setFunction('folderList', $viewHelper);
+            unset($e);
+        }
     }
 
     /**
@@ -176,7 +167,6 @@ class MediaDbPlugin extends \Yana\Plugins\AbstractPlugin
      * @user      group: admin, level: 1
      * @template  templates/mediafolder.html.tpl
      * @language  mediadb
-     * @access    public
      */
     public function mediadb_search_mediafolder()
     {
@@ -193,13 +183,11 @@ class MediaDbPlugin extends \Yana\Plugins\AbstractPlugin
      * @language   mediadb
      * @onsuccess  goto: mediadb
      * @onerror    goto: mediadb
-     * @access     public
      * @return     bool
      */
     public function mediadb_update_mediafolder()
     {
-        $form = self::getMediafolderForm();
-        $worker = new \Yana\Forms\Worker($this->_connectToDatabase('mediadb'), $form);
+        $worker = $this->_getMediafolderFormWorker();
         return $worker->update();
     }
 
@@ -215,14 +203,12 @@ class MediaDbPlugin extends \Yana\Plugins\AbstractPlugin
      * @language   mediadb
      * @onsuccess  goto: mediadb
      * @onerror    goto: mediadb
-     * @access     public
      * @param      array  $selected_entries  array of entries to delete
      * @return     bool
      */
     public function mediadb_delete_mediafolder(array $selected_entries)
     {
-        $form = self::getMediafolderForm();
-        $worker = new \Yana\Forms\Worker($this->_connectToDatabase('mediadb'), $form);
+        $worker = $this->_getMediafolderFormWorker();
         return $worker->delete($selected_entries);
     }
 
@@ -238,13 +224,11 @@ class MediaDbPlugin extends \Yana\Plugins\AbstractPlugin
      * @language   mediadb
      * @onsuccess  goto: mediadb
      * @onerror    goto: mediadb
-     * @access     public
      * @return     bool
      */
     public function mediadb_insert_mediafolder()
     {
-        $form = self::getMediafolderForm();
-        $worker = new \Yana\Forms\Worker($this->_connectToDatabase('mediadb'), $form);
+        $worker = $this->_getMediafolderFormWorker();
         return $worker->create();
     }
 
@@ -257,13 +241,12 @@ class MediaDbPlugin extends \Yana\Plugins\AbstractPlugin
      * @user       group: mediadb, role: moderator
      * @user       group: admin, level: 75
      * @template   NULL
-     * @access     public
      * @return     string
      */
     public function mediadb_export_mediafolder()
     {
-        $query = $this->getMediafolderForm()->getQuery(); // @todo Fixme!
-        return $query->toCSV();
+        $csv = $this->_getMediafolderFormWorker()->export();
+        return $csv;
     }
 }
 ?>

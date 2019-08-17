@@ -49,30 +49,23 @@ class CounterPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function catchAll($event, array $ARGS)
     {
-        self::$_id = __CLASS__ . '\\' . $this->_getApplication()->getProfileId();
+        $YANA = $this->_getApplication();
+
+        self::$_id = __CLASS__ . '\\' . $YANA->getProfileId();
         if (!\Yana\Db\FileDb\Counter::exists(self::$_id)) {
             \Yana\Db\FileDb\Counter::create(self::$_id);
         }
         self::$_counter = new \Yana\Db\FileDb\Counter(self::$_id);
-        self::$_counter->getNextValue();
-        $this->_getApplication()->getView()->setFunction('visitorCount', array($this, 'visitorCount'));
+        $visitorCount = self::$_counter->getNextValue();
+        $label = $YANA->getLanguage()->getVar("VISITOR_COUNT");
+        $viewHelper = new \Plugins\Counter\ViewHelper($visitorCount, $label);
+        $view = $YANA->getView();
+
+        // The default plugin registers a dummy function of the same name. Need to get rid of that first
+        $view->unsetFunction('visitorCount'); // This will do nothing if (for whatever reason) the function doesn't exist
+        // Register our function instead
+        $view->setFunction('visitorCount', $viewHelper);
         return true;
-    }
-
-    /**
-     * <<smarty function>> visitorCount
-     *
-     * Outputs the number of unique visitors
-     *
-     * @param   array   $params   params
-     * @return  string
-     */
-    public function visitorCount(array $params)
-    {
-        $count = self::$_counter->getCurrentValue();
-        $text = $this->_getApplication()->getLanguage()->getVar("VISITOR_COUNT");
-
-        return $text . ' <span style="font-weight: bold;">' . $count . '</span>';
     }
 
     /**
