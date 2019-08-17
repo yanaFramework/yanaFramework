@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Plugins\Configs;
 
@@ -68,21 +69,21 @@ abstract class AbstractBuilder extends \Yana\Core\Object
      *
      * @return  \Yana\Plugins\Configs\IsClassConfiguration
      */
-    abstract protected function buildClass();
+    abstract protected function buildClass(): \Yana\Plugins\Configs\IsClassConfiguration;
 
     /**
      * Build method object.
      *
      * @return  \Yana\Plugins\Configs\IsMethodConfiguration
      */
-    abstract protected function buildMethod();
+    abstract protected function buildMethod(): \Yana\Plugins\Configs\IsMethodConfiguration;
 
     /**
      * Returns the built object.
      *
      * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
-    public function getPluginConfigurationClass()
+    public function getPluginConfigurationClass(): \Yana\Plugins\Configs\ClassConfiguration
     {
         $this->buildClass();
         return $this->object;

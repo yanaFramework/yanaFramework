@@ -54,7 +54,7 @@ class Value extends \Yana\Core\Object implements \Yana\Http\Requests\IsValue
      */
     public function __construct($value)
     {
-        assert('is_null($value) || is_string($value) || is_array($value); // $value expected to be String');
+        assert('is_null($value) || is_scalar($value) || is_array($value); // $value expected to be String');
         if (!is_null($value)) {
             $this->_value = (is_scalar($value)) ? (string) $value : (array) $value;
         }

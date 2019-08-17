@@ -91,7 +91,7 @@ class UpdateParser extends \Yana\Db\Queries\Parsers\InsertParser implements \Yan
 
                     $keys[] = is_array($set['name']) && isset($set['name']['column']) ? (string) $set['name']['column'] : (string) $set['name'];
                     $value = current($set['value']['args']);
-                    $values[] = is_array($value) && isset($value['value']) ? (string) $value['value'] : (string) $value;
+                    $values[] = is_array($value) ?  isset($value['value']) ? (string) $value['value'] : "" : (string) $value;
                 }
             }
             unset($set, $value);

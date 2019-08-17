@@ -58,16 +58,6 @@ abstract class AbstractUploadWrapper extends \Yana\Core\Object implements \Yana\
      *
      * @return  array
      */
-    protected function _getFiles()
-    {
-        return $this->_files;
-    }
-
-    /**
-     * Returns list of file settings.
-     *
-     * @return  array
-     */
     protected function _getEntry($key)
     {
         assert('is_string($key); // Invalid argument type: $key. String expected');

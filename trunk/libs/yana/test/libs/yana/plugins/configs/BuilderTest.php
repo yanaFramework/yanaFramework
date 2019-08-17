@@ -24,6 +24,7 @@
  * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Plugins\Configs;
 
@@ -38,12 +39,12 @@ require_once __DIR__ . '/../../../../include.php';
  */
 class MyBuilder extends \Yana\Plugins\Configs\Builder
 {
-    public function buildClass()
+    public function buildClass(): \Yana\Plugins\Configs\IsClassConfiguration
     {
         return parent::buildClass();
     }
 
-    public function buildMethod()
+    public function buildMethod(): \Yana\Plugins\Configs\IsMethodConfiguration
     {
         return parent::buildMethod();
     }
@@ -155,8 +156,8 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         $method
                 ->setClassName('TestPlugin')
                 ->setMethodName('testA')
-                ->setParams(array('a' => 'string', 'b' => 'int'))
-                ->setDefaults(array(1 => 123))
+                ->addParam(new \Yana\Plugins\Configs\MethodParameter('a', 'string'))
+                ->addParam((new \Yana\Plugins\Configs\MethodParameter('b', 'int'))->setDefault(123))
                 ->setGroup($expected->getGroup()) // inherited
                 ->setSafeMode(true)
                 ->setTemplate($expected->getDirectory() . '/testplugin.php')

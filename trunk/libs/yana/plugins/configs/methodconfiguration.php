@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Plugins\Configs;
 
@@ -58,19 +59,14 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
     private $_args = array();
 
     /**
-     * @var  array
+     * @var  \Yana\Plugins\Configs\IsMethodParameterCollection
      */
-    private $_params = array();
+    private $_params = null;
 
     /**
      * @var  string
      */
     private $_return = "";
-
-    /**
-     * @var  array
-     */
-    private $_defaults = array();
 
     /**
      * @var  bool
@@ -106,7 +102,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
     /**
      * User settings.
      *
-     * @var  string
+     * @var  array
      */
     private $_users = array();
 
@@ -165,7 +161,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      *
      * @return  string
      */
-    public function getType()
+    public function getType(): string
     {
         return $this->_type;
     }
@@ -176,11 +172,10 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      * Valid types are: default, config, read, write, security, library.
      *
      * @param   string  $type  valid method type
-     * @return  self
+     * @return  $this
      */
-    public function setType($type)
+    public function setType(string $type): self
     {
-        assert('is_string($type); // Invalid argument $type: string expected');
         $this->_type = \Yana\Plugins\TypeEnumeration::fromString($type);
         return $this;
     }
@@ -189,11 +184,10 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      * Add directory.
      *
      * @param   string  $path  absolute path to plugin class file
-     * @return  self
+     * @return  $this
      */
-    public function addPath($path)
+    public function addPath(string $path): self
     {
-        assert('is_string($path); // Invalid argument $path: string expected');
         $this->_paths[] = $path;
         return $this;
     }
@@ -203,10 +197,10 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      *
      * @return  string
      */
-    public function getPath()
+    public function getPath(): string
     {
         if (!empty($this->_paths)) {
-            return $this->_paths[0];
+            return (string) $this->_paths[0];
         } else {
             return '';
         }
@@ -219,7 +213,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      *
      * @return  array
      */
-    public function getPaths()
+    public function getPaths(): array
     {
         return $this->_paths;
     }
@@ -228,7 +222,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      * Add Configuration.
      *
      * @param   \Yana\Plugins\Configs\IsMethodConfiguration $subscriberConfig  configuration of subscribing method
-     * @return  self
+     * @return  $this
      * @ignore
      */
     public function addSubscription(\Yana\Plugins\Configs\IsMethodConfiguration $subscriberConfig)
@@ -248,7 +242,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      *
      * @return  array
      */
-    public function getScripts()
+    public function getScripts(): array
     {
         return $this->_scripts;
     }
@@ -257,9 +251,9 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      * Set Javascript files.
      *
      * @param   array  $scripts  list of paths to javascript files.
-     * @return  self
+     * @return  $this
      */
-    public function setScripts(array $scripts)
+    public function setScripts(array $scripts): self
     {
         $this->_scripts = $scripts;
         return $this;
@@ -273,7 +267,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      *
      * @return  array
      */
-    public function getStyles()
+    public function getStyles(): array
     {
         return $this->_styles;
     }
@@ -282,9 +276,9 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      * Set CSS styles.
      *
      * @param   array  $styles  list of paths to CSS files.
-     * @return  self
+     * @return  $this
      */
-    public function setStyles(array $styles)
+    public function setStyles(array $styles): self
     {
         $this->_styles = $styles;
         return $this;
@@ -298,7 +292,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      *
      * @return  array
      */
-    public function getLanguages()
+    public function getLanguages(): array
     {
         return $this->_languages;
     }
@@ -309,7 +303,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      * @param   array  $languages  list of names of XLIFF files.
      * @return  self
      */
-    public function setLanguages(array $languages)
+    public function setLanguages(array $languages): self
     {
         $this->_languages = $languages;
         return $this;
@@ -318,39 +312,25 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
     /**
      * Get parameters.
      *
-     * Returns a list of all parameters as an array,
-     * where the keys are the param-names and the values are the param-types.
+     * Returns a collection of all parameters, which each member being an instance of {@see \Yana\Plugins\Configs\IsMethodParameter}
      *
-     * Example:
-     * <code>
-     * array(
-     *     'id' => 'int',
-     *     'title' => 'string'
-     * );
-     * </code>
-     *
-     * @return  array
+     * @return  \Yana\Plugins\Configs\IsMethodParameterCollection
      */
-    public function getParams()
+    public function getParams(): \Yana\Plugins\Configs\IsMethodParameterCollection
     {
+        if (!isset($this->_params)) {
+            $this->_params = new \Yana\Plugins\Configs\MethodParameterCollection();
+        }
         return $this->_params;
     }
 
     /**
      * Set parameters.
      *
-     * Example:
-     * <code>
-     * array(
-     *     'id' => 'int',
-     *     'title' => 'string'
-     * );
-     * </code>
-     *
-     * @param   array  $params  keys are the param-names and the values are the param-types
+     * @param   \Yana\Plugins\Configs\IsMethodParameterCollection  $params  collection of parameter configurations
      * @return  self
      */
-    public function setParams(array $params)
+    public function setParams(\Yana\Plugins\Configs\IsMethodParameterCollection $params): self
     {
         $this->_params = $params;
         return $this;
@@ -359,17 +339,12 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
     /**
      * Add method parameter.
      * 
-     * @param   string  $name     identifier
-     * @param   string  $type     data type (string, int, bool, array, float)
-     * @param   mixed   $default  value
+     * @param   \Yana\Plugins\Configs\IsMethodParameter  $param  to add
      * @return  self
      */
-    public function addParam($name, $type, $default = null)
+    public function addParam(\Yana\Plugins\Configs\IsMethodParameter $param): self
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
-        assert('is_string($type); // Invalid argument $type: string expected');
-        $this->_params[(string) $name] = (string) $type;
-        $this->_defaults[] = $default;
+        $this->getParams()->offsetSet(null, $param);
         return $this;
     }
 
@@ -380,7 +355,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      *
      * @return  string
      */
-    public function getReturn()
+    public function getReturn(): string
     {
         return $this->_return;
     }
@@ -391,9 +366,8 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      * @param   string  $return  valid PHP type - or empty string, if the function doesn't return a value
      * @return  self
      */
-    public function setReturn($return)
+    public function setReturn($return): self
     {
-        assert('is_string($return); // Invalid argument $return: string expected');
         $this->_return = (string) $return;
         return $this;
     }
@@ -408,7 +382,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      *
      * @return  string
      */
-    public function getGroup()
+    public function getGroup(): string
     {
         return $this->_group;
     }
@@ -421,9 +395,8 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      * @param   string  $group  unique name
      * @return  self
      */
-    public function setGroup($group)
+    public function setGroup($group): self
     {
-        assert('is_string($group); // Invalid argument $group: string expected');
         $this->_group = (string) $group;
         return $this;
     }
@@ -439,7 +412,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      *
      * @return  \Yana\Plugins\Menus\IsEntry
      */
-    public function getMenu()
+    public function getMenu(): ?\Yana\Plugins\Menus\IsEntry
     {
         return $this->_menu;
     }
@@ -450,7 +423,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      * @param   \Yana\Plugins\Menus\IsEntry  $menu  menu configuration
      * @return  self
      */
-    public function setMenu(\Yana\Plugins\Menus\IsEntry $menu)
+    public function setMenu(\Yana\Plugins\Menus\IsEntry $menu): self
     {
         $this->_menu = $menu;
         return $this;
@@ -461,7 +434,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      *
      * @return  \Yana\Plugins\Configs\EventRoute
      */
-    public function getOnSuccess()
+    public function getOnSuccess(): ?\Yana\Plugins\Configs\EventRoute
     {
         return $this->_onSuccess;
     }
@@ -470,9 +443,9 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      * Set settings on how to react on success.
      *
      * @param   \Yana\Plugins\Configs\EventRoute  $onSuccess  event configuration
-     * @return  self
+     * @return  $this
      */
-    public function setOnSuccess(\Yana\Plugins\Configs\EventRoute $onSuccess)
+    public function setOnSuccess(\Yana\Plugins\Configs\EventRoute $onSuccess): self
     {
         $onSuccess->setCode(\Yana\Plugins\Configs\ReturnCodeEnumeration::SUCCESS);
         $this->_onSuccess = $onSuccess;
@@ -484,7 +457,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      *
      * @return  \Yana\Plugins\Configs\EventRoute
      */
-    public function getOnError()
+    public function getOnError(): ?\Yana\Plugins\Configs\EventRoute
     {
         return $this->_onError;
     }
@@ -493,9 +466,9 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      * Set settings on how to react on error.
      *
      * @param   \Yana\Plugins\Configs\EventRoute  $onError  event configuration
-     * @return  self
+     * @return  $this
      */
-    public function setOnError(\Yana\Plugins\Configs\EventRoute $onError)
+    public function setOnError(\Yana\Plugins\Configs\EventRoute $onError): self
     {
         $onError->setCode(\Yana\Plugins\Configs\ReturnCodeEnumeration::ERROR);
         $this->_onError = $onError;
@@ -509,7 +482,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      *
      * @return  string
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->_title;
     }
@@ -518,12 +491,11 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      * Set title.
      *
      * @param   string  $title  human readable name
-     * @return  self
+     * @return  $this
      */
-    public function setTitle($title)
+    public function setTitle(string $title): self
     {
-        assert('is_string($title); // Invalid argument $title: string expected');
-        $this->_title = $title;
+        $this->_title = (string) $title;
         return $this;
     }
 
@@ -539,7 +511,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      *
      * @return  bool
      */
-    public function getSafeMode()
+    public function getSafeMode(): ?bool
     {
         return $this->_safeMode;
     }
@@ -553,10 +525,10 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      *
      * Any other value will reset the setting to NULL.
      *
-     * @param   bool  $safeMode  true = requires safe-mode, false = disallows safe-mode, null = don't care
-     * @return  self
+     * @param   scalar  $safeMode  true = requires safe-mode, false = disallows safe-mode, null = don't care
+     * @return  $this
      */
-    public function setSafeMode($safeMode = null)
+    public function setSafeMode($safeMode = null): self
     {
         if (is_string($safeMode)) {
             switch ($safeMode)
@@ -584,7 +556,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      *
      * @return  string
      */
-    public function getTemplate()
+    public function getTemplate(): string
     {
         return $this->_template;
     }
@@ -593,11 +565,10 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      * Set template path.
      *
      * @param   string  $template  relative path to template file
-     * @return  self
+     * @return  $this
      */
-    public function setTemplate($template)
+    public function setTemplate(string $template): self
     {
-        assert('is_string($template); // Invalid argument $template: string expected');
         $this->_template = strip_tags($template);
         return $this;
     }
@@ -609,7 +580,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      *
      * @return  \Yana\Plugins\Configs\IsUserPermissionRule[]
      */
-    public function getUserLevels()
+    public function getUserLevels(): array
     {
         return $this->_users;
     }
@@ -620,9 +591,9 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      * All elements must be instances of PluginUserLevel.
      *
      * @param   \Yana\Plugins\Configs\IsUserPermissionRule[]  $users  list of user level definitions
-     * @return  self
+     * @return  $this
      */
-    public function setUserLevels(array $users)
+    public function setUserLevels(array $users): self
     {
         $this->_users = array();
         foreach ($users as $user)
@@ -636,9 +607,9 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      * Add user user level rule.
      *
      * @param   \Yana\Plugins\Configs\IsUserPermissionRule  $user  user level definition
-     * @return  self
+     * @return  $this
      */
-    public function addUserLevel(\Yana\Plugins\Configs\IsUserPermissionRule $user)
+    public function addUserLevel(\Yana\Plugins\Configs\IsUserPermissionRule $user): self
     {
         $this->_users[] = $user;
         return $this;
@@ -657,7 +628,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      *
      * @return  bool
      */
-    public function getOverwrite()
+    public function getOverwrite(): bool
     {
         return $this->_overwrite;
     }
@@ -666,11 +637,10 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      * Set overwrite setting of method.
      *
      * @param   bool  $overwrite  true = overwrite parent declaration, false = default
-     * @return  self
+     * @return  $this
      */
-    public function setOverwrite($overwrite)
+    public function setOverwrite(bool $overwrite): self
     {
-        assert('is_bool($overwrite); // Invalid argument $overwrite: bool expected');
         $this->_overwrite = (bool) $overwrite;
         return $this;
     }
@@ -689,7 +659,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      *
      * @return  bool
      */
-    public function getSubscribe()
+    public function getSubscribe(): bool
     {
         return $this->_subscribe;
     }
@@ -698,11 +668,10 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      * Set subscribe setting of method.
      *
      * @param   bool  $subscribe  true = extend parent, false = implement yourself
-     * @return  self
+     * @return  $this
      */
-    public function setSubscribe($subscribe)
+    public function setSubscribe(bool $subscribe) : self
     {
-        assert('is_bool($subscribe); // Invalid argument $subscribe: bool expected');
         $this->_subscribe = (bool) $subscribe;
         return $this;
     }
@@ -712,7 +681,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      *
      * @return  string
      */
-    public function getClassName()
+    public function getClassName(): string
     {
         return $this->_className;
     }
@@ -723,9 +692,8 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      * @param   string  $className  case-sensitive identifier
      * @return  self
      */
-    public function setClassName($className)
+    public function setClassName(string $className): self
     {
-        assert('is_string($className); // Invalid argument $className: string expected');
         $this->_className = $className;
         return $this;
     }
@@ -735,7 +703,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      *
      * @return  string
      */
-    public function getMethodName()
+    public function getMethodName(): string
     {
         return $this->_methodName;
     }
@@ -744,11 +712,10 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      * Set method name.
      *
      * @param   string  $methodName  case-sensitive text
-     * @return  self
+     * @return  $this
      */
-    public function setMethodName($methodName)
+    public function setMethodName(string $methodName): self
     {
-        assert('is_string($methodName); // Invalid argument $methodName: string expected');
         $this->_methodName = $methodName;
         return $this;
     }
@@ -763,7 +730,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      * @throws  \Yana\Core\Exceptions\Forms\MissingFieldException  when a provided argument is missing or not valid
      * @throws  \Yana\Core\Exceptions\Forms\InvalidValueException  when a provided argument is missing or not valid
      */
-    public function setEventArguments(array $args)
+    public function setEventArguments(array $args): array
     {
         $this->_args = array();
 
@@ -774,10 +741,12 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
 
         $message = "A provided paramter is invalid.";
         $errorLevel = \Yana\Log\TypeEnumeration::ERROR;
-        $i = 0;
-        foreach ($this->getParams() as $name => $type)
+
+        foreach ($this->getParams() as $param)
         {
-            $name = strtolower($name);
+            /** @var \Yana\Plugins\Configs\IsMethodParameter $param */
+            $name = strtolower($param->getName());
+            $type = $param->getType();
             if (isset($args[$name]) && ($args[$name] !== '' || ($type === 'bool' || $type === 'boolean'))) {
                 $value = $args[$name];
                 switch ($type)
@@ -821,50 +790,26 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
                         }
                     break;
                 }
-            } elseif (array_key_exists($i, $this->_defaults)) {
-                $this->_args[$name] = $this->_defaults[$i];
+            } elseif ($param->isDefaultValueAvailable()) {
+                $this->_args[$name] = $param->getDefault();
             } else {
                 // missing parameter
                 $message = "A mandatory parameter is missing.";
                 $error = new \Yana\Core\Exceptions\Forms\MissingFieldException($message, $errorLevel);
                 throw $error->setField($name);
             }
-            $i++;
         } // end foreach
         return $this->_args;
-    }
-
-    /**
-     * Set default values for method params.
-     *
-     * @param   array  $defaults  list of default arguments
-     * @return  self
-     */
-    public function setDefaults(array $defaults)
-    {
-        $this->_defaults = $defaults;
-        return $this;
-    }
-
-    /**
-     * Get default values for method params.
-     *
-     * @return  array
-     */
-    public function getDefaults()
-    {
-        return $this->_defaults;
     }
 
     /**
      * Set if the function uses a generic, unchecked parameter list.
      *
      * @param   bool  $hasGenericParams  true = parameter list is generic, false = parameter list explicitely given
-     * @return  self
+     * @return  $this
      */
-    public function setHasGenericParams($hasGenericParams)
+    public function setHasGenericParams(bool $hasGenericParams): self
     {
-        assert('is_bool($hasGenericParams); // Invalid argument $hasGenericParams: bool expected');
         $this->_hasGenericParams = (bool) $hasGenericParams;
         return $this;
     }
@@ -874,7 +819,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      *
      * @return  bool
      */
-    public function hasGenericParams()
+    public function hasGenericParams(): bool
     {
         return $this->_hasGenericParams;
     }
@@ -907,13 +852,15 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
      * @param   \Yana\IsPlugin  $instance  object to send event to
      * @return  bool
      */
-    public function hasMethod(\Yana\IsPlugin $instance)
+    public function hasMethod(\Yana\IsPlugin $instance): bool
     {
         return method_exists($instance, $this->_methodName);
     }
 
     /**
      * Reinitialize instance.
+     *
+     * @codeCoverageIgnore
      */
     public function __wakeup()
     {

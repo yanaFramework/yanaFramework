@@ -304,6 +304,12 @@ class Converter extends \Yana\Core\AbstractUtility
         return $object;
     }
 
+    /**
+     * Takes an object and converts it to an associative array.
+     *
+     * @param   \Yana\Util\Xml\IsObject  $xml  any object to convert
+     * @return  array
+     */
     private static function _mapObjectToAssociativeArray($xml)
     {
         $array = array();
@@ -323,6 +329,16 @@ class Converter extends \Yana\Core\AbstractUtility
         return $array;
     }
 
+    /**
+     * Takes an object and converts it to an associative array.
+     *
+     * All public members will be returned as part of the array.
+     * The name of the member will be the key.
+     * Members that are not accessible
+     *
+     * @param   \Yana\Util\Xml\IsObject  $xml  any object to convert
+     * @return  array
+     */
     public static function convertObjectToAssociativeArray(\Yana\Util\Xml\IsObject $xml)
     {
         return self::_mapObjectToAssociativeArray($xml);

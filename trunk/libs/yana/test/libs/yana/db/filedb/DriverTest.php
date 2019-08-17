@@ -179,6 +179,44 @@ class DriverTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testSendQueryObjectCount()
+    {
+        $connection = new \Yana\Db\FileDb\Connection($this->schema);
+        $selectQuery = new \Yana\Db\Queries\SelectCount($connection);
+        $selectQuery->setTable('t');
+        $expectedResultObject = new \Yana\Db\FileDb\Result(array(array(1)));
+        $actualResultObject = $this->object->sendQueryObject($selectQuery);
+        $this->assertEquals($expectedResultObject, $actualResultObject);
+        $this->assertEquals(1, $actualResultObject->fetchOne());
+    }
+
+    /**
+     * @test
+     */
+    public function testSendQueryObjectExists()
+    {
+        $connection = new \Yana\Db\FileDb\Connection($this->schema);
+        $selectQuery = new \Yana\Db\Queries\SelectExist($connection);
+        $selectQuery->setTable('t');
+        $resultObject = new \Yana\Db\FileDb\Result(array(1));
+        $this->assertEquals($resultObject, $this->object->sendQueryObject($selectQuery));
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Db\Queries\Exceptions\InvalidSyntaxException
+     */
+    public function testSendQueryObjectInsertInvalidSyntaxException()
+    {
+        $connection = new \Yana\Db\FileDb\Connection($this->schema);
+        $selectQuery = new \Yana\Db\Queries\Insert($connection);
+        $selectQuery->setTable('t');
+        $this->object->sendQueryObject($selectQuery);
+    }
+
+    /**
+     * @test
+     */
     public function testSendQueryString()
     {
         $resultObject = new \Yana\Db\FileDb\Result(array(array('tvalue' => 1, 'tb' => true, 'ftid' => 1, 'tid' => 1)));

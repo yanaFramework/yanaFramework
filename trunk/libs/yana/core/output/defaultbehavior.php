@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Core\Output;
 
@@ -45,7 +46,7 @@ class DefaultBehavior extends \Yana\Core\Object implements \Yana\Core\Output\IsB
      *
      * @return  string|NULL
      */
-    public function outputResults()
+    public function outputResults() : ?string
     {
         /* 0 initialize vars */
         $plugins = $this->_getDependencyContainer()->getPlugins();
@@ -53,7 +54,7 @@ class DefaultBehavior extends \Yana\Core\Object implements \Yana\Core\Output\IsB
         $result = $plugins->getLastResult();
         $eventConfiguration = $plugins->getEventConfiguration($event);
         if (! $eventConfiguration instanceof \Yana\Plugins\Configs\IsMethodConfiguration) {
-            return; // error - unable to continue
+            return null; // error - unable to continue
         }
         // @codeCoverageIgnoreStart
         $template = $eventConfiguration->getTemplate();
@@ -122,9 +123,9 @@ class DefaultBehavior extends \Yana\Core\Object implements \Yana\Core\Output\IsB
     /**
      * Output a text message and relocate to next event.
      *
-     * @return string
+     * @return  string|NULL
      */
-    public function outputAsMessage()
+    public function outputAsMessage(): ?string
     {
         $route = $this->_getDependencyContainer()->getPlugins()->getNextEvent();
         $target = null;
@@ -182,9 +183,8 @@ class DefaultBehavior extends \Yana\Core\Object implements \Yana\Core\Output\IsB
      *
      * @param  string  $templateId  a valid template identifier
      */
-    public function outputAsTemplate($templateId)
+    public function outputAsTemplate(string $templateId)
     {
-        assert('is_string($templateId); // Invalid argument $templateId: string expected');
         $view = $this->_getDependencyContainer()->getView();
 
         // Find base template
@@ -214,6 +214,74 @@ class DefaultBehavior extends \Yana\Core\Object implements \Yana\Core\Output\IsB
     }
 
     /**
+     * Output relocation request.
+     *
+     * This will flush error messages and warnings to the screen
+     * and tell the client (i.e. a browser) to relocate, so that the given action can be executed.
+     *
+     * You may use the special event 'null' to prevent the framework from handling an event.
+     *
+     * @param  string  $action  relocate here
+     * @param   array  $args    with these arguments
+     */
+    public function relocateTo(string $action, array $args)
+    {
+        assert('!isset($actionLowerCase); // Cannot redeclare var $actionLowerCase');
+        $actionLowerCase = mb_strtolower((string) $action);
+        unset($action);
+
+        /**
+         * save log-files (if any)
+         *
+         * By default this will output any messages to a table of the database named 'log'.
+         */
+
+        assert('!isset($template); // Cannot redeclare var $template');
+        $templateName = 'id:MESSAGE';
+
+        /**
+         * is an AJAX request
+         */
+        if ($this->_getDependencyContainer()->getRequest()->isAjaxRequest()) {
+            $actionLowerCase = 'null';
+            $templateName = 'id:STDOUT';
+        }
+
+        /**
+         * output a message and DO NOT RELOCATE, when
+         *   1) headers are already sent, OR
+         *   2) the template explicitely requests a message, OR
+         *   3) the special 'NULL-event' (no event) is requested.
+         */
+        if ($actionLowerCase === 'null' || $this->_getDependencyContainer()->getDefault('MESSAGE') === true || headers_sent() === true) {
+
+            $args = $this->_getDependencyContainer()->getRegistry()->getVars();
+            $template = $this->_getDependencyContainer()->getView()->createLayoutTemplate($templateName, '', $args);
+            $template->setVar('ACTION', mb_strtolower("$actionLowerCase"));
+
+            $this->_printTemplate($template);
+
+        } else {
+
+            /**
+             * save message and relocate.
+             */
+
+            // @codeCoverageIgnoreStart
+            unset($_SESSION['STDOUT']);
+            $messageCollection = $this->_getDependencyContainer()->getExceptionLogger()->getMessages();
+            if ($messageCollection->count() > 0) {
+                $_SESSION['STDOUT'] = $messageCollection;
+            }
+
+            $urlFormatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
+            $args["action"] = $actionLowerCase;
+            header("Location: " . $urlFormatter(http_build_query($args), true));
+            // @codeCoverageIgnoreEnd
+        }
+    }
+
+    /**
      * Print the template content to the client.
      *
      * This function should be overwritten for unit tests.
@@ -234,7 +302,7 @@ class DefaultBehavior extends \Yana\Core\Object implements \Yana\Core\Output\IsB
      * @param  string  $text  to be printed
      * @codeCoverageIgnore
      */
-    protected function _printText($text)
+    protected function _printText(string $text)
     {
         print $text;
     }

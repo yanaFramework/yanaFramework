@@ -135,6 +135,48 @@ class QueryBuilderTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testBuildSelectQueryWithParentForm()
+    {
+        $form = new \Yana\Db\Ddl\Form('test', $this->db->getSchema());
+        $form->setTable('ft');
+        $subForm = $form->addForm('subForm');
+        $subForm->setTable('t');
+        $parentFacade = new \Yana\Forms\Facade();
+        $parentFacade->setBaseForm($form);
+        $facade = new \Yana\Forms\Facade();
+        $facade->setBaseForm($subForm);
+        $facade->setParent($parentFacade);
+        $query = $this->object->setForm($facade)->buildSelectQuery();
+        $this->assertTrue($query instanceof \Yana\Db\Queries\Select);
+        $this->assertSame($query, $this->object->buildSelectQuery());
+        $this->assertSame($this->db, $query->getDatabase());
+        $this->assertSame($subForm->getTable(), $query->getTable());
+    }
+
+    /**
+     * @test
+     */
+    public function testBuildSelectQueryWithSamtParentTable()
+    {
+        $form = new \Yana\Db\Ddl\Form('test', $this->db->getSchema());
+        $form->setTable('t');
+        $subForm = $form->addForm('subForm');
+        $subForm->setTable('t');
+        $parentFacade = new \Yana\Forms\Facade();
+        $parentFacade->setBaseForm($form);
+        $facade = new \Yana\Forms\Facade();
+        $facade->setBaseForm($subForm);
+        $facade->setParent($parentFacade);
+        $query = $this->object->setForm($facade)->buildSelectQuery();
+        $this->assertTrue($query instanceof \Yana\Db\Queries\Select);
+        $this->assertSame($query, $this->object->buildSelectQuery());
+        $this->assertSame($this->db, $query->getDatabase());
+        $this->assertSame($subForm->getTable(), $query->getTable());
+    }
+
+    /**
+     * @test
+     */
     public function testBuildSelectQuerySearchTerm()
     {
         $table = 't';

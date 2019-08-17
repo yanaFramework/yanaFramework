@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -25,39 +25,32 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Files;
+namespace Yana\Db\Export;
 
 /**
  * @ignore
  */
-require_once __Dir__ . '/../../../include.php';
+require_once __DIR__ . '/../../../../include.php';
+
+/**
+ * @package  test
+ * @ignore
+ */
+class MyXmlFactory extends \Yana\Db\Export\AbstractXmlFactory
+{
+    
+}
 
 /**
  * @package  test
  */
-class BlockTest extends \PHPUnit_Framework_TestCase
+class AbstractXmlFactoryTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var  \Yana\Files\Block
+     * @var \Yana\Db\Export\MyXmlFactory
      */
-    protected $_object;
-
-    /**
-     * @var  string
-     */
-    protected $_source = '';
-
-    /**
-     * Constructor
-     *
-     * @ignore
-     */
-    public function __construct()
-    {
-        $this->_source = tempnam(sys_get_temp_dir(), __CLASS__);
-        file_put_contents($this->_source, '::1');
-    }
+    protected $object;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -65,7 +58,7 @@ class BlockTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->_object = new \Yana\Files\Block($this->_source);
+        $this->object = new \Yana\Db\Export\MyXmlFactory();
     }
 
     /**
@@ -74,52 +67,48 @@ class BlockTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-       unset ($this->_object);
+        
     }
 
     /**
      * @test
      */
-    public function testSetContent()
+    public function testIsUsingForeignKeys()
     {
-        $input = 'qwertyTest';
-
-        $this->_object->setContent($input)->write();
-
-        $this->_object->read();
-
-        $this->assertEquals($input, $this->_object->getContent(), 'assert failed, the given content should be match the expected');
+        $this->assertFalse($this->object->isUsingForeignKeys());
     }
 
     /**
      * @test
      */
-    public function testIsBlocked()
+    public function testGetDatabaseNames()
     {
-        $this->assertTrue($this->_object->isBlocked('::1'));
-        $this->assertFalse($this->_object->isBlocked('::2'));
+        $this->assertSame(array(), $this->object->getDatabaseNames());
     }
 
     /**
-     * Test IPv4
-     *
-     * @test 
+     * @test
      */
-    public function testWithIpv4()
+    public function testSetUsingForeignKeys()
     {
-        $this->_object->setContent(array('127.*.*.*', '::1'));
-        $this->assertTrue($this->_object->isBlocked('127.0.0.1'));
+        $this->assertTrue($this->object->setUsingForeignKeys(true)->isUsingForeignKeys());
+        $this->assertFalse($this->object->setUsingForeignKeys(false)->isUsingForeignKeys());
     }
 
     /**
-     * Test IPv6
-     *
-     * @test 
+     * @test
      */
-    public function testWithIpv6()
+    public function testAddDatabaseName()
     {
-        $this->_object->setContent(array('127.*.*.*', '::1'));
-        $this->assertTrue($this->_object->isBlocked('::1'));
+        $this->assertSame(array(__FUNCTION__), $this->object->addDatabaseName(__FUNCTION__)->getDatabaseNames());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetDatabaseNames()
+    {
+        $this->assertSame(array('1', '2'), $this->object->setDatabaseNames(array('1', '2'))->getDatabaseNames());
     }
 
 }

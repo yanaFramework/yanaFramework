@@ -251,7 +251,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
     }
 
     /**
-     * select the kind of statement
+     * Select the kind of statement.
      *
      * The argument type can be one of the following:
      * <ul>
@@ -272,7 +272,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
      * @param   int  $type  set the kind of statement
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException    when argument is not a valid constant
      * @throws  \Yana\Db\Queries\Exceptions\TableNotSetException  if table has not been initialized
-     * @return  \Yana\Db\Queries\AbstractQuery
+     * @return  $this
      * @ignore
      */
     protected function setType($type)
@@ -293,9 +293,11 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
 
             case \Yana\Db\Queries\TypeEnumeration::COUNT:
                 if (is_array($this->column) && count($this->column) > 1) {
+                    // @codeCoverageIgnoreStart
                     $message = "Cannot use query type 'length' with multiple columns.";
                     $level = \Yana\Log\TypeEnumeration::WARNING;
                     throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
+                    // @codeCoverageIgnoreEnd
                 }
             case \Yana\Db\Queries\TypeEnumeration::UNKNOWN:
             case \Yana\Db\Queries\TypeEnumeration::SELECT:

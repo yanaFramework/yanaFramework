@@ -60,7 +60,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        
+
     }
 
     /**
@@ -83,6 +83,67 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     public function testOffsetSetInvalidArgumentException()
     {
         $this->object->offsetSet(null, new \Yana\Core\Object());
+    }
+
+    /**
+     * @test
+     */
+    public function testHasGroupAndRole()
+    {
+        $this->assertFalse($this->object->hasGroupAndRole('group', 'role'));
+        $this->assertFalse($this->object->hasGroupAndRole('no-such-group', 'no-such-role'));
+
+        $this->object[] = new \Yana\Security\Data\SecurityRules\Rule('group', 'other-role', true);
+        $this->object[] = new \Yana\Security\Data\SecurityRules\Rule('other-group', 'role', true);
+        $this->assertFalse($this->object->hasGroupAndRole('GrOuP', 'RoLe'));
+        $this->assertFalse($this->object->hasGroupAndRole('no-such-group', 'no-such-role'));
+
+        $this->object[] = new \Yana\Security\Data\SecurityRules\Rule('group', '', true);
+        $this->object[] = new \Yana\Security\Data\SecurityRules\Rule('', 'role', true);
+        $this->assertFalse($this->object->hasGroupAndRole('group', 'role'));
+        $this->assertFalse($this->object->hasGroupAndRole('no-such-group', 'no-such-role'));
+
+        $this->object[] = new \Yana\Security\Data\SecurityRules\Rule('Group', 'Role', true);
+
+        $this->assertTrue($this->object->hasGroupAndRole('GrOuP', 'RoLe'));
+        $this->assertFalse($this->object->hasGroupAndRole('no-such-group', 'no-such-role'));
+
+        $this->object->setItems();
+        $this->assertFalse($this->object->hasGroupAndRole('GrOuP', 'RoLe'));
+    }
+
+    /**
+     * @test
+     */
+    public function testHasGroup()
+    {
+        $this->assertFalse($this->object->hasGroup('group'));
+        $this->assertFalse($this->object->hasGroup('no-such-group'));
+
+        $rule = new \Yana\Security\Data\SecurityRules\Rule('group', 'role', true);
+        $this->object->offsetSet(null, $rule);
+
+        $this->assertTrue($this->object->hasGroup('GrOuP'));
+        $this->assertFalse($this->object->hasGroup('no-such-group'));
+        $this->object->offsetUnset(0);
+        $this->assertFalse($this->object->hasGroup('GrOuP'));
+    }
+
+    /**
+     * @test
+     */
+    public function testHasRole()
+    {
+        $this->assertFalse($this->object->hasRole('role'));
+        $this->assertFalse($this->object->hasRole('no-such-role'));
+
+        $rule = new \Yana\Security\Data\SecurityRules\Rule('group', 'role', true);
+        $this->object->offsetSet(null, $rule);
+
+        $this->assertTrue($this->object->hasRole('RoLe'));
+        $this->assertFalse($this->object->hasRole('no-such-role'));
+        $this->object->offsetUnset(0);
+        $this->assertFalse($this->object->hasRole('RoLe'));
     }
 
 }

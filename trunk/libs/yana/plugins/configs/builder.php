@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Plugins\Configs;
 
@@ -62,7 +63,7 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder implements \Yana\Log
      *
      * @return  \Yana\Plugins\Configs\IsClassConfiguration
      */
-    protected function buildClass()
+    protected function buildClass(): \Yana\Plugins\Configs\IsClassConfiguration
     {
         if ($this->_class) {
             $this->object->setNamespace($this->_class->getNamespaceName());
@@ -130,7 +131,7 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder implements \Yana\Log
      *
      * @return  \Yana\Plugins\Configs\IsMethodConfiguration
      */
-    protected function buildMethod()
+    protected function buildMethod(): \Yana\Plugins\Configs\IsMethodConfiguration
     {
         $method = new \Yana\Plugins\Configs\MethodConfiguration();
         if ($this->_method) {
@@ -241,34 +242,39 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder implements \Yana\Log
             unset($template);
             // process params
             assert('!isset($params); // Cannot redeclare var $params');
-            $params = array();
+            $params = new \Yana\Plugins\Configs\MethodParameterCollection();
             assert('!isset($param); // Cannot redeclare var $param');
             assert('!isset($match); // Cannot redeclare var $match');
             assert('!isset($name); // Cannot redeclare var $name');
             assert('!isset($type); // Cannot redeclare var $type');
             foreach ($parser->getTags(\Yana\Plugins\Annotations\Enumeration::PARAM, array()) as $param)
             {
+                $match = array();
                 if (preg_match('/^(\w+)\s+\$(\w+)/', $param, $match)) {
                     $name = $match[2];
                     $type = $match[1];
-                    $params[$name] = $type;
+                    $params[$name] = new \Yana\Plugins\Configs\MethodParameter($name, $type);
                 }
             }
-            $method->setParams($params);
-            $method->setHasGenericParams(isset($params['ARGS']));
-            unset($params, $match, $name, $type, $param);
+            unset($match, $name, $type, $param);
             /* @var $param \ReflectionParameter */
-            assert('!isset($defaults); // Cannot redeclare var $defaults');
-            $defaults = array();
+
             assert('!isset($param); // Cannot redeclare var $param');
-            foreach($this->_method->getParameters() as $i => $param)
+            foreach($this->_method->getParameters() as $param)
             {
                 if ($param->isDefaultValueAvailable()) {
-                    $defaults[$i] = $param->getDefaultValue();
+                    $name = $param->getName();
+                    if (!isset($params[$name])) {
+                        $params[$name] = new \Yana\Plugins\Configs\MethodParameter($name, (string) $param->getType()); 
+                    }
+                    $params[$name]->setDefault($param->getDefaultValue());
                 }
             }
-            $method->setDefaults($defaults);
-            unset($defaults, $param);
+            unset($param);
+
+            $method->setParams($params);
+            $method->setHasGenericParams(isset($params['ARGS']));
+
             $this->object->addMethod($method);
         }
         return $method;
@@ -280,7 +286,7 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder implements \Yana\Log
      * @param   \Yana\Plugins\Annotations\ReflectionClass  $pluginClass  base class description
      * @return  $this
      */
-    public function setReflection(\Yana\Plugins\Annotations\ReflectionClass $pluginClass)
+    public function setReflection(\Yana\Plugins\Annotations\ReflectionClass $pluginClass): self
     {
         $this->_class = $pluginClass;
         return $this;
@@ -294,7 +300,7 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder implements \Yana\Log
      * @param   \Yana\Plugins\Annotations\IsParser  $parser  used to parse the class for annotations.
      * @return  $this
      */
-    public function setAnnotationParser(\Yana\Plugins\Annotations\IsParser $parser)
+    public function setAnnotationParser(\Yana\Plugins\Annotations\IsParser $parser): self
     {
         $this->_parser = $parser;
         return $this;
@@ -307,7 +313,7 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder implements \Yana\Log
      *
      * @return  \Yana\Plugins\Annotations\IsParser 
      */
-    protected function getAnnotationParser()
+    protected function getAnnotationParser(): \Yana\Plugins\Annotations\IsParser
     {
         if (!isset($this->_parser)) {
             $this->_parser = new \Yana\Plugins\Annotations\Parser();
@@ -350,7 +356,7 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder implements \Yana\Log
      * @param   array  $tag  routing information
      * @return  \Yana\Plugins\Configs\EventRoute
      */
-    private function _buildEventRoute(array $tag)
+    private function _buildEventRoute(array $tag): \Yana\Plugins\Configs\EventRoute
     {
         assert('!isset($event); // Cannot redeclare var $event');
         $event = new \Yana\Plugins\Configs\EventRoute();

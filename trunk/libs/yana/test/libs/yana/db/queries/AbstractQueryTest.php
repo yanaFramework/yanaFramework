@@ -46,6 +46,11 @@ class MyQuery extends \Yana\Db\Queries\AbstractQuery
     {
         return parent::toString($stmt);
     }
+
+    public function setType($type)
+    {
+        return parent::setType($type);
+    }
 }
 
 /**
@@ -130,6 +135,53 @@ class AbstractQueryTest extends \PHPUnit_Framework_TestCase
     public function testGetType()
     {
         $this->assertSame(\Yana\Db\Queries\TypeEnumeration::UNKNOWN, $this->query->getType());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetType()
+    {
+        $this->query->setTable('t');
+        $this->assertSame(\Yana\Db\Queries\TypeEnumeration::SELECT, $this->query->setType(\Yana\Db\Queries\TypeEnumeration::SELECT)->getType());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetTypeDelete()
+    {
+        $this->query->setTable('t');
+        $this->assertSame(\Yana\Db\Queries\TypeEnumeration::DELETE, $this->query->setType(\Yana\Db\Queries\TypeEnumeration::DELETE)->getType());
+        $this->assertSame(1, $this->query->getLimit());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetTypeCount()
+    {
+        $this->query->setTable('t');
+        $this->assertSame(\Yana\Db\Queries\TypeEnumeration::COUNT, $this->query->setType(\Yana\Db\Queries\TypeEnumeration::COUNT)->getType());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetTypeInsert()
+    {
+        $this->query->setTable('t');
+        $this->assertSame(\Yana\Db\Queries\TypeEnumeration::INSERT, $this->query->setType(\Yana\Db\Queries\TypeEnumeration::INSERT)->getType());
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
+     */
+    public function testSetTypeInvalidArgumentException()
+    {
+        $this->query->setTable('t');
+        $this->query->setType(-1);
     }
 
     /**

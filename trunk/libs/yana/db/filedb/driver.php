@@ -65,7 +65,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
     private static $_baseDir = null;
 
     /**
-     * constructor
+     * <<constructor>> Initialize query parser.
      *
      * @param  \Yana\Db\Queries\IsParser  $parser  to handle SQL statements
      */
@@ -798,6 +798,11 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
         $this->_select($query->getTable());
         $set = $query->getValues();
 
+        if (empty($set) || !is_array($set)) {
+            $message = 'The insert statement contains no values to be inserted.';
+            throw new \Yana\Db\Queries\Exceptions\InvalidSyntaxException($message);
+        }
+
         if (!$this->_checkForeignKeys($this->_getTable(), $set)) {
             $message = "Foreign key check failed on table '{$this->_getTable()->getName()}' for " .
                     "row " . print_r($set, true);
@@ -806,10 +811,6 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
 
         assert('!isset($primaryKey); // Cannot redeclare var $primaryKey');
         $primaryKey = $this->_getTable()->getPrimaryKey();
-        if (empty($set)) {
-            $message = 'The statement contains illegal values.';
-            throw new \Yana\Db\Queries\Exceptions\InvalidSyntaxException($message);
-        }
 
         if ($this->_getTable()->getColumn($primaryKey)->isAutoIncrement()) {
             $this->_increment($set);

@@ -24,41 +24,57 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
-declare(strict_types=1);
 
-namespace Yana\Core\Output;
+namespace Yana\Plugins\Configs;
 
 /**
- * <<interface>> Helps the application class to handle output behavior.
+ * <<entity>> Parameter for method call.
+ *
+ * This class represents a plugin method's parameter.
  *
  * @package     yana
- * @subpackage  core
+ * @subpackage  plugins
+ * @ignore
  */
-interface IsBehavior
+interface IsMethodParameter
 {
 
     /**
-     * Provides GUI from current data.
-     *
-     * Returns the name of the action to call next (if any).
-     * Returns NULL if there is no such action.
+     * Get parameter type.
      *
      * @return  string
      */
-    public function outputResults() : ?string;
+    public function getType(): string;
 
     /**
-     * Output relocation request.
+     * Get parameter name.
      *
-     * This will flush error messages and warnings to the screen
-     * and tell the client (i.e. a browser) to relocate, so that the given action can be executed.
-     *
-     * You may use the special event 'null' to prevent the framework from handling an event.
-     *
-     * @param  string  $action  relocate here
-     * @param   array  $args    with these arguments
+     * @return  string
      */
-    public function relocateTo(string $action, array $args);
+    public function getName(): string;
+
+    /**
+     * Returns bool(true) if a parameter has been provided and bool(false) otherwise.
+     *
+     * @return  bool
+     */
+    public function isDefaultValueAvailable(): bool;
+
+    /**
+     * Returns a default value.
+     *
+     * @return  mixed
+     */
+    public function getDefault();
+
+    /**
+     * Set default value of parameter.
+     *
+     * @param   mixed  $default  of parameter
+     * @return  $this
+     */
+    public function setDefault($default);
+
 
 }
 

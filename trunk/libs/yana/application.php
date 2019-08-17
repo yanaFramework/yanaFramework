@@ -65,7 +65,7 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
     protected function _getOutputBehavior()
     {
         if (!isset($this->_outputBehavior)) {
-            $this->_outputBehavior = new \Yana\Core\Output\DefaultBehavior();
+            $this->_outputBehavior = new \Yana\Core\Output\DefaultBehavior($this->_getDependencyContainer());
         }
         return $this->_outputBehavior;
     }
@@ -492,7 +492,7 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
     }
 
     /**
-     * exit the current script
+     * Exit the current script.
      *
      * This will flush error messages and warnings to the screen,
      * write all reported errors (if any) to the framework's logs
@@ -533,58 +533,12 @@ final class Application extends \Yana\Core\Object implements \Yana\Report\IsRepo
      *
      * @param  string  $event  upcoming event to route to
      * @param  array   $args   list of arguments to pass to the function
-     * @since  2.9.0 RC2
+     * @codeCoverageIgnore
      */
     public function exitTo($event = 'null', array $args = array())
     {
         assert('is_string($event); // Invalid argument $event: string expected');
-        $eventLowerCase = mb_strtolower((string) $event);
-        unset($event);
-
-        /**
-         * save log-files (if any)
-         *
-         * By default this will output any messages to a table of the database named 'log'.
-         */
-        $view = $this->getView();
-
-        assert('!isset($template); // Cannot redeclare var $template');
-        $templateName = 'id:MESSAGE';
-
-        /**
-         * is an AJAX request
-         */
-        if ($this->_getDependencyContainer()->getRequest()->isAjaxRequest()) {
-            $eventLowerCase = 'null';
-            $templateName = 'id:STDOUT';
-        }
-
-        /**
-         * output a message and DO NOT RELOCATE, when
-         *   1) headers are already sent, OR
-         *   2) the template explicitely requests a message, OR
-         *   3) the special 'NULL-event' (no event) is requested.
-         */
-        if ($eventLowerCase === 'null' || $this->getDefault('MESSAGE') === true || headers_sent() === true) {
-
-            $template = $view->createLayoutTemplate($templateName, '', $this->getVars());
-            $template->setVar('ACTION', mb_strtolower("$eventLowerCase"));
-
-            exit((string) $template);
-        }
-
-        /**
-         * save message and relocate.
-         */
-        unset($_SESSION['STDOUT']);
-        $messageCollection = $this->_getDependencyContainer()->getExceptionLogger()->getMessages();
-        if ($messageCollection->count() > 0) {
-            $_SESSION['STDOUT'] = $messageCollection;
-        }
-
-        $urlFormatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
-        $args["action"] = $eventLowerCase;
-        header("Location: " . $urlFormatter(http_build_query($args), true));
+        $this->_getOutputBehavior()->relocateTo($event, $args);
         exit(0);
     }
 

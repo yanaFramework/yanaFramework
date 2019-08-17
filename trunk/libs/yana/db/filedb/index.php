@@ -360,8 +360,6 @@ class Index extends \Yana\Core\Object
                 $indexes = $_indexes; // should always be the case (but just to be on the safe side)
             }
             unset($_indexes);
-        } else {
-            $this->create();
         }
         $this->_indexes = $indexes;
     }

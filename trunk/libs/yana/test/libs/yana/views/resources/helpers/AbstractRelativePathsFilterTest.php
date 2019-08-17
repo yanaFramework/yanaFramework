@@ -24,43 +24,38 @@
  * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
-declare(strict_types=1);
 
-namespace Yana\Plugins\Configs;
+namespace Yana\Views\Resources\Helpers;
 
 /**
  * @ignore
  */
-require_once __DIR__ . '/../../../../include.php';
+require_once dirname(__FILE__) . '/../../../../../include.php';
 
 /**
  * @package  test
  * @ignore
  */
-class MyNullBuilder extends \Yana\Plugins\Configs\AbstractBuilder
+class MyAbstractRelativePathsFilter extends \Yana\Views\Resources\Helpers\AbstractRelativePathsFilter
 {
-    protected function buildClass(): \Yana\Plugins\Configs\IsClassConfiguration
-    {
-        return new \Yana\Plugins\Configs\ClassConfiguration();
-    }
-
-    protected function buildMethod(): \Yana\Plugins\Configs\IsMethodConfiguration
-    {
-        return new \Yana\Plugins\Configs\MethodConfiguration();
-    }
-
+    // intentionally left blank
 }
 
 /**
  * @package  test
  */
-class AbstractBuilderTest extends \PHPUnit_Framework_TestCase
+class AbstractRelativePathsFilterTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Plugins\Configs\MyNullBuilder
+     * @var \Yana\Views\Resources\Helpers\MyAbstractRelativePathsFilter
      */
     protected $object;
+
+    /**
+     * @var \Yana\Core\Dependencies\IsViewContainer
+     */
+    protected $container;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -68,7 +63,13 @@ class AbstractBuilderTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Plugins\Configs\MyNullBuilder();
+        if (!\class_exists('\Smarty') || !\class_exists('\Smarty_Internal_Template')) {
+            $this->markTestSkipped();
+        }
+        $configurationFactory = new \Yana\ConfigurationFactory();
+        $configuration = $configurationFactory->loadConfiguration(CWD . 'resources/system.config.xml');
+        $this->container = new \Yana\Core\Dependencies\Container($configuration);
+        $this->object = new \Yana\Views\Resources\Helpers\MyAbstractRelativePathsFilter($this->container);
     }
 
     /**
@@ -83,9 +84,17 @@ class AbstractBuilderTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testGetPluginConfigurationClass()
+    public function testSetLeftDelimiter()
     {
-        $this->assertEquals(new \Yana\Plugins\Configs\ClassConfiguration(), $this->object->getPluginConfigurationClass());
+        $this->assertSame('Abc', $this->object->setLeftDelimiter('Abc')->getLeftDelimiter());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetRightDelimiter()
+    {
+        $this->assertSame('Abc', $this->object->setRightDelimiter('Abc')->getRightDelimiter());
     }
 
 }

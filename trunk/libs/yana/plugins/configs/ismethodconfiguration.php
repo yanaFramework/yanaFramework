@@ -43,14 +43,14 @@ interface IsMethodConfiguration
      *
      * @return  string
      */
-    public function getType();
+    public function getType(): string;
 
     /**
      * Get directory.
      *
      * @return  string
      */
-    public function getPath();
+    public function getPath(): string;
 
     /**
      * Fet directory names of subscribing plugins.
@@ -59,7 +59,7 @@ interface IsMethodConfiguration
      *
      * @return  array
      */
-    public function getPaths();
+    public function getPaths(): array;
 
     /**
      * Get Javascript files.
@@ -69,7 +69,7 @@ interface IsMethodConfiguration
      *
      * @return  array
      */
-    public function getScripts();
+    public function getScripts(): array;
 
     /**
      * Get CSS-styles.
@@ -79,7 +79,7 @@ interface IsMethodConfiguration
      *
      * @return  array
      */
-    public function getStyles();
+    public function getStyles(): array;
 
     /**
      * Get language files.
@@ -89,25 +89,16 @@ interface IsMethodConfiguration
      *
      * @return  array
      */
-    public function getLanguages();
+    public function getLanguages(): array;
 
     /**
      * Get parameters.
      *
-     * Returns a list of all parameters as an array,
-     * where the keys are the param-names and the values are the param-types.
+     * Returns a collection of all parameters, which each member being an instance of {@see \Yana\Plugins\Configs\IsMethodParameter}
      *
-     * Example:
-     * <code>
-     * array(
-     *     'id' => 'int',
-     *     'title' => 'string'
-     * );
-     * </code>
-     *
-     * @return  array
+     * @return  \Yana\Plugins\Configs\IsMethodParameterCollection
      */
-    public function getParams();
+    public function getParams(): \Yana\Plugins\Configs\IsMethodParameterCollection;
 
     /**
      * Get return value.
@@ -116,7 +107,7 @@ interface IsMethodConfiguration
      *
      * @return  string
      */
-    public function getReturn();
+    public function getReturn(): string;
 
     /**
      * Get group.
@@ -128,7 +119,7 @@ interface IsMethodConfiguration
      *
      * @return  string
      */
-    public function getGroup();
+    public function getGroup(): string;
 
     /**
      * Get menu entry.
@@ -141,7 +132,7 @@ interface IsMethodConfiguration
      *
      * @return  \Yana\Plugins\Menus\IsEntry
      */
-    public function getMenu();
+    public function getMenu(): ?\Yana\Plugins\Menus\IsEntry;
 
     /**
      * Get settings on how to react on success.
@@ -155,7 +146,7 @@ interface IsMethodConfiguration
      *
      * @return  \Yana\Plugins\Configs\EventRoute
      */
-    public function getOnError();
+    public function getOnError(): ?\Yana\Plugins\Configs\EventRoute;
 
     /**
      * Get human readable name.
@@ -164,7 +155,7 @@ interface IsMethodConfiguration
      *
      * @return  string
      */
-    public function getTitle();
+    public function getTitle(): string;
 
     /**
      * get safemode setting of method
@@ -178,14 +169,14 @@ interface IsMethodConfiguration
      *
      * @return  bool
      */
-    public function getSafeMode();
+    public function getSafeMode(): ?bool;
 
     /**
      * Get template path.
      *
      * @return  string
      */
-    public function getTemplate();
+    public function getTemplate(): string;
 
     /**
      * Get user security levels.
@@ -194,7 +185,7 @@ interface IsMethodConfiguration
      *
      * @return  \Yana\Plugins\Configs\IsUserPermissionRule[]
      */
-    public function getUserLevels();
+    public function getUserLevels(): array;
 
     /**
      * get overwrite setting of method
@@ -209,7 +200,7 @@ interface IsMethodConfiguration
      *
      * @return  bool
      */
-    public function getOverwrite();
+    public function getOverwrite(): bool;
 
     /**
      * Get subscribe setting of method.
@@ -225,35 +216,28 @@ interface IsMethodConfiguration
      *
      * @return  bool
      */
-    public function getSubscribe();
+    public function getSubscribe(): bool;
 
     /**
      * Get class name.
      *
      * @return  string
      */
-    public function getClassName();
+    public function getClassName(): string;
 
     /**
      * Get method name.
      *
      * @return  string
      */
-    public function getMethodName();
-
-    /**
-     * Get default values for method params.
-     *
-     * @return  array
-     */
-    public function getDefaults();
+    public function getMethodName(): string;
 
     /**
      * Check if the function uses a generic, unchecked parameter list.
      *
      * @return  bool
      */
-    public function hasGenericParams();
+    public function hasGenericParams(): bool;
 
     /**
      * Executes the event on the provided instance and returns the result.
@@ -271,7 +255,7 @@ interface IsMethodConfiguration
      * @param   \Yana\IsPlugin  $instance  object to send event to
      * @return  bool
      */
-    public function hasMethod(\Yana\IsPlugin $instance);
+    public function hasMethod(\Yana\IsPlugin $instance): bool;
 
 }
 

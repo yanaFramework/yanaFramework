@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Log\Errors;
 
@@ -99,8 +100,8 @@ class Handler extends \Yana\Log\Errors\AbstractHandler
     {
         $reportingLevel = $this->getErrorReportingLevel();
         if (($reportingLevel & ~$errorNumber) !== $reportingLevel) {
-            $message = $this->_formatter->format($errorNumber, $description, $file, $lineNumber);
-            $this->_logger->addLog($message, $errorNumber);
+            $message = $this->_getFormatter()->format($errorNumber, $description, $file, $lineNumber);
+            $this->_getLogger()->addLog($message, $errorNumber);
 
             $this->_exit();
         }
@@ -126,8 +127,8 @@ class Handler extends \Yana\Log\Errors\AbstractHandler
             $description = (string) $code;
         }
 
-        $message = $this->_formatter->format(\Yana\Log\TypeEnumeration::ASSERT, $description, $pathToFile, $lineNumber);
-        $this->_logger->addLog($message, \Yana\Log\TypeEnumeration::ASSERT);
+        $message = $this->_getFormatter()->format(\Yana\Log\TypeEnumeration::ASSERT, $description, $pathToFile, $lineNumber);
+        $this->_getLogger()->addLog($message, \Yana\Log\TypeEnumeration::ASSERT);
 
         $this->_exit();
     }
@@ -148,12 +149,12 @@ class Handler extends \Yana\Log\Errors\AbstractHandler
         $message = "";
         do
         {
-            $message .= $this->_formatter->format(
+            $message .= $this->_getFormatter()->format(
                 \Yana\Log\TypeEnumeration::EXCEPTION, $e->getMessage(), $e->getFile(), $e->getLine(), $e->getTrace()
             );
             $e = $e->getPrevious();
         } while ($e);
-        $this->_logger->addLog($message, \Yana\Log\TypeEnumeration::EXCEPTION);
+        $this->_getLogger()->addLog($message, \Yana\Log\TypeEnumeration::EXCEPTION);
 
         $this->_exit();
     }

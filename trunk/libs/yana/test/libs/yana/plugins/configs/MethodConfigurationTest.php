@@ -24,6 +24,7 @@
  * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Plugins\Configs;
 
@@ -168,7 +169,7 @@ class MethodConfigurationTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetParams()
     {
-        $this->assertEquals(array(), $this->object->getParams());
+        $this->assertEquals(new \Yana\Plugins\Configs\MethodParameterCollection(), $this->object->getParams());
     }
 
     /**
@@ -176,9 +177,11 @@ class MethodConfigurationTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetParams()
     {
-        $params = array('p1' => 'int', 'p2' => 'string');
-        $this->object->setParams($params);
-        $this->assertEquals($params, $this->object->getParams());
+        $expected = new \Yana\Plugins\Configs\MethodParameterCollection();
+        $expected[] = new \Yana\Plugins\Configs\MethodParameter("p1", "int");
+        $expected[] = new \Yana\Plugins\Configs\MethodParameter("p2", "string");
+
+        $this->assertEquals($expected, $this->object->setParams($expected)->getParams());
     }
 
     /**
@@ -438,7 +441,9 @@ class MethodConfigurationTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetEventArguments($name, $type, $default, $value)
     {
-        $this->object->addParam($name, $type, $default);
+        $param = new \Yana\Plugins\Configs\MethodParameter($name, $type);
+        $param->setDefault($default);
+        $this->object->addParam($param);
         try {
             $this->assertSame(array($name => \is_null($value) ? $default : $value), $this->object->setEventArguments(array($name => $value)));
         } catch (\Yana\Core\Exceptions\Forms\InvalidValueException $e) {
@@ -449,30 +454,52 @@ class MethodConfigurationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @return  array
+     */
+    public function providerInvalidValueException()
+    {
+        return array(
+            array('a', 'array', 'test'),
+            array('i', 'int', 'One'),
+            array('f', 'float', 'One-Point-Two'),
+            array('s', 'other', array())
+        );
+    }
+
+    /**
+     * @test
+     * @dataProvider  providerInvalidValueException
+     * @param  string  $name
+     * @param  string  $type
+     * @param  mixed   $value
+     * @expectedException \Yana\Core\Exceptions\Forms\InvalidValueException
+     */
+    public function testSetEventArgumentsInvalidValueException($name, $type, $value)
+    {
+        $this->object->addParam(new \Yana\Plugins\Configs\MethodParameter($name, $type));
+        $this->object->setEventArguments(array($name => $value));
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\Forms\MissingFieldException
+     */
+    public function testSetEventArgumentsMissingFieldException()
+    {
+        $this->object->addParam(new \Yana\Plugins\Configs\MethodParameter('test', 'other'));
+        $this->object->setEventArguments(array('test' => null));
+    }
+
+    /**
      * @test
      */
     public function testAddParam()
     {
-        $this->assertSame(array("test" => "type"), $this->object->addParam("test", "type", "default")->getParams());
-        $this->assertSame(array("default"), $this->object->getDefaults());
-    }
-
-    /**
-     * @test
-     */
-    public function testGetDefaults()
-    {
-        $this->assertEquals(array(), $this->object->getDefaults());
-    }
-
-    /**
-     * @test
-     */
-    public function testSetDefaults()
-    {
-        $defaults = array(2 => 1, 3 => '2', 4=> 3);
-        $this->object->setDefaults($defaults);
-        $this->assertEquals($defaults, $this->object->getDefaults());
+        $param = new \Yana\Plugins\Configs\MethodParameter("test", "type");
+        $param->setDefault("default");
+        $expected = new \Yana\Plugins\Configs\MethodParameterCollection();
+        $expected[] = $param;
+        $this->assertEquals($expected, $this->object->addParam($param)->getParams());
     }
 
     /**

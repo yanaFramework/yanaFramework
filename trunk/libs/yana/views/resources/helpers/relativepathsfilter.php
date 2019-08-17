@@ -35,7 +35,7 @@ namespace Yana\Views\Resources\Helpers;
  * @package     yana
  * @subpackage  views
  */
-class RelativePathsFilter extends \Yana\Views\Helpers\AbstractViewHelper
+class RelativePathsFilter extends \Yana\Views\Resources\Helpers\AbstractRelativePathsFilter
 {
 
     /**
@@ -50,16 +50,15 @@ class RelativePathsFilter extends \Yana\Views\Helpers\AbstractViewHelper
         assert('is_string($source); // Wrong type for argument 1. String expected');
         assert('is_string($basedir); // Invalid argument $basedir: string expected');
 
-        $smarty = $this->_getViewManager()->getSmarty();
-        $lDelim = preg_quote($smarty->left_delimiter, '/');
-        $rDelim = preg_quote($smarty->right_delimiter, '/');
+        $lDelim = preg_quote($this->getLeftDelimiter(), '/');
+        $rDelim = preg_quote($this->getRightDelimiter(), '/');
 
         if (!empty($basedir)) {
             $basedir .= '/';
             if ($basedir[0] === '.') {
                 $basedir = preg_replace('/^\.[\/\\\]/', '' ,$basedir);
             }
-            $pattern = '/(' . $lDelim . ')import\s+(?:preparser(?:="true")?\s+|)file="(\S*)(".*' .
+            $pattern = '/(' . $lDelim . ')import\s+(?:preparser(?:="true")?\s+|literal\s+|)file="(\S*)(".*' .
                 $rDelim . ')/Ui';
             $match2 = array();
             preg_match_all($pattern, $source, $match2);
@@ -68,9 +67,10 @@ class RelativePathsFilter extends \Yana\Views\Helpers\AbstractViewHelper
                 if (preg_match('/\sliteral\s/i', $match2[0][$i])) {
                     $pattern = '/' . preg_quote($match2[0][$i], '/') . '/i';
                     $source = preg_replace($pattern, preg_replace("/\sliteral\s/i", " ", $match2[0][$i]), $source);
-                } elseif (preg_match('/\spreparser\s/i', $match2[0][$i])) {
+                } elseif (preg_match('/\spreparser(="true")?\s/i', $match2[0][$i])) {
                     $replacementPattern = "/.*<body[^>]*>(.*)<\/body>.*/si";
-                    $replacement = preg_replace($replacementPattern, "\\1", implode("", file($basedir . $match2[2][$i])));
+                    $fileContents = \file_exists($basedir . $match2[2][$i]) ? implode("", file($basedir . $match2[2][$i])) : "";
+                    $replacement = preg_replace($replacementPattern, "\\1", $fileContents);
                     $pattern = '/' . preg_quote($match2[0][$i], '/') . '/i';
                     $source = preg_replace($pattern, $replacement, $source);
                 } else {

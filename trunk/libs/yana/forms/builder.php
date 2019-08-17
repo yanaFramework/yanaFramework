@@ -120,8 +120,23 @@ class Builder extends \Yana\Forms\AbstractBuilder
         $selectQuery->setOffset($formSetup->getPage() * $formSetup->getEntriesPerPage());
         assert('!isset($values); // Cannot redeclare var $values');
         $values = $selectQuery->getResults();
-        if ($selectQuery->getExpectedResult() === \Yana\Db\ResultEnumeration::ROW) {
-            $values = array($values);
+        switch ($selectQuery->getExpectedResult())
+        {
+            case \Yana\Db\ResultEnumeration::ROW:
+                $values = array($values);
+            break;
+            case \Yana\Db\ResultEnumeration::COLUMN:
+                assert('!isset($rows); // Cannot redeclare var $rows');
+                $rows = array();
+                assert('!isset($key); // Cannot redeclare var $key');
+                assert('!isset($value); // Cannot redeclare var $value');
+                foreach ($values as $key => $value)
+                {
+                    $rows[$key] = array($selectQuery->getColumn() => $value);
+                }
+                unset($key, $value);
+                $values = $rows;
+                unset($rows);
         }
         $this->_getSetupBuilder()->setRows($values);
 

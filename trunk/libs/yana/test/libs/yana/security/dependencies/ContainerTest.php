@@ -302,4 +302,12 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(\Yana\Log\LogManager::getLogger(), $this->object->getLogger());
     }
 
+    /**
+     * @test
+     */
+    public function testGetConnectionToUserData()
+    {
+        $this->assertSame('user', $this->object->getConnectionToUserData()->getSchema()->getName());
+    }
+
 }

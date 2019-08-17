@@ -24,42 +24,18 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
-declare(strict_types=1);
 
-namespace Yana\Core\Output;
+namespace Yana\Plugins\Configs;
 
 /**
- * <<interface>> Helps the application class to handle output behavior.
+ * <<interface>> Plugin method parameter collection.
  *
  * @package     yana
- * @subpackage  core
+ * @subpackage  plugins
  */
-interface IsBehavior
+interface IsMethodParameterCollection extends \Yana\Core\IsCollection
 {
-
-    /**
-     * Provides GUI from current data.
-     *
-     * Returns the name of the action to call next (if any).
-     * Returns NULL if there is no such action.
-     *
-     * @return  string
-     */
-    public function outputResults() : ?string;
-
-    /**
-     * Output relocation request.
-     *
-     * This will flush error messages and warnings to the screen
-     * and tell the client (i.e. a browser) to relocate, so that the given action can be executed.
-     *
-     * You may use the special event 'null' to prevent the framework from handling an event.
-     *
-     * @param  string  $action  relocate here
-     * @param   array  $args    with these arguments
-     */
-    public function relocateTo(string $action, array $args);
-
+    // intentionally left blank
 }
 
 ?>

@@ -290,7 +290,10 @@ class QueryBuilder extends \Yana\Forms\AbstractQueryBuilder
 
             $parentResults = $parentForm->getSetup()->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE)->getRows();
             if ($parentForm->getBaseForm()->getTable() === $form->getBaseForm()->getTable()) {
-                $select->setRow($parentResults->key());
+                $rowId = $parentResults->key();
+                if (!is_null($rowId)) {
+                    $select->setRow($parentResults->key());
+                }
                 $form->getSetup()->setEntriesPerPage(1);
             } else {
                 assert('!isset($sourceColumnName); // Cannot redeclare var $sourceColumnName');

@@ -91,8 +91,6 @@ class SqlKeywordChecker extends \Yana\Core\Object implements \Yana\Db\Helpers\Is
      */
     public static function createFromApplicationDefault()
     {
-        assert('is_string($file); // Wrong argument type: $file. String expected.');
-
         $builder = new \Yana\ApplicationBuilder();
         $application = $builder->buildApplication();
         /* Load list of reserved SQL keywords (required for smart id quoting) */
@@ -121,7 +119,7 @@ class SqlKeywordChecker extends \Yana\Core\Object implements \Yana\Db\Helpers\Is
      */
     public static function createFromFile($filename)
     {
-        assert('is_string($file); // Wrong argument type: $file. String expected.');
+        assert('is_string($filename); // Wrong argument type: $filename. String expected.');
 
         assert('!isset($reservedSqlKeywords); // Cannot redeclare $reservedSqlKeywords');
         $reservedSqlKeywords = array();

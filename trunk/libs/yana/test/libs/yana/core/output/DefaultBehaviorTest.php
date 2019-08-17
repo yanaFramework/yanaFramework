@@ -24,6 +24,7 @@
  * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Core\Output;
 
@@ -44,7 +45,7 @@ class MyDefaultBehavior extends \Yana\Core\Output\DefaultBehavior
     {
         $this->template = $template;
     }
-    protected function _printText($text)
+    protected function _printText(string $text)
     {
         $this->printed = $text;
     }
@@ -92,6 +93,25 @@ class DefaultBehaviorTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testRelocateTo()
+    {
+        $this->assertNull($this->object->relocateTo('null', array()));
+        $this->assertSame('null', $this->object->template->getVar('ACTION'));
+    }
+
+    /**
+     * @test
+     */
+    public function testRelocateToJson()
+    {
+        $_GET['is_ajax_request'] = true;
+        $this->assertNull($this->object->relocateTo('test', array()));
+        $this->assertSame('null', $this->object->template->getVar('ACTION'));
+    }
+
+    /**
+     * @test
+     */
     public function testOutputAsJson()
     {
         $this->assertNull($this->object->outputAsJson(array(123)));
@@ -117,12 +137,12 @@ class DefaultBehaviorTest extends \PHPUnit_Framework_TestCase
         $this->assertNotEmpty($this->object->template);
         $this->assertTrue($this->object->template->getVar('STDOUT') instanceof \Yana\Log\ViewHelpers\MessageCollection);
     }
-
     /**
      * @test
      */
     public function testOutputAsTemplateStdOut()
     {
+
         $_SESSION['STDOUT'] = __FUNCTION__;
         $this->container->getLanguage()->getTranslations()->setLoaded('message');
         $this->assertNull($this->object->outputAsTemplate('sitemap'));

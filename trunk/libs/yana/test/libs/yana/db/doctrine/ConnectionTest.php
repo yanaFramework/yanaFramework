@@ -171,11 +171,8 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
     {
         // init database
         $this->object->insert('ft.1', array('ftvalue' => 1));
-
         $this->object->insert('t.foo', array('tvalue' => 1, 'ftid' => 1, 'tb' => true ));
-
         $this->object->insert('t.foo3', array('tvalue' => 3, 'ftid' => 1, 'tb' => false ));
-
         $this->object->insert('i.foo', array('ta' => array('1' => '1' ) ));
 
         // supposed to succeed

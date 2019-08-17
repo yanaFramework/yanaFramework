@@ -65,6 +65,11 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
     private $_db = null;
 
     /**
+     * @var \Yana\Db\Helpers\IsSqlKeywordChecker
+     */
+    private $_sqlKeywordChecker = null;
+
+    /**
      * @var string
      */
     private $_tpl = "INSERT INTO %TABLE% (%KEYS%) VALUES (%VALUES%);";
@@ -74,12 +79,31 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
      *
      * This class requires a database resource as input.
      *
-     * @param  \Yana\Db\IsConnection  $db  a database resource
+     * @param  \Yana\Db\IsConnection                 $db                 a database resource
+     * @param  \Yana\Db\Helpers\IsSqlKeywordChecker  $sqlKeywordChecker  a class that checks if a given string is a reserved SQL keyword
      */
-    public function __construct(\Yana\Db\IsConnection $db)
+    public function __construct(\Yana\Db\IsConnection $db, \Yana\Db\Helpers\IsSqlKeywordChecker $sqlKeywordChecker = null)
     {
+        if (!is_null($sqlKeywordChecker)) {
+            $this->_sqlKeywordChecker = $sqlKeywordChecker;
+        }
         $this->_db = $db;
         parent::__construct($this->_db->getSchema());
+    }
+
+    /**
+     * Returns a class that checks if a given string is a reserved SQL keyword.
+     *
+     * We need this functionality for quoting the names of IBM DB2 database object names.
+     *
+     * @return  \Yana\Db\Helpers\IsSqlKeywordChecker
+     */
+    protected function _getSqlKeywordChecker()
+    {
+        if (!isset($this->_sqlKeywordChecker)) {
+            $this->_sqlKeywordChecker = \Yana\Db\Helpers\SqlKeywordChecker::createFromApplicationDefault();
+        }
+        return $this->_sqlKeywordChecker;
     }
 
     /**
@@ -102,7 +126,9 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
     {
         $sql = array();
         if ($extractStructure) {
+            // @codeCoverageIgnoreStart
             $sql = parent::createMySQL();
+            // @codeCoverageIgnoreEnd
         }
 
         if ($extractData) {
@@ -150,10 +176,11 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
      */
     public function createPostgreSQL($extractStructure = true, $extractData = true)
     {
+        $sql = array();
         if ($extractStructure) {
+            // @codeCoverageIgnoreStart
             $sql = parent::createPostgreSQL();
-        } else {
-            $sql = array();
+            // @codeCoverageIgnoreEnd
         }
 
         if ($extractData) {
@@ -169,7 +196,7 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
                     }
 
                     /* build statement */
-                    $stmt = $this->_tpl;
+                    $stmt = $this->_tpl; // Copy the template
                     $stmt = str_replace('%TABLE%', '"' . YANA_DATABASE_PREFIX . $table .  '"', $stmt);
                     $stmt = str_replace('%KEYS%', '"' . mb_strtolower(implode('", "', array_keys($row))) .  '"', $stmt);
                     $stmt = str_replace('%VALUES%', implode(", ", $row), $stmt);
@@ -198,10 +225,11 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
      */
     public function createMSSQL($extractStructure = true, $extractData = true)
     {
+        $sql = array();
         if ($extractStructure) {
+            // @codeCoverageIgnoreStart
             $sql = parent::createMSSQL();
-        } else {
-            $sql = array();
+            // @codeCoverageIgnoreEnd
         }
 
         if ($extractData) {
@@ -263,35 +291,34 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
      */
     public function createDB2($extractStructure = true, $extractData = true)
     {
-        $builder = new \Yana\ApplicationBuilder();
-        $application = $builder->buildApplication();
+        $sql = array();
         if ($extractStructure) {
+            // @codeCoverageIgnoreStart
             $sql = parent::createDB2();
-        } else {
-            $sql = array();
+            // @codeCoverageIgnoreEnd
         }
 
-        $file = $application->getResource('system:/config/reserved_sql_keywords.file');
-        $sqlKeywords = file($file->getPath());
-        unset($file);
-
         if ($extractData) {
+
+            $sqlKeywords = $this->_getSqlKeywordChecker();
+            unset($file);
+
             @set_time_limit(500);
-            foreach ($this->schema->getTable() as $table)
+            foreach ($this->schema->getTables() as $table)
             {
                 /* @var $table \Yana\Db\Ddl\Table */
                 /* quote table */
                 $tableName = YANA_DATABASE_PREFIX . $table->getName();
-                if (\Yana\Util\Hashtable::quickSearch($sqlKeywords, $tableName) !== false) {
-                    $tableName = "\"{$tableName}\"";
+                if ($sqlKeywords->isSqlKeyword($tableName) !== false) {
+                    $tableName = "\"" . $tableName . "\"";
                 }
                 /* quote columns */
                 $columns = array();
                 foreach ($table->getColumnNames() as $column)
                 {
                     $column = mb_strtolower($column);
-                    if (\Yana\Util\Hashtable::quickSearch($sqlKeywords, mb_strtoupper($column)) !== false) {
-                        $columns[$column] = "\"{$column}\"";
+                    if ($sqlKeywords->isSqlKeyword($column) !== false) {
+                        $columns[$column] = "\"" . $column . "\"";
                     } else {
                         $columns[$column] = $column;
                     }
@@ -341,10 +368,11 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
      */
     public function createOracleDB($extractStructure = true, $extractData = true)
     {
+        $sql = array();
         if ($extractStructure) {
+            // @codeCoverageIgnoreStart
             $sql = parent::createOracleDB();
-        } else {
-            $sql = array();
+            // @codeCoverageIgnoreEnd
         }
 
         if ($extractData) {
@@ -362,389 +390,13 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
                     /* build statement */
                     $stmt = $this->_tpl;
                     $stmt = str_replace('%TABLE%', '"' . YANA_DATABASE_PREFIX . $table .  '"', $stmt);
-                    $stmt = str_replace('%KEYS%', '"' . mb_strtolower(implode('", "', array_keys($row))) .  '"', $stmt);
+                    $stmt = str_replace('%KEYS%', '"' . implode('", "', array_keys($row)) .  '"', $stmt);
                     $stmt = str_replace('%VALUES%', implode(", ", $row), $stmt);
                     $sql[] = $stmt;
                 }
             }
         }
         return $sql;
-    }
-
-    /**
-     * Create XML.
-     *
-     * This static function will export the content of the database to a xml string.
-     * It returns bool(false) on error.
-     *
-     * You may limit the output to a certain table or structure file, by setting
-     * the arguments $structure and $table. Otherwise the whole database is exported,
-     * which is also the default behavior. You may set the argument $structure to NULL,
-     * if you just need $table.
-     *
-     * Note that both arguments may also be provided as a list of files or tables.
-     *
-     * You may set the argument $useForeignKeys to bool(true), if you want references
-     * (foreign keys) between tables to be respected. This way tables may be
-     * containers for other tables, where there is a relation between both.
-     *
-     * To "resolve a foreign key relation" in this case actually means, each foreign
-     * key is interpreted as a parent-child relation between two tables.
-     * Each row of the child table (the referencing table) is then
-     * copied to it's parent row (the row in the referenced table,
-     * as identified by the value of the foreign key column in the
-     * current row of the child table).
-     *
-     * Note, that a table may have multiple parents.
-     * This will result in multiple copies of the same row.
-     *
-     * Also note, that this function does not detect circular
-     * references. However, this is not much of a restriction, as
-     * such references are not a legal construct in RDBMSs.
-     * Although some RDBMS allow such constructs, it would be
-     * "practically" impossible to add any data, without breaking
-     * referential integrity, because a row should not contain a
-     * checked reference to itself, while it does not exist.
-     *
-     * Note: this may result in an error for DBMS that ignore
-     * referential integrity, like MyISAM tables in MySQL.
-     *
-     * Here is an example to illustrate the behavior of this function.
-     * May "foo" and "bar" be tables, with "foo" having a property "bar_id",
-     * that is a foreign key, referencing "bar".
-     *
-     * The following function call will output the XML representation of both tables:
-     * <code>
-     * print \Yana\Db\Export\DataExporter::createXML(true, null, array('foo', 'bar'));
-     * </code>
-     *
-     * The result would look something like this:
-     * <code>
-     * ... XML-head ...
-     * <bar>
-     *   <item id="1">
-     *     <bar_id>1</bar_id>
-     *     <bar_value>0.0</bar_value>
-     *     <!-- here come some entries of table foo -->
-     *     <bar.foo>
-     *       <item id="2">
-     *         <foo_id>2</foo_id>
-     *         <bar_id>1</bar_id>
-     *         <!-- other values -->
-     *       </item>
-     *       <item id="5">
-     *         <foo_id>5</foo_id>
-     *         <bar_id>1</bar_id>
-     *         <!-- other values -->
-     *       </item>
-     *     </bar.foo>
-     *   </item>
-     * </bar>
-     * </code>
-     *
-     * @param   bool          $useForeignKeys  toogle wether to export "flat" structure or
-     *                                         use foreign keys to create recursive containers
-     * @param   string|array  $ddlFile         limit output to certain schema file(s)
-     * @param   string|array  $table           limit output to certain table(s)
-     * @param   array         $rows            limit output to certain rows(s)
-     *                                         e.g. array('tab1' => array(1, 2, 3))
-     * @return  string
-     */
-    public static function createXML($useForeignKeys = false, $ddlFile = null, $table = null, array $rows = null)
-    {
-        assert('is_null($ddlFile) || is_string($ddlFile) || is_array($ddlFile); // '.
-            'Wrong type for argument 1. String expected');
-        assert('is_null($table) || is_string($table) || is_array($table); // '.
-            'Wrong type for argument 2. String expected');
-
-        $data = array(); // declare output variable of type array
-        @set_time_limit(500); // This may take a while. Raise limit to avoid time-out.
-
-        switch (true)
-        {
-            case is_string($ddlFile): // get only 1 database
-                $ddlFiles = array($ddlFile);
-            break;
-            case is_array($ddlFile): // get all database definitions
-                $ddlFiles = array_values($ddlFile);
-            break;
-            default:
-                $ddlFiles = \Yana\Db\Ddl\DDL::getListOfFiles(true);
-            break;
-        }
-        unset($ddlFile);
-
-        $factory = new \Yana\Db\ConnectionFactory(new \Yana\Db\SchemaFactory());
-        /*
-         * loop through files
-         */
-        assert('!isset($structure); // Cannot redeclare var $structure');
-        /* @var $ddlFile string */
-        foreach ($ddlFiles as $ddlFile)
-        {
-            $db = $factory->createConnection($ddlFile);
-            $dbSchema = $db->getSchema();
-            $nodes = array();
-
-            switch (true)
-            {
-                case empty($table): // get all tables (default)
-                    $tables = $dbSchema->getTableNames();
-                break;
-                case is_string($table): // get only 1 table
-                    if (!$dbSchema->isTable($table)) {
-                        continue; // table is not here, try next file
-                    }
-                    $data[$table] = $db->select($table);
-                break 2; // no more tables - abort!
-                case is_array($table): // get some tables
-                    $tables = array_values($table);
-                break;
-                default: // get all tables (default)
-                    $tables = $dbSchema->getTableNames();
-                break;
-            }
-            unset($table);
-
-            if (!empty($tables) && is_array($tables)) {
-
-                /**
-                 * loop through tables
-                 */
-                foreach ($tables as $table)
-                {
-                    if (!$dbSchema->isTable($table)) {
-                        continue;
-                    }
-                    /*
-                     * 1) limit to certain rows
-                     */
-                    if (is_array($rows) && isset($rows[$table])) {
-                        $data[$table] = array();
-                        /* Note: $nodes is a "flat" list of references */
-                        $nodes[$table] =& $data[$table];
-
-                        /* add entries */
-                        assert('!isset($i); // Cannot redeclare var $i');
-                        foreach ($rows[$table] as $i)
-                        {
-                            $data[$table][$i] = $db->select("$table.$i");
-                        }
-                        unset($i);
-
-                    /*
-                     * 2) all rows
-                     */
-                    } else {
-                        $data[$table] = $db->select($table);
-                        /* Note: $nodes is a "flat" list of references */
-                        $nodes[$table] =& $data[$table];
-                    }
-                }
-                unset($table);
-
-                /**
-                 * resolve foreign keys on demand
-                 */
-                if ($useForeignKeys !== false) {
-                    /**
-                     * loop through tables
-                     */
-                    assert('!isset($tableName); // Cannot redeclare var $tableName');
-                    assert('!isset($table); // Cannot redeclare var $table');
-                    assert('!isset($hasFKey); // Cannot redeclare var $hasFKey');
-                    /* declare temporary variables */
-                    assert('!isset($_attr); // Cannot redeclare var $_attr');
-                    assert('!isset($_fKey); // Cannot redeclare var $_fKey');
-                    assert('!isset($_fTable); // Cannot redeclare var $_fTable');
-                    assert('!isset($_row); // Cannot redeclare var $_row');
-                    foreach (array_keys($nodes) as $tableName)
-                    {
-                        $_attr = "@$tableName";
-                        $table = $dbSchema->getTable($tableName);
-                        $_fKey = null;
-                        $_fTable = null;
-                        $_row = null;
-                        $hasFKey = false;
-
-                        /**
-                         * loop through foreign keys
-                         */
-                        assert('!isset($fCol); // Cannot redeclare var $fCol');
-                        assert('!isset($fTableName); // Cannot redeclare var $fTable');
-                        assert('!isset($column); // Cannot redeclare var $column');
-                        foreach ($table->getForeignKeys() as $column)
-                        {
-                            /* @var $column \Yana\Db\Ddl\ForeignKey */
-                            assert('!isset($_fKeys); // Cannot redeclare var $_fKeys');
-                            $_fKeys = $column->getColumns();
-                            $fTableName = $column->getTargetTable();
-                            if (count($_fKeys) > 1) {
-                                unset($_fKeys);
-                                continue; // ignore compound foreign keys
-                            }
-                            $hasFKey = true;
-                            $fCol = current($_fKeys); // value = target column of fkey constraint
-                            if (empty($fCol)) {
-                                $fCol = key($_fKeys); // fall back to key = source column
-                            }
-                            $fCol = strtoupper($fCol);
-                            unset($_fKeys);
-                            /**
-                             * {@internal
-                             *
-                             * Keep in mind that foreign key references
-                             * are reversed compared to arrays:
-                             *   $_fTable is reference to the target table,
-                             *   - NOT the source table!
-                             *
-                             * }}
-                             */
-                            $_fTable =& $nodes[$fTableName];
-                            /**
-                             * loop through rows in foreign table
-                             */
-                            assert('!isset($pKey); // Cannot redeclare var $pKey');
-                            foreach (array_keys($nodes[$tableName]) as $pKey)
-                            {
-                                $_row =& $nodes[$tableName][$pKey];
-                                if (isset($_row[$fCol])) {
-                                    $_fKey = $_row[$fCol];
-                                    /* skip value if referenced row does not exist */
-                                    if (isset($_fTable[$_fKey])) {
-                                        if (!isset($_fTable[$_fKey][$_attr])) {
-                                            $_fTable[$_fKey][$_attr] = array();
-                                        }
-                                        $_fTable[$_fKey][$_attr][$pKey] =& $_row;
-                                    }
-                                }
-                            }
-                            unset($pKey);
-                        } // end foreach (foreign key)
-                        unset($fCol, $fTableName, $column);
-                        if ($hasFKey && isset($data[$tableName])) {
-                            unset($data[$tableName]);
-                        }
-                    }
-                    // clean up temporary variables
-                    unset($_attr, $_fKey, $_fTable, $_row, $table, $tableName, $hasFKey);
-
-                } // end if ($useForeignKeys)
-
-            } // end if (get all tables)
-
-        } // end foreach (structure)
-        unset($ddlFile);
-
-        /**
-         * error - result is empty or invalid
-         */
-        if (empty($data) || !is_array($data)) {
-            return false;
-        }
-        /*
-         * encode data array to xml string
-         */
-        $data = self::_xmlEncode($data);
-        assert('is_string($data); // Unexpected argument type. String expected');
-        return "<?xml version=\"1.0\"?>\n" . $data;
-    }
-
-    /**
-     * Create xml.
-     *
-     * @param   array   $table      input table
-     * @param   string  $tableName  name of input table
-     * @param   string  $prefix     prefix of root element
-     * @param   int     $indent     number of tabs to indent
-     * @since   2.9.7
-     */
-    private static function _xmlEncode(array $table, $tableName = "", $prefix = "", $indent = 0)
-    {
-        assert('is_string($tableName); // Wrong argument type for argument 2. String expected.');
-        assert('is_string($prefix); // Wrong argument type for argument 3. String expected.');
-        assert('is_int($indent); // Wrong argument type for argument 4. Integer expected.');
-
-        /*
-         * settype to STRING
-         *            INTEGER
-         */
-        $tableName = (string) $tableName;
-        $prefix = (string) $prefix;
-        $indent = (int) $indent;
-
-        if (!empty($prefix)) {
-            $prefix .= ".";
-        }
-
-        $tab = "";
-        $xml = ""; // containts output
-
-        /*
-         * Create xml header.
-         *
-         * This applies to first iteration only (top-most call).
-         */
-        if ($indent === 0) {
-            $xml .= "<database>\n";
-            foreach ($table as $name => $value)
-            {
-                if (is_array($value)) {
-                    $xml .= self::_xmlEncode($value, $name, "", 1);
-                }
-            }
-            $xml .= "</database>";
-            return $xml;
-        }
-
-        /*
-         * Create xml body.
-         *
-         * This applies to all following iterations only.
-         */
-        for ($i = 0; $i < $indent; $i++)
-        {
-            $tab .= "\t";
-        }
-        unset($i);
-
-        $xml .= "$tab<$prefix$tableName>\n";
-        foreach ($table as $pKey => $row)
-        {
-            if (!is_array($row)) {
-                continue; // not a row
-            }
-            $xml .= "$tab\t<item id=\"$pKey\">\n";
-            foreach ($row as $column => $value)
-            {
-                $column = mb_strtolower($column);
-                if (is_bool($value)) {
-                    $xml .= "$tab\t\t<$column>" . ( ($value) ? "true" : "false" ) . "</$column>\n";
-
-                } elseif (is_array($value)) {
-                    if ($column[0] === '@') {
-                        $column = mb_substr($column, 1);
-                        $xml .= self::_xmlEncode($value, $column, $tableName, $indent + 2);
-
-                    } else {
-                        $xml .= "$tab\t\t<$column>\n";
-                        foreach ($value as $key => $item)
-                        {
-                            $xml .= \Yana\Util\Hashtable::toXML($item, $key, CASE_MIXED, $indent + 3);
-                        }
-                        $xml .= "$tab\t\t</$column>\n";
-                    }
-
-                } else {
-                    $xml .= "$tab\t\t<$column>" . htmlspecialchars($value, ENT_NOQUOTES, 'UTF-8') . "</$column>\n";
-
-                }
-            }
-            $xml .= "$tab\t</item>\n";
-        }
-        $xml .= "$tab</$prefix$tableName>\n";
-
-        return $xml;
     }
 
     /**
@@ -837,13 +489,6 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
             break;
 
             /*
-             * array
-             */
-            case is_array($value):
-                $value = \Yana\Files\SML::encode($value);
-            break;
-
-            /*
              * float
              */
             case is_float($value):
@@ -851,55 +496,24 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
             break;
 
             /*
+             * array
+             */
+            case is_array($value):
+                $value = \json_encode($value);
+            // fall through
+
+            /*
              * string
              */
             case is_string($value):
-                /* intentionally left blank */
-            break;
-
-            /*
-             * default
-             */
             default:
-                /* intentionally left blank */
+                $value = preg_replace('/[\x00\x1A\x22\x27\x5C]/us', '\\\$0', $value);
+                $value = preg_replace("/\n/us", '\\n', $value);
+                $value = preg_replace("/\r/us", '\\r', $value);
+                $value = preg_replace("/\f/us", '\\f', $value);
             break;
         }
-        /*
-         * add quotes
-         */
-        switch ($dbms)
-        {
-            /*
-             * MySQL
-             */
-            case 'mysql':
-                $value = mysql_escape_string($value);
-            break;
-            /*
-             * PostgreSQL
-             */
-            case 'postgresql':
-                if (function_exists('pg_escape_string')) {
-                    $value = pg_escape_string($value);
-                } else {
-                    $value = str_replace("'", "''", $value);
-                    $value = str_replace('\\', '\\\\', $value);
-                    $value = str_replace("\n", '\n', $value);
-                    $value = str_replace("\r", '\r', $value);
-                    $value = str_replace("\f", '\f', $value);
-                }
-            break;
-            /*
-             * other
-             */
-            default:
-                $value = str_replace("'", "''", $value);
-                $value = str_replace("\n", '\n', $value);
-                $value = str_replace("\r", '\r', $value);
-                $value = str_replace("\f", '\f', $value);
-            break;
-        }
-        return "'$value'";
+        return "'" . $value . "'";
     }
 
 }
