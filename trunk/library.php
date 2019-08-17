@@ -26,6 +26,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 /*
  * When debugging, make sure error reporting is at maximum.
@@ -360,6 +361,9 @@ $builder->addClassMapper(\Yana\Core\AutoLoadBuilder::DIRECT_MAPPER)
     ->setBaseDirectory(__DIR__ . '/libs/smarty/');
 $builder->addClassMapper(\Yana\Core\AutoLoadBuilder::GENERIC_MAPPER)
     ->setNameSpace('SQL_Parser')
+    ->setBaseDirectory('/ports/PortableApps/xampp/php/pear/');
+$builder->addClassMapper(\Yana\Core\AutoLoadBuilder::GENERIC_MAPPER)
+    ->setNameSpace('Doctrine')
     ->setBaseDirectory(__DIR__ . '/libs/');
 $builder->addClassMapper(\Yana\Core\AutoLoadBuilder::LOWERCASED_MAPPER)
     ->setNameSpace('Yana')
