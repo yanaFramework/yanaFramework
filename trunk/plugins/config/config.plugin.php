@@ -94,7 +94,14 @@ class ConfigPlugin extends \Yana\Plugins\AbstractPlugin
         $updateChecker->setCache($cacheAdapter);
 
         $view = $YANA->getView();
-        $view->setFunction('updateCheck', array($updateChecker, '__invoke'));
+        try {
+            $view->setFunction('updateCheck', $updateChecker);
+
+        } catch (\Yana\Views\Managers\RegistrationException $e) {
+            $view->unsetFunction('updateCheck');
+            $view->setFunction('updateCheck', $updateChecker);
+            unset($e);
+        }
     }
 
     /**

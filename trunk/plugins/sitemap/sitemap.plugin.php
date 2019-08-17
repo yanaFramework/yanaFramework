@@ -50,12 +50,13 @@ class SitemapPlugin extends \Yana\Plugins\AbstractPlugin
             $application->getLanguage()
         );
 
+        $view = $application->getView();
         try {
-            $this->_getApplication()->getView()->setFunction('sitemap', array($viewHelper, '__invoke'));
+            $view->setFunction('sitemap', array($viewHelper, '__invoke'));
 
         } catch (\Yana\Views\Managers\RegistrationException $e) {
-            $this->_getApplication()->getView()->unsetFunction('sitemap');
-            $this->_getApplication()->getView()->setFunction('sitemap', array($viewHelper, '__invoke'));
+            $view->unsetFunction('sitemap');
+            $view->setFunction('sitemap', array($viewHelper, '__invoke'));
             unset($e);
         }
     }
