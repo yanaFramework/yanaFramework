@@ -97,7 +97,7 @@ class UserPwdAdminPlugin extends \Yana\Plugins\AbstractPlugin
     }
 
     /**
-     * Cchecks if the password quality is high enough.
+     * Checks if the password quality is high enough.
      *
      * @subscribe
      *

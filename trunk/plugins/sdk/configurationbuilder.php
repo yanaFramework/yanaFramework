@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Plugins\SDK;
 
@@ -683,7 +684,7 @@ class ConfigurationBuilder extends \Yana\Plugins\Configs\AbstractBuilder
      *
      * @return  \Yana\Plugins\Configs\IsClassConfiguration
      */
-    protected function buildClass()
+    protected function buildClass(): \Yana\Plugins\Configs\IsClassConfiguration
     {
         foreach ($this->_sdkConfiguration as $key => $value)
         {
@@ -762,7 +763,7 @@ class ConfigurationBuilder extends \Yana\Plugins\Configs\AbstractBuilder
      *
      * @return  \Yana\Plugins\Configs\IsMethodConfiguration
      */
-    protected function buildMethod()
+    protected function buildMethod(): \Yana\Plugins\Configs\IsMethodConfiguration
     {
         $action = $this->_methodConfiguration;
         $methodName = array_shift($action);
