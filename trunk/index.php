@@ -25,6 +25,7 @@
  * @package    yana
  * @copyright  2011 Thomas Meyer
  */
+declare(strict_types=1);
 
 //error_reporting(0);
 require_once 'library.php';
