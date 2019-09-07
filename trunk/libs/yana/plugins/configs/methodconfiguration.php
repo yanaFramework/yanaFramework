@@ -883,13 +883,7 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
          * check for type attribute
          */
         assert('!isset($type); // Cannot redeclare var $type');
-        $type = $this->getType();
-        if (empty($type)) {
-            $report->addWarning("The mandatory attribute 'type' is missing.");
-        } else {
-            $report->addText('Type: ' . $type);
-        }
-        unset($type);
+        $report->addText('Type: ' . $this->getType());
 
         /**
          * check if template file exists
