@@ -670,7 +670,7 @@ class MDB2 extends \Yana\Files\File implements \Plugins\DbTools\IsImport
                 return $data['column'];
 
             case array_key_exists('null', $data):
-                return \Yana\Db\Export\DataFactory::quoteValue(null);
+                return 'NULL';
 
             case isset($data['function']):
                 $string = preg_replace('/^.*?<function>(.*?)<\/function>.*$/si', '$1', $string);
