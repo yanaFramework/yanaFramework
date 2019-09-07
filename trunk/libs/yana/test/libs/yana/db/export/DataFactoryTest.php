@@ -53,15 +53,21 @@ class DataFactoryTest extends \PHPUnit_Framework_TestCase
      */
     protected $object;
 
+    public function __construct($name = NULL, array $data = array(), $dataName = '')
+    {
+        parent::__construct($name, $data, $dataName);
+        $schemaFactory = new \Yana\Db\SchemaFactory();
+        $this->schema = $schemaFactory->createSchema('check');
+        $this->connection = new \Yana\Db\FileDb\Connection($this->schema);
+        $this->tearDown();
+    }
+
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
     protected function setUp()
     {
-        $schemaFactory = new \Yana\Db\SchemaFactory();
-        $this->schema = $schemaFactory->createSchema('check');
-        $this->connection = new \Yana\Db\FileDb\Connection($this->schema);
         $this->object = new \Yana\Db\Export\DataFactory($this->connection, new \Yana\Db\Helpers\SqlKeywordChecker(array('RESERVED')));
     }
 

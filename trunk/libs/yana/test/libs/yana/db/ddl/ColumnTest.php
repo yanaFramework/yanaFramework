@@ -418,6 +418,14 @@ class ColumnTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testHasDefault()
+    {
+        $this->assertFalse($this->column->hasDefault());
+    }
+
+    /**
+     * @test
+     */
     public function testIsAutoIncrement()
     {
         $this->assertFalse($this->column->isAutoIncrement());

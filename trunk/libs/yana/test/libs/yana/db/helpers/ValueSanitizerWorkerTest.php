@@ -112,6 +112,26 @@ class ValueSanitizerWorkerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     */
+    public function testAsBoolT()
+    {
+        $value = "T";
+        $this->object = new \Yana\Db\Helpers\ValueSanitizerWorker($value);
+        $this->assertTrue($this->object->asBool());
+    }
+
+    /**
+     * @test
+     */
+    public function testAsBoolF()
+    {
+        $value = "F";
+        $this->object = new \Yana\Db\Helpers\ValueSanitizerWorker($value);
+        $this->assertFalse($this->object->asBool());
+    }
+
+    /**
+     * @test
      * @expectedException \Yana\Core\Exceptions\Forms\InvalidValueException
      */
     public function testAsBoolInvalidValueException()

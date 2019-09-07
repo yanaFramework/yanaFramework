@@ -77,6 +77,43 @@ class MethodCollectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testOffsetExists()
+    {
+        $this->assertFalse($this->object->offsetExists('test'));
+        $o = new \Yana\Plugins\Configs\MethodConfiguration();
+        $o->setMethodName('methodName');
+        $this->object['test'] = $o;
+        $this->assertTrue($this->object->offsetExists('test'));
+    }
+
+    /**
+     * @test
+     */
+    public function testGetReportEmpty()
+    {
+        $this->assertTrue($this->object->getReport() instanceof \Yana\Report\IsReport);
+    }
+
+    /**
+     * @test
+     */
+    public function testGetReport()
+    {
+        $o1 = new \Yana\Plugins\Configs\MethodConfiguration();
+        $o1->setMethodName('methodName1');
+        $this->object['1'] = $o1;
+        $o2 = new \Yana\Plugins\Configs\MethodConfiguration();
+        $o2->setMethodName('methodName2');
+        $this->object['2'] = $o2;
+        $report = $this->object->getReport();
+        $this->assertSame(2, count($report->report));
+        $this->assertSame('methodname1', $report->report[0]->getTitle());
+        $this->assertSame('methodname2', $report->report[1]->getTitle());
+    }
+
+    /**
+     * @test
+     */
     public function testOffsetUnset()
     {
         $o = new \Yana\Plugins\Configs\MethodConfiguration();
