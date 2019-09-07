@@ -25,6 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Helpers;
 
@@ -49,11 +50,9 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
      *
      * @param  string  $dbms  name of DBMS to sanitize values for
      */
-    public function __construct($dbms = "generic")
+    public function __construct(string $dbms = "generic")
     {
-        assert('is_string($dbms); // Invalid argument $dbms: string expected');
-
-        $this->_dbms = (string) $dbms;
+        $this->_dbms = $dbms;
     }
 
     /**
@@ -61,9 +60,20 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
      *
      * @return  string
      */
-    protected function _getDBMS()
+    protected function _getDBMS(): string
     {
         return $this->_dbms;
+    }
+
+    /**
+     * Returns worker class for given value.
+     *
+     * @param   mixed  $value  of column
+     * @return  \Yana\Db\Helpers\IsValueSanitizerWorker
+     */
+    protected function _getWorker($value): \Yana\Db\Helpers\IsValueSanitizerWorker
+    {
+        return new \Yana\Db\Helpers\ValueSanitizerWorker($value);
     }
 
     /**
@@ -72,8 +82,6 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
      * The argument $row is expected to be an associative array of values, representing
      * a row that should be inserted or updated in the table. The keys of the array $row are
      * expected to be the lowercased column names.
-     *
-     * Returns bool(true) if $row is valid and bool(false) otherwise.
      *
      * @param   array   $row       values of the inserted/updated row
      * @param   bool    $isInsert  type of operation (true = insert, false = update)
@@ -88,10 +96,12 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
      * @throws  \Yana\Core\Exceptions\Forms\FieldNotFoundException  when a value was provided but no corresponding column exists
      * @throws  \Yana\Core\Exceptions\Files\SizeException           when an uploaded file is too large
      */
-    public function sanitizeRowByTable(\Yana\Db\Ddl\Table $table, array $row, $isInsert = true, array &$files = array())
+    public function sanitizeRowByTable(\Yana\Db\Ddl\Table $table, array $row, bool $isInsert = true, array &$files = array()): array
     {
-        assert('is_bool($isInsert); // Wrong type for argument 2. Boolean expected');
         $outputRow = array();
+        if ($table->isReadonly()) {
+            throw new \Yana\Core\Exceptions\NotWriteableException("Table '{$table->getName()}' is readonly. Write operation aborted.");
+        }
         /* @var $column \Yana\Db\Ddl\Column */
         foreach ($table->getColumns() as $column)
         {
@@ -99,7 +109,7 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
             /*
              * error - not writeable
              */
-            if (!$isInsert && $column->isReadonly() && !array_key_exists($columnName, $row)) {
+            if (!$isInsert && $column->isReadonly() && array_key_exists($columnName, $row)) {
                 throw new \Yana\Core\Exceptions\NotWriteableException("Database is readonly. " .
                     "Update operation on table '{$table->getName()}' aborted.");
             }
@@ -162,11 +172,7 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
     }
 
     /**
-     * Validate a row against database schema.
-     *
-     * The argument $row is expected to be an associative array of values, representing
-     * a row that should be inserted or updated in the table. The keys of the array $row are
-     * expected to be the lowercased column names.
+     * Validate a value against a database column
      *
      * Returns the sanitized value.
      *
@@ -196,7 +202,7 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
             $error = new \Yana\Core\Exceptions\Forms\InvalidSyntaxException($message, $level);
             throw $error->setValid($pattern)->setValue($value)->setField($title);
         }
-        $worker = new \Yana\Db\Helpers\ValueSanitizerWorker($value);
+        $worker = $this->_getWorker($value);
 
         switch ($refColumn->getType())
         {
@@ -224,7 +230,7 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
                     return null;
 
                 } catch (\Yana\Core\Exceptions\Files\DeletedException $e) {
-                    $files[] = array('column' => $column);
+                    $files[] = array('column' => $column); // This is intended behavior, the Insert class will look for this
                     return "";
                 }
 
@@ -265,6 +271,7 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
 
             case \Yana\Db\Ddl\ColumnTypeEnumeration::REFERENCE:
             case \Yana\Db\Ddl\ColumnTypeEnumeration::STRING:
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::TELEPHONE:
                 return $worker->asString((int) $refColumn->getLength());
 
             case \Yana\Db\Ddl\ColumnTypeEnumeration::TEXT:
@@ -279,11 +286,13 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
             case \Yana\Db\Ddl\ColumnTypeEnumeration::URL:
                 return $worker->asUrl((int) $refColumn->getLength());
 
+            // @codeCoverageIgnoreStart
             default:
                 assert('!in_array($value, \Yana\Db\Ddl\ColumnTypeEnumeration::getSupportedTypes()); // Unhandled column type. ');
                 throw new \Yana\Core\Exceptions\NotImplementedException(
                     "Type '" . $refColumn->getType() . "' not implemented.", \Yana\Log\TypeEnumeration::ERROR
                 );
+            // @codeCoverageIgnoreEnd
         }
     }
 

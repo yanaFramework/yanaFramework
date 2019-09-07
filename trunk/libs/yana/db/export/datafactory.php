@@ -377,19 +377,16 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
 
         if ($extractData) {
             @set_time_limit(500);
-            foreach ($this->schema->getTableNames() as $table)
+            $valueSanitizer = new \Yana\Db\Helpers\ValueSanitizer("oracle");
+            foreach ($this->schema->getTables() as $table)
             {
-                foreach($this->_db->select($table) as $row)
+                foreach($this->_db->select($table->getName()) as $row)
                 {
-                    /* quote values */
-                    foreach (array_keys($row) as $column)
-                    {
-                        $row[$column] = self::quoteValue($row[$column], "oracle");
-                    }
+                    $row = $valueSanitizer->sanitizeRowByTable($table, \array_change_key_case($row, \CASE_LOWER));
 
                     /* build statement */
                     $stmt = $this->_tpl;
-                    $stmt = str_replace('%TABLE%', '"' . YANA_DATABASE_PREFIX . $table .  '"', $stmt);
+                    $stmt = str_replace('%TABLE%', '"' . YANA_DATABASE_PREFIX . $table->getName() .  '"', $stmt);
                     $stmt = str_replace('%KEYS%', '"' . implode('", "', array_keys($row)) .  '"', $stmt);
                     $stmt = str_replace('%VALUES%', implode(", ", $row), $stmt);
                     $sql[] = $stmt;

@@ -1176,6 +1176,17 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
     }
 
     /**
+     * Returns bool(true) if the column has auto-increment or a default value.
+     *
+     * @param   string  $dbms  target DBMS, defaults to "generic"
+     * @return  bool
+     */
+    public function hasDefault($dbms = 'generic')
+    {
+        return $this->isAutoIncrement() || !is_null($this->getDefault($dbms));
+    }
+
+    /**
      * Get the default value.
      *
      * Returns the default value of the column (where available) or NULL, if there is none.

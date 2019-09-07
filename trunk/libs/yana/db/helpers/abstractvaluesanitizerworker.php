@@ -25,6 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Helpers;
 
@@ -34,7 +35,7 @@ namespace Yana\Db\Helpers;
  * @package     yana
  * @subpackage  db
  */
-abstract class AbstractValueSanitizerWorker extends \Yana\Core\Object
+abstract class AbstractValueSanitizerWorker extends \Yana\Core\Object implements \Yana\Db\Helpers\IsValueSanitizerWorker
 {
 
     /**

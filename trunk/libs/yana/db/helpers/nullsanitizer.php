@@ -45,7 +45,7 @@ class NullSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSani
      * @param   array   &$files    list of modified or inserted columns of type file or image
      * @return  array
      */
-    public function sanitizeRowByTable(\Yana\Db\Ddl\Table $table, array $row, $isInsert = true, array &$files = array())
+    public function sanitizeRowByTable(\Yana\Db\Ddl\Table $table, array $row, bool $isInsert = true, array &$files = array()): array
     {
         return $row;
     }
@@ -56,7 +56,7 @@ class NullSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSani
      * @param   \Yana\Db\Ddl\Column $column  
      * @param   mixed               $value   value of the inserted/updated row
      * @param   array               &$files  list of modified or inserted columns of type file or image
-     * @return  bool
+     * @return  mixed
      */
     public function sanitizeValueByColumn(\Yana\Db\Ddl\Column $column, $value, array &$files = array())
     {

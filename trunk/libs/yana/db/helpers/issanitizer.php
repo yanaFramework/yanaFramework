@@ -25,6 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Helpers;
 
@@ -44,8 +45,6 @@ interface IsSanitizer
      * a row that should be inserted or updated in the table. The keys of the array $row are
      * expected to be the lowercased column names.
      *
-     * Returns bool(true) if $row is valid and bool(false) otherwise.
-     *
      * @param   array   $row       values of the inserted/updated row
      * @param   bool    $isInsert  type of operation (true = insert, false = update)
      * @param   array   &$files    list of modified or inserted columns of type file or image
@@ -59,14 +58,10 @@ interface IsSanitizer
      * @throws  \Yana\Core\Exceptions\Forms\FieldNotFoundException  when a value was provided but no corresponding column exists
      * @throws  \Yana\Core\Exceptions\Files\SizeException           when an uploaded file is too large
      */
-    public function sanitizeRowByTable(\Yana\Db\Ddl\Table $table, array $row, $isInsert = true, array &$files = array());
+    public function sanitizeRowByTable(\Yana\Db\Ddl\Table $table, array $row, bool $isInsert = true, array &$files = array()): array;
 
     /**
-     * Validate a row against database schema.
-     *
-     * The argument $row is expected to be an associative array of values, representing
-     * a row that should be inserted or updated in the table. The keys of the array $row are
-     * expected to be the lowercased column names.
+     * Validate a value against a database column.
      *
      * Returns the sanitized value.
      *

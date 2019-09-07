@@ -25,6 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Helpers;
 
@@ -43,7 +44,7 @@ class ValueSanitizerWorker extends \Yana\Db\Helpers\AbstractValueSanitizerWorker
      * @return  array
      * @throws  \Yana\Core\Exceptions\Forms\InvalidValueException  when the value is not an array
      */
-    public function asArray()
+    public function asArray(): array
     {
         $value = $this->_getValue();
         if (!is_array($value)) {
@@ -55,13 +56,20 @@ class ValueSanitizerWorker extends \Yana\Db\Helpers\AbstractValueSanitizerWorker
     /**
      * Return value as boolean.
      *
-     * @return  array
+     * @return  bool
      * @throws  \Yana\Core\Exceptions\Forms\InvalidValueException  when the value cannot be interpreted as boolean
      */
-    public function asBool()
+    public function asBool(): bool
     {
         $value = $this->_getValue();
-        if (!is_bool($value)) { // required since bool(false) will return NULL!
+
+        if (\strcasecmp((string) $value, 't') === 0) { // For DBase
+            $value = true;
+
+        } elseif (\strcasecmp((string) $value, 'f') === 0) { // For DBase
+            $value = false;
+
+        } elseif (!is_bool($value)) { // required since bool(false) will return NULL!
             $value = filter_var((string) $value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
         }
         if (!is_bool($value)) {
@@ -80,7 +88,7 @@ class ValueSanitizerWorker extends \Yana\Db\Helpers\AbstractValueSanitizerWorker
      * @return  string
      * @throws  \Yana\Core\Exceptions\Forms\InvalidValueException  when the value doesn't have the required format
      */
-    public function asColor()
+    public function asColor(): string
     {
         $value = $this->_getValue();
         $options["regexp"] = '/^#[0-9a-f]{6}$/si';
@@ -98,11 +106,11 @@ class ValueSanitizerWorker extends \Yana\Db\Helpers\AbstractValueSanitizerWorker
      * @return  string
      * @throws  \Yana\Core\Exceptions\Forms\InvalidValueException  when the value is cannot be interpreted as boolean
      */
-    public function asDateString()
+    public function asDateString(): string
     {
         $value = $this->_getValue();
         if (is_array($value) && isset($value['month'], $value['day'], $value['year'])) {
-            $value = mktime(0, 0, 0, $value['month'], $value['day'], $value['year']);
+            $value = mktime(0, 0, 0, (int) $value['month'], (int) $value['day'], (int) $value['year']);
         }
         if (is_int($value)) {
             return date('Y-m-d', $value);
@@ -148,9 +156,8 @@ class ValueSanitizerWorker extends \Yana\Db\Helpers\AbstractValueSanitizerWorker
      * @throws  \Yana\Core\Exceptions\Files\NotFoundException      when no file was uploaded
      * @throws  \Yana\Core\Exceptions\Files\DeletedException       when the file was deleted
      */
-    public function asFileId($maxFileSize = 0)
+    public function asFileId(int $maxFileSize = 0): ?string
     {
-        assert('is_int($maxFileSize); // Invalid argument type: $maxFileSize. Integer expected');
         $value = $this->_getValue();
         if (is_array($value)) {
             /* Value is the uploaded file as if taken from $_FILES[$columnName].
@@ -191,10 +198,8 @@ class ValueSanitizerWorker extends \Yana\Db\Helpers\AbstractValueSanitizerWorker
      * @return  float
      * @throws  \Yana\Core\Exceptions\Forms\InvalidValueException  when the value is not a valid number or out of range
      */
-    public function asRangeValue($maxValue, $minValue = 0.0)
+    public function asRangeValue(float $maxValue, float $minValue = 0.0): float
     {
-        assert('is_float($maxValue); // Invalid argument type: $maxValue. Float expected');
-        assert('is_float($minValue); // Invalid argument type: $minValue. Float expected');
         $value = filter_var($this->_getValue(), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
         if (filter_var($value, FILTER_VALIDATE_FLOAT) === false) {
             $message = "Input is not a valid number.";
@@ -219,11 +224,8 @@ class ValueSanitizerWorker extends \Yana\Db\Helpers\AbstractValueSanitizerWorker
      * @return  float
      * @throws  \Yana\Core\Exceptions\Forms\InvalidValueException  when the value is not a valid number
      */
-    public function asFloat($maxLength = 0, $precision = 0, $isUnsigned = false)
+    public function asFloat(int $maxLength = 0, int $precision = 0, bool $isUnsigned = false): float
     {
-        assert('is_int($maxLength); // Invalid argument type: $maxLength. Integer expected');
-        assert('is_int($precision); // Invalid argument type: $precision. Integer expected');
-        assert('is_bool($isUnsigned); // Invalid argument type: $isUnsigned. Boolean expected');
         $value = $this->_getValue();
         if (\Yana\Data\FloatValidator::validate($value, (int) $maxLength - (int) $precision, (bool) $isUnsigned) === false) {
             throw new \Yana\Core\Exceptions\Forms\InvalidValueException();
@@ -238,7 +240,7 @@ class ValueSanitizerWorker extends \Yana\Db\Helpers\AbstractValueSanitizerWorker
      * @return  string
      * @throws  \Yana\Core\Exceptions\Forms\InvalidValueException  when the value is not a string
      */
-    public function asHtmlString($maxLength = 0)
+    public function asHtmlString(int $maxLength = 0): string
     {
         assert('is_int($maxLength); // Invalid argument type: $maxLength. Integer expected');
         $value = $this->_getValue();
@@ -261,7 +263,7 @@ class ValueSanitizerWorker extends \Yana\Db\Helpers\AbstractValueSanitizerWorker
      * @return  string
      * @throws  \Yana\Core\Exceptions\Forms\InvalidValueException  when the value is not a valid IP
      */
-    public function asIpAddress()
+    public function asIpAddress(): string
     {
         $value = $this->_getValue();
         if (filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_NO_RES_RANGE) === false) {
@@ -275,10 +277,10 @@ class ValueSanitizerWorker extends \Yana\Db\Helpers\AbstractValueSanitizerWorker
      *
      * @param   int   $maxLength   in digits
      * @param   bool  $isUnsigned  whether or not the integer can be negative
-     * @return  string
+     * @return  int
      * @throws  \Yana\Core\Exceptions\Forms\InvalidValueException  when the value is not a valid number
      */
-    public function asInteger($maxLength = 0, $isUnsigned = false)
+    public function asInteger(int $maxLength = 0, bool $isUnsigned = false): int
     {
         assert('is_int($maxLength); // Invalid argument type: $maxLength. Integer expected');
         assert('is_bool($isUnsigned); // Invalid argument type: $isUnsigned. Boolean expected');
@@ -298,7 +300,7 @@ class ValueSanitizerWorker extends \Yana\Db\Helpers\AbstractValueSanitizerWorker
      * @return  array
      * @throws  \Yana\Core\Exceptions\Forms\InvalidValueException  when the value is not an array
      */
-    public function asListOfValues()
+    public function asListOfValues(): array
     {
         $value = $this->_getValue();
         if (!is_array($value)) {
@@ -314,7 +316,7 @@ class ValueSanitizerWorker extends \Yana\Db\Helpers\AbstractValueSanitizerWorker
      * @return  string
      * @throws  \Yana\Core\Exceptions\Forms\InvalidValueException  when the value is not a valid mail or longer than the maximum
      */
-    public function asMailAddress($maxLength = 0)
+    public function asMailAddress(int $maxLength = 0): string
     {
         assert('is_int($maxLength); // Invalid argument type: $maxLength. Integer expected');
         $value = filter_var($this->_getValue(), FILTER_SANITIZE_EMAIL);
@@ -331,7 +333,7 @@ class ValueSanitizerWorker extends \Yana\Db\Helpers\AbstractValueSanitizerWorker
      * @return  array
      * @throws  \Yana\Core\Exceptions\Forms\InvalidValueException  when the value is not an array or one of its values is not part of the enumeration
      */
-    public function asSetOfEnumerationItems(array $enumerationItems)
+    public function asSetOfEnumerationItems(array $enumerationItems): array
     {
         $value = $this->_getValue();
         if (!is_array($value)) {
@@ -355,7 +357,7 @@ class ValueSanitizerWorker extends \Yana\Db\Helpers\AbstractValueSanitizerWorker
      * @return  string
      * @throws  \Yana\Core\Exceptions\Forms\InvalidValueException  when the value is not a string
      */
-    public function asPassword()
+    public function asPassword(): string
     {
         $value = $this->_getValue();
         if (!is_string($value)) {
@@ -371,7 +373,7 @@ class ValueSanitizerWorker extends \Yana\Db\Helpers\AbstractValueSanitizerWorker
      * @return  string
      * @throws  \Yana\Core\Exceptions\Forms\InvalidValueException  when the value is not a valid string
      */
-    public function asString($maxLength = 0)
+    public function asString(int $maxLength = 0): string
     {
         assert('is_int($maxLength); // Invalid argument type: $maxLength. Integer expected');
         $value = $this->_getValue();
@@ -388,7 +390,7 @@ class ValueSanitizerWorker extends \Yana\Db\Helpers\AbstractValueSanitizerWorker
      * @return  string
      * @throws  \Yana\Core\Exceptions\Forms\InvalidValueException  when the value is not a valid text
      */
-    public function asText($maxLength = 0)
+    public function asText(int $maxLength = 0): string
     {
         assert('is_int($maxLength); // Invalid argument type: $maxLength. Integer expected');
         $value = $this->_getValue();
@@ -406,7 +408,7 @@ class ValueSanitizerWorker extends \Yana\Db\Helpers\AbstractValueSanitizerWorker
      * @return  string
      * @throws  \Yana\Core\Exceptions\Forms\InvalidValueException  if the value is not a string or an array containing time information.
      */
-    public function asTimeString()
+    public function asTimeString(): string
     {
         $value = $this->_getTimeValue();
         $format = 'Y-m-d H:i:s';
@@ -425,7 +427,7 @@ class ValueSanitizerWorker extends \Yana\Db\Helpers\AbstractValueSanitizerWorker
      * @return  int
      * @throws  \Yana\Core\Exceptions\Forms\InvalidValueException  if the value is not a timestamp or an array containing time information.
      */
-    public function asTimestamp()
+    public function asTimestamp(): int
     {
         $value = $this->_getTimeValue();
         if (!is_int($value)) {
@@ -445,12 +447,12 @@ class ValueSanitizerWorker extends \Yana\Db\Helpers\AbstractValueSanitizerWorker
         if (is_array($value)) {
             if (isset($value['hour'], $value['minute'], $value['month'], $value['day'], $value['year'])) {
                 $value = mktime(
-                    $value['hour'],
-                    $value['minute'],
+                    (int) $value['hour'],
+                    (int) $value['minute'],
                     0,
-                    $value['month'],
-                    $value['day'],
-                    $value['year']
+                    (int) $value['month'],
+                    (int) $value['day'],
+                    (int) $value['year']
                 );
             }
         }
@@ -464,7 +466,7 @@ class ValueSanitizerWorker extends \Yana\Db\Helpers\AbstractValueSanitizerWorker
      * @return  string
      * @throws  \Yana\Core\Exceptions\Forms\InvalidValueException  when the value is not a valid URL
      */
-    public function asUrl($maxLength = 0)
+    public function asUrl(int $maxLength = 0): string
     {
         assert('is_int($maxLength); // Invalid argument type: $maxLength. Integer expected');
         $value = filter_var($this->_getValue(), FILTER_SANITIZE_URL);
