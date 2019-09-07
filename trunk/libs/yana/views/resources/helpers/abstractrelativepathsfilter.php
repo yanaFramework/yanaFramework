@@ -41,12 +41,12 @@ abstract class AbstractRelativePathsFilter extends \Yana\Views\Helpers\AbstractV
     /**
      * @var string
      */
-    private $_leftDelimiter = null;
+    private $_leftDelimiter = "";
 
     /**
      * @var string
      */
-    private $_rightDelimiter = null;
+    private $_rightDelimiter = "";
 
     /**
      * Get left Smarty delimiter.
