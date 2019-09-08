@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Forms\Setups;
 
@@ -551,22 +552,22 @@ class Builder extends \Yana\Core\Object implements \Yana\Forms\Setups\IsBuilder
                 // filter fields by column type
                 switch ($column->getType())
                 {
-                    case 'bool':
-                    case 'date':
-                    case 'enum':
-                    case 'float':
-                    case 'html':
-                    case 'inet':
-                    case 'integer':
-                    case 'list':
-                    case 'mail':
-                    case 'range':
-                    case 'set':
-                    case 'string':
-                    case 'text':
-                    case 'time':
-                    case 'timestamp':
-                    case 'url':
+                    case \Yana\Db\Ddl\ColumnTypeEnumeration::BOOL:
+                    case \Yana\Db\Ddl\ColumnTypeEnumeration::DATE:
+                    case \Yana\Db\Ddl\ColumnTypeEnumeration::ENUM:
+                    case \Yana\Db\Ddl\ColumnTypeEnumeration::FLOAT:
+                    case \Yana\Db\Ddl\ColumnTypeEnumeration::HTML:
+                    case \Yana\Db\Ddl\ColumnTypeEnumeration::INET:
+                    case \Yana\Db\Ddl\ColumnTypeEnumeration::INT:
+                    case \Yana\Db\Ddl\ColumnTypeEnumeration::LST:
+                    case \Yana\Db\Ddl\ColumnTypeEnumeration::MAIL:
+                    case \Yana\Db\Ddl\ColumnTypeEnumeration::RANGE:
+                    case \Yana\Db\Ddl\ColumnTypeEnumeration::SET:
+                    case \Yana\Db\Ddl\ColumnTypeEnumeration::STRING:
+                    case \Yana\Db\Ddl\ColumnTypeEnumeration::TEXT:
+                    case \Yana\Db\Ddl\ColumnTypeEnumeration::TIME:
+                    case \Yana\Db\Ddl\ColumnTypeEnumeration::TIMESTAMP:
+                    case \Yana\Db\Ddl\ColumnTypeEnumeration::URL:
                         $searchCollection[$columnName] = $column;
                         break;
                 } // end switch

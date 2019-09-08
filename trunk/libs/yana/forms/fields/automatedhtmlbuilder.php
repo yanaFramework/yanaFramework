@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Forms\Fields;
 
@@ -323,40 +324,40 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
          */
         switch ($field->getType())
         {
-            case 'array':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::ARR:
                 $this->setCssClass("gui_generator_array");
                 return $this->buildDiv(\Yana\Views\Helpers\Html\MenuHelper::factory()->__invoke($value));
-            case 'bool':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::BOOL:
                 $value = ($value) ? "true" : "false";
                 $this->setCssClass("gui_generator_bool icon_" . $value);
                 return $this->buildSpan('&nbsp;');
-            case 'color':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::COLOR:
                 $this->setAttr('style="background-color: ' . \htmlspecialchars($value) . '"')->setCssClass("gui_generator_color");
                 return $this->buildSpan(\htmlspecialchars($value));
-            case 'file':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::FILE:
                 $this->setCssClass('gui_generator_file_download');
                 if (!is_string($value)) {
                     $value = "";
                 }
                 return $this->buildSpan($this->buildFileDownload($value, $setup->getDownloadAction()));
-            case 'text':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::TEXT:
                 $textFormatter = new \Yana\Views\Helpers\Formatters\TextFormatterCollection();
                 $value = $textFormatter(\htmlspecialchars($value));
             // fall through
-            case 'html':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::HTML:
                 if (mb_strlen($value) > 25) {
                     $this->setCssClass('gui_generator_readonly_textarea');
                 }
                 return $this->buildDiv($value);
-            case 'image':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::IMAGE:
                 if (!is_string($value)) {
                     $value = "";
                 }
                 $this->setCssClass('gui_generator_image');
                 return $this->buildDiv($this->buildImageDownload($value, $setup->getDownloadAction()));
-            case 'enum':
-            case 'set':
-            case 'list':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::ENUM:
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::SET:
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::LST:
                 $this->setCssClass('gui_generator_array');
                 if (is_array($value)) {
                     $value = \Yana\Views\Helpers\Html\MenuHelper::factory()
@@ -364,9 +365,9 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                         ->__invoke($value);
                 }
                 return $this->buildDiv((string) $value);
-            case 'password':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::PASSWORD:
                 return '&ndash;'; // never show password
-            case 'reference':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::REFERENCE:
                 $label = mb_strtoupper($field->getColumn()->getReferenceSettings()->getLabel());
                 if ($label !== "") {
                     $row = $field->getContext()->getRow();
@@ -376,12 +377,12 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                     $value = "";
                 }
                 return $this->buildSpan(\htmlspecialchars($value));
-            case 'date':
-            case 'time':
-            case 'timestamp':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::DATE:
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::TIME:
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::TIMESTAMP:
                 $dateFormatter = new \Yana\Views\Helpers\Formatters\DateFormatter();
                 return $this->buildSpan($dateFormatter($value));
-            case 'url':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::URL:
                 if (!is_string($value)) {
                     return "&ndash;";
                 }
@@ -428,7 +429,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
          */
         switch ($field->getType())
         {
-            case 'bool':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::BOOL:
                 $items = array(
                     "*" => $lang->getVar('any'),
                     "true" => $lang->getVar('yes'),
@@ -439,10 +440,10 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                 }
                 $this->setCssClass("gui_generator_bool");
                 return $this->buildRadio($items, $value);
-            case 'enum':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::ENUM:
                 $value = array($value);
             // fall through
-            case 'set':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::SET:
                 if (empty($value)) {
                     $value = array();
                 }
@@ -456,9 +457,9 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                     $result = $this->buildSelectMultiple($items, $value);
                 }
                 return $result;
-            case 'time':
-            case 'timestamp':
-            case 'date':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::TIME:
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::TIMESTAMP:
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::DATE:
                 $startTime = $field->getMinValue();
                 if (empty($startTime)) {
                     $startTime = array();
@@ -478,9 +479,9 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                 $this->setId($id);
                 $this->setCssClass("gui_generator_date");
                 return $this->buildSpan($result);
-            case 'integer':
-            case 'float':
-            case 'range':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::INT:
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::FLOAT:
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::RANGE:
                 $name = $this->getName();
                 $id = $this->getId();
                 $this->setId($id . '_start')->setName($name . '[start]');
