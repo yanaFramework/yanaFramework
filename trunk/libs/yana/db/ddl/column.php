@@ -1760,8 +1760,9 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
 
         switch ($type)
         {
-            case 'array':
-            case 'list':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::ARR:
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::LST:
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::SET:
                 if (!is_array($value)) {
                     assert('is_string($value);');
                     $value = json_decode($value, true);
@@ -1775,24 +1776,24 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
                 }
                 return $value;
 
-            case 'bool':
-                return (!empty($value));
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::BOOL:
+                return (!empty($value) || $value === 'T'); // T = interbase DBMS
 
-            case 'date':
-            case 'time':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::DATE:
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::TIME:
                 if (!is_string($value)) {
                     return null;
                 }
                 return strtotime($value);
 
-            case 'html':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::HTML:
                 if (!is_scalar($value)) {
                     return "";
                 }
                 return htmlspecialchars_decode($value);
 
-            case 'file':
-            case 'image':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::FILE:
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::IMAGE:
                 if (empty($value)) {
                     return null;
                 }
@@ -1809,8 +1810,8 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
                 return $filename;
                 // @codeCoverageIgnoreEnd
 
-            case 'range':
-            case 'float':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::RANGE:
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::FLOAT:
                 if (!is_numeric($value)) {
                     return null;
                 }
@@ -1845,7 +1846,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
                 }
                 return $value;
 
-            case 'integer':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::INT:
                 if (!is_numeric($value)) {
                     return null;
                 }
@@ -1869,7 +1870,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
                 }
                 return $value;
 
-            case 'timestamp':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::TIMESTAMP:
                 if (!is_numeric($value)) {
                     return null;
                 }
@@ -1880,6 +1881,65 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
                     return "";
                 }
                 return "$value";
+        }
+    }
+
+    /**
+     * Serialize value as string.
+     *
+     * @param   mixed   $value  value of the row
+     * @param   string  $dbms   target DBMS (e.g. mysql, mssql, ..., generic)
+     * @return  bool
+     * @ignore
+     */
+    public function convertValueToString($value, $dbms = "generic")
+    {
+        $column = $this->getReferenceColumn();
+
+        if (is_null($value)) {
+            return "NULL";
+        }
+
+        switch ($column->getType())
+        {
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::RANGE:
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::FLOAT:
+                return (string) (float) $value;
+
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::TIMESTAMP:
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::INT:
+                return (string) (int) $value;
+
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::BOOL:
+                switch ($dbms)
+                {
+                    case 'dbase':
+                        return $value === true ? "T" : "F";
+
+                    case 'frontbase':
+                    case 'postgresql':
+                        return $value === true ? "TRUE" : "FALSE";
+
+                    default:
+                        return $value === true ? "1" : "0";
+                }
+
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::DATE:
+                return date('c', (int) $value);
+
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::ARR:
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::LST:
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::SET:
+                $value = \json_encode($value);
+            // fall through
+            default:
+                $value = str_replace('\\', '\\\\', $value);
+                $value = str_replace(YANA_DB_DELIMITER, '\\' . YANA_DB_DELIMITER, $value);
+                $value = preg_replace('/[\x00\x1A]/us', '', $value);
+                $value = preg_replace("/\n/us", '\\n', $value);
+                $value = preg_replace("/\r/us", '\\r', $value);
+                $value = preg_replace("/\f/us", '\\f', $value);
+                return YANA_DB_DELIMITER . $value . YANA_DB_DELIMITER;
         }
     }
 
