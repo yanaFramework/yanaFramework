@@ -198,8 +198,7 @@ class XDDLTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('testdb', $name, 'Database-name should match name-attribute in source file.');
 
         // test default value
-        $this->_object->setName();
-        $name = $this->_object->getName();
+        $name = $this->_object->setName("")->getName();
         $this->assertEquals(null, $name, 'Database-name should be empty after reset.');
     }
 

@@ -45,7 +45,7 @@ class NullLoader extends \Yana\Core\Autoloaders\Loader
      *
      * @param  string  $fileName
      */
-    protected function _includeFile($fileName)
+    protected function _includeFile(string $fileName)
     {
         // intentionally left blank
     }

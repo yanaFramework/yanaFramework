@@ -24,6 +24,7 @@
  * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Doctrine;
 
@@ -52,7 +53,8 @@ class ConnectionFactoryTest extends \PHPUnit_Framework_TestCase
         'PORT' => \YANA_DATABASE_PORT,
         'USERNAME' => \YANA_DATABASE_USER,
         'PASSWORD' => \YANA_DATABASE_PASSWORD,
-        'DATABASE' => \YANA_DATABASE_NAME
+        'DATABASE' => \YANA_DATABASE_NAME,
+        'CHARSET' => 'utf8'
     );
 
     /**

@@ -45,9 +45,9 @@ class MyLoader extends \Yana\Core\Autoloaders\AbstractLoader
      *
      * @param   string  $className  name of class you are trying to load
      */
-    public function loadClassFile($className)
+    public function loadClassFile(string $className): bool
     {
-        // intentionally left blank
+        return true;
     }
 
 }
