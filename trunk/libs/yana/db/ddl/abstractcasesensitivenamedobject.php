@@ -36,8 +36,20 @@ namespace Yana\Db\Ddl;
  * @package     yana
  * @subpackage  db
  */
-abstract class AbstractNamedObject extends \Yana\Db\Ddl\AbstractCaseSensitiveNamedObject
+abstract class AbstractCaseSensitiveNamedObject extends \Yana\Db\Ddl\AbstractObject
 {
+
+    /**
+     * Initialize instance and set a name.
+     *
+     * @param   string  $name  name
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException when an empty or invalid name is provided
+     */
+    public function __construct(string $name)
+    {
+        assert('is_string($name); // Invalid argument $name: string expected');
+        $this->setName($name);
+    }
 
     /**
      * Set object name.
@@ -51,7 +63,12 @@ abstract class AbstractNamedObject extends \Yana\Db\Ddl\AbstractCaseSensitiveNam
     public function setName($name)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
-        return parent::setName(mb_strtolower($name));
+        if ($name === "") {
+            $message = "Object name cannot be empty.";
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
+        }
+
+        return parent::setName($name);
     }
 
 }

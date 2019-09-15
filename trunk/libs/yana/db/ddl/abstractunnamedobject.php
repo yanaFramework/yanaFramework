@@ -29,29 +29,25 @@ declare(strict_types=1);
 namespace Yana\Db\Ddl;
 
 /**
- * database structure
- *
- * This is a base class for most DDL objects.
+ * Base class for most DDL objects.
  *
  * @package     yana
  * @subpackage  db
  */
-abstract class AbstractNamedObject extends \Yana\Db\Ddl\AbstractCaseSensitiveNamedObject
+abstract class AbstractUnnamedObject extends \Yana\Db\Ddl\AbstractObject
 {
 
     /**
-     * Set object name.
+     * Initialize instance.
      *
-     * The name is mandatory.
-     *
-     * @param   string  $name  object name
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when name is invalid
-     * @return  $this
+     * @param   string  $name  a valid, unique database object identifier
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when given name is invalid
      */
-    public function setName($name)
+    public function __construct(string $name = "")
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
-        return parent::setName(mb_strtolower($name));
+        if ($name > "") {
+            $this->setName(\mb_strtolower($name));
+        }
     }
 
 }

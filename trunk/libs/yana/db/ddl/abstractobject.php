@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Ddl;
 
@@ -45,22 +46,9 @@ abstract class AbstractObject extends \Yana\Db\Ddl\DDL
     protected $name = null;
 
     /**
-     * Initialize instance.
-     *
-     * @param   string  $name  a valid, unique database object identifier
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when given name is invalid
-     */
-    public function __construct($name = "")
-    {
-        if (!empty($name)) {
-            $this->setName($name);
-        }
-    }
-
-    /**
      * Returns the object name.
      *
-     * @return  string
+     * @return  string|NULL
      */
     public function getName()
     {
@@ -74,21 +62,21 @@ abstract class AbstractObject extends \Yana\Db\Ddl\DDL
      *
      * @param   string  $name   object name
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when given name is invalid
-     * @return  \Yana\Db\Ddl\AbstractObject 
+     * @return  $this
      */
-    public function setName($name = "")
+    public function setName($name)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
-        if (empty($name)) {
+        if ($name === "") {
             $this->name = null;
 
-        } elseif (!preg_match('/^[a-z]\w+$/is', $name)) {
+        } elseif (!preg_match('/^[a-z][\w\d-_]*$/uis', $name)) {
             $message = "Not a valid object name: '$name'. Must start with a letter and may only contain: " .
                 "a-z, 0-9, '-' and '_'.";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
 
         } else {
-            $this->name = mb_strtolower($name);
+            $this->name = $name;
         }
         return $this;
     }
