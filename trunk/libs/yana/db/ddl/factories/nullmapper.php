@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Ddl\Factories;
 
@@ -44,7 +45,7 @@ class NullMapper extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories\IsM
      * @param   string       $name      sequence name
      * @return  $this
      */
-    public function createSequence(\Yana\Db\Ddl\Database $database, array $info, $name)
+    public function createSequence(\Yana\Db\Ddl\Database $database, array $info, string $name): \Yana\Db\Ddl\Factories\IsMdb2Mapper
     {
         return $this;
     }
@@ -57,7 +58,7 @@ class NullMapper extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories\IsM
      * @param   string    $name   index name
      * @return  $this
      */
-    public function createIndex(\Yana\Db\Ddl\Table $table, array $info, $name)
+    public function createIndex(\Yana\Db\Ddl\Table $table, array $info, string $name): \Yana\Db\Ddl\Factories\IsMdb2Mapper
     {
         return $this;
     }
@@ -70,7 +71,7 @@ class NullMapper extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories\IsM
      * @param   string    $name   constraint name
      * @return  $this
      */
-    public function createConstraint(\Yana\Db\Ddl\Table $table, array $info, $name)
+    public function createConstraint(\Yana\Db\Ddl\Table $table, array $info, string $name): \Yana\Db\Ddl\Factories\IsMdb2Mapper
     {
         return $this;
     }
@@ -84,7 +85,7 @@ class NullMapper extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories\IsM
      * @param   string    $name   column name
      * @return  $this
      */
-    public function createColumn(\Yana\Db\Ddl\Table $table, array $info, $name)
+    public function createColumn(\Yana\Db\Ddl\Table $table, array $info, string $name): \Yana\Db\Ddl\Factories\IsMdb2Mapper
     {
         return $this;
     }
