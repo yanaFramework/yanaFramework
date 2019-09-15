@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Ddl\Factories;
 
@@ -64,7 +65,7 @@ interface IsDoctrineWrapper
      * Get list of columns associated with the table.
      *
      * @param   string  $tableName  must be a valid database table
-     * @return  array
+     * @return  \Doctrine\DBAL\Schema\Column[]
      */
     public function listTableColumns($tableName);
 
