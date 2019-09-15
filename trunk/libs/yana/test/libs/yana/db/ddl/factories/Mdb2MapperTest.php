@@ -320,7 +320,7 @@ class Mdb2MapperTest extends \PHPUnit_Framework_TestCase
     public function testCreateColumnLength()
     {
         $table = new \Yana\Db\Ddl\Table('test');
-        $info = array('type' => 'decimal', 'length' => '2, 10');
+        $info = array('type' => 'decimal', 'length' => '10, 2');
         $name = "column";
         $this->assertSame($this->object, $this->object->createColumn($table, $info, $name));
         $this->assertSame(10, $table->getColumn("column")->getLength());
