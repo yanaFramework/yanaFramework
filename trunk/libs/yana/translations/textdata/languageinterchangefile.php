@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Translations\TextData;
 
@@ -46,7 +47,7 @@ class LanguageInterchangeFile extends \SimpleXMLElement implements \Yana\Transla
      *
      * @return  string
      */
-    public function getSourceLanguage()
+    public function getSourceLanguage(): string
     {
         $node = $this->xpath("//file");
         return (string) $node[0]->attributes()->{'source-language'};
@@ -57,7 +58,7 @@ class LanguageInterchangeFile extends \SimpleXMLElement implements \Yana\Transla
      *
      * @return  string
      */
-    public function getTargetLanguage()
+    public function getTargetLanguage(): string
     {
         $node = $this->xpath("//file");
         return (string) $node[0]->attributes()->{'target-language'};
@@ -67,9 +68,9 @@ class LanguageInterchangeFile extends \SimpleXMLElement implements \Yana\Transla
      * Set source language.
      *
      * @param   string  $languageCode  standard language code, e.g. en, en-US
-     * @return  \Yana\Translations\TextData\LanguageInterchangeFile
+     * @return  $this
      */
-    public function setSourceLanguage($languageCode)
+    public function setSourceLanguage(string $languageCode): self
     {
         assert('is_string($languageCode); // Wrong argument type for argument 1. String expected.');
         foreach ($this->xpath("//file") as $node)
@@ -77,7 +78,7 @@ class LanguageInterchangeFile extends \SimpleXMLElement implements \Yana\Transla
             /* @var $node SimpleXMLElement */
             $sourceLanguage = $node['source-language'];
             if (empty($sourceLanguage)) {
-                $node->addAttribute('source-language', $languageCode);
+                $node->addAttribute('source-language', (string) $languageCode);
             } else {
                 $node['source-language'] = $languageCode;
             }
@@ -89,9 +90,9 @@ class LanguageInterchangeFile extends \SimpleXMLElement implements \Yana\Transla
      * Set target language.
      *
      * @param   string  $languageCode  standard language code, e.g. en, en-US
-     * @return  \Yana\Translations\TextData\LanguageInterchangeFile
+     * @return  $this
      */
-    public function setTargetLanguage($languageCode)
+    public function setTargetLanguage(string $languageCode): self
     {
         assert('is_string($languageCode); // Wrong argument type for argument 1. String expected.');
         foreach ($this->xpath("//file") as $node)
@@ -138,7 +139,7 @@ class LanguageInterchangeFile extends \SimpleXMLElement implements \Yana\Transla
      * @return  array
      * @ignore
      */
-    public function getGroups(array $array = array())
+    public function getGroups(array $array = array()): array
     {
         foreach ($this->xpath("//group") as $groupNode)
         {
@@ -170,7 +171,7 @@ class LanguageInterchangeFile extends \SimpleXMLElement implements \Yana\Transla
      * @param   array  $array  optional base array
      * @return  array
      */
-    public function toArray($array = array())
+    public function toArray($array = array()): array
     {
         foreach ($this->xpath("//trans-unit | //bin-unit") as $node)
         {
@@ -186,7 +187,7 @@ class LanguageInterchangeFile extends \SimpleXMLElement implements \Yana\Transla
      * @param   string  $string  string to convert
      * @return  string
      */
-    private function _decodeValue($string)
+    private function _decodeValue(string $string): string
     {
         $withoutTags = strip_tags($string);
         $decodedValue = html_entity_decode($withoutTags);
