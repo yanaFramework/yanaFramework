@@ -67,7 +67,7 @@ class SchemaFactory extends \Yana\Core\Object implements \Yana\Db\IsSchemaFactor
         assert('is_string($schemaName); // Wrong type for argument 1. String expected');
         $schema = null;
 
-        $lowerCaseSchemaName = strtolower($schemaName);
+        $lowerCaseSchemaName = mb_strtolower($schemaName);
         $cacheId = 'ddl_' . $lowerCaseSchemaName;
 
         $cache = $this->_getCache();
