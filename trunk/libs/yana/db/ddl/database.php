@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Ddl;
 
@@ -44,7 +45,7 @@ namespace Yana\Db\Ddl;
  * @package     yana
  * @subpackage  db
  */
-class Database extends \Yana\Db\Ddl\AbstractObject
+class Database extends \Yana\Db\Ddl\AbstractUnnamedObject
 {
     /**#@+
      * @ignore
@@ -1469,7 +1470,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
         $attributes = $node->attributes();
         $name = "";
         if (isset($attributes['name'])) {
-            $name = mb_strtolower($attributes['name']);
+            $name = mb_strtolower((string) $attributes['name']);
         } else {
             $name = \Yana\Db\Ddl\DDL::getNameFromPath($path);
         }
@@ -1477,9 +1478,8 @@ class Database extends \Yana\Db\Ddl\AbstractObject
         // if (instance not already exists) { create new object and cache it }
         if (!isset(self::$instances[$path])) {
             // if (object is already in session cache) { unserialize object }
-            if (false && isset($_SESSION[__CLASS__ . "/" . $name])) {
-                self::$instances[$path] = unserialize($_SESSION[__CLASS__ . "/" . $name]);
-                assert('self::$instances[$path] instanceof self;');
+            if (isset($_SESSION[__CLASS__ . "/" . $name]) && $_SESSION[__CLASS__ . "/" . $name] instanceof self) {
+                self::$instances[$path] = $_SESSION[__CLASS__ . "/" . $name];
                 // check if file has changed
                 if (!is_file($path) || filemtime($path) > self::$instances[$path]->lastModified) {
                     // invalidate cache
