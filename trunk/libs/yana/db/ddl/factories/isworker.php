@@ -42,7 +42,7 @@ interface IsWorker
      * @return  \Yana\Db\Ddl\Database
      * @throws  \Yana\Db\ConnectionException  when unable to open connection to database
      */
-    public function createDatabase();
+    public function createDatabase(): \Yana\Db\Ddl\Database;
 
 }
 

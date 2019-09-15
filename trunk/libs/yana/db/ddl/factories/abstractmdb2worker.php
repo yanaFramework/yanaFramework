@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Ddl\Factories;
 
@@ -59,21 +60,21 @@ abstract class AbstractMdb2Worker extends \Yana\Core\Object implements \Yana\Db\
     }
 
     /**
-     * 
+     * Returns MDB2 to XDDL mapping object.
      *
      * @return  \Yana\Db\Ddl\Factories\IsMdb2Mapper
      */
-    protected function _getMapper()
+    protected function _getMapper(): \Yana\Db\Ddl\Factories\IsMdb2Mapper
     {
         return $this->_mapper;
     }
 
     /**
-     * 
+     * Returns MDB2 wrapper object.
      *
      * @return  \Yana\Db\Ddl\Factories\IsMdb2Wrapper
      */
-    protected function _getWrapper()
+    protected function _getWrapper(): \Yana\Db\Ddl\Factories\IsMdb2Wrapper
     {
         return $this->_wrapper;
     }

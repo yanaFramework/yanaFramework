@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Ddl\Factories;
 
@@ -59,21 +60,21 @@ abstract class AbstractDoctrineWorker extends \Yana\Core\Object implements \Yana
     }
 
     /**
-     * 
+     * Returns Doctrine to XDDL mapping object.
      *
      * @return  \Yana\Db\Ddl\Factories\IsDoctrineMapper
      */
-    protected function _getMapper()
+    protected function _getMapper(): \Yana\Db\Ddl\Factories\IsDoctrineMapper
     {
         return $this->_mapper;
     }
 
     /**
-     * 
+     * Returns Doctrine DBAL wrapper object.
      *
      * @return  \Yana\Db\Ddl\Factories\IsDoctrineWrapper
      */
-    protected function _getWrapper()
+    protected function _getWrapper(): \Yana\Db\Ddl\Factories\IsDoctrineWrapper
     {
         return $this->_wrapper;
     }

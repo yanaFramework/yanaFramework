@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Ddl\Factories;
 
@@ -45,7 +46,7 @@ class Mdb2Worker extends \Yana\Db\Ddl\Factories\AbstractMdb2Worker
      * @return  \Yana\Db\Ddl\Database
      * @throws  \Yana\Db\ConnectionException  when unable to open connection to database
      */
-    public function createDatabase()
+    public function createDatabase(): \Yana\Db\Ddl\Database
     {
         $connection = $this->_getWrapper();
 
@@ -108,7 +109,7 @@ class Mdb2Worker extends \Yana\Db\Ddl\Factories\AbstractMdb2Worker
      * @param  \Yana\Db\Ddl\Table  $table      to add columns to
      * @param  string              $tableName  in source table name (may contain prefix)
      */
-    protected function _createColumns(\Yana\Db\Ddl\Table $table, $tableName)
+    protected function _createColumns(\Yana\Db\Ddl\Table $table, string $tableName)
     {
         assert('!isset($mapper); // Cannot redeclare var $mapper');
         $mapper = $this->_getMapper();
@@ -128,7 +129,7 @@ class Mdb2Worker extends \Yana\Db\Ddl\Factories\AbstractMdb2Worker
      * @param  \Yana\Db\Ddl\Table  $table      to add indexes to
      * @param  string              $tableName  in source table name (may contain prefix)
      */
-    protected function _createIndexes(\Yana\Db\Ddl\Table $table, $tableName)
+    protected function _createIndexes(\Yana\Db\Ddl\Table $table, string $tableName)
     {
         assert('!isset($mapper); // Cannot redeclare var $mapper');
         $mapper = $this->_getMapper();
@@ -148,7 +149,7 @@ class Mdb2Worker extends \Yana\Db\Ddl\Factories\AbstractMdb2Worker
      * @param  \Yana\Db\Ddl\Table  $table      to add constraints to
      * @param  string              $tableName  in source table name (may contain prefix)
      */
-    protected function _createConstraints(\Yana\Db\Ddl\Table $table, $tableName)
+    protected function _createConstraints(\Yana\Db\Ddl\Table $table, string $tableName)
     {
         assert('!isset($mapper); // Cannot redeclare var $mapper');
         $mapper = $this->_getMapper();
