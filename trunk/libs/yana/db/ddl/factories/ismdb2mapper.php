@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Ddl\Factories;
 
@@ -55,7 +56,7 @@ interface IsMdb2Mapper
      * @throws  \Yana\Core\Exceptions\AlreadyExistsException    when a sequence with the same name already exists
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if given an invalid name
      */
-    public function createSequence(\Yana\Db\Ddl\Database $database, array $info, $name);
+    public function createSequence(\Yana\Db\Ddl\Database $database, array $info, string $name): self;
 
     /**
      * Add a index to table.
@@ -75,7 +76,7 @@ interface IsMdb2Mapper
      * @param   string    $name   index name
      * @return  $this
      */
-    public function createIndex(\Yana\Db\Ddl\Table $table, array $info, $name);
+    public function createIndex(\Yana\Db\Ddl\Table $table, array $info, string $name): self;
 
     /**
      * Add a constraint to table.
@@ -117,7 +118,7 @@ interface IsMdb2Mapper
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException   when number of source and target columns in constraint is different
      * @return  $this
      */
-    public function createConstraint(\Yana\Db\Ddl\Table $table, array $info, $name);
+    public function createConstraint(\Yana\Db\Ddl\Table $table, array $info, string $name): self;
 
     /**
      * Add a column to table.
@@ -141,7 +142,7 @@ interface IsMdb2Mapper
      * @throws  \Yana\Core\Exceptions\NotImplementedException  when the given 'type' of column is unknwon
      * @return  $this
      */
-    public function createColumn(\Yana\Db\Ddl\Table $table, array $info, $name);
+    public function createColumn(\Yana\Db\Ddl\Table $table, array $info, string $name): self;
 }
 
 ?>

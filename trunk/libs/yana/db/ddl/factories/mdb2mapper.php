@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Ddl\Factories;
 
@@ -55,7 +56,7 @@ class Mdb2Mapper extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories\IsM
      * @throws  \Yana\Core\Exceptions\AlreadyExistsException    when a sequence with the same name already exists
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if given an invalid name
      */
-    public function createSequence(\Yana\Db\Ddl\Database $database, array $info, $name)
+    public function createSequence(\Yana\Db\Ddl\Database $database, array $info, string $name): \Yana\Db\Ddl\Factories\IsMdb2Mapper
     {
         $sequence = $database->addSequence($name); // may throw exception
         if (isset($info['start']) && is_numeric($info['start'])) {
@@ -98,7 +99,7 @@ class Mdb2Mapper extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories\IsM
      * @return  $this
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when no "fields" entry is given in index information
      */
-    public function createIndex(\Yana\Db\Ddl\Table $table, array $info, $name)
+    public function createIndex(\Yana\Db\Ddl\Table $table, array $info, string $name): \Yana\Db\Ddl\Factories\IsMdb2Mapper
     {
         if (!isset($info['fields'])) {
             throw new \Yana\Core\Exceptions\InvalidArgumentException("Index must contain at least one column", \Yana\Log\TypeEnumeration::WARNING);
@@ -158,7 +159,7 @@ class Mdb2Mapper extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories\IsM
      * @throws  \Yana\Core\Exceptions\NotFoundException        when target database/table/column not found
      * @return  $this
      */
-    public function createConstraint(\Yana\Db\Ddl\Table $table, array $info, $name)
+    public function createConstraint(\Yana\Db\Ddl\Table $table, array $info, string $name): \Yana\Db\Ddl\Factories\IsMdb2Mapper
     {
         switch (true)
         {
@@ -279,7 +280,7 @@ class Mdb2Mapper extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories\IsM
      * @param   string  $mdb2Strategy  as given by MDB2 reverse module
      * @return  int
      */
-    private function _mapKeyUpdateStrategy($mdb2Strategy)
+    private function _mapKeyUpdateStrategy(string $mdb2Strategy): int
     {
         assert('is_string($mdb2Strategy); // Invalid argument type: $mdb2Strategy. String expected.');
         $strategy = \Yana\Db\Ddl\KeyUpdateStrategyEnumeration::NOACTION;
@@ -324,7 +325,7 @@ class Mdb2Mapper extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories\IsM
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when no "type" entry is given in column information
      * @return  $this
      */
-    public function createColumn(\Yana\Db\Ddl\Table $table, array $info, $name)
+    public function createColumn(\Yana\Db\Ddl\Table $table, array $info, string $name): \Yana\Db\Ddl\Factories\IsMdb2Mapper
     {
         if (!isset($info['type'])) {
             throw new \Yana\Core\Exceptions\InvalidArgumentException();
@@ -341,17 +342,17 @@ class Mdb2Mapper extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories\IsM
                 assert('!isset($lowerCaseName); // Cannot redeclare var $lowerCaseName');
                 $lowerCaseName = \Yana\Util\Strings::toLowerCase($name);
                 if (\Yana\Util\Strings::startsWith($lowerCaseName, 'array') || \Yana\Util\Strings::endsWith($lowerCaseName, 'array')) {
-                    $type = "array";
+                    $type = \Yana\Db\Ddl\ColumnTypeEnumeration::ARR;
 
                 } elseif (\Yana\Util\Strings::startsWith($lowerCaseName, 'html') || \Yana\Util\Strings::endsWith($lowerCaseName, 'html')) {
-                    $type = "html";
+                    $type = \Yana\Db\Ddl\ColumnTypeEnumeration::HTML;
                 }
                 unset($lowerCaseName);
             break;
 
             case 'timestamp':
                 if (isset($info['nativetype']) && $info['nativetype'] === "datetime") {
-                    $type = "time";
+                    $type = \Yana\Db\Ddl\ColumnTypeEnumeration::TIME;
                 }
             break;
 
@@ -370,11 +371,11 @@ class Mdb2Mapper extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories\IsM
          * set length
          */
         if (!empty($info['length'])) {
-            if (strpos($info['length'], ',') !== false) {
+            if (is_string($info['length']) && strpos($info['length'], ',') !== false) {
                 $info['length'] = explode(',', $info['length']);
                 if (count($info['length']) === 2) {
-                    // 'length' => array( 0 => precision, 1 => length )
-                    $column->setLength((int) $info['length'][1], (int) $info['length'][0]);
+                    // 'length' => array( 0 => length, 1 => precision )
+                    $column->setLength((int) $info['length'][0], (int) $info['length'][1]);
                 }
             } elseif (is_numeric($info['length'])) {
                 $column->setLength((int) $info['length']);
@@ -386,14 +387,12 @@ class Mdb2Mapper extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories\IsM
          */
         if (!empty($info['notnull'])) {
             $column->setNullable(false);
-        } else {
-            $column->setNullable(true);
         }
 
         /*
          * set unsigned
          */
-        if (!empty($info['unsigned'])) {
+        if ($column->isNumber() && !empty($info['unsigned'])) {
             $column->setUnsigned(true);
         }
 
@@ -428,7 +427,7 @@ class Mdb2Mapper extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories\IsM
      * @return  string
      * @throws  \Yana\Core\Exceptions\NotImplementedException  when the type cannot be matched
      */
-    private function _mapColumnType($mdb2Type, $length)
+    private function _mapColumnType(string $mdb2Type, int $length): string
     {
         assert('is_string($mdb2Type); // Invalid argument type: $mdb2Type. String expected.');
         switch ($mdb2Type)
@@ -436,46 +435,46 @@ class Mdb2Mapper extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories\IsM
 
             case 'blob':
             case 'clob':
-                $type = "text";
+                $type = \Yana\Db\Ddl\ColumnTypeEnumeration::TEXT;
             break;
 
             case 'text':
                 if ($length === 0 || $length > 256) {
-                    $type = "text";
+                    $type = \Yana\Db\Ddl\ColumnTypeEnumeration::TEXT;
                 } else {
-                    $type = "string";
+                    $type = \Yana\Db\Ddl\ColumnTypeEnumeration::STRING;
                 }
             break;
 
             case 'bool':
             case 'boolean':
-                $type = "bool";
+                $type = \Yana\Db\Ddl\ColumnTypeEnumeration::BOOL;
             break;
 
             case 'int':
             case 'integer':
                 if ($length == 1) {
-                    $type = "bool";
+                    $type = \Yana\Db\Ddl\ColumnTypeEnumeration::BOOL;
                 } else {
-                    $type = "integer";
+                    $type = \Yana\Db\Ddl\ColumnTypeEnumeration::INT;
                 }
             break;
 
             case 'decimal':
             case 'float':
-                $type = "float";
+                $type = \Yana\Db\Ddl\ColumnTypeEnumeration::FLOAT;
             break;
 
             case 'timestamp':
-                $type = "timestamp";
+                $type = \Yana\Db\Ddl\ColumnTypeEnumeration::TIMESTAMP;
             break;
 
             case 'date':
-                $type = "date";
+                $type = \Yana\Db\Ddl\ColumnTypeEnumeration::DATE;
             break;
 
             case 'time':
-                $type = "string";
+                $type = \Yana\Db\Ddl\ColumnTypeEnumeration::STRING;
             break;
 
             /* more ? */
