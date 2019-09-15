@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db;
 
@@ -126,7 +127,7 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\IsConnecti
 
             }
             if (is_null($connection) && $ignoreFileDb && \Yana\Db\Mdb2\ConnectionFactory::isMdb2Available()) {
-                $connection = $this->_buildDoctrineConnection($schema); // may return NULL
+                $connection = $this->_buildMdb2Connection($schema); // may return NULL
 
             }
             if (is_null($connection)) {
