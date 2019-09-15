@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Export;
 
@@ -93,7 +94,8 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
     {
         $xslDocument = $this->_getProvider()->getXslDocument($dbmsType);
         $xmlDocument = new \DOMDocument();
-        $xmlDocument->loadXML((string) $this->schema); // Source file
+        $xddlDocument = $this->schema->serializeToXDDL();
+        $xmlDocument->loadXML($xddlDocument->asXML()); // Source file
         return $this->_getProcessor()->transformDocument($xmlDocument, $xslDocument);
     }
 
