@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Ddl\Factories;
 
@@ -45,7 +46,7 @@ class DoctrineWorker extends \Yana\Db\Ddl\Factories\AbstractDoctrineWorker
      * @return  \Yana\Db\Ddl\Database
      * @throws  \Yana\Db\ConnectionException  when unable to open connection to database
      */
-    public function createDatabase()
+    public function createDatabase(): \Yana\Db\Ddl\Database
     {
         $connection = $this->_getWrapper();
 
@@ -89,7 +90,7 @@ class DoctrineWorker extends \Yana\Db\Ddl\Factories\AbstractDoctrineWorker
      * @param   string  $tableName  id to modify
      * @return  string
      */
-    private function _stripPrefixFromTableName($tableName)
+    private function _stripPrefixFromTableName(string $tableName): string
     {
         return preg_replace('/^' . preg_quote(YANA_DATABASE_PREFIX, '/') . '/', '', $tableName);
     }
@@ -122,7 +123,7 @@ class DoctrineWorker extends \Yana\Db\Ddl\Factories\AbstractDoctrineWorker
      * @param  \Yana\Db\Ddl\Table  $table      to add columns to
      * @param  string              $tableName  in source table name (may contain prefix)
      */
-    protected function _createColumns(\Yana\Db\Ddl\Table $table, $tableName)
+    protected function _createColumns(\Yana\Db\Ddl\Table $table, string $tableName)
     {
         assert('!isset($mapper); // Cannot redeclare var $mapper');
         $mapper = $this->_getMapper();
@@ -131,6 +132,7 @@ class DoctrineWorker extends \Yana\Db\Ddl\Factories\AbstractDoctrineWorker
         assert('!isset($columnName); // Cannot redeclare var $columnName');
         foreach ($this->_getWrapper()->listTableColumns($tableName) as $columnName => $columnInfo)
         {
+            $columnName = $columnInfo->getName();
             $mapper->createColumn($table, $columnInfo, $columnName);
         }
         unset($columnInfo, $columnName);
@@ -142,15 +144,16 @@ class DoctrineWorker extends \Yana\Db\Ddl\Factories\AbstractDoctrineWorker
      * @param  \Yana\Db\Ddl\Table  $table      to add indexes to
      * @param  string              $tableName  in source table name (may contain prefix)
      */
-    protected function _createIndexes(\Yana\Db\Ddl\Table $table, $tableName)
+    protected function _createIndexes(\Yana\Db\Ddl\Table $table, string $tableName)
     {
         assert('!isset($mapper); // Cannot redeclare var $mapper');
         $mapper = $this->_getMapper();
 
         assert('!isset($indexInfo); // Cannot redeclare var $indexInfo');
         assert('!isset($indexName); // Cannot redeclare var $indexName');
-        foreach ($this->_getWrapper()->listTableIndexes($tableName) as $indexName => $indexInfo)
+        foreach ($this->_getWrapper()->listTableIndexes($tableName) as $indexInfo)
         {
+            $indexName = $indexInfo->getName();
             $mapper->createIndex($table, $indexInfo, $indexName);
         }
         unset($indexInfo, $indexName);
@@ -162,15 +165,16 @@ class DoctrineWorker extends \Yana\Db\Ddl\Factories\AbstractDoctrineWorker
      * @param  \Yana\Db\Ddl\Table  $table      to add constraints to
      * @param  string              $tableName  in source table name (may contain prefix)
      */
-    protected function _createConstraints(\Yana\Db\Ddl\Table $table, $tableName)
+    protected function _createConstraints(\Yana\Db\Ddl\Table $table, string $tableName)
     {
         assert('!isset($mapper); // Cannot redeclare var $mapper');
         $mapper = $this->_getMapper();
 
         assert('!isset($contraintInfo); // Cannot redeclare var $contraintInfo');
         assert('!isset($contraintName); // Cannot redeclare var $contraintName');
-        foreach ($this->_getWrapper()->listTableConstraints($tableName) as $contraintName => $contraintInfo)
+        foreach ($this->_getWrapper()->listTableConstraints($tableName) as $contraintInfo)
         {
+            $contraintName = $contraintInfo->getName();
             $mapper->createConstraint($table, $contraintInfo, (string) $contraintName);
         }
         unset($contraintInfo, $contraintName);
