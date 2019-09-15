@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Ddl;
 
@@ -197,7 +198,7 @@ abstract class DDL extends \Yana\Core\Object
                     {
                         case 'array':
                             if (!empty($this->$property)) {
-                                $value = implode(',', $this->$property);
+                                $value = (string) implode(',', $this->$property);
                             }
                         break;
                         case 'bool':
@@ -213,8 +214,8 @@ abstract class DDL extends \Yana\Core\Object
                             }
                         break;
                     }
-                    if (!is_null($value)) {
-                        $node->addAttribute($name, $value);
+                    if (is_string($value)) {
+                        $node->addAttribute($name, (string) $value);
                     }
                     unset($value);
                 }
@@ -306,7 +307,7 @@ abstract class DDL extends \Yana\Core\Object
                                     continue;
                                 }
                                 if ($key !== '' && (is_string($key) || $key != $value) && $keyAttr != $valAttr) {
-                                    $childNode->addAttribute($keyAttr, $key);
+                                    $childNode->addAttribute($keyAttr, (string) $key);
                                 }
                             }
                         }
