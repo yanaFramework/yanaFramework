@@ -42,7 +42,7 @@ interface IsLoader
      *
      * @return  \Yana\Core\Autoloaders\MapperCollection
      */
-    public function getMaps();
+    public function getMaps(): \Yana\Core\Autoloaders\MapperCollection;
 
     /**
      * Tells whether an exception should be thrown when a class is not found.
@@ -51,15 +51,15 @@ interface IsLoader
      *
      * @return  bool
      */
-    public function doesThrowExceptionWhenClassIsNotFound();
+    public function doesThrowExceptionWhenClassIsNotFound(): bool;
 
     /**
      * Set whether an exception should be thrown when a class is not found.
      *
      * @param   bool  $throwException  true = do throw exception, false = don't throw exception
-     * @return  \Yana\Core\Autoloaders\IsLoader
+     * @return  $this
      */
-    public function setThrowExceptionWhenClassIsNotFound($throwException);
+    public function setThrowExceptionWhenClassIsNotFound(bool $throwException): \Yana\Core\Autoloaders\IsLoader;
 
     /**
      * Try to load a file associated with a class.
@@ -67,6 +67,6 @@ interface IsLoader
      * @param   string  $className  name of class you are trying to load
      * @throws  \Yana\Core\Exceptions\ClassNotFoundException  when the class was not found (needs to be activated)
      */
-    public function loadClassFile($className);
+    public function loadClassFile(string $className): bool;
 
 }

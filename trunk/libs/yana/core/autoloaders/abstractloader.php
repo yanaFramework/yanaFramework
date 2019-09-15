@@ -56,7 +56,7 @@ abstract class AbstractLoader extends \Yana\Core\Object implements \Yana\Core\Au
      *
      * @return  \Yana\Core\Autoloaders\MapperCollection
      */
-    public function getMaps()
+    public function getMaps(): \Yana\Core\Autoloaders\MapperCollection
     {
         if (!isset($this->_maps)) {
             $this->_maps = new \Yana\Core\Autoloaders\MapperCollection();
@@ -69,7 +69,7 @@ abstract class AbstractLoader extends \Yana\Core\Object implements \Yana\Core\Au
      *
      * @return  bool
      */
-    public function doesThrowExceptionWhenClassIsNotFound()
+    public function doesThrowExceptionWhenClassIsNotFound(): bool
     {
         return $this->_throwExceptionWhenClassIsNotFound;
     }
@@ -78,11 +78,10 @@ abstract class AbstractLoader extends \Yana\Core\Object implements \Yana\Core\Au
      * Set whether an exception should be thrown when a class is not found.
      *
      * @param   bool  $throwException  true = do throw exception, false = don't throw exception
-     * @return  \Yana\Core\Autoloaders\AbstractLoader
+     * @return  $this
      */
-    public function setThrowExceptionWhenClassIsNotFound($throwException)
+    public function setThrowExceptionWhenClassIsNotFound(bool $throwException): \Yana\Core\Autoloaders\IsLoader
     {
-        assert('is_bool($throwException); // Invalid input $throwException. Boolean expected');
         $this->_throwExceptionWhenClassIsNotFound = $throwException;
         return $this;
     }

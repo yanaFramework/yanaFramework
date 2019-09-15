@@ -46,9 +46,8 @@ class Loader extends \Yana\Core\Autoloaders\AbstractLoader
      * @throws  \Yana\Core\Exceptions\ClassNotFoundException  when the class was not found (needs to be activated)
      * @return  bool
      */
-    public function loadClassFile($className)
+    public function loadClassFile(string $className): bool
     {
-        assert('is_string($className); // $className expected to be String');
         assert('!isset($fileName); // Cannot redeclare var $fileName');
         $fileName = "";
         assert('!isset($mapper); // Cannot redeclare var $mapper');
@@ -83,9 +82,8 @@ class Loader extends \Yana\Core\Autoloaders\AbstractLoader
      * @param  string  $fileName  path to PHP file
      * @codeCoverageIgnore
      */
-    protected function _includeFile($fileName)
+    protected function _includeFile(string $fileName)
     {
-        assert('is_string($fileName); // $className expected to be String');
         include_once $fileName;
     }
 
