@@ -81,7 +81,7 @@ class DoctrineWrapper extends \Yana\Db\Ddl\Factories\AbstractDoctrineWrapper
      * Get list of columns associated with the table.
      *
      * @param   string  $tableName  must be a valid database table
-     * @return  array
+     * @return  \Doctrine\DBAL\Schema\Column[]
      */
     public function listTableColumns($tableName)
     {
