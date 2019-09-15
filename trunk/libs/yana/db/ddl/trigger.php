@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Ddl;
 
@@ -47,7 +48,7 @@ namespace Yana\Db\Ddl;
  * @package     yana
  * @subpackage  db
  */
-class Trigger extends \Yana\Db\Ddl\AbstractObject
+class Trigger extends \Yana\Db\Ddl\AbstractUnnamedObject
 {
 
     /**
