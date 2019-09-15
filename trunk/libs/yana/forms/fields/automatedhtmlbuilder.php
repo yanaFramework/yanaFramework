@@ -391,7 +391,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                 if (!is_scalar($value)) {
                     $value = "&ndash;";
 
-                } elseif (mb_strlen($value) > 80) {
+                } elseif (mb_strlen((string) $value) > 80) {
                     $value = \htmlspecialchars(mb_substr((string) $value, 0, 76)) . '&nbsp;...';
 
                 } else {
@@ -531,7 +531,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                 $icon = $event->getIcon();
                 $href = "";
 
-                switch (strtolower($event->getLanguage()))
+                switch (strtolower((string) $event->getLanguage()))
                 {
                     case 'javascript':
                         assert('!isset($actionId);');
@@ -586,7 +586,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
             {
                 assert($event instanceof \Yana\Db\Ddl\Event);
                 /* @var $event \Yana\Db\Ddl\Event */
-                if (strtolower($event->getLanguage()) !== 'javascript') {
+                if (strtolower((string) $event->getLanguage()) !== 'javascript') {
                     continue; // non-javascript - ignore!
                 }
                 if ($event->getLabel() || $event->getIcon() ) {
