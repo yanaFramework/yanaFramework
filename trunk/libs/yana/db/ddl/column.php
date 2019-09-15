@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Ddl;
 
@@ -426,7 +427,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
         if (empty($description)) {
             $this->description = null;
         } else {
-            $this->description = "$description";
+            $this->description = (string) $description;
         }
         return $this;
     }
@@ -2003,13 +2004,13 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
         {
             if (is_array($item)) {
                 $optgroup = $node->addChild('optgroup');
-                $optgroup->addAttribute('label', $key);
+                $optgroup->addAttribute('label', (string) $key);
                 self::_serializeOptions($optgroup, $item);
                 unset($optgroup);
             } else {
                 $option = $node->addChild('option', \Yana\Util\Strings::htmlEntities($item));
                 if ($key !== $item) {
-                    $option->addAttribute('value', $key);
+                    $option->addAttribute('value', (string) $key);
                 }
                 unset($option);
             }
