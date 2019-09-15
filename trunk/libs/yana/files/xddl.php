@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Files;
 
@@ -58,7 +59,7 @@ class XDDL extends \Yana\Files\File
      *
      * @return  string
      */
-    public function toXML()
+    public function toXML(): string
     {
         if (isset($this->ddl) && $this->ddl->isModified()) {
             assert('!isset($xddl); // Cannot redeclare var $xddl');
@@ -89,7 +90,7 @@ class XDDL extends \Yana\Files\File
      *
      * @return  \SimpleXMLElement
      */
-    public function toSimpleXML()
+    public function toSimpleXML(): \SimpleXMLElement
     {
         $xml = $this->toXML();
         assert('is_string($xml);');
@@ -103,7 +104,7 @@ class XDDL extends \Yana\Files\File
      * @throws  \Yana\Core\Exceptions\NotFoundException       when file does not exist
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when file is invalid
      */
-    public function toDatabase()
+    public function toDatabase(): \Yana\Db\Ddl\Database
     {
         if (!isset($this->ddl)) {
             $this->ddl = self::_getDatabaseFromPath($this->getPath());
@@ -121,9 +122,8 @@ class XDDL extends \Yana\Files\File
      * @throws  \Yana\Core\Exceptions\NotFoundException       when file does not exist
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when file is invalid
      */
-    public static function getDatabase($databaseName)
+    public static function getDatabase(string $databaseName): \Yana\Db\Ddl\Database
     {
-        assert('is_string($databaseName); // Wrong type for argument 1. String expected');
         $path = \Yana\Db\Ddl\DDL::getPath($databaseName);
         return self::_getDatabaseFromPath($path);
     }
@@ -136,7 +136,7 @@ class XDDL extends \Yana\Files\File
      * @throws  \Yana\Core\Exceptions\NotFoundException       when file does not exist
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when file is invalid
      */
-    private static function _getDatabaseFromPath($path)
+    private static function _getDatabaseFromPath(string $path): \Yana\Db\Ddl\Database
     {
         if (!is_file($path)) {
             throw new \Yana\Core\Exceptions\NotFoundException("No such database definition '$path'.");
@@ -151,7 +151,7 @@ class XDDL extends \Yana\Files\File
             $ddl = \Yana\Db\Ddl\Database::unserializeFromXDDL($simpleXml, null, $path);
 
         } catch (\Exception $e) {
-            throw new \Yana\Core\Exceptions\InvalidSyntaxException("Error in XDDL-file.", E_USER_WARNING, $e);
+            throw new \Yana\Core\Exceptions\InvalidSyntaxException("Error in XDDL-file: " . $path, \Yana\Log\TypeEnumeration::WARNING, $e);
         }
         assert('$ddl instanceof \Yana\Db\Ddl\Database; // Invalid return value. \Yana\Db\Ddl\Database expected');
         return $ddl;
