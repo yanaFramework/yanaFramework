@@ -319,7 +319,7 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsCon
             assert('is_array($this->_options);');
 
             // there are some static options that always have to be there and can't be changed
-            $this->_options['portability'] = \MDB2_PORTABILITY_ALL;
+            $this->_options['portability'] = \MDB2_PORTABILITY_ALL ^ \MDB2_PORTABILITY_FIX_CASE;
         }
         return $this->_options;
     }
