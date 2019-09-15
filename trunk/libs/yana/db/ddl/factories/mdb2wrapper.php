@@ -139,14 +139,13 @@ class Mdb2Wrapper extends \Yana\Db\Ddl\Factories\AbstractMdb2Wrapper
         {
             assert('!isset($info); // Cannot redeclare var $info');
             $info = @$connection->getTableFieldDefinition($tableName, $name); // Muted since this call will otherwise raise deprecated warning
-            if ($info instanceof \MDB2_Error) {
-                throw new \Yana\Db\DatabaseException($info->getMessage());
+            if (is_array($info)) {
+                /* MDB2 "suggests" multiple options for data-types.
+                 * Since we don't know which is the best guess we simply take the first one.
+                 */
+                $list[$name] = array_shift($info);
+                assert('is_array($list[$name]);');
             }
-            /* MDB2 "suggests" multiple options for data-types.
-             * Since we don't know which is the best guess we simply take the first one.
-             */
-            $list[$name] = array_shift($info);
-            assert('is_array($list[$name]);');
             unset($info);
         }
         unset($name, $columns);
@@ -226,7 +225,7 @@ class Mdb2Wrapper extends \Yana\Db\Ddl\Factories\AbstractMdb2Wrapper
                 throw new \Yana\Db\DatabaseException($info->getMessage());
             }
             assert('is_array($info);');
-            $list[$name] = $info;
+            $list[\mb_strtolower($name)] = $info;
         }
         unset($info, $name, $constraints);
 
