@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Doctrine;
 
@@ -140,7 +141,8 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\Doctrine\I
         'PORT' => YANA_DATABASE_PORT,
         'USERNAME' => YANA_DATABASE_USER,
         'PASSWORD' => YANA_DATABASE_PASSWORD,
-        'DATABASE' => YANA_DATABASE_NAME
+        'DATABASE' => YANA_DATABASE_NAME,
+        'CHARSET' => 'utf8' // necessary so that the default client encoding of the connection matches the default internal encoding of the application
     );
 
     /**
@@ -158,6 +160,7 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\Doctrine\I
      *     <li><pre> string  ( USERNAME ) default =  root </pre></li>
      *     <li><pre> string  ( PASSWORD ) default =  n/a </pre></li>
      *     <li><pre> string  ( DATABASE ) default =  yana       name of the database </pre></li>
+     *     <li><pre> string  ( CHARSET )  default =  utf8       client encoding for this connection </pre></li>
      * </ul>
      *
      * The default settings may be changed by editing file config/system.config in key DEFAULT.DATABASE.DSN.
@@ -221,6 +224,9 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\Doctrine\I
         }
         if (isset($this->_dsn['DATABASE'])) {
             $dsn['dbname'] = $this->_dsn['DATABASE'];
+        }
+        if (isset($this->_dsn['CHARSET'])) {
+            $dsn['charset'] = $this->_dsn['CHARSET'];
         }
         assert('is_array($dsn);');
         return $dsn;
