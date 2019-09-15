@@ -96,7 +96,8 @@ class DbToolsPlugin extends \Yana\Plugins\AbstractPlugin
      *
      * @type        config
      * @user        group: admin, level: 100
-     * @template    null
+     * @template    message
+     * @onerror     goto: DB_TOOLS_CONFIG_IMPORT
      * @safemode    true
      *
      * @access      public
@@ -104,21 +105,23 @@ class DbToolsPlugin extends \Yana\Plugins\AbstractPlugin
     public function db_tools_write_config()
     {
         $factory = new \Yana\Db\Ddl\Factories\DatabaseFactory();
-        $xml = (string) $factory->buildWorker()->createDatabase();
+        $schema = $factory->buildWorker()->createDatabase();
+        $xmlObject = $schema->serializeToXDDL();
         $filename = 'database.db.xml';
-        if (empty($xml)) {
+        if (empty($xmlObject)) {
             $message = "Did not create '{$filename}' because the file is empty.";
             $code = \Yana\Log\TypeEnumeration::WARNING;
             $error = new \Yana\Core\Exceptions\Files\NotCreatedException($message, $code);
             throw $error->setFilename($filename);
         }
+        $xmlString = $xmlObject->asXML();
         // output file
         header("Cache-Control: maxage=1"); // Bug in IE8 with HTTPS-downloads
         header("Pragma: public");
         header("Content-Disposition: attachment; filename={$filename}");
         header("Content-type: text/xml");
-        header("Content-Length: " . mb_strlen($xml));
-        exit($xml);
+        header("Content-Length: " . mb_strlen($xmlString));
+        exit($xmlString);
     }
 
     /**
