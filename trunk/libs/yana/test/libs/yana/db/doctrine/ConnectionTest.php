@@ -121,14 +121,23 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * quote Invalid Argument Exception
+     * quote
      *
-     * @expectedException PHPUnit_Framework_Error
      * @test
      */
-    public function testQuoteInvalidArgument()
+    public function testQuoteNull()
     {
-        $this->object->quote(array());
+        $this->assertSame("NULL", $this->object->quote(null));
+    }
+
+    /**
+     * quote
+     *
+     * @test
+     */
+    public function testQuote()
+    {
+        $this->assertSame(YANA_DB_DELIMITER . "[]" . YANA_DB_DELIMITER, $this->object->quote(array()));
     }
 
     /**
