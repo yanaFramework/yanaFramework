@@ -296,7 +296,7 @@ if (!defined('YANA_DB_STRICT')) {
  */
 
 if (!defined('YANA_DB_DELIMITER')) {
-    define('YANA_DB_DELIMITER',          '"');
+    define('YANA_DB_DELIMITER',          '\'');
 }
 if (!defined('YANA_LEFT_DELIMITER')) {
     define('YANA_LEFT_DELIMITER',        '{');
