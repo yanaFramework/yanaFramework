@@ -198,24 +198,6 @@ class ValueSanitizerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testAsBoolT()
-    {
-        $value = "T";
-        $this->assertTrue($this->object->sanitizeValueByColumn($this->table->getColumn('boolColumn'), $value));
-    }
-
-    /**
-     * @test
-     */
-    public function testAsBoolF()
-    {
-        $value = "F";
-        $this->assertFalse($this->object->sanitizeValueByColumn($this->table->getColumn('boolColumn'), $value));
-    }
-
-    /**
-     * @test
-     */
     public function testAsColor()
     {
         $value = '#012345';
