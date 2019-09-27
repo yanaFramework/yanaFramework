@@ -354,7 +354,7 @@ class Worker extends \Yana\Forms\QueryBuilder
 
                 /* before doing anything, check if entry exists */
                 if (!$database->exists("{$tableName}.{$id}")) {
-                $message = 'Entry not found';
+                    $message = 'Entry not found';
                     $level = \Yana\Log\TypeEnumeration::WARNING;
                     throw new \Yana\Core\Exceptions\NotFoundException($message, $level);
                 }
