@@ -232,7 +232,7 @@ class DbDesigner4 extends \Yana\Files\File implements \Plugins\DbTools\IsImport
                     while (preg_match('/(?<=\\\\a).*?(?=\\\\a)/is', $init, $m))
                     {
                         $quotedValue = preg_replace('/(?<!\\\\)\\\\(\d+)/ise', 'chr($1)', $m[0]);
-                        $quotedValue = \Yana\Db\Export\DataFactory::quoteValue($quotedValue);
+                        $quotedValue = \Yana\Data\StringValidator::sanitize($quotedValue, 255);
                         $init = str_replace("\\a" . $m[0] . "\\a", $quotedValue, $init);
                     }
                     unset($quotedValue);

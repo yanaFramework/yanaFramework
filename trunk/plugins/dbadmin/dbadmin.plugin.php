@@ -120,8 +120,6 @@ class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
                 $methodName  = 'createDB2';
             break;
             case 'ACCESS':
-                $methodName  = 'createMSAccess';
-            break;
             case 'MSSQL':
                 $methodName  = 'createMSSQL';
             break;
@@ -137,12 +135,7 @@ class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
                 $methodName  = 'createPostgreSQL';
             break;
 
-            // The following DBMS are currently not supported
-            case 'DBASE':
-            case 'FBSQL':
-            case 'IBASE':
-            case 'IFX':
-            case 'SYBASE':
+            // Other DBMS are currently not supported
             default:
                 $message = "Chosen DBMS is invalid.";
                 $level = \Yana\Log\TypeEnumeration::WARNING;
@@ -477,8 +470,6 @@ class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
                 $methodName  = 'createDB2';
             break;
             case 'ACCESS':
-                $methodName  = 'createMSAccess';
-            break;
             case 'MSSQL':
                 $methodName  = 'createMSSQL';
             break;
@@ -494,11 +485,7 @@ class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
                 $dbms = 'PostGreSQL';
                 $methodName  = 'createPostgreSQL';
             break;
-            case 'DBASE':
-            case 'FBSQL':
-            case 'IBASE':
-            case 'IFX':
-            case 'SYBASE':
+            // Other DBMS are currently not supported
             default:
                 $message = "Chosen DBMS is invalid.";
                 $level = \Yana\Log\TypeEnumeration::WARNING;

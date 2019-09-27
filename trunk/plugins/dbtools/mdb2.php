@@ -664,10 +664,10 @@ class MDB2 extends \Yana\Files\File implements \Plugins\DbTools\IsImport
         switch (true)
         {
             case isset($data['value']):
-                return \Yana\Db\Export\DataFactory::quoteValue($data['value']);
+                return \Yana\Data\StringValidator::sanitize((string) $data['value'], 255);
 
             case isset($data['column']):
-                return $data['column'];
+                return (string) $data['column'];
 
             case array_key_exists('null', $data):
                 return 'NULL';

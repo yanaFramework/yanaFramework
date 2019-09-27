@@ -760,17 +760,15 @@ class ConfigurationBuilder extends \Yana\Plugins\Configs\AbstractBuilder
 
     /**
      * Build method object.
-     *
-     * @return  \Yana\Plugins\Configs\IsMethodConfiguration
      */
-    protected function buildMethod(): \Yana\Plugins\Configs\IsMethodConfiguration
+    protected function buildMethod()
     {
+        $method = new \Plugins\SDK\MethodConfiguration();
         $action = $this->_methodConfiguration;
         $methodName = array_shift($action);
-        if(empty($methodName)) {
+        if (empty($methodName)) {
             return;
         }
-        $method = new \Plugins\SDK\MethodConfiguration();
         $method->setMethodName($methodName)
             ->setTitle($methodName)
             ->setType(array_shift($action))
@@ -818,7 +816,6 @@ class ConfigurationBuilder extends \Yana\Plugins\Configs\AbstractBuilder
         }
 
         $this->object->addMethod($method);
-        return $method;
     }
 
     /**

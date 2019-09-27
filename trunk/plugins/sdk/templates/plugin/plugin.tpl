@@ -1,4 +1,4 @@
-<?php{$plugin}
+{$plugin}
 
 namespace {$plugin->getNamespace()};
 
@@ -37,13 +37,12 @@ class {$plugin->getClassName()} extends \Yana\Plugins\AbstractPlugin
     /**
      * Get form definition.
      *
-     * @return  FormFacade
+     * @return  \Yana\Forms\Facade
      */
     protected function _get{$form->getName()|capitalize}Form()
     {
-        $builder = new \Yana\Forms\Builder('{$schema->getName()}');
-        $builder->setId('{$form->getName()}');
-        return $builder();
+        $builder = $this->_getApplication()->buildForm('{$schema->getName()}');
+        return $builder->__invoke();
     }
 {/if}
 
@@ -93,7 +92,8 @@ class {$plugin->getClassName()} extends \Yana\Plugins\AbstractPlugin
      * @type      read
      * @user      group: {$plugin->getId()}
      * @user      group: admin, level: 1
-     * @menu      group: start
+     * @menu      group: {if $plugin->getType() === 'config'}setup{else}start{/if}
+
      * @title     {$form->getName()}
      * @template  templates/{$form->getName()}.html.tpl
      * @language  {$plugin->getId()}
@@ -135,7 +135,7 @@ class {$plugin->getClassName()} extends \Yana\Plugins\AbstractPlugin
     public function {$form->getEvent('update')->getAction()}()
     {
         $form = $this->_get{$form->getName()|capitalize}Form();
-        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker($this->_getDatabase(), $form);
         return $worker->update();
     }
 
@@ -211,10 +211,10 @@ class {$plugin->getClassName()} extends \Yana\Plugins\AbstractPlugin
     /**
      * Download action.
      *
-     * {@internal
+     * {literal}{@internal
      * If you need to restrict access to images or files in the database,
      * please add appropriate security tests to this function.
-     * }}
+     * }}{/literal}
      *
      * @type    read
      * @user    group: {$plugin->getId()}
@@ -230,4 +230,3 @@ class {$plugin->getClassName()} extends \Yana\Plugins\AbstractPlugin
 {/if}
 
 }
-?>

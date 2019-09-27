@@ -303,11 +303,7 @@ class DbToolsPlugin extends \Yana\Plugins\AbstractPlugin
                 case 'pgsql':
                     $methodName  = 'createPostgreSQL';
                 break;
-                case 'dbase':
-                case 'fbsql':
-                case 'ibase':
-                case 'ifx':
-                case 'sybase':
+                // Other DBMS are currently not supported
                 default:
                     $message = "Chosen DBMS is invalid.";
                     $level = \Yana\Log\TypeEnumeration::WARNING;
