@@ -454,6 +454,15 @@ class MethodConfigurationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     */
+    public function testSetEventArgumentsWithGenericParams()
+    {
+        $this->object->setHasGenericParams(true);
+        $this->assertSame(array('test' => 123), $this->object->setEventArguments(array('Test' => 123)));
+    }
+
+    /**
      * @return  array
      */
     public function providerInvalidValueException()
