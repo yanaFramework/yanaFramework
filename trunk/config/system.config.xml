@@ -192,6 +192,7 @@
             <phpfunction>nl2br</phpfunction>
             <phpfunction>max</phpfunction>
             <phpfunction>min</phpfunction>
+            <phpfunction>ucfirst</phpfunction>
             <!--
                 Trusted PHP-functions that may be called from within templates as a modifier
             -->
