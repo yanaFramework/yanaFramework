@@ -984,7 +984,29 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
      */
     public function quote($value)
     {
-        return \Yana\Db\Export\DataFactory::quoteValue($value);
+        if (is_null($value)) {
+            return YANA_DB_DELIMITER . YANA_DB_DELIMITER;
+
+        } elseif (is_scalar($value)) {
+            if (is_string($value)) {
+                $value = stripslashes("$value");
+                $value = str_replace('\\', '\\\\', $value);
+                $value = str_replace(YANA_DB_DELIMITER, '\\' . YANA_DB_DELIMITER, $value);
+                $value = str_replace("\n", '\n', $value);
+                $value = str_replace("\r", '\r', $value);
+                $value = str_replace("\f", '\f', $value);
+                $value = str_replace(chr(0), '', $value);
+            };
+            return YANA_DB_DELIMITER . "$value" . YANA_DB_DELIMITER;
+
+        } else {
+            $message = "A value of non-scalar type '" . gettype($value) .
+                "' has been found in an SQL statement and will be converted to string.";
+            $level = \Yana\Log\TypeEnumeration::INFO;
+            \Yana\Log\LogManager::getLogger()->addLog($message, $level);
+            return YANA_DB_DELIMITER . \Yana\Files\SML::encode($value) . YANA_DB_DELIMITER;
+
+        }
     }
 
     /**
