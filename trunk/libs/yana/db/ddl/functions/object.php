@@ -221,15 +221,14 @@ class Object extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\Is
      * @param   string  $dbms   target DBMS, defaults to "generic"
      * @return  \Yana\Db\Ddl\Functions\Implementation
      */
-    public function getImplementation($dbms = "generic")
+    public function getImplementation($dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         assert('is_string($dbms); // Invalid argument $dbms: string expected');
-        $dbms = strtolower($dbms);
-        assert('in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS()); // Unsupported DBMS');
-        if (!isset($this->implementations[$dbms])) {
+        $lcDbms = strtolower($dbms);
+        if (!isset($this->implementations[$lcDbms])) {
             return null;
         } else {
-            return $this->implementations[$dbms];
+            return $this->implementations[$lcDbms];
         }
     }
 
@@ -259,7 +258,7 @@ class Object extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\Is
      * @return  \Yana\Db\Ddl\Functions\Implementation
      * @throws  \Yana\Core\Exceptions\AlreadyExistsException  when an implementation for the chosen DBMS already exists
      */
-    public function addImplementation($dbms = "generic")
+    public function addImplementation($dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         assert('is_string($dbms); // Invalid argument $dbms: string expected');
         if (!isset($this->implementations[$dbms])) {
@@ -297,7 +296,7 @@ class Object extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\Is
         foreach (array_keys($ddl->implementations) as $i)
         {
             if (is_int($i)) {
-                $ddl->implementations['generic'] = $ddl->implementations[$i];
+                $ddl->implementations[\Yana\Db\DriverEnumeration::GENERIC] = $ddl->implementations[$i];
                 unset($ddl->implementations[$i]);
             }
         }

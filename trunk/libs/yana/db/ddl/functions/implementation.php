@@ -75,7 +75,7 @@ class Implementation extends \Yana\Db\Ddl\DDL
      * @var string
      * @ignore
      */
-    protected $dbms = "generic";
+    protected $dbms = \Yana\Db\DriverEnumeration::GENERIC;
 
     /**
      * @var string
@@ -143,12 +143,10 @@ class Implementation extends \Yana\Db\Ddl\DDL
      *
      * @param   string  $dbms   target DBMS, defaults to "generic"
      */
-    public function __construct($dbms = "generic")
+    public function __construct($dbms =\Yana\Db\DriverEnumeration::GENERIC)
     {
         assert('is_string($dbms); // Invalid argument $dbms: string expected');
-        $dbms = strtolower($dbms);
-        assert('in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS()); // Unsupported DBMS');
-        $this->dbms = "$dbms";
+        $this->dbms = strtolower($dbms);
     }
 
     /**

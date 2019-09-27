@@ -127,15 +127,14 @@ class Sql extends \Yana\Db\Ddl\Logs\AbstractLog
      * @param   string  $dbms   target DBMS, defaults to "generic"
      * @return  \Yana\Db\Ddl\Logs\Sql
      */
-    public function setDBMS($dbms = "generic")
+    public function setDBMS($dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         assert('is_string($dbms); // Invalid argument $dbms: String expected');
-        $dbms = strtolower($dbms);
-        assert('empty($dbms) || in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS()); // Unsupported DBMS');
+
         if (empty($dbms)) {
             $this->dbms = null;
         } else {
-            $this->dbms = "$dbms";
+            $this->dbms =  strtolower($dbms);
         }
         return $this;
     }

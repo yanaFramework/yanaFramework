@@ -96,15 +96,14 @@ class Constraint extends \Yana\Db\Ddl\AbstractUnnamedObject
      * @param   string  $dbms  target DBMS, defaults to "generic"
      * @return  \Yana\Db\Ddl\Constraint
      */
-    public function setDBMS($dbms = "generic")
+    public function setDBMS($dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         assert('is_string($dbms); // Wrong type for argument 1. String expected');
-        $dbms = strtolower($dbms);
-        assert('empty($dbms) || in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS()); // Unsupported DBMS');
+
         if (empty($dbms)) {
             $this->dbms = null;
         } else {
-            $this->dbms = "$dbms";
+            $this->dbms = strtolower((string) $dbms);
         }
         return $this;
     }

@@ -886,11 +886,10 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * @param   string  $dbms  target DBMS, defaults to "generic"
      * @return  array
      */
-    public function getConstraints($dbms = "generic")
+    public function getConstraints($dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         assert('is_string($dbms); // Wrong type for argument 1. String expected');
-        $dbms = strtolower($dbms);
-        assert('in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS()); // Unsupported DBMS');
+        $lcDbms = strtolower($dbms);
 
         $constraints = array();
         foreach ($this->constraints as $constraint)
@@ -898,7 +897,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
             /* @var $constraint \Yana\Db\Ddl\Constraint */
             assert($constraint instanceof \Yana\Db\Ddl\Constraint);
 
-            if ($constraint->getDBMS() === $dbms) {
+            if ($constraint->getDBMS() === $lcDbms) {
                 $constraints[] = $constraint;
             }
         }
@@ -916,18 +915,18 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * @param   string  $dbms  target DBMS, defaults to "generic"
      * @return  \Yana\Db\Ddl\Constraint
      */
-    public function getConstraint($name, $dbms = "generic")
+    public function getConstraint($name, $dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         assert('is_string($name); // Wrong type for argument 1. String expected');
         assert('is_string($dbms); // Wrong type for argument 2. String expected');
-        assert('in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS()); // Unsupported DBMS');
-        $dbms = strtolower($dbms);
+
+        $lcDbms = strtolower($dbms);
 
         foreach ((array) $this->constraints as $constraint)
         {
             /* @var $constraint \Yana\Db\Ddl\Constraint */
             assert($constraint instanceof \Yana\Db\Ddl\Constraint);
-            if ($constraint->getDBMS() === $dbms && $constraint->getName() === $name) {
+            if ($constraint->getDBMS() === $lcDbms && $constraint->getName() === $name) {
                 return $constraint;
             }
         }
@@ -956,13 +955,12 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * @param   string  $name        optional constraint-name
      * @param   string  $dbms        target DBMS, defaults to "generic"
      */
-    public function addConstraint($constraint, $name = "", $dbms = "generic")
+    public function addConstraint($constraint, $name = "", $dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         assert('is_string($constraint); // Wrong type for argument 1. String expected');
         assert('is_string($name); // Wrong type for argument 2. String expected');
         assert('is_string($dbms); // Wrong type for argument 3. String expected');
-        $dbms = strtolower($dbms);
-        assert('in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS()); // Unsupported DBMS');
+
         $object = new \Yana\Db\Ddl\Constraint($name);
         $object->setDBMS($dbms);
         $object->setConstraint($constraint);
@@ -1002,7 +1000,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      *
      * @param   string  $dbms  target DBMS, defaults to "generic"
      */
-    public function getTriggerBeforeInsert($dbms = "generic")
+    public function getTriggerBeforeInsert($dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         return $this->_getTrigger($dbms, 0, 0);
     }
@@ -1012,7 +1010,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      *
      * @param   string  $dbms  target DBMS, defaults to "generic"
      */
-    public function getTriggerBeforeUpdate($dbms = "generic")
+    public function getTriggerBeforeUpdate($dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         return $this->_getTrigger($dbms, 0, 1);
     }
@@ -1022,7 +1020,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      *
      * @param   string  $dbms  target DBMS, defaults to "generic"
      */
-    public function getTriggerBeforeDelete($dbms = "generic")
+    public function getTriggerBeforeDelete($dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         return $this->_getTrigger($dbms, 0, 2);
     }
@@ -1032,7 +1030,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      *
      * @param   string  $dbms  target DBMS, defaults to "generic"
      */
-    public function getTriggerAfterInsert($dbms = "generic")
+    public function getTriggerAfterInsert($dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         return $this->_getTrigger($dbms, 1, 0);
     }
@@ -1042,7 +1040,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      *
      * @param   string  $dbms  target DBMS, defaults to "generic"
      */
-    public function getTriggerAfterUpdate($dbms = "generic")
+    public function getTriggerAfterUpdate($dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         return $this->_getTrigger($dbms, 1, 1);
     }
@@ -1052,7 +1050,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      *
      * @param   string  $dbms  target DBMS, defaults to "generic"
      */
-    public function getTriggerAfterDelete($dbms = "generic")
+    public function getTriggerAfterDelete($dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         return $this->_getTrigger($dbms, 1, 2);
     }
@@ -1062,7 +1060,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      *
      * @param   string  $dbms  target DBMS, defaults to "generic"
      */
-    public function getTriggerInsteadInsert($dbms = "generic")
+    public function getTriggerInsteadInsert($dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         return $this->_getTrigger($dbms, 2, 0);
     }
@@ -1072,7 +1070,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      *
      * @param   string  $dbms  target DBMS, defaults to "generic"
      */
-    public function getTriggerInsteadUpdate($dbms = "generic")
+    public function getTriggerInsteadUpdate($dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         return $this->_getTrigger($dbms, 2, 1);
     }
@@ -1082,7 +1080,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      *
      * @param   string  $dbms  target DBMS, defaults to "generic"
      */
-    public function getTriggerInsteadDelete($dbms = "generic")
+    public function getTriggerInsteadDelete($dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         return $this->_getTrigger($dbms, 2, 2);
     }
@@ -1123,7 +1121,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * @param   string  $name     optional trigger name
      * @return  \Yana\Db\Ddl\Trigger
      */
-    public function setTriggerBeforeInsert($trigger, $dbms = "generic", $name = "")
+    public function setTriggerBeforeInsert($trigger, $dbms = \Yana\Db\DriverEnumeration::GENERIC, $name = "")
     {
         return $this->_setTrigger($trigger, $dbms, $name, 0, 0);
     }
@@ -1136,7 +1134,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * @param   string  $name     optional trigger name
      * @return  \Yana\Db\Ddl\Trigger
      */
-    public function setTriggerBeforeUpdate($trigger, $dbms = "generic", $name = "")
+    public function setTriggerBeforeUpdate($trigger, $dbms = \Yana\Db\DriverEnumeration::GENERIC, $name = "")
     {
         return $this->_setTrigger($trigger, $dbms, $name, 0, 1);
     }
@@ -1149,7 +1147,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * @param   string  $name     optional trigger name
      * @return  \Yana\Db\Ddl\Trigger
      */
-    public function setTriggerBeforeDelete($trigger, $dbms = "generic", $name = "")
+    public function setTriggerBeforeDelete($trigger, $dbms = \Yana\Db\DriverEnumeration::GENERIC, $name = "")
     {
         return $this->_setTrigger($trigger, $dbms, $name, 0, 2);
     }
@@ -1162,7 +1160,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * @param   string  $name     optional trigger name
      * @return  \Yana\Db\Ddl\Trigger
      */
-    public function setTriggerAfterInsert($trigger, $dbms = "generic", $name = "")
+    public function setTriggerAfterInsert($trigger, $dbms = \Yana\Db\DriverEnumeration::GENERIC, $name = "")
     {
         return $this->_setTrigger($trigger, $dbms, $name, 1, 0);
     }
@@ -1175,7 +1173,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * @param   string  $name     optional trigger name
      * @return  \Yana\Db\Ddl\Trigger
      */
-    public function setTriggerAfterUpdate($trigger, $dbms = "generic", $name = "")
+    public function setTriggerAfterUpdate($trigger, $dbms = \Yana\Db\DriverEnumeration::GENERIC, $name = "")
     {
         return $this->_setTrigger($trigger, $dbms, $name, 1, 1);
     }
@@ -1188,7 +1186,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * @param   string  $name     optional trigger name
      * @return  \Yana\Db\Ddl\Trigger
      */
-    public function setTriggerAfterDelete($trigger, $dbms = "generic", $name = "")
+    public function setTriggerAfterDelete($trigger, $dbms = \Yana\Db\DriverEnumeration::GENERIC, $name = "")
     {
         return $this->_setTrigger($trigger, $dbms, $name, 1, 2);
     }
@@ -1201,7 +1199,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * @param   string  $name     optional trigger name
      * @return  \Yana\Db\Ddl\Trigger
      */
-    public function setTriggerInsteadInsert($trigger, $dbms = "generic", $name = "")
+    public function setTriggerInsteadInsert($trigger, $dbms = \Yana\Db\DriverEnumeration::GENERIC, $name = "")
     {
         return $this->_setTrigger($trigger, $dbms, $name, 2, 0);
     }
@@ -1214,7 +1212,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * @param   string  $name     optional trigger name
      * @return  \Yana\Db\Ddl\Trigger
      */
-    public function setTriggerInsteadUpdate($trigger, $dbms = "generic", $name = "")
+    public function setTriggerInsteadUpdate($trigger, $dbms = \Yana\Db\DriverEnumeration::GENERIC, $name = "")
     {
         return $this->_setTrigger($trigger, $dbms, $name, 2, 1);
     }
@@ -1227,7 +1225,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * @param   string  $name     optional trigger name
      * @return  \Yana\Db\Ddl\Trigger
      */
-    public function setTriggerInsteadDelete($trigger, $dbms = "generic", $name = "")
+    public function setTriggerInsteadDelete($trigger, $dbms = \Yana\Db\DriverEnumeration::GENERIC, $name = "")
     {
         return $this->_setTrigger($trigger, $dbms, $name, 2, 2);
     }

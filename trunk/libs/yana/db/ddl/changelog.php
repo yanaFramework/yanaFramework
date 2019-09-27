@@ -144,7 +144,7 @@ class ChangeLog extends \Yana\Db\Ddl\DDL
      * @param   string  $dbms           name of the database which is used
      * @return  array
      */
-    public function getEntries($startVersion = null, $dbms = 'generic')
+    public function getEntries($startVersion = null, $dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         $dbms = strtolower($dbms);
         assert('is_array($this->changes); // Member "changes" has unexpected type. Array expected.');
@@ -155,7 +155,7 @@ class ChangeLog extends \Yana\Db\Ddl\DDL
         {
             /* @var $entry \Yana\Db\Ddl\Logs\Sql */
             // target DBMS does not match
-            if ($entry instanceof \Yana\Db\Ddl\Logs\Sql && $entry->getDBMS() !== 'generic' && $entry->getDBMS() !== $dbms) {
+            if ($entry instanceof \Yana\Db\Ddl\Logs\Sql && $entry->getDBMS() !== \Yana\Db\DriverEnumeration::GENERIC && $entry->getDBMS() !== $dbms) {
                 continue;
             }
 

@@ -271,20 +271,6 @@ class Database extends \Yana\Db\Ddl\AbstractUnnamedObject
     }
 
     /**
-     * Get list of supported DBMS.
-     *
-     * Returns a list with all supported DBMS as a numeric array.
-     *
-     * @return  array
-     * @ignore
-     */
-    public static function getSupportedDBMS()
-    {
-        return array('generic','db2','dbase','frontbase','informix','interbase','msaccess','mssql',
-            'mysql','oracle','postgresql','sybase','sqlite');
-    }
-
-    /**
      * Get list of include files.
      *
      * Returns the list of included XDDL-files.
@@ -1028,11 +1014,11 @@ class Database extends \Yana\Db\Ddl\AbstractUnnamedObject
      * @param   string  $dbms  target database-management-system
      * @return  array
      */
-    public function getInit($dbms = "generic")
+    public function getInit($dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         assert('is_string($dbms); // Wrong type for argument 1. String expected');
         $lowerCaseDbms = strtolower($dbms);
-        assert('in_array($lowerCaseDbms, \Yana\Db\Ddl\Database::getSupportedDBMS()); // Unsupported DBMS');
+
         if (empty($this->initialization)) {
             return array();
         }
@@ -1045,7 +1031,7 @@ class Database extends \Yana\Db\Ddl\AbstractUnnamedObject
 
             // target DBMS does not match
             $initDbms = $entry->getDBMS();
-            if ($initDbms !== 'generic' && $initDbms !== $lowerCaseDbms) {
+            if ($initDbms !== \Yana\Db\DriverEnumeration::GENERIC && $initDbms !== $lowerCaseDbms) {
                 continue;
             }
 
@@ -1187,14 +1173,12 @@ class Database extends \Yana\Db\Ddl\AbstractUnnamedObject
      * @param   string  $dbms  target database-management-system
      * @return  \Yana\Db\Ddl\Database
      */
-    public function addInit($sql, $dbms = "generic")
+    public function addInit($sql, $dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         assert('is_string($dbms); // Wrong type for argument 2. String expected');
-        $lowerCaseDbms = strtolower($dbms);
-        assert('preg_match("/^db2|dbase|frontbase|informix|interbase|msaccess|mssql|mysql|oracle|postgresql|sybase|' .
-            'sqlite|generic$/s", $lowerCaseDbms); // Unsupported DBMS');
+
         $init = new \Yana\Db\Ddl\DatabaseInit();
-        $init->setDBMS($lowerCaseDbms);
+        $init->setDBMS(strtolower($dbms));
         $init->setSQL($sql);
         $this->initialization[] = $init;
         return $this;

@@ -476,13 +476,13 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * @param   string  $dbms  target DBMS, defaults to "generic"
      * @return  string
      */
-    public function getQuery($dbms = "generic")
+    public function getQuery($dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         assert('is_string($dbms); // Wrong type for argument 1. String expected');
-        $dbms = strtolower($dbms);
-        assert('in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS()); // Unsupported DBMS');
-        if (isset($this->queries[$dbms])) {
-            return $this->queries[$dbms];
+        $lcDbms = strtolower($dbms);
+
+        if (isset($this->queries[$lcDbms])) {
+            return $this->queries[$lcDbms];
         } else {
             return null;
         }
@@ -516,16 +516,16 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * @param   string  $query  sql query
      * @param   string  $dbms   target DBMS, defaults to "generic"
      */
-    public function setQuery($query, $dbms = "generic")
+    public function setQuery($query, $dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         assert('is_string($query); // Wrong type for argument 1. String expected');
         assert('is_string($dbms); // Wrong type for argument 2. String expected');
-        $dbms = strtolower($dbms);
-        assert('in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS()); // Unsupported DBMS');
+        $lcDbms = strtolower($dbms);
+
         if (empty($query)) {
-            unset($this->queries["$dbms"]);
+            unset($this->queries[$lcDbms]);
         } else {
-            $this->queries["$dbms"] = "$query";
+            $this->queries[$lcDbms] = "$query";
         }
         return $this->queries;
     }
@@ -535,13 +535,13 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * @param   string  $dbms  target DBMS, defaults to "generic"
      */
-    public function dropQuery($dbms = "generic")
+    public function dropQuery($dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         assert('is_string($dbms); // Wrong type for argument 1. String expected');
-        $dbms = strtolower($dbms);
-        assert('in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS()); // Unsupported DBMS');
-        if (isset($this->queries["$dbms"])) {
-            unset($this->queries["$dbms"]);
+        $lcDbms = strtolower($dbms);
+
+        if (isset($this->queries[$lcDbms])) {
+            unset($this->queries[$lcDbms]);
         }
     }
 

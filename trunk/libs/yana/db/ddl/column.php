@@ -1182,7 +1182,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * @param   string  $dbms  target DBMS, defaults to "generic"
      * @return  bool
      */
-    public function hasDefault($dbms = 'generic')
+    public function hasDefault($dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         return $this->isAutoIncrement() || !is_null($this->getDefault($dbms));
     }
@@ -1196,17 +1196,16 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * @param   string  $dbms  target DBMS, defaults to "generic"
      * @return  mixed
      */
-    public function getDefault($dbms = 'generic')
+    public function getDefault($dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         assert('is_string($dbms); // Wrong type for argument 1. String expected');
-        $dbms = strtolower($dbms);
-        assert('in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS()); // Unsupported DBMS');
+        $lcDbms = strtolower($dbms);
 
         $default = null;
-        if (isset($this->default[$dbms])) {
-            $default = $this->default[$dbms];
-        } elseif (isset($this->default['generic'])) {
-            $default = $this->default['generic'];
+        if (isset($this->default[$lcDbms])) {
+            $default = $this->default[$lcDbms];
+        } elseif (isset($this->default[\Yana\Db\DriverEnumeration::GENERIC])) {
+            $default = $this->default[\Yana\Db\DriverEnumeration::GENERIC];
         }
 
         return $default;
@@ -1230,10 +1229,9 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * @param   string  $dbms   target DBMS, defaults to "generic"
      * @return  $this
      */
-    public function setDefault($value = null, $dbms = "generic")
+    public function setDefault($value = null, $dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         assert('is_string($dbms); // Wrong type for argument 1. String expected');
-        assert('in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS()); // Unsupported DBMS');
 
         $lcDbms = strtolower($dbms);
         if (is_null($value)) {
@@ -1255,7 +1253,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * @param   string  $dbms  target DBMS, defaults to "generic"
      * @return  array
      */
-    public function getConstraints($dbms = "generic")
+    public function getConstraints($dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         assert('is_string($dbms); // Wrong type for argument 1. String expected');
         $dbms = strtolower($dbms);
@@ -1284,7 +1282,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * @param   string  $dbms  target DBMS, defaults to "generic"
      * @return  \Yana\Db\Ddl\Constraint
      */
-    public function getConstraint($name, $dbms = "generic")
+    public function getConstraint($name, $dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
         assert('is_string($dbms); // Invalid argument $dbms: string expected');
@@ -1327,7 +1325,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * @param   string  $dbms        target DBMS, defaults to "generic"
      * @return  \Yana\Db\Ddl\Constraint
      */
-    public function addConstraint($constraint, $name = "", $dbms = "generic")
+    public function addConstraint($constraint, $name = "", $dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         assert('is_string($constraint); // Wrong type for argument 1. String expected');
         assert('is_string($name); // Wrong type for argument 2. String expected');
@@ -1649,7 +1647,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * @param   string  $dbms   target DBMS, defaults to "generic"
      * @return  mixed
      */
-    public function getAutoValue($dbms = "generic")
+    public function getAutoValue($dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         $default = $this->getDefault($dbms);
         switch ($this->type)
@@ -1749,7 +1747,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * @return  bool
      * @ignore
      */
-    public function interpretValue($value, $key = "", $dbms = "generic")
+    public function interpretValue($value, $key = "", $dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         $title = $this->getTitle();
         if (empty($title)) {
@@ -1886,65 +1884,6 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
     }
 
     /**
-     * Serialize value as string.
-     *
-     * @param   mixed   $value  value of the row
-     * @param   string  $dbms   target DBMS (e.g. mysql, mssql, ..., generic)
-     * @return  bool
-     * @ignore
-     */
-    public function convertValueToString($value, $dbms = "generic")
-    {
-        $column = $this->getReferenceColumn();
-
-        if (is_null($value)) {
-            return "NULL";
-        }
-
-        switch ($column->getType())
-        {
-            case \Yana\Db\Ddl\ColumnTypeEnumeration::RANGE:
-            case \Yana\Db\Ddl\ColumnTypeEnumeration::FLOAT:
-                return (string) (float) $value;
-
-            case \Yana\Db\Ddl\ColumnTypeEnumeration::TIMESTAMP:
-            case \Yana\Db\Ddl\ColumnTypeEnumeration::INT:
-                return (string) (int) $value;
-
-            case \Yana\Db\Ddl\ColumnTypeEnumeration::BOOL:
-                switch ($dbms)
-                {
-                    case 'dbase':
-                        return $value === true ? "T" : "F";
-
-                    case 'frontbase':
-                    case 'postgresql':
-                        return $value === true ? "TRUE" : "FALSE";
-
-                    default:
-                        return $value === true ? "1" : "0";
-                }
-
-            case \Yana\Db\Ddl\ColumnTypeEnumeration::DATE:
-                return date('c', (int) $value);
-
-            case \Yana\Db\Ddl\ColumnTypeEnumeration::ARR:
-            case \Yana\Db\Ddl\ColumnTypeEnumeration::LST:
-            case \Yana\Db\Ddl\ColumnTypeEnumeration::SET:
-                $value = \json_encode($value);
-            // fall through
-            default:
-                $value = str_replace('\\', '\\\\', $value);
-                $value = str_replace(YANA_DB_DELIMITER, '\\' . YANA_DB_DELIMITER, $value);
-                $value = preg_replace('/[\x00\x1A]/us', '', $value);
-                $value = preg_replace("/\n/us", '\\n', $value);
-                $value = preg_replace("/\r/us", '\\r', $value);
-                $value = preg_replace("/\f/us", '\\f', $value);
-                return YANA_DB_DELIMITER . $value . YANA_DB_DELIMITER;
-        }
-    }
-
-    /**
      * Serialize this object to XDDL.
      *
      * Returns the serialized object as a string in XML-DDL format.
@@ -2042,7 +1981,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
             foreach (array_keys($ddl->default) as $i)
             {
                 if (is_int($i)) {
-                    $ddl->default['generic'] = $ddl->default[$i];
+                    $ddl->default[\Yana\Db\DriverEnumeration::GENERIC] = $ddl->default[$i];
                     unset($ddl->default[$i]);
                 }
             }
