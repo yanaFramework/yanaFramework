@@ -74,7 +74,7 @@ abstract class AbstractConnectionWrapper extends \Yana\Core\Object implements \S
      *
      * @return \Yana\Db\IsConnection
      */
-    public function getDatabase()
+    public function getDatabase(): \Yana\Db\IsConnection
     {
         return $this->_db;
     }
