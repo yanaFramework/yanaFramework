@@ -63,13 +63,7 @@ class ValueSanitizerWorker extends \Yana\Db\Helpers\AbstractValueSanitizerWorker
     {
         $value = $this->_getValue();
 
-        if (\strcasecmp((string) $value, 't') === 0) { // For DBase
-            $value = true;
-
-        } elseif (\strcasecmp((string) $value, 'f') === 0) { // For DBase
-            $value = false;
-
-        } elseif (!is_bool($value)) { // required since bool(false) will return NULL!
+        if (!is_bool($value)) { // required since bool(false) will return NULL!
             $value = filter_var((string) $value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
         }
         if (!is_bool($value)) {
