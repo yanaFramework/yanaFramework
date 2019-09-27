@@ -278,7 +278,7 @@ class AbstractQueryTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetParentFalse()
     {
-        $this->assertFalse($this->query->getParent());
+        $this->assertNull($this->query->getParent());
     }
 
     /**
@@ -305,7 +305,7 @@ class AbstractQueryTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetTable()
     {
-        $this->assertFalse($this->query->getTable());
+        $this->assertSame('', $this->query->getTable());
     }
 
     /**
@@ -395,7 +395,7 @@ class AbstractQueryTest extends \PHPUnit_Framework_TestCase
     public function testToString()
     {
         $this->query->setTable('t')->setRow('123');
-        $this->assertEquals('t WHERE t.tid = "123"', $this->query->toString('%TABLE% %WHERE% %ORDERBY%'));
+        $this->assertEquals('t WHERE t.tid = ' . YANA_DB_DELIMITER . '123' . YANA_DB_DELIMITER, $this->query->toString('%TABLE% %WHERE% %ORDERBY%'));
     }
 
     /**
@@ -403,7 +403,7 @@ class AbstractQueryTest extends \PHPUnit_Framework_TestCase
      */
     public function testToStringNoTable()
     {
-        $this->assertFalse($this->query->toString('%TABLE% %WHERE% %ORDERBY%'));
+        $this->assertSame('', $this->query->toString('%TABLE% %WHERE% %ORDERBY%'));
     }
 
 }
