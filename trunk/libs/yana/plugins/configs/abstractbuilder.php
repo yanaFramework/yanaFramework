@@ -73,10 +73,8 @@ abstract class AbstractBuilder extends \Yana\Core\Object
 
     /**
      * Build method object.
-     *
-     * @return  \Yana\Plugins\Configs\IsMethodConfiguration
      */
-    abstract protected function buildMethod(): \Yana\Plugins\Configs\IsMethodConfiguration;
+    abstract protected function buildMethod();
 
     /**
      * Returns the built object.

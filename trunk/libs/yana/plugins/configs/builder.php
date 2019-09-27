@@ -128,10 +128,8 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder implements \Yana\Log
 
     /**
      * Build method object.
-     *
-     * @return  \Yana\Plugins\Configs\IsMethodConfiguration
      */
-    protected function buildMethod(): \Yana\Plugins\Configs\IsMethodConfiguration
+    protected function buildMethod()
     {
         $method = new \Yana\Plugins\Configs\MethodConfiguration();
         if ($this->_method) {
@@ -277,7 +275,6 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder implements \Yana\Log
 
             $this->object->addMethod($method);
         }
-        return $method;
     }
 
     /**
