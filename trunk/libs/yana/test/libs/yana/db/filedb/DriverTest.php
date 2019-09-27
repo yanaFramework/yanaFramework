@@ -228,7 +228,7 @@ class DriverTest extends \PHPUnit_Framework_TestCase
      */
     public function testQuote()
     {
-        $this->assertSame('"string"', $this->object->quote('string'));
+        $this->assertSame(YANA_DB_DELIMITER . 'string' . YANA_DB_DELIMITER, $this->object->quote('string'));
     }
 
     /**
