@@ -815,6 +815,8 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      * Returns the quoted values as a string surrounded by delimiters,
      * depending on the DBMS selected.
      *
+     * Note: If the provided value is NULL, the function returns the string "NULL" (not "'null'").
+     *
      * @param   mixed  $value  value too quote
      * @return  string
      * @ignore
@@ -822,13 +824,10 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
     public function quote($value)
     {
         if (is_null($value)) {
-            return 'NULL';
-        }
-        if (!is_scalar($value)) {
-            \Yana\Log\LogManager::getLogger()
-                ->addLog("Your SQL statement contains an unexpected non-scalar value: " .
-            "(" . gettype($value) .") " . "'" . print_r($value, true) . "'", \Yana\Log\TypeEnumeration::INFO);
-            $value = (string) $value;
+            return 'NULL'; // Doctrine and MDB2 both return the string 'null' (including quotes) instead of the constant NULL
+
+        } elseif (!is_scalar($value)) {
+            $value = \is_object($value) ? (string) $value : (string) \json_encode($value);
         }
         return $this->_getConnection()->quote($value);
     }

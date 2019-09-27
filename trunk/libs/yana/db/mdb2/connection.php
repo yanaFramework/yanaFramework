@@ -109,33 +109,11 @@ class Connection extends \Yana\Db\AbstractConnection
      */
     public function getDBMS()
     {
-        $dbms = "generic";
+        $dbms = \Yana\Db\DriverEnumeration::GENERIC;
         if (!empty($this->_dsn['DBMS'])) {
             $dbms = strtolower($this->_dsn['DBMS']);
         }
-        // @codeCoverageIgnoreStart
-        switch ($dbms)
-        {
-            // Mapping aliases (driver names) to real DBMS names
-            case 'mysqli':
-                return "mysql";
-            case 'pgsql':
-                return "postgresql";
-            case 'fbsql':
-                return "frontbase";
-            case 'ifx':
-                return "informix";
-            case 'ibase':
-                return "interbase";
-            case 'access':
-                return "msaccess";
-            case 'oci8':
-                return "oracle";
-            // any other
-            default:
-                return $dbms;
-        }
-        // @codeCoverageIgnoreEnd
+        return \Yana\Db\DriverEnumeration::mapAliasToDriver($dbms);
     }
 
     /**
@@ -216,7 +194,7 @@ class Connection extends \Yana\Db\AbstractConnection
      * result of your statement.
      *
      * @param   \Yana\Db\Queries\AbstractQuery  $query  one SQL statement (or a query object) to execute
-     * @return  mixed
+     * @return  \Yana\Db\IsResult
      * @throws  \Yana\Db\Queries\Exceptions\QueryException if the SQL statement is not valid
      */
     public function sendQueryObject(\Yana\Db\Queries\AbstractQuery $query)

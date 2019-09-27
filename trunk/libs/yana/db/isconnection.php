@@ -177,7 +177,7 @@ interface IsConnection
      * Send a sql-statement directly to the database driver API.
      *
      * @param   \Yana\Db\Queries\AbstractQuery  $sqlStmt  one SQL statement (or a query object) to execute
-     * @return  mixed
+     * @return  \Yana\Db\IsResult
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException if the SQL statement is not valid
      */
     public function sendQueryObject(\Yana\Db\Queries\AbstractQuery $sqlStmt);

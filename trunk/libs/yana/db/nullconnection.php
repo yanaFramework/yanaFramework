@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db;
 
@@ -38,16 +39,39 @@ class NullConnection extends \Yana\Core\Object implements \Yana\Db\IsConnection
 {
 
     /**
+     * @var  string
+     */
+    private $_dbms = \Yana\Db\DriverEnumeration::GENERIC;
+
+    /**
      * @var  \Yana\Db\Ddl\Database 
      */
     private $_schema = null;
 
     /**
-     * Initialize schema.
+     * @var \Yana\Db\Helpers\IsSqlKeywordChecker
      */
-    public function __construct()
+    private $_sqlKeywordChecker = null;
+
+    /**
+     * Initialize schema.
+     * 
+     * @param  \Yana\Db\Ddl\Database                 $schema  optional schema
+     * @param  string                                $dbms    optional DBMS
+     * @param  \Yana\Db\Helpers\IsSqlKeywordChecker  $sqlKeywordChecker  a class that checks if a given string is a reserved SQL keyword
+     */
+    public function __construct(\Yana\Db\Ddl\Database $schema = null, string $dbms = \Yana\Db\DriverEnumeration::GENERIC, \Yana\Db\Helpers\IsSqlKeywordChecker $sqlKeywordChecker = null)
     {
-        $this->_schema = new \Yana\Db\Ddl\Database('null');
+        // @codeCoverageIgnoreStart
+        if (!is_null($sqlKeywordChecker)) {
+            $this->_sqlKeywordChecker = $sqlKeywordChecker;
+        }
+        // @codeCoverageIgnoreEnd
+        if (is_null($schema)) {
+            $schema = new \Yana\Db\Ddl\Database('null');
+        }
+        $this->_schema = $schema;
+        $this->_dbms = $dbms;
     }
 
     /**
@@ -61,13 +85,42 @@ class NullConnection extends \Yana\Core\Object implements \Yana\Db\IsConnection
     }
 
     /**
+     * Set the name of the chosen DBMS as a lower-cased string.
+     *
+     * @param   string  $dbms  chosen DBMS
+     * @return  $this
+     */
+    public function setDBMS(string $dbms)
+    {
+        $this->_dbms = strtolower($dbms);
+        return $this;
+    }
+
+    /**
      * Returns the name of the chosen DBMS as a lower-cased string.
      *
      * @return  string
      */
     public function getDBMS()
     {
-        return "generic";
+        return $this->_dbms;
+    }
+
+    /**
+     * Returns a class that checks if a given string is a reserved SQL keyword.
+     *
+     * We need this functionality for quoting the names of IBM DB2 database object names.
+     *
+     * @return  \Yana\Db\Helpers\IsSqlKeywordChecker
+     */
+    protected function _getSqlKeywordChecker()
+    {
+        if (!isset($this->_sqlKeywordChecker)) {
+            // @codeCoverageIgnoreStart
+            $this->_sqlKeywordChecker = \Yana\Db\Helpers\SqlKeywordChecker::createFromApplicationDefault();
+            // @codeCoverageIgnoreEnd
+        }
+        return $this->_sqlKeywordChecker;
     }
 
     /**
@@ -224,12 +277,12 @@ class NullConnection extends \Yana\Core\Object implements \Yana\Db\IsConnection
      * Send a sql-statement directly to the database driver API.
      *
      * @param   \Yana\Db\Queries\AbstractQuery  $sqlStmt  one SQL statement (or a query object) to execute
-     * @return  mixed
+     * @return  \Yana\Db\IsResult
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException if the SQL statement is not valid
      */
     public function sendQueryObject(\Yana\Db\Queries\AbstractQuery $sqlStmt)
     {
-        return array();
+        return new \Yana\Db\FileDb\Result(array());
     }
 
     /**
@@ -257,7 +310,41 @@ class NullConnection extends \Yana\Core\Object implements \Yana\Db\IsConnection
      */
     public function quoteId($value)
     {
-        return $value;
+        if ($this->_needsQuoting($value)) {
+            switch ($this->getDBMS())
+            {
+                case \Yana\Db\DriverEnumeration::MYSQL:
+                    $leftDelimiter = $rightDelimiter = '`';
+                    break;
+                case \Yana\Db\DriverEnumeration::MSSQL:
+                    $leftDelimiter = '[';
+                    $rightDelimiter = ']';
+                    break;
+                default:
+                    $leftDelimiter = '"';
+                    $rightDelimiter = '"';
+            }
+            $value = str_replace($leftDelimiter, $leftDelimiter . $leftDelimiter, $value);
+            if ($rightDelimiter !== $leftDelimiter) {
+                $value = str_replace($rightDelimiter, $rightDelimiter . $rightDelimiter, $value);
+            }
+            return $leftDelimiter . $value . $rightDelimiter;
+        } else {
+            return $value;
+        }
+    }
+
+    /**
+     * Returns bool(true) if the ID should be quoted.
+     *
+     * @param   string  $id  name of database object
+     * @return  bool
+     */
+    private function _needsQuoting(string $id): bool
+    {
+        $isDb2Keyword = ($this->getDBMS() === \Yana\Db\DriverEnumeration::DB2 && $this->_getSqlKeywordChecker()->isSqlKeyword($id));
+        $doesNeedQuoting = preg_match('/^[a-z][\w\-]*$/ui', $id) !== 1;
+        return $isDb2Keyword || $doesNeedQuoting;
     }
 
 }

@@ -109,42 +109,11 @@ class Connection extends \Yana\Db\AbstractConnection
     public function getDBMS()
     {
         assert('!isset($dbms); // Cannot redeclare var $dbms');
-        $dbms = "generic";
+        $dbms = \Yana\Db\DriverEnumeration::GENERIC;
         if (!empty($this->_dsn['DBMS'])) {
             $dbms = strtolower($this->_dsn['DBMS']);
         }
-        // @codeCoverageIgnoreStart
-        switch ($dbms)
-        {
-            // Mapping aliases (driver names) to real DBMS names
-            case 'mysqli':
-            case 'mysql2':
-            case 'pdo_mysql':
-            case 'drizzle_pdo_mysql':
-                return "mysql";
-            case 'ibm_db2':
-                return "db2";
-            case 'pdo_sqlsrv':
-            case 'sqlsrv':
-                return "mssql";
-            case 'pgsql':
-            case 'postgres':
-            case 'pdo_pgsql':
-                return "postgresql";
-            case 'sqlite3':
-            case 'pdo_sqlite':
-                return "sqlite";
-            case 'pdo_oci':
-            case 'oci':
-            case 'oci8':
-                return "oracle";
-            case 'sqlanywhere':
-                return "sybase";
-            // any other
-            default:
-                return $dbms;
-        }
-        // @codeCoverageIgnoreEnd
+        return \Yana\Db\DriverEnumeration::mapAliasToDriver($dbms);
     }
 
     /**
@@ -231,7 +200,7 @@ class Connection extends \Yana\Db\AbstractConnection
      * result of your statement.
      *
      * @param   \Yana\Db\Queries\AbstractQuery  $query  one SQL statement (or a query object) to execute
-     * @return  mixed
+     * @return  \Yana\Db\IsResult
      * @throws  \Yana\Db\Queries\Exceptions\QueryException if the SQL statement is not valid
      */
     public function sendQueryObject(\Yana\Db\Queries\AbstractQuery $query)
@@ -363,10 +332,9 @@ class Connection extends \Yana\Db\AbstractConnection
         switch ($this->getDBMS())
         {
             // always quote
-            case 'mysql':
-            case 'mysqli':
-            case 'postgresql':
-            case 'mssql':
+            case \Yana\Db\DriverEnumeration::MYSQL:
+            case \Yana\Db\DriverEnumeration::POSTGRESQL:
+            case \Yana\Db\DriverEnumeration::MSSQL:
                 return $this->_getConnection()->quoteIdentifier($value);
 
             /* quote only where necessary
