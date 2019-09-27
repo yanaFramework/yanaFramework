@@ -735,8 +735,8 @@ class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Con
         $this->_args = array();
 
         if ($this->hasGenericParams()) {
-            $this->_args = $args;
-            return $this;
+            $this->_args = \array_change_key_case($args);
+            return $this->_args;
         }
 
         $message = "A provided paramter is invalid.";
