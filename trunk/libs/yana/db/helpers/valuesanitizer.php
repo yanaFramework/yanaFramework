@@ -50,7 +50,7 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
      *
      * @param  string  $dbms  name of DBMS to sanitize values for
      */
-    public function __construct(string $dbms = "generic")
+    public function __construct(string $dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         $this->_dbms = $dbms;
     }
@@ -83,9 +83,10 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
      * a row that should be inserted or updated in the table. The keys of the array $row are
      * expected to be the lowercased column names.
      *
-     * @param   array   $row       values of the inserted/updated row
-     * @param   bool    $isInsert  type of operation (true = insert, false = update)
-     * @param   array   &$files    list of modified or inserted columns of type file or image
+     * @param   \Yana\Db\Ddl\Table  $table     database object to use as base
+     * @param   array               $row       values of the inserted/updated row
+     * @param   bool                $isInsert  type of operation (true = insert, false = update)
+     * @param   array               &$files    list of modified or inserted columns of type file or image
      * @return  array
      * @throws  \Yana\Core\Exceptions\NotWriteableException         when a target column or table is not writeable
      * @throws  \Yana\Core\Exceptions\NotFoundException             when the column definition is invalid
@@ -176,9 +177,9 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
      *
      * Returns the sanitized value.
      *
-     * @param   \Yana\Db\Ddl\Column $column  
-     * @param   mixed               $value   value of the inserted/updated row
-     * @param   array               &$files  list of modified or inserted columns of type file or image
+     * @param   \Yana\Db\Ddl\Column  $column  database object to use as base
+     * @param   mixed                $value   value of the inserted/updated row
+     * @param   array                &$files  list of modified or inserted columns of type file or image
      * @return  mixed
      * @throws  \Yana\Core\Exceptions\NotFoundException            if the column definition is invalid
      * @throws  \Yana\Core\Exceptions\Forms\InvalidValueException  if an invalid value is encountered, that could not be sanitized
