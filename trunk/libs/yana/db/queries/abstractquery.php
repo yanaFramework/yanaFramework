@@ -58,7 +58,7 @@ namespace Yana\Db\Queries;
  * @subpackage  db
  * @since       2.9 RC1
  */
-abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
+abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper implements \Yana\Db\Queries\IsQuery
 {
 
     /**#@+
@@ -83,7 +83,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
     /**
      * @var string
      */
-    protected $tableName = null;
+    protected $tableName = "";
 
     /**
      * @var string
@@ -229,7 +229,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
      * and reuse it without creating another one. This can
      * help to improve the performance of your application.
      *
-     * @return  \Yana\Db\Queries\AbstractQuery
+     * @return  $this;
      */
     public function resetQuery()
     {
@@ -326,7 +326,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
      *
      * @return  int
      */
-    public function getType()
+    public function getType(): int
     {
         assert('is_int($this->type); // Expecting member "type" to be an integer');
         return $this->type;
@@ -353,7 +353,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
      * @since   2.9.3
      * @ignore
      */
-    public function getExpectedResult()
+    public function getExpectedResult(): int
     {
         assert('is_int($this->type); // Expecting member "expectedResult" to be an integer');
         return $this->expectedResult;
@@ -381,7 +381,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
      * @param   bool  $state  true = on, false = off
      * @return  $this
      */
-    public function useInheritance($state)
+    public function useInheritance(bool $state)
     {
         assert('is_bool($state); // Invalid argument $state: bool expected');
         $this->useInheritance = (bool) $state;
@@ -487,9 +487,8 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
      * @throws  \Yana\Db\Queries\Exceptions\TableNotSetException     if table has not been initialized
      * @throws  \Yana\Db\Queries\Exceptions\ColumnNotFoundException  if no column with the given name has been found
      */
-    public function getTableByColumn($columnName)
+    public function getTableByColumn(string $columnName): \Yana\Db\Ddl\Table
     {
-        assert('is_string($columnName); // Wrong type for argument 1. String expected');
         $columnName = $this->getColumnByAlias($columnName);
         $dbSchema = $this->getDatabase()->getSchema();
 
@@ -536,26 +535,24 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
      *
      * It will return bool(false) if there is no such parent.
      *
-     * If the argument $table is empty, or not provided, the
+     * If the argument $tableName is empty, or not provided, the
      * currently selected table (see {link \Yana\Db\Queries\AbstractQuery::setTable()})
      * is used instead.
      *
-     * @param   string  $table  name of a table
+     * @param   string  $tableName  name of a table
      * @since   2.9.6
      * @return  string
      */
-    public function getParent($table = "")
+    public function getParent(string $tableName = ""): ?\Yana\Db\Ddl\Table
     {
-        assert('is_string($table); // Wrong type for argument 1. String expected');
-
-        if ($table === "") {
-            $table = $this->tableName;
+        if ($tableName === "") {
+            $tableName = $this->tableName;
         }
-        $table = mb_strtoupper($table);
+        $ucTableName = mb_strtoupper($tableName);
 
-        $parent = false;
-        if (isset($this->parentTables[$table])) {
-            $parent = $this->parentTables[$table];
+        $parent = null;
+        if (isset($this->parentTables[$ucTableName])) {
+            $parent = $this->parentTables[$ucTableName];
         }
         return $parent;
     }
@@ -786,9 +783,9 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
      *
      * @param   string  $table  table name to use in query
      * @throws  \Yana\Db\Queries\Exceptions\TableNotFoundException  when the table does not exist
-     * @return  \Yana\Db\Queries\AbstractQuery
+     * @return  $this
      */
-    public function setTable($table)
+    public function setTable(string $table)
     {
         assert('is_string($table); // Wrong type for argument 1. String expected');
         $this->resetId();
@@ -835,18 +832,14 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
     /**
      * Get the name of the currently selected table.
      *
-     * Returns the lower-cased name of the currently selected table, or bool(false) if none has been selected yet.
+     * Returns the name of the currently selected table.
+     * If none has been selected yet, an empty string is returned.
      *
-     * @return  bool(false)|string
+     * @return  string
      */
-    public function getTable()
+    public function getTable() : string
     {
-        if (is_string($this->tableName)) {
-            return $this->tableName;
-        } else {
-            /* error: no table has been selected, yet */
-            return false;
-        }
+        return $this->tableName;
     }
 
     /**
@@ -855,7 +848,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
      * @return  \Yana\Db\Ddl\Table
      * @throws  \Yana\Db\Queries\Exceptions\TableNotSetException  if table has not been initialized
      */
-    protected function currentTable()
+    protected function currentTable(): \Yana\Db\Ddl\Table
     {
         if (!isset($this->table)) {
             if (!$this->getTable()) {
@@ -1114,7 +1107,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
      *
      * @param   scalar  $row  set source row
      * @throws  \Yana\Db\Queries\Exceptions\TableNotSetException     if table has not been initialized
-     * @return  \Yana\Db\Queries\AbstractQuery
+     * @return  $this
      */
     public function setRow($row)
     {
@@ -1197,7 +1190,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
      *
      * @return  string
      */
-    public function getRow()
+    public function getRow(): string
     {
         $row = '*';
         if (is_string($this->row)) {
@@ -1214,9 +1207,9 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
      * @throws  \Yana\Db\Queries\Exceptions\ColumnNotFoundException  if the given column is not found
      * @throws  \Yana\Db\Queries\Exceptions\InconsistencyException   when a foreign key check detects invalid database values
      * @throws  \Yana\Db\Queries\Exceptions\TargetNotFoundException  when no target can be found for the given key
-     * @return  \Yana\Db\Queries\AbstractQuery
+     * @return  $this
      */
-    public function setKey($key)
+    public function setKey(string $key)
     {
         assert('is_scalar($key); // Wrong argument type for argument 1. String expected.');
         assert('preg_match("/^[\w\d-_]+(\.(\w[^\.]*|\*|\?)){0,}(\.\*)?$/i", $key);'
@@ -1376,10 +1369,8 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
      * @return  \Yana\Db\Queries\AbstractQuery
      * @ignore
      */
-    protected function setOrderBy($orderBy, $desc = array())
+    protected function setOrderBy(array $orderBy, array $desc = array())
     {
-        settype($orderBy, 'array');
-        settype($desc, 'array');
         $this->resetId();
         $this->orderBy = array();
         $this->desc = array();
@@ -1452,10 +1443,9 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
         {
             case 'or':
                 return $this->convertWhereToString($leftOperand) . ' OR ' . $this->convertWhereToString($rightOperand);
-            break;
+
             case 'and':
                 return $this->convertWhereToString($leftOperand) . ' AND ' . $this->convertWhereToString($rightOperand);
-            break;
         }
 
         /**
@@ -1467,8 +1457,8 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
         }
         // right operand
         if ($operator === 'exists' || $operator === 'not exists') {
-            if ($rightOperand instanceof \Yana\Db\Queries\Select) {
-                $rightOperand = "($rightOperand)";
+            if ($rightOperand instanceof \Yana\Db\Queries\Select && $rightOperand instanceof self) {
+                $rightOperand = "(" . $rightOperand->toString() . ")";
             }
         } elseif ($operator === 'in' || $operator === 'not in') {
             assert('!isset($value); // cannot redeclare variable $value');
@@ -1869,7 +1859,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
      * @return  int
      * @since   2.9.3
      */
-    public function getLimit()
+    public function getLimit(): int
     {
         assert('is_int($this->limit); // Expecting member "limit" to be an integer.');
         return (int) $this->limit;
@@ -1913,7 +1903,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
      * @return  int
      * @since   2.9.3
      */
-    public function getOffset()
+    public function getOffset(): int
     {
         assert('is_int($this->offset); // Expecting member "offset" to be an integer');
         return (int) $this->offset;
@@ -1925,7 +1915,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
      * @return  string
      * @ignore
      */
-    public function toId()
+    public function toId(): string
     {
         if (!isset($this->_id)) {
             $this->_id = serialize(array($this->type, $this->tableName, $this->column, $this->row,
@@ -1980,7 +1970,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper
      * @since   2.9.3
      * @ignore
      */
-    public function sendQuery()
+    public function sendQuery(): \Yana\Db\IsResult
     {
         return $this->getDatabase()->sendQueryObject($this);
     }
