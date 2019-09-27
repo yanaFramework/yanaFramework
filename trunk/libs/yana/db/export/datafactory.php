@@ -65,14 +65,9 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
     private $_db = null;
 
     /**
-     * @var \Yana\Db\Helpers\IsSqlKeywordChecker
+     * @var \Yana\Db\NullConnection
      */
-    private $_sqlKeywordChecker = null;
-
-    /**
-     * @var string
-     */
-    private $_tpl = "INSERT INTO %TABLE% (%KEYS%) VALUES (%VALUES%);";
+    private $_nullConnection = null;
 
     /**
      * Create a new instance.
@@ -85,25 +80,27 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
     public function __construct(\Yana\Db\IsConnection $db, \Yana\Db\Helpers\IsSqlKeywordChecker $sqlKeywordChecker = null)
     {
         if (!is_null($sqlKeywordChecker)) {
-            $this->_sqlKeywordChecker = $sqlKeywordChecker;
+            $this->_nullConnection = new \Yana\Db\NullConnection($db->getSchema(), \Yana\Db\DriverEnumeration::GENERIC, $sqlKeywordChecker);
         }
         $this->_db = $db;
         parent::__construct($this->_db->getSchema());
     }
 
     /**
-     * Returns a class that checks if a given string is a reserved SQL keyword.
+     * Returns a fake connection.
      *
-     * We need this functionality for quoting the names of IBM DB2 database object names.
+     * This "connection" can be used to build an insert query to create a SQL statement for a DBMS of your choice.
      *
      * @return  \Yana\Db\Helpers\IsSqlKeywordChecker
      */
-    protected function _getSqlKeywordChecker()
+    protected function _getNullConnection()
     {
-        if (!isset($this->_sqlKeywordChecker)) {
-            $this->_sqlKeywordChecker = \Yana\Db\Helpers\SqlKeywordChecker::createFromApplicationDefault();
+        if (!isset($this->_nullConnection)) {
+            // @codeCoverageIgnoreStart
+            $this->_nullConnection = new \Yana\Db\NullConnection($this->_db->getSchema());
+            // @codeCoverageIgnoreEnd
         }
-        return $this->_sqlKeywordChecker;
+        return $this->_nullConnection;
     }
 
     /**
@@ -134,24 +131,23 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
         if ($extractData) {
             @set_time_limit(500); // this may take a while: increase time limit so we don't run into a timeout
 
+            $select = new \Yana\Db\Queries\Select($this->_db);
+            $select->useInheritance(false);
+            $insert = new \Yana\Db\Queries\Insert($this->_getNullConnection()->setDBMS(\Yana\Db\DriverEnumeration::MYSQL));
             // Loop through all tables in the database and extract each one
-            foreach ($this->schema->getTableNames() as $table)
+            foreach ($this->schema->getTables() as $table)
             {
                 // Select * From table
-                foreach($this->_db->select($table) as $row)
+                foreach($select->setTable($table->getName())->getResults() as $row)
                 {
-                    /* quote values */
-                    foreach (array_keys($row) as $column)
-                    {
-                        $row[$column] = self::quoteValue($row[$column], "mysql");
-                    }
+                    $insert
+                        ->resetQuery()
+                        ->useInheritance(false)
+                        ->setTable($table->getName())
+                        ->setValues($row);
 
                     /* build statement */
-                    $stmt = $this->_tpl; // Copy the template
-                    $stmt = str_replace('%TABLE%', "`" . YANA_DATABASE_PREFIX . $table .  "`", $stmt);
-                    $stmt = str_replace('%KEYS%', "`" . mb_strtolower(implode("`, `", array_keys($row))) .  "`", $stmt);
-                    $stmt = str_replace('%VALUES%', implode(", ", $row), $stmt);
-                    $sql[] = $stmt;
+                    $sql[] = (string) $insert . ';';
                 }
             }
         }
@@ -185,22 +181,24 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
 
         if ($extractData) {
             @set_time_limit(500);
-            foreach ($this->schema->getTableNames() as $table)
+
+            $select = new \Yana\Db\Queries\Select($this->_db);
+            $select->useInheritance(false);
+            $insert = new \Yana\Db\Queries\Insert($this->_getNullConnection()->setDBMS(\Yana\Db\DriverEnumeration::POSTGRESQL));
+            // Loop through all tables in the database and extract each one
+            foreach ($this->schema->getTables() as $table)
             {
-                foreach($this->_db->select($table) as $row)
+                // Select * From table
+                foreach($select->setTable($table->getName())->getResults() as $row)
                 {
-                    /* quote values */
-                    foreach (array_keys($row) as $column)
-                    {
-                        $row[$column] = self::quoteValue($row[$column], "postgresql");
-                    }
+                    $insert
+                        ->resetQuery()
+                        ->useInheritance(false)
+                        ->setTable($table->getName())
+                        ->setValues($row);
 
                     /* build statement */
-                    $stmt = $this->_tpl; // Copy the template
-                    $stmt = str_replace('%TABLE%', '"' . YANA_DATABASE_PREFIX . $table .  '"', $stmt);
-                    $stmt = str_replace('%KEYS%', '"' . mb_strtolower(implode('", "', array_keys($row))) .  '"', $stmt);
-                    $stmt = str_replace('%VALUES%', implode(", ", $row), $stmt);
-                    $sql[] = $stmt;
+                    $sql[] = (string) $insert . ';';
                 }
             }
         }
@@ -234,22 +232,24 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
 
         if ($extractData) {
             @set_time_limit(500);
-            foreach ($this->schema->getTableNames() as $table)
+
+            $select = new \Yana\Db\Queries\Select($this->_db);
+            $select->useInheritance(false);
+            $insert = new \Yana\Db\Queries\Insert($this->_getNullConnection()->setDBMS(\Yana\Db\DriverEnumeration::MSSQL));
+            // Loop through all tables in the database and extract each one
+            foreach ($this->schema->getTables() as $table)
             {
-                foreach($this->_db->select($table) as $row)
+                // Select * From table
+                foreach($select->setTable($table->getName())->getResults() as $row)
                 {
-                    /* quote values */
-                    foreach (array_keys($row) as $column)
-                    {
-                        $row[$column] = self::quoteValue($row[$column], "mssql");
-                    }
+                    $insert
+                        ->resetQuery()
+                        ->useInheritance(false)
+                        ->setTable($table->getName())
+                        ->setValues($row);
 
                     /* build statement */
-                    $stmt = $this->_tpl;
-                    $stmt = str_replace('%TABLE%', '[' . YANA_DATABASE_PREFIX . $table .  ']', $stmt);
-                    $stmt = str_replace('%KEYS%', '[' . mb_strtolower(implode('], [', array_keys($row))) .  ']', $stmt);
-                    $stmt = str_replace('%VALUES%', implode(", ", $row), $stmt);
-                    $sql[] = $stmt;
+                    $sql[] = (string) $insert . ';';
                 }
             }
         }
@@ -299,51 +299,25 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
         }
 
         if ($extractData) {
-
-            $sqlKeywords = $this->_getSqlKeywordChecker();
-            unset($file);
-
             @set_time_limit(500);
+
+            $select = new \Yana\Db\Queries\Select($this->_db);
+            $select->useInheritance(false);
+            $insert = new \Yana\Db\Queries\Insert($this->_getNullConnection()->setDBMS(\Yana\Db\DriverEnumeration::DB2));
+            // Loop through all tables in the database and extract each one
             foreach ($this->schema->getTables() as $table)
             {
-                /* @var $table \Yana\Db\Ddl\Table */
-                /* quote table */
-                $tableName = YANA_DATABASE_PREFIX . $table->getName();
-                if ($sqlKeywords->isSqlKeyword($tableName) !== false) {
-                    $tableName = "\"" . $tableName . "\"";
-                }
-                /* quote columns */
-                $columns = array();
-                foreach ($table->getColumnNames() as $column)
+                // Select * From table
+                foreach($select->setTable($table->getName())->getResults() as $row)
                 {
-                    $column = mb_strtolower($column);
-                    if ($sqlKeywords->isSqlKeyword($column) !== false) {
-                        $columns[$column] = "\"" . $column . "\"";
-                    } else {
-                        $columns[$column] = $column;
-                    }
-                }
-                foreach($this->_db->select($table->getName()) as $row)
-                {
-                    $keys = "";
-                    /* quote values */
-                    foreach (array_keys($row) as $column)
-                    {
-                        $columName = mb_strtolower($column);
-                        if (isset($columns[$columName])) {
-                            $keys .= ( ($keys) ? ', ' : '' ) . $columns[$columName];
-                        } else {
-                            $keys .= ( ($keys) ? ', ' : '' ) . $columName;
-                        }
-                        $row[$column] = self::quoteValue($row[$column], "db2");
-                    }
+                    $insert
+                        ->resetQuery()
+                        ->useInheritance(false)
+                        ->setTable($table->getName())
+                        ->setValues($row);
 
                     /* build statement */
-                    $stmt = $this->_tpl;
-                    $stmt = str_replace('%TABLE%', $tableName, $stmt);
-                    $stmt = str_replace('%KEYS%', $keys, $stmt);
-                    $stmt = str_replace('%VALUES%', implode(", ", $row), $stmt);
-                    $sql[] = $stmt;
+                    $sql[] = (string) $insert . ";";
                 }
             }
         }
@@ -377,140 +351,28 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
 
         if ($extractData) {
             @set_time_limit(500);
-            $valueSanitizer = new \Yana\Db\Helpers\ValueSanitizer("oracle");
+
+            $select = new \Yana\Db\Queries\Select($this->_db);
+            $select->useInheritance(false);
+            $insert = new \Yana\Db\Queries\Insert($this->_getNullConnection()->setDBMS(\Yana\Db\DriverEnumeration::ORACLE));
+            // Loop through all tables in the database and extract each one
             foreach ($this->schema->getTables() as $table)
             {
-                foreach($this->_db->select($table->getName()) as $row)
+                // Select * From table
+                foreach($select->setTable($table->getName())->getResults() as $row)
                 {
-                    $row = $valueSanitizer->sanitizeRowByTable($table, \array_change_key_case($row, \CASE_LOWER));
+                    $insert
+                        ->resetQuery()
+                        ->useInheritance(false)
+                        ->setTable($table->getName())
+                        ->setValues($row);
 
                     /* build statement */
-                    $stmt = $this->_tpl;
-                    $stmt = str_replace('%TABLE%', '"' . YANA_DATABASE_PREFIX . $table->getName() .  '"', $stmt);
-                    $stmt = str_replace('%KEYS%', '"' . implode('", "', array_keys($row)) .  '"', $stmt);
-                    $stmt = str_replace('%VALUES%', implode(", ", $row), $stmt);
-                    $sql[] = $stmt;
+                    $sql[] = (string) $insert . ';';
                 }
             }
         }
         return $sql;
-    }
-
-    /**
-     * Returns a quoted value.
-     *
-     * @param   mixed   $value  value to quote
-     * @param   string  $dbms   database name
-     * @return  string
-     * @ignore
-     */
-    public static function quoteValue($value, $dbms = null)
-    {
-        /*
-         * FileDb
-         */
-        if (is_null($dbms)) {
-            if (is_null($value)) {
-                return YANA_DB_DELIMITER . YANA_DB_DELIMITER;
-
-            } elseif (is_scalar($value)) {
-                if (is_string($value)) {
-                    $value = stripslashes("$value");
-                    $value = str_replace('\\', '\\\\', $value);
-                    $value = str_replace(YANA_DB_DELIMITER, '\\' . YANA_DB_DELIMITER, $value);
-                    $value = str_replace("\n", '\n', $value);
-                    $value = str_replace("\r", '\r', $value);
-                    $value = str_replace("\f", '\f', $value);
-                    $value = str_replace(chr(0), '', $value);
-                };
-                return YANA_DB_DELIMITER . "$value" . YANA_DB_DELIMITER;
-
-            } else {
-                $message = "A value of non-scalar type '" . gettype($value) .
-                    "' has been found in an SQL statement and will be converted to string.";
-                $level = \Yana\Log\TypeEnumeration::INFO;
-                \Yana\Log\LogManager::getLogger()->addLog($message, $level);
-                return YANA_DB_DELIMITER . \Yana\Files\SML::encode($value) . YANA_DB_DELIMITER;
-
-            }
-        } /* end if */
-        /*
-         * ... other DBMS ...
-         */
-
-        switch (true)
-        {
-            /*
-             * constant NULL
-             */
-            case is_null($value):
-                return 'NULL';
-            break;
-
-            /*
-             * integer
-             */
-            case is_int($value):
-                return "$value";
-            break;
-
-            /*
-             * boolean
-             */
-            case is_bool($value):
-                switch ($dbms)
-                {
-                    case 'dbase':
-                        if ($value === true) {
-                            return "T";
-                        } else {
-                            return "F";
-                        }
-                    break;
-                    case 'frontbase':
-                    case 'postgresql':
-                        if ($value === true) {
-                            return "TRUE";
-                        } else {
-                            return "FALSE";
-                        }
-                    break;
-                    default:
-                        if ($value === true) {
-                            return "1";
-                        } else {
-                            return "0";
-                        }
-                    break;
-                }
-            break;
-
-            /*
-             * float
-             */
-            case is_float($value):
-                $value = str_replace(',', '.', "$value");
-            break;
-
-            /*
-             * array
-             */
-            case is_array($value):
-                $value = \json_encode($value);
-            // fall through
-
-            /*
-             * string
-             */
-            case is_string($value):
-            default:
-                $value = preg_replace('/[\x00\x1A\x22\x27\x5C]/us', '\\\$0', $value);
-                $value = preg_replace("/\n/us", '\\n', $value);
-                $value = preg_replace("/\r/us", '\\r', $value);
-                $value = preg_replace("/\f/us", '\\f', $value);
-            break;
-        }
-        return "'" . $value . "'";
     }
 
 }
