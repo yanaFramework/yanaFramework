@@ -80,6 +80,14 @@ class NullConnectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testSetDBMS()
+    {
+        $this->assertSame('whatever', $this->object->setDBMS('WhatEver')->getDBMS());
+    }
+
+    /**
+     * @test
+     */
     public function testCommit()
     {
         $this->assertSame($this->object, $this->object->commit());
@@ -196,6 +204,47 @@ class NullConnectionTest extends \PHPUnit_Framework_TestCase
     {
         $value = "SomeValue";
         $this->assertSame($value, $this->object->quoteId($value));
+    }
+
+    /**
+     * @test
+     */
+    public function testQuoteDb2()
+    {
+        $checker = new \Yana\Db\Helpers\SqlKeywordChecker(array("USER"));
+        $this->object = new \Yana\Db\NullConnection(null, \Yana\Db\DriverEnumeration::DB2, $checker);
+        $value = "User";
+        $this->assertSame('"' . $value. '"', $this->object->quoteId($value));
+    }
+
+    /**
+     * @test
+     */
+    public function testQuoteMySql()
+    {
+        $this->object = new \Yana\Db\NullConnection(null, \Yana\Db\DriverEnumeration::MYSQL);
+        $value = "my sql";
+        $this->assertSame('`' . $value. '`', $this->object->quoteId($value));
+    }
+
+    /**
+     * @test
+     */
+    public function testQuoteMsSql()
+    {
+        $this->object = new \Yana\Db\NullConnection(null, \Yana\Db\DriverEnumeration::MSSQL);
+        $value = "ms.[sql]";
+        $this->assertSame('[ms.[[sql]]]', $this->object->quoteId($value));
+    }
+
+    /**
+     * @test
+     */
+    public function testQuoteOracle()
+    {
+        $this->object = new \Yana\Db\NullConnection(null, \Yana\Db\DriverEnumeration::ORACLE);
+        $value = 'some "value"';
+        $this->assertSame('"some ""value"""', $this->object->quoteId($value));
     }
 
 }
