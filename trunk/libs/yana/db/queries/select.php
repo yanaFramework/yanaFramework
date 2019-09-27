@@ -326,7 +326,7 @@ class Select extends \Yana\Db\Queries\SelectCount
      * @throws  \Yana\Db\Queries\Exceptions\ColumnNotFoundException when the column does not exist
      * @return  $this
      */
-    public function setOrderBy($orderBy, $desc = array())
+    public function setOrderBy(array $orderBy, array $desc = array())
     {
         parent::setOrderBy($orderBy, $desc);
         return $this;

@@ -316,7 +316,7 @@ class Update extends \Yana\Db\Queries\Insert
      * @since   2.9.3
      * @ignore
      */
-    public function sendQuery()
+    public function sendQuery(): \Yana\Db\IsResult
     {
         assert('!isset($message); // Cannot redeclare $message');
         assert('!isset($level); // Cannot redeclare $level');

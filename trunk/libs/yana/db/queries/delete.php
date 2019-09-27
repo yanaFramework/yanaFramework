@@ -52,13 +52,11 @@ class Delete extends \Yana\Db\Queries\AbstractQuery
      * @param   array  $desc     sort descending (true=yes, false=no)
      * @throws  \Yana\Db\Queries\Exceptions\TableNotFoundException  when the base table does not exist
      * @throws  \Yana\Db\Queries\Exceptions\ColumnNotFoundException when the column does not exist
-     * @return  \Yana\Db\Queries\Delete 
+     * @return  $this
      */
-    public function setOrderBy($orderBy, $desc = array())
+    public function setOrderBy(array $orderBy, array $desc = array())
     {
-        settype($orderBy, 'array');
-        settype($desc, 'array');
-        parent::setOrderBy($orderBy, $desc); // throws exception
+        parent::setOrderBy($orderBy, $desc); // may throw exception
         return $this;
     }
 
@@ -187,7 +185,7 @@ class Delete extends \Yana\Db\Queries\AbstractQuery
      * @ignore
      * @codeCoverageIgnore
      */
-    public function sendQuery()
+    public function sendQuery(): \Yana\Db\IsResult
     {
         // logging: backup entry before deleting it
         $message = "Deleting entry '{$this->tableName}.{$this->row}'.";

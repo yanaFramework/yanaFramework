@@ -82,22 +82,6 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
     private $_sanitizer = null;
 
     /**
-     * create a new instance
-     *
-     * This creates and initializes a new instance of this class.
-     *
-     * The argument $database can be an instance of class Connection or
-     * any derived sub-class (e.g. FileDb).
-     *
-     * @param  \Yana\Db\IsConnection  $database  a database resource
-     */
-    public function __construct(\Yana\Db\IsConnection $database)
-    {
-        parent::__construct($database);
-        $this->_sanitizer = new \Yana\Db\Helpers\ValueSanitizer($this->getDatabase()->getDBMS());
-    }
-
-    /**
      * @param   \Yana\Db\Helpers\IsSanitizer $sanitizer
      * @return  $this
      */
@@ -113,10 +97,28 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
      *
      * If no sanitizer has been set, it will create one.
      *
+     * @return \Yana\Db\Helpers\ValueConverter
+     */
+    protected function _getConverter()
+    {
+        if (!isset($this->_sanitizer)) {
+            $this->_sanitizer = new \Yana\Db\Helpers\ValueConverter($this->getDatabase()->getDBMS());
+        }
+        return $this->_sanitizer;
+    }
+
+    /**
+     * Returns the sanitizer algorithm used to clean input values.
+     *
+     * If no sanitizer has been set, it will create one.
+     *
      * @return \Yana\Db\Helpers\IsSanitizer
      */
     protected function _getSanitizer()
     {
+        if (!isset($this->_sanitizer)) {
+            $this->_sanitizer = new \Yana\Db\Helpers\ValueSanitizer($this->getDatabase()->getDBMS());
+        }
         return $this->_sanitizer;
     }
 
@@ -346,7 +348,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
      *
      * @return  mixed
      */
-    public function &getValues()
+    public function getValues()
     {
         return $this->values;
     }
@@ -420,7 +422,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
      * @throws  \Yana\Db\Queries\Exceptions\ConstraintException         when a constraint violation is detected
      * @ignore
      */
-    public function sendQuery()
+    public function sendQuery(): \Yana\Db\IsResult
     {
         // send query
         $result = parent::sendQuery();
@@ -511,7 +513,6 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
                 return "";
             }
             assert('!isset($keys); // Cannot redeclare $keys');
-            assert('!isset($values); // Cannot redeclare $values');
             $keys = "";
             // quote id's to avoid conflicts with reserved keywords
             assert('!isset($value); // Cannot redeclare var $value');
@@ -523,20 +524,17 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
                 $keys .= $this->getDatabase()->quoteId($value);
             }
             unset($value);
-            $values = '';
-            assert('!isset($value); // Cannot redeclare $values');
-            foreach ($this->values as $value)
-            {
-                $values .= (($values !== '') ? ', ' : '' );
-                if (is_array($value)) {
-                    $values .= $this->getDatabase()->quote(json_encode($value));
-                } else {
-                    $values .= $this->getDatabase()->quote($value);
-                }
-            }
-            unset($value);
+
+            assert('!isset($valueConverter); // Cannot redeclare $valueConverter');
+            $valueConverter = new \Yana\Db\Helpers\ValueConverter($this->getDatabase()->getDBMS());
+            assert('!isset($table); // Cannot redeclare $table');
+            $table = $this->getDatabase()->getSchema()->getTable($this->getTable());
+            assert('!isset($values); // Cannot redeclare $values');
+            $values = $valueConverter->convertRowToString($table, \array_change_key_case($this->values, CASE_LOWER));
+            unset($table, $valueConverter);
+
             $stmt = str_replace('%KEYS%', $keys, $stmt);
-            $stmt = str_replace('%VALUES%', $values, $stmt);
+            $stmt = str_replace('%VALUES%', implode(", ", $values), $stmt);
             unset($keys, $values);
         }
 
