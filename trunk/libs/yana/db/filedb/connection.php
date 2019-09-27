@@ -68,7 +68,7 @@ class Connection extends \Yana\Db\AbstractConnection
      */
     public function getDBMS()
     {
-        return "generic";
+        return \Yana\Db\DriverEnumeration::GENERIC;
     }
 
     /**
