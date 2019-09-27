@@ -96,10 +96,13 @@ class DataFactoryTest extends \PHPUnit_Framework_TestCase
         $this->connection->commit();
 
         $expectedSQL = array(
-            0 => 'INSERT INTO `ft` (`ftvalue`, `ftid`) VALUES (1, 1);',
-            1 => 'INSERT INTO `t` (`tvalue`, `ta`, `tb`, `ftid`, `tid`) VALUES (1, \'{\"1\":\"2\",\"2\":\"3\"}\', 1, 1, \'FOO\');',
-            2 => 'INSERT INTO `t` (`tvalue`, `tb`, `ftid`, `tid`) VALUES (3, 0, 1, \'FOO3\');',
-            3 => 'INSERT INTO `i` (`ta`, `iid`, `tvalue`, `tb`, `ftid`, `tid`) VALUES (\'{\"1\":\"2\",\"2\":\"3\"}\', \'FOO\', 1, 1, 1, \'FOO\');'
+            0 => 'INSERT INTO ft (ftid, ftvalue) VALUES (1, 1);',
+            1 => 'INSERT INTO t (tid, tvalue, ta, tb, ftid) VALUES '
+                . '(' . YANA_DB_DELIMITER . 'FOO' . YANA_DB_DELIMITER . ', 1, ' . YANA_DB_DELIMITER . '{"1":"2","2":"3"}' . YANA_DB_DELIMITER . ', 1, 1);',
+            2 => 'INSERT INTO t (tid, tvalue, tb, ftid) VALUES '
+                . '(' . YANA_DB_DELIMITER . 'FOO3' . YANA_DB_DELIMITER . ', 3, 0, 1);',
+            3 => 'INSERT INTO i (iid, ta) VALUES '
+                . '(' . YANA_DB_DELIMITER . 'FOO' . YANA_DB_DELIMITER . ', ' . YANA_DB_DELIMITER . '{"1":"1"}' . YANA_DB_DELIMITER . ');'
         );
         $createdSql = $this->object->createMySQL(false, true);
         $this->assertInternalType('array', $createdSql);
@@ -118,10 +121,13 @@ class DataFactoryTest extends \PHPUnit_Framework_TestCase
         $this->connection->commit();
 
         $expectedSQL = array(
-            0 => 'INSERT INTO "ft" ("ftvalue", "ftid") VALUES (1, 1);',
-            1 => 'INSERT INTO "t" ("tvalue", "ta", "tb", "ftid", "tid") VALUES (1, \'{\"1\":\"2\",\"2\":\"3\"}\', TRUE, 1, \'FOO\');',
-            2 => 'INSERT INTO "t" ("tvalue", "tb", "ftid", "tid") VALUES (3, FALSE, 1, \'FOO3\');',
-            3 => 'INSERT INTO "i" ("ta", "iid", "tvalue", "tb", "ftid", "tid") VALUES (\'{\"1\":\"2\",\"2\":\"3\"}\', \'FOO\', 1, TRUE, 1, \'FOO\');'
+            0 => 'INSERT INTO ft (ftid, ftvalue) VALUES (1, 1);',
+            1 => 'INSERT INTO t (tid, tvalue, ta, tb, ftid) VALUES '
+                . '(' . YANA_DB_DELIMITER . 'FOO' . YANA_DB_DELIMITER . ', 1, ' . YANA_DB_DELIMITER . '{"1":"2","2":"3"}' . YANA_DB_DELIMITER . ', TRUE, 1);',
+            2 => 'INSERT INTO t (tid, tvalue, tb, ftid) VALUES '
+                . '(' . YANA_DB_DELIMITER . 'FOO3' . YANA_DB_DELIMITER . ', 3, FALSE, 1);',
+            3 => 'INSERT INTO i (iid, ta) VALUES '
+                . '(' . YANA_DB_DELIMITER . 'FOO' . YANA_DB_DELIMITER . ', ' . YANA_DB_DELIMITER . '{"1":"1"}' . YANA_DB_DELIMITER . ');'
         );
         $createdSql = $this->object->createPostgreSQL(false, true);
         $this->assertInternalType('array', $createdSql);
@@ -140,10 +146,13 @@ class DataFactoryTest extends \PHPUnit_Framework_TestCase
         $this->connection->commit();
 
         $expectedSQL = array(
-            0 => 'INSERT INTO [ft] ([ftvalue], [ftid]) VALUES (1, 1);',
-            1 => 'INSERT INTO [t] ([tvalue], [ta], [tb], [ftid], [tid]) VALUES (1, \'{\"1\":\"2\",\"2\":\"3\"}\', 1, 1, \'FOO\');',
-            2 => 'INSERT INTO [t] ([tvalue], [tb], [ftid], [tid]) VALUES (3, 0, 1, \'FOO3\');',
-            3 => 'INSERT INTO [i] ([ta], [iid], [tvalue], [tb], [ftid], [tid]) VALUES (\'{\"1\":\"2\",\"2\":\"3\"}\', \'FOO\', 1, 1, 1, \'FOO\');'
+            0 => 'INSERT INTO ft (ftid, ftvalue) VALUES (1, 1);',
+            1 => 'INSERT INTO t (tid, tvalue, ta, tb, ftid) VALUES '
+                . '(' . YANA_DB_DELIMITER . 'FOO' . YANA_DB_DELIMITER . ', 1, ' . YANA_DB_DELIMITER . '{"1":"2","2":"3"}' . YANA_DB_DELIMITER . ', 1, 1);',
+            2 => 'INSERT INTO t (tid, tvalue, tb, ftid) VALUES '
+                . '(' . YANA_DB_DELIMITER . 'FOO3' . YANA_DB_DELIMITER . ', 3, 0, 1);',
+            3 => 'INSERT INTO i (iid, ta) VALUES '
+                . '(' . YANA_DB_DELIMITER . 'FOO' . YANA_DB_DELIMITER . ', ' . YANA_DB_DELIMITER . '{"1":"1"}' . YANA_DB_DELIMITER . ');'
         );
         $createdSql = $this->object->createMSSQL(false, true);
         $this->assertInternalType('array', $createdSql);
@@ -162,10 +171,13 @@ class DataFactoryTest extends \PHPUnit_Framework_TestCase
         $this->connection->commit();
 
         $expectedSQL = array(
-            0 => 'INSERT INTO [ft] ([ftvalue], [ftid]) VALUES (1, 1);',
-            1 => 'INSERT INTO [t] ([tvalue], [ta], [tb], [ftid], [tid]) VALUES (1, \'{\"1\":\"2\",\"2\":\"3\"}\', 1, 1, \'FOO\');',
-            2 => 'INSERT INTO [t] ([tvalue], [tb], [ftid], [tid]) VALUES (3, 0, 1, \'FOO3\');',
-            3 => 'INSERT INTO [i] ([ta], [iid], [tvalue], [tb], [ftid], [tid]) VALUES (\'{\"1\":\"2\",\"2\":\"3\"}\', \'FOO\', 1, 1, 1, \'FOO\');'
+            0 => 'INSERT INTO ft (ftid, ftvalue) VALUES (1, 1);',
+            1 => 'INSERT INTO t (tid, tvalue, ta, tb, ftid) VALUES '
+                . '(' . YANA_DB_DELIMITER . 'FOO' . YANA_DB_DELIMITER . ', 1, ' . YANA_DB_DELIMITER . '{"1":"2","2":"3"}' . YANA_DB_DELIMITER . ', 1, 1);',
+            2 => 'INSERT INTO t (tid, tvalue, tb, ftid) VALUES '
+                . '(' . YANA_DB_DELIMITER . 'FOO3' . YANA_DB_DELIMITER . ', 3, 0, 1);',
+            3 => 'INSERT INTO i (iid, ta) VALUES '
+                . '(' . YANA_DB_DELIMITER . 'FOO' . YANA_DB_DELIMITER . ', ' . YANA_DB_DELIMITER . '{"1":"1"}' . YANA_DB_DELIMITER . ');'
         );
         $createdSql = $this->object->createMSAccess(false, true);
         $this->assertInternalType('array', $createdSql);
@@ -184,10 +196,13 @@ class DataFactoryTest extends \PHPUnit_Framework_TestCase
         $this->connection->commit();
 
         $expectedSQL = array(
-            0 => 'INSERT INTO ft (ftvalue, ftid) VALUES (1, 1);',
-            1 => 'INSERT INTO t (tvalue, ta, tb, ftid, tid) VALUES (1, \'{\"1\":\"2\",\"2\":\"3\"}\', 1, 1, \'FOO\');',
-            2 => 'INSERT INTO t (tvalue, tb, ftid, tid) VALUES (3, 0, 1, \'FOO3\');',
-            3 => 'INSERT INTO i (ta, iid, tvalue, tb, ftid, tid) VALUES (\'{\"1\":\"2\",\"2\":\"3\"}\', \'FOO\', 1, 1, 1, \'FOO\');'
+            0 => 'INSERT INTO ft (ftid, ftvalue) VALUES (1, 1);',
+            1 => 'INSERT INTO t (tid, tvalue, ta, tb, ftid) VALUES '
+                . '(' . YANA_DB_DELIMITER . 'FOO' . YANA_DB_DELIMITER . ', 1, ' . YANA_DB_DELIMITER . '{"1":"2","2":"3"}' . YANA_DB_DELIMITER . ', 1, 1);',
+            2 => 'INSERT INTO t (tid, tvalue, tb, ftid) VALUES '
+                . '(' . YANA_DB_DELIMITER . 'FOO3' . YANA_DB_DELIMITER . ', 3, 0, 1);',
+            3 => 'INSERT INTO i (iid, ta) VALUES '
+                . '(' . YANA_DB_DELIMITER . 'FOO' . YANA_DB_DELIMITER . ', ' . YANA_DB_DELIMITER . '{"1":"1"}' . YANA_DB_DELIMITER . ');'
         );
         $createdSql = $this->object->createDB2(false, true);
         $this->assertInternalType('array', $createdSql);
@@ -206,26 +221,17 @@ class DataFactoryTest extends \PHPUnit_Framework_TestCase
         $this->connection->commit();
 
         $expectedSQL = array(
-            0 => 'INSERT INTO "ft" ("FTVALUE", "FTID") VALUES (1, 1);',
-            1 => 'INSERT INTO "t" ("TVALUE", "TA", "TB", "FTID", "TID") VALUES (1, \'{\"1\":\"2\",\"2\":\"3\"}\', 1, 1, \'FOO\');',
-            2 => 'INSERT INTO "t" ("TVALUE", "TB", "FTID", "TID") VALUES (3, 0, 1, \'FOO3\');',
-            3 => 'INSERT INTO "i" ("TA", "IID", "TVALUE", "TB", "FTID", "TID") VALUES (\'{\"1\":\"2\",\"2\":\"3\"}\', \'FOO\', 1, 1, 1, \'FOO\');'
+            0 => 'INSERT INTO ft (ftid, ftvalue) VALUES (1, 1);',
+            1 => 'INSERT INTO t (tid, tvalue, ta, tb, ftid) VALUES '
+                . '(' . YANA_DB_DELIMITER . 'FOO' . YANA_DB_DELIMITER . ', 1, ' . YANA_DB_DELIMITER . '{"1":"2","2":"3"}' . YANA_DB_DELIMITER . ', 1, 1);',
+            2 => 'INSERT INTO t (tid, tvalue, tb, ftid) VALUES '
+                . '(' . YANA_DB_DELIMITER . 'FOO3' . YANA_DB_DELIMITER . ', 3, 0, 1);',
+            3 => 'INSERT INTO i (iid, ta) VALUES '
+                . '(' . YANA_DB_DELIMITER . 'FOO' . YANA_DB_DELIMITER . ', ' . YANA_DB_DELIMITER . '{"1":"1"}' . YANA_DB_DELIMITER . ');'
         );
-//        $createdSql = $this->object->createOracleDB(false, true);
-//        $this->assertInternalType('array', $createdSql);
-//        $this->assertSame($expectedSQL, $createdSql);
-    }
-
-    /**
-     * @covers Yana\Db\Export\DataFactory::quoteValue
-     * @todo   Implement testQuoteValue().
-     */
-    public function testQuoteValue()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $createdSql = $this->object->createOracleDB(false, true);
+        $this->assertInternalType('array', $createdSql);
+        $this->assertSame($expectedSQL, $createdSql);
     }
 
 }
