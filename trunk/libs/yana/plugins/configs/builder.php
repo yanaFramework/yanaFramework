@@ -131,12 +131,12 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder implements \Yana\Log
      */
     protected function buildMethod()
     {
-        $method = new \Yana\Plugins\Configs\MethodConfiguration();
         if ($this->_method) {
             $parser = $this->getAnnotationParser();
 
             $classPath = $this->_class->getDirectory();
             assert(is_dir($classPath));
+            $method = new \Yana\Plugins\Configs\MethodConfiguration();
             $method->setClassName($this->_method->getClassName());
             $method->setMethodName($this->_method->getName());
 
