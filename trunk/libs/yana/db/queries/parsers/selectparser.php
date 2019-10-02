@@ -216,13 +216,13 @@ class SelectParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
          * Joined table is always table "B".
          * This convention makes the later steps a little easier.
          */
-        if (strcasecmp($leftOperand[0], $joinedTable) === 0) {
+        if (strcasecmp((string) $leftOperand[0], $joinedTable) === 0) {
             $tableA  = $rightOperand[0]; // right operand is the base table
             $columnA = $rightOperand[1];
             $tableB  = $leftOperand[0];
             $columnB = $leftOperand[1];
 
-        } elseif (strcasecmp($rightOperand[0], $joinedTable) === 0) {
+        } elseif (strcasecmp((string) $rightOperand[0], $joinedTable) === 0) {
             $tableA  = $leftOperand[0]; // left operand is the base table
             $columnA = $leftOperand[1];
             $tableB  = $rightOperand[0];

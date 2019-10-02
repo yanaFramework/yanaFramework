@@ -744,7 +744,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
         /* if primary key is renamed, the old one has to be replaced */
         if (isset($set[$primaryKey]) && strcasecmp($row, $set[$primaryKey]) !== 0) { // updating primary key
             $smlfile->remove("$primaryKey.$row"); // remove old row
-            $row = mb_strtoupper($set[$primaryKey]);
+            $row = mb_strtoupper((string) $set[$primaryKey]);
             unset($set[$primaryKey]);
             $set = array($row => $set); // insert as new
         } elseif ($row != "") { // inserting a new row
@@ -796,12 +796,17 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
     private function _executeInsertQuery(\Yana\Db\Queries\Insert $query)
     {
         $this->_select($query->getTable());
-        $set = $query->getValues();
+        $set = (array) $query->getValues();
+        $primaryValue = $query->getRow();
+        if ($primaryValue !== '*') {
+            $set[$this->_getTable()->getPrimaryKey()] = $query->getRow();
+        }
 
-        if (empty($set) || !is_array($set)) {
+        if (empty($set)) {
             $message = 'The insert statement contains no values to be inserted.';
             throw new \Yana\Db\Queries\Exceptions\InvalidSyntaxException($message);
         }
+        $set = \array_change_key_case($set, CASE_UPPER);
 
         if (!$this->_checkForeignKeys($this->_getTable(), $set)) {
             $message = "Foreign key check failed on table '{$this->_getTable()->getName()}' for " .
@@ -810,7 +815,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
         }
 
         assert('!isset($primaryKey); // Cannot redeclare var $primaryKey');
-        $primaryKey = $this->_getTable()->getPrimaryKey();
+        $primaryKey = mb_strtoupper($this->_getTable()->getPrimaryKey());
 
         if ($this->_getTable()->getColumn($primaryKey)->isAutoIncrement()) {
             $this->_increment($set);
@@ -819,12 +824,9 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
         if (isset($set[$primaryKey])) {
             $primaryValue = $set[$primaryKey];
             unset($set[$primaryKey]);
-        } else {
-            $primaryValue = $query->getRow();
-            if ($primaryValue === '*') {
-                $message = "Cannot insert entry. No primary key provided.";
-                throw new \Yana\Db\Queries\Exceptions\InvalidPrimaryKeyException($message);
-            }
+        } elseif ($primaryValue === '*') {
+            $message = "Cannot insert entry. No primary key provided.";
+            throw new \Yana\Db\Queries\Exceptions\InvalidPrimaryKeyException($message);
         }
 
         /* get reference to SML file */
@@ -848,34 +850,18 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
                  * 1) an entry with the same key already exists
                  */
                 if ($column->isUnique() === true) {
-                    assert('!isset($tmp); // Cannot redeclare var $tmp');
-                    $tmp = $idxfile->getVar($column, $set[$column]);
                     /*
                      * Error - unique constraint has already been breached by some
                      * previous operation.
                      * This may occur, when a unique constraint is added, that didn't
                      * exist before.
                      */
-                    if (is_array($tmp) && count($tmp) > 1) {
-                        assert('!isset($log); // Cannot redeclare var $log');
-                        $log = "SQL WARNING: The column {$column} " .
-                                "has an unique constraint, but multiple " .
-                                "rows with the same name have been found. " .
-                                "This conflict can not be solved automatically. " .
-                                "Please edit and update the affected table.";
-                        \Yana\Log\LogManager::getLogger()->addLog($log, \Yana\Log\TypeEnumeration::WARNING, array('affected rows:' => $tmp));
-                        unset($log);
-                    }
-                    /*
-                     * error - constraint is breached
-                     */
-                    if (!empty($tmp)) {
-                        $message = "SQL ERROR: Cannot insert entry with column {$column} " .
-                                "= " . $set[$column] . ". The column has an unique constraint " .
-                                "and another entry with the same value already exists.";
+                    if ($idxfile->hasVar($columnName, $set[$columnName])) {
+                        $message = "SQL ERROR: Cannot insert entry with column " . $columnName .
+                            " = " . $set[$columnName] . ". The column has an unique constraint " .
+                            "and another entry with the same value already exists.";
                         throw new \Yana\Db\Queries\Exceptions\DuplicateValueException($message);
                     }
-                    unset($tmp);
                 } // end if
                 /*
                  * update indexes
@@ -886,11 +872,11 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
                  *   (currently that is the case for columns using unique constraints)
                  */
                 if ($column->hasIndex() === true || $column->isUnique() === true) {
-                    $idxfile->create($column, array($primaryValue, $set[$column]));
+                    $idxfile->create($columnName, array($primaryValue, $set[$columnName]));
                 } // end if
             } // end if
         } // end foreach
-        unset($column);
+        unset($column, $columnName);
         if (is_array($smlfile->getVar("{$primaryKey}.{$primaryValue}"))) {
             $message = "SQL ERROR: Cannot insert entry with primary key = " .
                     "{$primaryValue}. Another entry with this key already exists.";
@@ -1000,12 +986,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
             return YANA_DB_DELIMITER . "$value" . YANA_DB_DELIMITER;
 
         } else {
-            $message = "A value of non-scalar type '" . gettype($value) .
-                "' has been found in an SQL statement and will be converted to string.";
-            $level = \Yana\Log\TypeEnumeration::INFO;
-            \Yana\Log\LogManager::getLogger()->addLog($message, $level);
-            return YANA_DB_DELIMITER . \Yana\Files\SML::encode($value) . YANA_DB_DELIMITER;
-
+            return $this->quote(\json_encode($value));
         }
     }
 
@@ -1136,7 +1117,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
         /*
          * 2) simulate auto-increment
          */
-        $primaryKey = $this->_getTable()->getPrimaryKey();
+        $primaryKey = \mb_strtoupper($this->_getTable()->getPrimaryKey());
         if (empty($set[$primaryKey])) {
             $index = $this->_getAutoIncrement()->getNextValue();
             $set[$primaryKey] = $index;
@@ -1279,7 +1260,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
             if (is_array($column)) {
                 $column = $column[1];
             }
-            $column = mb_strtoupper($column);
+            $column = mb_strtoupper((string) $column);
             if (!is_string($alias)) {
                 $alias = $column;
             }
@@ -1347,7 +1328,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
         }
 
         $sortArray = array_shift($columns);
-        $sort = mb_strtoupper($sortArray[1]);
+        $sort = mb_strtoupper((string) $sortArray[1]);
         $isDescending = array_shift($desc);
         unset($sortArray);
 
@@ -1587,9 +1568,9 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
             /* get value of foreign key */
             if ($aIsPk) {
                 $row[$columnA] = $id;
-                $keyA = mb_strtoupper($id);
+                $keyA = mb_strtoupper((string) $id);
             } elseif (isset($row[$columnA])) {
-                $keyA = mb_strtoupper($row[$columnA]);
+                $keyA = mb_strtoupper((string) $row[$columnA]);
             } else {
                 $keyA = null;
             }
@@ -1751,10 +1732,10 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
          */
         switch ($operator)
         {
-            case 'or':
+            case \Yana\Db\Queries\OperatorEnumeration::OR:
                 return $this->_doWhere($current, $leftOperand) || $this->_doWhere($current, $rightOperand);
 
-            case 'and':
+            case \Yana\Db\Queries\OperatorEnumeration::AND:
                 return $this->_doWhere($current, $leftOperand) && $this->_doWhere($current, $rightOperand);
 
         }
@@ -1772,8 +1753,8 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
         } else {
             $table = $this->_getTable();
         }
-        if (isset($current[mb_strtoupper($leftOperand)])) {
-            $value = $current[mb_strtoupper($leftOperand)];
+        if (isset($current[mb_strtoupper((string) $leftOperand)])) {
+            $value = $current[mb_strtoupper((string) $leftOperand)];
         } elseif ($table !== $ignoreTable) {
             $value = null;
         } else {
@@ -1788,56 +1769,60 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
         {
             case '<>':
                 // fall through
-                $operator = '!=';
-            case '!=':
+                $operator = \Yana\Db\Queries\OperatorEnumeration::NOT_EQUAL;
+            case \Yana\Db\Queries\OperatorEnumeration::NOT_EQUAL:
                 // fall through
-            case '=':
+            case '==':
+            case \Yana\Db\Queries\OperatorEnumeration::EQUAL:
                 $column = $table->getColumn($leftOperand);
                 assert('$column instanceof \Yana\Db\Ddl\Column; // Column not found: ' . $leftOperand);
                 if (is_null($rightOperand)) {
                     return is_null($value) xor $operator === '!=';
                 }
                 if ($column->isPrimaryKey() || $column->isForeignKey()) {
-                    return strcasecmp($value, $rightOperand) === 0 xor $operator === '!=';
+                    return strcasecmp($value, $rightOperand) === 0 xor $operator === \Yana\Db\Queries\OperatorEnumeration::NOT_EQUAL;
                 }
-                return (strcmp($value, $rightOperand) === 0) xor $operator === '!=';
+                return (strcmp($value, $rightOperand) === 0) xor $operator === \Yana\Db\Queries\OperatorEnumeration::NOT_EQUAL;
 
-            case 'like':
+            case \Yana\Db\Queries\OperatorEnumeration::NOT_LIKE:
+                $operator = \Yana\Db\Queries\OperatorEnumeration::NOT_REGEX;
+                // fall through
+            case \Yana\Db\Queries\OperatorEnumeration::LIKE:
                 $rightOperand = preg_quote($rightOperand, '/');
                 $rightOperand = str_replace('%', '.*', $rightOperand);
                 $rightOperand = str_replace('_', '.?', $rightOperand);
                 // fall through
-            case 'regexp':
-                return preg_match('/^' . $rightOperand . '$/is', $value) === 1;
+            case \Yana\Db\Queries\OperatorEnumeration::REGEX:
+                return preg_match('/^' . $rightOperand . '$/is', $value) === 1 xor $operator === \Yana\Db\Queries\OperatorEnumeration::NOT_REGEX;
 
-            case '<':
+            case \Yana\Db\Queries\OperatorEnumeration::LESS:
                 return ($value < $rightOperand);
 
-            case '>':
+            case \Yana\Db\Queries\OperatorEnumeration::GREATER:
                 return ($value > $rightOperand);
 
-            case '<=':
+            case \Yana\Db\Queries\OperatorEnumeration::LESS_OR_EQUAL:
                 return ($value <= $rightOperand);
 
-            case '>=':
+            case \Yana\Db\Queries\OperatorEnumeration::GREATER_OR_EQUAL:
                 return ($value >= $rightOperand);
 
-            case 'in':
+            case \Yana\Db\Queries\OperatorEnumeration::IN:
                 if ($rightOperand instanceof \Yana\Db\Queries\Select) {
                     $rightOperand = $rightOperand->getResults();
                 }
                 return (bool) in_array($value, $rightOperand);
 
-            case 'not in':
+            case \Yana\Db\Queries\OperatorEnumeration::NOT_IN:
                 if ($rightOperand instanceof \Yana\Db\Queries\Select) {
                     $rightOperand = $rightOperand->getResults();
                 }
                 return !in_array($value, $rightOperand);
 
-            case 'exists':
+            case \Yana\Db\Queries\OperatorEnumeration::EXISTS:
                 return ($rightOperand instanceof \Yana\Db\Queries\SelectExist) && $rightOperand->doesExist();
 
-            case 'not exists':
+            case \Yana\Db\Queries\OperatorEnumeration::NOT_EXISTS:
                 return ($rightOperand instanceof \Yana\Db\Queries\SelectExist) && !$rightOperand->doesExist();
 
             default:

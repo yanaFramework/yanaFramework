@@ -25,6 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Queries;
 

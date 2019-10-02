@@ -1768,7 +1768,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
                 }
                 assert('is_array($value); // Unexpected result: $value should be an array.');
                 if ($key !== "") {
-                    $value = \Yana\Util\Hashtable::get($value, mb_strtolower($key));
+                    $value = \Yana\Util\Hashtable::get($value, mb_strtolower((string) $key));
                     if (is_null($value)) {
                         $value = null;
                     }

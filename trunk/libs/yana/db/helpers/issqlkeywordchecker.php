@@ -42,7 +42,7 @@ interface IsSqlKeywordChecker
      * @param   string  $id  to test
      * @return  bool
      */
-    public function isSqlKeyword($id);
+    public function isSqlKeyword(string $id): bool;
 
 }
 

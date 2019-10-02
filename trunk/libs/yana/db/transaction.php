@@ -89,7 +89,7 @@ class Transaction extends \Yana\Core\Object implements \Yana\Db\IsTransaction
     /**
      * Commit current transaction and write all changes to the database.
      *
-     * @return  \Yana\Db\IsTransaction
+     * @return  $this
      * @throws  \Yana\Db\CommitFailedException  when the commit did not succeed
      */
     public function commit(\Yana\Db\IsDriver $driver)
@@ -185,7 +185,7 @@ class Transaction extends \Yana\Core\Object implements \Yana\Db\IsTransaction
      * Update a row or cell.
      *
      * @param   \Yana\Db\Queries\Update  $updateQuery    the address of the row that should be updated
-     * @return  \Yana\Db\Transaction
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException          when either the given $key or $value is invalid
      * @throws  \Yana\Db\Queries\Exceptions\InvalidResultTypeException  when the query has an invalid column selector
      * @throws  \Yana\Db\Queries\Exceptions\ConstraintException         when a constraint check fails
@@ -239,7 +239,7 @@ class Transaction extends \Yana\Core\Object implements \Yana\Db\IsTransaction
      * Insert $value at position $key.
      *
      * @param   \Yana\Db\Queries\Insert  $insertQuery   the address of the row that should be inserted
-     * @return  \Yana\Db\Transaction
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException          when either $key or $value is invalid
      * @throws  \Yana\Db\Queries\Exceptions\InvalidResultTypeException  when the query has an invalid column selector
      * @throws  \Yana\Db\Queries\Exceptions\ConstraintException         when a constraint check fails
@@ -292,7 +292,7 @@ class Transaction extends \Yana\Core\Object implements \Yana\Db\IsTransaction
      * Remove row.
      *
      * @param   \Yana\Db\Queries\Delete  $deleteQuery   the address of the row that should be removed
-     * @return  \Yana\Db\Transaction
+     * @return  $this
      */
     public function remove(\Yana\Db\Queries\Delete $deleteQuery)
     {
@@ -344,7 +344,7 @@ class Transaction extends \Yana\Core\Object implements \Yana\Db\IsTransaction
     /**
      * Reset the object to default values.
      *
-     * @return  \Yana\Db\Transaction
+     * @return  $this
      */
     public function rollback()
     {

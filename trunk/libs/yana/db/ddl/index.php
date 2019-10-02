@@ -311,7 +311,7 @@ class Index extends \Yana\Db\Ddl\AbstractUnnamedObject
     {
         assert('is_string($name); // Invalid argument $name: String expected');
 
-        $name = strtolower($name);
+        $name = mb_strtolower($name);
         if (isset($this->columns[$name])) {
             unset($this->columns[$name]);
         }

@@ -269,7 +269,7 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsCon
 
         /* 1 determine if odbc is required to connect to this dbms */
         if (!empty($dsn['DBMS'])) {
-            if (!empty($dsn['USE_ODBC']) || in_array(mb_strtolower($dsn['DBMS']), $requireOdbc)) {
+            if (!empty($dsn['USE_ODBC']) || in_array(strtolower($dsn['DBMS']), $requireOdbc)) {
                 $dsnForMdb2['phptype']  = 'ODBC';
                 $dsnForMdb2['dbsyntax'] = (string) $dsn['DBMS'];
             } else {

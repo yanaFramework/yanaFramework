@@ -25,6 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Queries\Parsers;
 
@@ -55,7 +56,7 @@ abstract class AbstractParser extends \Yana\Core\Object implements \Yana\Db\Quer
     /**
      * @return \Yana\Db\IsConnection
      */
-    protected function _getDatabase()
+    protected function _getDatabase(): \Yana\Db\IsConnection
     {
         return $this->_database;
     }
@@ -94,7 +95,7 @@ abstract class AbstractParser extends \Yana\Core\Object implements \Yana\Db\Quer
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the given where-clause is invalid
      * @ignore
      */
-    protected function _parseWhere(array $syntaxTree)
+    protected function _parseWhere(array $syntaxTree): array
     {
         if (empty($syntaxTree)) {
             return array(); // empty where clause
@@ -141,9 +142,8 @@ abstract class AbstractParser extends \Yana\Core\Object implements \Yana\Db\Quer
      * @return  array
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when an unknown operator is encountered
      */
-    protected function _parseWhereByArguments(array $operators, array $arguments, $isNegated)
+    protected function _parseWhereByArguments(array $operators, array $arguments, bool $isNegated): array
     {
-
         $where = array();
 
         while (count($operators) > 0)
@@ -152,30 +152,31 @@ abstract class AbstractParser extends \Yana\Core\Object implements \Yana\Db\Quer
 
             switch ($operator)
             {
-                case 'not exists':
-                case 'exists':
+                case \Yana\Db\Queries\OperatorEnumeration::NOT_EXISTS:
+                case \Yana\Db\Queries\OperatorEnumeration::EXISTS:
                     $operand = $this->_mapArgument(\array_shift($arguments));
                     $where = array($operand, $operator, null);
                     unset($operand);
                 break;
-                case 'not in':
-                case 'in':
-                case '!=':
-                case '=':
-                case '<':
-                case '<=':
-                case '>':
-                case '>=':
-                case 'not like':
-                case 'like':
-                case 'regexp':
+                case \Yana\Db\Queries\OperatorEnumeration::NOT_IN:
+                case \Yana\Db\Queries\OperatorEnumeration::IN:
+                case \Yana\Db\Queries\OperatorEnumeration::NOT_EQUAL:
+                case \Yana\Db\Queries\OperatorEnumeration::EQUAL:
+                case \Yana\Db\Queries\OperatorEnumeration::LESS:
+                case \Yana\Db\Queries\OperatorEnumeration::LESS_OR_EQUAL:
+                case \Yana\Db\Queries\OperatorEnumeration::GREATER:
+                case \Yana\Db\Queries\OperatorEnumeration::GREATER_OR_EQUAL:
+                case \Yana\Db\Queries\OperatorEnumeration::NOT_LIKE:
+                case \Yana\Db\Queries\OperatorEnumeration::LIKE:
+                case \Yana\Db\Queries\OperatorEnumeration::REGEX:
+                case \Yana\Db\Queries\OperatorEnumeration::NOT_REGEX:
                     $leftOperand = $this->_mapArgument(\array_shift($arguments));
                     $rightOperand = $this->_mapArgument(\array_shift($arguments));
                     $where = array($leftOperand, $operator, $rightOperand);
                     unset($leftOperand, $rightOperand);
                 break;
-                case 'and':
-                case 'or':
+                case \Yana\Db\Queries\OperatorEnumeration::AND:
+                case \Yana\Db\Queries\OperatorEnumeration::OR:
                     $where = array($where, $operator, $this->_parseWhereByArguments($operators, $arguments, $isNegated));
                 break 2;
                 // other operators are currently not supported
@@ -196,10 +197,8 @@ abstract class AbstractParser extends \Yana\Core\Object implements \Yana\Db\Quer
      * @return  string
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException
      */
-    protected function _mapOperator($operator, $isNegated)
+    protected function _mapOperator(string $operator, bool $isNegated): string
     {
-        assert('is_bool($isNegated); // Invalid argument type: $isNegated. Boolean expected.');
-
         switch (\strtolower($operator))
         {
             // is test for existence
@@ -207,60 +206,63 @@ abstract class AbstractParser extends \Yana\Core\Object implements \Yana\Db\Quer
                 $isNegated = !$isNegated;
             // fall through
             case 'is':
-                $operator = $isNegated ? '!=' : '=';
+                $operator = $isNegated ? \Yana\Db\Queries\OperatorEnumeration::NOT_EQUAL : \Yana\Db\Queries\OperatorEnumeration::EQUAL;
             break;
             case 'not in':
                 $isNegated = !$isNegated;
             // fall through
             case 'in':
-                $operator = $isNegated ? 'not in' : 'in';
+                $operator = $isNegated ? \Yana\Db\Queries\OperatorEnumeration::NOT_IN : \Yana\Db\Queries\OperatorEnumeration::IN;
             break;
             case 'not exists':
                 $isNegated = !$isNegated;
             // fall through
             case 'exists':
-                $operator = $isNegated ? 'not exists' : 'exists';
+                $operator = $isNegated ? \Yana\Db\Queries\OperatorEnumeration::NOT_EXISTS : \Yana\Db\Queries\OperatorEnumeration::EXISTS;
             break;
             case '!=':
                 $isNegated = !$isNegated;
             // fall through
             case '=':
-                $operator = $isNegated ? '!=' : '=';
+                $operator = $isNegated ? \Yana\Db\Queries\OperatorEnumeration::NOT_EQUAL : \Yana\Db\Queries\OperatorEnumeration::EQUAL;
             break;
             case '<':
                 if ($isNegated) {
-                    $operator = '>=';
+                    $operator = \Yana\Db\Queries\OperatorEnumeration::GREATER_OR_EQUAL;
                 }
             break;
             case '<=':
                 if ($isNegated) {
-                    $operator = '>';
+                    $operator = \Yana\Db\Queries\OperatorEnumeration::GREATER;
                 }
             break;
             case '>':
                 if ($isNegated) {
-                    $operator = '<=';
+                    $operator = \Yana\Db\Queries\OperatorEnumeration::LESS_OR_EQUAL;
                 }
             break;
             case '>=':
                 if ($isNegated) {
-                    $operator = '<';
+                    $operator = \Yana\Db\Queries\OperatorEnumeration::LESS;
                 }
             break;
             case 'not like':
                 $isNegated = !$isNegated;
             // fall through
             case 'like':
-                $operator = ($isNegated) ? 'not like' : 'like';
+                $operator = ($isNegated) ? \Yana\Db\Queries\OperatorEnumeration::NOT_LIKE : \Yana\Db\Queries\OperatorEnumeration::LIKE;
+            break;
+            case 'not regexp':
+                $isNegated = !$isNegated;
+            // fall through
+            case 'regexp':
+                $operator = ($isNegated) ? \Yana\Db\Queries\OperatorEnumeration::NOT_REGEX : \Yana\Db\Queries\OperatorEnumeration::REGEX;
             break;
             case 'and':
-                $operator = ($isNegated) ? 'or' : 'and';
+                $operator = ($isNegated) ? \Yana\Db\Queries\OperatorEnumeration::OR : \Yana\Db\Queries\OperatorEnumeration::AND;
             break;
             case 'or':
-                $operator = ($isNegated) ? 'and' : 'or';
-            break;
-            case 'regexp':
-                // intentionally left blank
+                $operator = ($isNegated) ? \Yana\Db\Queries\OperatorEnumeration::AND : \Yana\Db\Queries\OperatorEnumeration::OR;
             break;
             // other operators are currently not supported
             default:
@@ -301,7 +303,7 @@ abstract class AbstractParser extends \Yana\Core\Object implements \Yana\Db\Quer
      * @param   array  $syntaxTree  abstract syntax tree as provided by SQL_Parser
      * @return  array
      */
-    protected function _mapTableList(array $syntaxTree)
+    protected function _mapTableList(array $syntaxTree): array
     {
         $tables = array();
         // retrieve table
@@ -331,7 +333,7 @@ abstract class AbstractParser extends \Yana\Core\Object implements \Yana\Db\Quer
      * @param   array  $syntaxTree  abstract syntax tree as provided by SQL_Parser
      * @return  array
      */
-    protected function _mapTableJoins(array $syntaxTree)
+    protected function _mapTableJoins(array $syntaxTree): array
     {
         $joins = array();
         // retrieve table
@@ -361,7 +363,7 @@ abstract class AbstractParser extends \Yana\Core\Object implements \Yana\Db\Quer
      * @param   array  $syntaxTree  abstract syntax tree as provided by SQL_Parser
      * @return  array
      */
-    protected function _mapTableJoinClause(array $syntaxTree)
+    protected function _mapTableJoinClause(array $syntaxTree): array
     {
         $joins = array();
         // retrieve table
@@ -400,7 +402,7 @@ abstract class AbstractParser extends \Yana\Core\Object implements \Yana\Db\Quer
      * @return  array
      * @codeCoverageIgnore
      */
-    protected function _mapColumnNames(array $syntaxTree)
+    protected function _mapColumnNames(array $syntaxTree): array
     {
         $columns = array();
         // retrieve columns
@@ -421,7 +423,7 @@ abstract class AbstractParser extends \Yana\Core\Object implements \Yana\Db\Quer
      * @return  array
      * @codeCoverageIgnore
      */
-    protected function _mapTableNames(array $syntaxTree)
+    protected function _mapTableNames(array $syntaxTree): array
     {
         $tables = array();
         // retrieve tables
@@ -441,7 +443,7 @@ abstract class AbstractParser extends \Yana\Core\Object implements \Yana\Db\Quer
      * @param   array  $syntaxTree  abstract syntax tree as provided by SQL_Parser
      * @return  string
      */
-    protected function _mapTableName(array $syntaxTree)
+    protected function _mapTableName(array $syntaxTree): string
     {
         $tables = $this->_mapTableNames($syntaxTree);
         $tableName = (is_array($tables) && count($tables) > 0) ? current($tables) : "";
@@ -457,7 +459,7 @@ abstract class AbstractParser extends \Yana\Core\Object implements \Yana\Db\Quer
      * @param   array  $syntaxTree  abstract syntax tree as provided by SQL_Parser
      * @return  array
      */
-    protected function _mapColumnList(array $syntaxTree)
+    protected function _mapColumnList(array $syntaxTree): array
     {
         $columns = array();
         // retrieve table
@@ -495,7 +497,7 @@ abstract class AbstractParser extends \Yana\Core\Object implements \Yana\Db\Quer
      * @param   array  $syntaxTree  abstract syntax tree as provided by SQL_Parser
      * @return  array
      */
-    protected function _mapColumnListToListOfIdentifiers(array $syntaxTree)
+    protected function _mapColumnListToListOfIdentifiers(array $syntaxTree): array
     {
         $columns = array();
         foreach ($syntaxTree as $column)

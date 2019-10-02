@@ -394,7 +394,7 @@ abstract class DDL extends \Yana\Core\Object
                     $value = null;
                     if (isset($tag[2])) {
                         if (!is_null($id)) {
-                            $id = mb_strtolower($id);
+                            $id = mb_strtolower((string) $id);
                         }
                         $class = $tag[2];
                         $value = call_user_func(array($class, 'unserializeFromXDDL'), $node, $this);
@@ -459,7 +459,7 @@ abstract class DDL extends \Yana\Core\Object
                 switch ($type)
                 {
                     case 'nmtoken':
-                        $this->$property = mb_strtolower($value);
+                        $this->$property = mb_strtolower((string) $value);
                     break;
                     case 'array':
                         $value = preg_split('/, ?/', $value);

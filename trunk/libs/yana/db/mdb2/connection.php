@@ -39,7 +39,7 @@ class Connection extends \Yana\Db\AbstractConnection
     /**
      * @var  \Yana\Db\IsDriver
      */
-    private $_connection = null;
+    private $_driver = null;
 
     /**
      * @var  \Yana\Db\Helpers\SqlKeywordChecker
@@ -70,21 +70,21 @@ class Connection extends \Yana\Db\AbstractConnection
         }
 
         // open database connection
-        $this->_setConnection($server->getConnection());
+        $this->_setDriver($server->getConnection());
         $this->_dsn = $server->getDsn();
 
         parent::__construct($schema);
     }
 
     /**
-     * Wrap and set the database connection.
+     * Wrap and set the database driver.
      *
-     * @param   \MDB2_Driver_Common  $connection  MDB2 database connection
+     * @param   \MDB2_Driver_Common  $driver  MDB2 database driver
      * @return  $this
      */
-    protected function _setConnection(\MDB2_Driver_Common $connection)
+    protected function _setDriver(\MDB2_Driver_Common $driver)
     {
-        $this->_connection = new \Yana\Db\Mdb2\Driver($connection);
+        $this->_driver = new \Yana\Db\Mdb2\Driver($driver);
         return $this;
     }
 
@@ -131,7 +131,7 @@ class Connection extends \Yana\Db\AbstractConnection
     public function equals(\Yana\Core\IsObject $anotherObject)
     {
         return (bool) parent::equals($anotherObject) && $anotherObject instanceof $this
-            && $this->_connection->equals($anotherObject->_connection);
+            && $this->_driver->equals($anotherObject->_driver);
     }
 
     /**
@@ -176,7 +176,7 @@ class Connection extends \Yana\Db\AbstractConnection
             throw new \Yana\Db\Queries\Exceptions\SecurityException($message);
         }
 
-        $connection = $this->_getConnection();
+        $connection = $this->_getDriver();
         $mdb2Result = $connection->sendQueryString($sqlStmt, $limit, $offset);
         assert($mdb2Result instanceof \Yana\Db\IsResult);
 
@@ -304,7 +304,7 @@ class Connection extends \Yana\Db\AbstractConnection
      * @return  string
      * @ignore
      */
-    public function quoteId($value)
+    public function quoteId($value): string
     {
         assert('is_string($value); // Wrong argument type for argument 1. String expected.');
         $value = (string) $value;
@@ -326,11 +326,12 @@ class Connection extends \Yana\Db\AbstractConnection
         switch ($this->getDBMS())
         {
             // always quote
+            case \Yana\Db\Mdb2\DriverEnumeration::MYSQL:
+            case \Yana\Db\Mdb2\DriverEnumeration::POSTGRESQL:
+            case \Yana\Db\Mdb2\DriverEnumeration::MSSQL:
             case 'mysql':
-            case 'mysqli':
             case 'postgresql':
-            case 'mssql':
-                return $this->_getConnection()->quoteIdentifier($value);
+                return $this->_getDriver()->quoteIdentifier($value);
 
             /* quote only where necessary
              *
@@ -338,7 +339,7 @@ class Connection extends \Yana\Db\AbstractConnection
              */
             default:
                 if (strpos($value, ' ') !== false || $this->_getSqlKeywordChecker()->isSqlKeyword($value) === true) {
-                    return $this->_getConnection()->quoteIdentifier($value);
+                    return $this->_getDriver()->quoteIdentifier($value);
                 }
 
                 return $value;
@@ -351,15 +352,15 @@ class Connection extends \Yana\Db\AbstractConnection
      *
      * @return  \Yana\Db\IsDriver
      */
-    protected function _getConnection()
+    protected function _getDriver(): \Yana\Db\IsDriver
     {
-        if (!isset($this->_connection)) {
+        if (!isset($this->_driver)) {
             // @codeCoverageIgnoreStart
             $dbServer = new \Yana\Db\Mdb2\ConnectionFactory($this->_dsn);
-            $this->_setConnection($dbServer->getConnection());
+            $this->_setDriver($dbServer->getConnection());
             // @codeCoverageIgnoreEnd
         }
-        return $this->_connection;
+        return $this->_driver;
     }
 
 }

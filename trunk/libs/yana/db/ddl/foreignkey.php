@@ -717,7 +717,7 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractUnnamedObject
         }
         if (!empty($ddl->columns)) {
             $ddl->columns = array_change_key_case($ddl->columns, CASE_LOWER);
-            $ddl->columns = array_map('strtolower', $ddl->columns);
+            $ddl->columns = array_map('mb_strtolower', $ddl->columns);
         }
         return $ddl;
     }

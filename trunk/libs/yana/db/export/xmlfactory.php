@@ -211,9 +211,9 @@ class XmlFactory extends \Yana\Db\Export\AbstractXmlFactory
                     // @codeCoverageIgnoreEnd
                 }
                 $hasFKey = true;
-                $fCol = strtoupper((string) current($_fKeys)); // value = target column of fkey constraint
+                $fCol = mb_strtoupper((string) current($_fKeys)); // value = target column of fkey constraint
                 if (empty($fCol)) {
-                    $fCol = strtoupper((string) key($_fKeys)); // fall back to key = source column
+                    $fCol = mb_strtoupper((string) key($_fKeys)); // fall back to key = source column
                 }
                 unset($_fKeys);
                 /**

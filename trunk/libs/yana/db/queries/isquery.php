@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Queries;
 
@@ -73,11 +74,11 @@ interface IsQuery
      * Returns currently selected constant.
      *
      * <ul>
-     *  <li> DbResultEnumeration::UNKNOWN - no input </li>
-     *  <li> DbResultEnumeration::TABLE   - table only </li>
-     *  <li> DbResultEnumeration::ROW     - table + row </li>
-     *  <li> DbResultEnumeration::COLUMN  - table + column </li>
-     *  <li> DbResultEnumeration::CELL    - table + row + column </li>
+     *  <li> ResultEnumeration::UNKNOWN - no input </li>
+     *  <li> ResultEnumeration::TABLE   - table only </li>
+     *  <li> ResultEnumeration::ROW     - table + row </li>
+     *  <li> ResultEnumeration::COLUMN  - table + column </li>
+     *  <li> ResultEnumeration::CELL    - table + row + column </li>
      * </ul>
      *
      * Note: DbResultEnumeration::CELL means to refer to exactly 1 column.

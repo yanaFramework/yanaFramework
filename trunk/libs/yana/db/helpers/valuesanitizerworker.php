@@ -89,7 +89,7 @@ class ValueSanitizerWorker extends \Yana\Db\Helpers\AbstractValueSanitizerWorker
         if (filter_var($value, FILTER_VALIDATE_REGEXP, array("options" => $options)) === false) {
             throw new \Yana\Core\Exceptions\Forms\InvalidValueException();
         }
-        return strtoupper($value);
+        return strtoupper((string) $value);
     }
 
     /**

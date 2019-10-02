@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Helpers;
 
@@ -58,7 +59,7 @@ class SqlKeywordChecker extends \Yana\Core\Object implements \Yana\Db\Helpers\Is
      *
      * @return  array
      */
-    protected function _getListOfKeywords()
+    protected function _getListOfKeywords(): array
     {
         return $this->_listOfKeywords;
     }
@@ -69,10 +70,8 @@ class SqlKeywordChecker extends \Yana\Core\Object implements \Yana\Db\Helpers\Is
      * @param   string  $id  to test
      * @return  bool
      */
-    public function isSqlKeyword($id)
+    public function isSqlKeyword(string $id): bool
     {
-        assert('is_string($id); // Wrong argument type: $id. String expected.');
-
         $listOfKeywords = $this->_getListOfKeywords();
         if (empty($listOfKeywords)) {
             return false;
@@ -89,7 +88,7 @@ class SqlKeywordChecker extends \Yana\Core\Object implements \Yana\Db\Helpers\Is
      * @return  \Yana\Db\Helpers\IsSqlKeywordChecker
      * @codeCoverageIgnore
      */
-    public static function createFromApplicationDefault()
+    public static function createFromApplicationDefault(): \Yana\Db\Helpers\IsSqlKeywordChecker
     {
         $builder = new \Yana\ApplicationBuilder();
         $application = $builder->buildApplication();
@@ -117,10 +116,8 @@ class SqlKeywordChecker extends \Yana\Core\Object implements \Yana\Db\Helpers\Is
      * @return  \Yana\Db\Helpers\IsSqlKeywordChecker
      * @codeCoverageIgnore
      */
-    public static function createFromFile($filename)
+    public static function createFromFile(string $filename): \Yana\Db\Helpers\IsSqlKeywordChecker
     {
-        assert('is_string($filename); // Wrong argument type: $filename. String expected.');
-
         assert('!isset($reservedSqlKeywords); // Cannot redeclare $reservedSqlKeywords');
         $reservedSqlKeywords = array();
 

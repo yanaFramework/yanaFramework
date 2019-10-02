@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Queries;
 
@@ -61,14 +62,14 @@ namespace Yana\Db\Queries;
 abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper implements \Yana\Db\Queries\IsQuery
 {
 
-    /**#@+
-     * @ignore
-     */
-
     /**
      * @var string
      */
     private $_id = null;
+
+    /**#@+
+     * @ignore
+     */
 
     /**
      * @var int
@@ -81,14 +82,26 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
     protected $expectedResult = \Yana\Db\Queries\TypeEnumeration::UNKNOWN;
 
     /**
-     * @var string
+     * @var \Yana\Db\Queries\IsJoinCondition[]
      */
-    protected $tableName = "";
+    protected $joins = array();
+
+    /**
+     * @var bool
+     */
+    protected $isSubQuery = false;
+
+    /** #@- */
 
     /**
      * @var string
      */
-    protected $row = '*';
+    private $_tableName = "";
+
+    /**
+     * @var string
+     */
+    private $_row = '*';
 
     /**
      * @var array
@@ -98,79 +111,67 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
     /**
      * @var array
      */
-    protected $profile = array();
+    private $_profile = array();
 
     /**
      * @var array
      */
-    protected $rowId = array();
+    private $_rowId = array();
 
     /**
      * @var array
      */
-    protected $where = array();
+    private $_where = array();
 
     /**
      * @var array
      */
-    protected $orderBy = array();
+    private $_orderBy = array();
 
     /**
      * @var array
      */
-    protected $desc = array();
+    private $_desc = array();
 
     /**
      * @var int
      */
-    protected $limit = 0;
+    private $_limit = 0;
 
     /**
      * @var int
      */
-    protected $offset = 0;
-
-    /**
-     * @var \Yana\Db\Queries\IsJoinCondition[]
-     */
-    protected $joins = array();
+    private $_offset = 0;
 
     /**
      * @var string
      */
-    protected $arrayAddress = '';
+    private $_arrayAddress = '';
 
     /**
      * @var bool
      */
-    protected $useInheritance = true;
-
-    /**
-     * @var bool
-     */
-    protected $isSubQuery = false;
+    private $_useInheritance = true;
 
     /**
      * @var array
      */
-    protected $parentTables = array();
+    private $_parentTables = array();
 
     /**
      * @var array
      */
-    protected $tableByColumn = array();
+    private $_tableByColumn = array();
 
     /**
      * @var \Yana\Db\Ddl\Table
      */
-    protected $table = null;
+    private $_table = null;
 
     /**
      * @var array
      */
     private $_oldValues = null;
-
-    /** #@- */
 
     /**
      * magic get
@@ -234,19 +235,20 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
     public function resetQuery()
     {
         $this->resetId();
-        $this->row           = '*';
-        $this->column        = array();
-        $this->profile       = array();
-        $this->rowId         = array();
-        $this->where         = array();
-        $this->orderBy       = null;
-        $this->desc          = false;
-        $this->limit         = 0;
-        $this->joins         = array();
-        $this->arrayAddress  = '';
-        $this->parentTables  = array();
-        $this->tableByColumn = array();
-        $this->_oldValues    = null;
+        $this->_row           = '*';
+        $this->column         = array();
+        $this->_profile       = array();
+        $this->_rowId         = array();
+        $this->_where         = array();
+        $this->_orderBy       = array();
+        $this->_desc          = array();
+        $this->_limit         = 0;
+        $this->_offset        = 0;
+        $this->joins          = array();
+        $this->_arrayAddress  = '';
+        $this->_parentTables  = array();
+        $this->_tableByColumn = array();
+        $this->_oldValues     = null;
         return $this;
     }
 
@@ -283,7 +285,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
         switch ($type)
         {
             case \Yana\Db\Queries\TypeEnumeration::INSERT:
-                if ($this->row === '*' && $this->expectedResult === \Yana\Db\ResultEnumeration::TABLE) {
+                if ($this->_row === '*' && $this->expectedResult === \Yana\Db\ResultEnumeration::TABLE) {
                     if ($table->getColumn($table->getPrimaryKey())->isAutoFill()) {
                         $this->expectedResult = \Yana\Db\ResultEnumeration::ROW;
                     }
@@ -308,7 +310,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
 
             case \Yana\Db\Queries\TypeEnumeration::DELETE:
                 $this->type = $type;
-                $this->limit = 1;
+                $this->_limit = 1;
             break;
 
             default:
@@ -383,9 +385,18 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      */
     public function useInheritance(bool $state)
     {
-        assert('is_bool($state); // Invalid argument $state: bool expected');
-        $this->useInheritance = (bool) $state;
+        $this->_useInheritance = $state;
         return $this;
+    }
+
+    /**
+     * Check if automatic handling of inheritance is active.
+     *
+     * @return bool
+     */
+    protected function isUsingInheritance(): bool
+    {
+        return $this->_useInheritance;
     }
 
     /**
@@ -408,8 +419,8 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
         foreach ($parentTable->getColumnNames() as $columnName)
         {
             $columnName = mb_strtoupper($columnName);
-            if (!isset($this->tableByColumn[$columnName]) && !$table->isColumn($columnName)) {
-                $this->tableByColumn[$columnName] = $tableName;
+            if (!isset($this->_tableByColumn[$columnName]) && !$table->isColumn($columnName)) {
+                $this->_tableByColumn[$columnName] = $tableName;
             }
         }
         unset($columnName);
@@ -417,7 +428,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
          * add table
          */
         $tableName = mb_strtoupper($table->getName());
-        $this->parentTables[$tableName] = $parentTable;
+        $this->_parentTables[$tableName] = $parentTable;
         return $this;
     }
 
@@ -432,22 +443,21 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      * will return the name of the parent table, where the
      * column was defined or re-defined.
      *
-     * It will return bool(false) if there is no such parent.
+     * It will return an empty string if there is no such parent.
      *
      * @param   string  $columnName  name of a column
      * @since   2.9.6
      * @return  string
      * @ignore
      */
-    protected function getParentByColumn($columnName)
+    protected function getParentByColumn(string $columnName): string
     {
-        assert('is_string($columnName); // Wrong type for argument 1. String expected');
-        $columnName = mb_strtoupper($columnName);
-        if (isset($this->tableByColumn[$columnName])) {
-            return $this->tableByColumn[$columnName];
-        } else {
-            return false;
+        $ucColumnName = mb_strtoupper($columnName);
+        $parentTable = "";
+        if (isset($this->_tableByColumn[$ucColumnName])) {
+            $parentTable = $this->_tableByColumn[$ucColumnName];
         }
+        return $parentTable;
     }
 
     /**
@@ -470,7 +480,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
         if (is_array($columnName)) {
             $tableName = array_shift($columnName);
             $columnName = array_shift($columnName);
-            $this->tableByColumn[$columnName] = $tableName;
+            $this->_tableByColumn[$columnName] = $tableName;
             unset($tableName);
         }
         return mb_strtoupper($columnName);
@@ -494,8 +504,8 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
 
         $table = null;
         // lazy loading: resolve source tables for requested column
-        if (isset($this->tableByColumn[$columnName])) {
-            $table = $dbSchema->getTable($this->tableByColumn[$columnName]); // When we are auto-resolving inheritance between tables
+        if (isset($this->_tableByColumn[$columnName])) {
+            $table = $dbSchema->getTable($this->_tableByColumn[$columnName]); // When we are auto-resolving inheritance between tables
 
         } elseif ($this->currentTable()->isColumn($columnName)) {
             $table = $this->currentTable(); // may throw exception
@@ -546,13 +556,13 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
     public function getParent(string $tableName = ""): ?\Yana\Db\Ddl\Table
     {
         if ($tableName === "") {
-            $tableName = $this->tableName;
+            $tableName = $this->_tableName;
         }
         $ucTableName = mb_strtoupper($tableName);
 
         $parent = null;
-        if (isset($this->parentTables[$ucTableName])) {
-            $parent = $this->parentTables[$ucTableName];
+        if (isset($this->_parentTables[$ucTableName])) {
+            $parent = $this->_parentTables[$ucTableName];
         }
         return $parent;
     }
@@ -565,7 +575,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      *
      * @param   \Yana\Db\Ddl\Table  $table    table
      * @since   2.9.6
-     * @return  \Yana\Db\Queries\AbstractQuery
+     * @return  $this
      * @ignore
      */
     protected function detectInheritance(\Yana\Db\Ddl\Table $table)
@@ -621,7 +631,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      * @param   bool   $isLeftJoin       use left join instead of inner join
      * @throws  \Yana\Db\Queries\Exceptions\TableNotFoundException   if a provided table is not found
      * @throws  \Yana\Db\Queries\Exceptions\ConstraintException      if no suitable column is found to create a foreign key
-     * @return  \Yana\Db\Queries\AbstractQuery
+     * @return  $this
      * @ignore
      */
     protected function setJoin($joinedTableName, $targetKey = null, $sourceTableName = null, $foreignKey = null, $isLeftJoin = false)
@@ -800,11 +810,11 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
         }
 
         // Auto-attach profile check to where clause if profile constraint is present.
-        $this->profile = array();
+        $this->_profile = array();
         if ($table->hasProfile()) {
             $builder = new \Yana\ApplicationBuilder();
             $application = $builder->buildApplication();
-            $this->profile = array('profile_id', '=', $application->getProfileId());
+            $this->_profile = array('profile_id', '=', $application->getProfileId());
             unset($builder, $application);
         }
 
@@ -814,8 +824,8 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
         }
 
         // assign table name and definition
-        $this->tableName = $tableName;
-        $this->table = $table;
+        $this->_tableName = $tableName;
+        $this->_table = $table;
 
         /**
          * inheritance check
@@ -823,8 +833,8 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
          * Details: If one table inherits from another - that is if the primary
          * key is also a foreign key - then these are to be joined automatically.
          */
-        if ($this->useInheritance) {
-            $this->detectInheritance($this->table);
+        if ($this->isUsingInheritance()) {
+            $this->detectInheritance($this->_table);
         }
         return $this;
     }
@@ -839,7 +849,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      */
     public function getTable() : string
     {
-        return $this->tableName;
+        return $this->_tableName;
     }
 
     /**
@@ -850,13 +860,13 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      */
     protected function currentTable(): \Yana\Db\Ddl\Table
     {
-        if (!isset($this->table)) {
+        if (!isset($this->_table)) {
             if (!$this->getTable()) {
                 throw new \Yana\Db\Queries\Exceptions\TableNotSetException("Need to set table first!");
             }
-            $this->table = $this->getDatabase()->getSchema()->getTable($this->getTable());
+            $this->_table = $this->getDatabase()->getSchema()->getTable($this->getTable());
         }
-        return $this->table;
+        return $this->_table;
     }
 
     /**
@@ -869,10 +879,10 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      * @throws  \Yana\Db\Queries\Exceptions\TableNotSetException     if table has not been initialized
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException       if a given argument is invalid
      * @throws  \Yana\Db\Queries\Exceptions\ColumnNotFoundException  if the given column is not found in the table
-     * @return  \Yana\Db\Queries\AbstractQuery
+     * @return  $this
      * @ignore
      */
-    protected function setColumn($column = '*')
+    protected function setColumn(string $column = '*')
     {
         return $this->setColumnWithAlias($column);
     }
@@ -887,7 +897,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      * @throws  \Yana\Db\Queries\Exceptions\TableNotSetException     if table has not been initialized
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException       if a given argument is invalid
      * @throws  \Yana\Db\Queries\Exceptions\ColumnNotFoundException  if the given column is not found in the table
-     * @return  \Yana\Db\Queries\AbstractQuery
+     * @return  $this
      * @ignore
      */
     protected function setColumnWithAlias($column = '*', $alias = "")
@@ -899,7 +909,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
         /**
          * 1) wrong order of commands, need to set up table first
          */
-        if (empty($this->tableName)) {
+        if (empty($this->_tableName)) {
             throw new \Yana\Db\Queries\Exceptions\TableNotSetException("Cannot set column - need to set table first!");
         }
 
@@ -912,7 +922,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
              * set column
              */
             $this->column = array();
-            if ($this->row === '*') {
+            if ($this->_row === '*') {
                 if ($this->expectedResult !== \Yana\Db\ResultEnumeration::ROW) {
                     $this->expectedResult = \Yana\Db\ResultEnumeration::TABLE;
                 }
@@ -933,21 +943,20 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
             if (strpos($column, '.')) {
                 list($table, $column) = explode('.', $column);
                 $this->setTable($table);
-                unset($table);
             } else {
                 $table = $this->getParentByColumn($column);
-                if ($table !== false) {
+                if ($table > "") {
                     $this->setTable($table);
                 }
-                unset($table);
             }
+            unset($table);
 
             /*
              * 3.2) invalid argument, not a column
              */
             if (YANA_DB_STRICT && !$this->currentTable()->isColumn($column)) {
                 throw new \Yana\Db\Queries\Exceptions\ColumnNotFoundException("The column '$column' is not found in table " .
-                    "'{$this->tableName}'.", \Yana\Log\TypeEnumeration::WARNING);
+                    "'{$this->_tableName}'.", \Yana\Log\TypeEnumeration::WARNING);
             }
 
             /*
@@ -956,12 +965,12 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
             assert('!isset($columnValue); // Cannot redeclare var $columnValue');
             $this->column = array();
             $alias = $alias > "" ? (string) $alias : 0;
-            $this->column[$alias] = array($this->tableName, mb_strtolower($column));
-            if ($this->row !== '*' || $this->getExpectedResult() === \Yana\Db\ResultEnumeration::ROW) {
+            $this->column[$alias] = array($this->_tableName, mb_strtolower($column));
+            if ($this->_row !== '*' || $this->getExpectedResult() === \Yana\Db\ResultEnumeration::ROW) {
                 $this->expectedResult = \Yana\Db\ResultEnumeration::CELL;
             } else {
                 if (!$this->currentTable()->getColumn($column)->isPrimaryKey()) {
-                    $this->column[] = array($this->tableName, $this->table->getPrimaryKey());
+                    $this->column[] = array($this->_tableName, $this->_table->getPrimaryKey());
                 }
                 $this->expectedResult = \Yana\Db\ResultEnumeration::COLUMN;
             }
@@ -986,13 +995,11 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      * @param   string  $arrayAddress   array address
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException    if a given argument is invalid
      * @throws  \Yana\Db\Queries\Exceptions\TableNotSetException  if table has not been initialized (Only in STRICT mode!)
-     * @return  \Yana\Db\Queries\AbstractQuery
+     * @return  $this
      * @ignore
      */
-    protected function setArrayAddress($arrayAddress = "")
+    protected function setArrayAddress(string $arrayAddress = "")
     {
-        assert('is_string($arrayAddress); // Wrong type for argument 1. String expected');
-
         if (YANA_DB_STRICT && !empty($arrayAddress)) {
             /**
              * error - cannot set array address on a table
@@ -1015,8 +1022,21 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
             unset($column, $columnName);
         }
 
-        $this->arrayAddress = "$arrayAddress";
+        $this->_arrayAddress = "$arrayAddress";
         return $this;
+    }
+
+    /**
+     * Returns the currently selected address as a string.
+     *
+     * If none has been selected yet, an empty string is returned.
+     *
+     * @return  string
+     * @ignore
+     */
+    protected function getArrayAddress(): string
+    {
+        return $this->_arrayAddress;
     }
 
     /**
@@ -1036,11 +1056,11 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      * See {link \Yana\Db\AbstractQuery::getColumns()} to get a list of all
      * selected columns.
      *
-     * @param   int     $i  index of column to get
+     * @param   scalar  $i  index of column to get
      * @return  string
      * @ignore
      */
-    protected function getColumn($i = null)
+    protected function getColumn($i = null): string
     {
         if (is_array($this->column)) {
             if (is_null($i)) {
@@ -1077,7 +1097,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      * @return  array
      * @ignore
      */
-    protected function getColumns()
+    protected function getColumns(): array
     {
         $columns = array();
         if (is_array($this->column)) {
@@ -1087,7 +1107,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
          * catchable error: column is string (can be converted to array)
          */
         } elseif (is_string($this->column)) {
-            $columns = array(array($this->tableName, $this->column));
+            $columns = array(array($this->_tableName, $this->column));
 
         }
         // else: column has unexpected type
@@ -1117,7 +1137,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
         /*
          * 1) wrong order of commands, need to set up table first
          */
-        if (empty($this->tableName)) {
+        if (empty($this->_tableName)) {
             throw new \Yana\Db\Queries\Exceptions\TableNotSetException("Cannot set row - need to set table first!");
         }
         $table = $this->currentTable();
@@ -1130,11 +1150,11 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
             /*
              * 2.1) reset row id
              */
-            $this->rowId = array();
+            $this->_rowId = array();
             /*
              * 2.2) set row
              */
-            $this->row = '*';
+            $this->_row = '*';
             /*
              * 2.3) update type of expected result
              */
@@ -1162,11 +1182,11 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
             /*
              * 3.1) update row id
              */
-            $this->rowId = array(array($this->tableName, $table->getPrimaryKey()), '=', $row);
+            $this->_rowId = array(array($this->_tableName, $table->getPrimaryKey()), '=', $row);
             /*
              * 3.2) set row
              */
-            $this->row = mb_strtolower($row);
+            $this->_row = $row;
             /*
              * 3.3) update type of expected result
              */
@@ -1193,10 +1213,10 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
     public function getRow(): string
     {
         $row = '*';
-        if (is_string($this->row)) {
-            $row = mb_strtolower($this->row);
+        if (is_string($this->_row)) {
+            $row = mb_strtolower($this->_row);
         }
-        return $row;
+        return (string) $row;
     }
 
     /**
@@ -1270,7 +1290,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
             }
             unset($a, $foreignTable, $column);
             if ($isArray) {
-                $this->arrayAddress = implode('.', array_slice($array, 3));
+                $this->_arrayAddress = implode('.', array_slice($array, 3));
                 $array = array_slice($array, 0, 3);
             } else {
                 /* intentionally left blank */
@@ -1323,7 +1343,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      * @param   bool    $desc    sort descending (true=yes, false=no)
      * @throws  \Yana\Db\Queries\Exceptions\TableNotFoundException   when the base table does not exist
      * @throws  \Yana\Db\Queries\Exceptions\ColumnNotFoundException  when the column does not exist
-     * @return  \Yana\Db\Queries\AbstractQuery
+     * @return  $this
      * @ignore
      */
     protected function addOrderBy($column, $desc = false)
@@ -1337,7 +1357,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
         if (strpos($column, '.')) {
             list($tableName, $column) = explode('.', $column);
         } else {
-            $tableName = $this->tableName;
+            $tableName = $this->_tableName;
         }
         $table = $this->getDatabase()->getSchema()->getTable($tableName);
         if (!($table instanceof \Yana\Db\Ddl\Table)) {
@@ -1354,8 +1374,8 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
             $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Db\Queries\Exceptions\ColumnNotFoundException($message, $level);
         }
-        $this->orderBy[] = array($tableName, mb_strtolower($column));
-        $this->desc[] = $desc;
+        $this->_orderBy[] = array($tableName, mb_strtolower($column));
+        $this->_desc[] = $desc;
         return $this;
     }
 
@@ -1366,14 +1386,14 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      * @param   array  $desc     list of sort order (true=desc, false=asc)
      * @throws  \Yana\Db\Queries\Exceptions\TableNotFoundException   when the base table does not exist
      * @throws  \Yana\Db\Queries\Exceptions\ColumnNotFoundException  when the column does not exist
-     * @return  \Yana\Db\Queries\AbstractQuery
+     * @return  $this
      * @ignore
      */
     protected function setOrderBy(array $orderBy, array $desc = array())
     {
         $this->resetId();
-        $this->orderBy = array();
-        $this->desc = array();
+        $this->_orderBy = array();
+        $this->_desc = array();
 
         // reset when empty
         if (empty($orderBy)) {
@@ -1396,10 +1416,9 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      * @return  array
      * @ignore
      */
-    protected function getOrderBy()
+    protected function getOrderBy(): array
     {
-        assert('is_array($this->orderBy);');
-        return $this->orderBy;
+        return $this->_orderBy;
     }
 
     /**
@@ -1410,94 +1429,9 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      * @return  array
      * @ignore
      */
-    protected function getDescending()
+    protected function getDescending(): array
     {
-        assert('is_array($this->desc);');
-        return $this->desc;
-    }
-
-    /**
-     * Convert where clause to string.
-     *
-     * Returns the where condition clause as a string for printing.
-     *
-     * @param   array  $where  where clausel as an array
-     * @return  string
-     * @ignore
-     */
-    protected function convertWhereToString(array $where)
-    {
-        if (empty($where)) {
-            return "";
-        }
-        /* if all required information is provided */
-        assert('count($where) === 3; // Where clause must have exactly 3 items: left + right operands + operator');
-        $leftOperand = $where[0];
-        $operator = $where[1];
-        $rightOperand = $where[2];
-
-        /**
-         * 1) is sub-clause
-         */
-        switch ($operator)
-        {
-            case 'or':
-                return $this->convertWhereToString($leftOperand) . ' OR ' . $this->convertWhereToString($rightOperand);
-
-            case 'and':
-                return $this->convertWhereToString($leftOperand) . ' AND ' . $this->convertWhereToString($rightOperand);
-        }
-
-        /**
-         * 2) is atomar clause
-         */
-        // left operand
-        if (is_array($leftOperand)) {
-            $leftOperand = $this->getDatabase()->quoteId(YANA_DATABASE_PREFIX.$leftOperand[0]) . '.' . $leftOperand[1];
-        }
-        // right operand
-        if ($operator === 'exists' || $operator === 'not exists') {
-            if ($rightOperand instanceof \Yana\Db\Queries\Select && $rightOperand instanceof self) {
-                $rightOperand = "(" . $rightOperand->toString() . ")";
-            }
-        } elseif ($operator === 'in' || $operator === 'not in') {
-            assert('!isset($value); // cannot redeclare variable $value');
-            assert('!isset($list); // cannot redeclare variable $list');
-            if ($rightOperand instanceof \Yana\Db\Queries\Select) {
-                $list = (string) $rightOperand;
-            } else {
-                $list = "";
-                foreach ($rightOperand as $value)
-                {
-                    if (!empty($list)) {
-                        $list .= ", ";
-                    }
-                    if (is_string($value)) {
-                        $value = $this->getDatabase()->quote($value);
-                    }
-                    $list .= $value;
-                }
-            }
-            $rightOperand = "($list)";
-            unset($value, $list);
-        } elseif (is_array($rightOperand)) {
-            $rightOperand = $this->getDatabase()->quoteId(YANA_DATABASE_PREFIX.$rightOperand[0]) . '.' . $rightOperand[1];
-        } elseif (is_string($rightOperand)) {
-            $rightOperand = $this->getDatabase()->quote($rightOperand);
-        } elseif (is_null($rightOperand)) {
-            if ($operator == '=') {
-                return $leftOperand . ' is null ';
-            } elseif ($operator == '!=') {
-                return $leftOperand . ' is not null ';
-            } else {
-                $message = "The invalid operator '" . $operator .
-                    "' in your where clause has been ignored.";
-                \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::INFO);
-                return "";
-            }
-        }
-
-        return $leftOperand . ' ' . $operator . ' ' . $rightOperand;
+        return $this->_desc;
     }
 
     /**
@@ -1524,7 +1458,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
         }
         $leftOperand = $where[0];
-        $operator = strtolower($where[1]);
+        $operator = strtolower((string) $where[1]);
         $rightOperand = $where[2];
 
         /**
@@ -1532,10 +1466,9 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
          */
         switch ($operator)
         {
-            case 'and':
-            case 'or':
+            case \Yana\Db\Queries\OperatorEnumeration::AND:
+            case \Yana\Db\Queries\OperatorEnumeration::OR:
                 return array($this->parseWhereArray($leftOperand, true), $operator, $this->parseWhereArray($rightOperand, true));
-            break;
         }
 
         /*
@@ -1546,12 +1479,12 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
          * 2.1) handle left operator (must be column name)
          */
         if (is_array($leftOperand) && count($leftOperand) === 2) {
-            $tableName = mb_strtolower(array_shift($leftOperand));
-            $column = mb_strtolower(array_shift($leftOperand));
+            $tableName = mb_strtolower((string) array_shift($leftOperand));
+            $column = mb_strtolower((string) array_shift($leftOperand));
 
         } elseif (is_string($leftOperand)) {
-            $tableName = $this->tableName;
-            $column = mb_strtolower($leftOperand);
+            $tableName = $this->_tableName;
+            $column = mb_strtolower((string) $leftOperand);
 
         } else {
             $message = "Missing column name in where clause.";
@@ -1583,7 +1516,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
              * Reason: When scanning a whole table you may
              * search for primary keys - otherwise not.
              */
-            $isTableScan = ($this->row === '*' || is_null($this->row) || $this->row === '?');
+            $isTableScan = ($this->_row === '*' || is_null($this->_row) || $this->_row === '?');
             if (!$isTableScan && $table->getColumn($column)->isPrimaryKey()) {
                 $message = "Invalid where clause. " .
                     "You are trying to search for a primary key.\n\t\t" .
@@ -1603,20 +1536,20 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
         switch (true)
         {
             // is array
-            case $operator === 'in' || $operator === 'not in':
+            case $operator === \Yana\Db\Queries\OperatorEnumeration::IN || $operator === \Yana\Db\Queries\OperatorEnumeration::NOT_IN:
                 assert('is_array($rightOperand) || $rightOperand instanceof \Yana\Db\Queries\Select;');
             break;
 
             // is sub-query
-            case $operator === 'exists' || $operator === 'not exists':
+            case $operator === \Yana\Db\Queries\OperatorEnumeration::EXISTS || $operator === \Yana\Db\Queries\OperatorEnumeration::NOT_EXISTS:
                 assert('$rightOperand instanceof \Yana\Db\Queries\SelectExist;');
             break;
 
             // is column name
             case is_array($rightOperand) && count($rightOperand) === 2:
 
-                $tableName = mb_strtolower(array_shift($rightOperand));
-                $column = mb_strtolower(array_shift($rightOperand));
+                $tableName = mb_strtolower((string) array_shift($rightOperand));
+                $column = mb_strtolower((string) array_shift($rightOperand));
 
                 /**
                  * check if table - column pair is valid
@@ -1653,15 +1586,15 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
         switch ($operator)
         {
             case '==':
-            case '=':
-                $operator = '=';
+            case \Yana\Db\Queries\OperatorEnumeration::EQUAL:
+                $operator = \Yana\Db\Queries\OperatorEnumeration::EQUAL;
             break;
             case '<>':
-            case '!=':
-                $operator = '!=';
+            case \Yana\Db\Queries\OperatorEnumeration::NOT_EQUAL:
+                $operator = \Yana\Db\Queries\OperatorEnumeration::NOT_EQUAL;
             break;
-            case 'exists':
-            case 'not exists':
+            case \Yana\Db\Queries\OperatorEnumeration::EXISTS:
+            case \Yana\Db\Queries\OperatorEnumeration::NOT_EXISTS:
                 if (!($rightOperand instanceof \Yana\Db\Queries\SelectExist)) {
                     $message = "Invalid where clause.\n\t\t" .
                         "The operator '{$operator}' requires the right operand " .
@@ -1670,8 +1603,8 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
                     throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
                 }
             break;
-            case 'in':
-            case 'not in':
+            case \Yana\Db\Queries\OperatorEnumeration::IN:
+            case \Yana\Db\Queries\OperatorEnumeration::NOT_IN:
                 if (!is_array($rightOperand)) {
                     if (!($rightOperand instanceof \Yana\Db\Queries\Select)) {
                         $message = "Invalid where clause.\n\t\t" .
@@ -1681,12 +1614,12 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
                     }
                 }
             break;
-            case 'like':
-            case 'regexp':
-            case '<':
-            case '>':
-            case '<=':
-            case '>=':
+            case \Yana\Db\Queries\OperatorEnumeration::LIKE:
+            case \Yana\Db\Queries\OperatorEnumeration::REGEX:
+            case \Yana\Db\Queries\OperatorEnumeration::LESS:
+            case \Yana\Db\Queries\OperatorEnumeration::GREATER:
+            case \Yana\Db\Queries\OperatorEnumeration::LESS_OR_EQUAL:
+            case \Yana\Db\Queries\OperatorEnumeration::GREATER_OR_EQUAL:
                 if (is_null($rightOperand)) {
                     $message = "Invalid where clause.\n\t\t" .
                         "The operator '{$operator}' is not supported when comparing a column with NULL.";
@@ -1703,12 +1636,12 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
         if ($rightOperand instanceof self) {
             $rightOperand->isSubQuery = true;
         }
-        if (!$dontOptimize && empty($this->rowId) && $operator == '=' && is_string($rightOperand)) {
+        if (!$dontOptimize && empty($this->_rowId) && $operator == \Yana\Db\Queries\OperatorEnumeration::EQUAL && is_string($rightOperand)) {
             $primaryKey = $this->currentTable()->getPrimaryKey();
             switch (true)
             {
-                case is_array($leftOperand)  && strcasecmp($primaryKey, $leftOperand[1]) === 0:
-                case !is_array($leftOperand) && strcasecmp($primaryKey, $leftOperand) === 0:
+                case is_array($leftOperand)  && strcasecmp($primaryKey, (string) $leftOperand[1]) === 0:
+                case !is_array($leftOperand) && strcasecmp($primaryKey, (string) $leftOperand) === 0:
                     $this->setRow($rightOperand);
                     return array();
                 break;
@@ -1762,14 +1695,14 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      * @throws  \Yana\Db\Queries\Exceptions\ColumnNotFoundException  when a referenced column is not found
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException       when the where-clause contains invalid values
      * @ignore
-     * @return  \Yana\Db\Queries\AbstractQuery
+     * @return  $this
      */
     protected function setWhere(array $where = array())
     {
         // clear cached query id
         $this->resetId();
 
-        $this->where = $this->parseWhereArray($where); // throws exception
+        $this->_where = $this->parseWhereArray($where); // throws exception
         return $this;
     }
 
@@ -1784,15 +1717,15 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      * @param   array  $where  where clause
      * @throws  \Yana\Core\Exceptions\NotFoundException         when a column is not found
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the having-clause contains invalid values
-     * @return  \Yana\Db\Queries\SelectExist 
+     * @return  $this
      */
     protected function addWhere(array $where)
     {
         if (!empty($where)) {
-            if (!empty($this->where)) {
+            if (!empty($this->_where)) {
                 // clear cached query id
                 $this->resetId();
-                $this->where = array($this->parseWhereArray($where), 'and', $this->where);
+                $this->_where = array($this->parseWhereArray($where), \Yana\Db\Queries\OperatorEnumeration::AND, $this->_where);
             } else {
                 $this->setWhere($where);
             }
@@ -1806,26 +1739,26 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      * @return  array
      * @ignore
      */
-    protected function getWhere()
+    protected function getWhere(): array
     {
-        if (!is_array($this->where)) {
+        if (!is_array($this->_where)) {
             return array();
         }
-        $where = $this->where;
+        $where = $this->_where;
         // automatically add profile constraint
-        if (!empty($this->profile)) {
+        if (!empty($this->_profile)) {
             if (empty($where)) {
-                $where = $this->profile;
+                $where = $this->_profile;
             } else {
-                $where = array($this->profile, 'and', $where);
+                $where = array($this->_profile, \Yana\Db\Queries\OperatorEnumeration::AND, $where);
             }
         }
         // automatically add primary key selector
-        if (!empty($this->rowId)) {
+        if (!empty($this->_rowId)) {
             if (empty($where)) {
-                $where = $this->rowId;
+                $where = $this->_rowId;
             } else {
-                $where = array($this->rowId, 'and', $where);
+                $where = array($this->_rowId, \Yana\Db\Queries\OperatorEnumeration::AND, $where);
             }
         }
         if ($this->type === \Yana\Db\Queries\TypeEnumeration::EXISTS && !empty($this->column)) {
@@ -1833,9 +1766,11 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
             foreach ($this->getColumns() as $column)
             {
                 if (empty($where)) {
-                    $where = array($column, '!=', null);
+                    $where = array($column, \Yana\Db\Queries\OperatorEnumeration::NOT_EQUAL, null);
                 } else {
-                    $where = array(array($column, '!=', null), 'and', $where);
+                    $where = array(
+                        array($column, \Yana\Db\Queries\OperatorEnumeration::NOT_EQUAL, null), \Yana\Db\Queries\OperatorEnumeration::AND, $where
+                    );
                 }
             }
             unset($column);
@@ -1861,8 +1796,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      */
     public function getLimit(): int
     {
-        assert('is_int($this->limit); // Expecting member "limit" to be an integer.');
-        return (int) $this->limit;
+        return $this->_limit;
     }
 
     /**
@@ -1877,18 +1811,17 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      *
      * @param   int  $limit  limit for this query
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when limit is not positive
-     * @return  \Yana\Db\Queries\AbstractQuery
+     * @return  $this
      */
-    protected function setLimit($limit)
+    protected function setLimit(int $limit)
     {
-        assert('is_int($limit); // Wrong argument type for argument 1. Integer expected.');
         $this->resetId();
         if ($limit < 0) {
             $message = "Limit must not be negative: '$limit'";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
         }
-        $this->limit = (int) $limit;
+        $this->_limit = $limit;
         return $this;
     }
 
@@ -1905,8 +1838,32 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      */
     public function getOffset(): int
     {
-        assert('is_int($this->offset); // Expecting member "offset" to be an integer');
-        return (int) $this->offset;
+        return $this->_offset;
+    }
+
+    /**
+     * Set an offset for this query.
+     *
+     * Note: This setting will not be part of the sql statement
+     * produced by __toString(). Use the API's $limit and
+     * $offset parameter instead when sending the query.
+     *
+     * This restriction does not apply if you use sendQuery().
+     *
+     * @param   int  $offset  offset for this query
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when offset is not positive
+     * @return  $this
+     */
+    protected function setOffset(int $offset)
+    {
+        $this->resetId();
+        if ($offset < 0) {
+            $message = "Offset must not be negative: '$offset'";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
+        }
+        $this->_offset = $offset;
+        return $this;
     }
 
     /**
@@ -1918,8 +1875,8 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
     public function toId(): string
     {
         if (!isset($this->_id)) {
-            $this->_id = serialize(array($this->type, $this->tableName, $this->column, $this->row,
-            $this->where, $this->orderBy, $this->having, $this->desc, $this->joins, $this->offset, $this->limit, $this->values));
+            $this->_id = serialize(array($this->type, $this->_tableName, $this->column, $this->_row,
+            $this->_where, $this->_orderBy, $this->having, $this->_desc, $this->joins, $this->_offset, $this->_limit, $this->values));
         }
         return $this->_id;
     }
@@ -1943,7 +1900,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      * @return  array
      * @ignore
      */
-    protected function getOldValues()
+    protected function getOldValues(): array
     {
         if (!isset($this->_oldValues)) {
             $query = new \Yana\Db\Queries\Select($this->getDatabase());
@@ -1984,18 +1941,18 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      * After the statements was successfully carried out, the old files need to be removed.
      *
      * @param   array  $files  list of files that should be deleted
-     * @return  \Yana\Db\Queries\AbstractQuery
+     * @return  $this
      * @ignore
      */
     protected function deleteFiles(array $files = array())
     {
         // abort if there is nothing to do
         if (empty($files)) {
-            return;
+            return $this;
         }
         $values = $this->getOldValues();
         if (empty($values)) {
-            return;
+            return $this;
         }
         // iterate over list of file-columns
         foreach ($files as $column)
@@ -2052,77 +2009,9 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
     /**
      * Build a SQL-query.
      *
-     * @param   string  $stmt  sql statement template
      * @return  string
      */
-    protected function toString($stmt = "")
-    {
-        /* 1. replace %TABLE% */
-        if (strpos($stmt, '%TABLE%') !== false) {
-            $table = $this->getTable();
-            if (!is_string($table)) {
-                return false;
-            }
-            $table = $this->getDatabase()->quoteId(YANA_DATABASE_PREFIX.$this->getTable());
-            $stmt = str_replace('%TABLE%', $table, $stmt);
-        }
-
-        /* 2. replace %WHERE% */
-        if (strpos($stmt, '%WHERE%') !== false) {
-            assert('!isset($where); // Cannot redeclare var $where');
-            $where = $this->getWhere();
-
-            if (is_array($where) && count($where) > 0) {
-                $where = $this->convertWhereToString($where);
-                if (!empty($where)) {
-                    $where = 'WHERE ' . $where;
-                }
-            } else {
-                $where = "";
-            }
-            if (!empty($where)) {
-                $stmt = str_replace('%WHERE%', trim($where), $stmt);
-            } else {
-                $stmt = str_replace(' %WHERE%', '', $stmt);
-            }
-            unset($where);
-        }
-
-        /* 3. replace %ORDERBY% */
-        if (strpos($stmt, '%ORDERBY%') !== false) {
-            assert('!isset($orderBy); // Cannot redeclare $orderBy');
-            $orderBy = $this->getOrderBy();
-            $desc = $this->getDescending();
-            if (is_array($orderBy) && !empty($orderBy)) {
-                assert('!isset($_orderBy); // Cannot redeclare var $_orderBy');
-                $_orderBy = 'ORDER BY ';
-                assert('!isset($i); // Cannot redeclare var $i');
-                assert('!isset($element); // Cannot redeclare var $element');
-                foreach ($orderBy as $i => $element)
-                {
-                    if (is_array($element)) {
-                        $_orderBy .= $element[0] . '.' . $element[1];
-                    } else {
-                        $_orderBy .= $this->tableName . '.' . $element;
-                    }
-                    if (!empty($desc[$i])) {
-                        $_orderBy .= ' DESC';
-                    }
-                    if (++$i < count($orderBy)) {
-                        $_orderBy .= ', ';
-                    }
-                } /* end foreach */
-                unset($i, $element); /* clean up garbage */
-                $stmt = str_replace('%ORDERBY%', $_orderBy, $stmt);
-                unset($_orderBy); /* clean up garbage */
-            } else {
-                $stmt = str_replace(' %ORDERBY%', '', $stmt);
-            }
-            unset($orderBy);
-        }
-
-        return $stmt;
-    }
+    abstract protected function toString(): string;
 
 }
 

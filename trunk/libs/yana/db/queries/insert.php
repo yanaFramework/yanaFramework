@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Queries;
 
@@ -38,7 +39,7 @@ namespace Yana\Db\Queries;
  * @package     yana
  * @subpackage  db
  */
-class Insert extends \Yana\Db\Queries\AbstractQuery
+class Insert extends \Yana\Db\Queries\AbstractQuery implements \Yana\Db\Queries\IsInsertQuery
 {
 
     /**
@@ -52,11 +53,6 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
      * @ignore
      */
     protected $column = array();
-
-    /**
-     * @var array
-     */
-    protected $profile = array();
 
     /**
      * @var array
@@ -152,7 +148,6 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
     public function resetQuery()
     {
         parent::resetQuery();
-        $this->profile = array();
         $this->values  = null;
         $this->queue   = array();
         $this->files   = array();
@@ -226,7 +221,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
                 assert('!isset($columnName); // Cannot redeclare var $columnName');
                 $columnName = $column[1];
                 $parent = $this->getParentByColumn($columnName);
-                if (false !== $parent) {
+                if ($parent > "") {
                     $this->_appendValue($parent, $columnName, $values[$columnName]);
                     unset($values[$columnName]);
                 }
@@ -244,13 +239,13 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
         $primaryKey = $table->getPrimaryKey();
 
         // copy primary key to row property
-        if ($this->expectedResult === \Yana\Db\ResultEnumeration::TABLE && isset($values[$primaryKey])) {
+        if ($this->getExpectedResult() === \Yana\Db\ResultEnumeration::TABLE && isset($values[$primaryKey])) {
             $this->setRow($values[$primaryKey]);
         }
 
         assert('!isset($isInsert); // Cannot redeclare var $isInsert');
         $isInsert = false;
-        if ($this->type === \Yana\Db\Queries\TypeEnumeration::INSERT) {
+        if ($this->getType() === \Yana\Db\Queries\TypeEnumeration::INSERT) {
             $isInsert = true;
             assert('is_array($values);');
 
@@ -262,19 +257,19 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
                 $column = $table->getColumn($primaryKey);
                 if ($column->isAutoIncrement()) {
                     /* ignore - is to be inserted automatically by database */
-                } elseif ($this->row !== '*') {
+                } elseif ($this->getRow() !== '*') {
                     // may throw exception
-                    $values[$primaryKey] = $this->_getSanitizer()->sanitizeValueByColumn($column, $this->row, $this->files);
+                    $values[$primaryKey] = $this->_getSanitizer()->sanitizeValueByColumn($column, $this->getRow(), $this->files);
                 } else {
                     $message = "Cannot insert a row without a primary key. Operation aborted.";
                     throw new \Yana\Db\Queries\Exceptions\InvalidPrimaryKeyException($message);
                 }
-            } elseif ($this->row !== '*' && strcasecmp($this->row, $values[$primaryKey]) !== 0) {
+            } elseif ($this->getRow() !== '*' && strcasecmp($this->getRow(), (string) $values[$primaryKey]) !== 0) {
                 assert('!isset($message); // Cannot redeclare $message');
                 assert('!isset($level); // Cannot redeclare $level');
                 $message = "Cannot set values. The primary key is ambigious.\n\t\t" .
                     "The primary key has been set via " . __CLASS__ . "->setRow() or " .
-                    __CLASS__ . "->setKey() to '" . $this->row . "'.\n\t\t" .
+                    __CLASS__ . "->setKey() to '" . $this->getRow() . "'.\n\t\t" .
                     "However, the primary key provided with " . __CLASS__ . "->setValues() is '" .
                     $values[$primaryKey] . "'.";
                 $level = \Yana\Log\TypeEnumeration::WARNING;
@@ -306,15 +301,15 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
                 }
                 // @codeCoverageIgnoreEnd
                 assert('!$isInsert; // May only insert rows, not tables, cells or columns');
-                if (empty($this->arrayAddress) && isset($this->column[0]) && is_array($this->column[0])) {
-                    assert('count($this->column) === 1;');
-                    assert('count($this->column[0]) === 2;');
-                    assert('isset($this->column[0][1]);');
-                    assert('$this->tableName === $this->column[0][0];');
-                    assert('$table->isColumn($this->column[0][1]);');
+                if (!$this->getArrayAddress() && isset($this->column[0]) && is_array($this->column[0])) {
+                    assert(count($this->column) === 1);
+                    assert(count($this->column[0]) === 2);
+                    assert(isset($this->column[0][1]));
+                    assert($this->getTable() === $this->column[0][0]);
+                    assert($table->isColumn($this->column[0][1]));
                     assert('!isset($column); // Cannot redeclare var $column');
                     $column = $table->getColumn($this->column[0][1]);
-                    assert('$column instanceof \Yana\Db\Ddl\Column;');
+                    assert($column instanceof \Yana\Db\Ddl\Column);
                     // check if value is valid (may throw exception)
                     $values = $this->_getSanitizer()->sanitizeValueByColumn($column, $values, $this->files);
                     unset($column);
@@ -328,10 +323,8 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
          */
         if (!$this->checkProfile($values)) {
             assert('!isset($message); // Cannot redeclare $message');
-            assert('!isset($level); // Cannot redeclare $level');
             $message = "Cannot set values. Profile constraint mismatch.";
-            $level = \Yana\Log\TypeEnumeration::WARNING;
-            throw new \Yana\Db\Queries\Exceptions\ConstraintException($message, $level);
+            throw new \Yana\Db\Queries\Exceptions\ConstraintException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
 
         /*
@@ -389,7 +382,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
      * @since   2.9.3
      * @ignore
      */
-    protected function checkProfile(&$value)
+    protected function checkProfile(&$value): bool
     {
         // table has no profile constraint
         if (!$this->currentTable()->hasProfile()) {
@@ -432,7 +425,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
             // retrieve and submit queries in queue
             $row = $this->getRow();
             // deactivate table-inhertitance (will be reverted later)
-            $prevSetting = $this->useInheritance;
+            $prevSetting = $this->isUsingInheritance();
             $this->useInheritance(false);
             $result = null;
             assert('!isset($table); // Cannot redeclare var $table');
@@ -468,7 +461,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
      * When a row is inserted, blobs associated with it need to be moved to a file-store.
      *
      * @param   array  $files  list of files to upload
-     * @return  \Yana\Db\Queries\Insert
+     * @return  $this
      * @ignore
      */
     protected function uploadFiles(array $files = array())
@@ -497,48 +490,12 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
     /**
      * Build a SQL-query.
      *
-     * @param   string $stmt sql statement
      * @return  string
      */
-    protected function toString($stmt = "INSERT INTO %TABLE% (%KEYS%) VALUES (%VALUES%)")
+    protected function toString(): string
     {
-        /*
-         * replace %KEYS% and %VALUES%
-         *
-         * Note: this is done here, since all other types
-         * of statements do not have these token.
-         */
-        if (strpos($stmt, '%KEYS%') !== false) {
-            if (!is_array($this->values) || count($this->values) === 0) {
-                return "";
-            }
-            assert('!isset($keys); // Cannot redeclare $keys');
-            $keys = "";
-            // quote id's to avoid conflicts with reserved keywords
-            assert('!isset($value); // Cannot redeclare var $value');
-            foreach (array_keys($this->values) as $value)
-            {
-                if ($keys != "") {
-                    $keys .= ", ";
-                }
-                $keys .= $this->getDatabase()->quoteId($value);
-            }
-            unset($value);
-
-            assert('!isset($valueConverter); // Cannot redeclare $valueConverter');
-            $valueConverter = new \Yana\Db\Helpers\ValueConverter($this->getDatabase()->getDBMS());
-            assert('!isset($table); // Cannot redeclare $table');
-            $table = $this->getDatabase()->getSchema()->getTable($this->getTable());
-            assert('!isset($values); // Cannot redeclare $values');
-            $values = $valueConverter->convertRowToString($table, \array_change_key_case($this->values, CASE_LOWER));
-            unset($table, $valueConverter);
-
-            $stmt = str_replace('%KEYS%', $keys, $stmt);
-            $stmt = str_replace('%VALUES%', implode(", ", $values), $stmt);
-            unset($keys, $values);
-        }
-
-        return parent::toString($stmt);
+        $serializer = new \Yana\Db\Queries\QuerySerializer();
+        return $serializer->fromInsertQuery($this);
     }
 
 }

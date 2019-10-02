@@ -308,7 +308,7 @@ class NullConnection extends \Yana\Core\Object implements \Yana\Db\IsConnection
      * @param   mixed  $value  name of database object
      * @return  string
      */
-    public function quoteId($value)
+    public function quoteId($value): string
     {
         if ($this->_needsQuoting($value)) {
             switch ($this->getDBMS())
@@ -332,6 +332,18 @@ class NullConnection extends \Yana\Core\Object implements \Yana\Db\IsConnection
         } else {
             return $value;
         }
+    }
+
+    /**
+     * Returns the quoted database identifier as a string.
+     *
+     * @param   mixed  $value  name of database object
+     * @return  string
+     */
+    public function quote($value): string
+    {
+        $valueConverter = new \Yana\Db\Helpers\ValueConverter();
+        return $valueConverter->convertValueToString($value, \Yana\Db\Ddl\ColumnTypeEnumeration::STRING);
     }
 
     /**

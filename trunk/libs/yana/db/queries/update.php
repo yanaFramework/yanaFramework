@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Queries;
 
@@ -38,7 +39,7 @@ namespace Yana\Db\Queries;
  * @package     yana
  * @subpackage  db
  */
-class Update extends \Yana\Db\Queries\Insert
+class Update extends \Yana\Db\Queries\Insert implements \Yana\Db\Queries\IsUpdateQuery
 {
 
     /**
@@ -68,14 +69,14 @@ class Update extends \Yana\Db\Queries\Insert
      * An E_USER_WARNING is issued if the second argument is
      * provided but the targeted column is not of type 'array'.
      *
-     * @param   string  $column         column
-     * @return  bool
+     * @param   string  $column  column name or '*' for 'all'
+     * @return  $this
      * @throws  \Yana\Db\Queries\Exceptions\InvalidSyntaxException   if table has not been initialized
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException       if a given argument is invalid
      * @throws  \Yana\Db\Queries\Exceptions\ColumnNotFoundException  if the given column is not found in the table
-     * @return  \Yana\Db\Queries\Update
+     * @return  $this
      */
-    public function setColumn($column = '*')
+    public function setColumn(string $column = '*')
     {
         parent::setColumn($column);
         return $this;
@@ -93,10 +94,10 @@ class Update extends \Yana\Db\Queries\Insert
      * If the argument $i is not provided, the function returns
      * the first column.
      *
-     * @param   int  $i  index of column to get
+     * @param   scalar  $i  index of column to get
      * @return  string
      */
-    public function getColumn($i = 0)
+    public function getColumn($i = null): string
     {
         return parent::getColumn($i);
     }
@@ -108,10 +109,9 @@ class Update extends \Yana\Db\Queries\Insert
      *
      * @return  string
      */
-    public function getArrayAddress()
+    public function getArrayAddress(): string
     {
-        assert('is_string($this->arrayAddress);');
-        return $this->arrayAddress;
+        return parent::getArrayAddress();
     }
 
     /**
@@ -120,12 +120,10 @@ class Update extends \Yana\Db\Queries\Insert
      * @param   array  $orderBy  list of column names
      * @param   array  $desc     sort descending (true=yes, false=no)
      * @throws  \Yana\Core\Exceptions\NotFoundException  when a column or table does not exist
-     * @return  \Yana\Db\Queries\Update
+     * @return  $this
      */
-    public function setOrderBy($orderBy, $desc = array())
+    public function setOrderBy(array $orderBy, array $desc = array())
     {
-        settype($orderBy, 'array');
-        settype($desc, 'array');
         parent::setOrderBy($orderBy, $desc);
         return $this;
     }
@@ -138,7 +136,7 @@ class Update extends \Yana\Db\Queries\Insert
      *
      * @return  array
      */
-    public function getOrderBy()
+    public function getOrderBy(): array
     {
         return parent::getOrderBy();
     }
@@ -148,7 +146,7 @@ class Update extends \Yana\Db\Queries\Insert
      *
      * @return  array
      */
-    public function getDescending()
+    public function getDescending(): array
     {
         return parent::getDescending();
     }
@@ -194,11 +192,30 @@ class Update extends \Yana\Db\Queries\Insert
      * @param   array  $where  where clause
      * @throws  \Yana\Core\Exceptions\NotFoundException         when a column is not found
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the where-clause contains invalid values
-     * @return  \Yana\Db\Queries\Update
+     * @return  $this
      */
     public function setWhere(array $where = array())
     {
         parent::setWhere($where);
+        return $this;
+    }
+
+    /**
+     * add where clause
+     *
+     * The syntax is as follows:
+     * array(0=>column,1=>operator,2=>value)
+     * Where "operator" can be one of the following:
+     * '=', 'REGEXP', 'LIKE', '<', '>', '!=', '<=', '>='
+     *
+     * @param   array  $where  where clause
+     * @throws  \Yana\Core\Exceptions\NotFoundException         when a column is not found
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the having-clause contains invalid values
+     * @return  $this
+     */
+    public function addWhere(array $where)
+    {
+        parent::addWhere($where);
         return $this;
     }
 
@@ -209,7 +226,7 @@ class Update extends \Yana\Db\Queries\Insert
      *
      * @return  array
      */
-    public function getWhere()
+    public function getWhere(): array
     {
         return parent::getWhere();
     }
@@ -223,7 +240,7 @@ class Update extends \Yana\Db\Queries\Insert
      * @ignore
      * @throws  \Yana\Core\Exceptions\Security\InsufficientRightsException  when the user may not access the profile
      */
-    protected function checkProfile(&$value)
+    protected function checkProfile(&$value): bool
     {
         if (!$this->currentTable()->hasProfile()) {
             return true;
@@ -304,7 +321,7 @@ class Update extends \Yana\Db\Queries\Insert
      *
      * @return  array
      */
-    public function getOldValues()
+    public function getOldValues(): array
     {
         return parent::getOldValues();
     }
@@ -319,10 +336,8 @@ class Update extends \Yana\Db\Queries\Insert
     public function sendQuery(): \Yana\Db\IsResult
     {
         assert('!isset($message); // Cannot redeclare $message');
-        assert('!isset($level); // Cannot redeclare $level');
-        $message = "Updating entry '{$this->tableName}.{$this->row}'.";
-        $level = \Yana\Log\TypeEnumeration::INFO;
-        \Yana\Log\LogManager::getLogger()->addLog($message, $level, $this->getOldValues());
+        $message = "Updating entry '" . $this->getTable() . "." . $this->getRow() . "'.";
+        \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::INFO, $this->getOldValues());
 
         // send query
         return parent::sendQuery();
@@ -331,67 +346,12 @@ class Update extends \Yana\Db\Queries\Insert
     /**
      * Build a SQL-query.
      *
-     * @param   string $stmt sql statement
      * @return  string
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if the query is invalid or could not be parsed
      */
-    protected function toString($stmt = "UPDATE %TABLE% SET %SET% %WHERE%")
+    protected function toString(): string
     {
-        /*
-         * replace %SET%
-         *
-         * Note: this is done here, since all other types
-         * of statements do not have this token.
-         */
-        if (strpos($stmt, '%SET%') !== false) {
-            assert('!isset($set); // Cannot redeclare $set');
-            $set = "";
-            if ($this->expectedResult === \Yana\Db\ResultEnumeration::ROW) {
-                if (is_array($this->values)) {
-                    assert('!isset($column); // Cannot redeclare $column');
-                    assert('!isset($value); // Cannot redeclare $value');
-                    foreach ($this->values as $column => $value)
-                    {
-                        if (is_null($value)) {
-                            continue;
-                        }
-                        if ($set !== '') {
-                            $set .= ', ';
-                        }
-                        if (is_array($value)) {
-                            $set .= $this->getDatabase()->quoteId($this->getTable()) . '.' . $this->getDatabase()->quoteId($column)
-                                . ' = ' . $this->getDatabase()->quote(json_encode($value));
-                        } else {
-                            $set .= $this->getDatabase()->quoteId($this->getTable()) . '.' . $this->getDatabase()->quoteId($column)
-                                . ' = ' . $this->getDatabase()->quote($value);
-                        }
-                    }
-                    unset($column, $value);
-                } else {
-                    assert('!isset($message); // Cannot redeclare $message');
-                    assert('!isset($level); // Cannot redeclare $level');
-                    $message = "No valid values provided in statement: " . $stmt;
-                    $level = \Yana\Log\TypeEnumeration::WARNING;
-                    throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
-                }
-            } elseif ($this->expectedResult === \Yana\Db\ResultEnumeration::CELL) {
-                assert('!isset($values); // Cannot redeclare $values');
-                $values = is_scalar($this->values) ? (string) $this->values : json_encode($this->values);
-                $set = $this->getDatabase()->quoteId($this->getTable()) . '.' . $this->getDatabase()->quoteId($this->getColumn()) .
-                    ' = ' . $this->getDatabase()->quote($values);
-                unset($values);
-            } else {
-                assert('!isset($message); // Cannot redeclare $message');
-                assert('!isset($level); // Cannot redeclare $level');
-                $message = "No row or cell selected for update in statement: " . $stmt;
-                $level = \Yana\Log\TypeEnumeration::WARNING;
-                throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
-            }
-            $stmt = str_replace('%SET%', $set, $stmt);
-            unset($set);
-        }
-
-        return parent::toString($stmt);
+        $serializer = new \Yana\Db\Queries\QuerySerializer();
+        return $serializer->fromUpdateQuery($this);
     }
 
 }

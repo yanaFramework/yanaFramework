@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Queries;
 
@@ -57,7 +58,7 @@ namespace Yana\Db\Queries;
  * @package     yana
  * @subpackage  db
  */
-class Select extends \Yana\Db\Queries\SelectCount
+class Select extends \Yana\Db\Queries\SelectCount implements \Yana\Db\Queries\IsSelectQuery
 {
 
     /**
@@ -89,7 +90,6 @@ class Select extends \Yana\Db\Queries\SelectCount
     {
         parent::resetQuery();
         $this->having = array();
-        $this->offset = 0;
         return $this;
     }
 
@@ -155,7 +155,7 @@ class Select extends \Yana\Db\Queries\SelectCount
         if (empty($columns)) {
 
             $this->column = array();
-            if ($this->row !== '*') {
+            if ($this->getRow() !== '*') {
                 $this->expectedResult = \Yana\Db\ResultEnumeration::ROW;
 
             } elseif ($this->expectedResult !== \Yana\Db\ResultEnumeration::ROW) {
@@ -180,7 +180,7 @@ class Select extends \Yana\Db\Queries\SelectCount
          */
 
         // error - wrong order of commands, need to set up table first
-        if (empty($this->tableName)) {
+        if ($this->getTable() === "") {
             throw new \Yana\Db\Queries\Exceptions\InvalidSyntaxException("Cannot set columns - need to set table first!");
         }
 
@@ -189,12 +189,12 @@ class Select extends \Yana\Db\Queries\SelectCount
         assert('!isset($alias); // Cannot redeclare var $alias');
         foreach ($columns as $alias => $column)
         {
-            $alias = mb_strtoupper($alias);
+            $alias = mb_strtoupper((string) $alias);
             $result[$alias] = $this->_getColumnArray($column); // throws exception
         }
         $this->column = $result;
 
-        $this->expectedResult = ($this->row === '*') ? \Yana\Db\ResultEnumeration::TABLE : \Yana\Db\ResultEnumeration::ROW;
+        $this->expectedResult = ($this->getRow() === '*') ? \Yana\Db\ResultEnumeration::TABLE : \Yana\Db\ResultEnumeration::ROW;
         return $this;
     }
 
@@ -210,17 +210,12 @@ class Select extends \Yana\Db\Queries\SelectCount
      *
      * @param   string  $column  column name
      * @param   string  $alias   optional column alias
-     * @name    DbQuery::setColumns()
-     * @see     DbQuery::setColumn()
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if a given argument is invalid
      * @throws  \Yana\Core\Exceptions\NotFoundException         if the given table or column is not found
      * @return  $this 
      */
-    public function addColumn($column, $alias = "")
+    public function addColumn(string $column, string $alias = "")
     {
-        assert('is_string($column); // Wrong argument type argument 1. String expected');
-        assert('is_string($alias); // Wrong argument type argument 2. String expected');
-
         // reset query id
         $this->resetId();
 
@@ -233,25 +228,27 @@ class Select extends \Yana\Db\Queries\SelectCount
             $this->column[$alias] = $columnDefinition;
         }
 
-        $this->expectedResult = ($this->row === '*') ? \Yana\Db\ResultEnumeration::TABLE : \Yana\Db\ResultEnumeration::ROW;
+        $this->expectedResult = ($this->getRow() === '*') ? \Yana\Db\ResultEnumeration::TABLE : \Yana\Db\ResultEnumeration::ROW;
         return $this;
     }
 
     /**
-     * get column array
+     * Get column array.
      *
      * This takes a column name like "table.column" or just "column", checks validity and
      * returns in both cases: array("table", "column").
      *
+     * If the input already is an array, it just returns the array as is.
+     *
      * When the table name is missing, it is determined automatically, unless the column name
      * is ambigious.
      *
-     * @param   strinng  $column  column name
+     * @param   string|array  $column  column name
      * @return  array
      * @throws  \Yana\Db\Queries\Exceptions\TableNotFoundException   if the table was not found
      * @throws  \Yana\Db\Queries\Exceptions\ColumnNotFoundException  if the column was not found
      */
-    private function _getColumnArray($column)
+    private function _getColumnArray($column): array
     {
         if (is_array($column)) {
             return $column;
@@ -261,8 +258,8 @@ class Select extends \Yana\Db\Queries\SelectCount
             list($tableName, $column) = explode('.', $column);
         } else {
             $tableName = $this->getParentByColumn($column);
-            if ($tableName === false) {
-                $tableName = $this->tableName;
+            if (!$tableName) {
+                $tableName = $this->getTable();
             }
         }
 
@@ -298,7 +295,7 @@ class Select extends \Yana\Db\Queries\SelectCount
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if a given argument is invalid
      * @return  $this
      */
-    public function setArrayAddress($arrayAddress = "")
+    public function setArrayAddress(string $arrayAddress = "")
     {
         parent::setArrayAddress($arrayAddress);
         return $this;
@@ -311,10 +308,9 @@ class Select extends \Yana\Db\Queries\SelectCount
      *
      * @return  string
      */
-    public function getArrayAddress()
+    public function getArrayAddress(): string
     {
-        assert('is_string($this->arrayAddress);');
-        return $this->arrayAddress;
+        return parent::getArrayAddress();
     }
 
     /**
@@ -340,7 +336,7 @@ class Select extends \Yana\Db\Queries\SelectCount
      *
      * @return  array
      */
-    public function getOrderBy()
+    public function getOrderBy(): array
     {
         return parent::getOrderBy();
     }
@@ -350,7 +346,7 @@ class Select extends \Yana\Db\Queries\SelectCount
      *
      * @return  array
      */
-    public function getDescending()
+    public function getDescending(): array
     {
         return parent::getDescending();
     }
@@ -437,16 +433,15 @@ class Select extends \Yana\Db\Queries\SelectCount
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException       when the having-clause contains invalid values
      * @return  $this
      */
-    public function addHaving(array $having, $isMandatory = true)
+    public function addHaving(array $having, bool $isMandatory = true)
     {
-        assert('is_bool($isMandatory); // Wrong type for argument 2. Boolean expected');
         // clear cached query id
         $this->resetId();
         $having = $this->parseWhereArray($having); // throws exception
         if ($isMandatory) {
-            $operator = 'and';
+            $operator = \Yana\Db\Queries\OperatorEnumeration::AND;
         } else {
-            $operator = 'or';
+            $operator = \Yana\Db\Queries\OperatorEnumeration::OR;
         }
         if (empty($this->having)) {
             $this->having = $having;
@@ -465,7 +460,7 @@ class Select extends \Yana\Db\Queries\SelectCount
      *
      * @return  array
      */
-    public function getHaving()
+    public function getHaving(): array
     {
         assert('is_array($this->having);');
         return $this->having;
@@ -485,7 +480,7 @@ class Select extends \Yana\Db\Queries\SelectCount
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when limit is not positive
      * @return  $this
      */
-    public function setLimit($limit)
+    public function setLimit(int $limit)
     {
         parent::setLimit($limit); // throws exception
         return $this;
@@ -504,50 +499,20 @@ class Select extends \Yana\Db\Queries\SelectCount
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when offset is not positive
      * @return  $this
      */
-    public function setOffset($offset)
+    public function setOffset(int $offset)
     {
-        assert('is_int($offset); // Wrong argument type for argument 1. Integer expected.');
-        $this->resetId();
-        if ($offset < 0) {
-            $message = "Offset must not be negative: '$offset'";
-            $level = \Yana\Log\TypeEnumeration::WARNING;
-            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
-        }
-        $this->offset = (int) $offset;
-        return $this;
+        return parent::setOffset($offset);
     }
 
     /**
      * Build a SQL-query.
      *
-     * @param   string $stmt sql statement
      * @return  string
      */
-    protected function toString($stmt = "SELECT %COLUMN% FROM %TABLE% %WHERE% %HAVING% %ORDERBY%")
+    protected function toString(): string
     {
-        /* replace %HAVING% */
-        if (strpos($stmt, '%HAVING%') !== false) {
-            $having = $this->getHaving();
-
-            if (is_array($having) && count($having) > 0) {
-                $having = $this->convertWhereToString($having);
-                if (!empty($having)) {
-                    $having = 'HAVING ' . $having;
-                }
-            } else {
-                $having = "";
-            }
-            assert('is_string($having); // Unexpected value $having');
-            if (!empty($having)) {
-                $stmt = str_replace('%HAVING%', trim($having), $stmt);
-            } else {
-                $stmt = str_replace(' %HAVING%', '', $stmt);
-            }
-            unset($having);
-        }
-
-        return parent::toString($stmt);
-
+        $serializer = new \Yana\Db\Queries\QuerySerializer();
+        return $serializer->fromSelectQuery($this);
     }
 
     /**
@@ -581,7 +546,7 @@ class Select extends \Yana\Db\Queries\SelectCount
      * @name    \Yana\Db\Queries\Select::toCSV()
      * @throws  \Yana\Core\Exceptions\InvalidValueException  if the database query is incomplete or invalid
      */
-    public function toCSV($colSep = ';', $rowSep = "\n", $hasHeader = true)
+    public function toCSV(string $colSep = ';', string $rowSep = "\n", bool $hasHeader = true): string
     {
         assert('is_string($colSep); // Wrong argument type for argument 1. String expected.');
         assert('is_string($rowSep); // Wrong argument type for argument 2. String expected.');
@@ -692,7 +657,7 @@ class Select extends \Yana\Db\Queries\SelectCount
      * @return  array
      * @see     \Yana\Db\Queries\Select::toCSV()
      */
-    public function getColumnTitles()
+    public function getColumnTitles(): array
     {
         $dbSchema = $this->getDatabase()->getSchema();
         $titles = array(); // array of column titles
@@ -804,7 +769,7 @@ class Select extends \Yana\Db\Queries\SelectCount
      *
      * @return  int
      */
-    public function countResults()
+    public function countResults(): int
     {
         return $this->sendQuery()->countRows();
     }
@@ -847,7 +812,7 @@ class Select extends \Yana\Db\Queries\SelectCount
                 case \Yana\Db\ResultEnumeration::TABLE:
                     assert('!isset($rowId); // Cannot redeclare var $rowId');
                     if (isset($row[$id])) {
-                        $rowId = mb_strtoupper($row[$id]);
+                        $rowId = mb_strtoupper((string) $row[$id]);
                     } else {
                         $rowId = $i;
                     }
@@ -925,10 +890,10 @@ class Select extends \Yana\Db\Queries\SelectCount
                 switch ($returnedType)
                 {
                     case \Yana\Db\ResultEnumeration::TABLE:
-                        $refKey[mb_strtoupper($alias)] = $value;
+                        $refKey[mb_strtoupper((string) $alias)] = $value;
                     break;
                     case \Yana\Db\ResultEnumeration::ROW:
-                        $output[mb_strtoupper($alias)] = $value;
+                        $output[mb_strtoupper((string) $alias)] = $value;
                     break;
                     case \Yana\Db\ResultEnumeration::CELL:
                         $output = $value;

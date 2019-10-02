@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Queries;
 
@@ -57,7 +58,7 @@ namespace Yana\Db\Queries;
  * @package     yana
  * @subpackage  db
  */
-class SelectCount extends \Yana\Db\Queries\SelectExist
+class SelectCount extends \Yana\Db\Queries\SelectExist implements \Yana\Db\Queries\IsCountQuery
 {
 
     /**
@@ -77,9 +78,9 @@ class SelectCount extends \Yana\Db\Queries\SelectExist
      * @throws  \Yana\Db\Queries\Exceptions\InvalidSyntaxException   if table has not been initialized
      * @throws  \Yana\Db\Queries\Exceptions\ColumnNotFoundException  if the given column is not found in the table
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException       if a given argument is invalid
-     * @return  \Yana\Db\Queries\SelectCount 
+     * @return  $this
      */
-    public function setColumn($column = '*', $alias = "")
+    public function setColumn(string $column = '*', string $alias = "")
     {
         parent::setColumnWithAlias($column, $alias);
         return $this;
@@ -97,10 +98,10 @@ class SelectCount extends \Yana\Db\Queries\SelectExist
      * If the argument $i is not provided, the function returns
      * the first column.
      *
-     * @param   int     $i  index of column to get
+     * @param   scalar  $i  index of column to get
      * @return  string
      */
-    public function getColumn($i = null)
+    public function getColumn($i = null): string
     {
         return parent::getColumn($i);
     }
@@ -112,7 +113,7 @@ class SelectCount extends \Yana\Db\Queries\SelectExist
      *
      * @return  array
      */
-    public function getColumns()
+    public function getColumns(): array
     {
         return parent::getColumns();
     }
@@ -120,47 +121,12 @@ class SelectCount extends \Yana\Db\Queries\SelectExist
     /**
      * Build a SQL-query.
      *
-     * @param   string  $stmt  sql statement template
      * @return  string
      */
-    protected function toString($stmt = "SELECT count(%COLUMN%) FROM %TABLE% %WHERE%")
+    protected function toString(): string
     {
-        /* replace %COLUMN% */
-        if ($this->getColumn() === '*') {
-            $stmt = str_replace('%COLUMN%', '*', $stmt);
-
-        } else {
-            assert('!isset($column); // Cannot redeclare $column');
-            $column = "";
-
-            assert('!isset($alias); // Cannot redeclare var $alias');
-            assert('!isset($item); // Cannot redeclare var $item');
-            foreach ($this->getColumns() as $alias => $item)
-            {
-                if (is_array($item)) {
-                    if ($column !== "") {
-                        $column .= ', ';
-                    }
-                    $column .= $this->getDatabase()->quoteId(YANA_DATABASE_PREFIX.$item[0]) . '.' . $this->getDatabase()->quoteId($item[1]);
-                    if (is_string($alias)) {
-                        $column .= " as " .$this->getDatabase()->quoteId($alias);
-                    }
-                    /* When selecting a column, the framework automaticall adds the primary key as second column.
-                     * This second column must be dropped for sub-queries or otherwise the query will fail.
-                     */
-                    if ($this->isSubQuery && $this->getExpectedResult() === \Yana\Db\ResultEnumeration::COLUMN) {
-                        break;
-                    }
-                }
-            }
-            unset($alias, $item);
-
-            $stmt = str_replace('%COLUMN%', $column, $stmt);
-            unset($column);
-        }
-
-        return parent::toString($stmt);
-
+        $serializer = new \Yana\Db\Queries\QuerySerializer();
+        return $serializer->fromCountQuery($this);
     }
 
     /**
@@ -171,7 +137,7 @@ class SelectCount extends \Yana\Db\Queries\SelectExist
      *
      * @return  bool
      */
-    public function doesExist()
+    public function doesExist(): bool
     {
         return $this->countResults() > 0;
     }
@@ -184,7 +150,7 @@ class SelectCount extends \Yana\Db\Queries\SelectExist
      *
      * @return  int
      */
-    public function countResults()
+    public function countResults(): int
     {
         try {
             

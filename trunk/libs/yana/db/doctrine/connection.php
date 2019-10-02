@@ -39,7 +39,7 @@ class Connection extends \Yana\Db\AbstractConnection
     /**
      * @var  \Yana\Db\IsDriver
      */
-    private $_connection = null;
+    private $_driver = null;
 
     /**
      * @var  array
@@ -83,7 +83,7 @@ class Connection extends \Yana\Db\AbstractConnection
      */
     protected function _setConnection(\Doctrine\DBAL\Connection $connection)
     {
-        $this->_connection = new \Yana\Db\Doctrine\Driver($connection);
+        $this->_driver = new \Yana\Db\Doctrine\Driver($connection);
         return $this;
     }
 
@@ -134,7 +134,7 @@ class Connection extends \Yana\Db\AbstractConnection
         {
             case !$anotherObject instanceof $this:
             case !parent::equals($anotherObject):
-            case !$this->_connection->equals($anotherObject->_connection):
+            case !$this->_driver->equals($anotherObject->_driver):
                 return false;
         }
         return true;
@@ -182,7 +182,7 @@ class Connection extends \Yana\Db\AbstractConnection
             throw new \Yana\Db\Queries\Exceptions\SecurityException($message);
         }
 
-        $connection = $this->_getConnection();
+        $connection = $this->_getDriver();
         $result = $connection->sendQueryString($sqlStmt, $limit, $offset);
         assert($result instanceof \Yana\Db\IsResult);
 
@@ -310,7 +310,7 @@ class Connection extends \Yana\Db\AbstractConnection
      * @return  string
      * @ignore
      */
-    public function quoteId($value)
+    public function quoteId($value): string
     {
         assert('is_string($value); // Wrong argument type for argument 1. String expected.');
         $value = (string) $value;
@@ -335,7 +335,7 @@ class Connection extends \Yana\Db\AbstractConnection
             case \Yana\Db\DriverEnumeration::MYSQL:
             case \Yana\Db\DriverEnumeration::POSTGRESQL:
             case \Yana\Db\DriverEnumeration::MSSQL:
-                return $this->_getConnection()->quoteIdentifier($value);
+                return $this->_getDriver()->quoteIdentifier($value);
 
             /* quote only where necessary
              *
@@ -343,7 +343,7 @@ class Connection extends \Yana\Db\AbstractConnection
              */
             default:
                 if (strpos($value, ' ') !== false || $this->_getSqlKeywordChecker()->isSqlKeyword($value) === true) {
-                    return $this->_getConnection()->quoteIdentifier($value);
+                    return $this->_getDriver()->quoteIdentifier($value);
                 }
 
                 return $value;
@@ -356,15 +356,15 @@ class Connection extends \Yana\Db\AbstractConnection
      *
      * @return  \Yana\Db\IsDriver
      */
-    protected function _getConnection()
+    protected function _getDriver(): \Yana\Db\IsDriver
     {
-        if (!isset($this->_connection)) {
+        if (!isset($this->_driver)) {
             // @codeCoverageIgnoreStart
             $dbServer = new \Yana\Db\Doctrine\ConnectionFactory($this->_dsn);
             $this->_setConnection($dbServer->getConnection());
             // @codeCoverageIgnoreEnd
         }
-        return $this->_connection;
+        return $this->_driver;
     }
 
 }

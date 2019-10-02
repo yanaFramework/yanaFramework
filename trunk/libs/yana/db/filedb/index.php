@@ -81,20 +81,19 @@ class Index extends \Yana\Core\Object
     /**
      * Get cached indexes for 1 column.
      *
-     * Returns NULL if the column is not stored.
+     * Returns an empty array if the column is not stored.
      *
-     * @param   string $column name
+     * @param   string  $column  name
      * @return  array
      */
-    protected function getColumnValues($column)
+    protected function getColumnValues(string $column): array
     {
-        assert('is_string($column); // Wrong argument type argument 1. String expected');
         $indexes = $this->getVars();
         if (isset($indexes[$column])) {
             return $indexes[$column];
+
         } else {
-            $index = null;
-            return $index;
+            return array();
         }
     }
 
@@ -171,7 +170,7 @@ class Index extends \Yana\Core\Object
         }
 
         assert('$this->_table->isColumn($column); // No such column: ' . $column);
-        $primaryKey = $this->_table->getPrimaryKey();
+        $primaryKey = \mb_strtoupper($this->_table->getPrimaryKey());
 
         /* no need to index primary key, it is an index by itself */
         if (strcasecmp($primaryKey, $column) === 0) {
@@ -182,7 +181,7 @@ class Index extends \Yana\Core\Object
         $index = $this->getColumnValues($column);
 
         /* create / recreate index */
-        if (empty($update) || is_null($index)) {
+        if (empty($update) || empty($index)) {
 
             $dataset = $this->_data->getVar($primaryKey);
             // table is empty
@@ -193,7 +192,7 @@ class Index extends \Yana\Core\Object
             // target column provided
             if (!empty($update)) {
                 assert('!isset($updateSet); // Cannot redeclar var $updateSet');
-                $updateSet = array(mb_strtoupper($update[0]) => array($column => $update[1]));
+                $updateSet = array(mb_strtoupper((string) $update[0]) => array($column => $update[1]));
                 $dataset = \Yana\Util\Hashtable::merge($dataset, $updateSet);
                 unset($updateSet);
             }
@@ -202,7 +201,7 @@ class Index extends \Yana\Core\Object
         /* update index */
         } else {
 
-            $dataset = array(mb_strtoupper($update[0]) => array($column => $update[1]));
+            $dataset = array(mb_strtoupper((string) $update[0]) => array($column => $update[1]));
             $data = $index;
             if (!is_array($data)) {
                 $data = array();
@@ -215,7 +214,7 @@ class Index extends \Yana\Core\Object
         {
             /* NULL values are to be ignored */
             if (isset($row[$column])) {
-                $key = mb_strtoupper($row[$column]);
+                $key = mb_strtoupper((string) $row[$column]);
                 if (isset($data[$key])) {
                     if (is_array($data[$key])) {
                         array_push($data, $value);
@@ -292,28 +291,43 @@ class Index extends \Yana\Core\Object
         assert('is_string($column); // Wrong argument type for argument 1. String expected.');
         assert('is_null($value) || is_scalar($value); // Wrong argument type for argument 2. Scalar expected.');
 
-        $column = mb_strtoupper("$column");
-        assert('!isset($index); // Cannot redeclare var $index');
-        $index = $this->getColumnValues($column);
-        if (!is_array($index)) {
+        $index = $this->_getVar($column, $value);
+        if (count($index) === 0) {
             throw new \Yana\Core\Exceptions\NotFoundException(
                 "SQL syntax error. No such index '$column' in table '" . $this->_table->getName() . "'.",
                 \Yana\Log\TypeEnumeration::WARNING
             );
         }
+        return $index;
+    }
+
+    private function _getVar(string $column, $value = null)
+    {
+        assert('is_null($value) || is_scalar($value); // Wrong argument type for argument 2. Scalar expected.');
+
+        $column = mb_strtoupper("$column");
+        assert('!isset($index); // Cannot redeclare var $index');
+        $index = $this->getColumnValues($column);
+
         if (is_null($value)) {
             return $index;
         } else {
-            $value = mb_strtoupper("$value");
-            if (isset($index[$value])) {
-                return $index[$value];
-            } else {
-                throw new \Yana\Core\Exceptions\NotFoundException(
-                    "SQL syntax error. No such index '$column' in table '" . $this->_table->getName() . "'.",
-                    \Yana\Log\TypeEnumeration::WARNING
-                );
-            }
+            $value = is_scalar($value) ? mb_strtoupper((string) $value) : json_encode($value);
+            return isset($index[$value]) ? $index[$value] : array();
         }
+    }
+
+    /**
+     * Returns bool(true) if the column and value exist in the index.
+     *
+     * @param   string  $column column name
+     * @param   scalar  $value  value
+     * @return  bool
+     */
+    public function hasVar(string $column, $value = null): bool
+    {
+        $index = $this->_getVar($column, $value);
+        return count($index) > 0;
     }
 
     /**

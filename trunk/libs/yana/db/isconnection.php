@@ -202,7 +202,15 @@ interface IsConnection
      * @param   mixed  $value  name of database object
      * @return  string
      */
-    public function quoteId($value);
+    public function quoteId($value): string;
+
+    /**
+     * Returns the quoted value as a string.
+     *
+     * @param   mixed  $value  name of database object
+     * @return  string
+     */
+    public function quote($value): string;
 
 }
 

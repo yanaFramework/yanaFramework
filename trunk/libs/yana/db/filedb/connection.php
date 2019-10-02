@@ -93,7 +93,7 @@ class Connection extends \Yana\Db\AbstractConnection
      * @return  string
      * @ignore
      */
-    public function quoteId($value)
+    public function quoteId($value): string
     {
         return (string) $value;
     }
@@ -117,7 +117,7 @@ class Connection extends \Yana\Db\AbstractConnection
         assert('is_int($limit) && $limit >= 0; // Invalid argument $limit. Must be a positive integer.');
 
         // send query to database
-        $connection = $this->_getConnection();
+        $connection = $this->_getDriver();
         return $connection->sendQueryString($sqlStmt, $limit, $offset); // may throw exception
     }
 
@@ -130,7 +130,7 @@ class Connection extends \Yana\Db\AbstractConnection
      */
     public function sendQueryObject(\Yana\Db\Queries\AbstractQuery $query)
     {
-        $connection = $this->_getConnection();
+        $connection = $this->_getDriver();
         return $connection->sendQueryObject($query); // may throw exception
     }
 
@@ -140,7 +140,7 @@ class Connection extends \Yana\Db\AbstractConnection
      * @return  \Yana\Db\FileDb\Driver
      * @ignore
      */
-    protected function _getConnection()
+    protected function _getDriver(): \Yana\Db\IsDriver
     {
         if (!isset($this->_database)) {
             $this->_database = new \Yana\Db\FileDb\Driver(new \Yana\Db\Queries\Parser($this));
@@ -153,10 +153,10 @@ class Connection extends \Yana\Db\AbstractConnection
      * Set database connection.
      *
      * @param   \Yana\Db\IsDriver  $driver
-     * @return  self
+     * @return  $this
      * @ignore
      */
-    protected function _setConnection(\Yana\Db\IsDriver $driver)
+    protected function _setDriver(\Yana\Db\IsDriver $driver)
     {
         $this->_database = $driver;
         return $this;

@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Queries;
 
@@ -57,7 +58,7 @@ namespace Yana\Db\Queries;
  * @package     yana
  * @subpackage  db
  */
-class SelectExist extends \Yana\Db\Queries\AbstractQuery
+class SelectExist extends \Yana\Db\Queries\AbstractQuery implements \Yana\Db\Queries\IsExistsQuery
 {
 
     /**
@@ -126,7 +127,7 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery
      * @param   array  $where  where clause
      * @throws  \Yana\Core\Exceptions\NotFoundException         when a column is not found
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the having-clause contains invalid values
-     * @return  \Yana\Db\Queries\SelectExist 
+     * @return  $this
      */
     public function addWhere(array $where)
     {
@@ -139,7 +140,7 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery
      *
      * @return  array
      */
-    public function getWhere()
+    public function getWhere(): array
     {
         return parent::getWhere();
     }
@@ -159,9 +160,9 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery
      * @param   string $foreignKey       name of the foreign key in source table
      *                                   (when omitted the API will look up the key in the schema file)
      * @throws  \Yana\Core\Exceptions\NotFoundException  if a provided table or column is not found
-     * @return  \Yana\Db\Queries\SelectExist
+     * @return  $this
      */
-    public function setInnerJoin($joinedTableName, $targetKey = null, $sourceTableName = null, $foreignKey = null)
+    public function setInnerJoin(string $joinedTableName, string $targetKey = null, string $sourceTableName = null, string $foreignKey = null)
     {
         parent::setJoin($joinedTableName, $targetKey, $sourceTableName, $foreignKey, false);
         return $this;
@@ -176,10 +177,10 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery
      * Returns bool(true) on success and bool(false) on error.
      *
      * @param   string  $table  name of table to remove
-     * @return  \Yana\Db\Queries\SelectExist
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\NotFoundException  if the table does not exist
      */
-    public function unsetJoin($table)
+    public function unsetJoin(string $table)
     {
         assert('is_string($table); // Wrong type for argument 1. String expected');
         $table = mb_strtolower($table);
@@ -199,7 +200,7 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery
      * @return  \Yana\Db\Queries\JoinCondition
      * @throws  \Yana\Db\Queries\Exceptions\NotFoundException  when the target table is not joined
      */
-    public function getJoin($table)
+    public function getJoin(string $table): \Yana\Db\Queries\JoinCondition
     {
         assert('is_string($table); // Wrong type for argument 1. String expected');
         $table = mb_strtolower($table);
@@ -221,7 +222,7 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery
      *
      * @return  \Yana\Db\Queries\JoinCondition[]
      */
-    public function getJoins()
+    public function getJoins(): array
     {
         return $this->joins;
     }
@@ -231,7 +232,7 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery
      *
      * @return  array
      */
-    protected function getTables()
+    protected function getTables(): array
     {
         return array_merge(array($this->getTable()), array_keys($this->getJoins()));
     }
@@ -244,7 +245,7 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery
      *
      * @return  bool
      */
-    public function doesExist()
+    public function doesExist(): bool
     {
         try {
             $result = $this->sendQuery();
@@ -260,75 +261,22 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery
     /**
      * Build a SQL-query.
      *
-     * @param   string  $stmt  sql statement template
      * @return  string
      */
-    protected function toString($stmt = "SELECT 1 FROM %TABLE% %WHERE%")
+    protected function toString(): string
     {
+        $serializer = new \Yana\Db\Queries\QuerySerializer();
+        return $serializer->fromExistsQuery($this);
+    }
 
-        /* prepare where clause */
-        $where = $this->getWhere();
-
-        if (is_array($where) && !empty($where)) {
-            $where = $this->convertWhereToString($where);
-            if (!empty($where)) {
-                $where = 'WHERE ' . $where;
-            }
-        } else {
-            $where = "";
-        }
-
-        /* 1. replace %TABLE% */
-        if (!empty($this->joins)) {
-            $table = $this->getDatabase()->quoteId(YANA_DATABASE_PREFIX . $this->getTable());
-
-            assert('!isset($tableName); // cannot redeclare variable $tableName');
-            assert('!isset($join); // cannot redeclare variable $join');
-            foreach ($this->joins as $tableName => $join)
-            {
-                /* add table-join */
-                switch (true)
-                {
-                    case $join->isLeftJoin():
-                        $table .= ' LEFT JOIN ' . $this->getDatabase()->quoteId(YANA_DATABASE_PREFIX . $tableName);
-                    break;
-                    case $join->isInnerJoin():
-                        $table .= ' JOIN ' . $this->getDatabase()->quoteId(YANA_DATABASE_PREFIX . $tableName);
-                    break;
-                };
-                if ($join->getForeignKey() === "" || $join->getTargetKey() === "") {
-                    continue; // nothing to add to on-clause
-                }
-                /* add on-clause */
-                switch (true)
-                {
-                    case $join->isLeftJoin():
-                    case $join->isInnerJoin():
-                        $table .= ' ON ' .
-                            ($join->getSourceTableName() > "" ? $this->getDatabase()->quoteId(YANA_DATABASE_PREFIX . $join->getSourceTableName()) . '.' : "") .
-                            $this->getDatabase()->quoteId($join->getForeignKey()) .
-                            ' = ' .
-                            ($join->getJoinedTableName() > "" ? $this->getDatabase()->quoteId(YANA_DATABASE_PREFIX . $join->getJoinedTableName()) . '.' : "") .
-                            $this->getDatabase()->quoteId($join->getTargetKey());
-                    break;
-                }
-            } /* end foreach */
-            unset($tableName, $join);
-
-            $stmt = str_replace('%TABLE%', $table, $stmt);
-        }
-
-        /* 2. replace %WHERE% */
-        assert('is_string($where); // Unexpected value $where');
-        if (!empty($where)) {
-            $stmt = str_replace('%WHERE%', trim($where), $stmt);
-        } else {
-            $stmt = str_replace(' %WHERE%', '', $stmt);
-        }
-        unset($where);
-
-        return parent::toString($stmt);
-
+    /**
+     * Returns bool(true) if the select statement is used in a where clause.
+     *
+     * @return bool
+     */
+    public function isSubSelect(): bool
+    {
+        return $this->isSubQuery;
     }
 
 }

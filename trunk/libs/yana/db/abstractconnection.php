@@ -224,7 +224,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
     {
         $transaction = $this->_getTransaction();
         assert($transaction instanceof \Yana\Db\IsTransaction);
-        $connection = $this->_getConnection();
+        $connection = $this->_getDriver();
         assert($connection instanceof \Yana\Db\IsDriver);
         $transaction->commit($connection); // throws exception
         $this->reset();
@@ -821,7 +821,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      * @return  string
      * @ignore
      */
-    public function quote($value)
+    public function quote($value): string
     {
         if (is_null($value)) {
             return 'NULL'; // Doctrine and MDB2 both return the string 'null' (including quotes) instead of the constant NULL
@@ -829,7 +829,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
         } elseif (!is_scalar($value)) {
             $value = \is_object($value) ? (string) $value : (string) \json_encode($value);
         }
-        return $this->_getConnection()->quote($value);
+        return $this->_getDriver()->quote($value);
     }
 
     /**
@@ -1008,7 +1008,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      *
      * @return  \Yana\Db\IsDriver
      */
-    abstract protected function _getConnection();
+    abstract protected function _getDriver(): \Yana\Db\IsDriver;
 
 }
 

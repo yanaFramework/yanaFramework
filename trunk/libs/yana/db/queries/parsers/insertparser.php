@@ -129,9 +129,9 @@ class InsertParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
                 throw new \Yana\Db\Queries\Exceptions\ColumnNotFoundException($message, $level);
             }
             if ($column->getType() === 'array') {
-                $set[mb_strtoupper($keys[$i])] = json_decode($values[$i]);
+                $set[mb_strtoupper((string) $keys[$i])] = json_decode($values[$i]);
             } else {
-                $set[mb_strtoupper($keys[$i])] = $values[$i];
+                $set[mb_strtoupper((string) $keys[$i])] = $values[$i];
             }
         } // end foreach
         unset($i, $column);

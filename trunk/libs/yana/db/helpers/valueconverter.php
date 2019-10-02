@@ -46,6 +46,11 @@ class ValueConverter extends \Yana\Core\Object implements \Yana\Db\Helpers\IsVal
     private $_dbms = "";
 
     /**
+     * @var \Yana\Db\Sql\Quoting\IsAlgorithm
+     */
+    private $_quotingAlgorithm = null;
+
+    /**
      * Sets the target DBMS.
      *
      * @param  string  $dbms  name of DBMS to sanitize values for
@@ -63,6 +68,31 @@ class ValueConverter extends \Yana\Core\Object implements \Yana\Db\Helpers\IsVal
     protected function _getDBMS(): string
     {
         return $this->_dbms;
+    }
+
+    /**
+     * Return a quoting algorithm to handle strings to be included as values in SQL queries.
+     *
+     * @return  \Yana\Db\Sql\Quoting\IsAlgorithm
+     */
+    public function getQuotingAlgorithm(): \Yana\Db\Sql\Quoting\IsAlgorithm
+    {
+        if (!isset($this->_quotingAlgorithm)) {
+            $this->_quotingAlgorithm = new \Yana\Db\Sql\Quoting\GenericAlgorithm();
+        }
+        return $this->_quotingAlgorithm;
+    }
+
+    /**
+     * Inject a quoting algorithm.
+     *
+     * @param   \Yana\Db\Sql\Quoting\IsAlgorithm  $quotingAlgorithm  quoting algorithm to handle strings to be included as values in SQL queries
+     * @return  $this
+     */
+    public function setQuotingAlgorithm(\Yana\Db\Sql\Quoting\IsAlgorithm $quotingAlgorithm)
+    {
+        $this->_quotingAlgorithm = $quotingAlgorithm;
+        return $this;
     }
 
     /**
@@ -230,7 +260,7 @@ class ValueConverter extends \Yana\Core\Object implements \Yana\Db\Helpers\IsVal
         {
             $columnName = $column->getName();
             $columnType = $column->getReferenceColumn()->getType();
-            if (isset($row[$columnName])) {
+            if (array_key_exists($columnName, $row)) {
                 $outputRow[$columnName] = $this->convertValueToString($row[$columnName], $columnType);
                 unset($row[$columnName]);
             }
@@ -279,21 +309,15 @@ class ValueConverter extends \Yana\Core\Object implements \Yana\Db\Helpers\IsVal
                 }
 
             case \Yana\Db\Ddl\ColumnTypeEnumeration::DATE:
-                return date('c', (int) $value);
-
+                return \YANA_DB_DELIMITER . date('c', (int) $value) . \YANA_DB_DELIMITER;
+            // fall through
             case \Yana\Db\Ddl\ColumnTypeEnumeration::ARR:
             case \Yana\Db\Ddl\ColumnTypeEnumeration::LST:
             case \Yana\Db\Ddl\ColumnTypeEnumeration::SET:
                 $value = \json_encode($value);
             // fall through
             default:
-                $value = str_replace('\\', '\\\\', $value);
-                $value = str_replace(YANA_DB_DELIMITER, '\\' . YANA_DB_DELIMITER, $value);
-                $value = preg_replace('/[\x00\x1A]/us', '', $value);
-                $value = preg_replace("/\n/us", '\\n', $value);
-                $value = preg_replace("/\r/us", '\\r', $value);
-                $value = preg_replace("/\f/us", '\\f', $value);
-                return YANA_DB_DELIMITER . $value . YANA_DB_DELIMITER;
+                return $this->getQuotingAlgorithm()->quote((string) $value);
         }
     }
 

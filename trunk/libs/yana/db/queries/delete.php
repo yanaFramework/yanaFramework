@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Queries;
 
@@ -36,7 +37,7 @@ namespace Yana\Db\Queries;
  * @package     yana
  * @subpackage  db
  */
-class Delete extends \Yana\Db\Queries\AbstractQuery
+class Delete extends \Yana\Db\Queries\AbstractQuery implements \Yana\Db\Queries\IsDeleteQuery
 {
 
     /**
@@ -68,7 +69,7 @@ class Delete extends \Yana\Db\Queries\AbstractQuery
      *
      * @return  array
      */
-    public function getOrderBy()
+    public function getOrderBy(): array
     {
         return parent::getOrderBy();
     }
@@ -80,7 +81,7 @@ class Delete extends \Yana\Db\Queries\AbstractQuery
      *
      * @return  array
      */
-    public function getDescending()
+    public function getDescending(): array
     {
         return parent::getDescending();
     }
@@ -127,7 +128,7 @@ class Delete extends \Yana\Db\Queries\AbstractQuery
      * @throws  \Yana\Db\Queries\Exceptions\TableNotFoundException         when a referenced table is not found
      * @throws  \Yana\Db\Queries\Exceptions\ColumnNotFoundException        when a referenced column is not found
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the where-clause contains invalid values
-     * @return  \Yana\Db\Queries\Delete 
+     * @return  $this
      */
     public function setWhere(array $where = array())
     {
@@ -136,11 +137,30 @@ class Delete extends \Yana\Db\Queries\AbstractQuery
     }
 
     /**
+     * add where clause
+     *
+     * The syntax is as follows:
+     * array(0=>column,1=>operator,2=>value)
+     * Where "operator" can be one of the following:
+     * '=', 'REGEXP', 'LIKE', '<', '>', '!=', '<=', '>='
+     *
+     * @param   array  $where  where clause
+     * @throws  \Yana\Core\Exceptions\NotFoundException         when a column is not found
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the having-clause contains invalid values
+     * @return  $this
+     */
+    public function addWhere(array $where)
+    {
+        parent::addWhere($where);
+        return $this;
+    }
+
+    /**
      * Returns the current where clause.
      *
      * @return  array
      */
-    public function getWhere()
+    public function getWhere(): array
     {
         return parent::getWhere();
     }
@@ -155,11 +175,11 @@ class Delete extends \Yana\Db\Queries\AbstractQuery
      * This restriction does not apply if you use sendQuery().
      *
      * @param   int  $limit  limit for this query
-     * @return  bool
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when limit is not positive
      * @return  \Yana\Db\Queries\Delete 
      */
-    public function setLimit($limit)
+    public function setLimit(int $limit)
     {
         parent::setLimit($limit);
         return $this;
@@ -172,7 +192,7 @@ class Delete extends \Yana\Db\Queries\AbstractQuery
      *
      * @return  array
      */
-    public function getOldValues()
+    public function getOldValues(): array
     {
         return parent::getOldValues();
     }
@@ -188,7 +208,7 @@ class Delete extends \Yana\Db\Queries\AbstractQuery
     public function sendQuery(): \Yana\Db\IsResult
     {
         // logging: backup entry before deleting it
-        $message = "Deleting entry '{$this->tableName}.{$this->row}'.";
+        $message = "Deleting entry '" . $this->getTable() . "." . $this->getRow() . "'.";
         $level = \Yana\Log\TypeEnumeration::INFO;
         \Yana\Log\LogManager::getLogger()->addLog($message, $level, $this->getOldValues());
 
@@ -208,12 +228,12 @@ class Delete extends \Yana\Db\Queries\AbstractQuery
     /**
      * Build a SQL-query.
      *
-     * @param   string $stmt sql statement
      * @return  string
      */
-    public function toString($stmt = "DELETE FROM %TABLE% %WHERE% %ORDERBY%")
+    protected function toString(): string
     {
-        return parent::toString($stmt);
+        $serializer = new \Yana\Db\Queries\QuerySerializer();
+        return $serializer->fromDeleteQuery($this);
     }
 
 }

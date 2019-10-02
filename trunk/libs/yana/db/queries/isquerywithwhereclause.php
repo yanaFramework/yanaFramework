@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Queries;
 
@@ -81,6 +82,21 @@ interface IsQueryWithWhereClause extends \Yana\Db\Queries\IsQuery
      * @return  $this
      */
     public function setWhere(array $where = array());
+
+    /**
+     * add where clause
+     *
+     * The syntax is as follows:
+     * array(0=>column,1=>operator,2=>value)
+     * Where "operator" can be one of the following:
+     * '=', 'REGEXP', 'LIKE', '<', '>', '!=', '<=', '>='
+     *
+     * @param   array  $where  where clause
+     * @throws  \Yana\Core\Exceptions\NotFoundException         when a column is not found
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the having-clause contains invalid values
+     * @return  $this
+     */
+    public function addWhere(array $where);
 
     /**
      * Returns the current where clause.
