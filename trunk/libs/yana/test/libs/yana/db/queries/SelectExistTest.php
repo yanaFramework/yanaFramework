@@ -24,6 +24,7 @@
  * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Queries;
 
@@ -214,6 +215,14 @@ class SelectExistTest extends \PHPUnit_Framework_TestCase
             ' AND t.tvalue < ' . \YANA_DB_DELIMITER . '5' . \YANA_DB_DELIMITER .
             ' AND t.tvalue > ' . \YANA_DB_DELIMITER . '2' . \YANA_DB_DELIMITER;
         $this->assertSame($expected, (string) $this->query);
+    }
+
+    /**
+     * @test
+     */
+    public function testIsSubSelect()
+    {
+        $this->assertFalse($this->query->isSubSelect());
     }
 
 }

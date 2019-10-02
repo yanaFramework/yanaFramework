@@ -181,12 +181,30 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         // init database
         $this->object->insert('ft.1', array('ftvalue' => 1));
         $this->object->insert('t.foo', array('tvalue' => 1, 'ftid' => 1, 'tb' => true ));
-        $this->object->insert('t.foo3', array('tvalue' => 3, 'ftid' => 1, 'tb' => false ));
-        $this->object->insert('i.foo', array('ta' => array('1' => '1' ) ));
+        $this->object->insert('t.foo3', array('tvalue' => 3, 'ftid' => 1, 'tb' => false));
+        $this->object->insert('i.foo', array('ta' => array('1' => '1')));
 
         // supposed to succeed
         $this->object->update('i.foo.ta.1.a', 2)->commit();
         $this->assertEquals(2, $this->object->select('i.foo.ta.1.a'));
+        $this->assertEquals(array('1' => array('a' => 2)), $this->object->select('i.foo.ta'));
+    }
+
+    /**
+     * insert and update
+     *
+     * @test
+     */
+    public function testUpdateArrayValue()
+    {
+        $this->object->insert('ft.1', array('ftvalue' => 1));
+        $this->object->insert('t.foo', array('tvalue' => 1, 'ftid' => 1, 'tb' => true));
+        $this->object->insert('t.foo3', array('tvalue' => 3, 'ftid' => 1, 'tb' => false));
+        $this->object->insert('i.foo', array('ta' => array('1' => '1', '2' => '2')))->commit();
+
+        $this->object->update('i.foo.ta.1.a', 2)->commit();
+        $this->assertEquals(2, $this->object->select('i.foo.ta.1.a'));
+        $this->assertEquals(array('1' => array('a' => 2), '2' => 2), $this->object->select('i.foo.ta'));
     }
 
     /**

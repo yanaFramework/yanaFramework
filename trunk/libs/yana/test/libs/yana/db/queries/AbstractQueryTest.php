@@ -24,6 +24,7 @@
  * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Queries;
 
@@ -39,12 +40,11 @@ class MyQuery extends \Yana\Db\Queries\AbstractQuery
 {
 
     /**
-     * @param   string  $stmt  sql statement template
      * @return  string
      */
-    public function toString($stmt = "")
+    protected function toString(): string
     {
-        return parent::toString($stmt);
+        return "";
     }
 
     public function setType($type)
@@ -378,32 +378,6 @@ class AbstractQueryTest extends \PHPUnit_Framework_TestCase
     public function testSendQueryNotSupportedException()
     {
         $this->query->sendQuery();
-    }
-
-    /**
-     * @test
-     */
-    public function testToStringEmpty()
-    {
-        $this->query->setTable('t')->setRow('tid');
-        $this->assertEquals("", (string) $this->query);
-    }
-
-    /**
-     * @test
-     */
-    public function testToString()
-    {
-        $this->query->setTable('t')->setRow('123');
-        $this->assertEquals('t WHERE t.tid = ' . YANA_DB_DELIMITER . '123' . YANA_DB_DELIMITER, $this->query->toString('%TABLE% %WHERE% %ORDERBY%'));
-    }
-
-    /**
-     * @test
-     */
-    public function testToStringNoTable()
-    {
-        $this->assertSame('', $this->query->toString('%TABLE% %WHERE% %ORDERBY%'));
     }
 
 }

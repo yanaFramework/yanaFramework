@@ -234,6 +234,57 @@ class DriverTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testId()
+    {
+        $connection = new \Yana\Db\FileDb\Connection($this->schema);
+        $parser = new \Yana\Db\Queries\Parser($connection);
+        $object = new \Yana\Db\FileDb\Driver($parser);
+        $insert = new \Yana\Db\Queries\Insert($connection);
+        $insert->setTable('u')->setValues(array('uid' => 'test'));
+        $object->sendQueryObject($insert);
+        $select = new \Yana\Db\Queries\Select($connection);
+        $select->setTable('u')->setRow('test');
+        $this->assertSame(array('uid' => 'TEST'), $this->object->sendQueryObject($select)->fetchRow(0));
+    }
+
+    /**
+     * @test
+     */
+    public function testId2()
+    {
+        $connection = new \Yana\Db\FileDb\Connection($this->schema);
+        $parser = new \Yana\Db\Queries\Parser($connection);
+        $object = new \Yana\Db\FileDb\Driver($parser);
+        $delete = new \Yana\Db\Queries\Delete($connection);
+        $delete->setTable('ft')->setLimit(0);
+        $object->sendQueryObject($delete);
+        $insert = new \Yana\Db\Queries\Insert($connection);
+        $insert->setTable('ft')->setValues(array('ftid' => 123, 'ftvalue' => 2));
+        $object->sendQueryObject($insert);
+        $select = new \Yana\Db\Queries\Select($connection);
+        $select->setTable('ft')->setRow(123);
+        $this->assertEquals(array('ftvalue' => '2', 'ftid' => 123), $this->object->sendQueryObject($select)->fetchRow(0));
+    }
+
+    /**
+     * @test
+     */
+    public function testQuoteNull()
+    {
+        $this->assertSame(YANA_DB_DELIMITER . YANA_DB_DELIMITER, $this->object->quote(null));
+    }
+
+    /**
+     * @test
+     */
+    public function testQuoteArray()
+    {
+        $this->assertSame(YANA_DB_DELIMITER . \json_encode(array(1)) . YANA_DB_DELIMITER, $this->object->quote(array(1)));
+    }
+
+    /**
+     * @test
+     */
     public function testQuoteIdentifier()
     {
         $this->assertSame('t', $this->object->quoteIdentifier('t'));

@@ -44,7 +44,7 @@ class MyBuilder extends \Yana\Plugins\Configs\Builder
         return parent::buildClass();
     }
 
-    public function buildMethod(): \Yana\Plugins\Configs\IsMethodConfiguration
+    public function buildMethod()
     {
         return parent::buildMethod();
     }
@@ -109,7 +109,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testBuildMethod()
     {
-        $this->assertEquals(new \Yana\Plugins\Configs\MethodConfiguration(), $this->object->buildMethod());
+        $this->assertNull($this->object->buildMethod());
     }
 
     /**

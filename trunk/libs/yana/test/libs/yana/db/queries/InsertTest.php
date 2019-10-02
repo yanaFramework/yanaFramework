@@ -24,6 +24,7 @@
  * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Queries;
 
@@ -154,7 +155,7 @@ class InsertTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(in_array(50, $getValues), 'assert failed, the expected value 50 should be match an enry in givin array');
         $sql = (string) $this->query;
         $valid = "INSERT INTO ft (ftid, ftvalue) "
-            . "VALUES (" . \YANA_DB_DELIMITER . "2" . \YANA_DB_DELIMITER . ", " . \YANA_DB_DELIMITER . "50" . \YANA_DB_DELIMITER . ")";
+            . "VALUES (2, 50)";
         $this->assertEquals($valid, $sql, 'assert failed, the expected sql insert statement must be equal');
     }
 

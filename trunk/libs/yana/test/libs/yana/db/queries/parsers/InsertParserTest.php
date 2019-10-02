@@ -24,6 +24,7 @@
  * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Queries\Parsers;
 
@@ -83,9 +84,7 @@ class InsertParserTest extends \PHPUnit_Framework_TestCase
     public function testParseStatement()
     {
         $expectedResult = "INSERT INTO t (tid, tvalue, ftid) VALUES ("
-            . \YANA_DB_DELIMITER . "1" . \YANA_DB_DELIMITER . ", "
-            . \YANA_DB_DELIMITER . "2" . \YANA_DB_DELIMITER . ", "
-            . \YANA_DB_DELIMITER . "1" . \YANA_DB_DELIMITER . ")";
+            . \YANA_DB_DELIMITER . "1" . \YANA_DB_DELIMITER . ", 2, 1)";
         $sqlStmt = "INSERT INTO t (tid, tvalue, ftid) VALUES ('1', '2', '1');";
         $ast = $this->parser->parse($sqlStmt);
         $query = $this->object->parseStatement(\array_shift($ast));

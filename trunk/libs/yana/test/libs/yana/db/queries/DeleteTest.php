@@ -24,6 +24,7 @@
  * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Queries;
 
@@ -85,7 +86,7 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetOrderBy()
     {
-        $this->assertEquals(array(array('t', 'tid')), $this->query->setTable('t')->setOrderBy('tid')->getOrderBy());
+        $this->assertEquals(array(array('t', 'tid')), $this->query->setTable('t')->setOrderBy(array('tid'))->getOrderBy());
     }
 
     /**
@@ -110,6 +111,17 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
     public function testSetWhere()
     {
         $this->assertEquals(array(array('t', 'tid'), '=', '1'), $this->query->setTable('t')->setWhere(array('tid', '=', '1'))->getWhere());
+    }
+
+    /**
+     * @test
+     */
+    public function testAddWhere()
+    {
+        $this->query->setTable('t');
+        $having = $this->query->addWhere(array('tvalue', '>', 1))->addWhere(array('tvalue', '=', 2))->getWhere();
+        $expected = array(array(array('t', 'tvalue'), '=', '2'), 'and', array(array('t', 'tvalue'), '>', '1'));
+        $this->assertEquals($expected, $having);
     }
 
     /**
@@ -152,7 +164,7 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
         $this->query->setTable('ft');
         $this->query->setRow(2);
         $this->query->useInheritance(true);
-        $sql = (string) $this->query->toString();
+        $sql = (string) $this->query;
         $valid = "DELETE FROM ft WHERE ft.ftid = " . \YANA_DB_DELIMITER . "2" . \YANA_DB_DELIMITER;
         $this->assertEquals($valid, $sql);
     }

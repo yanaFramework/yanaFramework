@@ -174,10 +174,21 @@ class IndexTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testGet()
+    public function testGetVar()
     {
         $get = $this->_object->getVar('FVALUE', 44);
         $this->assertEquals(2, (int) $get, 'expected primary key 2 where the expected FVALUE has the entry 44');
+    }
+
+    /**
+     * @test
+     */
+    public function testHasVar()
+    {
+        $this->assertTrue($this->_object->hasVar('FVALUE', 44));
+        $this->assertFalse($this->_object->hasVar('FVALUE', -1));
+        $this->assertTrue($this->_object->hasVar('FVALUE'));
+        $this->assertFalse($this->_object->hasVar('FVALUE2'));
     }
 
     /**

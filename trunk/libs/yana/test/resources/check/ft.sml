@@ -1,5 +1,5 @@
 <FTID>
-	<1>
-		<FTVALUE>1</FTVALUE>
-	</1>
+	<123>
+		<FTVALUE>2</FTVALUE>
+	</123>
 </FTID>

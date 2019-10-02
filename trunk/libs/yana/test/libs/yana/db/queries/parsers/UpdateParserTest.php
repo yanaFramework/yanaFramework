@@ -24,6 +24,7 @@
  * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Queries\Parsers;
 
@@ -88,8 +89,7 @@ class UpdateParserTest extends \PHPUnit_Framework_TestCase
     public function testParseStatement()
     {
         $sqlStmt = "UPDATE t SET tvalue='1' WHERE tid = '2'";
-        $expectedResult = "UPDATE t SET t.tvalue = " . YANA_DB_DELIMITER . "1" . YANA_DB_DELIMITER
-            . " WHERE t.tid = " . YANA_DB_DELIMITER . "2" . YANA_DB_DELIMITER;
+        $expectedResult = "UPDATE t SET t.tvalue = 1 WHERE t.tid = " . YANA_DB_DELIMITER . "2" . YANA_DB_DELIMITER;
         $ast = $this->parser->parse($sqlStmt);
         $query = $this->object->parseStatement(\array_shift($ast));
         $this->assertTrue($query instanceof \Yana\Db\Queries\Update);

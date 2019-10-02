@@ -186,7 +186,7 @@ class NullConnectionTest extends \PHPUnit_Framework_TestCase
      */
     public function testSendQueryObject()
     {
-        $this->assertSame(array(), $this->object->sendQueryObject(new \Yana\Db\Queries\Select($this->object)));
+        $this->assertEquals(new \Yana\Db\FileDb\Result(array()), $this->object->sendQueryObject(new \Yana\Db\Queries\Select($this->object)));
     }
 
     /**
