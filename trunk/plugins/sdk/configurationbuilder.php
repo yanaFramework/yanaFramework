@@ -691,7 +691,7 @@ class ConfigurationBuilder extends \Yana\Plugins\Configs\AbstractBuilder
             switch ($key)
             {
                 case 'name':
-                    if (mb_strlen($value) > 15 || !preg_match('/^[\d\w-_ äüöß\(\)]+$/si', $value)) {
+                    if (mb_strlen($value) > 15 || !preg_match('/^[\d\w\-_ äüöß\(\)]+$/si', $value)) {
                         $message = 'Not a valid name.';
                         $errorLevel = \Yana\Log\TypeEnumeration::WARNING;
                         $error = new \Yana\Core\Exceptions\Forms\InvalidCharacterException($message, $errorLevel);
@@ -706,7 +706,7 @@ class ConfigurationBuilder extends \Yana\Plugins\Configs\AbstractBuilder
                     $this->object->setNamespace('Plugins\\' . $id);
                     break;
                 case 'parent':
-                    if (!preg_match('/^[\d\w-]*$/si', $value)) {
+                    if (!preg_match('/^[\d\w\-]*$/si', $value)) {
                         $message = 'Not a valid plugin name.';
                         $errorLevel = \Yana\Log\TypeEnumeration::WARNING;
                         $error = new \Yana\Core\Exceptions\Forms\InvalidCharacterException($message, $errorLevel);
@@ -716,7 +716,7 @@ class ConfigurationBuilder extends \Yana\Plugins\Configs\AbstractBuilder
                     $this->object->setParent($value);
                     break;
                 case 'package':
-                    if (!preg_match('/^[\d\w-_]*$/si', $value)) {
+                    if (!preg_match('/^[\d\w\-_]*$/si', $value)) {
                         $message = 'Not a valid identifier.';
                         $errorLevel = \Yana\Log\TypeEnumeration::WARNING;
                         $error = new \Yana\Core\Exceptions\Forms\InvalidCharacterException($message, $errorLevel);

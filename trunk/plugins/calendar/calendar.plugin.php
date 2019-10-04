@@ -982,7 +982,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
         {
             $matches = array();
             // This matches all rules not starting with an X character
-            if (!preg_match("/^[^X^x]+[-\w]+[-\w]+/", $line)) {
+            if (!preg_match("/^[^X^x]+[\-\w]+[\-\w]+/", $line)) {
                 continue;
             }
 

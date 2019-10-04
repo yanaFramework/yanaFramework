@@ -89,7 +89,7 @@ class DownloadsPlugin extends \Yana\Plugins\AbstractPlugin
                 break;
 
                 case 2:
-                    if (preg_match('/^\w+\/[\w-]+$/s', $buffer) && !headers_sent()) {
+                    if (preg_match('/^\w+\/[\w\-]+$/s', $buffer) && !headers_sent()) {
                         header("Content-type: {$buffer}");
                     }
                 break;
