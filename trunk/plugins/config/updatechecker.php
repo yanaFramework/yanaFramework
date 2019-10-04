@@ -20,7 +20,7 @@ namespace Plugins\Config;
  * @package    yana
  * @subpackage plugins
  */
-class UpdateChecker extends \Yana\Core\AbstractObject implements \Yana\Views\Helpers\IsFunction,
+class UpdateChecker extends \Yana\Core\StdObject implements \Yana\Views\Helpers\IsFunction,
     \Yana\Data\Adapters\IsCacheable
 {
 

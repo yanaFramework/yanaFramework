@@ -36,11 +36,11 @@ require_once __Dir__ . '/../../../../include.php';
 /**
  * @package  test
  */
-class ObjectTest extends \PHPUnit_Framework_TestCase
+class StdObjectTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Util\Xml\Object
+     * @var \Yana\Util\Xml\StdObject
      */
     protected $object;
 
@@ -50,7 +50,7 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Util\Xml\Object();
+        $this->object = new \Yana\Util\Xml\StdObject();
     }
 
     /**
@@ -166,9 +166,9 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $this->object->getAll("a"));
         $this->object->a = "1";
         $this->assertEquals($expected->setItems(array("1")), $this->object->getAll("a"));
-        $this->object->a = new \Yana\Util\Xml\Object("1");
+        $this->object->a = new \Yana\Util\Xml\StdObject("1");
         $this->assertEquals($expected->setItems(array("1")), $this->object->getAll("a"));
-        $this->object->a = array(new \Yana\Util\Xml\Object("1"));
+        $this->object->a = array(new \Yana\Util\Xml\StdObject("1"));
         $this->assertEquals($expected->setItems(array("1")), $this->object->getAll("a"));
         $this->object->a = array("1", "2");
         $this->assertEquals($expected->setItems(array("1", "2")), $this->object->getAll("a"));
@@ -179,7 +179,7 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
      */
     public function testConstructor()
     {
-        $this->object = new \Yana\Util\Xml\Object("Test");
+        $this->object = new \Yana\Util\Xml\StdObject("Test");
         $this->assertSame("Test", $this->object->getPcData());
     }
 

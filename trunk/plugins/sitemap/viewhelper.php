@@ -16,7 +16,7 @@ namespace Plugins\Sitemap;
  * @package    yana
  * @subpackage plugins
  */
-class ViewHelper extends \Yana\Core\AbstractObject implements \Yana\Views\Helpers\IsFunction
+class ViewHelper extends \Yana\Core\StdObject implements \Yana\Views\Helpers\IsFunction
 {
 
     /**

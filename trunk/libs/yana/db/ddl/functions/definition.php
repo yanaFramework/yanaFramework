@@ -148,7 +148,7 @@ class Object extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\Is
      * To reset the property, leave the parameter empty.
      *
      * @param   string  $title  any text is valid
-     * @return  \Yana\Db\Ddl\Functions\Object
+     * @return  \Yana\Db\Ddl\Functions\Definition
      */
     public function setTitle($title = "")
     {
@@ -198,7 +198,7 @@ class Object extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\Is
      * To reset the property, leave the parameter $description empty.
      *
      * @param   string  $description  any text is valid
-     * @return  \Yana\Db\Ddl\Functions\Object
+     * @return  \Yana\Db\Ddl\Functions\Definition
      */
     public function setDescription($description)
     {
@@ -279,7 +279,7 @@ class Object extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\Is
      *
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed              $parent  parent node (if any)
-     * @return  \Yana\Db\Ddl\Functions\Object
+     * @return  \Yana\Db\Ddl\Functions\Definition
      * @throws   \Yana\Core\Exceptions\InvalidArgumentException  when the name attribute is missing
      */
     public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)

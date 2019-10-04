@@ -20,7 +20,7 @@ namespace Plugins\Calendar;
  * @package    yana
  * @subpackage plugins
  */
-class RecurranceRule extends \Yana\Core\AbstractObject
+class RecurranceRule extends \Yana\Core\StdObject
 {
 
     /* @var  string  */ protected  $id               = null;

@@ -33,15 +33,14 @@ namespace Yana\Core;
  */
 require_once __DIR__ . '/../../../include.php';
 
-
 /**
  * @package  test
  */
-class ObjectTest extends \PHPUnit_Framework_TestCase
+class StdObjectTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var  \Yana\Core\Object
+     * @var  \Yana\Core\StdObject
      */
     protected $object;
     
@@ -59,7 +58,7 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Core\Object();
+        $this->object = new \Yana\Core\StdObject();
     }
 
     /**

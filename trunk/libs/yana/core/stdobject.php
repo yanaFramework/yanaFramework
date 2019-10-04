@@ -37,7 +37,7 @@ namespace Yana\Core;
  * @package     yana
  * @subpackage  core
  */
-class Object extends \StdClass implements \Yana\Core\IsObject, \Yana\Core\IsCloneable
+class StdObject extends \StdClass implements \Yana\Core\IsObject, \Yana\Core\IsCloneable
 {
 
     /**
@@ -72,7 +72,7 @@ class Object extends \StdClass implements \Yana\Core\IsObject, \Yana\Core\IsClon
      * <<magic>> Issues a warning when trying to access undefined property.
      *
      * @param   string  $name  property name
-     * @return  \Yana\Core\Object
+     * @return  \Yana\Core\StdObject
      * @throws  \Yana\Core\Exceptions\UndefinedPropertyException  always!
      * @ignore
      */
