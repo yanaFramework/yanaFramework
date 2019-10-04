@@ -98,7 +98,7 @@ abstract class AbstractContext extends \Yana\Core\StdObject implements \Yana\Mai
         $sanitizedHeaders = array();
         foreach ($values as $key => $value)
         {
-            if (!preg_match('/^[a-z\d-]+$/', $key) || (is_string($value) && preg_match('/[\r\n\f]/', $value))) {
+            if (!preg_match('/^[a-z\d\-]+$/', $key) || (is_string($value) && preg_match('/[\r\n\f]/', $value))) {
                 $errorCount++;
                 continue;
             } elseif (is_array($value)) {
@@ -183,7 +183,7 @@ abstract class AbstractContext extends \Yana\Core\StdObject implements \Yana\Mai
                     }
                     break;
                 case 'content-type':
-                    if (preg_match('/^(\w+\/\w+);( ?| +)charset="?[\w\d-]+"?$/i', $value)) {
+                    if (preg_match('/^(\w+\/\w+);( ?| +)charset="?[\w\d\-]+"?$/i', $value)) {
                         $restrictedHeaders['content-type'] = "$value";
                     }
                     break;

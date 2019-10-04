@@ -92,7 +92,7 @@ class FileMapper extends \Yana\Files\Readonly
     public function toFileId($filename)
     {
         assert('is_string($filename); // Wrong argument type for argument 1. String expected');
-        return preg_replace('/^.*?([\w-_]+)\.\w+$/', '$1', $filename);
+        return preg_replace('/^.*?([\w\-_]+)\.\w+$/', '$1', $filename);
     }
 
     /**

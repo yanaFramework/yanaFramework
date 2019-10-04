@@ -30,7 +30,7 @@ namespace Yana\Core;
 
 require_once __DIR__ . '/isobject.php';
 require_once __DIR__ . '/iscloneable.php';
-require_once __DIR__ . '/object.php';
+require_once __DIR__ . '/stdobject.php';
 require_once __DIR__ . '/autoloaders/ismapper.php';
 require_once __DIR__ . '/iscountablearray.php';
 require_once __DIR__ . '/iscollection.php';

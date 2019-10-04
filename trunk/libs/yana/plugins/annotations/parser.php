@@ -164,7 +164,7 @@ class Parser extends \Yana\Plugins\Annotations\AbstractParser
                 $match2 = array(); // for use in reg-exp.
                 if ($tagContent === "") {
                     $result[$count] = true;
-                } elseif (preg_match_all('/([\w-]+)\:\s+([^,]*)/', $match[1][$i], $match2)) {
+                } elseif (preg_match_all('/([\w\-]+)\:\s+([^,]*)/', $match[1][$i], $match2)) {
                     $result[$count] = array();
                     assert('!isset($key); // Cannot redeclare var $key');
                     assert('!isset($value); // Cannot redeclare var $value');
@@ -228,11 +228,11 @@ class Parser extends \Yana\Plugins\Annotations\AbstractParser
                 $match2 = array();
                 if ($tagContent === "") {
                     $result[$count] = true;
-                } elseif (preg_match('/([\w-]+)\:(?:\s+|$)/', $tagContent)) {
+                } elseif (preg_match('/([\w\-]+)\:(?:\s+|$)/', $tagContent)) {
                     $result[$count] = array();
                     assert('!isset($key); // Cannot redeclare var $key');
                     assert('!isset($value); // Cannot redeclare var $value');
-                    while (preg_match('/(([\w-]+)\:(\s+.*?|))(?:,\s*?[\w-]+\:|$)/s', $tagContent, $match2))
+                    while (preg_match('/(([\w\-]+)\:(\s+.*?|))(?:,\s*?[\w\-]+\:|$)/s', $tagContent, $match2))
                     {
                         $tagContent = str_replace($match2[1], '', $tagContent);
                         /**

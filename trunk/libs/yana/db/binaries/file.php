@@ -134,7 +134,7 @@ class File extends \Yana\Files\Readonly
 
                 case 2:
                     $buffer = trim($buffer);
-                    if (preg_match('/^\w+\/[\w-]+$/s', $buffer)) {
+                    if (preg_match('/^\w+\/[\w\-]+$/s', $buffer)) {
                         $this->_type = (string) $buffer;
                     } else {
                         \Yana\Log\LogManager::getLogger()

@@ -70,7 +70,7 @@ abstract class AbstractObject extends \Yana\Db\Ddl\DDL
         if ($name === "") {
             $this->name = null;
 
-        } elseif (!preg_match('/^[a-z][\w\d-_]*$/uis', $name)) {
+        } elseif (!preg_match('/^[a-z][\w\d\-\_]*$/uis', $name)) {
             $message = "Not a valid object name: '$name'. Must start with a letter and may only contain: " .
                 "a-z, 0-9, '-' and '_'.";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message);

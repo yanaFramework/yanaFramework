@@ -107,12 +107,10 @@ class Builder extends \Yana\Plugins\Repositories\AbstractBuilder
                 $methodName = mb_strtolower($methodName);
                 /* @var $method \Yana\Plugins\Configs\IsMethodConfiguration */
                 // skip default event handlers (will be handled in step 3)
-                switch (true)
-                {
-                    case $methodName === 'catchall':
-                        $pluginsWithDefaultMethods[$id] = $config;
-                    case $methodName[0] === '_':
-                        continue;
+                if ($methodName === 'catchall') {
+                    $pluginsWithDefaultMethods[$id] = $config;
+                } elseif ($methodName[0] === '_') {
+                    continue;
                 }
 
                 $isOverwrite = $method->getOverwrite();

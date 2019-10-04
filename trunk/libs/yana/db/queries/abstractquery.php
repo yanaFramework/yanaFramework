@@ -1232,7 +1232,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
     public function setKey(string $key)
     {
         assert('is_scalar($key); // Wrong argument type for argument 1. String expected.');
-        assert('preg_match("/^[\w\d-_]+(\.(\w[^\.]*|\*|\?)){0,}(\.\*)?$/i", $key);'
+        assert('preg_match("/^[\w\d\-_]+(\.(\w[^\.]*|\*|\?)){0,}(\.\*)?$/i", $key);'
             . " // Syntax error. The key '{$key}' is not valid.");
 
         $key = preg_replace("/\.(\*)?$/", '', $key);

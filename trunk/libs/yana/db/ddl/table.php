@@ -1258,7 +1258,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
                 case ($event === 0 && !$trigger->isInsert()):
                 case ($event === 1 && !$trigger->isUpdate()):
                 case ($event === 2 && !$trigger->isDelete()):
-                    continue;
+                    break;
                 default:
                     return $trigger->getTrigger();
             }

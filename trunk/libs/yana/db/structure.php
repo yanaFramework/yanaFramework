@@ -224,7 +224,7 @@ class Structure extends \Yana\Files\SML
      */
     public function addTable($table)
     {
-        if (preg_match('/^[\w\d-_]+$/s', $table) && !isset($this->content['TABLES'][mb_strtoupper($table)])) {
+        if (preg_match('/^[\w\d\-_]+$/s', $table) && !isset($this->content['TABLES'][mb_strtoupper($table)])) {
             if (!isset($this->content['TABLES'])) {
                 $this->content['TABLES'] = array();
             }
@@ -361,7 +361,7 @@ class Structure extends \Yana\Files\SML
             /* error: table not found */
             return false;
 
-        } elseif (preg_match('/^[\w\d-_]+$/s', $column) && !isset($tbl['CONTENT'][mb_strtoupper($column)])) {
+        } elseif (preg_match('/^[\w\d\-_]+$/s', $column) && !isset($tbl['CONTENT'][mb_strtoupper($column)])) {
             $tbl['CONTENT'][mb_strtoupper($column)] = array();
 
             /*

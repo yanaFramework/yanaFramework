@@ -108,21 +108,21 @@ class ApplicationBuilder extends \Yana\Core\StdObject
         switch ($logging)
         {
             case YANA_ERROR_ON:
-                error_reporting(E_ALL);
+                error_reporting(~E_DEPRECATED);
                 if ($this->_isCommandLineCall()) {
                     $formatter = new \Yana\Log\Formatter\TextFormatter();
                 } else {
                     $formatter = new \Yana\Log\Formatter\HtmlFormatter();
                 }
                 $this->_errorLogger = new \Yana\Log\ScreenLogger();
-                $this->_errorLogger->setLogLevel(E_ALL);
+                $this->_errorLogger->setLogLevel(~E_DEPRECATED);
                 $isActive = true;
                 break;
             case YANA_ERROR_LOG:
                 error_reporting(E_ALL);
                 $formatter = new \Yana\Log\Formatter\TextFormatter();
                 $this->_errorLogger = new \Yana\Log\FileLogger(new \Yana\Files\Text('cache/error.log'));
-                $this->_errorLogger->setLogLevel(E_ALL & ~E_STRICT);
+                $this->_errorLogger->setLogLevel(E_ALL ^ (E_STRICT | E_DEPRECATED));
                 $isActive = true;
                 break;
             /**

@@ -86,7 +86,7 @@ class Builder extends \Yana\Http\Requests\Container
             foreach ($_SERVER['argv'] as $argument)
             {
                 assert('!isset($m); // Cannot redeclare var $m');
-                if (preg_match('/^([\w\d-_\.]*)=(.*)$/', "$argument", $m)) {
+                if (preg_match('/^([\w\d\-\_\.]*)=(.*)$/', "$argument", $m)) {
                     \Yana\Util\Hashtable::set($arguments, mb_strtolower($m[1]), $m[2]);
                 }
                 unset($m);

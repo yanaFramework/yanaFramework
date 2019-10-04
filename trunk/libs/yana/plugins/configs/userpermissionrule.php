@@ -87,7 +87,7 @@ class UserPermissionRule extends \Yana\Core\StdObject implements \Yana\Plugins\C
     public function setRole($role)
     {
         assert('is_string($role); // Wrong type for argument 1. String expected');
-        if (!preg_match('/^[\d\w-_]*$/si', $role)) {
+        if (!preg_match('/^[\d\w\-_]*$/si', $role)) {
             $message = "Invalid characters in role '$role'.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
@@ -128,7 +128,7 @@ class UserPermissionRule extends \Yana\Core\StdObject implements \Yana\Plugins\C
     public function setGroup($group)
     {
         assert('is_string($group); // Invalid argument $group: string expected');
-        if (!preg_match('/^[\d\w-_]*$/si', $group)) {
+        if (!preg_match('/^[\d\w\-_]*$/si', $group)) {
             $message = "Invalid characters in group '$group'.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
