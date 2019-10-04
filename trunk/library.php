@@ -28,13 +28,6 @@
  */
 declare(strict_types=1);
 
-/*
- * When debugging, make sure error reporting is at maximum.
- */
-if (error_reporting() > 0) {
-    error_reporting(E_ALL | E_STRICT);
-}
-
 /**
  * Set encoding to UTF-8
  */
