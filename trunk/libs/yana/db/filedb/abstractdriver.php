@@ -39,7 +39,7 @@ namespace Yana\Db\FileDb;
  * @package     yana
  * @subpackage  db
  */
-abstract class AbstractDriver extends \Yana\Core\Object implements \Yana\Db\IsDriver
+abstract class AbstractDriver extends \Yana\Core\StdObject implements \Yana\Db\IsDriver
 {
 
     /**

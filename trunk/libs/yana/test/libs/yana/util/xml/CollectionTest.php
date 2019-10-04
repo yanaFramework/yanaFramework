@@ -68,7 +68,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     public function testOffsetSet()
     {
         $this->object->offsetSet(null, "1");
-        $this->assertEquals(new \Yana\Util\Xml\Object("1"), $this->object->offsetGet(0));
+        $this->assertEquals(new \Yana\Util\Xml\StdObject("1"), $this->object->offsetGet(0));
     }
 
     /**
@@ -77,7 +77,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
      */
     public function testOffsetSetInvalidArgumentException()
     {
-        $this->object->offsetSet(null, new \Yana\Core\Object());
+        $this->object->offsetSet(null, new \Yana\Core\StdObject());
     }
 
 }

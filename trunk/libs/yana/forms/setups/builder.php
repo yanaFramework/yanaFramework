@@ -34,7 +34,7 @@ namespace Yana\Forms\Setups;
  * @package     yana
  * @subpackage  form
  */
-class Builder extends \Yana\Core\Object implements \Yana\Forms\Setups\IsBuilder
+class Builder extends \Yana\Core\StdObject implements \Yana\Forms\Setups\IsBuilder
 {
 
     use \Yana\Forms\Dependencies\HasContainer;

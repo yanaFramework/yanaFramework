@@ -35,7 +35,7 @@ namespace Yana\Http\Uploads;
  * @package     yana
  * @subpackage  http
  */
-abstract class AbstractUploadWrapper extends \Yana\Core\Object implements \Yana\Http\Uploads\IsUploadWrapper
+abstract class AbstractUploadWrapper extends \Yana\Core\StdObject implements \Yana\Http\Uploads\IsUploadWrapper
 {
 
     /**

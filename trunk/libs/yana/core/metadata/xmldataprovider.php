@@ -52,7 +52,7 @@ namespace Yana\Core\MetaData;
  * @package     yana
  * @subpackage  core
  */
-class XmlDataProvider extends \Yana\Core\Object implements \Yana\Core\MetaData\IsDataProvider
+class XmlDataProvider extends \Yana\Core\StdObject implements \Yana\Core\MetaData\IsDataProvider
 {
 
     /**

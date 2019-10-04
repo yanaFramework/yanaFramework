@@ -39,7 +39,7 @@ namespace Yana\Db\Ddl\Factories;
  * @ignore
  * @codeCoverageIgnore
  */
-abstract class AbstractDoctrineWrapper extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories\IsDoctrineWrapper
+abstract class AbstractDoctrineWrapper extends \Yana\Core\StdObject implements \Yana\Db\Ddl\Factories\IsDoctrineWrapper
 {
 
     /**

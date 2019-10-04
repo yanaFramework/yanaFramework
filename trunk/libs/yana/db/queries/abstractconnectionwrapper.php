@@ -34,7 +34,7 @@ namespace Yana\Db\Queries;
  * @package     yana
  * @subpackage  db
  */
-abstract class AbstractConnectionWrapper extends \Yana\Core\Object implements \Serializable
+abstract class AbstractConnectionWrapper extends \Yana\Core\StdObject implements \Serializable
 {
 
     /**

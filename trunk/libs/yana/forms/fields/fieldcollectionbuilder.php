@@ -33,7 +33,7 @@ namespace Yana\Forms\Fields;
  * @package     yana
  * @subpackage  form
  */
-class FieldCollectionBuilder extends \Yana\Core\Object implements \Yana\Forms\Fields\IsFieldCollectionBuilder
+class FieldCollectionBuilder extends \Yana\Core\StdObject implements \Yana\Forms\Fields\IsFieldCollectionBuilder
 {
 
     /**

@@ -35,7 +35,7 @@ namespace Yana\Db\Ddl\Factories;
  * @package     yana
  * @subpackage  db
  */
-class DoctrineMapper extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories\IsDoctrineMapper
+class DoctrineMapper extends \Yana\Core\StdObject implements \Yana\Db\Ddl\Factories\IsDoctrineMapper
 {
 
     /**

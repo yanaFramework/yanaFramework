@@ -34,7 +34,7 @@ namespace Yana\Core;
  * @package     yana
  * @subpackage  core
  */
-abstract class AbstractCollection extends \Yana\Core\Object implements \Yana\Core\IsCollection
+abstract class AbstractCollection extends \Yana\Core\StdObject implements \Yana\Core\IsCollection
 {
 
     /**

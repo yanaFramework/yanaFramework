@@ -36,7 +36,7 @@ namespace Yana\Core\Dependencies;
  * @package     yana
  * @subpackage  core
  */
-class ExceptionContainer extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsExceptionContainer
+class ExceptionContainer extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\IsExceptionContainer
 {
 
     /**

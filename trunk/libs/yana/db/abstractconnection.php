@@ -35,7 +35,7 @@ namespace Yana\Db;
  * @package     yana
  * @subpackage  db
  */
-abstract class AbstractConnection extends \Yana\Core\Object implements \Serializable, \Yana\Db\IsConnection
+abstract class AbstractConnection extends \Yana\Core\StdObject implements \Serializable, \Yana\Db\IsConnection
 {
 
     /**

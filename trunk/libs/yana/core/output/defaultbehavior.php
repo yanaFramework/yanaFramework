@@ -34,7 +34,7 @@ namespace Yana\Core\Output;
  * @package     yana
  * @subpackage  core
  */
-class DefaultBehavior extends \Yana\Core\Object implements \Yana\Core\Output\IsBehavior
+class DefaultBehavior extends \Yana\Core\StdObject implements \Yana\Core\Output\IsBehavior
 {
     use \Yana\Core\Dependencies\HasApplicationContainer;
 

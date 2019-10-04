@@ -37,7 +37,7 @@ namespace Yana\Security\Passwords;
  *
  * @ignore
  */
-abstract class AbstractAlgorithm extends \Yana\Core\Object implements \Yana\Security\Passwords\IsAlgorithm
+abstract class AbstractAlgorithm extends \Yana\Core\StdObject implements \Yana\Security\Passwords\IsAlgorithm
 {
 
     /**

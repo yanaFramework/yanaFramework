@@ -35,7 +35,7 @@ namespace Yana\Plugins\Annotations;
  * @package     yana
  * @subpackage  plugins
  */
-abstract class AbstractParser extends \Yana\Core\Object implements \Yana\Plugins\Annotations\IsParser
+abstract class AbstractParser extends \Yana\Core\StdObject implements \Yana\Plugins\Annotations\IsParser
 {
 
     /**

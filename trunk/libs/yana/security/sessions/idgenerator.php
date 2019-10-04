@@ -39,7 +39,7 @@ namespace Yana\Security\Sessions;
  *
  * @ignore
  */
-class IdGenerator extends \Yana\Core\Object implements \Yana\Security\Sessions\IsIdGenerator
+class IdGenerator extends \Yana\Core\StdObject implements \Yana\Security\Sessions\IsIdGenerator
 {
 
     /**

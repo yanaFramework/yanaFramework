@@ -34,7 +34,7 @@ namespace Yana\Forms\Fields;
  * @subpackage  form
  * @ignore
  */
-abstract class AbstractField extends \Yana\Core\Object implements \Yana\Forms\Fields\IsField
+abstract class AbstractField extends \Yana\Core\StdObject implements \Yana\Forms\Fields\IsField
 {
 
     /**

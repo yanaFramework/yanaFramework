@@ -34,7 +34,7 @@ namespace Yana\Log\Formatter;
  * @package    yana
  * @subpackage log
  */
-abstract class AbstractFormatter extends \Yana\Core\Object implements \Yana\Log\Formatter\IsFormatter
+abstract class AbstractFormatter extends \Yana\Core\StdObject implements \Yana\Log\Formatter\IsFormatter
 {
 
     /**

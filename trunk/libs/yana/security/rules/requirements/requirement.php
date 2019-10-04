@@ -39,7 +39,7 @@ namespace Yana\Security\Rules\Requirements;
  *
  * @ignore
  */
-class Requirement extends \Yana\Core\Object implements \Yana\Security\Rules\Requirements\IsRequirement
+class Requirement extends \Yana\Core\StdObject implements \Yana\Security\Rules\Requirements\IsRequirement
 {
 
     /**

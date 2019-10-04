@@ -39,7 +39,7 @@ namespace Yana\Db\FileDb;
  * @subpackage  db
  * @since       2.8.6
  */
-class Index extends \Yana\Core\Object
+class Index extends \Yana\Core\StdObject
 {
 
     /**

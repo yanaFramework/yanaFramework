@@ -244,7 +244,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
      */
     public function testEqualsFalse()
     {
-        $this->assertFalse($this->object->equals(new \Yana\Core\Object()), 'assert failed, there are two different objects');
+        $this->assertFalse($this->object->equals(new \Yana\Core\StdObject()), 'assert failed, there are two different objects');
     }
 
     /**

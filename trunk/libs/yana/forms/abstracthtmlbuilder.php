@@ -37,7 +37,7 @@ namespace Yana\Forms;
  * @package     yana
  * @subpackage  form
  */
-abstract class AbstractHtmlBuilder extends \Yana\Core\Object
+abstract class AbstractHtmlBuilder extends \Yana\Core\StdObject
 {
 
     /**

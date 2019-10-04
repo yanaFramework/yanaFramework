@@ -37,7 +37,7 @@ namespace Yana\Security\Data\SecurityLevels;
  * @package     yana
  * @subpackage  security
  */
-abstract class AbstractLevel extends \Yana\Core\Object implements \Yana\Security\Data\SecurityLevels\IsLevelEntity
+abstract class AbstractLevel extends \Yana\Core\StdObject implements \Yana\Security\Data\SecurityLevels\IsLevelEntity
 {
 
     /**

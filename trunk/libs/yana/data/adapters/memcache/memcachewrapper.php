@@ -33,7 +33,7 @@ namespace Yana\Data\Adapters\MemCache;
  * @package     yana
  * @subpackage  data
  */
-class MemcacheWrapper extends \Yana\Core\Object implements \Yana\Data\Adapters\MemCache\IsWrapper
+class MemcacheWrapper extends \Yana\Core\StdObject implements \Yana\Data\Adapters\MemCache\IsWrapper
 {
 
     /**

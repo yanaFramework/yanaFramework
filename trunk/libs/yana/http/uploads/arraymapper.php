@@ -35,7 +35,7 @@ namespace Yana\Http\Uploads;
  * @package     yana
  * @subpackage  http
  */
-class ArrayMapper extends \Yana\Core\Object implements \Yana\Http\Uploads\IsArrayMapper
+class ArrayMapper extends \Yana\Core\StdObject implements \Yana\Http\Uploads\IsArrayMapper
 {
 
     /**

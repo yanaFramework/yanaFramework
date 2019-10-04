@@ -451,7 +451,7 @@ class XDDLTest extends \PHPUnit_Framework_TestCase
     {
         $name = "test_function";
         $function = $this->_object->getFunction($name);
-        $this->assertTrue($function instanceof \Yana\Db\Ddl\Functions\Object, "Expected getFunction() to return an instance of \Yana\Db\Ddl\Functions\Object.");
+        $this->assertTrue($function instanceof \Yana\Db\Ddl\Functions\Definition, "Expected getFunction() to return an instance of \Yana\Db\Ddl\Functions\Definition.");
         $this->assertEquals($name, $function->getName(), "Expected returned function to have given name.");
     }
 
@@ -464,7 +464,7 @@ class XDDLTest extends \PHPUnit_Framework_TestCase
     {
         $name = "new_function";
         $function = $this->_object->addFunction($name);
-        $this->assertTrue($function instanceof \Yana\Db\Ddl\Functions\Object, "Expected addFunction() to return an instance of \Yana\Db\Ddl\Functions\Object.");
+        $this->assertTrue($function instanceof \Yana\Db\Ddl\Functions\Definition, "Expected addFunction() to return an instance of \Yana\Db\Ddl\Functions\Definition.");
         $this->assertEquals($name, $function->getName(), "Expected returned function to have given name.");
     }
 
@@ -479,7 +479,7 @@ class XDDLTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($array), "Returned list of functions should not be empty");
         foreach ($array as $item)
         {
-            $this->assertTrue($item instanceof \Yana\Db\Ddl\Functions\Object, "Every returned function is expected to be an instance of \Yana\Db\Ddl\Functions\Object.");
+            $this->assertTrue($item instanceof \Yana\Db\Ddl\Functions\Definition, "Every returned function is expected to be an instance of \Yana\Db\Ddl\Functions\Definition.");
         }
     }
 

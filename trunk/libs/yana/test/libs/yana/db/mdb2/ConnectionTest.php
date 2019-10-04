@@ -246,7 +246,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         $test = $this->object->equals($anotherObject);
         $this->assertFalse($test, 'assert failed, there are two different objects of dbstrem');
 
-        $anotherObject = new \Yana\Core\Object();
+        $anotherObject = new \Yana\Core\StdObject();
         $test = $this->object->equals($anotherObject);
         $this->assertFalse($test, 'assert failed, there are two different objects');
 

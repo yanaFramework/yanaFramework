@@ -33,7 +33,7 @@ namespace Yana\Mails\Messages;
  * @package     yana
  * @subpackage  mails
  */
-class Message extends \Yana\Core\Object implements \Yana\Mails\Messages\IsMessage
+class Message extends \Yana\Core\StdObject implements \Yana\Mails\Messages\IsMessage
 {
 
     /**

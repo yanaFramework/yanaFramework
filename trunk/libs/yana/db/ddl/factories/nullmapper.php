@@ -34,7 +34,7 @@ namespace Yana\Db\Ddl\Factories;
  * @package     yana
  * @subpackage  db
  */
-class NullMapper extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories\IsMdb2Mapper
+class NullMapper extends \Yana\Core\StdObject implements \Yana\Db\Ddl\Factories\IsMdb2Mapper
 {
 
     /**

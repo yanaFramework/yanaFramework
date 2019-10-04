@@ -34,7 +34,7 @@ namespace Yana\Db\Queries;
  * @package     yana
  * @subpackage  db
  */
-class JoinCondition extends \Yana\Core\Object implements \Yana\Db\Queries\IsJoinCondition
+class JoinCondition extends \Yana\Core\StdObject implements \Yana\Db\Queries\IsJoinCondition
 {
 
     /**

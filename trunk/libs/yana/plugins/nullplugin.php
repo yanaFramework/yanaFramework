@@ -34,7 +34,7 @@ namespace Yana\Plugins;
  * @subpackage  plugins
  * @ignore
  */
-class NullPlugin extends \Yana\Core\Object implements \Yana\IsPlugin
+class NullPlugin extends \Yana\Core\StdObject implements \Yana\IsPlugin
 {
 
     /**

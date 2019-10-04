@@ -36,7 +36,7 @@ namespace Yana\Forms;
  * @subpackage  form
  * @ignore
  */
-abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Forms\IsBuilder
+abstract class AbstractBuilder extends \Yana\Core\StdObject implements \Yana\Forms\IsBuilder
 {
 
     use \Yana\Forms\Dependencies\HasContainer;

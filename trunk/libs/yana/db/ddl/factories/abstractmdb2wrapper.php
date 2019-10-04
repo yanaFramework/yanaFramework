@@ -39,7 +39,7 @@ namespace Yana\Db\Ddl\Factories;
  * @ignore
  * @codeCoverageIgnore
  */
-abstract class AbstractMdb2Wrapper extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories\IsMdb2Wrapper
+abstract class AbstractMdb2Wrapper extends \Yana\Core\StdObject implements \Yana\Db\Ddl\Factories\IsMdb2Wrapper
 {
 
     /**

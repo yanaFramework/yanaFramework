@@ -34,7 +34,7 @@ namespace Yana\Core\Autoloaders;
  * @package     yana
  * @subpackage  core
  */
-abstract class AbstractMapper extends \Yana\Core\Object implements \Yana\Core\Autoloaders\IsMapper
+abstract class AbstractMapper extends \Yana\Core\StdObject implements \Yana\Core\Autoloaders\IsMapper
 {
 
     /**

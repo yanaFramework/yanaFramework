@@ -39,7 +39,7 @@ namespace Yana\Plugins\Configs;
  *
  * @ignore
  */
-class ClassConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Configs\IsClassConfiguration
+class ClassConfiguration extends \Yana\Core\StdObject implements \Yana\Plugins\Configs\IsClassConfiguration
 {
 
     /**

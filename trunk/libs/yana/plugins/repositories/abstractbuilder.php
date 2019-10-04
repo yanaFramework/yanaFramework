@@ -35,7 +35,7 @@ namespace Yana\Plugins\Repositories;
  * @package     yana
  * @subpackage  plugins
  */
-abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Log\IsLogable
+abstract class AbstractBuilder extends \Yana\Core\StdObject implements \Yana\Log\IsLogable
 {
 
     use \Yana\Log\HasLogger;

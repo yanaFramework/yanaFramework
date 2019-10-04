@@ -37,7 +37,7 @@ namespace Yana\Core\Sessions;
  * @subpackage  core
  * @link        http://www.php.net/manual/en/class.sessionhandlerinterface.php
  */
-class MemcacheSaveHandler extends \Yana\Core\Object implements \Yana\Core\Sessions\IsSessionSaveHandler
+class MemcacheSaveHandler extends \Yana\Core\StdObject implements \Yana\Core\Sessions\IsSessionSaveHandler
 {
 
     /**

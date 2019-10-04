@@ -35,7 +35,7 @@ namespace Yana\Data\Adapters;
  * @package     yana
  * @subpackage  data
  */
-abstract class AbstractEntity extends \Yana\Core\Object implements \Yana\Data\Adapters\IsEntity
+abstract class AbstractEntity extends \Yana\Core\StdObject implements \Yana\Data\Adapters\IsEntity
 {
 
     /**

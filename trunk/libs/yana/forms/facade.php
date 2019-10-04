@@ -34,7 +34,7 @@ namespace Yana\Forms;
  * @subpackage  form
  * @ignore
  */
-class Facade extends \Yana\Core\Object
+class Facade extends \Yana\Core\StdObject
 {
 
     /**

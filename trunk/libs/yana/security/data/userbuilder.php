@@ -61,7 +61,7 @@ namespace Yana\Security\Data;
  *
  * @ignore
  */
-class UserBuilder extends \Yana\Core\Object implements \Yana\Security\Data\IsUserBuilder
+class UserBuilder extends \Yana\Core\StdObject implements \Yana\Security\Data\IsUserBuilder
 {
 
     /**

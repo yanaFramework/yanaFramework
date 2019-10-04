@@ -38,7 +38,7 @@ namespace Yana\Plugins\Menus;
  * @package     yana
  * @subpackage  plugins
  */
-abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Plugins\Menus\IsBuilder, \Yana\Log\IsLogable
+abstract class AbstractBuilder extends \Yana\Core\StdObject implements \Yana\Plugins\Menus\IsBuilder, \Yana\Log\IsLogable
 {
 
     use \Yana\Log\HasLogger;

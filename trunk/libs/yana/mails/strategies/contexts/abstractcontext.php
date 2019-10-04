@@ -33,7 +33,7 @@ namespace Yana\Mails\Strategies\Contexts;
  * @package     yana
  * @subpackage  mails
  */
-abstract class AbstractContext extends \Yana\Core\Object implements \Yana\Mails\Strategies\Contexts\IsContext
+abstract class AbstractContext extends \Yana\Core\StdObject implements \Yana\Mails\Strategies\Contexts\IsContext
 {
 
     /**

@@ -35,7 +35,7 @@ namespace Yana\Security\Data\Users;
  * @package     yana
  * @subpackage  security
  */
-class Mapper extends \Yana\Core\Object implements \Yana\Data\Adapters\IsEntityMapper
+class Mapper extends \Yana\Core\StdObject implements \Yana\Data\Adapters\IsEntityMapper
 {
 
     /**

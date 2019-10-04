@@ -38,7 +38,7 @@ namespace Yana\Plugins\Configs;
  *
  * @ignore
  */
-abstract class AbstractBuilder extends \Yana\Core\Object
+abstract class AbstractBuilder extends \Yana\Core\StdObject
 {
 
     /**

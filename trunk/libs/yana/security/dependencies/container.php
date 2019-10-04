@@ -42,7 +42,7 @@ namespace Yana\Security\Dependencies;
  *
  * @ignore
  */
-class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies\IsFacadeContainer, \Yana\Data\Adapters\IsCacheable
+class Container extends \Yana\Core\StdObject implements \Yana\Security\Dependencies\IsFacadeContainer, \Yana\Data\Adapters\IsCacheable
 {
 
     use \Yana\Core\Dependencies\HasSecurity;

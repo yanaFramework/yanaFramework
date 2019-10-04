@@ -35,7 +35,7 @@ namespace Yana\Plugins\Events;
  *
  * @ignore
  */
-class Dispatcher extends \Yana\Core\Object implements \Serializable, \Yana\Plugins\Events\IsDispatcher
+class Dispatcher extends \Yana\Core\StdObject implements \Serializable, \Yana\Plugins\Events\IsDispatcher
 {
 
     /**

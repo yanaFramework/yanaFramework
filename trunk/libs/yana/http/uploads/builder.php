@@ -35,7 +35,7 @@ namespace Yana\Http\Uploads;
  * @package     yana
  * @subpackage  http
  */
-class Builder extends \Yana\Core\Object
+class Builder extends \Yana\Core\StdObject
 {
 
     /**

@@ -35,7 +35,7 @@ namespace Yana\Db\Mdb2;
  * @package     yana
  * @subpackage  db
  */
-class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsConnectionFactory
+class ConnectionFactory extends \Yana\Core\StdObject implements \Yana\Db\Mdb2\IsConnectionFactory
 {
 
     /**

@@ -35,7 +35,7 @@ namespace Yana\Plugins\Loaders;
  *
  * @ignore
  */
-abstract class AbstractRegistryLoader extends \Yana\Core\Object implements \Serializable, \Yana\Plugins\Loaders\IsRegistryLoader
+abstract class AbstractRegistryLoader extends \Yana\Core\StdObject implements \Serializable, \Yana\Plugins\Loaders\IsRegistryLoader
 {
 
     /**

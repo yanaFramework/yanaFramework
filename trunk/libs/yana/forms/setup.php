@@ -32,7 +32,7 @@ namespace Yana\Forms;
  * @package     yana
  * @subpackage  form
  */
-class Setup extends \Yana\Core\Object implements \Yana\Forms\IsSetup
+class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
 {
 
     /**

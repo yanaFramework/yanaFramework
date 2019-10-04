@@ -37,7 +37,7 @@ namespace Yana\Security\Passwords\Builders;
  *
  * @ignore
  */
-class Builder extends \Yana\Core\Object implements \Yana\Security\Passwords\Builders\IsBuilder
+class Builder extends \Yana\Core\StdObject implements \Yana\Security\Passwords\Builders\IsBuilder
 {
 
     /**

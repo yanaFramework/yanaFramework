@@ -49,7 +49,7 @@ namespace Yana\Core;
  * @package     yana
  * @subpackage  core
  */
-abstract class AbstractSingleton extends \Yana\Core\Object implements \Yana\Core\IsSingleton
+abstract class AbstractSingleton extends \Yana\Core\StdObject implements \Yana\Core\IsSingleton
 {
 
     /**

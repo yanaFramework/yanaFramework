@@ -36,7 +36,7 @@ namespace Yana\Core\MetaData;
  * @package     yana
  * @subpackage  core
  */
-class NullDataProvider extends \Yana\Core\Object implements \Yana\Core\MetaData\IsDataProvider
+class NullDataProvider extends \Yana\Core\StdObject implements \Yana\Core\MetaData\IsDataProvider
 {
 
     /**

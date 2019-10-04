@@ -37,7 +37,7 @@ namespace Yana\Db\FileDb;
  *
  * @ignore
  */
-class Result extends \Yana\Core\Object implements \Yana\Db\IsResult
+class Result extends \Yana\Core\StdObject implements \Yana\Db\IsResult
 {
 
     /**

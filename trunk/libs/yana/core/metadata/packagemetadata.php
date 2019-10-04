@@ -34,7 +34,7 @@ namespace Yana\Core\MetaData;
  * @package     yana
  * @subpackage  core
  */
-class PackageMetaData extends \Yana\Core\Object implements \Yana\Core\MetaData\IsPackageMetaData
+class PackageMetaData extends \Yana\Core\StdObject implements \Yana\Core\MetaData\IsPackageMetaData
 {
 
     /**

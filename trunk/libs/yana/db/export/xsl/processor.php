@@ -37,7 +37,7 @@ namespace Yana\Db\Export\Xsl;
  * @package     yana
  * @subpackage  db
  */
-class Processor extends \Yana\Core\Object implements \Yana\Db\Export\Xsl\IsProcessor
+class Processor extends \Yana\Core\StdObject implements \Yana\Db\Export\Xsl\IsProcessor
 {
 
     /**

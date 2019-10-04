@@ -37,7 +37,7 @@ namespace Yana;
  * @package     yana
  * @subpackage  core
  */
-class ConfigurationFactory extends \Yana\Core\Object implements \Yana\IsConfigurationFactory
+class ConfigurationFactory extends \Yana\Core\StdObject implements \Yana\IsConfigurationFactory
 {
 
     /**

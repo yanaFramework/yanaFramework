@@ -62,7 +62,7 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     protected $form;
 
     /**
-     * @var \Yana\Db\Ddl\Functions\Object
+     * @var \Yana\Db\Ddl\Functions\Definition
      */
     protected $function;
 
@@ -174,7 +174,7 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $this->field = new \Yana\Db\Ddl\Field('field');
         $this->foreignkey = new \Yana\Db\Ddl\ForeignKey('foreignkey');
         $this->form = new \Yana\Db\Ddl\Form('form');
-        $this->function = new \Yana\Db\Ddl\Functions\Object('function');
+        $this->function = new \Yana\Db\Ddl\Functions\Definition('function');
         $this->functionimplementation = new \Yana\Db\Ddl\Functions\Implementation;
         $this->functionparameter = new \Yana\Db\Ddl\Functions\Parameter('param');
         $this->logcreate = new \Yana\Db\Ddl\Logs\Create('logcreate');
@@ -1810,16 +1810,16 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     public function testImplementation()
     {
        $test3 = $this->function->getImplementation("mysql");
-       $this->assertNull($test3, "\Yana\Db\Ddl\Functions\Object, no test implementations are set");
+       $this->assertNull($test3, "\Yana\Db\Ddl\Functions\Definition, no test implementations are set");
 
        $f1 = $this->function->addImplementation('mysql');
        $f2 = $this->function->addImplementation('oracle');
 
        $test1 = $this->function->getImplementations();
-       $this->assertEquals(count($test1), 2, "\Yana\Db\Ddl\Functions\Object, a problem with reading/writing implementations has occured");
+       $this->assertEquals(count($test1), 2, "\Yana\Db\Ddl\Functions\Definition, a problem with reading/writing implementations has occured");
 
        $test2 = $this->function->getImplementation("mysql");
-       $this->assertEquals(count($test2), 1, "\Yana\Db\Ddl\Functions\Object, a problem with reading specified implementations has occured");
+       $this->assertEquals(count($test2), 1, "\Yana\Db\Ddl\Functions\Definition, a problem with reading specified implementations has occured");
     }
 
     /**
@@ -2422,10 +2422,10 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $parentDatabase = $subForm->getDatabase();
         $this->assertEquals($database, $parentDatabase, '\Yana\Db\Ddl\Form::getDatabase, the values should be equal');
 
-        // \Yana\Db\Ddl\Functions\Object
-        $childFunction = new \Yana\Db\Ddl\Functions\Object('function', $database);
+        // \Yana\Db\Ddl\Functions\Definition
+        $childFunction = new \Yana\Db\Ddl\Functions\Definition('function', $database);
         $parentFunction = $childFunction->getParent();
-        $this->assertEquals($database, $parentFunction, '\Yana\Db\Ddl\Functions\Object::getParent, the values should be equal');
+        $this->assertEquals($database, $parentFunction, '\Yana\Db\Ddl\Functions\Definition::getParent, the values should be equal');
 
         // \Yana\Db\Ddl\Index
         $childIndex = new \Yana\Db\Ddl\Index('index', $parentTable);

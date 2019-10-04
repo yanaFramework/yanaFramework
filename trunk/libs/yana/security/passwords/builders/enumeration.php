@@ -37,7 +37,7 @@ namespace Yana\Security\Passwords\Builders;
  *
  * @ignore
  */
-class Enumeration extends \Yana\Core\Object
+class Enumeration extends \Yana\Core\StdObject
 {
 
     /**

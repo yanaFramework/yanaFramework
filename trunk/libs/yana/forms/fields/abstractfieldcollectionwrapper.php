@@ -40,7 +40,7 @@ namespace Yana\Forms\Fields;
  * @subpackage  form
  * @ignore
  */
-abstract class AbstractFieldCollectionWrapper extends \Yana\Core\Object implements \Yana\Forms\Fields\IsFieldCollectionWrapper
+abstract class AbstractFieldCollectionWrapper extends \Yana\Core\StdObject implements \Yana\Forms\Fields\IsFieldCollectionWrapper
 {
 
     /**

@@ -39,7 +39,7 @@ namespace Yana\Db\Export;
  * @package     yana
  * @subpackage  db
  */
-abstract class AbstractSqlFactory extends \Yana\Core\Object
+abstract class AbstractSqlFactory extends \Yana\Core\StdObject
 {
 
     /**

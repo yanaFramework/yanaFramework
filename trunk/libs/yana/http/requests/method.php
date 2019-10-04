@@ -35,7 +35,7 @@ namespace Yana\Http\Requests;
  * @package     yana
  * @subpackage  http
  */
-class Method extends \Yana\Core\Object implements \Yana\Http\Requests\IsMethod
+class Method extends \Yana\Core\StdObject implements \Yana\Http\Requests\IsMethod
 {
 
     /**

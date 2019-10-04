@@ -35,7 +35,7 @@ namespace Yana\Http\Requests;
  * @package     yana
  * @subpackage  http
  */
-abstract class AbstractValueWrapper extends \Yana\Core\Object
+abstract class AbstractValueWrapper extends \Yana\Core\StdObject
 {
 
     /**

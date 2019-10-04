@@ -33,7 +33,7 @@ namespace Yana\Db;
  * @package     yana
  * @subpackage  db
  */
-class NullTransaction extends \Yana\Core\Object implements \Yana\Db\IsTransaction
+class NullTransaction extends \Yana\Core\StdObject implements \Yana\Db\IsTransaction
 {
 
     /**

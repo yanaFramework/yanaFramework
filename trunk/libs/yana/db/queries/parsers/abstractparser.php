@@ -35,7 +35,7 @@ namespace Yana\Db\Queries\Parsers;
  * @package     yana
  * @subpackage  db
  */
-abstract class AbstractParser extends \Yana\Core\Object implements \Yana\Db\Queries\Parsers\IsParser
+abstract class AbstractParser extends \Yana\Core\StdObject implements \Yana\Db\Queries\Parsers\IsParser
 {
 
     /**

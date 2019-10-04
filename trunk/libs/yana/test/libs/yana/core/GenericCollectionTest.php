@@ -68,7 +68,7 @@ class GenericCollectionTest extends \PHPUnit_Framework_TestCase
      */
     public function testOffsetSet()
     {
-        $test = new \Yana\Core\Object();
+        $test = new \Yana\Core\StdObject();
         $this->assertSame($test, $this->object->offsetSet(null, $test));
         $this->assertSame($test, $this->object->offsetGet(0));
     }

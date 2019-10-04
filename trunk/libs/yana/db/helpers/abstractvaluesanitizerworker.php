@@ -35,7 +35,7 @@ namespace Yana\Db\Helpers;
  * @package     yana
  * @subpackage  db
  */
-abstract class AbstractValueSanitizerWorker extends \Yana\Core\Object implements \Yana\Db\Helpers\IsValueSanitizerWorker
+abstract class AbstractValueSanitizerWorker extends \Yana\Core\StdObject implements \Yana\Db\Helpers\IsValueSanitizerWorker
 {
 
     /**

@@ -56,7 +56,7 @@ namespace Yana\Media;
  * @subpackage  utilities
  * @since       2.8.7
  */
-class Image extends \Yana\Core\Object
+class Image extends \Yana\Core\StdObject
 {
 
     /**

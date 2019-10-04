@@ -35,7 +35,7 @@ namespace Yana\Plugins\Loaders;
  *
  * @ignore
  */
-abstract class AbstractPluginLoader extends \Yana\Core\Object implements \Serializable, \Yana\Plugins\Loaders\IsPluginLoader
+abstract class AbstractPluginLoader extends \Yana\Core\StdObject implements \Serializable, \Yana\Plugins\Loaders\IsPluginLoader
 {
 
     /**

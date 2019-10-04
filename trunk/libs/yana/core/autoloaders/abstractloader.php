@@ -34,7 +34,7 @@ namespace Yana\Core\Autoloaders;
  * @package     yana
  * @subpackage  core
  */
-abstract class AbstractLoader extends \Yana\Core\Object implements \Yana\Core\Autoloaders\IsLoader
+abstract class AbstractLoader extends \Yana\Core\StdObject implements \Yana\Core\Autoloaders\IsLoader
 {
 
     /**

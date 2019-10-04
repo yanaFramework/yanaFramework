@@ -37,7 +37,7 @@ namespace Yana\Security\Passwords\Behaviors;
  *
  * @ignore
  */
-abstract class AbstractBehavior extends \Yana\Core\Object implements \Yana\Security\Passwords\Behaviors\IsBehavior
+abstract class AbstractBehavior extends \Yana\Core\StdObject implements \Yana\Security\Passwords\Behaviors\IsBehavior
 {
 
     /**

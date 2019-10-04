@@ -37,7 +37,7 @@ namespace Yana\Security\Rules\Requirements;
  *
  * @ignore
  */
-abstract class AbstractDataObject extends \Yana\Core\Object
+abstract class AbstractDataObject extends \Yana\Core\StdObject
 {
 
     /**

@@ -33,7 +33,7 @@ namespace Yana\Mails\Strategies;
  * @package     yana
  * @subpackage  mails
  */
-abstract class AbstractStrategy extends \Yana\Core\Object implements \Yana\Mails\Strategies\IsStrategy
+abstract class AbstractStrategy extends \Yana\Core\StdObject implements \Yana\Mails\Strategies\IsStrategy
 {
 
     /**

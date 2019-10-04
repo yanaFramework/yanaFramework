@@ -33,7 +33,7 @@ namespace Yana\Log\Errors;
  * @package     yana
  * @subpackage  log
  */
-abstract class AbstractHandler extends \Yana\Core\Object implements \Yana\Log\Errors\IsHandler
+abstract class AbstractHandler extends \Yana\Core\StdObject implements \Yana\Log\Errors\IsHandler
 {
 
     /**

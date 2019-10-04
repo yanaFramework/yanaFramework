@@ -35,7 +35,7 @@ namespace Yana\Plugins\Repositories;
  * @package     yana
  * @subpackage  plugins
  */
-abstract class AbstractRepository extends \Yana\Core\Object implements \Yana\Plugins\Repositories\IsRepository//, \Serializable
+abstract class AbstractRepository extends \Yana\Core\StdObject implements \Yana\Plugins\Repositories\IsRepository//, \Serializable
 {
 
     /**

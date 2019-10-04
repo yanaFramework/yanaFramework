@@ -37,7 +37,7 @@ namespace Yana\Http\Requests;
  * @package     yana
  * @subpackage  http
  */
-class Value extends \Yana\Core\Object implements \Yana\Http\Requests\IsValue
+class Value extends \Yana\Core\StdObject implements \Yana\Http\Requests\IsValue
 {
 
     /**

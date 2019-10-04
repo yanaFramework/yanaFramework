@@ -37,7 +37,7 @@ namespace Yana\Security\Data\SecurityRules;
  * @package     yana
  * @subpackage  security
  */
-abstract class AbstractRule extends \Yana\Core\Object implements \Yana\Security\Data\SecurityRules\IsRuleEntity
+abstract class AbstractRule extends \Yana\Core\StdObject implements \Yana\Security\Data\SecurityRules\IsRuleEntity
 {
 
     /**

@@ -36,7 +36,7 @@ namespace Yana\Plugins\Menus;
  * @subpackage  plugins
  * @ignore
  */
-class Entry extends \Yana\Core\Object implements \Yana\Plugins\Menus\IsEntry
+class Entry extends \Yana\Core\StdObject implements \Yana\Plugins\Menus\IsEntry
 {
 
     /**

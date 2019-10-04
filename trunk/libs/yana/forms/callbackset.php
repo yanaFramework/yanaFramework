@@ -33,7 +33,7 @@ namespace Yana\Forms;
  * @package     yana
  * @subpackage  form
  */
-class CallbackSet extends \Yana\Core\Object implements \Yana\Forms\IsCallbackSet
+class CallbackSet extends \Yana\Core\StdObject implements \Yana\Forms\IsCallbackSet
 {
 
     /**

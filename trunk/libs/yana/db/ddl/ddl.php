@@ -34,7 +34,7 @@ namespace Yana\Db\Ddl;
  * @package     yana
  * @subpackage  db
  */
-abstract class DDL extends \Yana\Core\Object
+abstract class DDL extends \Yana\Core\StdObject
 {
     /**
      * File extensions

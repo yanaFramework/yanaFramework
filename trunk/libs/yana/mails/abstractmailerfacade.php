@@ -33,7 +33,7 @@ namespace Yana\Mails;
  * @package     yana
  * @subpackage  mails
  */
-abstract class AbstractMailerFacade extends \Yana\Core\Object implements \Yana\Mails\IsMailerFacade
+abstract class AbstractMailerFacade extends \Yana\Core\StdObject implements \Yana\Mails\IsMailerFacade
 {
 
     /**

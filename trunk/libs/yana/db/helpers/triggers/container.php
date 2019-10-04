@@ -34,7 +34,7 @@ namespace Yana\Db\Helpers\Triggers;
  * @package     yana
  * @subpackage  db
  */
-class Container extends \Yana\Core\Object
+class Container extends \Yana\Core\StdObject
 {
 
     /**

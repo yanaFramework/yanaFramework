@@ -35,7 +35,7 @@ namespace Yana\Plugins\Menus;
  *
  * @ignore
  */
-class NullMenuBuilder extends \Yana\Core\Object implements \Yana\Plugins\Menus\IsTextMenuBuilder
+class NullMenuBuilder extends \Yana\Core\StdObject implements \Yana\Plugins\Menus\IsTextMenuBuilder
 {
 
     /**

@@ -41,7 +41,7 @@ namespace Yana\Media;
  * @since       2.8.7
  * @see         Image
  */
-class Brush extends \Yana\Core\Object
+class Brush extends \Yana\Core\StdObject
 {
 
     /**

@@ -38,7 +38,7 @@ namespace Yana\Security;
  * @subpackage  security
  * @ignore
  */
-abstract class AbstractFacade extends \Yana\Core\Object implements \Yana\Security\IsFacade
+abstract class AbstractFacade extends \Yana\Core\StdObject implements \Yana\Security\IsFacade
 {
 
     /**

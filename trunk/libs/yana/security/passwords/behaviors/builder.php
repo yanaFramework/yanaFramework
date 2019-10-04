@@ -35,7 +35,7 @@ namespace Yana\Security\Passwords\Behaviors;
  * @package     yana
  * @subpackage  security
  */
-class Builder extends \Yana\Core\Object implements \Yana\Security\Passwords\Behaviors\IsBuilder
+class Builder extends \Yana\Core\StdObject implements \Yana\Security\Passwords\Behaviors\IsBuilder
 {
 
     /**

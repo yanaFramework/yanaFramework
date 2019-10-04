@@ -33,7 +33,7 @@ namespace Yana\Db\Binaries;
  * @package     yana
  * @subpackage  db
  */
-class FileNameCache extends \Yana\Core\Object implements \Yana\Db\Binaries\IsFileNameCache
+class FileNameCache extends \Yana\Core\StdObject implements \Yana\Db\Binaries\IsFileNameCache
 {
 
     /**

@@ -37,7 +37,7 @@ namespace Yana\Security\Rules\Requirements;
  *
  * @ignore
  */
-class DataWriterHelper extends \Yana\Core\Object
+class DataWriterHelper extends \Yana\Core\StdObject
 {
 
     /**

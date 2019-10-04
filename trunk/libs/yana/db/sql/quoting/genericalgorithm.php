@@ -34,7 +34,7 @@ namespace Yana\Db\Sql\Quoting;
  * @package     yana
  * @subpackage  db
  */
-class GenericAlgorithm extends \Yana\Core\Object implements \Yana\Db\Sql\Quoting\IsAlgorithm
+class GenericAlgorithm extends \Yana\Core\StdObject implements \Yana\Db\Sql\Quoting\IsAlgorithm
 {
 
     /**

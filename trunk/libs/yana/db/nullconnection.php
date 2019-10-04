@@ -35,7 +35,7 @@ namespace Yana\Db;
  * @subpackage  db
  * @ignore
  */
-class NullConnection extends \Yana\Core\Object implements \Yana\Db\IsConnection
+class NullConnection extends \Yana\Core\StdObject implements \Yana\Db\IsConnection
 {
 
     /**

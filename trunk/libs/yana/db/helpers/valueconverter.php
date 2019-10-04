@@ -35,7 +35,7 @@ namespace Yana\Db\Helpers;
  * @package     yana
  * @subpackage  db
  */
-class ValueConverter extends \Yana\Core\Object implements \Yana\Db\Helpers\IsValueConverter
+class ValueConverter extends \Yana\Core\StdObject implements \Yana\Db\Helpers\IsValueConverter
 {
 
     /**

@@ -85,7 +85,7 @@ class Database extends \Yana\Db\Ddl\AbstractUnnamedObject
         'table'          => array('tables',         'array', 'Yana\Db\Ddl\Table'),
         'view'           => array('views',          'array', 'Yana\Db\Ddl\Views\View'),
         'form'           => array('forms',          'array', 'Yana\Db\Ddl\Form'),
-        'function'       => array('functions',      'array', 'Yana\Db\Ddl\Functions\Object'),
+        'function'       => array('functions',      'array', 'Yana\Db\Ddl\Functions\Definition'),
         'sequence'       => array('sequences',      'array', 'Yana\Db\Ddl\Sequence'),
         'initialization' => array('initialization', 'array', 'Yana\Db\Ddl\DatabaseInit'),
         'changelog'      => array('changelog',      'Yana\Db\Ddl\ChangeLog')
@@ -142,7 +142,7 @@ class Database extends \Yana\Db\Ddl\AbstractUnnamedObject
     protected $forms = array();
 
     /**
-     * @var \Yana\Db\Ddl\Functions\Object[]
+     * @var \Yana\Db\Ddl\Functions\Definition[]
      */
     protected $functions = array();
 
@@ -839,11 +839,11 @@ class Database extends \Yana\Db\Ddl\AbstractUnnamedObject
      * Get function definition.
      *
      * Returns the function definition with the name $name as an instance of
-     * \Yana\Db\Ddl\Functions\Object. If no function with the given name exists, NULL is returned
+     * \Yana\Db\Ddl\Functions\Definition. If no function with the given name exists, NULL is returned
      * instead.
      *
      * @param   string  $name   name of expected function
-     * @return  \Yana\Db\Ddl\Functions\Object
+     * @return  \Yana\Db\Ddl\Functions\Definition
      */
     public function getFunction($name)
     {
@@ -852,7 +852,7 @@ class Database extends \Yana\Db\Ddl\AbstractUnnamedObject
         $function = null;
         if (isset($this->functions[$lowerCaseName])) {
             $function = $this->functions[$lowerCaseName];
-            assert($function instanceof \Yana\Db\Ddl\Functions\Object);
+            assert($function instanceof \Yana\Db\Ddl\Functions\Definition);
         }
 
         return $function;
@@ -862,14 +862,14 @@ class Database extends \Yana\Db\Ddl\AbstractUnnamedObject
      * Add function definition.
      *
      * Adds a new function item to the database definition and returns the
-     * function definition as an instance of \Yana\Db\Ddl\Functions\Object.
+     * function definition as an instance of \Yana\Db\Ddl\Functions\Definition.
      *
      * If another function with the same name already exists, it throws an
      * AlreadyExistsException.
      * The name must start with a letter and may only contain: a-z, 0-9, '-' and '_'.
      *
      * @param   string  $name  name for the new function
-     * @return  \Yana\Db\Ddl\Functions\Object
+     * @return  \Yana\Db\Ddl\Functions\Definition
      * @throws  \Yana\Core\Exceptions\AlreadyExistsException    if another function with the same name is already defined
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if given an invalid name
      */
@@ -885,7 +885,7 @@ class Database extends \Yana\Db\Ddl\AbstractUnnamedObject
             throw $exception;
         }
 
-        $this->functions[$lowerCaseName] = new \Yana\Db\Ddl\Functions\Object($lowerCaseName);
+        $this->functions[$lowerCaseName] = new \Yana\Db\Ddl\Functions\Definition($lowerCaseName);
         return $this->functions[$lowerCaseName];
     }
 
@@ -893,7 +893,7 @@ class Database extends \Yana\Db\Ddl\AbstractUnnamedObject
      * List all functions by definition.
      *
      * Returns a list of function definitions, where each element is a
-     * \Yana\Db\Ddl\Functions\Object object.
+     * \Yana\Db\Ddl\Functions\Definition object.
      * If no functions are defined, the list is empty.
      *
      * Important note! You can NOT add a new function to the database by adding

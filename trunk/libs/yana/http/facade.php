@@ -35,7 +35,7 @@ namespace Yana\Http;
  * @package     yana
  * @subpackage  http
  */
-class Facade extends \Yana\Core\Object implements \Yana\Http\IsFacade
+class Facade extends \Yana\Core\StdObject implements \Yana\Http\IsFacade
 {
 
     /**

@@ -43,7 +43,7 @@ namespace Yana\Db\Ddl\Factories;
  * @subpackage  db
  * @codeCoverageIgnore
  */
-class DatabaseFactory extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories\IsDatabaseFactory
+class DatabaseFactory extends \Yana\Core\StdObject implements \Yana\Db\Ddl\Factories\IsDatabaseFactory
 {
 
     /**

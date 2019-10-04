@@ -46,7 +46,7 @@ namespace Yana;
  * @package     yana
  * @subpackage  core
  */
-final class Application extends \Yana\Core\Object implements \Yana\Report\IsReportable, \Yana\Core\IsVarContainer
+final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsReportable, \Yana\Core\IsVarContainer
 {
     use \Yana\Core\Dependencies\HasApplicationContainer;
 

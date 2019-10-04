@@ -41,7 +41,7 @@ namespace Yana\Plugins\Configs;
  * @subpackage  plugins
  * @ignore
  */
-class UserPermissionRule extends \Yana\Core\Object implements \Yana\Plugins\Configs\IsUserPermissionRule
+class UserPermissionRule extends \Yana\Core\StdObject implements \Yana\Plugins\Configs\IsUserPermissionRule
 {
 
     /**

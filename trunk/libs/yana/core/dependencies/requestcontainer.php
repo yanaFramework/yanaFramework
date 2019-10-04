@@ -36,7 +36,7 @@ namespace Yana\Core\Dependencies;
  * @package     yana
  * @subpackage  core
  */
-class RequestContainer extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsRequestContainer
+class RequestContainer extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\IsRequestContainer
 {
 
     use \Yana\Core\Dependencies\HasRequest;

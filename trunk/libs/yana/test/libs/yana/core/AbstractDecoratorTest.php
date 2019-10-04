@@ -53,7 +53,7 @@ class MyDecorator extends \Yana\Core\AbstractDecorator
  * @package  test
  * @ignore
  */
-class MyObject extends \Yana\Core\Object
+class MyObject extends \Yana\Core\StdObject
 {
 
     public $a = "b";

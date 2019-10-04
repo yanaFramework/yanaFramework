@@ -35,7 +35,7 @@ namespace Yana\Plugins\Subscriptions;
  * @package     yana
  * @subpackage  plugins
  */
-class Queue extends \Yana\Core\Object implements \Yana\Plugins\Subscriptions\IsQueue
+class Queue extends \Yana\Core\StdObject implements \Yana\Plugins\Subscriptions\IsQueue
 {
 
     /**

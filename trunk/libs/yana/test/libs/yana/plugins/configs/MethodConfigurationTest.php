@@ -37,7 +37,7 @@ require_once __DIR__ . '/../../../../include.php';
  * @package test
  * @ignore
  */
-class MyTestPlugin extends \Yana\Core\Object implements \Yana\IsPlugin
+class MyTestPlugin extends \Yana\Core\StdObject implements \Yana\IsPlugin
 {
 
     public function __construct()

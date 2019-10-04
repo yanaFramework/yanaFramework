@@ -39,7 +39,7 @@ namespace Yana\Core\Sessions;
  * @package     yana
  * @subpackage  core
  */
-class NullWrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWrapper
+class NullWrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\IsWrapper
 {
 
     /**

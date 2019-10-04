@@ -34,7 +34,7 @@ namespace Yana\Db\Ddl\Factories;
  * @package     yana
  * @subpackage  db
  */
-abstract class AbstractDoctrineWorker extends \Yana\Core\Object implements \Yana\Db\Ddl\Factories\IsWorker
+abstract class AbstractDoctrineWorker extends \Yana\Core\StdObject implements \Yana\Db\Ddl\Factories\IsWorker
 {
 
     /**

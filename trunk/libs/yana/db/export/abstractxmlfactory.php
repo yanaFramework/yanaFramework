@@ -33,7 +33,7 @@ namespace Yana\Db\Export;
  * @package     yana
  * @subpackage  db
  */
-abstract class AbstractXmlFactory extends \Yana\Core\Object
+abstract class AbstractXmlFactory extends \Yana\Core\StdObject
 {
 
     /**

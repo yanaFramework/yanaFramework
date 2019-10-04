@@ -39,7 +39,7 @@ namespace Yana\Security\Data\Behaviors;
  *
  * @ignore
  */
-abstract class AbstractBehavior extends \Yana\Core\Object implements \Yana\Security\Data\Behaviors\IsBehavior
+abstract class AbstractBehavior extends \Yana\Core\StdObject implements \Yana\Security\Data\Behaviors\IsBehavior
 {
 
     /**

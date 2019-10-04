@@ -39,7 +39,7 @@ namespace Yana\Security\Rules;
  *
  * @ignore
  */
-abstract class AbstractChecker extends \Yana\Core\Object implements \Yana\Security\Rules\IsChecker
+abstract class AbstractChecker extends \Yana\Core\StdObject implements \Yana\Security\Rules\IsChecker
 {
 
     /**

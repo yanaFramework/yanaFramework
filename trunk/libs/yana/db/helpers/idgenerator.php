@@ -53,7 +53,7 @@ namespace Yana\Db\Helpers;
  * @package     yana
  * @subpackage  db
  */
-class IdGenerator extends \Yana\Core\Object
+class IdGenerator extends \Yana\Core\StdObject
 {
 
     /**

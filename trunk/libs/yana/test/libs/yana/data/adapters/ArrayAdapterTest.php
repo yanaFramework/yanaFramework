@@ -92,7 +92,7 @@ class ArrayAdapterTest extends \PHPUnit_Framework_TestCase
  * @package test
  * @ignore
  */
-class MockSplSubject extends \Yana\Core\Object implements \Yana\Data\Adapters\IsEntity
+class MockSplSubject extends \Yana\Core\StdObject implements \Yana\Data\Adapters\IsEntity
 {
 
     private $_id;

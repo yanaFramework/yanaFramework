@@ -35,7 +35,7 @@ namespace Yana\Plugins\Data;
  * @package     yana
  * @subpackage  plugins
  */
-class Mapper extends \Yana\Core\Object implements \Yana\Data\Adapters\IsEntityMapper
+class Mapper extends \Yana\Core\StdObject implements \Yana\Data\Adapters\IsEntityMapper
 {
 
     /**

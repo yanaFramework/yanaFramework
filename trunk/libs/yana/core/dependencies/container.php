@@ -36,7 +36,7 @@ namespace Yana\Core\Dependencies;
  * @package     yana
  * @subpackage  core
  */
-class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsApplicationContainer
+class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\IsApplicationContainer
 {
 
     use \Yana\Core\Dependencies\HasSecurity, \Yana\Core\Dependencies\HasPlugin, \Yana\Core\Dependencies\HasRequest;

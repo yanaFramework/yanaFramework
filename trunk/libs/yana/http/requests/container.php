@@ -35,7 +35,7 @@ namespace Yana\Http\Requests;
  * @package     yana
  * @subpackage  http
  */
-class Container extends \Yana\Core\Object implements \Yana\Http\Requests\IsContainer
+class Container extends \Yana\Core\StdObject implements \Yana\Http\Requests\IsContainer
 {
 
     /**

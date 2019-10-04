@@ -35,7 +35,7 @@ namespace Yana\Plugins\Dependencies;
  * @package     yana
  * @subpackage  plugins
  */
-class Container extends \Yana\Core\Object implements \Yana\Plugins\Dependencies\IsContainer
+class Container extends \Yana\Core\StdObject implements \Yana\Plugins\Dependencies\IsContainer
 {
 
     use \Yana\Core\Dependencies\HasPlugin, \Yana\Core\Dependencies\HasSession;

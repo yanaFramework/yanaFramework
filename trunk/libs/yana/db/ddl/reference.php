@@ -33,7 +33,7 @@ namespace Yana\Db\Ddl;
  * @package     yana
  * @subpackage  db
  */
-class Reference extends \Yana\Core\Object
+class Reference extends \Yana\Core\StdObject
 {
 
     /**

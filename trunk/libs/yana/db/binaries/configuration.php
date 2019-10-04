@@ -38,7 +38,7 @@ namespace Yana\Db\Binaries;
  * @ignore
  * @codeCoverageIgnore
  */
-class Configuration extends \Yana\Core\Object implements \Yana\Db\Binaries\IsConfiguration
+class Configuration extends \Yana\Core\StdObject implements \Yana\Db\Binaries\IsConfiguration
 {
     use \Yana\Db\Binaries\HasConfiguration;
 }

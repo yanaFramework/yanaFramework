@@ -65,7 +65,7 @@ namespace Yana\Plugins;
  * @package     yana
  * @subpackage  plugins
  */
-class Facade extends \Yana\Core\Object implements \Yana\Report\IsReportable, \Yana\Log\IsLogable
+class Facade extends \Yana\Core\StdObject implements \Yana\Report\IsReportable, \Yana\Log\IsLogable
 {
 
     use \Yana\Log\HasLogger;

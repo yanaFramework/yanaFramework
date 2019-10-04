@@ -35,7 +35,7 @@ namespace Yana\Core\Sessions;
  * @subpackage  core
  * @link        http://www.php.net/manual/en/class.sessionhandlerinterface.php
  */
-class NullSaveHandler extends \Yana\Core\Object implements \Yana\Core\Sessions\IsSessionSaveHandler
+class NullSaveHandler extends \Yana\Core\StdObject implements \Yana\Core\Sessions\IsSessionSaveHandler
 {
 
     /**

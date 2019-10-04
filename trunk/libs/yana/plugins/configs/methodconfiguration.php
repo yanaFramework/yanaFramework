@@ -40,7 +40,7 @@ namespace Yana\Plugins\Configs;
  *
  * @ignore
  */
-class MethodConfiguration extends \Yana\Core\Object implements \Yana\Plugins\Configs\IsMethodConfiguration, \Yana\Report\IsReportable
+class MethodConfiguration extends \Yana\Core\StdObject implements \Yana\Plugins\Configs\IsMethodConfiguration, \Yana\Report\IsReportable
 {
 
     /**

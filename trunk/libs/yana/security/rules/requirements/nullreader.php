@@ -37,7 +37,7 @@ namespace Yana\Security\Rules\Requirements;
  *
  * @ignore
  */
-class NullReader extends \Yana\Core\Object implements \Yana\Security\Rules\Requirements\IsDataReader
+class NullReader extends \Yana\Core\StdObject implements \Yana\Security\Rules\Requirements\IsDataReader
 {
 
     /**

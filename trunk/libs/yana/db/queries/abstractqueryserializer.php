@@ -34,7 +34,7 @@ namespace Yana\Db\Queries;
  * @package     yana
  * @subpackage  db
  */
-abstract class AbstractQuerySerializer extends \Yana\Core\Object implements \Yana\Db\Queries\IsQuerySerializer
+abstract class AbstractQuerySerializer extends \Yana\Core\StdObject implements \Yana\Db\Queries\IsQuerySerializer
 {
 
     /**

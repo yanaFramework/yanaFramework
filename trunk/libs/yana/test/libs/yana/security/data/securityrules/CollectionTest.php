@@ -82,7 +82,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
      */
     public function testOffsetSetInvalidArgumentException()
     {
-        $this->object->offsetSet(null, new \Yana\Core\Object());
+        $this->object->offsetSet(null, new \Yana\Core\StdObject());
     }
 
     /**

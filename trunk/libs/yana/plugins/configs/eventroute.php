@@ -36,7 +36,7 @@ namespace Yana\Plugins\Configs;
  * @subpackage  plugins
  * @ignore
  */
-class EventRoute extends \Yana\Core\Object implements \Yana\Plugins\Configs\IsEventRoute
+class EventRoute extends \Yana\Core\StdObject implements \Yana\Plugins\Configs\IsEventRoute
 {
 
     /**

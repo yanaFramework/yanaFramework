@@ -33,7 +33,7 @@ namespace Yana\Log;
  * @package    yana
  * @subpackage log
  */
-abstract class AbstactLogger extends \Yana\Core\Object implements \Yana\Log\IsLogger
+abstract class AbstactLogger extends \Yana\Core\StdObject implements \Yana\Log\IsLogger
 {
     use \Yana\Log\HasLogLevel;
 }

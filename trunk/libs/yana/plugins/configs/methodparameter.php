@@ -36,7 +36,7 @@ namespace Yana\Plugins\Configs;
  * @subpackage  plugins
  * @ignore
  */
-class MethodParameter extends \Yana\Core\Object implements \Yana\Plugins\Configs\IsMethodParameter
+class MethodParameter extends \Yana\Core\StdObject implements \Yana\Plugins\Configs\IsMethodParameter
 {
 
     /**

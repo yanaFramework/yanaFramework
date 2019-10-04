@@ -40,7 +40,7 @@ namespace Yana\Http\Uris;
  * @subpackage  http
  * @ignore
  */
-class Container extends \Yana\Core\Object implements \Yana\Http\Uris\IsContainer
+class Container extends \Yana\Core\StdObject implements \Yana\Http\Uris\IsContainer
 {
 
     /**

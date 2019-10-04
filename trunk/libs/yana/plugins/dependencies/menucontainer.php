@@ -35,7 +35,7 @@ namespace Yana\Plugins\Dependencies;
  * @package     yana
  * @subpackage  plugins
  */
-class MenuContainer extends \Yana\Core\Object implements \Yana\Plugins\Dependencies\IsMenuContainer
+class MenuContainer extends \Yana\Core\StdObject implements \Yana\Plugins\Dependencies\IsMenuContainer
 {
 
     /**

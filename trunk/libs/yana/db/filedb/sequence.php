@@ -42,7 +42,7 @@ namespace Yana\Db\FileDb;
  * @package     yana
  * @subpackage  db
  */
-class Sequence extends \Yana\Core\Object
+class Sequence extends \Yana\Core\StdObject
 {
 
     /**

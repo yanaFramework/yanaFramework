@@ -47,7 +47,7 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
         $xmlSource = new \SimpleXMLElement('<root>bar</root>');
         $this->assertSame("bar", \Yana\Util\Xml\Converter::convertXmlToAssociativeArray($xmlSource));
         $this->assertSame("bar", \Yana\Util\Xml\Converter::convertXmlToNumericArray($xmlSource));
-        $this->assertEquals(new \Yana\Util\Xml\Object(), \Yana\Util\Xml\Converter::convertXmlToObject($xmlSource));
+        $this->assertEquals(new \Yana\Util\Xml\StdObject(), \Yana\Util\Xml\Converter::convertXmlToObject($xmlSource));
     }
 
     /**
@@ -147,15 +147,15 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
             '<child4 a="6">7</child4><child4 a="8">9</child4><child4 a="10">11</child4></child2></root>');
         $object = \Yana\Util\Xml\Converter::convertXmlToObject($xmlSource);
         $this->assertTrue($object instanceof \Yana\Util\Xml\IsObject);
-        $this->assertTrue($object instanceof \Yana\Util\Xml\Object);
+        $this->assertTrue($object instanceof \Yana\Util\Xml\StdObject);
         $this->assertObjectHasAttribute('child1', $object);
         $this->assertSame("1", $object->child1);
         $this->assertObjectHasAttribute('child2', $object);
-        $this->assertTrue($object->child2 instanceof \Yana\Util\Xml\Object);
+        $this->assertTrue($object->child2 instanceof \Yana\Util\Xml\StdObject);
         $this->assertObjectHasAttribute('@a', $object->child2);
         $this->assertSame("2", $object->child2->getAttribute('a'));
         $this->assertObjectHasAttribute('child3', $object->child2);
-        $this->assertTrue($object->child2->child3 instanceof \Yana\Util\Xml\Object);
+        $this->assertTrue($object->child2->child3 instanceof \Yana\Util\Xml\StdObject);
         $this->assertObjectHasAttribute('@a', $object->child2->child3);
         $this->assertObjectHasAttribute('@b', $object->child2->child3);
         $this->assertObjectHasAttribute('#pcdata', $object->child2->child3);
@@ -168,9 +168,9 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('0', $object->child2->child4);
         $this->assertArrayHasKey('1', $object->child2->child4);
         $this->assertArrayHasKey('2', $object->child2->child4);
-        $this->assertTrue($object->child2->child4[0] instanceof \Yana\Util\Xml\Object);
-        $this->assertTrue($object->child2->child4[1] instanceof \Yana\Util\Xml\Object);
-        $this->assertTrue($object->child2->child4[2] instanceof \Yana\Util\Xml\Object);
+        $this->assertTrue($object->child2->child4[0] instanceof \Yana\Util\Xml\StdObject);
+        $this->assertTrue($object->child2->child4[1] instanceof \Yana\Util\Xml\StdObject);
+        $this->assertTrue($object->child2->child4[2] instanceof \Yana\Util\Xml\StdObject);
         $this->assertSame("6", $object->child2->child4[0]->getAttribute('a'));
         $this->assertSame("8", $object->child2->child4[1]->getAttribute('a'));
         $this->assertSame("10", $object->child2->child4[2]->getAttribute('a'));
@@ -184,22 +184,22 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
      */
     public function testConvertObjectToAssociativeArray()
     {
-        $object = new \Yana\Util\Xml\Object();
+        $object = new \Yana\Util\Xml\StdObject();
         $object->child1 = "1";
 
-        $child2 = new \Yana\Util\Xml\Object();
+        $child2 = new \Yana\Util\Xml\StdObject();
         $child2->addAttribute("a", "2");
         $object->child2 = $child2;
 
-        $child3 = new \Yana\Util\Xml\Object();
+        $child3 = new \Yana\Util\Xml\StdObject();
         $child3->setPcData("3")->addAttribute("a", "4")->addAttribute("b", "5");
         $child2->child3 = $child3;
 
-        $child41 = new \Yana\Util\Xml\Object();
+        $child41 = new \Yana\Util\Xml\StdObject();
         $child41->addAttribute("a", "6")->setPcData("7");
-        $child42 = new \Yana\Util\Xml\Object();
+        $child42 = new \Yana\Util\Xml\StdObject();
         $child42->addAttribute("a", "8")->setPcData("9");
-        $child43 = new \Yana\Util\Xml\Object();
+        $child43 = new \Yana\Util\Xml\StdObject();
         $child43->addAttribute("a", "10")->setPcData("11");
         $child2->child4 = array($child41, $child42, $child43);
         $array = \Yana\Util\Xml\Converter::convertObjectToAssociativeArray($object);

@@ -35,7 +35,7 @@ namespace Yana\Data\Adapters;
  * @package     yana
  * @subpackage  data
  */
-abstract class AbstractDatabaseAdapter extends \Yana\Core\Object implements \Yana\Data\Adapters\IsDataBaseAdapter
+abstract class AbstractDatabaseAdapter extends \Yana\Core\StdObject implements \Yana\Data\Adapters\IsDataBaseAdapter
 {
 
     /**

@@ -156,15 +156,15 @@ class XmlArrayTest extends \PHPUnit_Framework_TestCase
             '<child4 a="6">7</child4><child4 a="8">9</child4><child4 a="10">11</child4></child2></root>';
         $this->_object = new \Yana\Util\XmlArray($xmlSource);
         $object = $this->_object->toObject();
-        $this->assertTrue($object instanceof \Yana\Util\Xml\Object);
+        $this->assertTrue($object instanceof \Yana\Util\Xml\StdObject);
         $this->assertObjectHasAttribute('child1', $object);
         $this->assertSame("1", $object->child1);
         $this->assertObjectHasAttribute('child2', $object);
-        $this->assertTrue($object->child2 instanceof \Yana\Util\Xml\Object);
+        $this->assertTrue($object->child2 instanceof \Yana\Util\Xml\StdObject);
         $this->assertObjectHasAttribute('@a', $object->child2);
         $this->assertSame("2", $object->child2->getAttribute('a'));
         $this->assertObjectHasAttribute('child3', $object->child2);
-        $this->assertTrue($object->child2->child3 instanceof \Yana\Util\Xml\Object);
+        $this->assertTrue($object->child2->child3 instanceof \Yana\Util\Xml\StdObject);
         $this->assertObjectHasAttribute('@a', $object->child2->child3);
         $this->assertObjectHasAttribute('@b', $object->child2->child3);
         $this->assertObjectHasAttribute('#pcdata', $object->child2->child3);
@@ -177,9 +177,9 @@ class XmlArrayTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('0', $object->child2->child4);
         $this->assertArrayHasKey('1', $object->child2->child4);
         $this->assertArrayHasKey('2', $object->child2->child4);
-        $this->assertTrue($object->child2->child4[0] instanceof \Yana\Util\Xml\Object);
-        $this->assertTrue($object->child2->child4[1] instanceof \Yana\Util\Xml\Object);
-        $this->assertTrue($object->child2->child4[2] instanceof \Yana\Util\Xml\Object);
+        $this->assertTrue($object->child2->child4[0] instanceof \Yana\Util\Xml\StdObject);
+        $this->assertTrue($object->child2->child4[1] instanceof \Yana\Util\Xml\StdObject);
+        $this->assertTrue($object->child2->child4[2] instanceof \Yana\Util\Xml\StdObject);
         $this->assertSame("6", $object->child2->child4[0]->getAttribute('a'));
         $this->assertSame("8", $object->child2->child4[1]->getAttribute('a'));
         $this->assertSame("10", $object->child2->child4[2]->getAttribute('a'));
@@ -196,8 +196,8 @@ class XmlArrayTest extends \PHPUnit_Framework_TestCase
         $xmlSource = '<root/>';
         $this->_object = new \Yana\Util\XmlArray($xmlSource);
         $object = $this->_object->toObject();
-        $this->assertTrue($object instanceof \Yana\Util\Xml\Object);
-        $this->assertEquals(new \Yana\Util\Xml\Object(), $object);
+        $this->assertTrue($object instanceof \Yana\Util\Xml\StdObject);
+        $this->assertEquals(new \Yana\Util\Xml\StdObject(), $object);
     }
 
 }

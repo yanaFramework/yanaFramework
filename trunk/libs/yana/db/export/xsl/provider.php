@@ -38,7 +38,7 @@ namespace Yana\Db\Export\Xsl;
  * @property-read \DOMDocument $mysql      MySQL XSL-Template
  * @property-read \DOMDocument $postgresql PostGreSQL XSL-Template
  */
-class Provider extends \Yana\Core\Object implements \Yana\Db\Export\Xsl\IsProvider
+class Provider extends \Yana\Core\StdObject implements \Yana\Db\Export\Xsl\IsProvider
 {
 
     /**

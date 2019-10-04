@@ -39,7 +39,7 @@ namespace Yana\Security\Data\SecurityRules;
  *
  * @ignore
  */
-class Mapper extends \Yana\Core\Object implements \Yana\Security\Data\SecurityRules\IsMapper
+class Mapper extends \Yana\Core\StdObject implements \Yana\Security\Data\SecurityRules\IsMapper
 {
 
     /**

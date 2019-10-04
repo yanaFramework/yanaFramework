@@ -69,7 +69,7 @@ namespace Yana\Core;
  * @package     yana
  * @subpackage  core
  */
-abstract class AbstractDecorator extends \Yana\Core\Object
+abstract class AbstractDecorator extends \Yana\Core\StdObject
 {
 
     /**
@@ -118,7 +118,7 @@ abstract class AbstractDecorator extends \Yana\Core\Object
      * <<magic>> Retrieves properties from the decorated object.
      *
      * @param   string  $name  property name
-     * @return  \Yana\Core\Object
+     * @return  \Yana\Core\StdObject
      * @ignore
      */
     public function __get($name)

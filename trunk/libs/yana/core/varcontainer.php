@@ -39,7 +39,7 @@ namespace Yana\Core;
  * @subpackage  core
  * @ingore
  */
-class VarContainer extends \Yana\Core\Object implements \Yana\Core\IsVarContainer
+class VarContainer extends \Yana\Core\StdObject implements \Yana\Core\IsVarContainer
 {
 
     /**

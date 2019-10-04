@@ -33,7 +33,7 @@ namespace Yana\Report;
  * @package    yana
  * @subpackage report
  */
-class ApplicationReportBuilder extends \Yana\Core\Object
+class ApplicationReportBuilder extends \Yana\Core\StdObject
 {
 
     /**

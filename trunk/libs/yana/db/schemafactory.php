@@ -33,7 +33,7 @@ namespace Yana\Db;
  * @package     yana
  * @subpackage  db
  */
-class SchemaFactory extends \Yana\Core\Object implements \Yana\Db\IsSchemaFactory, \Yana\Data\Adapters\IsCacheable
+class SchemaFactory extends \Yana\Core\StdObject implements \Yana\Db\IsSchemaFactory, \Yana\Data\Adapters\IsCacheable
 {
     use \Yana\Data\Adapters\HasCache;
 

@@ -33,7 +33,7 @@ namespace Yana\Db\Binaries\Uploads;
  * @package     yana
  * @subpackage  db
  */
-abstract class AbstractUploader extends \Yana\Core\Object
+abstract class AbstractUploader extends \Yana\Core\StdObject
 {
 
     /**

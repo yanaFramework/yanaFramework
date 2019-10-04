@@ -36,7 +36,7 @@ namespace Yana\Core\Sessions;
  * @package     yana
  * @subpackage  core
  */
-class Manager extends \Yana\Core\Object implements \Yana\Core\Sessions\IsManager
+class Manager extends \Yana\Core\StdObject implements \Yana\Core\Sessions\IsManager
 {
 
     /**

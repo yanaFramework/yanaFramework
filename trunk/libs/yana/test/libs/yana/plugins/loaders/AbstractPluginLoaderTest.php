@@ -84,7 +84,7 @@ class AbstractLoaderTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $appContainer = new \Yana\Core\Dependencies\Container(new \Yana\Util\Xml\Object());
+        $appContainer = new \Yana\Core\Dependencies\Container(new \Yana\Util\Xml\StdObject());
         $container = new \Yana\Plugins\Dependencies\PluginContainer(new \Yana\Application($appContainer), new \Yana\Security\Sessions\NullWrapper());
         $this->object = new \Yana\Plugins\Loaders\MyLoader(new \Yana\Files\Dir(CWD . '/resources'), $container);
     }
@@ -132,7 +132,7 @@ class AbstractLoaderTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoadPluginsWithException()
     {
-        $appContainer = new \Yana\Core\Dependencies\Container(new \Yana\Util\Xml\Object());
+        $appContainer = new \Yana\Core\Dependencies\Container(new \Yana\Util\Xml\StdObject());
         $container = new \Yana\Plugins\Dependencies\PluginContainer(new \Yana\Application($appContainer), new \Yana\Security\Sessions\NullWrapper());
         $this->object = new \Yana\Plugins\Loaders\MyExceptionLoader(new \Yana\Files\Dir(CWD . '/resources'), $container);
 

@@ -51,7 +51,7 @@ namespace Yana;
  * @name        Index
  * @package     yana
  */
-class ApplicationBuilder extends \Yana\Core\Object
+class ApplicationBuilder extends \Yana\Core\StdObject
 {
 
     /**

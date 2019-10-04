@@ -36,7 +36,7 @@ require_once dirname(__FILE__) . '/../../../../../include.php';
  * @package  test
  * @ignore
  */
-class MyFooFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFormatter
+class MyFooFormatter extends \Yana\Core\StdObject implements \Yana\Views\Helpers\IsFormatter
 {
     /**
      * @param   string  $string  ignored
@@ -107,7 +107,7 @@ class FormatterCollectionTest extends \PHPUnit_Framework_TestCase
      */
     public function testOffsetSetInvalidArgumentException()
     {
-        $this->object->offsetSet(null, new \Yana\Core\Object());
+        $this->object->offsetSet(null, new \Yana\Core\StdObject());
     }
 
 }

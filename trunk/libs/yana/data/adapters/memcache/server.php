@@ -36,7 +36,7 @@ namespace Yana\Data\Adapters\MemCache;
  * @package     yana
  * @subpackage  data
  */
-class Server extends \Yana\Core\Object
+class Server extends \Yana\Core\StdObject
 {
 
     /**

@@ -34,7 +34,7 @@ namespace Yana\Forms\Fields;
  * @subpackage  form
  * @ignore
  */
-abstract class AbstractWhereClauseCreator extends \Yana\Core\Object implements \Yana\Forms\Fields\IsWhereClauseCreator
+abstract class AbstractWhereClauseCreator extends \Yana\Core\StdObject implements \Yana\Forms\Fields\IsWhereClauseCreator
 {
 
     /**

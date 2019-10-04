@@ -35,7 +35,7 @@ namespace Yana\Plugins\Menus;
  *
  * @ignore
  */
-abstract class AbstractMenu extends \Yana\Core\Object implements \Yana\Plugins\Menus\IsMenu
+abstract class AbstractMenu extends \Yana\Core\StdObject implements \Yana\Plugins\Menus\IsMenu
 {
 
     /**

@@ -36,7 +36,7 @@ namespace Yana\Data;
  * @subpackage  data
  * @ignore
  */
-abstract class AbstractValidator extends \Yana\Core\Object implements \Yana\Data\IsValidator
+abstract class AbstractValidator extends \Yana\Core\StdObject implements \Yana\Data\IsValidator
 {
 
    // intentionally left blank

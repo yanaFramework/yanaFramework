@@ -35,7 +35,7 @@ namespace Yana\Core\Autoloaders;
  * @subpackage  core
  * @codeCoverageIgnore
  */
-class Wrapper extends \Yana\Core\Object
+class Wrapper extends \Yana\Core\StdObject
 {
 
     /**

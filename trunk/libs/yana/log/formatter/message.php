@@ -33,7 +33,7 @@ namespace Yana\Log\Formatter;
  * @package    yana
  * @subpackage log
  */
-class Message extends \Yana\Core\Object
+class Message extends \Yana\Core\StdObject
 {
 
     /**

@@ -50,7 +50,7 @@ require_once __DIR__ . '/../log/formatter/message.php';
  * @package     yana
  * @subpackage  core
  */
-class AutoLoadBuilder extends \Yana\Core\Object
+class AutoLoadBuilder extends \Yana\Core\StdObject
 {
 
     const PSR0 = 0;

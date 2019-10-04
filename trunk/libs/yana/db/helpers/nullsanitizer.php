@@ -34,7 +34,7 @@ namespace Yana\Db\Helpers;
  * @package     yana
  * @subpackage  db
  */
-class NullSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSanitizer
+class NullSanitizer extends \Yana\Core\StdObject implements \Yana\Db\Helpers\IsSanitizer
 {
 
     /**

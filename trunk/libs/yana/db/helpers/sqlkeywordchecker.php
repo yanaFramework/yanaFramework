@@ -36,7 +36,7 @@ namespace Yana\Db\Helpers;
  * @package     yana
  * @subpackage  db
  */
-class SqlKeywordChecker extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSqlKeywordChecker
+class SqlKeywordChecker extends \Yana\Core\StdObject implements \Yana\Db\Helpers\IsSqlKeywordChecker
 {
 
     /**

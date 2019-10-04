@@ -35,7 +35,7 @@ namespace Yana\Plugins\Dependencies;
  * @package     yana
  * @subpackage  plugins
  */
-class PluginContainer extends \Yana\Core\Object implements \Yana\Plugins\Dependencies\IsPluginContainer
+class PluginContainer extends \Yana\Core\StdObject implements \Yana\Plugins\Dependencies\IsPluginContainer
 {
 
     /**

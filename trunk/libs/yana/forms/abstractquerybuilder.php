@@ -31,7 +31,7 @@ namespace Yana\Forms;
  * @package     yana
  * @subpackage  form
  */
-class AbstractQueryBuilder extends \Yana\Core\Object
+class AbstractQueryBuilder extends \Yana\Core\StdObject
 {
 
     /**

@@ -33,7 +33,7 @@ namespace Yana\Db\Mdb2;
  * @package     yana
  * @subpackage  db
  */
-class ExceptionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsExceptionFactory
+class ExceptionFactory extends \Yana\Core\StdObject implements \Yana\Db\Mdb2\IsExceptionFactory
 {
 
     /**
