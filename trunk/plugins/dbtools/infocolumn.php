@@ -58,7 +58,7 @@ namespace Plugins\DbTools;
  * @subpackage  database
  * @ignore
  */
-class InfoColumn extends \Yana\Core\Object
+class InfoColumn extends \Yana\Core\AbstractObject
 {
     /**#@+
      * @access  private

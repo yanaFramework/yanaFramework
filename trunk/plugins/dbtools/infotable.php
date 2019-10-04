@@ -64,7 +64,7 @@ namespace Plugins\DbTools;
  * @subpackage  database
  * @ignore
  */
-class InfoTable extends \Yana\Core\Object
+class InfoTable extends \Yana\Core\AbstractObject
 {
 
     /**

@@ -19,7 +19,7 @@ namespace Plugins\MediaDb;
  * @package     yana
  * @subpackage  plugins
  */
-class ViewHelper extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFunction
+class ViewHelper extends \Yana\Core\AbstractObject implements \Yana\Views\Helpers\IsFunction
 {
 
     /**
