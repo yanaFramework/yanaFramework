@@ -27,7 +27,7 @@
  */
 declare(strict_types=1);
 
-//error_reporting(0);
+error_reporting(~E_DEPRECATED);
 require_once 'library.php';
 
 $application = new \Yana\ApplicationBuilder();
