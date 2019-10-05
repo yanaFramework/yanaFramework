@@ -87,16 +87,19 @@ class QueryBuilder extends \Yana\Forms\AbstractQueryBuilder
         }
 
         // set output columns
-        assert('!isset($columnNames); // Cannot redeclare var $columnNames');
+        assert(!isset($updateForm), 'Cannot redeclare var $updateForm');
+        $updateForm = $form->getUpdateForm();
+        /** @var \Yana\Forms\Setups\IsContext $updateForm */
+        assert(!isset($columnNames), 'Cannot redeclare var $columnNames');
         $columnNames = $form->getUpdateForm()->getColumnNames();
         if (count($columnNames) > 0) {
             $query->setColumns($columnNames); // throws NotFoundException
             $primaryKey = $form->getTable()->getPrimaryKey();
-            if (\in_array($primaryKey, $columnNames)) {
+            if (!$updateForm->hasColumnName($primaryKey)) {
                 $query->addColumn($form->getTable()->getPrimaryKey());
             }
         }
-        unset($columnNames);
+        unset($updateForm, $columnNames);
 
         $this->_buildSelectForSubForm($query);
         /* @var $reference \Yana\Db\Ddl\Reference */
