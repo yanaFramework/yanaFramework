@@ -53,21 +53,21 @@ abstract class AbstractBuilder extends \Yana\Core\StdObject implements \Yana\For
      *
      * @var  \Yana\Db\IsConnection
      */
-    private $_database;
+    private $_database = null;
 
     /**
      * Form facade.
      *
      * @var  \Yana\Forms\Facade
      */
-    private $_facade;
+    private $_facade = null;
 
     /**
      * Query builder class.
      *
      * @var  \Yana\Forms\Worker
      */
-    private $_queryBuilder;
+    private $_queryBuilder = null;
 
     /**
      * Included builder.
