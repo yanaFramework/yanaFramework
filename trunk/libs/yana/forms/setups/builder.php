@@ -231,7 +231,7 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Forms\Setups\IsBuild
             assert('!isset($columnNames); // Cannot redeclare var $columnNames');
             $context = $setup->getContext($name);
             if ($name === \Yana\Forms\Setups\ContextNameEnumeration::UPDATE) {
-                $this->_setUpdateContextRows($requestValues);
+                $this->setRows($requestValues);
 
             } else {
                 $columnNames = array_flip($context->getColumnNames());
