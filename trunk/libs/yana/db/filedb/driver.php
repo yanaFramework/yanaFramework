@@ -706,7 +706,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
                  */
                 if ($column->isUnique() === true) {
                     assert('!isset($tmp); // Cannot redeclare var $tmp');
-                    $tmp = $idxfile->getVar($column, $set[$column]);
+                    $tmp = $idxfile->getVar($columnName, $set[$columnName]);
                     /*
                      * Error - unique constraint has already been breached by some
                      * previous operation.
@@ -715,7 +715,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
                      */
                     if (is_array($tmp) && count($tmp) > 1) {
                         assert('!isset($log); // Cannot redeclare var $log');
-                        $log = "SQL WARNING: The column {$column} " .
+                        $log = "SQL WARNING: The column {$columnName} " .
                                 "has an unique constraint, but multiple " .
                                 "rows with the same name have been found. " .
                                 "This conflict can not be solved automatically. " .
@@ -727,8 +727,8 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
                      * error - constraint is breached
                      */
                     if (!empty($tmp) && strcasecmp($tmp, $row) !== 0) {
-                        $message = "Cannot update entry with column {$column}" .
-                                "= " . $set[$column] . ". The column has an unique constraint " .
+                        $message = "Cannot update entry with column {$columnName}" .
+                                "= " . $set[$columnName] . ". The column has an unique constraint " .
                                 "and another entry with the same value already exists.";
                         throw new \Yana\Db\Queries\Exceptions\DuplicateValueException($message);
                     }
