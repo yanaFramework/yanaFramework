@@ -76,6 +76,13 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Forms\Setups\IsBuild
     private $_blacklistColumnNames = array();
 
     /**
+     * The values of the rows to show in the form, if any.
+     *
+     * @var array
+     */
+    private $_rows = array();
+
+    /**
      * Initialize instance.
      *
      * @param  \Yana\Db\Ddl\Form  $form  base form defintion that the setup will apply to
@@ -85,6 +92,16 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Forms\Setups\IsBuild
         $this->_form = $form;
         $this->object = new \Yana\Forms\Setup();
         $this->_setDependencyContainer($container);
+    }
+
+    /**
+     * Returns values of the rows to show in the form, if any.
+     *
+     * @return  array
+     */
+    public function getRows(): array
+    {
+        return $this->_rows;
     }
 
     /**
@@ -110,6 +127,9 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Forms\Setups\IsBuild
     public function __invoke()
     {
         $this->_buildActions()->_buildSetupContext();
+        $this->_resetUpdateContextRows()->_setUpdateContextRows($this->getRows());
+        $this->_buildHeader();
+        $this->_buildFooter();
         return $this->object;
     }
 
@@ -236,9 +256,7 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Forms\Setups\IsBuild
      */
     public function setRows(array $rows = array())
     {
-        $this->_resetUpdateContextRows()->_setUpdateContextRows($rows);
-        $this->_buildHeader();
-        $this->_buildFooter();
+        $this->_rows = $rows;
         return $this;
     }
 
