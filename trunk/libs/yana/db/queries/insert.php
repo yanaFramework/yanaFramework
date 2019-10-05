@@ -235,7 +235,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery implements \Yana\Db\Queries\
         /*
          * 2.a) inserting a row
          */
-        assert('!isset($primaryKey); // Cannot redeclare var $primaryKey');
+        assert(!isset($primaryKey), 'Cannot redeclare var $primaryKey');
         $primaryKey = $table->getPrimaryKey();
 
         // copy primary key to row property
@@ -243,17 +243,17 @@ class Insert extends \Yana\Db\Queries\AbstractQuery implements \Yana\Db\Queries\
             $this->setRow($values[$primaryKey]);
         }
 
-        assert('!isset($isInsert); // Cannot redeclare var $isInsert');
+        assert(!isset($isInsert), 'Cannot redeclare var $isInsert');
         $isInsert = false;
         if ($this->getType() === \Yana\Db\Queries\TypeEnumeration::INSERT) {
             $isInsert = true;
-            assert('is_array($values);');
+            assert(is_array($values));
 
             /*
              * 2.a.1) copy primary key from row property or vice versa
              */
             if (!isset($values[$primaryKey])) {
-                assert('!isset($column);');
+                assert(!isset($column));
                 $column = $table->getColumn($primaryKey);
                 if ($column->isAutoIncrement()) {
                     /* ignore - is to be inserted automatically by database */
