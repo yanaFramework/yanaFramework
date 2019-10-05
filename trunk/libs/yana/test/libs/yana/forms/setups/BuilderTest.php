@@ -369,6 +369,14 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testGetRows()
+    {
+        $this->assertSame(array(), $this->object->getRows());
+    }
+
+    /**
+     * @test
+     */
     public function testSetRows()
     {
         $rows = array(
@@ -378,7 +386,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
                 'other' => 'this must not be used'
             )
         );
-        $setup = $this->object->setRows($rows)->__invoke();
+        $this->assertSame($rows, $this->object->setRows($rows)->getRows());
     }
 
     /**
