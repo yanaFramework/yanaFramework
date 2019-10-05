@@ -236,7 +236,7 @@ class ValueSanitizerWorker extends \Yana\Db\Helpers\AbstractValueSanitizerWorker
      */
     public function asHtmlString(int $maxLength = 0): string
     {
-        assert('is_int($maxLength); // Invalid argument type: $maxLength. Integer expected');
+        assert(is_int($maxLength), 'Invalid argument type: $maxLength. Integer expected');
         $value = $this->_getValue();
         if (!is_string($value)) {
             throw new \Yana\Core\Exceptions\Forms\InvalidValueException();
@@ -276,8 +276,8 @@ class ValueSanitizerWorker extends \Yana\Db\Helpers\AbstractValueSanitizerWorker
      */
     public function asInteger(int $maxLength = 0, bool $isUnsigned = false): int
     {
-        assert('is_int($maxLength); // Invalid argument type: $maxLength. Integer expected');
-        assert('is_bool($isUnsigned); // Invalid argument type: $isUnsigned. Boolean expected');
+        assert(is_int($maxLength), 'Invalid argument type: $maxLength. Integer expected');
+        assert(is_bool($isUnsigned), 'Invalid argument type: $isUnsigned. Boolean expected');
         $value = $this->_getValue();
         if (\Yana\Data\IntegerValidator::validate($value, $maxLength, (bool) $isUnsigned) === false) {
             throw new \Yana\Core\Exceptions\Forms\InvalidValueException();
@@ -312,7 +312,7 @@ class ValueSanitizerWorker extends \Yana\Db\Helpers\AbstractValueSanitizerWorker
      */
     public function asMailAddress(int $maxLength = 0): string
     {
-        assert('is_int($maxLength); // Invalid argument type: $maxLength. Integer expected');
+        assert(is_int($maxLength), 'Invalid argument type: $maxLength. Integer expected');
         $value = filter_var($this->_getValue(), FILTER_SANITIZE_EMAIL);
         if (filter_var($value, FILTER_VALIDATE_EMAIL) === false || ($maxLength > 0 && \mb_strlen($value) > $maxLength)) {
             throw new \Yana\Core\Exceptions\Forms\InvalidValueException();
@@ -369,7 +369,7 @@ class ValueSanitizerWorker extends \Yana\Db\Helpers\AbstractValueSanitizerWorker
      */
     public function asString(int $maxLength = 0): string
     {
-        assert('is_int($maxLength); // Invalid argument type: $maxLength. Integer expected');
+        assert(is_int($maxLength), 'Invalid argument type: $maxLength. Integer expected');
         $value = $this->_getValue();
         if (!is_string($value)) {
             throw new \Yana\Core\Exceptions\Forms\InvalidValueException();
@@ -386,7 +386,7 @@ class ValueSanitizerWorker extends \Yana\Db\Helpers\AbstractValueSanitizerWorker
      */
     public function asText(int $maxLength = 0): string
     {
-        assert('is_int($maxLength); // Invalid argument type: $maxLength. Integer expected');
+        assert(is_int($maxLength), 'Invalid argument type: $maxLength. Integer expected');
         $value = $this->_getValue();
         if (!is_string($value)) {
             throw new \Yana\Core\Exceptions\Forms\InvalidValueException();
@@ -462,7 +462,7 @@ class ValueSanitizerWorker extends \Yana\Db\Helpers\AbstractValueSanitizerWorker
      */
     public function asUrl(int $maxLength = 0): string
     {
-        assert('is_int($maxLength); // Invalid argument type: $maxLength. Integer expected');
+        assert(is_int($maxLength), 'Invalid argument type: $maxLength. Integer expected');
         $value = filter_var($this->_getValue(), FILTER_SANITIZE_URL);
         if ($maxLength > 0) {
             $value = mb_substr($value, 0, (int) $maxLength);

@@ -203,6 +203,9 @@ class ValueSanitizer extends \Yana\Core\StdObject implements \Yana\Db\Helpers\Is
             $error = new \Yana\Core\Exceptions\Forms\InvalidSyntaxException($message, $level);
             throw $error->setValid($pattern)->setValue($value)->setField($title);
         }
+        if ($value === "" && $column->isNumber()) {
+            return NULL;
+        };
         $worker = $this->_getWorker($value);
 
         switch ($refColumn->getType())
