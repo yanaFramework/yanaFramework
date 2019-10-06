@@ -33,19 +33,30 @@ namespace Plugins\DbAdmin;
  */
 class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
 {
+
     /**
-     * Constructor
+     * Attempts to load a database schema.
      *
-     * @access public
-     * @ignore
+     * @param   string  $schemaName  to load
+     * @return \Yana\Db\Ddl\Database
      */
-    public function __construct()
+    private function _loadDatabaseSchema(string $schemaName): \Yana\Db\Ddl\Database
     {
-        /**
-         * load PEAR-DB
-         * @ignore
-         */
-        @include_once "MDB2.php";
+        $schemaFactory = new \Yana\Db\SchemaFactory();
+        return $schemaFactory->createSchema($schemaName);
+    }
+
+    /**
+     * Attempts to open and return a database connection.
+     *
+     * @param   string  $schema  to load
+     * @return  \Yana\Db\IsConnection
+     */
+    private function _openConnection(string $schema): \Yana\Db\IsConnection
+    {
+        $schemaFactory = new \Yana\Db\SchemaFactory();
+        $connectionFactory = new \Yana\Db\ConnectionFactory($schemaFactory);
+        return $connectionFactory->createConnection($schema, true);
     }
 
     /**
@@ -62,10 +73,6 @@ class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
     public function get_db_configuration()
     {
         $yana = $this->_getApplication();
-
-        if (!class_exists("MDB2")) {
-            throw new \Yana\Db\Mdb2\PearDbException();
-        }
 
         $yana->setVar("DATABASE_ACTIVE",      YANA_DATABASE_ACTIVE);
         $yana->setVar("DATABASE_DBMS",        YANA_DATABASE_DBMS);
@@ -94,16 +101,9 @@ class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
      * @param       string  $dbms  type of DBMS
      * @param       array   $list  list of database schemas
      * @throws      \Yana\Core\Exceptions\Forms\MissingInputException  when either DBMS or databases have not been selected
-     * @throws      \Yana\Db\Mdb2\PearDbException                      when PEAR MDB2 was not found
      */
     public function db_install($dbms, array $list)
     {
-        $YANA = $this->_getApplication();
-
-        if (!class_exists("MDB2")) {
-            throw new \Yana\Db\Mdb2\PearDbException();
-        }
-
         if (empty($dbms) || empty($list)) {
             /* nothing to do */
             $message = "No databases for target DBMS selected.";
@@ -144,7 +144,7 @@ class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
         }
 
         /* Mapping the DBMS to it's installation directory */
-        $installDirectory = $YANA->getResource('system:/dbinstall/' . mb_strtolower($dbms));
+        $installDirectory = $this->_getApplication()->getResource('system:/dbinstall/' . mb_strtolower($dbms));
         if (!$installDirectory instanceof \Yana\Files\Dir || !$installDirectory->exists()) {
             /* invalid option - the choosen dbms is unknown */
             \Yana\Log\LogManager::getLogger()->addLog("Unable to install database. The choosen DBMS '{$dbms}' is unknown.");
@@ -175,8 +175,8 @@ class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
             }
 
             $installFile = $installDirectory . $item . '.sql';
-            $dbSchema = \Yana\Files\XDDL::getDatabase($item); // may throw \Yana\Core\Exceptions\NotFoundException
-            $database = new \Yana\Db\Mdb2\Connection($dbSchema);
+            $database = $this->_openConnection($item);
+            $dbSchema = $database->getSchema(); // may throw \Yana\Core\Exceptions\NotFoundException
 
             /* If no SQL file for the current $item does exist,
              * we need to call the appropriate \Yana\Db\Export\SqlFactory method
@@ -282,9 +282,6 @@ class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
     {
         @set_time_limit(500);
 
-        if (!class_exists("MDB2")) {
-            throw new \Yana\Db\Mdb2\PearDbException();
-        }
         if (empty($dbms) || empty($list)) {
             /* nothing to do */
             $message = "No databases for target DBMS selected.";
@@ -298,8 +295,8 @@ class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
             /**
              * read database content
              */
-            $dbSchema = \Yana\Files\XDDL::getDatabase($item);
-            $db = new \Yana\Db\Mdb2\Connection($dbSchema);
+            $db = $this->_openConnection($item);
+            $dbSchema = $db->getSchema();
             $fileDb = new \Yana\Db\FileDb\Connection($dbSchema);
 
             /**
