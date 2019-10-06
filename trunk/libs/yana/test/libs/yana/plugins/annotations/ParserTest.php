@@ -70,6 +70,13 @@ class ParserTest extends \PHPUnit_Framework_TestCase
              * {@test6 Key:}
              * {@test6}
              * {@test7 Key1:, Key2: value1, value2, value3, Key3: test }
+             * @script      1.js
+             * @script      2.js
+             * @script
+             * @style       1.css
+             * @style       2.css
+             * @style
+             *
              * @ignore
              * {invalid@nonsense}
              * {@missingbracket
@@ -126,6 +133,15 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     public function testGetTagEmpty()
     {
         $this->assertTrue($this->object->getTag('test5'));
+    }
+
+    /**
+     * @test
+     */
+    public function testGetTagsList()
+    {
+        $this->assertSame(array('1.js', '2.js', true), $this->object->getTags('script'));
+        $this->assertSame(array('1.css', '2.css', true), $this->object->getTags('style'));
     }
 
     /**

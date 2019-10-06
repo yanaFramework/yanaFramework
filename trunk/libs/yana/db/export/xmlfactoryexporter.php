@@ -204,7 +204,7 @@ class XmlFactoryExporter extends \Yana\Core\AbstractUtility
          */
         $tab = str_repeat("\t", $indent);
 
-        $xml = "$tab<table id=\"" . \Yana\Util\Strings::htmlSpecialChars($tableName) . "\">\n";
+        $xml = "$tab<table id=\"" . \Yana\Util\Strings::htmlSpecialChars((string) $tableName) . "\">\n";
         foreach ($table as $pKey => $row)
         {
             if (is_array($row)) {
@@ -231,7 +231,7 @@ class XmlFactoryExporter extends \Yana\Core\AbstractUtility
 
         $tab = str_repeat("\t", $indent);
 
-        $xml = "$tab<row id=\"" . \Yana\Util\Strings::htmlSpecialChars($rowId) . "\">\n";
+        $xml = "$tab<row id=\"" . \Yana\Util\Strings::htmlSpecialChars((string) $rowId) . "\">\n";
         foreach ($row as $column => $value)
         {
             $column = mb_strtolower($column);

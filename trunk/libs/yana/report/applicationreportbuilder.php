@@ -180,7 +180,7 @@ class ApplicationReportBuilder extends \Yana\Core\StdObject
 
         @include_once "MDB2.php";
         // @codeCoverageIgnoreStart
-        if (!class_exists("MDB2")) {
+        if (!class_exists("MDB2", false)) {
             $message = "PHP PEAR-MDB2 module not found. " .
                 "Database plugins require PEAR-MDB2 and will not run unless you install it.";
             $subReport->addError($message);

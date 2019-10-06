@@ -117,8 +117,7 @@ class Mdb2WorkerTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        //$this->markTestSkipped();
-        if (!$this->isAvailable()) {
+        if (!\Yana\Db\Mdb2\ConnectionFactory::isMdb2Available() || !$this->isAvailable()) {
             $this->markTestSkipped();
         }
         try {

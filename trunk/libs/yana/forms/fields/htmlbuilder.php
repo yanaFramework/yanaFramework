@@ -462,7 +462,7 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
         assert('is_string($mimeType); // Invalid argument $mimeType: string expected');
         $attr = ($this->getAttr() > '' ? ' ' : '') . $this->getAttr();
         if ($mimeType) {
-            $attr .= ' accept="' . \Yana\Util\Strings::htmlSpecialChars($mimeType) . '"';
+            $attr .= ' accept="' . \Yana\Util\Strings::htmlSpecialChars((string) $mimeType) . '"';
         }
         if ($this->getMaxLength() > 0) {
             $attr .= ' maxlength="' . (int) $this->getMaxLength() . '"';
@@ -592,7 +592,7 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
         $title = ($this->getTitle()) ? $this->getTitle() : $lang->getVar('ext_link');
 
         $onclick = 'return confirm(\'' . $lang->getVar('confirm_ext_link') . '\')';
-        $href = htmlspecialchars($url, ENT_COMPAT, 'UTF-8');
+        $href = \Yana\Util\Strings::htmlSpecialChars((string) $url);
         $text = $url;
         if (mb_strlen($text) > 80) {
             $text = mb_substr($text, 0, 76) . ' ...';

@@ -184,7 +184,7 @@ abstract class AbstractFormatter extends \Yana\Core\StdObject implements \Yana\L
                 case \Yana\Log\TypeEnumeration::INFO:
                 case \Yana\Log\TypeEnumeration::ASSERT:
                 case \Yana\Log\TypeEnumeration::UNKNOWN:
-                    $description = htmlspecialchars($description, ENT_NOQUOTES, 'UTF-8');
+                    $description = \Yana\Util\Strings::htmlSpecialChars((string) $description, ENT_NOQUOTES);
                     $description = preg_replace('/\'[^\'\"\s]+\'/', '<span style="color:#f00">$0</span>', $description);
             }
             // create output

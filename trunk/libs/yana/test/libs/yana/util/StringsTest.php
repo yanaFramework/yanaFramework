@@ -305,12 +305,12 @@ class StringsTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Generated from @assert ("test", "crc32") == -662733300.
+     * @test
      */
     public function testEncrypt()
     {
         $this->assertEquals(
-            -662733300, \Yana\Util\Strings::encrypt("test", "crc32")
+                \crc32("test"), \Yana\Util\Strings::encrypt("test", "crc32")
         );
     }
 

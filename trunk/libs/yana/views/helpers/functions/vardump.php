@@ -55,10 +55,10 @@ class VarDump extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vi
         if (isset($params['var'])) {
             if (is_scalar($params['var'])) {
                 return '<pre style="text-align: left">' . gettype($params['var']) . '(' .
-                    htmlspecialchars(var_export($params['var'], true), ENT_COMPAT, 'UTF-8') . ')</pre>';
+                    \Yana\Util\Strings::htmlSpecialChars((string) var_export($params['var'], true)) . ')</pre>';
             } else {
                 return '<pre style="text-align: left">' .
-                    htmlspecialchars(var_export(@$params['var'], true), ENT_COMPAT, 'UTF-8') . '</pre>';
+                    \Yana\Util\Strings::htmlSpecialChars((string) var_export(@$params['var'], true)) . '</pre>';
             }
         } else {
             return '<pre style="text-align: left">' .

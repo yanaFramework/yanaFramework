@@ -508,7 +508,7 @@ class Hashtable extends \Yana\Core\AbstractUtility
             break;
             default:
                 $xml = $tab . ('<' . $tagName . ' ' . $attId . '="' . $name . '">' .
-                    htmlspecialchars($data, ENT_NOQUOTES, self::$_inputEncoding) . '</' . $tagName . ">\n");
+                \Yana\Util\Strings::htmlSpecialChars((string) $data, ENT_NOQUOTES, self::$_inputEncoding) . '</' . $tagName . ">\n");
             break;
         } /* end switch */
 

@@ -59,7 +59,7 @@ class PrintArray extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana
         $lDelim = $smarty->smarty->left_delimiter;
         $rDelim = $smarty->smarty->right_delimiter;
         if (is_array($array)) {
-            $array = htmlspecialchars(\Yana\Files\SML::encode($array), ENT_COMPAT, 'UTF-8');
+            $array = \Yana\Util\Strings::htmlSpecialChars((string) \Yana\Files\SML::encode($array));
             $replacement = '<span style="color: #35a;">$1</span>$2<span style="color: #35a;">$3</span>';
 
             $array = preg_replace('/(&lt;\w[^&]*&gt;)(.*?)(&lt;\/[^&]*&gt;)$/m', $replacement, $array);

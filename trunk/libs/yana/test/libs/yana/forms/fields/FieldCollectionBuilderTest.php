@@ -70,7 +70,6 @@ class FieldCollectionBuilderTest extends \PHPUnit_Framework_TestCase
         $context = new \Yana\Forms\Setups\Context('update');
         $parentForm = new \Yana\Forms\Fields\FieldCollectionWrapper($formFacade, $context);
         $collection = $this->object->__invoke($parentForm);
-        $this->assertEmpty($collection);
         $this->assertSame(0, $collection->count());
     }
 
@@ -96,7 +95,6 @@ class FieldCollectionBuilderTest extends \PHPUnit_Framework_TestCase
 
         $parentForm = new \Yana\Forms\Fields\FieldCollectionWrapper($formFacade, $context);
         $collection = $this->object->__invoke($parentForm);
-        $this->assertEmpty($collection);
         $this->assertSame(0, $collection->count());
     }
 
@@ -262,7 +260,6 @@ class FieldCollectionBuilderTest extends \PHPUnit_Framework_TestCase
 
         $parentForm = new \Yana\Forms\Fields\FieldCollectionWrapper($formFacade, $context);
         $collection = $this->object->__invoke($parentForm);
-        $this->assertEmpty($collection);
         $this->assertSame(0, $collection->count());
     }
 

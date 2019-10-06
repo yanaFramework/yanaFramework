@@ -145,7 +145,7 @@ class ValueConverter extends \Yana\Core\StdObject implements \Yana\Db\Helpers\Is
                 if (!is_scalar($value)) {
                     return "";
                 }
-                return htmlspecialchars_decode($value);
+                return \Yana\Util\Strings::htmlSpecialChars((string) $value);
 
             case \Yana\Db\Ddl\ColumnTypeEnumeration::FILE:
             case \Yana\Db\Ddl\ColumnTypeEnumeration::IMAGE:

@@ -97,7 +97,8 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder implements \Yana\Log
             assert('!isset($tags); // Cannot redeclare var $tags');
             assert('!isset($tag); // Cannot redeclare var $tag');
             $tags = $parser->getTags(\Yana\Plugins\Annotations\Enumeration::MENU);
-            foreach ($tags as $tag) {
+            foreach ($tags as $tag)
+            {
                 assert('!isset($menu); // Cannot redeclare var $menu');
                 $menu = new \Yana\Plugins\Menus\Entry();
                 if (isset($tag[\Yana\Plugins\Annotations\Enumeration::GROUP])) {

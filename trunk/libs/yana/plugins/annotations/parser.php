@@ -148,7 +148,7 @@ class Parser extends \Yana\Plugins\Annotations\AbstractParser
          * 1) simple tags: @foo
          */
         $match = array();
-        if (preg_match_all('/ @' . preg_quote($tagName, '/') . '(\s.*|)$/mi', $this->getText(), $match)) {
+        if (preg_match_all('/ @' . preg_quote($tagName, '/') . '(|\s.*)$/mi', $this->getText(), $match)) {
 
             assert('!isset($i); // Cannot redeclare var $i');
             assert('!isset($tagContent); // Cannot redeclare var $tagContent');

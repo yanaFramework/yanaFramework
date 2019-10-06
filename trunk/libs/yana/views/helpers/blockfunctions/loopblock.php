@@ -124,13 +124,13 @@ class LoopBlock extends \Yana\Core\StdObject implements \Yana\Views\Helpers\IsBl
                 $list .= $this->_loop($key, $item, $element, $template, $id . '.');
             } elseif (is_scalar($element)) {
                 $li = $template;
-                $li = str_replace('$' . $key, htmlspecialchars($prefix . $id, ENT_COMPAT, 'UTF-8'), $li);
+                $li = str_replace('$' . $key, \Yana\Util\Strings::htmlSpecialChars((string) $prefix . $id), $li);
                 if ($element === true) {
                     $li = str_replace('$' . $item, 'true', $li);
                 } elseif ($element === false) {
                     $li = str_replace('$' . $item, 'false', $li);
                 } else {
-                    $li = str_replace('$' . $item, htmlspecialchars($element, ENT_COMPAT, 'UTF-8'), $li);
+                    $li = str_replace('$' . $item, \Yana\Util\Strings::htmlSpecialChars((string) $element), $li);
                 }
                 $list .= $li;
             }

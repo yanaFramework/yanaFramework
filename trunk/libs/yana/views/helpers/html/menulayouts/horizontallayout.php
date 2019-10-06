@@ -78,19 +78,19 @@ class HorizontalLayout extends \Yana\Views\Helpers\Html\MenuLayouts\AbstractLayo
             /* print key */
             if (is_array($element)) {
                 $ul .= '<li onmouseover="yanaHMenu(this,true)" onmouseout="yanaHMenu(this,false)" class="hmenu">';
-                $ul .= '<div class="menu_head">' . htmlspecialchars($key, ENT_COMPAT, 'UTF-8') . '</div>';
+                $ul .= '<div class="menu_head">' . \Yana\Util\Strings::htmlSpecialChars((string) $key) . '</div>';
             } else {
                 $ul .= '<li class="entry">';
                 if ($keys === 2) {
                     /* intentionally left blank */
                 } elseif ($keys == 1 && is_scalar($element)) {
-                    $ul .= '<a href="'.htmlspecialchars($key, ENT_COMPAT, 'UTF-8').'">';
+                    $ul .= '<a href="'.\Yana\Util\Strings::htmlSpecialChars((string) $key).'">';
                 } else {
                     $ul .= '<span class="gui_array_key">';
                     if ($allowHtml) {
                         $ul .= $key;
                     } else {
-                        $ul .= htmlspecialchars($key, ENT_COMPAT, 'UTF-8').':';
+                        $ul .= \Yana\Util\Strings::htmlSpecialChars((string) $key).':';
                     }
                     $ul .= '</span>';
                 }
@@ -113,10 +113,10 @@ class HorizontalLayout extends \Yana\Views\Helpers\Html\MenuLayouts\AbstractLayo
                     if ($allowHtml) {
                         $ul .= $element;
                     } else {
-                        $ul .= htmlspecialchars($element, ENT_COMPAT, 'UTF-8');
+                        $ul .= \Yana\Util\Strings::htmlSpecialChars((string) $element);
                     }
                 } else {
-                    $ul .= htmlspecialchars(print_r((string) $element, true), ENT_COMPAT, 'UTF-8');
+                    $ul .= \Yana\Util\Strings::htmlSpecialChars((string) print_r((string) $element, true));
                 }
                 if ($keys == 0) {
                     $ul .= '</span>';

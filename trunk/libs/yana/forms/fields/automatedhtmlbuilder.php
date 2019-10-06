@@ -332,8 +332,8 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                 $this->setCssClass("gui_generator_bool icon_" . $value);
                 return $this->buildSpan('&nbsp;');
             case \Yana\Db\Ddl\ColumnTypeEnumeration::COLOR:
-                $this->setAttr('style="background-color: ' . \htmlspecialchars($value) . '"')->setCssClass("gui_generator_color");
-                return $this->buildSpan(\htmlspecialchars($value));
+                $this->setAttr('style="background-color: ' . \Yana\Util\Strings::htmlSpecialChars((string) $value) . '"')->setCssClass("gui_generator_color");
+                return $this->buildSpan(\Yana\Util\Strings::htmlSpecialChars((string) $value));
             case \Yana\Db\Ddl\ColumnTypeEnumeration::FILE:
                 $this->setCssClass('gui_generator_file_download');
                 if (!is_string($value)) {
@@ -342,7 +342,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                 return $this->buildSpan($this->buildFileDownload($value, $setup->getDownloadAction()));
             case \Yana\Db\Ddl\ColumnTypeEnumeration::TEXT:
                 $textFormatter = new \Yana\Views\Helpers\Formatters\TextFormatterCollection();
-                $value = $textFormatter(\htmlspecialchars($value));
+                $value = $textFormatter(\Yana\Util\Strings::htmlSpecialChars((string) $value));
             // fall through
             case \Yana\Db\Ddl\ColumnTypeEnumeration::HTML:
                 if (mb_strlen($value) > 25) {
@@ -376,7 +376,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                 if (!is_string($value)) {
                     $value = "";
                 }
-                return $this->buildSpan(\htmlspecialchars($value));
+                return $this->buildSpan(\Yana\Util\Strings::htmlSpecialChars((string) $value));
             case \Yana\Db\Ddl\ColumnTypeEnumeration::DATE:
             case \Yana\Db\Ddl\ColumnTypeEnumeration::TIME:
             case \Yana\Db\Ddl\ColumnTypeEnumeration::TIMESTAMP:
@@ -392,10 +392,10 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                     $value = "&ndash;";
 
                 } elseif (mb_strlen((string) $value) > 80) {
-                    $value = \htmlspecialchars(mb_substr((string) $value, 0, 76)) . '&nbsp;...';
+                    $value = \Yana\Util\Strings::htmlSpecialChars(mb_substr((string) $value, 0, 76)) . '&nbsp;...';
 
                 } else {
-                    $value = \htmlspecialchars((string) $value);
+                    $value = \Yana\Util\Strings::htmlSpecialChars((string) $value);
                 }
                 return $this->buildSpan($value);
         }
@@ -535,7 +535,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                 {
                     case 'javascript':
                         assert('!isset($actionId);');
-                        $actionId = \Yana\Util\Strings::htmlSpecialChars($event->getAction());
+                        $actionId = \Yana\Util\Strings::htmlSpecialChars((string) $event->getAction());
                         $href = 'href="javascript://" ' . $event->getName() . '="' . $actionId . '"';
                         unset($actionId);
                     break;
@@ -593,7 +593,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                     continue; // these are links - ignore!
                 }
                 $name = $event->getName();
-                $code = \Yana\Util\Strings::htmlSpecialChars($event->getAction());
+                $code = \Yana\Util\Strings::htmlSpecialChars((string) $event->getAction());
                 $eventsAsHtml .= "$name=\"$code\"";
             } // end foreach
         }

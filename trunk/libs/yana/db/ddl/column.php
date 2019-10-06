@@ -1789,7 +1789,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
                 if (!is_scalar($value)) {
                     return "";
                 }
-                return htmlspecialchars_decode($value);
+                return htmlspecialchars_decode((string) $value);
 
             case \Yana\Db\Ddl\ColumnTypeEnumeration::FILE:
             case \Yana\Db\Ddl\ColumnTypeEnumeration::IMAGE:

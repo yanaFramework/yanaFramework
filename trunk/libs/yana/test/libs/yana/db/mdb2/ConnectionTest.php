@@ -61,6 +61,9 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
+        if (!\Yana\Db\Mdb2\ConnectionFactory::isMdb2Available()) {
+            $this->markTestSkipped();
+        }
         if (\version_compare(\phpversion(), '7.0.0') >= 0 && \version_compare(\MDB2::apiVersion(), '2.5.0b5') < 0) {
             $this->markTestSkipped('MDB2 version not compatible with PHP7.');
         }

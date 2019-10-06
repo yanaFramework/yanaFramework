@@ -49,10 +49,10 @@ class NullExceptionFactoryTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Db\Mdb2\NullExceptionFactory();
-        if (!\class_exists('\MDB2_Error')) {
+        if (!\Yana\Db\Mdb2\ConnectionFactory::isMdb2Available()) {
             $this->markTestSkipped('Pear MDB2 required for this test');
         }
+        $this->object = new \Yana\Db\Mdb2\NullExceptionFactory();
     }
 
     /**

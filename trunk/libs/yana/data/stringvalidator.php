@@ -251,7 +251,7 @@ class StringValidator extends AbstractValidator
             $value = preg_replace("/\s/", " ", $value);
             /* trim spaces */
             $value = trim($value);
-            $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+            $value = \Yana\Util\Strings::htmlSpecialChars($value, ENT_QUOTES);
             /*
              * Escape Token-delimiters, to prevent possible code injection.
              * Note: YANA_UNI_DELIMITER has also to be a part of YANA_LEFT_DELIMITER and

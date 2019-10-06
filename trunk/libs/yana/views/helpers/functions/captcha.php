@@ -55,7 +55,7 @@ class Captcha extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vi
     {
         $id = '';
         if (isset($params['id']) && is_string($params['id'])) {
-            $id = ' id="' . htmlspecialchars($params['id'], ENT_COMPAT, 'UTF-8') . '"';
+            $id = ' id="' . \Yana\Util\Strings::htmlSpecialChars((string) $params['id']) . '"';
         }
         $index = rand(1, 9);
 

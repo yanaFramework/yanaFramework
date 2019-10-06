@@ -102,7 +102,7 @@ abstract class AbstractHelper extends \Yana\Core\StdObject
     public function setId($id)
     {
         assert('is_string($id); // Invalid argument $id: string expected');
-        $this->_id = \Yana\Util\Strings::htmlSpecialChars($id, ENT_QUOTES);
+        $this->_id = \Yana\Util\Strings::htmlSpecialChars((string) $id, ENT_QUOTES);
         return $this;
     }
 
@@ -125,7 +125,7 @@ abstract class AbstractHelper extends \Yana\Core\StdObject
     public function setName($name)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
-        $this->_name = \Yana\Util\Strings::htmlSpecialChars($name, ENT_QUOTES);
+        $this->_name = \Yana\Util\Strings::htmlSpecialChars((string) $name, ENT_QUOTES);
         return $this;
     }
 
@@ -148,7 +148,7 @@ abstract class AbstractHelper extends \Yana\Core\StdObject
     public function setCssClass($class)
     {
         assert('is_string($class); // Invalid argument $class: string expected');
-        $this->_class = \Yana\Util\Strings::htmlSpecialChars($class, ENT_QUOTES);
+        $this->_class = \Yana\Util\Strings::htmlSpecialChars((string) $class, ENT_QUOTES);
         return $this;
     }
 
@@ -222,7 +222,7 @@ abstract class AbstractHelper extends \Yana\Core\StdObject
     public function setAttr($attr)
     {
         assert('is_string($attr); // Invalid argument $attr: string expected');
-        $this->_attr = \Yana\Util\Strings::htmlSpecialChars($attr, ENT_NOQUOTES);
+        $this->_attr = \Yana\Util\Strings::htmlSpecialChars((string) $attr, ENT_NOQUOTES);
         return $this;
     }
 

@@ -302,7 +302,6 @@ class Strings extends \Yana\Core\AbstractUtility
      * @name    Strings::encrypt()
      * @see     Strings::encode()
      *
-     * @assert ("test", "crc32") == -662733300
      * @assert ("test", "md5") == "098f6bcd4621d373cade4e832627b4f6"
      * @assert ("test", "sha") == "a94a8fe5ccb19ba61c4c0873d391e987982fbbd3"
      * @assert ("test", "crypt", "pass") == "pawpU97AVNPO6"

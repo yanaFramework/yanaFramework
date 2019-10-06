@@ -112,30 +112,29 @@ class ConnectionFactory extends \Yana\Core\StdObject implements \Yana\Db\IsConne
     }
 
     /**
-     * <<factory>> Returns a ready-to-use database connection.
+     * Test if a connection is available.
      *
-     * Example:
-     * <code>
-     * // Connect to database using 'config/db/user.db.xml'
-     * $db = \Yana\Db\ConnectionFactory();
-     * $db->createConnection('user');
-     * </code>
+     * Returns bool(true) if a connection to a db-server could be established via the provided parameters,
+     * and bool(false) otherwise.
      *
-     * @param   string|\Yana\Db\Ddl\Database  $schema        name of the database schema file (see config/db/*.xml),
-     *                                                       or instance of \Yana\Db\Ddl\Database
-     * @param   bool                          $ignoreFileDb  set to bool(true) if you DON'T want to use the fallback File-DB driver
-     * @return  \Yana\Db\IsConnection
-     * @throws  \Yana\Core\Exceptions\NotFoundException  when no such database was found
-     * @throws  \Yana\Db\ConnectionException             when connection to database failed
+     * Will also return bool(false) if no suitable database abstraction layer is available.
+     *
+     * @param   array  $dsn  info data for connection
+     * @return  bool
+     * @codeCoverageIgnore
      */
-    public function isAvailable($schema, $ignoreFileDb = YANA_DATABASE_ACTIVE)
+    public static function isAvailable(array $dsn): bool
     {
-        if (is_string($schema)) {
-            $schema = $this->_getSchemaFactory()->createSchema($schema);
-        }
-        assert($schema instanceof \Yana\Db\Ddl\Database);
+        if (\Yana\Db\Doctrine\ConnectionFactory::isDoctrineAvailable()) {
+            return \Yana\Db\Doctrine\ConnectionFactory::isAvailable($dsn);
 
-        return $this->_createConnection($schema, $ignoreFileDb);
+        }
+        if (\Yana\Db\Mdb2\ConnectionFactory::isMdb2Available()) {
+            return \Yana\Db\Mdb2\ConnectionFactory::isAvailable($dsn);
+
+        }
+
+        return false;
     }
 
     /**

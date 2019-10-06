@@ -251,7 +251,7 @@ class TextFormatter extends \Yana\Views\Helpers\Formatters\AbstractFormatter
                             $mailHref = preg_replace('/ ?(\[wbr\]|\[br\])/', '', $mailHref);
                             $mailHref = preg_replace('/^mailto:/i', '', $mailHref);
                             $mailHref = filter_var($mailHref, FILTER_SANITIZE_EMAIL);
-                            $mailHref = htmlspecialchars($mailHref, ENT_COMPAT, 'UTF-8');
+                            $mailHref = \Yana\Util\Strings::htmlSpecialChars((string) $mailHref);
                             if (!empty($mailHref)) {
                                 $string = str_replace(
                                     $mailMatch,
@@ -275,7 +275,7 @@ class TextFormatter extends \Yana\Views\Helpers\Formatters\AbstractFormatter
                         {
                             if (preg_match("/^[\w\d\-_\/]+\.(png|jpg|gif|jpeg)$/i", $matches[1], $ext)) {
                                 $strip_tags = strip_tags(preg_replace("/\[wbr\]/i", "", $matches[1]));
-                                $htmlspecialchars = htmlspecialchars($strip_tags, ENT_COMPAT, 'UTF-8');
+                                $htmlspecialchars = \Yana\Util\Strings::htmlSpecialChars((string) $strip_tags);
                                 $replace = '<img alt="" border="0" src="' . $htmlspecialchars .
                                     '" style="max-width: 320px; max-height: 240px" onload="javascript:if'.
                                     '(this.width>320) { this.width=320; }; if(this.height>240) { this.height=240; };'.
@@ -327,7 +327,7 @@ class TextFormatter extends \Yana\Views\Helpers\Formatters\AbstractFormatter
                             $uriHref = strip_tags($uriHref);
                             $uriHref = preg_replace('/ ?(\[wbr\]|\[br\])/', '', $uriHref);
                             $uriHref = filter_var($uriHref, FILTER_SANITIZE_URL);
-                            $uriHref = htmlspecialchars($uriHref, ENT_COMPAT, 'UTF-8');
+                            $uriHref = \Yana\Util\Strings::htmlSpecialChars((string) $uriHref);
                             if (!preg_match('/^[^:]+:/', $uriHref)) {
                                 $uriHref = 'http://' . $uriHref;
                             } elseif (!preg_match('/^(https?:\/\/|ftp:\/\/)/', $uriHref)) {
@@ -363,7 +363,7 @@ class TextFormatter extends \Yana\Views\Helpers\Formatters\AbstractFormatter
                                     $regExp = "/\[$tagName\](.*)(?:\[\/$tagName\]|$)/Us";
                                 }
                                 if (isset($opt[2])) {
-                                    $replace = htmlspecialchars_decode($opt[2]);
+                                    $replace = htmlspecialchars_decode((string) $opt[2]);
                                 } else {
                                     $replace = '<span class="embtag_tag_' . $tagName . '">$1</span>123';
                                 }

@@ -80,20 +80,20 @@ class SimpleLayout extends \Yana\Views\Helpers\Html\MenuLayouts\AbstractLayout
                 $ul .= '<li class="gui_array_head" onmouseover="this.className=\'gui_array_head_open\'" ' .
                     'onmouseout="this.className=\'gui_array_head\'">';
                 $ul .= '<span class="gui_array_key">';
-                $ul .= htmlspecialchars($key, ENT_COMPAT, 'UTF-8');
+                $ul .= \Yana\Util\Strings::htmlSpecialChars((string) $key);
                 $ul .= '</span>';
             } else {
                 $ul .= '<li class="gui_array_list">';
                 if ($keys === 2) {
                     /* intentionally left blank */
                 } elseif ($keys == 1 && is_scalar($element)) {
-                    $ul .= '<a href="' . htmlspecialchars($key, ENT_COMPAT, 'UTF-8') . '">';
+                    $ul .= '<a href="' . \Yana\Util\Strings::htmlSpecialChars((string) $key) . '">';
                 } else {
                     $ul .= '<span class="gui_array_key">';
                     if ($allowHtml) {
                         $ul .= $key;
                     } else {
-                        $ul .= htmlspecialchars($key, ENT_COMPAT, 'UTF-8') . ':';
+                        $ul .= \Yana\Util\Strings::htmlSpecialChars((string) $key) . ':';
                     }
                     $ul .= '</span>';
                 }
@@ -111,18 +111,18 @@ class SimpleLayout extends \Yana\Views\Helpers\Html\MenuLayouts\AbstractLayout
             } elseif (is_string($element)) {
                 if (!$allowHtml) {
                     $ul .= '<span class="gui_array_value">' .
-                        $textFormatter(htmlspecialchars($element, ENT_COMPAT, 'UTF-8')) . '</span>';
+                        $textFormatter(\Yana\Util\Strings::htmlSpecialChars((string) $element)) . '</span>';
                 } else {
                     $ul .= '<span class="gui_array_value">' . $element . '</span>';
                 }
             } elseif (is_scalar($element)) {
-                $ul .= '<span class="gui_array_value">' . htmlspecialchars($element, ENT_COMPAT, 'UTF-8') . '</span>';
+                $ul .= '<span class="gui_array_value">' . \Yana\Util\Strings::htmlSpecialChars((string) $element) . '</span>';
             } elseif (is_array($element)) {
                 $ul .= $this->__invoke($element, $keys, $allowHtml);
             } elseif (is_object($element)) {
-                $ul .= '<span class="gui_array_value">' . htmlspecialchars((string) $element, ENT_COMPAT, 'UTF-8') . '</span>';
+                $ul .= '<span class="gui_array_value">' . \Yana\Util\Strings::htmlSpecialChars((string) $element) . '</span>';
             } else {
-                $ul .= '<span class="gui_array_value">' . htmlspecialchars(print_r($element, true), ENT_COMPAT, 'UTF-8') .
+                $ul .= '<span class="gui_array_value">' . \Yana\Util\Strings::htmlSpecialChars((string) print_r($element, true)) .
                     '</span>';
             }
 
