@@ -332,6 +332,16 @@
                     <source/>
                  </trans-unit>
             </group>
+            <group id="Yana\Db\Export\Xsl\ProcessorException">
+                 <trans-unit id="Yana\Db\Export\Xsl\ProcessorException.h">
+                    <target>XSLT processor error</target>
+                    <source/>
+                 </trans-unit>
+                 <trans-unit id="Yana\Db\Export\Xsl\ProcessorException.p">
+                    <target>There was an error processing the given XSL template to generate SQL from the database schema stored in a XML DDL file. Make sure the PHP XSL extension is available. Windows users: add 'extension=php_xsl.dll' to your php.ini file. On Linux please use 'apt-get install php7.2-xsl' on your console.</target>
+                    <source/>
+                 </trans-unit>
+            </group>
             <group id="Yana\Db\Queries\Exceptions\NotCreatedException">
                  <trans-unit id="Yana\Db\Queries\Exceptions\NotCreatedException.h">
                     <target>The entry could not be created</target>

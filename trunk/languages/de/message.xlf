@@ -332,6 +332,16 @@
                     <target>Die Datei <bpt id="b1">&lt;b&gt;</bpt>{$FILE}<ept id="b1">&lt;/b&gt;</ept> konnte nicht erzeugt werden. Möglicherweise sind unzureichende Rechte gesetzt oder das Verzeichnis ist schreibgeschützt.</target>
                  </trans-unit>
             </group>
+            <group id="Yana\Db\Export\Xsl\ProcessorException">
+                 <trans-unit id="Yana\Db\Export\Xsl\ProcessorException.h">
+                    <source>XSLT processor error</source>
+                    <target>XSLT-Processorfehler</target>
+                 </trans-unit>
+                 <trans-unit id="Yana\Db\Export\Xsl\ProcessorException.p">
+                    <source>There was an error processing the given XSL template to generate SQL from the database schema stored in a XML DDL file. Make sure the PHP XSL extension is available. Windows users: add 'extension=php_xsl.dll' to your php.ini file. On Linux please use 'apt-get install php7.2-xsl' on your console.</source>
+                    <target>Bei der Umwandlung des Datenbankschemas aus einer XML DDL-Datei in SQL ist ein Fehler aufgetreten. Stellen Sie bitte sicher, dass die XSL-Erweiterung instaliert und aktiviert ist. Windowsnutzer: Füren Sie 'extension=php_xsl.dll' zu Ihrer php.ini hinzu. Auf Linux verwenden Sie bitte 'apt-get install php7.2-xsl' auf der Kommandozeile.</target>
+                 </trans-unit>
+            </group>
             <group id="Yana\Db\Queries\Exceptions\NotCreatedException">
                  <trans-unit id="Yana\Db\Queries\Exceptions\NotCreatedException.h">
                     <source>The entry could not be created</source>
