@@ -273,7 +273,7 @@ class TextFormatter extends \Yana\Views\Helpers\Formatters\AbstractFormatter
                     case 'img':
                         while (preg_match("/\[img\](.*)\[\/img\]/U", $string, $matches))
                         {
-                            if (preg_match("/^[\w\d-_\/]+\.(png|jpg|gif|jpeg)$/i", $matches[1], $ext)) {
+                            if (preg_match("/^[\w\d\-_\/]+\.(png|jpg|gif|jpeg)$/i", $matches[1], $ext)) {
                                 $strip_tags = strip_tags(preg_replace("/\[wbr\]/i", "", $matches[1]));
                                 $htmlspecialchars = htmlspecialchars($strip_tags, ENT_COMPAT, 'UTF-8');
                                 $replace = '<img alt="" border="0" src="' . $htmlspecialchars .

@@ -177,7 +177,7 @@ class EngineFactory extends \Yana\Core\StdObject
         $smarty->use_sub_dirs = strtolower((string) $config->usesubdirs) !== 'false';
         $smarty->compile_check = strtolower((string) $config->compilecheck) !== 'false';
 
-        $smarty->error_reporting = E_ALL & ~E_NOTICE;
+        $smarty->error_reporting = E_ALL ^ (E_NOTICE | E_DEPRECATED);
 
         return $this;
     }

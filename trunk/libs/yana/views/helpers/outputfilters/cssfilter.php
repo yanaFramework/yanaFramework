@@ -79,7 +79,7 @@ class CssFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\
     protected function _css($url)
     {
         $css = "";
-        if (preg_match("/^[\w-_\.\/]+\.css$/si", $url)) {
+        if (preg_match("/^[\w\-_\.\/]+\.css$/si", $url)) {
             $css = '<link rel="stylesheet" type="text/css" href="' . $url . '"/>';
         }
         return $css;

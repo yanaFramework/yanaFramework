@@ -66,7 +66,7 @@ class PrintArray extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana
             $replacement = '<span style="color: #607; font-weight: bold;">$0</span>';
             $array = preg_replace('/&lt;[^&]+&gt;\s*$/m', $replacement, $array);
 
-            $pattern = '/' . preg_quote($lDelim, '/') . '\$[\w\.-_]+' . preg_quote($rDelim, '/') . '/m';
+            $pattern = '/' . preg_quote($lDelim, '/') . '\$[\w\.\-_]+' . preg_quote($rDelim, '/') . '/m';
             $array = preg_replace($pattern, '<span style="color: #080;">$0</span>', $array);
 
             $array = preg_replace('/\[\/?[\w\=]+\]/m', '<span style="color: #800;">$0</span>', $array);

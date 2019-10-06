@@ -85,7 +85,7 @@ class XmlMetaData extends \Yana\Core\MetaData\XmlMetaData
                                     $message = "The value '{$item}' is not a valid file resource.";
                                     \Yana\Log\LogManager::getLogger()
                                         ->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
-                                    continue;
+                                    break;
                                 }
                                 $item = "{$directory}{$item}";
                             }
@@ -96,7 +96,6 @@ class XmlMetaData extends \Yana\Core\MetaData\XmlMetaData
                             } else {
                                 $values[$name][(string) $attributes['id']] = (string) $item;
                             }
-                            break;
                     } // end switch
                 } // end foreach
                 $template->setScripts($values['SCRIPT'])

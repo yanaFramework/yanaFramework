@@ -75,7 +75,7 @@ class JsFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\V
     protected function _script($string)
     {
         $script = "";
-        if (preg_match("/^[\w-_\.\/]+\.js$/si", $string)) {
+        if (preg_match("/^[\w\-_\.\/]+\.js$/si", $string)) {
             $script = '<script type="text/javascript" language="javascript" src="' . $string . '"></script>';
         }
         return $script;
