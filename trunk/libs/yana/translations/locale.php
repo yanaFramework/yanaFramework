@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Translations;
 
@@ -36,7 +37,7 @@ namespace Yana\Translations;
  * @subpackage  translations
  * @ignore
  */
-class Locale extends \Yana\Core\Object implements \Yana\Translations\IsLocale
+class Locale extends \Yana\Core\StdObject implements \Yana\Translations\IsLocale
 {
 
     /**
@@ -56,10 +57,8 @@ class Locale extends \Yana\Core\Object implements \Yana\Translations\IsLocale
      * @param  string  $country   2 character country code
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when either language or country are invalid
      */
-    public function __construct($language = "", $country = "")
+    public function __construct(string $language = "", string $country = "")
     {
-        assert('is_string($language); // Invalid argument $language: string expected');
-        assert('is_string($country); // Invalid argument $country: string expected');
         if ($language > "") {
             $this->setLanguage($language);
         }

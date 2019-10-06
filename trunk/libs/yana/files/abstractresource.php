@@ -40,7 +40,7 @@ namespace Yana\Files;
  * @package     yana
  * @subpackage  files
  */
-abstract class AbstractResource extends \Yana\Core\Object implements \Yana\Files\IsResource
+abstract class AbstractResource extends \Yana\Core\StdObject implements \Yana\Files\IsResource
 {
 
     /**

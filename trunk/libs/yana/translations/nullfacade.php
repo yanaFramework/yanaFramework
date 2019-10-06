@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Translations;
 
@@ -35,7 +36,7 @@ namespace Yana\Translations;
  * @package     yana
  * @subpackage  translations
  */
-class NullFacade extends \Yana\Core\Object implements \Yana\Translations\IsFacade
+class NullFacade extends \Yana\Core\StdObject implements \Yana\Translations\IsFacade
 {
 
     /**
@@ -72,7 +73,7 @@ class NullFacade extends \Yana\Core\Object implements \Yana\Translations\IsFacad
      * Read language strings from a file.
      *
      * @param   string  $file  name of translation file that should be loaded
-     * @return  self
+     * @return  $this
      */
     public function readFile($file)
     {
@@ -125,7 +126,7 @@ class NullFacade extends \Yana\Core\Object implements \Yana\Translations\IsFacad
      * Add a directory to the list of language directories.
      *
      * @param   string  $directory  base directory
-     * @return  self
+     * @return  $this
      */
     public function addDirectory($directory)
     {
@@ -137,7 +138,7 @@ class NullFacade extends \Yana\Core\Object implements \Yana\Translations\IsFacad
      *
      * @param   string  $selectedLanguage  current language
      * @param   string  $selectedCountry   current country (optional)
-     * @return  self
+     * @return  $this
      */
     public function setLocale($selectedLanguage, $selectedCountry = "")
     {
@@ -170,7 +171,7 @@ class NullFacade extends \Yana\Core\Object implements \Yana\Translations\IsFacad
      * Adds a class that provides meta-information about a language package.
      *
      * @param   \Yana\Core\MetaData\IsDataProvider  $provider  to load information about a language pack
-     * @return  self
+     * @return  $this
      */
     public function addMetaDataProvider(\Yana\Core\MetaData\IsDataProvider $provider)
     {
@@ -181,7 +182,7 @@ class NullFacade extends \Yana\Core\Object implements \Yana\Translations\IsFacad
      * Adds a class that finds and loads translations.
      *
      * @param  \Yana\Translations\TextData\IsDataProvider  $provider  to load the contents of a language pack
-     * @return  self
+     * @return  $this
      */
     public function addTextDataProvider(\Yana\Translations\TextData\IsDataProvider $provider)
     {
@@ -202,7 +203,7 @@ class NullFacade extends \Yana\Core\Object implements \Yana\Translations\IsFacad
      * Read language strings.
      *
      * @param   string  $id  name of translation package that should be loaded
-     * @return  self
+     * @return  $this
      */
     public function loadTranslations($id)
     {

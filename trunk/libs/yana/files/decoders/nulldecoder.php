@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Files\Decoders;
 
@@ -34,7 +35,7 @@ namespace Yana\Files\Decoders;
  * @subpackage  files
  * @ignore
  */
-class NullDecoder extends \Yana\Core\Object implements \Yana\Files\Decoders\IsDecoder
+class NullDecoder extends \Yana\Core\StdObject implements \Yana\Files\Decoders\IsDecoder
 {
 
     /**

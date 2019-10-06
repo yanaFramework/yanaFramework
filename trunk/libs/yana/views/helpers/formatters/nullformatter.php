@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Views\Helpers\Formatters;
 
@@ -36,7 +37,7 @@ namespace Yana\Views\Helpers\Formatters;
  * @subpackage  views
  * @ignore
  */
-class NullFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFormatter
+class NullFormatter extends \Yana\Core\StdObject implements \Yana\Views\Helpers\IsFormatter
 {
 
     /**

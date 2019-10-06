@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Files\Decoders;
 
@@ -35,7 +36,7 @@ namespace Yana\Files\Decoders;
  * @package     yana
  * @subpackage  files
  */
-class Json extends \Yana\Core\Object implements \Yana\Files\Decoders\IsDecoder
+class Json extends \Yana\Core\StdObject implements \Yana\Files\Decoders\IsDecoder
 {
 
     /**
@@ -60,9 +61,8 @@ class Json extends \Yana\Core\Object implements \Yana\Files\Decoders\IsDecoder
      */
     public function getFile($input, $caseSensitive = CASE_MIXED)
     {
-        assert('is_array($input) || is_string($input); /* Wrong argument type for argument 1. '.
-            'String or array expected. */');
-        assert('$caseSensitive === CASE_MIXED || $caseSensitive === CASE_LOWER || $caseSensitive === CASE_UPPER;');
+        assert(is_array($input) || is_string($input), 'Wrong argument type for argument 1. String or array expected.');
+        assert($caseSensitive === CASE_MIXED || $caseSensitive === CASE_LOWER || $caseSensitive === CASE_UPPER);
 
         if (is_string($input) && is_file($input)) {
             $result = (array) json_decode(file_get_contents($input), true);

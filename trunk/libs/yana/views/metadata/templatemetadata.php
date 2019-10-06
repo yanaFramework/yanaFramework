@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Views\MetaData;
 
@@ -35,7 +36,7 @@ namespace Yana\Views\MetaData;
  * @package     yana
  * @subpackage  views
  */
-class TemplateMetaData extends \Yana\Core\Object implements \Yana\Views\MetaData\IsTemplateMetaData, \Yana\Report\IsReportable
+class TemplateMetaData extends \Yana\Core\StdObject implements \Yana\Views\MetaData\IsTemplateMetaData, \Yana\Report\IsReportable
 {
 
     /**
@@ -67,11 +68,10 @@ class TemplateMetaData extends \Yana\Core\Object implements \Yana\Views\MetaData
      * Set template id.
      *
      * @param   string  $id  some string that is a valid identifier
-     * @return  \Yana\Views\MetaData\TemplateMetaData
+     * @return  $this
      */
-    public function setId($id)
+    public function setId(string $id)
     {
-        assert('is_string($id); // Invalid argument $id. String expected');
         $this->_id = $id;
         return $this;
     }
@@ -81,7 +81,7 @@ class TemplateMetaData extends \Yana\Core\Object implements \Yana\Views\MetaData
      *
      * @return  string
      */
-    public function getId()
+    public function getId(): string
     {
         return $this->_id;
     }
@@ -90,11 +90,10 @@ class TemplateMetaData extends \Yana\Core\Object implements \Yana\Views\MetaData
      * Set path to template file.
      *
      * @param   string  $file  valid file path
-     * @return  \Yana\Views\MetaData\TemplateMetaData
+     * @return  $this
      */
-    public function setFile($file)
+    public function setFile(string $file)
     {
-        assert('is_string($file); // Invalid argument $file. String expected');
         $this->_file = $file;
         return $this;
     }
@@ -109,7 +108,7 @@ class TemplateMetaData extends \Yana\Core\Object implements \Yana\Views\MetaData
      *
      * @return  string
      */
-    public function getFile()
+    public function getFile(): string
     {
         return $this->_file;
     }
@@ -120,7 +119,7 @@ class TemplateMetaData extends \Yana\Core\Object implements \Yana\Views\MetaData
      * See {@see \Yana\Translations\Language} for more details on language ids.
      *
      * @param   array  $languages  the ids are filenames (without path or extension)
-     * @return  \Yana\Views\MetaData\TemplateMetaData
+     * @return  $this
      */
     public function setLanguages(array $languages)
     {
@@ -136,7 +135,7 @@ class TemplateMetaData extends \Yana\Core\Object implements \Yana\Views\MetaData
      *
      * @return  array
      */
-    public function getLanguages()
+    public function getLanguages(): array
     {
         return $this->_languages;
     }
@@ -147,7 +146,7 @@ class TemplateMetaData extends \Yana\Core\Object implements \Yana\Views\MetaData
      * These should be relative paths that can be used as URIs.
      *
      * @param   array  $scripts  list of valid file paths
-     * @return  \Yana\Views\MetaData\TemplateMetaData
+     * @return  $this
      */
     public function setScripts(array $scripts)
     {
@@ -163,7 +162,7 @@ class TemplateMetaData extends \Yana\Core\Object implements \Yana\Views\MetaData
      *
      * @return  array
      */
-    public function getScripts()
+    public function getScripts(): array
     {
         return $this->_scripts;
     }
@@ -174,7 +173,7 @@ class TemplateMetaData extends \Yana\Core\Object implements \Yana\Views\MetaData
      * These should be relative paths that can be used as URIs.
      *
      * @param   array  $styles  list of valid file paths
-     * @return  \Yana\Views\MetaData\TemplateMetaData
+     * @return  $this
      */
     public function setStyles(array $styles)
     {
@@ -190,7 +189,7 @@ class TemplateMetaData extends \Yana\Core\Object implements \Yana\Views\MetaData
      *
      * @return  array
      */
-    public function getStyles()
+    public function getStyles(): array
     {
         return $this->_styles;
     }

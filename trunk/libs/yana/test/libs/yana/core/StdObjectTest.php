@@ -117,7 +117,7 @@ class StdObjectTest extends \PHPUnit_Framework_TestCase
         $getClass = $this->object->getClass();
         $this->assertInternalType('string', $getClass, 'asserft faield, the value is not from type string');
         // expected Object as a string
-        $this->assertEquals(__NAMESPACE__ . '\\Object', $getClass, ' the values should be equal');
+        $this->assertEquals(__NAMESPACE__ . '\\StdObject', $getClass, ' the values should be equal');
     }
 
     /**

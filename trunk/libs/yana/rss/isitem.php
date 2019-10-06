@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\RSS;
 
@@ -43,21 +44,21 @@ interface IsItem
      *
      * @return  string 
      */
-    public function getGUID();
+    public function getGUID(): string;
 
     /**
      * Returns the title of the item.
      *
      * @return  string 
      */
-    public function getTitle();
+    public function getTitle(): string;
 
     /**
      * Get URL of the item.
      *
      * @return  string
      */
-    public function getLink();
+    public function getLink(): string;
 
     /**
      * Set URL of the item.
@@ -65,46 +66,46 @@ interface IsItem
      * Any item must refer to an existing web-resource.
      *
      * @param   string  $link  must be a valid URL
-     * @return  \Yana\RSS\IsItem
+     * @return  $thid
      */
-    public function setLink($link);
+    public function setLink(string $link);
 
     /**
      * Item synopsis, note that this may contain HTML.
      *
      * @return  string
      */
-    public function getDescription();
+    public function getDescription(): string;
 
     /**
      * Set item synopsis.
      *
      * @param   string  $description  some text - may contain HTML
-     * @return  \Yana\RSS\IsItem 
+     * @return  $this
      */
-    public function setDescription($description);
+    public function setDescription(string $description);
 
     /**
      * Get e-mail address of the author.
      *
      * @return  string
      */
-    public function getAuthor();
+    public function getAuthor(): string;
 
     /**
      * Set e-mail address of the author.
      *
      * @param   string  $author  must be valid e-mail address
-     * @return  \Yana\RSS\IsItem 
+     * @return  $this
      */
-    public function setAuthor($author);
+    public function setAuthor(string $author);
 
     /**
      * Get list of categories.
      *
      * @return  array
      */
-    public function getCategory();
+    public function getCategory(): array;
 
     /**
      * Include item in one or more categories.
@@ -114,7 +115,7 @@ interface IsItem
      * E.g. all "announcements", all "news-updates" aso.
      *
      * @param   array  $category  list of strings
-     * @return  \Yana\RSS\IsItem 
+     * @return  $this
      */
     public function setCategory(array $category);
 
@@ -123,7 +124,7 @@ interface IsItem
      *
      * @return  string
      */
-    public function getComments();
+    public function getComments(): string;
 
     /**
      * Set URL to a page for comments.
@@ -133,16 +134,16 @@ interface IsItem
      * The comment-URL and the content-URL may be identical.
      *
      * @param   string  $comments  must be a valid URL
-     * @return  \Yana\RSS\IsItem 
+     * @return  $this
      */
-    public function setComments($comments);
+    public function setComments(string $comments);
 
     /**
      * Indicates when the item was published.
      *
      * @return  string
      */
-    public function getPubDate();
+    public function getPubDate(): string;
 
     /**
      * Set a publication date.
@@ -153,9 +154,9 @@ interface IsItem
      * Note: Use date('r'); to create a valid string.
      *
      * @param   string  $pubDate  formatted date using RFC 2822
-     * @return  \Yana\RSS\IsItem 
+     * @return  $this
      */
-    public function setPubDate($pubDate);
+    public function setPubDate(string $pubDate);
 
     /**
      * Convert item to XML fragment.
@@ -165,7 +166,7 @@ interface IsItem
      * @param   \SimpleXMLElement  $channel  parent XML node, for valid RSS this should be a "channel" element
      * @return  \SimpleXMLElement
      */
-    public function toSimpleXml(\SimpleXMLElement $channel = null);
+    public function toSimpleXml(\SimpleXMLElement $channel = null): \SimpleXMLElement;
 
 }
 

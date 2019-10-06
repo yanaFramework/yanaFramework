@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Files\Decoders;
 
@@ -33,7 +34,7 @@ namespace Yana\Files\Decoders;
  * @package     yana
  * @subpackage  files
  */
-class SML extends \Yana\Core\Object implements \Yana\Files\Decoders\IsDecoder
+class SML extends \Yana\Core\StdObject implements \Yana\Files\Decoders\IsDecoder
 {
 
     /**

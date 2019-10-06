@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Files;
 
@@ -33,7 +34,7 @@ namespace Yana\Files;
  * @package     yana
  * @subpackage  core
  */
-class DirectoryIterator extends \Yana\Core\Object implements \Yana\Core\IsCountableIterator
+class DirectoryIterator extends \Yana\Core\StdObject implements \Yana\Core\IsCountableIterator
 {
 
     /**

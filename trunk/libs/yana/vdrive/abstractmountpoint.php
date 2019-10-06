@@ -24,6 +24,7 @@
  * @package    yana
  * @license    http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\VDrive;
 
@@ -37,7 +38,7 @@ namespace Yana\VDrive;
  *
  * @ignore
  */
-abstract class AbstractMountpoint extends \Yana\Core\Object implements \Yana\Report\IsReportable
+abstract class AbstractMountpoint extends \Yana\Core\StdObject implements \Yana\Report\IsReportable
 {
 
     /**

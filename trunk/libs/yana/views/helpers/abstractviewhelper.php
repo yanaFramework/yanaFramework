@@ -27,6 +27,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Views\Helpers;
 
@@ -37,7 +38,7 @@ namespace Yana\Views\Helpers;
  * @subpackage  views
  * @codeCoverageIgnore
  */
-abstract class AbstractViewHelper extends \Yana\Core\Object
+abstract class AbstractViewHelper extends \Yana\Core\StdObject
 {
 
     use \Yana\Views\HasViewDependency;

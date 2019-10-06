@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\RSS;
 
@@ -37,7 +38,7 @@ namespace Yana\RSS;
  * @package     yana
  * @subpackage  rss
  */
-class Item extends \Yana\Core\Object implements \Yana\RSS\IsItem
+class Item extends \Yana\Core\StdObject implements \Yana\RSS\IsItem
 {
 
     /**
@@ -94,11 +95,9 @@ class Item extends \Yana\Core\Object implements \Yana\RSS\IsItem
      *
      * @param  string  $title  single line of text, may contain HTML
      */
-    public function __construct($title)
+    public function __construct(string $title)
     {
-        assert('is_string($title); // Invalid argument $title: string expected');
-
-        $this->_title = (string) $title;
+        $this->_title = $title;
 
         $this->_pubDate = date('r');
     }
@@ -110,7 +109,7 @@ class Item extends \Yana\Core\Object implements \Yana\RSS\IsItem
      *
      * @return string 
      */
-    public function getGUID()
+    public function getGUID(): string
     {
         return md5($this->_title . $this->_description);
     }
@@ -120,7 +119,7 @@ class Item extends \Yana\Core\Object implements \Yana\RSS\IsItem
      *
      * @return string 
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->_title;
     }
@@ -130,7 +129,7 @@ class Item extends \Yana\Core\Object implements \Yana\RSS\IsItem
      *
      * @return string
      */
-    public function getLink()
+    public function getLink(): string
     {
         return $this->_link;
     }
@@ -140,14 +139,12 @@ class Item extends \Yana\Core\Object implements \Yana\RSS\IsItem
      *
      * Any item must refer to an existing web-resource.
      *
-     * @param  string  $link  must be a valid URL
-     * @return Item 
+     * @param   string  $link  must be a valid URL
+     * @return  $this
      */
-    public function setLink($link)
+    public function setLink(string $link)
     {
-        assert('is_string($link); // Invalid argument $link: string expected');
-
-        $this->_link = (string) $link;
+        $this->_link = $link;
         return $this;
     }
 
@@ -156,7 +153,7 @@ class Item extends \Yana\Core\Object implements \Yana\RSS\IsItem
      *
      * @return string
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->_description;
     }
@@ -164,14 +161,12 @@ class Item extends \Yana\Core\Object implements \Yana\RSS\IsItem
     /**
      * Set item synopsis.
      *
-     * @param  string  $description  some text - may contain HTML
-     * @return Item 
+     * @param   string  $description  some text - may contain HTML
+     * @return  $this
      */
-    public function setDescription($description)
+    public function setDescription(string $description)
     {
-        assert('is_string($description); // Invalid argument $description: string expected');
-
-        $this->_description = (string) $description;
+        $this->_description = $description;
         return $this;
     }
 
@@ -180,7 +175,7 @@ class Item extends \Yana\Core\Object implements \Yana\RSS\IsItem
      *
      * @return string
      */
-    public function getAuthor()
+    public function getAuthor(): string
     {
         return $this->_author;
     }
@@ -188,13 +183,11 @@ class Item extends \Yana\Core\Object implements \Yana\RSS\IsItem
     /**
      * Set e-mail address of the author.
      *
-     * @param  string  $author  must be valid e-mail address
-     * @return Item 
+     * @param   string  $author  must be valid e-mail address
+     * @return  $this
      */
-    public function setAuthor($author)
+    public function setAuthor(string $author)
     {
-        assert('is_string($author); // Invalid argument $author: string expected');
-
         $this->_author = (string) filter_var($author, FILTER_SANITIZE_EMAIL);
         return $this;
     }
@@ -202,9 +195,9 @@ class Item extends \Yana\Core\Object implements \Yana\RSS\IsItem
     /**
      * Get list of categories.
      *
-     * @return array  list of strings
+     * @return  array  list of strings
      */
-    public function getCategory()
+    public function getCategory(): array
     {
         return $this->_category;
     }
@@ -216,8 +209,8 @@ class Item extends \Yana\Core\Object implements \Yana\RSS\IsItem
      * It identifies a key-word or name, to aggregate items of similar types.
      * E.g. all "announcements", all "news-updates" aso.
      *
-     * @param  array  $category  list of strings
-     * @return Item 
+     * @param   array  $category  list of strings
+     * @return  $this
      */
     public function setCategory(array $category)
     {
@@ -230,7 +223,7 @@ class Item extends \Yana\Core\Object implements \Yana\RSS\IsItem
      *
      * @return string
      */
-    public function getComments()
+    public function getComments(): string
     {
         return $this->_comments;
     }
@@ -242,13 +235,11 @@ class Item extends \Yana\Core\Object implements \Yana\RSS\IsItem
      * If you provide a comment page or forum to do so, enter the URL here.
      * The comment-URL and the content-URL may be identical.
      *
-     * @param  string  $comments  must be a valid URL
-     * @return Item 
+     * @param   string  $comments  must be a valid URL
+     * @return  $this
      */
-    public function setComments($comments)
+    public function setComments(string $comments)
     {
-        assert('is_string($comments); // Invalid argument $comments: string expected');
-
         $this->_comments = (string) filter_var($comments, FILTER_SANITIZE_URL);
         return $this;
     }
@@ -258,7 +249,7 @@ class Item extends \Yana\Core\Object implements \Yana\RSS\IsItem
      *
      * @return string
      */
-    public function getPubDate()
+    public function getPubDate(): string
     {
         return $this->_pubDate;
     }
@@ -271,13 +262,11 @@ class Item extends \Yana\Core\Object implements \Yana\RSS\IsItem
      *
      * Note: Use date('r'); to create a valid string.
      *
-     * @param  string  $pubDate  formatted date using RFC 2822
-     * @return Item 
+     * @param   string  $pubDate  formatted date using RFC 2822
+     * @return  $this
      */
-    public function setPubDate($pubDate)
+    public function setPubDate(string $pubDate)
     {
-        assert('is_string($pubDate); // Invalid argument $pubDate: string expected');
-
         $this->_pubDate = $pubDate;
         return $this;
     }
@@ -300,7 +289,7 @@ class Item extends \Yana\Core\Object implements \Yana\RSS\IsItem
      * @param  \SimpleXMLElement  $channel  parent XML node, for valid RSS this should be a "channel" element
      * @return \SimpleXMLElement
      */
-    public function toSimpleXml(\SimpleXMLElement $channel = null)
+    public function toSimpleXml(\SimpleXMLElement $channel = null): \SimpleXMLElement
     {
         if (is_null($channel)) {
             $xml = new \SimpleXMLElement('<item/>', LIBXML_NOXMLDECL);

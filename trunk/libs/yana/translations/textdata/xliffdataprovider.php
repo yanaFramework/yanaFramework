@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Translations\TextData;
 
@@ -36,7 +37,7 @@ namespace Yana\Translations\TextData;
  * @subpackage  translations
  * @ignore
  */
-class XliffDataProvider extends \Yana\Core\Object implements \Yana\Translations\TextData\IsDataProvider
+class XliffDataProvider extends \Yana\Core\StdObject implements \Yana\Translations\TextData\IsDataProvider
 {
 
     /**
@@ -61,7 +62,7 @@ class XliffDataProvider extends \Yana\Core\Object implements \Yana\Translations\
      *
      * @return  \Yana\Files\IsDir
      */
-    protected function _getDirectory()
+    protected function _getDirectory(): \Yana\Files\IsDir
     {
         return $this->_directory;
     }
@@ -75,10 +76,8 @@ class XliffDataProvider extends \Yana\Core\Object implements \Yana\Translations\
      * @return  string
      * @throws  \Yana\Core\Exceptions\Translations\InvalidFileNameException  when the given filename is invalid
      */
-    protected function _convertIdToFilePath($id, \Yana\Translations\Locale $locale)
+    protected function _convertIdToFilePath(string $id, \Yana\Translations\Locale $locale): string
     {
-        assert('is_string($id); // Invalid argument $id: string expected');
-
         // check syntax of filename
         if (!preg_match("/^[\w_\-\d]+$/i", $id)) {
             $message = "The provided language file id contains illegal characters.".
@@ -108,9 +107,8 @@ class XliffDataProvider extends \Yana\Core\Object implements \Yana\Translations\
      * @return  \Yana\Translations\TextData\IsLanguageInterchangeFile
      * @throws  \Exception  when the XML data could not be parsed
      */
-    protected function _loadXmlByFileName($file)
+    protected function _loadXmlByFileName(string $file): \Yana\Translations\TextData\IsLanguageInterchangeFile
     {
-        assert('is_string($file); // Invalid argument $file: string expected');
         return new \Yana\Translations\TextData\LanguageInterchangeFile($file, LIBXML_NOENT, true);
     }
 
@@ -127,7 +125,7 @@ class XliffDataProvider extends \Yana\Core\Object implements \Yana\Translations\
      * @return  \Yana\Translations\TextData\IsTextContainer
      */
     protected function _fillContainer(\Yana\Translations\TextData\IsLanguageInterchangeFile $xml,
-        \Yana\Translations\TextData\IsTextContainer $container, $id)
+        \Yana\Translations\TextData\IsTextContainer $container, string $id):  \Yana\Translations\TextData\IsTextContainer
     {
         if (!empty($xml)) {
             $strings = \array_change_key_case($xml->toArray());

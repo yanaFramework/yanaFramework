@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Views\Helpers\Html;
 
@@ -50,7 +51,7 @@ namespace Yana\Views\Helpers\Html;
  * @package     yana
  * @subpackage  views
  */
-class MenuHelper extends \Yana\Core\Object
+class MenuHelper extends \Yana\Core\StdObject
 {
 
     /**

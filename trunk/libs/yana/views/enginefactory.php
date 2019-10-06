@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Views;
 
@@ -36,7 +37,7 @@ namespace Yana\Views;
  * @package     yana
  * @subpackage  views
  */
-class EngineFactory extends \Yana\Core\Object
+class EngineFactory extends \Yana\Core\StdObject
 {
 
     /**

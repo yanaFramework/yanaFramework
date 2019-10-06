@@ -27,6 +27,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Views\MetaData;
 
@@ -44,7 +45,7 @@ interface IsTemplateMetaData
      *
      * @return  string
      */
-    public function getId();
+    public function getId(): string;
 
     /**
      * Return path to template file.
@@ -56,7 +57,7 @@ interface IsTemplateMetaData
      *
      * @return  string
      */
-    public function getFile();
+    public function getFile(): string;
 
     /**
      * Get list of language ids.
@@ -66,7 +67,7 @@ interface IsTemplateMetaData
      *
      * @return  array
      */
-    public function getLanguages();
+    public function getLanguages(): array;
 
     /**
      * Get list of script files.
@@ -76,7 +77,7 @@ interface IsTemplateMetaData
      *
      * @return  array
      */
-    public function getScripts();
+    public function getScripts(): array;
 
     /**
      * Get list of stylesheet files.
@@ -86,7 +87,7 @@ interface IsTemplateMetaData
      *
      * @return  array
      */
-    public function getStyles();
+    public function getStyles(): array;
 
 }
 

@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Views\Skins;
 
@@ -35,7 +36,7 @@ namespace Yana\Views\Skins;
  * @package     yana
  * @subpackage  views
  */
-class Skin extends \Yana\Core\Object implements \Yana\Views\Skins\IsSkin
+class Skin extends \Yana\Core\StdObject implements \Yana\Views\Skins\IsSkin
 {
 
     /**

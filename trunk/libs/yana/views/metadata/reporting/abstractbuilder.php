@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Views\MetaData\Reporting;
 
@@ -36,7 +37,7 @@ namespace Yana\Views\MetaData\Reporting;
  * @subpackage  views
  * @ignore
  */
-abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Views\MetaData\Reporting\IsBuilder
+abstract class AbstractBuilder extends \Yana\Core\StdObject implements \Yana\Views\MetaData\Reporting\IsBuilder
 {
 
     /**
@@ -59,7 +60,7 @@ abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Views\
      *
      * @return  \Yana\Report\IsReport
      */
-    protected function _getReport()
+    protected function _getReport(): \Yana\Report\IsReport
     {
         return $this->_report;
     }

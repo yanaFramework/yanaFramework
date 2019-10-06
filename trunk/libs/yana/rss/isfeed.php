@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\RSS;
 
@@ -41,7 +42,7 @@ interface IsFeed
      *
      * @return  string
      */
-    public function getTitle();
+    public function getTitle(): string;
 
     /**
      * Set the name/title of the channel.
@@ -49,14 +50,14 @@ interface IsFeed
      * @param   string  $title  e.g. title of the website the channel refers to
      * @return  $this
      */
-    public function setTitle($title);
+    public function setTitle(string $title);
 
     /**
      * Returns a link that points to the originating website of the feed.
      *
      * @return  string
      */
-    public function getLink();
+    public function getLink(): string;
 
     /**
      * Set URL for link to the channel's website.
@@ -64,14 +65,14 @@ interface IsFeed
      * @param   string  $link  link that points to the originating website of the feed
      * @return  $this
      */
-    public function setLink($link);
+    public function setLink(string $link);
 
     /**
      * Returns a text to describe context and purpose of this channel.
      *
      * @return string
      */
-    public function getDescription();
+    public function getDescription(): string;
 
     /**
      * Set a channel description.
@@ -79,14 +80,14 @@ interface IsFeed
      * @param   string  $description  a text to describe context and purpose of this channel
      * @return  $this
      */
-    public function setDescription($description);
+    public function setDescription(string $description);
 
     /**
      * Get locale/language the channel is written in.
      *
      * @return string
      */
-    public function getLanguage();
+    public function getLanguage(): string;
 
     /**
      * Set locale/language the channel is written in.
@@ -103,14 +104,14 @@ interface IsFeed
      * @return  $this
      * @see     \Yana\Translations\Facade
      */
-    public function setLanguage($language);
+    public function setLanguage(string $language);
 
     /**
      * Returns copyright notice for this channel
      *
      * @return  string
      */
-    public function getCopyright();
+    public function getCopyright(): string;
 
     /**
      * Set a copyright notice of your choice.
@@ -120,14 +121,14 @@ interface IsFeed
      * @param   string  $copyright  an URL or other reference to a license text
      * @return  $this
      */
-    public function setCopyright($copyright);
+    public function setCopyright(string $copyright);
 
     /**
      * Get e-mail of person responsible for editorial content.
      *
      * @return  string
      */
-    public function getManagingEditor();
+    public function getManagingEditor(): string;
 
     /**
      * Set e-mail of person responsible for editorial content.
@@ -144,14 +145,14 @@ interface IsFeed
      * @param   string  $managingEditor  valid e-mail address
      * @return  $this
      */
-    public function setManagingEditor($managingEditor);
+    public function setManagingEditor(string $managingEditor);
 
     /**
      * Get e-mail of person responsible for technical issues.
      *
      * @return  string
      */
-    public function getWebMaster();
+    public function getWebMaster(): string;
 
     /**
      * Set e-mail of person responsible for technical issues.
@@ -167,7 +168,7 @@ interface IsFeed
      * @param   string  $webMaster  valid e-mail address
      * @return  $this
      */
-    public function setWebMaster($webMaster);
+    public function setWebMaster(string $webMaster);
 
     /**
      * Get "time to live" in minutes.
@@ -177,7 +178,7 @@ interface IsFeed
      *
      * @return  int
      */
-    public function getTimeToLive();
+    public function getTimeToLive(): int;
 
     /**
      * Set "time to live".
@@ -187,14 +188,14 @@ interface IsFeed
      * @param   int  $ttl  number of minutes, must be >= 0
      * @return  $this
      */
-    public function setTimeToLive($ttl);
+    public function setTimeToLive(int $ttl);
 
     /**
      * Get image URL.
      *
      * @return  string
      */
-    public function getImage();
+    public function getImage(): string;
 
     /**
      * Set image URL.
@@ -204,7 +205,7 @@ interface IsFeed
      * @param   string  $image  must be a valid URL.
      * @return  $this
      */
-    public function setImage($image);
+    public function setImage(string $image);
 
     /**
      * Returns a list of categories that the channel belongs to.
@@ -215,7 +216,7 @@ interface IsFeed
      *
      * @return  array
      */
-    public function getCategory();
+    public function getCategory(): array;
 
     /**
      * Include channel in one or more categories.
@@ -234,7 +235,7 @@ interface IsFeed
      *
      * @return  string
      */
-    public function getCss();
+    public function getCss(): string;
 
     /**
      * Set URL to a CSS stylesheet that formats the channel.
@@ -244,14 +245,14 @@ interface IsFeed
      * @param   string  $css  must be a valid URL
      * @return  $this
      */
-    public function setCss($css);
+    public function setCss(string $css);
 
     /**
      * Returns an URL to a XSL transformation that formats the channel.
      *
      * @return string
      */
-    public function getXslt();
+    public function getXslt(): string;
 
     /**
      * Set URL to a XSL transformation that formats the channel.
@@ -261,7 +262,7 @@ interface IsFeed
      * @param   string  $xslt  must be a valid URL
      * @return  $this
      */
-    public function setXslt($xslt);
+    public function setXslt(string $xslt);
 
     /**
      * Add RSS feed item to this channel.
@@ -271,14 +272,14 @@ interface IsFeed
      * @param   \Yana\RSS\Item  $item  new RSSitem
      * @return  $this
      */
-    public function addItem(Item $item);
+    public function addItem(\Yana\RSS\Item $item);
 
     /**
      * Get RSS feed items of this channel.
      *
      * @return  \Yana\RSS\Item[]
      */
-    public function getItems();
+    public function getItems(): array;
 
     /**
      * Convert item to XML fragment.
@@ -287,7 +288,7 @@ interface IsFeed
      *
      * @return  \SimpleXMLElement
      */
-    public function toSimpleXml();
+    public function toSimpleXml(): \SimpleXMLElement;
 
 }
 

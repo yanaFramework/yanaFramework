@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Views\Icons;
 
@@ -35,7 +36,7 @@ namespace Yana\Views\Icons;
  * @package     yana
  * @subpackage  views
  */
-abstract class AbstractXmlAdapter extends \Yana\Core\Object implements \Yana\Data\Adapters\IsDataAdapter
+abstract class AbstractXmlAdapter extends \Yana\Core\StdObject implements \Yana\Data\Adapters\IsDataAdapter
 {
 
     /**
@@ -59,10 +60,10 @@ abstract class AbstractXmlAdapter extends \Yana\Core\Object implements \Yana\Dat
      * @param  \Yana\Files\IsTextFile  $file       XML config file
      * @param  string                  $directory  base directory the file refers to (doesn't have to be same as file)
      */
-    public function __construct(\Yana\Files\IsTextFile $file, $directory)
+    public function __construct(\Yana\Files\IsTextFile $file, string $directory)
     {
         $this->_file = $file;
-        $this->_directory = (string) $directory;
+        $this->_directory = $directory;
     }
 
     /**
@@ -72,7 +73,7 @@ abstract class AbstractXmlAdapter extends \Yana\Core\Object implements \Yana\Dat
      *
      * @return  \Yana\Views\Icons\Collection
      */
-    protected function _getCollection()
+    protected function _getCollection(): \Yana\Views\Icons\Collection
     {
         if (!isset($this->_collection)) {
             $this->_collection = new \Yana\Views\Icons\Collection();
@@ -90,12 +91,10 @@ abstract class AbstractXmlAdapter extends \Yana\Core\Object implements \Yana\Dat
      * @param   string  $fileContent  XML file containing icon definitions
      * @return  \Yana\Views\Icons\Collection
      */
-    private function _buildIconFileCollection($fileContent)
+    private function _buildIconFileCollection(string $fileContent): \Yana\Views\Icons\Collection
     {
-        assert('is_string($fileContent); // Cannot redeclare var $fileContent');
-
         $collection = new \Yana\Views\Icons\Collection();
-        assert('!isset($file); // Cannot redeclare var $file');
+        assert(!isset($file), 'Cannot redeclare var $file');
         foreach (\simplexml_load_string((string) $fileContent) as $file)
         {
             if (!empty($file['id']) && !empty($file['path']) && !empty($file['regex'])) {
@@ -115,13 +114,9 @@ abstract class AbstractXmlAdapter extends \Yana\Core\Object implements \Yana\Dat
      * @param   string  $regex  
      * @return  \Yana\Views\Icons\IsFile
      */
-    private function _buildIconFile($id, $path, $regex)
+    private function _buildIconFile(string $id, string $path, string $regex): \Yana\Views\Icons\IsFile
     {
-        assert('is_string($id); // Cannot redeclare var $id');
-        assert('is_string($path); // Cannot redeclare var $path');
-        assert('is_string($regex); // Cannot redeclare var $regex');
-
-        assert('!isset($entity); // Cannot redeclare var $entity');
+        assert(!isset($entity), 'Cannot redeclare var $entity');
         $entity = new \Yana\Views\Icons\File();
         $entity
                 ->setId((string) $id)
@@ -138,11 +133,11 @@ abstract class AbstractXmlAdapter extends \Yana\Core\Object implements \Yana\Dat
      */
     protected function _saveChangesToFile()
     {
-        assert('!isset($xmlRootNode); // Cannot redeclare var $xmlRootNode');
+        assert(!isset($xmlRootNode), 'Cannot redeclare var $xmlRootNode');
         $xmlRootNode = new \SimpleXMLElement('<files/>');
 
-        assert('!isset($entity); // Cannot redeclare var $entity');
-        assert('!isset($fileNode); // Cannot redeclare var $fileNode');
+        assert(!isset($entity), 'Cannot redeclare var $entity');
+        assert(!isset($fileNode), 'Cannot redeclare var $fileNode');
         foreach ($this->_getCollection() as $entity)
         {
             /* @var $entity \Yana\Views\Icons\IsFile */

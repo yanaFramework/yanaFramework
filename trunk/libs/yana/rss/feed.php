@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\RSS;
 
@@ -60,7 +61,7 @@ namespace Yana\RSS;
  * @package     yana
  * @subpackage  rss
  */
-class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
+class Feed extends \Yana\Core\StdObject implements \Yana\RSS\IsFeed
 {
 
     /**
@@ -155,9 +156,8 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      *
      * @param  string  $description  a text to describe context and purpose of this channel
      */
-    public function __construct($description)
+    public function __construct(string $description)
     {
-        assert('is_string($description); // Invalid argument $description: String expected');
         $this->setDescription($description);
 
         // auto-generated fields
@@ -171,7 +171,7 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      *
      * @return string
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->_title;
     }
@@ -182,10 +182,8 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      * @param   string  $title  e.g. title of the website the channel refers to
      * @return  $this
      */
-    public function setTitle($title)
+    public function setTitle(string $title)
     {
-        assert('is_string($title); // Invalid argument $title: string expected');
-
         $this->_title = $title;
         return $this;
     }
@@ -195,7 +193,7 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      *
      * @return string
      */
-    public function getLink()
+    public function getLink(): string
     {
         return $this->_link;
     }
@@ -206,10 +204,8 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      * @param   string  $link  link that points to the originating website of the feed
      * @return  $this
      */
-    public function setLink($link)
+    public function setLink(string $link)
     {
-        assert('is_string($link); // Invalid argument $link: string expected');
-
         $this->_link = $link;
         return $this;
     }
@@ -219,7 +215,7 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      *
      * @return string
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->_description;
     }
@@ -230,10 +226,8 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      * @param   string  $description  a text to describe context and purpose of this channel
      * @return  $this
      */
-    public function setDescription($description)
+    public function setDescription(string $description)
     {
-        assert('is_string($description); // Invalid argument $description: string expected');
-
         $this->_description = $description;
         return $this;
     }
@@ -243,7 +237,7 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      *
      * @return string
      */
-    public function getLanguage()
+    public function getLanguage(): string
     {
         return $this->_language;
     }
@@ -263,9 +257,8 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      * @return  $this
      * @see     \Yana\Translations\Facade
      */
-    public function setLanguage($language)
+    public function setLanguage(string $language)
     {
-        assert('is_string($language); // Invalid argument $language: string expected');
         assert('preg_match("/^(?:|\w{2}(?:-\w{2})?)$/s", $language); // Invalid syntax: $language');
 
         $this->_language = $language;
@@ -277,7 +270,7 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      *
      * @return string
      */
-    public function getCopyright()
+    public function getCopyright(): string
     {
         return $this->_copyright;
     }
@@ -290,10 +283,8 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      * @param   string  $copyright  an URL or other reference to a license text
      * @return  $this
      */
-    public function setCopyright($copyright)
+    public function setCopyright(string $copyright)
     {
-        assert('is_string($copyright); // Invalid argument $copyright: string expected');
-
         $this->_copyright = $copyright;
         return $this;
     }
@@ -303,7 +294,7 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      *
      * @return string
      */
-    public function getManagingEditor()
+    public function getManagingEditor(): string
     {
         return $this->_managingEditor;
     }
@@ -323,10 +314,8 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      * @param   string  $managingEditor  valid e-mail address
      * @return  $this
      */
-    public function setManagingEditor($managingEditor)
+    public function setManagingEditor(string $managingEditor)
     {
-        assert('is_string($managingEditor); // Invalid argument $managingEditor: string expected');
-
         $this->_managingEditor = (string) filter_var($managingEditor, FILTER_SANITIZE_EMAIL);
         return $this;
     }
@@ -336,7 +325,7 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      *
      * @return string
      */
-    public function getWebMaster()
+    public function getWebMaster(): string
     {
         return $this->_webMaster;
     }
@@ -355,10 +344,8 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      * @param   string  $webMaster  valid e-mail address
      * @return  $this
      */
-    public function setWebMaster($webMaster)
+    public function setWebMaster(string $webMaster)
     {
-        assert('is_string($webMaster); // Invalid argument $webMaster: string expected');
-
         $this->_webMaster = (string) filter_var($webMaster, FILTER_SANITIZE_EMAIL);
         return $this;
     }
@@ -371,7 +358,7 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      *
      * @return int
      */
-    public function getTimeToLive()
+    public function getTimeToLive(): int
     {
         return $this->_ttl;
     }
@@ -384,10 +371,9 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      * @param   int  $ttl  number of minutes, must be >= 0
      * @return  $this
      */
-    public function setTimeToLive($ttl)
+    public function setTimeToLive(int $ttl)
     {
-        assert('is_int($ttl); // Invalid argument $ttl: int expected');
-        assert('$ttl >= 0; // Invalid argument $ttl: must be positive');
+        assert($ttl >= 0, 'Invalid argument $ttl: must be positive');
 
         $this->_ttl = $ttl;
         return $this;
@@ -398,7 +384,7 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      *
      * @return string
      */
-    public function getImage()
+    public function getImage(): string
     {
         return $this->_image;
     }
@@ -411,10 +397,8 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      * @param   string  $image  must be a valid URL.
      * @return  $this
      */
-    public function setImage($image)
+    public function setImage(string $image)
     {
-        assert('is_string($image); // Invalid argument $image: string expected');
-
         $this->_image = $image;
         return $this;
     }
@@ -428,7 +412,7 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      *
      * @return array
      */
-    public function getCategory()
+    public function getCategory(): array
     {
         return $this->_category;
     }
@@ -454,7 +438,7 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      *
      * @return string
      */
-    public function getCss()
+    public function getCss(): string
     {
         return $this->_css;
     }
@@ -467,10 +451,8 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      * @param   string  $css  must be a valid URL
      * @return  $this
      */
-    public function setCss($css)
+    public function setCss(string $css)
     {
-        assert('is_string($css); // Invalid argument $css: string expected');
-
         $this->_css = $css;
         return $this;
     }
@@ -480,7 +462,7 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      *
      * @return string
      */
-    public function getXslt()
+    public function getXslt(): string
     {
         return $this->_xslt;
     }
@@ -494,10 +476,8 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      * @param   string  $xslt  must be a valid URL
      * @return  $this
      */
-    public function setXslt($xslt)
+    public function setXslt(string $xslt)
     {
-        assert('is_string($xslt); // Invalid argument $xslt: string expected');
-
         $this->_xslt = $xslt;
         return $this;
     }
@@ -510,9 +490,9 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      * @param   \Yana\RSS\Item  $item  new RSS item
      * @return  $this
      */
-    public function addItem(Item $item)
+    public function addItem(\Yana\RSS\Item $item)
     {
-        assert('is_array($this->_items);');
+        assert(is_array($this->_items));
         $this->_items[] = $item;
         return $this;
     }
@@ -522,7 +502,7 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      *
      * @return \Yana\RSS\Item[]
      */
-    public function getItems()
+    public function getItems(): array
     {
         return $this->_items;
     }
@@ -552,7 +532,7 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
      *
      * @return \SimpleXMLElement
      */
-    public function toSimpleXml()
+    public function toSimpleXml(): \SimpleXMLElement
     {
         $rss = new \SimpleXMLElement('<rss version="2.0"/>', LIBXML_NOXMLDECL);
         $channel = $rss->addChild('channel');
@@ -599,7 +579,7 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
             $channel->addChild('webMaster', $this->getWebMaster());
         }
         if ($this->getTimeToLive()) {
-            $channel->addChild('ttl', $this->getTimeToLive());
+            $channel->addChild('ttl', (string) $this->getTimeToLive());
         }
 
         assert('!isset($category); // Cannot redeclare var $category');

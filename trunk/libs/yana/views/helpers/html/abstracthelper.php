@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Views\Helpers\Html;
 
@@ -37,7 +38,7 @@ namespace Yana\Views\Helpers\Html;
  * @package     yana
  * @subpackage  views
  */
-abstract class AbstractHelper extends \Yana\Core\Object
+abstract class AbstractHelper extends \Yana\Core\StdObject
 {
 
     /**

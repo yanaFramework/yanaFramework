@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Files\Streams;
 
@@ -44,7 +45,7 @@ namespace Yana\Files\Streams;
  * @package     yana
  * @subpackage  files
  */
-class Stream extends \Yana\Core\Object
+class Stream extends \Yana\Core\StdObject
 {
 
     /**
@@ -65,7 +66,7 @@ class Stream extends \Yana\Core\Object
      * @param   int     $flags         either IS_URL_WRAPPER or IS_LOCAL_WRAPPER (default)
      * @return  bool
      */
-    public static function registerWrapper($protocolName, $wrapperName = null, $flags = self::IS_LOCAL_WRAPPER)
+    public static function registerWrapper(string $protocolName, string $wrapperName = null, int $flags = self::IS_LOCAL_WRAPPER): bool
     {
         if (empty($wrapperName)) {
             $wrapperName = $protocolName;
@@ -80,7 +81,7 @@ class Stream extends \Yana\Core\Object
      * @param   string  $protocolName  name of the stream protocol, e.g. 'file'
      * @return  bool
      */
-    public static function isRegistered($protocolName)
+    public static function isRegistered(string $protocolName): bool
     {
         $wrappers = self::getWrappers();
         return \in_array($protocolName, $wrappers);
@@ -91,7 +92,7 @@ class Stream extends \Yana\Core\Object
      *
      * @return  array
      */
-    public static function getWrappers()
+    public static function getWrappers(): array
     {
         return \stream_get_wrappers();
     }
@@ -102,7 +103,7 @@ class Stream extends \Yana\Core\Object
      * @param   string  $protocolName  name of the stream protocol, e.g. 'file'
      * @return  bool
      */
-    public static function restoreWrapper($protocolName)
+    public static function restoreWrapper(string $protocolName): bool
     {
         return \stream_wrapper_restore($protocolName);
     }
@@ -113,7 +114,7 @@ class Stream extends \Yana\Core\Object
      * @param   string  $protocolName  name of the stream protocol, e.g. 'file'
      * @return  bool
      */
-    public static function unregisterWrapper($protocolName)
+    public static function unregisterWrapper(string $protocolName): bool
     {
         return \stream_wrapper_unregister($protocolName);
     }

@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Views\Helpers\Modifiers;
 
@@ -37,7 +38,7 @@ namespace Yana\Views\Helpers\Modifiers;
  * @package     yana
  * @subpackage  views
  */
-class UrlModifier extends \Yana\Core\Object implements \Yana\Views\Helpers\IsModifier
+class UrlModifier extends \Yana\Core\StdObject implements \Yana\Views\Helpers\IsModifier
 {
 
     /**

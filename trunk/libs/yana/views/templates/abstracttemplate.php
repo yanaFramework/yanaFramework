@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Views\Templates;
 
@@ -37,7 +38,7 @@ namespace Yana\Views\Templates;
  * @subpackage  views
  * @codeCoverageIgnore
  */
-abstract class AbstractTemplate extends \Yana\Core\Object implements \Yana\Views\Templates\IsTemplate
+abstract class AbstractTemplate extends \Yana\Core\StdObject implements \Yana\Views\Templates\IsTemplate
 {
 
     /**

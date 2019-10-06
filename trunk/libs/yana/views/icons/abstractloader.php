@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Views\Icons;
 
@@ -35,7 +36,7 @@ namespace Yana\Views\Icons;
  * @package     yana
  * @subpackage  views
  */
-abstract class AbstractLoader extends \Yana\Core\Object implements \Yana\Views\Icons\IsLoader
+abstract class AbstractLoader extends \Yana\Core\StdObject implements \Yana\Views\Icons\IsLoader
 {
 
     /**

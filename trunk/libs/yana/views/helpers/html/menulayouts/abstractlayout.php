@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Views\Helpers\Html\MenuLayouts;
 
@@ -37,7 +38,7 @@ namespace Yana\Views\Helpers\Html\MenuLayouts;
  * @package     yana
  * @subpackage  views
  */
-abstract class AbstractLayout extends \Yana\Core\Object implements \Yana\Views\Helpers\Html\MenuLayouts\IsLayout
+abstract class AbstractLayout extends \Yana\Core\StdObject implements \Yana\Views\Helpers\Html\MenuLayouts\IsLayout
 {
 
     // intentionally left blank

@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Translations\TextData;
 
@@ -36,7 +37,7 @@ namespace Yana\Translations\TextData;
  * @subpackage  translations
  * @ignore
  */
-class NullDataProvider extends \Yana\Core\Object implements \Yana\Translations\TextData\IsDataProvider
+class NullDataProvider extends \Yana\Core\StdObject implements \Yana\Translations\TextData\IsDataProvider
 {
 
     /**

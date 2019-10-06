@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Files\Streams\Wrappers;
 
@@ -37,7 +38,7 @@ namespace Yana\Files\Streams\Wrappers;
  * @package     yana
  * @subpackage  files
  */
-abstract class AbstractWrapper extends \Yana\Core\Object implements \Yana\Files\Streams\Wrappers\IsStreamWrapper
+abstract class AbstractWrapper extends \Yana\Core\StdObject implements \Yana\Files\Streams\Wrappers\IsStreamWrapper
 {
 
     /**
@@ -68,7 +69,7 @@ abstract class AbstractWrapper extends \Yana\Core\Object implements \Yana\Files\
      * <<magic>> Maps the property.
      *
      * @param   string  $name  property name
-     * @return  \Yana\Core\Object
+     * @return  \Yana\Core\StdObject
      */
     public function __get($name)
     {

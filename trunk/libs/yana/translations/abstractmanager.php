@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Translations;
 
@@ -35,7 +36,7 @@ namespace Yana\Translations;
  * @package     yana
  * @subpackage  translations
  */
-abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Translations\IsTranslationManager
+abstract class AbstractManager extends \Yana\Core\StdObject implements \Yana\Translations\IsTranslationManager
 {
 
     use \Yana\Log\HasLogger;
@@ -75,7 +76,7 @@ abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Transl
      *
      * @return  \Yana\Translations\LocaleCollection
      */
-    protected function _getAcceptedLocales()
+    protected function _getAcceptedLocales(): \Yana\Translations\LocaleCollection
     {
         return $this->_acceptedLocales;
     }
@@ -87,7 +88,7 @@ abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Transl
      * If you add multiple, only the first will be used.
      *
      * @param   \Yana\Core\MetaData\IsDataProvider  $provider  to load information about a language pack
-     * @return  \Yana\Translations\Manager
+     * @return  $this
      */
     public function addMetaDataProvider(\Yana\Core\MetaData\IsDataProvider $provider)
     {
@@ -98,8 +99,8 @@ abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Transl
     /**
      * Adds a class that finds and loads translations.
      *
-     * @param  \Yana\Translations\TextData\IsDataProvider  $provider  to load the contents of a language pack
-     * @return  \Yana\Translations\Manager
+     * @param   \Yana\Translations\TextData\IsDataProvider  $provider  to load the contents of a language pack
+     * @return  $this
      */
     public function addTextDataProvider(\Yana\Translations\TextData\IsDataProvider $provider)
     {
@@ -110,9 +111,9 @@ abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Transl
     /**
      * Use this collection to load information about language packs.
      *
-     * @return \Yana\Core\MetaData\DataProviderCollection
+     * @return  \Yana\Core\MetaData\DataProviderCollection
      */
-    protected function _getMetaDataProviders()
+    protected function _getMetaDataProviders(): \Yana\Core\MetaData\DataProviderCollection
     {
         return $this->_metaDataProviders;
     }
@@ -120,9 +121,9 @@ abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Transl
     /**
      * Use this collection to load translations from language packs.
      *
-     * @return \Yana\Translations\TextData\DataProviderCollection
+     * @return  \Yana\Translations\TextData\DataProviderCollection
      */
-    protected function _getTextDataProviders()
+    protected function _getTextDataProviders(): \Yana\Translations\TextData\DataProviderCollection
     {
         return $this->_textDataProviders;
     }
