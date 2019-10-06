@@ -159,7 +159,7 @@ class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
         /* get the list of available installation files */
         $installDirectory = $installDirectory->getPath();
 
-        assert('!isset($initialization); // Cannot redeclare var $initialization');
+        assert(!isset($initialization), 'Cannot redeclare var $initialization');
         $initialization = array();
 
         foreach ($dbList as $item)
@@ -561,7 +561,7 @@ class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
             );
 
             // Test if the connection settings are valid
-            $test = \Yana\Db\Mdb2\ConnectionFactory::isAvailable($dsn);
+            $test = \Yana\Db\ConnectionFactory::isAvailable($dsn);
             if ($test !== true) {
                 $message = 'Unable to establish connection to database server. Check your input please!';
                 $level = \Yana\Log\TypeEnumeration::WARNING;
