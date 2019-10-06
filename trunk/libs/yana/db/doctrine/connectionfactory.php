@@ -290,7 +290,7 @@ class ConnectionFactory extends \Yana\Core\StdObject implements \Yana\Db\Doctrin
      *
      * @return  bool
      */
-    public static function isDoctrineAvailable()
+    public static function isDoctrineAvailable(): bool
     {
         return class_exists('\Doctrine\DBAL\DriverManager');
     }
@@ -304,7 +304,7 @@ class ConnectionFactory extends \Yana\Core\StdObject implements \Yana\Db\Doctrin
      * @param   array  $dsn   dns (info data for connection)
      * @return  bool
      */
-    public static function isAvailable(array $dsn)
+    public static function isAvailable(array $dsn): bool
     {
         try {
             $factory = new self($dsn);

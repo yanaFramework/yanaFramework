@@ -112,6 +112,33 @@ class ConnectionFactory extends \Yana\Core\StdObject implements \Yana\Db\IsConne
     }
 
     /**
+     * <<factory>> Returns a ready-to-use database connection.
+     *
+     * Example:
+     * <code>
+     * // Connect to database using 'config/db/user.db.xml'
+     * $db = \Yana\Db\ConnectionFactory();
+     * $db->createConnection('user');
+     * </code>
+     *
+     * @param   string|\Yana\Db\Ddl\Database  $schema        name of the database schema file (see config/db/*.xml),
+     *                                                       or instance of \Yana\Db\Ddl\Database
+     * @param   bool                          $ignoreFileDb  set to bool(true) if you DON'T want to use the fallback File-DB driver
+     * @return  \Yana\Db\IsConnection
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when no such database was found
+     * @throws  \Yana\Db\ConnectionException             when connection to database failed
+     */
+    public function isAvailable($schema, $ignoreFileDb = YANA_DATABASE_ACTIVE)
+    {
+        if (is_string($schema)) {
+            $schema = $this->_getSchemaFactory()->createSchema($schema);
+        }
+        assert($schema instanceof \Yana\Db\Ddl\Database);
+
+        return $this->_createConnection($schema, $ignoreFileDb);
+    }
+
+    /**
      * @param   \Yana\Db\Ddl\Database  $schema        passed on to connection
      * @param   bool                   $ignoreFileDb  set to bool(true) if you DON'T want to use the fallback File-DB driver
      * @return  \Yana\Db\IsConnection

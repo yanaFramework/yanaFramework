@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Ddl\Functions;
 
@@ -43,7 +44,7 @@ namespace Yana\Db\Ddl\Functions;
  * @package     yana
  * @subpackage  db
  */
-class Object extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIncludableDDL
+class Definition extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIncludableDDL
 {
 
     /**

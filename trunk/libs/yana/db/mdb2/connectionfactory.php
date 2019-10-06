@@ -351,11 +351,11 @@ class ConnectionFactory extends \Yana\Core\StdObject implements \Yana\Db\Mdb2\Is
      *
      * @return  bool
      */
-    public static function isMdb2Available()
+    public static function isMdb2Available(): bool
     {
         /* load PEAR-DB */
         @include_once "MDB2.php";
-        return class_exists("MDB2");
+        return class_exists("MDB2", false);
     }
 
     /**
@@ -367,7 +367,7 @@ class ConnectionFactory extends \Yana\Core\StdObject implements \Yana\Db\Mdb2\Is
      * @param   array  $dsn   dns (info data for connection)
      * @return  bool
      */
-    public static function isAvailable(array $dsn)
+    public static function isAvailable(array $dsn): bool
     {
         if (!self::isMdb2Available()) {
             return false;
