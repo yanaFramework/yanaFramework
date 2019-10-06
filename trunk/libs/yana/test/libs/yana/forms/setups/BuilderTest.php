@@ -329,7 +329,8 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         $setup->setInsertAction('insertAction')->setUpdateAction('updateAction')->getContext($updateContextName)
                 ->setColumnNames(array('tid', 'tvalue'))->setRows(array(1 => array('TID' => '5', 'FOO' => 'something')));
         $this->object->updateValues($array);
-        $expected = array(1 => array('TID' => '4', 'TVALUE' => 'Test', 'FOO' => 'something'));
+        $this->object->__invoke();
+        $expected = array(1 => array('TID' => '4', 'TVALUE' => 'Test'));
         $this->assertSame($expected, $setup->getContext($updateContextName)->getRows()->toArray());
     }
 
