@@ -34,7 +34,7 @@ namespace Yana\Util\Xml;
  * @subpackage core
  * @ignore
  */
-class Object extends \stdClass implements \Yana\Util\Xml\IsObject
+class StdObject extends \stdClass implements \Yana\Util\Xml\IsObject
 {
 
     /**

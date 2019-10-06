@@ -50,7 +50,7 @@ class Collection extends \Yana\Core\AbstractCollection
     public function offsetSet($offset, $value)
     {
         if (\is_scalar($value)) {
-            $value = new \Yana\Util\Xml\Object((string) $value);
+            $value = new \Yana\Util\Xml\StdObject((string) $value);
         }
         assert('is_null($offset) || is_scalar($offset); // $offset expected to be Scalar');
         if (!$value instanceof \Yana\Util\Xml\IsObject) {

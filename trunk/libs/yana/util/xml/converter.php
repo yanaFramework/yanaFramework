@@ -246,14 +246,14 @@ class Converter extends \Yana\Core\AbstractUtility
      * Note: a node may either be a container or a text node.
      * It must not be both. This means: it must not have inline nodes.
      *
-     * @return  \Yana\Util\Xml\Object
+     * @return  \Yana\Util\Xml\StdObject
      */
     public static function convertXmlToObject(\SimpleXMLElement $xml)
     {
         $attributes = $xml->attributes();
         $children = $xml->children();
 
-        $object = new \Yana\Util\Xml\Object();
+        $object = new \Yana\Util\Xml\StdObject();
 
         if (empty($attributes) && empty($children)) {
             return $object;
