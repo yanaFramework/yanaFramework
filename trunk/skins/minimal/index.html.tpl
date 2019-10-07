@@ -19,7 +19,7 @@
 
 {import id="STDOUT" STDOUT=$STDOUT}
 
-{import id=$SYSTEM_INSERT}
+{import template=$SYSTEM_INSERT}
 
 </body>
 

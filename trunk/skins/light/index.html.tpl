@@ -32,7 +32,7 @@
           {toolbar}
       </div>
 {import id="STDOUT" STDOUT=$STDOUT}
-      <div align="center">{import id=$SYSTEM_INSERT}</div>
+      <div align="center">{import template=$SYSTEM_INSERT}</div>
     </td>
     <td width="24" style="background-image: url('data/box-r.gif')">&nbsp;</td>
   </tr>

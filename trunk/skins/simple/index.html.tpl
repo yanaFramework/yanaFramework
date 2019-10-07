@@ -40,7 +40,7 @@
         <div><img border="0" alt="" src={$PROFILE.LOGO}/></div>
 {/if}
 {import id="STDOUT" STDOUT=$STDOUT}
-{import id=$SYSTEM_INSERT}
+{import template=$SYSTEM_INSERT}
             </td>
           </tr>
       </table>
