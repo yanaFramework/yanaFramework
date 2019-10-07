@@ -138,7 +138,11 @@ class Mdb2WrapperTest extends \PHPUnit_Framework_TestCase
         $indexes = $this->object->listTableIndexes('t');
         $this->assertGreaterThanOrEqual(1, count($indexes));
         $index = current($indexes);
-        $this->assertSame(array('ftid' => array('position' => 1, 'sorting' => 'ascending')), $index['fields']);
+        /* Defined as "index2".
+         * The "index1" is not returned because it is identical to the PRIMARY index.
+         * In PEAR MDB2, the PRIMARY index is listed as a constraint, not an index.
+         */
+        $this->assertSame(array('tvalue' => array('position' => 1, 'sorting' => 'ascending')), $index['fields']);
     }
 
     /**

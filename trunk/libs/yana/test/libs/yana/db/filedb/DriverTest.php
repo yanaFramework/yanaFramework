@@ -219,8 +219,12 @@ class DriverTest extends \PHPUnit_Framework_TestCase
      */
     public function testSendQueryString()
     {
-        $resultObject = new \Yana\Db\FileDb\Result(array(array('tvalue' => 1, 'tb' => true, 'ftid' => 1, 'tid' => 1)));
-        $this->assertEquals($resultObject, $this->object->sendQueryString('select * from t'));
+        try {
+            $resultObject = new \Yana\Db\FileDb\Result(array(array('tvalue' => 1, 'tb' => true, 'ftid' => 1, 'tid' => 1)));
+            $this->assertEquals($resultObject, $this->object->sendQueryString('select * from t'));
+        } catch (\Yana\Db\Queries\Exceptions\NotSupportedException $e) {
+            $this->markTestSkipped($e->getMessage());
+        }
     }
 
     /**
