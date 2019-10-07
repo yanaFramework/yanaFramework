@@ -35,18 +35,6 @@ class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
 {
 
     /**
-     * Attempts to load a database schema.
-     *
-     * @param   string  $schemaName  to load
-     * @return \Yana\Db\Ddl\Database
-     */
-    private function _loadDatabaseSchema(string $schemaName): \Yana\Db\Ddl\Database
-    {
-        $schemaFactory = new \Yana\Db\SchemaFactory();
-        return $schemaFactory->createSchema($schemaName);
-    }
-
-    /**
      * Attempts to open and return a database connection.
      *
      * @param   string  $schema  to load
