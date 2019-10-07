@@ -36,7 +36,7 @@ namespace Yana\Db\Doctrine;
  */
 class DriverEnumeration extends \Yana\Core\AbstractEnumeration
 {
-    const MYSQL = 'mysql';
+    const MYSQL = 'mysqli';
     const MYSQL_2 = 'mysql2';
     const MYSQL_PDO = 'pdo_mysql';
     const MYSQL_DRIZZLE = 'drizzle_pdo_mysql';
