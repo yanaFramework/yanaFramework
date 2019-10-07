@@ -67,11 +67,11 @@ interface IsConnection
      * @param   array            $orderBy  a list of columns to order the resultset by
      * @param   int              $offset   the number of the first result to be returned
      * @param   int              $limit    maximum number of results to return
-     * @param   bool             $desc     if true results will be ordered in descending,
+     * @param   array             $desc     if true results will be ordered in descending,
      *                                     otherwise in ascending order
      * @return  mixed
      */
-    public function select($key, array $where = array(), $orderBy = array(), $offset = 0, $limit = 0, $desc = false);
+    public function select($key, array $where = array(), $orderBy = array(), $offset = 0, $limit = 0, $desc = array());
 
     /**
      * Update a row or cell.
@@ -168,7 +168,7 @@ interface IsConnection
      * @param   string  $sqlStmt  one SQL statement (or a query object) to execute
      * @param   int     $offset   the row to start from
      * @param   int     $limit    the maximum numbers of rows in the resultset
-     * @return  mixed
+     * @return  \Yana\Db\IsResult
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException if the SQL statement is not valid
      */
     public function sendQueryString($sqlStmt, $offset = 0, $limit = 0);

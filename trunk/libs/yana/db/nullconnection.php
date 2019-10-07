@@ -145,7 +145,7 @@ class NullConnection extends \Yana\Core\StdObject implements \Yana\Db\IsConnecti
      *                                     otherwise in ascending order
      * @return  mixed
      */
-    public function select($key, array $where = array(), $orderBy = array(), $offset = 0, $limit = 0, $desc = false)
+    public function select($key, array $where = array(), $orderBy = array(), $offset = 0, $limit = 0, $desc = array())
     {
         return array();
     }
@@ -265,12 +265,12 @@ class NullConnection extends \Yana\Core\StdObject implements \Yana\Db\IsConnecti
      * @param   string  $sqlStmt  one SQL statement (or a query object) to execute
      * @param   int     $offset   the row to start from
      * @param   int     $limit    the maximum numbers of rows in the resultset
-     * @return  mixed
+     * @return  \Yana\Db\IsResult
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException if the SQL statement is not valid
      */
     public function sendQueryString($sqlStmt, $offset = 0, $limit = 0)
     {
-        return array();
+        return new \Yana\Db\FileDb\Result();
     }
 
     /**

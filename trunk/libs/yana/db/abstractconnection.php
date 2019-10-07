@@ -332,7 +332,7 @@ abstract class AbstractConnection extends \Yana\Core\StdObject implements \Seria
      * @return  mixed
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when one of the given arguments is not valid
      */
-    public function select($key, array $where = array(), $orderBy = array(), $offset = 0, $limit = 0, $desc = false)
+    public function select($key, array $where = array(), $orderBy = array(), $offset = 0, $limit = 0, $desc = array())
     {
         if (is_object($key) && $key instanceof \Yana\Db\Queries\Select) {
 
@@ -342,7 +342,7 @@ abstract class AbstractConnection extends \Yana\Core\StdObject implements \Seria
         } else {
 
             $queryBuilder = $this->_getQueryBuilder();
-            $selectQuery = $queryBuilder->select($key, $where, $orderBy, $offset, $limit, $desc);
+            $selectQuery = $queryBuilder->select((string) $key, (array) $where, (array) $orderBy, (int) $offset, (int) $limit, (array) $desc);
         }
 
         return $selectQuery->getResults();
@@ -364,7 +364,7 @@ abstract class AbstractConnection extends \Yana\Core\StdObject implements \Seria
      * a query as an object and reuse it with multiple arguments.
      *
      * @param   string|\Yana\Db\Queries\Update  $key    the address of the row that should be updated
-     * @param   mixed            $value  value
+     * @param   mixed                           $value  value
      * @return  \Yana\Db\IsConnection
      * @name    AbstractConnection::update()
      * @see     AbstractConnection::insertOrUpdate()
