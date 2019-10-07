@@ -178,7 +178,7 @@ class NullConnectionTest extends \PHPUnit_Framework_TestCase
      */
     public function testSendQueryString()
     {
-        $this->assertSame(array(), $this->object->sendQueryString(''));
+        $this->assertEquals(new \Yana\Db\FileDb\Result(), $this->object->sendQueryString(''));
     }
 
     /**
