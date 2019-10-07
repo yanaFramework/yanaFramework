@@ -607,7 +607,7 @@ class GuestbookPlugin extends \Yana\Plugins\AbstractPlugin
         $sortBy = "guestbook_date";
         $desc = true;
         /* get rows from database */
-        $result = $database->select($table->getName(), $where, $sortBy, $page, $entPerPage, $desc);
+        $result = $database->select($table->getName(), $where, array($sortBy), $page, $entPerPage, array($desc));
 
         /* set template vars */
 
