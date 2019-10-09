@@ -181,11 +181,12 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
             function ($id, $entry) use ($visibleColumns, $securityFacade)
             {
                 $id = mb_strtolower($id);
+                $entry = \array_change_key_case($entry, CASE_LOWER);
 
                 foreach (array_keys($entry) as $i)
                 {
                     if (!in_array($i, $visibleColumns)) {
-                        unset($entry[$i]);
+                        throw \Yana\Db\Queries\Exceptions\NotUpdatedException();
                     }
                 }
 
@@ -196,7 +197,7 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
                     throw new \Yana\Core\Exceptions\User\NotFoundException($message, $level);
                 }
 
-                if ($id === "administrator" && !$entry['user_active']) {
+                if ($id === "administrator" && empty($entry['user_active'])) {
                     $message = "The administrator's account must not be deactivated";
                     $level = \Yana\Log\TypeEnumeration::ERROR;
                     throw new \Yana\Core\Exceptions\User\DeleteAdminException($message, $level);
