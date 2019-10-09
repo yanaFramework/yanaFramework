@@ -170,13 +170,15 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
      *
      * @return  \Yana\Data\Adapters\IsDataAdapter
      */
-    public function getCache()
+    public function getCache(): \Yana\Data\Adapters\IsDataAdapter
     {
         if (!isset($this->_applicationCache)) {
             $tempDir = $this->_getPathToCacheDirectory();
             if (YANA_CACHE_ACTIVE === true && is_dir($tempDir)) {
+                // @codeCoverageIgnoreStart
                 $temporaryDirectory = new \Yana\Files\Dir($tempDir);
                 $this->_applicationCache = new \Yana\Data\Adapters\FileCacheAdapter($temporaryDirectory);
+                // @codeCoverageIgnoreEnd
             } else {
                 $this->_applicationCache = new \Yana\Data\Adapters\ArrayAdapter();
             }
@@ -190,9 +192,9 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
      * Builds and returns a class that converts exceptions to messages and passes them as var
      * "STDOUT" to a var-container for output in a template or on the command line.
      *
-     * @return  Yana\Log\IsLogger
+     * @return  \Yana\Log\IsLogger
      */
-    public function getExceptionLogger()
+    public function getExceptionLogger(): \Yana\Log\IsLogger
     {
         if (!isset($this->_exceptionLogger)) {
             $languageManager = $this->getLanguage();
@@ -227,7 +229,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
      * @return  string
      * @throws  \Yana\Core\Exceptions\InvalidActionException  when the event is undefined
      */
-    public function getAction()
+    public function getAction(): string
     {
         if (!isset($this->_action)) {
             $action = $this->getRequest()->getActionArgument();
@@ -240,7 +242,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
                     $error->setAction($action);
                 // fall through
                 case empty($action):
-                    assert('!empty($this->_configuration->default->homepage); // Configuration missing default homepage.');
+                    assert(!empty($this->_configuration->default->homepage), 'Configuration missing default homepage.');
                     $action = (string) $this->_configuration->default->homepage;
                 // fall through
                 default:
@@ -259,7 +261,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
      * 
      * @return \Yana\Security\IsFacade
      */
-    public function getSecurity()
+    public function getSecurity(): \Yana\Security\IsFacade
     {
         if (!isset($this->_security)) {
             $this->_security = new \Yana\Security\Facade($this);
@@ -272,7 +274,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
      *
      * @return  bool
      */
-    public function isSafemode()
+    public function isSafemode(): bool
     {
         if (!isset($this->_isSafemode)) {
             $eventConfiguration = $this->getPlugins()->getEventConfiguration($this->getAction());
@@ -291,7 +293,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
      *
      * @return  \Yana\Util\Xml\IsObject
      */
-    public function getDefaultConfiguration()
+    public function getDefaultConfiguration(): \Yana\Util\Xml\IsObject
     {
         return $this->_configuration->default;
     }
@@ -301,7 +303,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
      *
      * @return  \Yana\Util\Xml\IsObject
      */
-    public function getTemplateConfiguration()
+    public function getTemplateConfiguration(): \Yana\Util\Xml\IsObject
     {
         return $this->_configuration->templates;
     }
@@ -316,7 +318,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
      * @throws  \Yana\Core\Exceptions\NotReadableException    when Registry file is not readable
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when Registry file could not be read or contains invalid syntax
      */
-    public function getRegistry()
+    public function getRegistry(): \Yana\VDrive\IsRegistry
     {
         if (!isset($this->_registry)) {
             // path to cache file
@@ -386,7 +388,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
      *
      * @return  \Yana\Plugins\Facade
      */
-    public function getPlugins()
+    public function getPlugins(): \Yana\Plugins\Facade
     {
         if (!isset($this->_plugins)) {
             $cacheId = 'plugins';
@@ -410,7 +412,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
      *
      * @return  array
      */
-    public function getDefaultEvent()
+    public function getDefaultEvent(): array
     {
         $defaultEvent = $this->getDefault('EVENT');
         if ($defaultEvent instanceof \Yana\Util\IsXmlArray) {
@@ -430,7 +432,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
      *
      * @return  \Yana\Views\Managers\IsManager
      */
-    public function getView()
+    public function getView(): \Yana\Views\Managers\IsManager
     {
         if (!isset($this->_view)) {
             $factory = new \Yana\Views\EngineFactory($this);
@@ -447,7 +449,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
      *
      * @return  \Yana\Translations\IsFacade
      */
-    public function getLanguage()
+    public function getLanguage(): \Yana\Translations\IsFacade
     {
         if (!isset($this->_language)) {
             $this->_language = $this->_buildNewTranslationFacade();
@@ -460,7 +462,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
      *
      * @return  \Yana\Translations\IsFacade
      */
-    protected function _buildNewTranslationFacade()
+    protected function _buildNewTranslationFacade(): \Yana\Translations\IsFacade
     {
         $registry = $this->getRegistry();
         $languageDir = (string) $registry->getVar('LANGUAGEDIR');
@@ -502,14 +504,14 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
      *
      * @return  \Yana\Views\Skins\IsSkin
      */
-    public function getSkin()
+    public function getSkin(): \Yana\Views\Skins\IsSkin
     {
         if (!isset($this->_skin)) {
-            assert('!isset($registry); // Cannot redeclare var $registry');
+            assert(!isset($registry), 'Cannot redeclare var $registry');
             $registry = $this->getRegistry();
-            assert('!isset($cache); // Cannot redeclare var $cache');
+            assert(!isset($cache), 'Cannot redeclare var $cache');
             $cache = $this->getCache();
-            assert('!isset($cacheId); // Cannot redeclare var $cacheId');
+            assert(!isset($cacheId), 'Cannot redeclare var $cacheId');
             $cacheId = 'skin_' . (string) $registry->getVar('PROFILE.SKIN');
 
             if (isset($cache[$cacheId])) {
@@ -551,21 +553,47 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
      *
      * @return  string
      */
-    public function getProfileId()
+    public function getProfileId(): string
     {
         if (!isset($this->_id)) {
-            $id = $this->getRequest()->getProfileArgument();
+            $id = $this->isSafemode() ? '' : $this->getRequest()->getProfileArgument();
             if ($id > "") {
-                $this->_id = $id;
+                // @codeCoverageIgnoreStart
+
+                // trivial - no need to test this
+                $this->_id = $id; // We get here if the profile id is passed via the URL, which is the case most of the time
+                // @codeCoverageIgnoreEnd
 
             } elseif (!empty($this->_configuration->default->profile)) {
-                $this->_id = (string) $this->_configuration->default->profile;
+                $this->_id = (string) $this->_configuration->default->profile; // Default profile id, in case nothing else is provided
 
             } else {
-                $this->_id = 'default';
+                // @codeCoverageIgnoreStart
+                $this->_id = 'default'; // This is just a fallback, and should be unreachable (unless the configuration file is bust)
+                // @codeCoverageIgnoreEnd
             }
         }
         return $this->_id;
+    }
+
+    /**
+     * Returns a string containing profile and session parameters.
+     *
+     * Looks like this: ?id={profileId}&{sessionName}={sessionId}.
+     *
+     * If the client accepts session cookies, the session information is not included.
+     *
+     * @return string
+     */
+    public function getApplicationUrlParameters(): string
+    {
+        $baseUrl = "?id=" . $this->getProfileId();
+        if (empty($_COOKIE) && session_status() === \PHP_SESSION_ACTIVE) {
+            // @codeCoverageIgnoreStart
+            $baseUrl .= "&" . session_name() . "=" . session_id();
+            // @codeCoverageIgnoreEnd
+        }
+        return $baseUrl;
     }
 
     /**
@@ -573,7 +601,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
      *
      * @return  \Yana\Log\IsLogHandler
      */
-    public function getLogger()
+    public function getLogger(): \Yana\Log\IsLogHandler
     {
         return \Yana\Log\LogManager::getLogger();
     }
@@ -599,12 +627,12 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
      * Note: system default values are typically defined in the
      * 'default' section of the 'config/system.config' configurations file.
      *
-     * @param   string  $key  adress of data in memory (case insensitive)
+     * @param   scalar  $key  adress of data in memory (case insensitive)
      * @return  mixed
      */
     public function getDefault($key)
     {
-        assert('is_scalar($key); // Invalid argument $key: scalar expected');
+        assert(is_scalar($key), 'Invalid argument $key: scalar expected');
         $result = null;
         if (isset($this->_configuration->default)) {
             $key = mb_strtolower("$key");
@@ -634,7 +662,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
      *
      * @return  \Yana\Plugins\Menus\IsCacheableBuilder
      */
-    public function getMenuBuilder()
+    public function getMenuBuilder(): \Yana\Plugins\Menus\IsCacheableBuilder
     {
         if (!isset($this->_menuBuilder)) {
             $container = new \Yana\Plugins\Dependencies\MenuContainer($this);
@@ -656,7 +684,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
      *
      * @return  string
      */
-    protected function _getPathToCacheDirectory()
+    protected function _getPathToCacheDirectory(): string
     {
         $tempDir = 'cache';
         if (isset($this->_configuration->tempdir)) {
@@ -673,7 +701,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
      *
      * @return  \Yana\Db\IsConnectionFactory
      */
-    public function getConnectionFactory()
+    public function getConnectionFactory(): \Yana\Db\IsConnectionFactory
     {
         if (!isset($this->_connectionFactory)) {
             $this->_connectionFactory = new \Yana\Db\ConnectionFactory(new \Yana\Db\SchemaFactory($this->getCache()));
@@ -686,7 +714,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
      *
      * @return  \Yana\Views\Icons\IsLoader
      */
-    public function getIconLoader()
+    public function getIconLoader(): \Yana\Views\Icons\IsLoader
     {
         if (!isset($this->_iconLoader)) {
             $registry = $this->getRegistry();
@@ -705,7 +733,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
      *
      * @return  \Yana\Plugins\Configs\MethodCollection
      */
-    public function getEventConfigurationsForPlugins()
+    public function getEventConfigurationsForPlugins(): \Yana\Plugins\Configs\MethodCollection
     {
         if (!isset($this->_eventConfigurationsForPlugins)) {
             $this->_eventConfigurationsForPlugins = $this->getPlugins()->getEventConfigurations();
@@ -720,7 +748,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
      *
      * @return  string
      */
-    public function getLastPluginAction()
+    public function getLastPluginAction(): string
     {
         return (string) $this->getPlugins()->getLastEvent();
     }
@@ -730,7 +758,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
      *
      * @return  array
      */
-    public function getDefaultUser()
+    public function getDefaultUser(): array
     {
         return $this->getDefault('user');
     }
@@ -740,7 +768,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
      *
      * @return  \Yana\Plugins\Data\IsAdapter
      */
-    public function getPluginAdapter()
+    public function getPluginAdapter(): \Yana\Plugins\Data\IsAdapter
     {
         if (!isset($this->_pluginAdapter)) {
             $this->_pluginAdapter = new \Yana\Plugins\Data\Adapter($this->getConnectionFactory()->createConnection("plugins"));

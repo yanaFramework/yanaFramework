@@ -82,7 +82,7 @@ class TextMenuBuilder extends \Yana\Core\StdObject implements \Yana\Plugins\Menu
      */
     protected function _hasGroup($pluginName)
     {
-        assert('is_string($pluginName); // Invalid argument $pluginName: string expected');
+        assert(is_string($pluginName), 'Invalid argument $pluginName: string expected');
         if (empty($this->_hasGroup)) {
 
             $plugins = $this->_getDependencies()->getPluginFacade();
@@ -106,16 +106,16 @@ class TextMenuBuilder extends \Yana\Core\StdObject implements \Yana\Plugins\Menu
      */
     protected function _getPluginNameByGroupId($menuId)
     {
-        assert('is_string($menuId); // Invalid argument $menuId: string expected');
+        assert(is_string($menuId), 'Invalid argument $menuId: string expected');
         if (empty($this->_pluginsWithGroups)) {
             $plugins = $this->_getDependencies()->getPluginFacade()->getPluginConfigurations()->toArray();
 
             /* @var $pluginConfiguration PluginConfigurationClass */
-            assert('!isset($pluginName); // Cannot redeclare var $pluginName');
-            assert('!isset($pluginConfiguration); // Cannot redeclare var $pluginConfiguration');
+            assert(!isset($pluginName), 'Cannot redeclare var $pluginName');
+            assert(!isset($pluginConfiguration), 'Cannot redeclare var $pluginConfiguration');
             foreach ($plugins as $pluginName => $pluginConfiguration)
             {
-                assert('!isset($menuEntry); // Cannot redeclare var $menuEntry');
+                assert(!isset($menuEntry), 'Cannot redeclare var $menuEntry');
                 foreach ($pluginConfiguration->getMenuNames() as $menuEntry)
                 {
                     if ($menuEntry->getGroup()) {
@@ -126,7 +126,7 @@ class TextMenuBuilder extends \Yana\Core\StdObject implements \Yana\Plugins\Menu
             } // end foreach
             unset($pluginName, $pluginConfiguration);
         }
-        assert('!isset($pluginName); // Cannot redeclare var $pluginName');
+        assert(!isset($pluginName), 'Cannot redeclare var $pluginName');
         $pluginName = "";
         if (isset($this->_pluginsWithGroups[$menuId])) {
             $pluginName = $this->_pluginsWithGroups[$menuId];
@@ -142,7 +142,7 @@ class TextMenuBuilder extends \Yana\Core\StdObject implements \Yana\Plugins\Menu
      */
     public function translateMenuName($menuNameToken)
     {
-        assert('is_string($menuNameToken); // Invalid argument $menuNameToken: string expected');
+        assert(is_string($menuNameToken), 'Invalid argument $menuNameToken: string expected');
         return $this->_getDependencies()->getTranslationFacade()->replaceToken($menuNameToken);
     }
 
@@ -186,7 +186,7 @@ class TextMenuBuilder extends \Yana\Core\StdObject implements \Yana\Plugins\Menu
      */
     private function _getMenu(\Yana\Plugins\Menus\IsMenu $menuConfiguration, array &$textMenu, $menuId, array $menuEntries, $isSafemode)
     {
-        assert('is_string($menuId); // Invalid argument $menuId: string expected');
+        assert(is_string($menuId), 'Invalid argument $menuId: string expected');
         $name = $menuConfiguration->getMenuName($menuId);
         $urlFormatter = $this->_getDependencies()->getUrlFormatter();
 

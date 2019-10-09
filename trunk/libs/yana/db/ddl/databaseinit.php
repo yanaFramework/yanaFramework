@@ -109,7 +109,7 @@ class DatabaseInit extends \Yana\Db\Ddl\DDL
      */
     public function setDBMS($dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
-        assert('is_string($dbms); // Wrong type for argument 1. String expected');
+        assert(is_string($dbms), 'Wrong type for argument 1. String expected');
 
         if (empty($dbms)) {
             $this->dbms = null;
@@ -143,7 +143,7 @@ class DatabaseInit extends \Yana\Db\Ddl\DDL
      */
     public function setSQL($sql)
     {
-        assert('is_string($sql); // Wrong type for argument 1. String expected');
+        assert(is_string($sql), 'Wrong type for argument 1. String expected');
         if (empty($sql)) {
             $this->sql = null;
         } else {

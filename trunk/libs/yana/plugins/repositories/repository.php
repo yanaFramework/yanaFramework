@@ -95,7 +95,7 @@ class Repository extends \Yana\Plugins\Repositories\AbstractRepository
      */
     public function getSubscribers($methodName)
     {
-        assert('is_string($methodName); // Invalid argument $methodName: string expected');
+        assert(is_string($methodName), 'Invalid argument $methodName: string expected');
         return $this->_getQueue($methodName)->getSubscribers();
     }
 

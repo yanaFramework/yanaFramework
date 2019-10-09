@@ -64,7 +64,7 @@ trait HasConfiguration
      */
     public function setDirectory($directory)
     {
-        assert('is_dir($directory); // Directory does not exist');
+        assert(is_dir($directory), 'Directory does not exist');
         $this->_directory = realpath($directory) . '/';
         return $this;
     }

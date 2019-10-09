@@ -51,8 +51,8 @@ class Dir extends \Yana\Core\AbstractUtility
      */
     public static function getSize($directory, $countSubDirs = true)
     {
-        assert('is_string($directory); // Wrong argument type for argument 1. String expected.');
-        assert('is_bool($countSubDirs); // Wrong argument type for argument 2. Boolean expected.');
+        assert(is_string($directory), 'Wrong argument type for argument 1. String expected.');
+        assert(is_bool($countSubDirs), 'Wrong argument type for argument 2. Boolean expected.');
 
         /* directory does not exist */
         if (!is_string($directory) || !is_dir($directory)) {
@@ -97,8 +97,8 @@ class Dir extends \Yana\Core\AbstractUtility
      */
     public static function listFiles($directory, $nameFilter = "")
     {
-        assert('is_string($directory); // Wrong argument type for argument 1. String expected.');
-        assert('is_string($nameFilter); // Wrong argument type for argument 2. String expected.');
+        assert(is_string($directory), 'Wrong argument type for argument 1. String expected.');
+        assert(is_string($nameFilter), 'Wrong argument type for argument 2. String expected.');
         return self::_dirlist($directory, $nameFilter, true, false);
     }
 
@@ -111,7 +111,7 @@ class Dir extends \Yana\Core\AbstractUtility
      */
     public static function listDirectories($directory)
     {
-        assert('is_string($directory); // Wrong argument type for argument 1. String expected.');
+        assert(is_string($directory), 'Wrong argument type for argument 1. String expected.');
         return self::_dirlist($directory, "", false, true);
     }
 
@@ -158,7 +158,7 @@ class Dir extends \Yana\Core\AbstractUtility
 
         /* Quote all special chars */
         if (strpos($nameFilter, '|') !== false) {
-            assert('!isset($tok); // cannot redeclare variable $tok');
+            assert(!isset($tok), 'cannot redeclare variable $tok');
             $tok = strtok($nameFilter, "|");
             $nameFilter = "";
             while ($tok !== false)
@@ -180,7 +180,7 @@ class Dir extends \Yana\Core\AbstractUtility
         $dirHandle = dir($directory);
         while($entry = $dirHandle->read())
         {
-            assert('is_array($dirlist); // Invariant condition failed: $dirlist is not an array.');
+            assert(is_array($dirlist), 'Invariant condition failed: $dirlist is not an array.');
             switch (true)
             {
                 case $includeFiles && is_file($directory . $entry) && ($nameFilter === "" || preg_match("/(?:{$nameFilter})$/i", $entry)):
@@ -192,7 +192,7 @@ class Dir extends \Yana\Core\AbstractUtility
         $dirHandle->close();
         sort($dirlist);
 
-        assert('is_array($dirlist); // Unexpected result: $dirlist is not an array.');
+        assert(is_array($dirlist), 'Unexpected result: $dirlist is not an array.');
         return $dirlist;
     }
 

@@ -83,7 +83,7 @@ class Structure extends \Yana\Files\SML
      */
     public function __construct($filename)
     {
-        assert('is_string($filename); // Wrong type for argument 1. String expected');
+        assert(is_string($filename), 'Wrong type for argument 1. String expected');
         $filename = \Yana\Db\Structure::_getFilename($filename);
         parent::__construct($filename, CASE_UPPER);
 
@@ -120,8 +120,8 @@ class Structure extends \Yana\Files\SML
             {
                 $this->content['TABLES'][$k]['PRIMARY_KEY'] = mb_strtolower($v['PRIMARY_KEY']);
                 if (isset($v['FOREIGN_KEYS'])) {
-                    assert('!isset($k1); // cannot redeclare variable $k1');
-                    assert('!isset($v1); // cannot redeclare variable $v1');
+                    assert(!isset($k1), 'cannot redeclare variable $k1');
+                    assert(!isset($v1), 'cannot redeclare variable $v1');
                     foreach ($v['FOREIGN_KEYS'] as $k1 => $v1)
                     {
                         $this->content['TABLES'][$k]['FOREIGN_KEYS'][$k1] = mb_strtolower($v1);
@@ -186,7 +186,7 @@ class Structure extends \Yana\Files\SML
 
         } else {
             $source = implode("", $source);
-            assert('is_string($source); // Unexpected result $source. String expected');
+            assert(is_string($source), 'Unexpected result $source. String expected');
             if (empty($source)) {
                 return false;
             } else {
@@ -256,8 +256,8 @@ class Structure extends \Yana\Files\SML
      */
     public function renameTable($oldTable, $newTable)
     {
-        assert('is_string($oldTable); // Wrong type for argument 1. String expected');
-        assert('is_string($newTable); // Wrong type for argument 2. String expected');
+        assert(is_string($oldTable), 'Wrong type for argument 1. String expected');
+        assert(is_string($newTable), 'Wrong type for argument 2. String expected');
         $newTable = mb_strtoupper("$newTable");
         $oldTable = mb_strtoupper("$oldTable");
 
@@ -300,7 +300,7 @@ class Structure extends \Yana\Files\SML
      */
     public function dropTable($table)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
         $table = mb_strtoupper("$table");
 
         if (!isset($this->content['TABLES'][$table])) {
@@ -334,8 +334,8 @@ class Structure extends \Yana\Files\SML
      */
     public function isColumn($table, $column)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
         return is_array($this->_getColumn($table, $column));
     }
 
@@ -354,8 +354,8 @@ class Structure extends \Yana\Files\SML
      */
     public function addColumn($table, $column)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
         $tbl =& $this->_getTable($table);
         if (!is_array($tbl)) {
             /* error: table not found */
@@ -392,9 +392,9 @@ class Structure extends \Yana\Files\SML
      */
     public function renameColumn($table, $oldColumn, $newColumn)
     {
-        assert('is_string($table); // Invalid argument $table: string expected');
-        assert('is_string($oldColumn); // Invalid argument $oldColumn: string expected');
-        assert('is_string($newColumn); // Invalid argument $newColumn: string expected');
+        assert(is_string($table), 'Invalid argument $table: string expected');
+        assert(is_string($oldColumn), 'Invalid argument $oldColumn: string expected');
+        assert(is_string($newColumn), 'Invalid argument $newColumn: string expected');
 
         $oldColumn = mb_strtoupper($oldColumn);
         $newColumn = mb_strtoupper($newColumn);
@@ -443,8 +443,8 @@ class Structure extends \Yana\Files\SML
      */
     public function dropColumn($table, $column)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
 
         $column = mb_strtoupper($column);
 
@@ -532,7 +532,7 @@ class Structure extends \Yana\Files\SML
      */
     public function setInit($table, array $statements = null)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
         $tbl =& $this->_getTable($table);
         if (!is_array($tbl)) {
             /* error: table not found */
@@ -577,7 +577,7 @@ class Structure extends \Yana\Files\SML
      */
     public function getInit($table = null)
     {
-        assert('is_null($table) || is_string($table); // Invalid argument $table: String expected');
+        assert(is_null($table) || is_string($table), 'Invalid argument $table: String expected');
         if (is_null($table)) {
             $tables = (array) $this->getTables();
         } elseif (is_string($table)) {
@@ -632,8 +632,8 @@ class Structure extends \Yana\Files\SML
      */
     public function isNullable($table, $column)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -680,9 +680,9 @@ class Structure extends \Yana\Files\SML
      */
     public function setNullable($table, $column, $isNullable)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
-        assert('is_bool($isNullable); // Invalid argument $isNullable: Boolean expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
+        assert(is_bool($isNullable), 'Invalid argument $isNullable: Boolean expected');
         $col =& $this->_getColumn($table, $column);
 
         /*
@@ -753,9 +753,9 @@ class Structure extends \Yana\Files\SML
      */
     public function setAuto($table, $column, $isAuto = true)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
-        assert('is_bool($isAuto); // Invalid argument $isAuto: Boolean expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
+        assert(is_bool($isAuto), 'Invalid argument $isAuto: Boolean expected');
         $col =& $this->_getColumn($table, $column);
 
         /*
@@ -803,8 +803,8 @@ class Structure extends \Yana\Files\SML
      */
     public function isAuto($table, $column)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -838,8 +838,8 @@ class Structure extends \Yana\Files\SML
      */
     public function isAutonumber($table, $column)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
         $type = $this->getType($table, $column);
         $type = mb_strtolower($type);
         if ($type !== 'int' && $type !== 'integer') {
@@ -866,8 +866,8 @@ class Structure extends \Yana\Files\SML
      */
     public function hasIndex($table, $column)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -908,9 +908,9 @@ class Structure extends \Yana\Files\SML
      */
     public function setIndex($table, $column, $hasIndex)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
-        assert('is_bool($hasIndex); // Invalid argument $hasIndex: Boolean expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
+        assert(is_bool($hasIndex), 'Invalid argument $hasIndex: Boolean expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -951,7 +951,7 @@ class Structure extends \Yana\Files\SML
      */
     public function getProfile($table)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
         $tbl =& $this->_getTable($table);
 
         if (!is_array($tbl)) {
@@ -988,8 +988,8 @@ class Structure extends \Yana\Files\SML
      */
     public function setProfile($table, $column = null)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_null($column) || is_string($column); // Invalid argument $column: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_null($column) || is_string($column), 'Invalid argument $column: String expected');
         $tbl =& $this->_getTable($table);
 
         if (!is_array($tbl)) {
@@ -1029,8 +1029,8 @@ class Structure extends \Yana\Files\SML
      */
     public function isForeignKey($table, $column)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
         /* settype to STRING */
         $column = (string) $column;
         $column = mb_strtoupper($column);
@@ -1066,9 +1066,9 @@ class Structure extends \Yana\Files\SML
      */
     public function setForeignKey($table, $column, $ftable = null)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
-        assert('is_null($ftable) || is_string($ftable); // Invalid argument $ftable: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
+        assert(is_null($ftable) || is_string($ftable), 'Invalid argument $ftable: String expected');
         /* settype to STRING */
         $column = (string) $column;
         $column = mb_strtoupper($column);
@@ -1130,8 +1130,8 @@ class Structure extends \Yana\Files\SML
      */
     public function isPrimaryKey($table, $column)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
         /* settype to STRING */
         $column = (string) $column;
         if (strcasecmp($this->getPrimaryKey($table), $column) === 0) {
@@ -1160,8 +1160,8 @@ class Structure extends \Yana\Files\SML
      */
     public function isUnique($table, $column)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -1202,9 +1202,9 @@ class Structure extends \Yana\Files\SML
      */
     public function setUnique($table, $column, $isUnique)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
-        assert('is_bool($isUnique); // Invalid argument $isUnique: Boolean expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
+        assert(is_bool($isUnique), 'Invalid argument $isUnique: Boolean expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -1247,8 +1247,8 @@ class Structure extends \Yana\Files\SML
      */
     public function isUnsigned($table, $column)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -1296,9 +1296,9 @@ class Structure extends \Yana\Files\SML
      */
     public function setUnsigned($table, $column, $isUnsigned)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
-        assert('is_bool($isUnsigned); // Invalid argument $isUnsigned: Boolean expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
+        assert(is_bool($isUnsigned), 'Invalid argument $isUnsigned: Boolean expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -1358,8 +1358,8 @@ class Structure extends \Yana\Files\SML
      */
     public function isZerofill($table, $column)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -1402,9 +1402,9 @@ class Structure extends \Yana\Files\SML
      */
     public function setZerofill($table, $column, $isZerofill)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
-        assert('is_bool($isZerofill); // Invalid argument $isZerofill: Boolean expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
+        assert(is_bool($isZerofill), 'Invalid argument $isZerofill: Boolean expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -1447,8 +1447,8 @@ class Structure extends \Yana\Files\SML
      */
     public function isNumber($table, $column)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -1513,7 +1513,7 @@ class Structure extends \Yana\Files\SML
      */
     public function getForeignKeys($table)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
         $tbl =& $this->_getTable($table);
 
         if (!is_array($tbl)) {
@@ -1544,7 +1544,7 @@ class Structure extends \Yana\Files\SML
      */
     public function getPrimaryKey($table)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
         $tbl =& $this->_getTable($table);
 
         if (!is_array($tbl)) {
@@ -1574,8 +1574,8 @@ class Structure extends \Yana\Files\SML
      */
     public function setPrimaryKey($table, $column)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
         /* settype to STRING */
         $column = (string) $column;
         $column = mb_strtolower($column);
@@ -1617,8 +1617,8 @@ class Structure extends \Yana\Files\SML
      */
     public function getDescription($table = null, $column = null)
     {
-        assert('is_null($table) || is_string($table); // Invalid argument $table: String expected');
-        assert('is_null($column) || is_string($column); // Invalid argument $column: String expected');
+        assert(is_null($table) || is_string($table), 'Invalid argument $table: String expected');
+        assert(is_null($column) || is_string($column), 'Invalid argument $column: String expected');
         /*
          * get description on database
          */
@@ -1690,9 +1690,9 @@ class Structure extends \Yana\Files\SML
      */
     public function setDescription($table, $column, $description)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
-        assert('is_string($description); // Invalid argument $description: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
+        assert(is_string($description), 'Invalid argument $description: String expected');
         /*
          * set description on database
          */
@@ -1747,8 +1747,8 @@ class Structure extends \Yana\Files\SML
      */
     public function getLength($table, $column)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -1792,8 +1792,8 @@ class Structure extends \Yana\Files\SML
      */
     public function getPrecision($table, $column)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -1850,10 +1850,10 @@ class Structure extends \Yana\Files\SML
      */
     public function setLength($table, $column, $length, $precision = -1)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
-        assert('is_int($length); // Invalid argument $length: Integer expected');
-        assert('is_int($precision); // Invalid argument $precision: Integer expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
+        assert(is_int($length), 'Invalid argument $length: Integer expected');
+        assert(is_int($precision), 'Invalid argument $precision: Integer expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -1901,8 +1901,8 @@ class Structure extends \Yana\Files\SML
      */
     public function getType($table, $column)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -1932,8 +1932,8 @@ class Structure extends \Yana\Files\SML
      */
     public function setType($table, $column, $value)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -1977,8 +1977,8 @@ class Structure extends \Yana\Files\SML
      */
     public function getImageSettings($table, $column)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -2058,8 +2058,8 @@ class Structure extends \Yana\Files\SML
      */
     public function setImageSettings($table, $column, array $settings)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -2119,8 +2119,8 @@ class Structure extends \Yana\Files\SML
      */
     public function getColumnsByType($table, $type)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($type); // Invalid argument $type: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($type), 'Invalid argument $type: String expected');
         /* settype to STRING */
         $table = (string) $table;
         $type  = (string) $type;
@@ -2159,7 +2159,7 @@ class Structure extends \Yana\Files\SML
      */
     public function getFiles($table)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
         /* settype to STRING */
         $table  = (string) $table;
         /* get list of all columns */
@@ -2197,8 +2197,8 @@ class Structure extends \Yana\Files\SML
      */
     public function getDefault($table, $column)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
         $property =& $this->_getColumnProperty($table, $column, 'DEFAULT');
         $type = $this->getType($table, $column);
 
@@ -2238,8 +2238,8 @@ class Structure extends \Yana\Files\SML
      */
     public function setDefault($table, $column, $value)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
         if ($this->_setColumnProperty($table, $column, 'DEFAULT', $value)) {
             /*
              * write protocol to keep track of changes
@@ -2264,7 +2264,7 @@ class Structure extends \Yana\Files\SML
      */
     public function getColumns($table)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
         $tbl =& $this->_getTable($table);
 
         if (!is_array($tbl)) {
@@ -2288,8 +2288,8 @@ class Structure extends \Yana\Files\SML
      */
     public function getTableByForeignKey($table, $foreignKey)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($foreignKey); // Invalid argument $foreignKey: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($foreignKey), 'Invalid argument $foreignKey: String expected');
         $foreignKey = mb_strtoupper("$foreignKey");
 
         $tbl =& $this->_getTable($table);
@@ -2336,7 +2336,7 @@ class Structure extends \Yana\Files\SML
      */
     public function setStrict($isStrict)
     {
-        assert('is_bool($isStrict); // Invalid argument $isStrict: Boolean expected');
+        assert(is_bool($isStrict), 'Invalid argument $isStrict: Boolean expected');
         if ($isStrict) {
             $this->content['USE_STRICT'] = true;
         } else {
@@ -2375,7 +2375,7 @@ class Structure extends \Yana\Files\SML
      */
     public function getIndexes($table)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
         if (!isset($this->content['TABLES'])) {
             \Yana\Log\LogManager::getLogger()->addLog("The list of tables is empty.", \Yana\Log\TypeEnumeration::INFO);
             return array();
@@ -2408,7 +2408,7 @@ class Structure extends \Yana\Files\SML
      */
     public function getUniqueConstraints($table)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
         if (!isset($this->content['TABLES'])) {
             \Yana\Log\LogManager::getLogger()->addLog("The list of tables is empty.", \Yana\Log\TypeEnumeration::INFO);
             return array();
@@ -2448,7 +2448,7 @@ class Structure extends \Yana\Files\SML
      */
     public function getAssociation($table)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
         $table = mb_strtoupper($table);
 
         /*
@@ -2477,7 +2477,7 @@ class Structure extends \Yana\Files\SML
      */
     public function hasAssociation($table)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
 
         if (!isset($this->content['ASSOCIATIONS'])) {
             return false;
@@ -2504,8 +2504,8 @@ class Structure extends \Yana\Files\SML
      */
     public function setAssociation($dbName, $table)
     {
-        assert('is_string($dbName); // Invalid argument $dbName: String expected');
-        assert('is_string($table); // Invalid argument $table: String expected');
+        assert(is_string($dbName), 'Invalid argument $dbName: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
 
         if (!isset($this->content['ASSOCIATIONS']) || !is_array($this->content['ASSOCIATIONS'])) {
             $this->content['ASSOCIATIONS'] = array();
@@ -2541,7 +2541,7 @@ class Structure extends \Yana\Files\SML
      */
     public function unsetAssociation($table = "")
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
 
         if ($table == "") {
             if (isset($this->content['ASSOCIATIONS'])) {
@@ -2578,7 +2578,7 @@ class Structure extends \Yana\Files\SML
      */
     public function getConstraint($table, array $columns = array())
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
         return $this->getFields('constraint', '', $table, $columns, true);
     }
 
@@ -2605,9 +2605,9 @@ class Structure extends \Yana\Files\SML
      */
     public function setConstraint($constraint, $table, $column = null)
     {
-        assert('is_string($constraint); // Invalid argument $constraint: string expected');
-        assert('is_string($table); // Invalid argument $table: string expected');
-        assert('is_null($column) || is_string($column); // Invalid argument $column: string expected');
+        assert(is_string($constraint), 'Invalid argument $constraint: string expected');
+        assert(is_string($table), 'Invalid argument $table: string expected');
+        assert(is_null($column) || is_string($column), 'Invalid argument $column: string expected');
 
         if (!preg_match(\Yana\Db\Helpers\ConstraintCollection::CONSTRAINT_SYNTAX, $constraint)) {
             \Yana\Log\LogManager::getLogger()->addLog("Syntax error in constraint: '".trim($constraint)."'.", \Yana\Log\TypeEnumeration::WARNING);
@@ -2652,8 +2652,8 @@ class Structure extends \Yana\Files\SML
      */
     public function getTrigger($operation, $table, array $columns = array())
     {
-        assert('is_string($operation); // Invalid argument $operation: String expected');
-        assert('is_string($table); // Invalid argument $table: String expected');
+        assert(is_string($operation), 'Invalid argument $operation: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
         return $this->getFields('trigger', $operation, $table, $columns);
     }
 
@@ -2676,13 +2676,13 @@ class Structure extends \Yana\Files\SML
      */
     public function setTrigger($trigger, $operation, $table, $column = null)
     {
-        assert('is_string($trigger); // Invalid argument $trigger: String expected');
-        assert('is_string($operation); // Invalid argument $operation: String expected');
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
+        assert(is_string($trigger), 'Invalid argument $trigger: String expected');
+        assert(is_string($operation), 'Invalid argument $operation: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
 
         $operation = mb_strtoupper("$operation");
-        assert('preg_match("/^(BEFORE|AFTER)_(INSERT|UPDATE|DELETE)$/", $operation); // Invalid operation');
+        assert((bool) preg_match("/^(BEFORE|AFTER)_(INSERT|UPDATE|DELETE)$/", $operation), 'Invalid operation');
 
         if (!is_null($column)) {
             $col =& $this->_getColumn($table, $column);
@@ -2734,8 +2734,8 @@ class Structure extends \Yana\Files\SML
      */
     public function isReadonly($table = "", $column = "")
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
         /* 1) the database is set to readonly */
         if (!empty($this->content['READONLY'])) {
             return true;
@@ -2796,9 +2796,9 @@ class Structure extends \Yana\Files\SML
      */
     public function setReadonly($isReadonly, $table = null, $column = null)
     {
-        assert('is_bool($isReadonly); // Invalid argument $isReadonly: Boolean expected');
-        assert('is_null($table) || is_string($table); // Invalid argument $table: String expected');
-        assert('is_null($column) || is_string($column); // Invalid argument $column: String expected');
+        assert(is_bool($isReadonly), 'Invalid argument $isReadonly: Boolean expected');
+        assert(is_null($table) || is_string($table), 'Invalid argument $table: String expected');
+        assert(is_null($column) || is_string($column), 'Invalid argument $column: String expected');
         if (!is_null($column)) {
             $col =& $this->_getColumn($table, $column);
             if (!is_array($col)) {
@@ -2851,9 +2851,9 @@ class Structure extends \Yana\Files\SML
      */
     public function isVisible($table, $column, $action = "")
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
-        assert('is_string($action); // Invalid argument $action: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
+        assert(is_string($action), 'Invalid argument $action: String expected');
         $action = mb_strtoupper("$action");
 
         $col =& $this->_getColumn($table, $column);
@@ -2950,10 +2950,10 @@ class Structure extends \Yana\Files\SML
      */
     public function setVisible($isVisible, $table, $column, $action = "")
     {
-        assert('is_bool($isVisible); // Invalid argument $isVisible: Boolean expected');
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
-        assert('is_string($action); // Invalid argument $action: String expected');
+        assert(is_bool($isVisible), 'Invalid argument $isVisible: Boolean expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
+        assert(is_string($action), 'Invalid argument $action: String expected');
         $action = mb_strtoupper("$action");
 
         $col =& $this->_getColumn($table, $column);
@@ -3034,8 +3034,8 @@ class Structure extends \Yana\Files\SML
      */
     public function isNumericArray($table, $column)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
         $col =& $this->_getColumn($table, $column);
 
         /*
@@ -3110,9 +3110,9 @@ class Structure extends \Yana\Files\SML
      */
     public function setNumericArray($table, $column, $isNumeric = true)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
-        assert('is_bool($isNumeric); // Invalid argument $isNumeric: Boolean expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
+        assert(is_bool($isNumeric), 'Invalid argument $isNumeric: Boolean expected');
         $col =& $this->_getColumn($table, $column);
 
         /*
@@ -3176,9 +3176,9 @@ class Structure extends \Yana\Files\SML
      */
     public function isEditable($table, $column, $action = "")
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
-        assert('is_string($action); // Invalid argument $action: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
+        assert(is_string($action), 'Invalid argument $action: String expected');
         $action = mb_strtoupper("$action");
 
         $col =& $this->_getColumn($table, $column);
@@ -3273,10 +3273,10 @@ class Structure extends \Yana\Files\SML
      */
     public function setEditable($isEditable, $table, $column, $action = "")
     {
-        assert('is_bool($isEditable); // Invalid argument $isEditable: Boolean expected');
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
-        assert('is_string($action); // Invalid argument $action: String expected');
+        assert(is_bool($isEditable), 'Invalid argument $isEditable: Boolean expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
+        assert(is_string($action), 'Invalid argument $action: String expected');
         $action = mb_strtoupper("$action");
 
         $col =& $this->_getColumn($table, $column);
@@ -3359,8 +3359,8 @@ class Structure extends \Yana\Files\SML
      */
     public function isScalar($table, $column)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
         switch ($this->getType($table, $column))
         {
             case 'file':
@@ -3397,9 +3397,9 @@ class Structure extends \Yana\Files\SML
      */
     public function getAction($table, $column, $namespace = 'DEFAULT')
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
-        assert('is_string($namespace); // Invalid argument $namespace: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
+        assert(is_string($namespace), 'Invalid argument $namespace: String expected');
         $col =& $this->_getColumn($table, $column);
         $namespace = mb_strtoupper("$namespace");
 
@@ -3477,7 +3477,7 @@ class Structure extends \Yana\Files\SML
      */
     public function getActions($table)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
         $result = array();
         foreach ($this->getColumns($table) as $column)
         {
@@ -3524,10 +3524,10 @@ class Structure extends \Yana\Files\SML
      */
     public function setAction($table, $column, $action = null, $namespace = 'DEFAULT', $linkText = '', $tooltip = '')
     {
-        assert('is_null($action) || is_string($action); // Invalid argument $action: string expected');
-        assert('is_string($namespace); // Invalid argument $namespace: string expected');
-        assert('is_string($linkText); // Invalid argument $linkText: string expected');
-        assert('is_string($tooltip); // Invalid argument $tooltip: string expected');
+        assert(is_null($action) || is_string($action), 'Invalid argument $action: string expected');
+        assert(is_string($namespace), 'Invalid argument $namespace: string expected');
+        assert(is_string($linkText), 'Invalid argument $linkText: string expected');
+        assert(is_string($tooltip), 'Invalid argument $tooltip: string expected');
 
         $col =& $this->_getColumn($table, $column);
         $namespace = mb_strtoupper("$namespace");
@@ -3617,9 +3617,9 @@ class Structure extends \Yana\Files\SML
      */
     public function getTitle($table, $column, $namespace = 'DEFAULT')
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
-        assert('is_string($namespace); // Invalid argument $namespace: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
+        assert(is_string($namespace), 'Invalid argument $namespace: String expected');
         $col =& $this->_getColumn($table, $column);
         $namespace = mb_strtoupper("$namespace");
 
@@ -3667,9 +3667,9 @@ class Structure extends \Yana\Files\SML
      */
     public function getLinkText($table, $column, $namespace = 'DEFAULT')
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
-        assert('is_string($namespace); // Invalid argument $namespace: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
+        assert(is_string($namespace), 'Invalid argument $namespace: String expected');
         $col =& $this->_getColumn($table, $column);
         $namespace = mb_strtoupper("$namespace");
 
@@ -3716,10 +3716,10 @@ class Structure extends \Yana\Files\SML
      */
     public function getFields($fieldname, $operation, $table, array $columns = array(), $as_assoc = false)
     {
-        assert('is_string($fieldname); // Invalid argument $fieldname: String expected');
-        assert('is_string($operation); // Invalid argument $operation: String expected');
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_bool($as_assoc); // Invalid argument $as_assoc: Boolean expected');
+        assert(is_string($fieldname), 'Invalid argument $fieldname: String expected');
+        assert(is_string($operation), 'Invalid argument $operation: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_bool($as_assoc), 'Invalid argument $as_assoc: Boolean expected');
         $fieldname = mb_strtoupper("$fieldname");
         $operation = mb_strtoupper("$operation");
         $table = mb_strtoupper("$table");
@@ -3777,7 +3777,7 @@ class Structure extends \Yana\Files\SML
                 $columns = array_keys($this->content['TABLES'][$table]['CONTENT']);
             }
 
-            assert('is_array($columns); // the table '.$table.' has no contents');
+            assert(is_array($columns), 'the table '.$table.' has no contents');
             if (is_array($columns)) {
                 foreach ($columns as $column)
                 {
@@ -3844,12 +3844,12 @@ class Structure extends \Yana\Files\SML
      */
     public function includeFile($filename)
     {
-        assert('is_string($filename); // Invalid argument $filename: String expected');
+        assert(is_string($filename), 'Invalid argument $filename: String expected');
         $file = new \Yana\Db\Structure($filename);
         $file->read();
-        assert('!isset($current_list); // cannot redeclare $current_list');
-        assert('!isset($import_list); // cannot redeclare $import_list');
-        assert('!isset($intersection); // cannot redeclare $intersection');
+        assert(!isset($current_list), 'cannot redeclare $current_list');
+        assert(!isset($import_list), 'cannot redeclare $import_list');
+        assert(!isset($intersection), 'cannot redeclare $intersection');
         $current_list = array_keys($this->content['TABLES']);
         $import_list  = array_keys($file->content['TABLES']);
         $intersection = array_intersect($current_list, $import_list);
@@ -3860,7 +3860,7 @@ class Structure extends \Yana\Files\SML
             \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
             return false;
         }
-        assert('!isset($table); // cannot redeclare $table');
+        assert(!isset($table), 'cannot redeclare $table');
         /* $this->unsetAssociation(); */
         $databaseName = $file->getDatabaseName();
         foreach ($import_list as $table)
@@ -3893,7 +3893,7 @@ class Structure extends \Yana\Files\SML
      */
     public function addStructure($table, array $array)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
 
         /* init header */
         if (empty($this->content)) {
@@ -4126,9 +4126,9 @@ class Structure extends \Yana\Files\SML
             if ($col['foreignkey'] === true && $this->getType($table, $name) !== 'select') {
                 $this->setType($table, $name, 'select');
                 if (is_array($col['references'])) {
-                    assert('!isset($fTable); // Cannot redeclare var $fTable');
-                    assert('!isset($fId); // Cannot redeclare var $fId');
-                    assert('!isset($fName); // Cannot redeclare var $fName');
+                    assert(!isset($fTable), 'Cannot redeclare var $fTable');
+                    assert(!isset($fId), 'Cannot redeclare var $fId');
+                    assert(!isset($fName), 'Cannot redeclare var $fName');
                     $fTable = array_shift($col['references']);
                     $fId = array_shift($col['references']);
                     if ($this->isColumn($fTable, 'name')) {
@@ -4189,7 +4189,7 @@ class Structure extends \Yana\Files\SML
          * set foreign key
          */
         if (isset($array['foreignkeys']) && is_array($array['foreignkeys'])) {
-            assert('!isset($element); // Cannot redeclare var $element');
+            assert(!isset($element), 'Cannot redeclare var $element');
             foreach ($array['foreignkeys'] as $element)
             {
                 $this->setForeignKey($table, $element['column'], $element['foreigntable'], $element['foreigncolumn']);
@@ -4208,7 +4208,7 @@ class Structure extends \Yana\Files\SML
      */
     private static function _getFilename($databaseName)
     {
-        assert('is_string($databaseName); // Invalid argument $databaseName: String expected');
+        assert(is_string($databaseName), 'Invalid argument $databaseName: String expected');
         if (preg_match('/^([\w\d_]+)$/', $databaseName)) {
             $databaseName = self::getDirectory() . "$databaseName" . self::$_extension;
         }
@@ -4247,7 +4247,7 @@ class Structure extends \Yana\Files\SML
      */
     public static function getListOfFiles($fullFilename = false)
     {
-        assert('is_bool($fullFilename); // Invalid argument $fullFilename: Boolean expected');
+        assert(is_bool($fullFilename), 'Invalid argument $fullFilename: Boolean expected');
         $directory = self::getDirectory();
         $list = array();
         try {
@@ -4332,7 +4332,7 @@ class Structure extends \Yana\Files\SML
     public function getChangelog()
     {
         if (isset($this->content['CHANGELOG'])) {
-            assert('is_array($this->content["CHANGELOG"]);');
+            assert(is_array($this->content["CHANGELOG"]), 'is_array($this->content["CHANGELOG"])');
             return $this->content['CHANGELOG'];
         } else {
             return false;
@@ -4374,7 +4374,7 @@ class Structure extends \Yana\Files\SML
      */
     private function &_getTable(&$table)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
         $table = mb_strtoupper("$table");
         if (isset($this->content['TABLES'][$table])) {
             return $this->content['TABLES'][$table];
@@ -4398,8 +4398,8 @@ class Structure extends \Yana\Files\SML
      */
     private function &_getColumn(&$table, &$column)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
         $column = mb_strtoupper("$column");
 
         $tbl =& $this->_getTable($table);
@@ -4430,10 +4430,10 @@ class Structure extends \Yana\Files\SML
      */
     private function &_getColumnProperty(&$table, &$column, $property, $namespace = '')
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
-        assert('is_string($property); // Invalid argument $property: String expected');
-        assert('is_string($namespace); // Invalid argument $namespace: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
+        assert(is_string($property), 'Invalid argument $property: String expected');
+        assert(is_string($namespace), 'Invalid argument $namespace: String expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -4470,9 +4470,9 @@ class Structure extends \Yana\Files\SML
      */
     private function _setColumnProperty(&$table, &$column, $property, $value)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column); // Invalid argument $column: String expected');
-        assert('is_string($property); // Invalid argument $property: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column), 'Invalid argument $column: String expected');
+        assert(is_string($property), 'Invalid argument $property: String expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -4498,11 +4498,11 @@ class Structure extends \Yana\Files\SML
      */
     private function _logChanges($table, $column, $comment, $function, $renamedObject = '')
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
-        assert('is_string($column) || is_null($column); // Invalid argument $column: String expected');
-        assert('is_string($comment); // Invalid argument $comment: String expected');
-        assert('is_string($function); // Invalid argument $function: String expected');
-        assert('is_string($renamedObject); // Invalid argument $renamedObject: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
+        assert(is_string($column) || is_null($column), 'Invalid argument $column: String expected');
+        assert(is_string($comment), 'Invalid argument $comment: String expected');
+        assert(is_string($function), 'Invalid argument $function: String expected');
+        assert(is_string($renamedObject), 'Invalid argument $renamedObject: String expected');
 
         $table = mb_strtolower("$table");
         $column = mb_strtolower("$column");

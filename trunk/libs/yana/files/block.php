@@ -53,11 +53,11 @@ class Block extends \Yana\Files\File
     public function setContent($input)
     {
         if (!is_array($input)) {
-            assert('is_string($input); // Wrong type for argument 1. String expected');
+            assert(is_string($input), 'Wrong type for argument 1. String expected');
             $input = preg_replace("/[;,\s]+/s", "\n", "$input");
             $input = explode("\n", $input);
         }
-        assert('is_array($input);');
+        assert(is_array($input), 'is_array($input)');
         $this->content = $input;
         for ($i = 0; $i < count($this->content); $i++)
         {
@@ -83,12 +83,12 @@ class Block extends \Yana\Files\File
          * There are multiple allowed delitimers. They are: ";", ",", any whitespace.
          * But only "\n" is used automatically. The following code handles the missing ones.
          */
-        assert('is_array($this->content);');
+        assert(is_array($this->content), 'is_array($this->content)');
         $content = implode("", $this->content); // convert array to string
         $content = trim($content); // remove trailing spaces
         $content = preg_replace("/[;,\s]+/", "\n", $content); // map all delimiters to "\n"
         $this->content = explode("\n", $content); // explode by delimiter
-        assert('is_array($this->content);');
+        assert(is_array($this->content), 'is_array($this->content)');
         return $this;
     }
 
@@ -102,16 +102,16 @@ class Block extends \Yana\Files\File
      */
     public function isBlocked($remoteAddress)
     {
-        assert('is_string($remoteAddress); // Invalid argument $remoteAddress: string expected');
-        assert('filter_var($remoteAddress, FILTER_VALIDATE_IP); // Not a valid IP-address');
+        assert(is_string($remoteAddress), 'Invalid argument $remoteAddress: string expected');
+        assert($remoteAddress === filter_var($remoteAddress, \FILTER_VALIDATE_IP), 'Not a valid IP-address');
 
-        assert('is_array($this->content);');
+        assert(is_array($this->content), 'is_array($this->content)');
 
         if (empty($this->content)) { // read file contents
             $this->read();
         }
 
-        assert('!isset($line); // cannot redeclare variable $line');
+        assert(!isset($line), 'cannot redeclare variable $line');
         foreach ((array) $this->content as $line)
         {
             // convert to regular expression

@@ -48,7 +48,7 @@ class DataProviderCollection extends \Yana\Core\AbstractCollection
      */
     public function offsetSet($offset, $value)
     {
-        assert('is_null($offset) || is_scalar($offset); // $offset expected to be Scalar');
+        assert(is_null($offset) || is_scalar($offset), '$offset expected to be Scalar');
         if (!$value instanceof \Yana\Core\MetaData\IsDataProvider) {
             $message = 'Instance of IsDataProvider expected';
             $level = \Yana\Log\TypeEnumeration::WARNING;

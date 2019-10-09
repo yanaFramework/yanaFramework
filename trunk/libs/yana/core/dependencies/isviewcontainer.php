@@ -66,28 +66,28 @@ interface IsViewContainer
      *
      * @return  string
      */
-    public function getProfileId();
+    public function getProfileId(): string;
 
     /**
      * XML template configuration object.
      *
      * @return  \Yana\Util\Xml\IsObject
      */
-    public function getTemplateConfiguration();
+    public function getTemplateConfiguration(): \Yana\Util\Xml\IsObject;
 
     /**
      * Returns the application's default icon loader.
      *
      * @return  \Yana\Views\Icons\IsLoader
      */
-    public function getIconLoader();
+    public function getIconLoader(): \Yana\Views\Icons\IsLoader;
 
     /**
      * Creates and returns an application menu builder.
      *
      * @return  \Yana\Plugins\Menus\IsCacheableBuilder
      */
-    public function getMenuBuilder();
+    public function getMenuBuilder(): \Yana\Plugins\Menus\IsCacheableBuilder;
 
     /**
      * Get language translation-repository.
@@ -96,14 +96,14 @@ interface IsViewContainer
      *
      * @return  \Yana\Translations\IsFacade
      */
-    public function getLanguage();
+    public function getLanguage(): \Yana\Translations\IsFacade;
 
     /**
      * Returns the attached loggers.
      *
      * @return  \Yana\Log\LoggerCollection
      */
-    public function getLogger();
+    public function getLogger(): \Yana\Log\IsLogHandler;
 
     /**
      * Get registry.
@@ -115,7 +115,7 @@ interface IsViewContainer
      * @throws  \Yana\Core\Exceptions\NotReadableException    when Registry file is not readable
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when Registry file could not be read or contains invalid syntax
      */
-    public function getRegistry();
+    public function getRegistry(): \Yana\VDrive\IsRegistry;
 
     /**
      * Get view.
@@ -123,9 +123,9 @@ interface IsViewContainer
      * This returns the view component. If none exists, a new instance is created.
      * This is an auxiliary class that provides access to output-specific functions.
      *
-     * @return  \Yana\Views\Managers\IsSmartyManager
+     * @return  \Yana\Views\Managers\IsManager
      */
-    public function getView();
+    public function getView(): \Yana\Views\Managers\IsManager;
 
 }
 

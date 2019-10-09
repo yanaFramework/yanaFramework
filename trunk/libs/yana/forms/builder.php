@@ -49,7 +49,7 @@ class Builder extends \Yana\Forms\AbstractBuilder
      */
     public function __construct($file, \Yana\Core\Dependencies\IsFormContainer $container)
     {
-        assert('is_string($file); // Invalid argument $file: String expected');
+        assert(is_string($file), 'Invalid argument $file: String expected');
 
         $this->_setFile($file);
         $this->_setDependencyContainer($container);
@@ -64,12 +64,12 @@ class Builder extends \Yana\Forms\AbstractBuilder
      */
     public function __invoke()
     {
-        assert('!isset($formName); // Cannot redeclare var $formName');
+        assert(!isset($formName), 'Cannot redeclare var $formName');
         $formName = $this->_getForm()->getName();
-        assert('!isset($formSetup); // Cannot redeclare var $formSetup');
+        assert(!isset($formSetup), 'Cannot redeclare var $formSetup');
         $formSetup = null;
 
-        assert('!isset($cache); // Cannot redeclare var $cache');
+        assert(!isset($cache), 'Cannot redeclare var $cache');
         $cache = $this->_getCache();
         if (isset($cache[$formName])) {
             $formSetup = $cache[$formName];
@@ -84,11 +84,11 @@ class Builder extends \Yana\Forms\AbstractBuilder
             $formSetup->setSearchTerm($this->_getFacade()->getParent()->getSetup()->getSearchTerm());
         }
 
-        assert('!isset($request); // Cannot redeclare var $request');
+        assert(!isset($request), 'Cannot redeclare var $request');
         $request = (array) $this->_getDependencyContainer()->getRequest()->all()->value($formName)->all()->asArrayOfStrings();
-        assert('!isset($uploadWrapper); // Cannot redeclare var $uploadWrapper');
+        assert(!isset($uploadWrapper), 'Cannot redeclare var $uploadWrapper');
         $uploadWrapper = $this->_getDependencyContainer()->getRequest()->files();
-        assert('!isset($files); // Cannot redeclare var $files');
+        assert(!isset($files), 'Cannot redeclare var $files');
         $files = array();
         if ($uploadWrapper->has($formName) && $uploadWrapper->isListOfFiles($formName)) {
             $files = (array) $uploadWrapper->all($formName);
@@ -103,22 +103,22 @@ class Builder extends \Yana\Forms\AbstractBuilder
 
         $this->_getQueryBuilder()->setForm($this->_getFacade());
 
-        assert('!isset($countQuery); // Cannot redeclare var $countQuery');
+        assert(!isset($countQuery), 'Cannot redeclare var $countQuery');
         $countQuery = $this->_getQueryBuilder()->buildCountQuery();
-        assert('!isset($where); // Cannot redeclare var $where');
+        assert(!isset($where), 'Cannot redeclare var $where');
         $where = $this->getWhere();
         if (!empty($where)) {
             $countQuery->addWhere($where);
         }
         $formSetup->setEntryCount($countQuery->countResults());
 
-        assert('!isset($selectQuery); // Cannot redeclare var $selectQuery');
+        assert(!isset($selectQuery), 'Cannot redeclare var $selectQuery');
         $selectQuery = $this->_getQueryBuilder()->buildSelectQuery();
         if (!empty($where)) {
             $selectQuery->addWhere($where);
         }
         $selectQuery->setOffset($formSetup->getPage() * $formSetup->getEntriesPerPage());
-        assert('!isset($values); // Cannot redeclare var $values');
+        assert(!isset($values), 'Cannot redeclare var $values');
         $values = $selectQuery->getResults();
         switch ($selectQuery->getExpectedResult())
         {
@@ -126,10 +126,10 @@ class Builder extends \Yana\Forms\AbstractBuilder
                 $values = array($values);
             break;
             case \Yana\Db\ResultEnumeration::COLUMN:
-                assert('!isset($rows); // Cannot redeclare var $rows');
+                assert(!isset($rows), 'Cannot redeclare var $rows');
                 $rows = array();
-                assert('!isset($key); // Cannot redeclare var $key');
-                assert('!isset($value); // Cannot redeclare var $value');
+                assert(!isset($key), 'Cannot redeclare var $key');
+                assert(!isset($value), 'Cannot redeclare var $value');
                 foreach ($values as $key => $value)
                 {
                     $rows[$key] = array($selectQuery->getColumn() => $value);
@@ -140,10 +140,10 @@ class Builder extends \Yana\Forms\AbstractBuilder
         }
         $this->_getSetupBuilder()->setRows($values);
 
-        assert('!isset($referenceValues); // Cannot redeclare var $referenceValues');
+        assert(!isset($referenceValues), 'Cannot redeclare var $referenceValues');
         $referenceValues = array();
-        assert('!isset($name); // Cannot redeclare var $name');
-        assert('!isset($reference); // Cannot redeclare var $reference');
+        assert(!isset($name), 'Cannot redeclare var $name');
+        assert(!isset($reference), 'Cannot redeclare var $reference');
         foreach ($formSetup->getForeignKeys() as $name => $reference)
         {
             $referenceValues[$name] = $this->_getQueryBuilder()->autocomplete($name,  "", 0);
@@ -219,13 +219,13 @@ class Builder extends \Yana\Forms\AbstractBuilder
         $form->setTitle($title);
 
         // copy security settings from table to form
-        assert('!isset($grant); // Cannot redeclare var $grant');
+        assert(!isset($grant), 'Cannot redeclare var $grant');
         foreach ($table->getGrants() as $grant)
         {
             $form->setGrant($grant);
         }
         unset($grant);
-        assert('!isset($column); // Cannot redeclare var $column');
+        assert(!isset($column), 'Cannot redeclare var $column');
         foreach ($table->getColumns() as $column)
         {
             $this->_addFieldByColumn($form, $column);
@@ -250,7 +250,7 @@ class Builder extends \Yana\Forms\AbstractBuilder
         }
 
         // set the column title (aka "label")
-        assert('!isset($title); // Cannot redeclare var $title');
+        assert(!isset($title), 'Cannot redeclare var $title');
         $title = $column->getTitle();
         if (!empty($title)) {
             $field->setTitle($title);
@@ -263,7 +263,7 @@ class Builder extends \Yana\Forms\AbstractBuilder
         unset($title);
 
         // copy column grants to field
-        assert('!isset($grant); // Cannot redeclare var $grant');
+        assert(!isset($grant), 'Cannot redeclare var $grant');
         foreach ($column->getGrants() as $grant)
         {
             $field->setGrant($grant);

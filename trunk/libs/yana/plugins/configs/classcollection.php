@@ -45,7 +45,7 @@ class ClassCollection extends \Yana\Core\AbstractCollection implements \Yana\Plu
      */
     public function offsetUnset($offset)
     {
-        assert('is_string($offset); // Invalid argument $offset: string expected');
+        assert(is_string($offset), 'Invalid argument $offset: string expected');
         parent::offsetUnset(mb_strtolower($offset));
     }
 
@@ -57,7 +57,7 @@ class ClassCollection extends \Yana\Core\AbstractCollection implements \Yana\Plu
      */
     public function offsetGet($offset)
     {
-        assert('is_string($offset); // Invalid argument $offset: string expected');
+        assert(is_string($offset), 'Invalid argument $offset: string expected');
         return parent::offsetGet(mb_strtolower($offset));
     }
 
@@ -69,7 +69,7 @@ class ClassCollection extends \Yana\Core\AbstractCollection implements \Yana\Plu
      */
     public function offsetExists($offset)
     {
-        assert('is_string($offset); // Invalid argument $offset: string expected');
+        assert(is_string($offset), 'Invalid argument $offset: string expected');
         return parent::offsetExists(mb_strtolower($offset));
     }
 
@@ -108,7 +108,7 @@ class ClassCollection extends \Yana\Core\AbstractCollection implements \Yana\Plu
      */
     public function isActiveByDefault($className)
     {
-        assert('is_string($className); // Invalid argument $className: string expected');
+        assert(is_string($className), 'Invalid argument $className: string expected');
         $isDefaultActive = false;
         if ($this->offsetExists($className)) {
             $isDefaultActive = $this->offsetGet($className)->isActiveByDefault();

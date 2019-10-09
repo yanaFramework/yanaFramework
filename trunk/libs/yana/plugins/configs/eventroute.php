@@ -87,7 +87,7 @@ class EventRoute extends \Yana\Core\StdObject implements \Yana\Plugins\Configs\I
      */
     public function setCode($code)
     {
-        assert('is_int($code); // Invalid argument $code: int expected');
+        assert(is_int($code), 'Invalid argument $code: int expected');
         $this->_code = (int) $code;
         return $this;
     }
@@ -110,7 +110,7 @@ class EventRoute extends \Yana\Core\StdObject implements \Yana\Plugins\Configs\I
      */
     public function setTarget($target)
     {
-        assert('is_string($target); // Invalid argument $target: string expected');
+        assert(is_string($target), 'Invalid argument $target: string expected');
         $this->_target = (string) $target;
         return $this;
     }
@@ -137,7 +137,7 @@ class EventRoute extends \Yana\Core\StdObject implements \Yana\Plugins\Configs\I
      */
     public function setMessage($message)
     {
-        assert('is_string($message); // Invalid argument $message: string expected');
+        assert(is_string($message), 'Invalid argument $message: string expected');
         $this->_message = (string) $message;
         return $this;
     }

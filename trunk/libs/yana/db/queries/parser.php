@@ -95,7 +95,7 @@ class Parser extends \Yana\Core\StdObject implements \Yana\Db\Queries\IsParser
      */
     public function parseSQL($sqlStatement)
     {
-        assert('is_string($sqlStatement); // Wrong argument type argument 1. String expected');
+        assert(is_string($sqlStatement), 'Wrong argument type argument 1. String expected');
         $trimmedStatement = trim($sqlStatement);
         $sqlParser = new \SQL_Parser();
         $syntaxTree = $sqlParser->parse($trimmedStatement); // get abstract syntax tree (AST)
@@ -104,7 +104,7 @@ class Parser extends \Yana\Core\StdObject implements \Yana\Db\Queries\IsParser
         // However, we do know that there can be only one, because we had only one statement as input.
         // So we take the first (and only) statement and continue as usual.
         if (is_array($syntaxTree) && isset($syntaxTree[0]) && is_array($syntaxTree[0])) {
-            assert('count($syntaxTree) === 1; // Must not contain more than one statement');
+            assert(count($syntaxTree) === 1, 'Must not contain more than one statement');
             $syntaxTree = $syntaxTree[0];
         }
 
@@ -119,7 +119,7 @@ class Parser extends \Yana\Core\StdObject implements \Yana\Db\Queries\IsParser
             $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
         }
-        assert('is_array($syntaxTree)');
+        assert(is_array($syntaxTree));
         return $parser->parseStatement($syntaxTree);
     }
 
@@ -134,8 +134,8 @@ class Parser extends \Yana\Core\StdObject implements \Yana\Db\Queries\IsParser
      */
     private function _selectParser($command, $sqlStatement)
     {
-        assert('is_string($command); // Wrong argument type argument 1. String expected');
-        assert('is_string($sqlStatement); // Wrong argument type argument 2. String expected');
+        assert(is_string($command), 'Wrong argument type argument 1. String expected');
+        assert(is_string($sqlStatement), 'Wrong argument type argument 2. String expected');
         /* @var $parser \Yana\Db\Queries\Parsers\IsParser */
         switch ($command)
         {

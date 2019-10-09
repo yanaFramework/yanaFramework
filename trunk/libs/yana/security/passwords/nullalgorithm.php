@@ -48,7 +48,7 @@ class NullAlgorithm extends \Yana\Security\Passwords\AbstractAlgorithm
      */
     public function __invoke($password)
     {
-        assert('is_scalar($password); // Wrong argument type for argument $password. String expected.');
+        assert(is_scalar($password), 'Wrong argument type for argument $password. String expected.');
 
         return (string) $password;
     }

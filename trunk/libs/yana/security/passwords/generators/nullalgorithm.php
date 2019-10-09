@@ -50,8 +50,8 @@ class NullAlgorithm extends \Yana\Security\Passwords\Generators\AbstractAlgorith
      */
     public function __invoke($length = 8)
     {
-        assert('is_int($length); // Wrong argument type: $length. Integer expected');
-        assert('$length >= 8;  // Invalid argument value: $length. Must be 8 or greater');
+        assert(is_int($length), 'Wrong argument type: $length. Integer expected');
+        assert($length >= 8, 'Invalid argument value: $length. Must be 8 or greater');
         return \str_repeat(" ", $length);
     }
 

@@ -66,9 +66,10 @@ class UrlModifierTest extends \PHPUnit_Framework_TestCase
      */
     public function test__invoke()
     {
-        \Yana\Views\Helpers\Formatters\UrlFormatter::setBaseUrl('test');
+        \Yana\Views\Helpers\Formatters\UrlFormatter::setDependencyContainer(new \Yana\Core\Dependencies\UrlFormatterContainer('test'));
         $_SERVER['PHP_SELF'] = "";
         $this->assertSame('http://test?&amp;a=1&amp;b=2', $this->object->__invoke('a=1&b=2'));
+        \Yana\Views\Helpers\Formatters\UrlFormatter::setDependencyContainer(new \Yana\Core\Dependencies\UrlFormatterContainer(''));
     }
 
 }

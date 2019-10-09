@@ -116,9 +116,9 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      */
     public function buildDateSelector(array $value = array())
     {
-        assert('!isset($day); // Cannot redeclare var $day');
-        assert('!isset($month); // Cannot redeclare var $month');
-        assert('!isset($year); // Cannot redeclare var $year');
+        assert(!isset($day), 'Cannot redeclare var $day');
+        assert(!isset($month), 'Cannot redeclare var $month');
+        assert(!isset($year), 'Cannot redeclare var $year');
         // get timestamp
         switch (true)
         {
@@ -137,19 +137,19 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
                 $year = (int) $value['year'];
             break;
         }
-        assert('!isset($name); // Cannot redeclare var $name');
+        assert(!isset($name), 'Cannot redeclare var $name');
         $name = $this->getName();
-        assert('!isset($id); // Cannot redeclare var $id');
+        assert(!isset($id), 'Cannot redeclare var $id');
         $id = $this->getId();
-        assert('!isset($days); // Cannot redeclare var $days');
+        assert(!isset($days), 'Cannot redeclare var $days');
         $days = $this->_arrayFill(31);
-        assert('!isset($months); // Cannot redeclare var $months');
+        assert(!isset($months), 'Cannot redeclare var $months');
         $months = $this->_arrayFill(12);
-        assert('!isset($years); // Cannot redeclare var $years');
+        assert(!isset($years), 'Cannot redeclare var $years');
         $years = $this->_arrayFill($year + 20, $year - 100);
 
         // returns "<select day><select month><select year><icon>"
-        assert('!isset($string); // Cannot redeclare var $string');
+        assert(!isset($string), 'Cannot redeclare var $string');
         $string = $this->setId($id . "_day")->setName($name . "[day]")->_getSelect($days, array($day))
             . $this->setId($id . "_month")->setName($name . "[month]")->_getSelect($months, array($month))
             . $this->setId($id . "_year")->setName($name . "[year]")->_getSelect($years, array($year))
@@ -377,9 +377,9 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      */
     public function buildList(array $values = array(), $isNumeric = false)
     {
-        assert('!isset($lang); // Cannot redeclare var $lang');
+        assert(!isset($lang), 'Cannot redeclare var $lang');
         $lang = $this->_getTranslationFacade();
-        assert('!isset($template); // Cannot redeclare var $template');
+        assert(!isset($template), 'Cannot redeclare var $template');
         $template = '';
 
         if (!$isNumeric) {
@@ -403,9 +403,9 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
                 '<span class="icon_new">&nbsp;</span></a>';
         }
 
-        assert('!isset($id); // Cannot redeclare var $id');
+        assert(!isset($id), 'Cannot redeclare var $id');
         $id = $this->getId() > '' ? ' id="' . $this->getId() . '"' : ''; 
-        assert('!isset($result); // Cannot redeclare var $result');
+        assert(!isset($result), 'Cannot redeclare var $result');
         $result = '<div' . $id . ' class="' . (($this->getCssClass()) ? $this->getCssClass() : "gui_generator_array")  . '">';
         unset($id);
 
@@ -438,8 +438,8 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      */
     public function buildTextfield($value, $type = 'text')
     {
-        assert('is_string($type); // Invalid argument $text: string expected');
-        assert('preg_match("/^[a-z]+$/", $type); // Invalid argument $text: must only contain characters a-z');
+        assert(is_string($type), 'Invalid argument $text: string expected');
+        assert((bool) preg_match("/^[a-z]+$/", $type), 'Invalid argument $text: must only contain characters a-z');
         $maxLength = (int) $this->getMaxLength();
         $attr = ($this->getAttr() > '' ? ' ' : '') . $this->getAttr();
         return '<input' . $attr .' id="' . $this->getId() . '" name="' . $this->getName() . '" ' .
@@ -458,8 +458,8 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      */
     public function buildFilefield($hasDelete, $mimeType = '')
     {
-        assert('is_bool($hasDelete); // Invalid argument $hasDelete: bool expected');
-        assert('is_string($mimeType); // Invalid argument $mimeType: string expected');
+        assert(is_bool($hasDelete), 'Invalid argument $hasDelete: bool expected');
+        assert(is_string($mimeType), 'Invalid argument $mimeType: string expected');
         $attr = ($this->getAttr() > '' ? ' ' : '') . $this->getAttr();
         if ($mimeType) {
             $attr .= ' accept="' . \Yana\Util\Strings::htmlSpecialChars((string) $mimeType) . '"';
@@ -513,8 +513,8 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
             return '<span class="icon_blank">&nbsp;</span>';
         }
 
-        assert('is_string($filename); // Invalid argument $filename: string expected');
-        assert('is_string($downloadAction); // Invalid argument $downloadAction: string expected');
+        assert(is_string($filename), 'Invalid argument $filename: string expected');
+        assert(is_string($downloadAction), 'Invalid argument $downloadAction: string expected');
         $lang = $this->_getTranslationFacade();
         $fileId = $this->_getFilenameCache()->storeFilename($filename);
         $formatter = $this->_getUrlFormatter();
@@ -536,8 +536,8 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
             return '<span class="icon_blank">&nbsp;</span>';
         }
 
-        assert('is_string($filename); // Invalid argument $filename: string expected');
-        assert('is_string($downloadAction); // Invalid argument $downloadAction: string expected');
+        assert(is_string($filename), 'Invalid argument $filename: string expected');
+        assert(is_string($downloadAction), 'Invalid argument $downloadAction: string expected');
         $fileId = $this->_getFilenameCache()->storeFilename($filename);
         $formatter = $this->_getUrlFormatter();
         return '<a href="' . $formatter("action={$downloadAction}&target={$fileId}&fullsize=true", false, false) . '">' .
@@ -612,10 +612,10 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      */
     public function buildRange($value, $rangeMin, $rangeMax, $rangeStep)
     {
-        assert('is_float($value); // Invalid argument $value: float expected');
-        assert('is_float($rangeMin); // Invalid argument $rangeMin: float expected');
-        assert('is_float($rangeMax); // Invalid argument $rangeMax: float expected');
-        assert('is_float($rangeStep); // Invalid argument $rangeStep: float expected');
+        assert(is_float($value), 'Invalid argument $value: float expected');
+        assert(is_float($rangeMin), 'Invalid argument $rangeMin: float expected');
+        assert(is_float($rangeMax), 'Invalid argument $rangeMax: float expected');
+        assert(is_float($rangeStep), 'Invalid argument $rangeStep: float expected');
 
         $attr = ($this->getAttr() > '' ? ' ' : '') . $this->getAttr();
         return '<input' . $attr .' id="' . $this->getId() . '" name="' . $this->getName() . '" ' .

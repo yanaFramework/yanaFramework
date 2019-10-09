@@ -63,7 +63,7 @@ abstract class AbstractHandler extends \Yana\Core\StdObject implements \Yana\Log
      *
      * @internal NOTE: this function is public for technical reasons. Don't call it yourself.
      */
-    abstract public function handleError($errorNumber, $description, $file, $lineNumber);
+    abstract public function handleError(int $errorNumber, string $description, string $file, int $lineNumber);
 
     /**
      * Handles failed assertions.
@@ -73,22 +73,22 @@ abstract class AbstractHandler extends \Yana\Core\StdObject implements \Yana\Log
      *
      * @param   string  $pathToFile   file
      * @param   int     $lineNumber   line number
-     * @param   string  $code         assertion code (note: can be empty)
+     * @param   scalar  $code         assertion code (note: can be empty)
      * @param   string  $description  optional description
      *
      * @internal NOTE: this function is public for technical reasons. Don't call it yourself.
      */
-    abstract public function handleAssertion($pathToFile, $lineNumber, $code, $description = "");
+    abstract public function handleAssertion(string $pathToFile, int $lineNumber, $code, string $description = "");
 
     /**
      * Handles uncaught exceptions.
      *
-     * @param  \Throwable|\Exception  $e  some unhandled exception: PHP 7 implements Throwable, PHP 5 does not
+     * @param  \Throwable  $e  some unhandled exception: PHP 7 implements Throwable, PHP 5 does not
      * @ignore
      *
      * @internal NOTE: this function is public for technical reasons. Don't call it yourself.
      */
-    abstract public function handleException($e);
+    abstract public function handleException(\Throwable $e);
 
     /**
      * Activate or deactive error handler.
@@ -123,7 +123,7 @@ abstract class AbstractHandler extends \Yana\Core\StdObject implements \Yana\Log
      *
      * @return  int
      */
-    public function getErrorReportingLevel()
+    public function getErrorReportingLevel(): int
     {
         if (!is_int($this->_errorReportingLevel)) {
             $errorReportingLevel = (int) error_reporting();
@@ -143,9 +143,8 @@ abstract class AbstractHandler extends \Yana\Core\StdObject implements \Yana\Log
      * @param   int  $newLevel  error reporting level corresponding to PHP error levels
      * @return  $this
      */
-    public function setErrorReportingLevel($newLevel)
+    public function setErrorReportingLevel(int $newLevel)
     {
-        assert('is_int($newLevel); // Integer expected.');
         $this->_errorReportingLevel = (int) $newLevel;
         return $this;
     }

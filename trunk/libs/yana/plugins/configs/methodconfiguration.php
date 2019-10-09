@@ -546,7 +546,7 @@ class MethodConfiguration extends \Yana\Core\StdObject implements \Yana\Plugins\
                     break;
             }
         }
-        assert('is_null($safeMode) || is_bool($safeMode); // Invalid argument $safeMode: bool expected');
+        assert(is_null($safeMode) || is_bool($safeMode), 'Invalid argument $safeMode: bool expected');
         $this->_safeMode = $safeMode;
         return $this;
     }
@@ -882,24 +882,24 @@ class MethodConfiguration extends \Yana\Core\StdObject implements \Yana\Plugins\
         /**
          * check for type attribute
          */
-        assert('!isset($type); // Cannot redeclare var $type');
+        assert(!isset($type), 'Cannot redeclare var $type');
         $report->addText('Type: ' . $this->getType());
 
         /**
          * check if template file exists
          */
-        assert('!isset($template); // Cannot redeclare var $template');
+        assert(!isset($template), 'Cannot redeclare var $template');
         $template = $this->getTemplate();
-        assert('is_string($template); // Unexpected value: $template. String expected');
+        assert(is_string($template), 'Unexpected value: $template. String expected');
         $tplMessage = strcasecmp($template, "message");
         if (!empty($template) && strcasecmp($template, "null") !== 0 && $tplMessage !== 0) {
 
-            assert('!isset($filename); // Cannot redeclare var $filename');
+            assert(!isset($filename), 'Cannot redeclare var $filename');
             $filename = $template;
             try {
 
-                assert('!isset($builder); // Cannot redeclare var $builder');
-                assert('!isset($skin); // Cannot redeclare var $skin');
+                assert(!isset($builder), 'Cannot redeclare var $builder');
+                assert(!isset($skin), 'Cannot redeclare var $skin');
                 $builder = new \Yana\ApplicationBuilder();
                 $skin = $builder->buildApplication()->getSkin();
                 $filename = file_exists($filename) ? $filename : $skin->getTemplateData($template)->getFile();

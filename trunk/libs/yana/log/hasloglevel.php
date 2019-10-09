@@ -67,7 +67,7 @@ trait HasLogLevel
      */
     public function setLogLevel($level)
     {
-        assert('is_int($level); // Invalid argument $level: int expected');
+        assert(is_int($level), 'Invalid argument $level: int expected');
         $this->_logLevel = (int) $level;
         return $this;
     }
@@ -80,7 +80,7 @@ trait HasLogLevel
      */
     protected function _isAcceptable($level)
     {
-        assert('is_int($level); // Invalid argument $level: int expected');
+        assert(is_int($level), 'Invalid argument $level: int expected');
 
         $reportingLevel = $this->getLogLevel();
         return $reportingLevel <= 0 || (($reportingLevel & ~$level) !== $reportingLevel);

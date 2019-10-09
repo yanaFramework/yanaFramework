@@ -51,7 +51,7 @@ class Sha512Algorithm extends \Yana\Security\Passwords\AbstractCryptAlgorithm
      */
     public function __invoke($password)
     {
-        assert('is_string($password); // Wrong argument type for argument $password. String expected.');
+        assert(is_string($password), 'Wrong argument type for argument $password. String expected.');
 
         if (CRYPT_SHA512 === 1) {
             $hashString = crypt($password, '$6$rounds=5000$' . $this->_createSalt() . '$');

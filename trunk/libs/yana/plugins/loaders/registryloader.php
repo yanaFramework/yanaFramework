@@ -48,10 +48,10 @@ class RegistryLoader extends \Yana\Plugins\Loaders\AbstractRegistryLoader
      */
     public function loadRegistry($name)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert(is_string($name), 'Invalid argument $name: string expected');
 
         // load virtual drive, if it exists
-        assert('!isset($driveFile); // Cannot redeclare var $driveFile');
+        assert(!isset($driveFile), 'Cannot redeclare var $driveFile');
         $driveFile = \Yana\Plugins\PluginNameMapper::toVDriveFilenameWithDirectory($name, $this->_getPluginDirectory());
 
         if (!is_file($driveFile)) {

@@ -250,8 +250,8 @@ class Update extends \Yana\Db\Queries\Insert implements \Yana\Db\Queries\IsUpdat
         $row = $this->getRow();
 
         if ($row === '*') {
-            assert('!isset($message); // Cannot redeclare $message');
-            assert('!isset($level); // Cannot redeclare $level');
+            assert(!isset($message), 'Cannot redeclare $message');
+            assert(!isset($level), 'Cannot redeclare $level');
             $message = "SQL security restriction. Cannot update a table (only rows and cells).";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             \Yana\Log\LogManager::getLogger()->addLog($message, $level);
@@ -260,7 +260,7 @@ class Update extends \Yana\Db\Queries\Insert implements \Yana\Db\Queries\IsUpdat
         /*
          * build query: select profile_id from table where id = "foo"
          */
-        assert('!isset($select); // Cannot redeclare variable $select');
+        assert(!isset($select), 'Cannot redeclare variable $select');
         $select = new \Yana\Db\Queries\Select($this->getDatabase());
         $select->setTable($table);
         $select->setRow($row);
@@ -274,13 +274,13 @@ class Update extends \Yana\Db\Queries\Insert implements \Yana\Db\Queries\IsUpdat
         unset($select);
 
         $resultRow = $result->fetchRow(0);
-        assert('is_array($resultRow); // unexpected result: $resultRow');
+        assert(is_array($resultRow), 'unexpected result: $resultRow');
         $profileId = array_pop($resultRow);
         $builder = new \Yana\ApplicationBuilder();
         $security = $builder->buildApplication()->getSecurity();
         if ($security->checkRules($profileId) !== true) {
-            assert('!isset($message); // Cannot redeclare $message');
-            assert('!isset($level); // Cannot redeclare $level');
+            assert(!isset($message), 'Cannot redeclare $message');
+            assert(!isset($level), 'Cannot redeclare $level');
             $message = "The login is valid, but the access rights are not enough to access the function.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Core\Exceptions\Security\InsufficientRightsException($message, $level);
@@ -289,8 +289,8 @@ class Update extends \Yana\Db\Queries\Insert implements \Yana\Db\Queries\IsUpdat
         {
             case \Yana\Db\ResultEnumeration::ROW:
                 if (isset($value['profile_id']) && $value['profile_id'] != $profileId) {
-                    assert('!isset($message); // Cannot redeclare $message');
-                    assert('!isset($level); // Cannot redeclare $level');
+                    assert(!isset($message), 'Cannot redeclare $message');
+                    assert(!isset($level), 'Cannot redeclare $level');
                     $message = "Security restriction. The profile id of an entry may not be changed.";
                     $level = \Yana\Log\TypeEnumeration::WARNING;
                     \Yana\Log\LogManager::getLogger()->addLog($message, $level);
@@ -300,8 +300,8 @@ class Update extends \Yana\Db\Queries\Insert implements \Yana\Db\Queries\IsUpdat
 
             case \Yana\Db\ResultEnumeration::CELL:
                 if (strcasecmp($this->getColumn(), 'profile_id') === 0) {
-                    assert('!isset($message); // Cannot redeclare $message');
-                    assert('!isset($level); // Cannot redeclare $level');
+                    assert(!isset($message), 'Cannot redeclare $message');
+                    assert(!isset($level), 'Cannot redeclare $level');
                     $message = "Security restriction. The profile id of an entry may not be changed.";
                     $level = \Yana\Log\TypeEnumeration::WARNING;
                     \Yana\Log\LogManager::getLogger()->addLog($message, $level);
@@ -335,7 +335,7 @@ class Update extends \Yana\Db\Queries\Insert implements \Yana\Db\Queries\IsUpdat
      */
     public function sendQuery(): \Yana\Db\IsResult
     {
-        assert('!isset($message); // Cannot redeclare $message');
+        assert(!isset($message), 'Cannot redeclare $message');
         $message = "Updating entry '" . $this->getTable() . "." . $this->getRow() . "'.";
         \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::INFO, $this->getOldValues());
 

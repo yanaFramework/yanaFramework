@@ -60,7 +60,7 @@ abstract class AbstractUploadWrapper extends \Yana\Core\StdObject implements \Ya
      */
     protected function _getEntry($key)
     {
-        assert('is_string($key); // Invalid argument type: $key. String expected');
+        assert(is_string($key), 'Invalid argument type: $key. String expected');
         return \Yana\Util\Hashtable::get($this->_files, \Yana\Util\Strings::toLowerCase((string) $key));
     }
 
@@ -85,10 +85,10 @@ abstract class AbstractUploadWrapper extends \Yana\Core\StdObject implements \Ya
      */
     protected function _isList($something)
     {
-        assert('!isset($isList); // Cannot redeclare var $isList');
+        assert(!isset($isList), 'Cannot redeclare var $isList');
         $isList = is_array($something) && (empty($something['name']) || is_array($something['name']));
         if ($isList) {
-            assert('!isset($couldBeFile); // Cannot redeclare var $couldBeFile');
+            assert(!isset($couldBeFile), 'Cannot redeclare var $couldBeFile');
             foreach ($something as $couldBeFile)
             {
                 if (!$this->_isFile($couldBeFile)) {

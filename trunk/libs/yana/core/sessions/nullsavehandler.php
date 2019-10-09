@@ -75,7 +75,7 @@ class NullSaveHandler extends \Yana\Core\StdObject implements \Yana\Core\Session
      */
     public function read($id)
     {
-        assert('is_string($id); // $id expected to be String');
+        assert(is_string($id), '$id expected to be String');
         $value = "";
         if (isset($this->_data[(string) $id])) {
             $value = (string) $this->_data[(string) $id];
@@ -92,8 +92,8 @@ class NullSaveHandler extends \Yana\Core\StdObject implements \Yana\Core\Session
      */
     public function write($id, $data)
     {
-        assert('is_string($id); // $id expected to be String');
-        assert('is_string($data); // $data expected to be String');
+        assert(is_string($id), '$id expected to be String');
+        assert(is_string($data), '$data expected to be String');
         $this->_data[(string) $id] = (string) $data;
         return true;
     }
@@ -106,7 +106,7 @@ class NullSaveHandler extends \Yana\Core\StdObject implements \Yana\Core\Session
      */
     public function destroy($id)
     {
-        assert('is_string($id); // $id expected to be String');
+        assert(is_string($id), '$id expected to be String');
         unset($this->_data[(string) $id]);
         return true;
     }

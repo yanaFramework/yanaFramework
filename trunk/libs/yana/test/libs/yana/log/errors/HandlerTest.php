@@ -100,7 +100,7 @@ class HandlerTest extends \PHPUnit_Framework_TestCase
      */
     public function testHandleAssertion()
     {
-        $this->object->handleAssertion("file", 2, 1);
+        $this->object->handleAssertion("file", 2, (string) 1);
         $this->assertCount(1, $this->logger->getLogs());
     }
 

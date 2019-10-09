@@ -83,7 +83,7 @@ class Processor extends \Yana\Core\StdObject implements \Yana\Db\Export\Xsl\IsPr
         // Transform to SQL
         $sql = trim($xsltProcessor->transformToXml($xmlDocument));
         $array = preg_split('/(?<=;)$/m', $sql);
-        assert('is_array($array);');
+        assert(is_array($array), 'is_array($array)');
         return $array;
     }
 

@@ -98,7 +98,7 @@ class Constraint extends \Yana\Db\Ddl\AbstractUnnamedObject
      */
     public function setDBMS($dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
-        assert('is_string($dbms); // Wrong type for argument 1. String expected');
+        assert(is_string($dbms), 'Wrong type for argument 1. String expected');
 
         if (empty($dbms)) {
             $this->dbms = null;
@@ -141,7 +141,7 @@ class Constraint extends \Yana\Db\Ddl\AbstractUnnamedObject
      */
     public function setConstraint($constraint = "")
     {
-        assert('is_string($constraint); // Wrong type for argument 1. String expected');
+        assert(is_string($constraint), 'Wrong type for argument 1. String expected');
         if (empty($constraint)) {
             $this->constraint = null;
         } else {

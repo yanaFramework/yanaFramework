@@ -60,10 +60,10 @@ class DoctrineWorker extends \Yana\Db\Ddl\Factories\AbstractDoctrineWorker
         /*
          * build tables
          */
-        assert('!isset($table); // Cannot redeclare var $table');
+        assert(!isset($table), 'Cannot redeclare var $table');
         foreach ($connection->listTables() as $table)
         {
-            assert('!isset($tableName); // Cannot redeclare var $tableName');
+            assert(!isset($tableName), 'Cannot redeclare var $tableName');
             $tableName = $this->_stripPrefixFromTableName($table->getName());
             $table = $database->addTable($tableName); // get \Yana\Db\Ddl\Table object
 
@@ -74,7 +74,7 @@ class DoctrineWorker extends \Yana\Db\Ddl\Factories\AbstractDoctrineWorker
         } // end foreach
         unset($table);
 
-        assert('!isset($table); // Cannot redeclare var $table');
+        assert(!isset($table), 'Cannot redeclare var $table');
         foreach ($database->getTables() as $table)
         {
             $this->_createConstraints($table, $table->getName());
@@ -102,11 +102,11 @@ class DoctrineWorker extends \Yana\Db\Ddl\Factories\AbstractDoctrineWorker
      */
     protected function _createSequences(\Yana\Db\Ddl\Database $database)
     {
-        assert('!isset($mapper); // Cannot redeclare var $mapper');
+        assert(!isset($mapper), 'Cannot redeclare var $mapper');
         $mapper = $this->_getMapper();
 
-        assert('!isset($sequenceName); // Cannot redeclare var $sequenceName');
-        assert('!isset($sequence); // Cannot redeclare var $sequence');
+        assert(!isset($sequenceName), 'Cannot redeclare var $sequenceName');
+        assert(!isset($sequence), 'Cannot redeclare var $sequence');
         foreach($this->_getWrapper()->listSequences() as $sequence)
         {
             $sequenceName = (string) $sequence->getName();
@@ -125,11 +125,11 @@ class DoctrineWorker extends \Yana\Db\Ddl\Factories\AbstractDoctrineWorker
      */
     protected function _createColumns(\Yana\Db\Ddl\Table $table, string $tableName)
     {
-        assert('!isset($mapper); // Cannot redeclare var $mapper');
+        assert(!isset($mapper), 'Cannot redeclare var $mapper');
         $mapper = $this->_getMapper();
 
-        assert('!isset($columnInfo); // Cannot redeclare var $columnInfo');
-        assert('!isset($columnName); // Cannot redeclare var $columnName');
+        assert(!isset($columnInfo), 'Cannot redeclare var $columnInfo');
+        assert(!isset($columnName), 'Cannot redeclare var $columnName');
         foreach ($this->_getWrapper()->listTableColumns($tableName) as $columnName => $columnInfo)
         {
             $columnName = $columnInfo->getName();
@@ -146,11 +146,11 @@ class DoctrineWorker extends \Yana\Db\Ddl\Factories\AbstractDoctrineWorker
      */
     protected function _createIndexes(\Yana\Db\Ddl\Table $table, string $tableName)
     {
-        assert('!isset($mapper); // Cannot redeclare var $mapper');
+        assert(!isset($mapper), 'Cannot redeclare var $mapper');
         $mapper = $this->_getMapper();
 
-        assert('!isset($indexInfo); // Cannot redeclare var $indexInfo');
-        assert('!isset($indexName); // Cannot redeclare var $indexName');
+        assert(!isset($indexInfo), 'Cannot redeclare var $indexInfo');
+        assert(!isset($indexName), 'Cannot redeclare var $indexName');
         foreach ($this->_getWrapper()->listTableIndexes($tableName) as $indexInfo)
         {
             $indexName = $indexInfo->getName();
@@ -167,11 +167,11 @@ class DoctrineWorker extends \Yana\Db\Ddl\Factories\AbstractDoctrineWorker
      */
     protected function _createConstraints(\Yana\Db\Ddl\Table $table, string $tableName)
     {
-        assert('!isset($mapper); // Cannot redeclare var $mapper');
+        assert(!isset($mapper), 'Cannot redeclare var $mapper');
         $mapper = $this->_getMapper();
 
-        assert('!isset($contraintInfo); // Cannot redeclare var $contraintInfo');
-        assert('!isset($contraintName); // Cannot redeclare var $contraintName');
+        assert(!isset($contraintInfo), 'Cannot redeclare var $contraintInfo');
+        assert(!isset($contraintName), 'Cannot redeclare var $contraintName');
         foreach ($this->_getWrapper()->listTableConstraints($tableName) as $contraintInfo)
         {
             $contraintName = $contraintInfo->getName();

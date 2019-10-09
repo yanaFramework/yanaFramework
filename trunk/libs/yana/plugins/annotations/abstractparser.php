@@ -50,7 +50,7 @@ abstract class AbstractParser extends \Yana\Core\StdObject implements \Yana\Plug
      */
     public function __construct($text = "")
     {
-        assert('is_string($text); // Invalid argument $text: string expected');
+        assert(is_string($text), 'Invalid argument $text: string expected');
         $this->setText($text);
     }
 
@@ -74,7 +74,7 @@ abstract class AbstractParser extends \Yana\Core\StdObject implements \Yana\Plug
      */
     public function setText($text)
     {
-        assert('is_string($text); // Invalid argument $text: string expected');
+        assert(is_string($text), 'Invalid argument $text: string expected');
         $this->_text = (string) $text;
         return $this;
     }

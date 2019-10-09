@@ -96,7 +96,7 @@ class Handler extends \Yana\Log\Errors\AbstractHandler
      *
      * @internal NOTE: this function is public for technical reasons. Don't call it yourself.
      */
-    public function handleError($errorNumber, $description, $file, $lineNumber)
+    public function handleError(int $errorNumber, string $description, string $file, int $lineNumber)
     {
         $reportingLevel = $this->getErrorReportingLevel();
         if (($reportingLevel & ~$errorNumber) !== $reportingLevel) {
@@ -115,15 +115,15 @@ class Handler extends \Yana\Log\Errors\AbstractHandler
      *
      * @param   string  $pathToFile   file
      * @param   int     $lineNumber   line number
-     * @param   string  $code         assertion code (note: can be boolean)
+     * @param   scalar  $code         assertion code (note: can be boolean)
      * @param   string  $description  optional description
      *
      * @internal NOTE: this function is public for technical reasons. Don't call it yourself.
      */
-    public function handleAssertion($pathToFile, $lineNumber, $code, $description = "")
+    public function handleAssertion(string $pathToFile, int $lineNumber, $code, string $description = "")
     {
         // Can't put assertions here. This would risk an infinite loop.
-        if (empty($description)) {
+        if (empty($description) && \is_scalar($code)) {
             $description = (string) $code;
         }
 
@@ -136,14 +136,25 @@ class Handler extends \Yana\Log\Errors\AbstractHandler
     /**
      * Handles uncaught exceptions.
      *
-     * @param  \Throwable|\Exception  $e  some unhandled exception: PHP 7 implements Throwable, PHP 5 does not
+     * @param  \Throwable  $e  some unhandled exception: PHP 7 implements Throwable, PHP 5 does not
      * @ignore
      *
      * @internal NOTE: this function is public for technical reasons. Don't call it yourself.
      */
-    public function handleException($e)
+    public function handleException(\Throwable $e)
     {
         // Can't throw exceptions here. This would risk an infinite loop.
+
+        // @codeCoverageIgnoreStart
+        if ($e instanceof \AssertionError) { // This exception is new as of PHP 7
+
+            /* This should not be reachable, except for when there is no assertion callback function registered.
+             * Usually the framework always registers a callback function, but we are not the only one with code around here.
+             * So since we cannot know for sure, we leave this code here as a fallback.
+             */
+            return $this->handleAssertion($e->getFile(), $e->getLine(), (string) $e->getCode(), (string) $e->getMessage());
+        }
+        // @codeCoverageIgnoreEnd
 
         // move down to root exception
         $message = "";

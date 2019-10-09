@@ -74,7 +74,7 @@ class XmlDataProvider extends \Yana\Core\StdObject implements \Yana\Core\MetaDat
      */
     public function __construct($directory)
     {
-        assert('is_string($directory); // Invalid argument $directory: string expected');
+        assert(is_string($directory), 'Invalid argument $directory: string expected');
 
         $this->_directory = $directory;
     }
@@ -111,7 +111,7 @@ class XmlDataProvider extends \Yana\Core\StdObject implements \Yana\Core\MetaDat
      */
     protected function _convertIdToFilePath($id)
     {
-        assert('is_string($id); // Invalid argument $id: string expected');
+        assert(is_string($id), 'Invalid argument $id: string expected');
         $file = $this->_getDirectory() .'/' . $id . $this->_getFileExtension();
         return $file;
     }
@@ -126,7 +126,7 @@ class XmlDataProvider extends \Yana\Core\StdObject implements \Yana\Core\MetaDat
      */
     protected function _loadXmlByFileName($file)
     {
-        assert('is_string($file); // Invalid argument $file: string expected');
+        assert(is_string($file), 'Invalid argument $file: string expected');
         return new \Yana\Core\MetaData\XmlMetaData($file, LIBXML_NOWARNING | LIBXML_NOERROR | LIBXML_NOENT, true);
     }
 
@@ -157,7 +157,7 @@ class XmlDataProvider extends \Yana\Core\StdObject implements \Yana\Core\MetaDat
      */
     protected function _fillMetaData(\Yana\Core\MetaData\IsPackageMetaData $metaData, \Yana\Core\MetaData\XmlMetaData $xml, $id)
     {
-        assert('is_string($id); // Invalid argument $id: string expected');
+        assert(is_string($id), 'Invalid argument $id: string expected');
 
         if (!empty($xml)) {
             $file = $this->_convertIdToFilePath($id);
@@ -185,7 +185,7 @@ class XmlDataProvider extends \Yana\Core\StdObject implements \Yana\Core\MetaDat
      */
     public function loadOject($id)
     {
-        assert('is_string($id); // Invalid argument $id: string expected');
+        assert(is_string($id), 'Invalid argument $id: string expected');
 
         $file = $this->_convertIdToFilePath((string) $id);
         if (!is_file($file)) {
@@ -206,10 +206,10 @@ class XmlDataProvider extends \Yana\Core\StdObject implements \Yana\Core\MetaDat
      */
     public function getListOfValidIds()
     {
-        assert('is_array($this->_validIds);');
+        assert(is_array($this->_validIds), 'is_array($this->_validIds)');
         if (empty($this->_validIds)) {
             $this->_validIds = array();
-            assert('!isset($file); // Cannot redeclare var $file');
+            assert(!isset($file), 'Cannot redeclare var $file');
             foreach (glob($this->_convertIdToFilePath('*')) as $file)
             {
                 $id = basename($file, $this->_getFileExtension());
@@ -217,7 +217,7 @@ class XmlDataProvider extends \Yana\Core\StdObject implements \Yana\Core\MetaDat
             }
             unset($file);
         }
-        assert('is_array($this->_validIds);');
+        assert(is_array($this->_validIds), 'is_array($this->_validIds)');
         return $this->_validIds;
     }
 

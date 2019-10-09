@@ -72,11 +72,11 @@ class Requirement extends \Yana\Core\StdObject implements \Yana\Security\Rules\R
      */
     public function __construct($group, $role, $level)
     {
-        assert('is_string($group); // Invalid argument $group: String expected');
-        assert('is_string($role); // Invalid argument $role: String expected');
-        assert('is_int($level); // Invalid argument $level: Integer expected');
-        assert('$level >= 0; // Security level cannot be smaller than 0');
-        assert('$level <= 100; // Security level cannot be greater than 100');
+        assert(is_string($group), 'Invalid argument $group: String expected');
+        assert(is_string($role), 'Invalid argument $role: String expected');
+        assert(is_int($level), 'Invalid argument $level: Integer expected');
+        assert($level >= 0, 'Security level cannot be smaller than 0');
+        assert($level <= 100, 'Security level cannot be greater than 100');
         $this->_group = (string) $group;
         $this->_role = (string) $role;
         $this->_level = (int) $level;

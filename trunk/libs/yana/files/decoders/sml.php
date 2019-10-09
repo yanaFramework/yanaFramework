@@ -49,9 +49,8 @@ class SML extends \Yana\Core\StdObject implements \Yana\Files\Decoders\IsDecoder
      */
     public function getFile($input, $caseSensitive = CASE_MIXED)
     {
-        assert('is_array($input) || is_string($input); /* Wrong argument type for argument 1.'.
-            ' String or array expected. */');
-        assert('$caseSensitive === CASE_MIXED || $caseSensitive === CASE_LOWER || $caseSensitive === CASE_UPPER;');
+        assert(is_array($input) || is_string($input), 'Wrong argument type: $input. String or array expected.');
+        assert($caseSensitive === CASE_MIXED || $caseSensitive === CASE_LOWER || $caseSensitive === CASE_UPPER, '$caseSensitive === CASE_MIXED || $caseSensitive === CASE_LOWER || $caseSensitive === CASE_UPPER');
 
         $result = array();
         $stack = array(&$result);
@@ -132,7 +131,7 @@ class SML extends \Yana\Core\StdObject implements \Yana\Files\Decoders\IsDecoder
                     $openTag = array_pop($translatedKey);
                     /* hide follow up errors */
                     if ($isValid === true) {
-                        assert('!isset($m);');
+                        assert(!isset($m), '!isset($m)');
                         $m = array();
                         preg_match("/<\/([^>]*)>/U", $buffer, $m);
                         $closedTag = $m[1];
@@ -192,12 +191,12 @@ class SML extends \Yana\Core\StdObject implements \Yana\Files\Decoders\IsDecoder
      */
     public function encode($data, $name = null, $caseSensitive = CASE_MIXED, $indent = 0)
     {
-        assert('is_null($data) || is_scalar($data) || is_array($data) || is_object($data); '.
-            '/* Wrong argument type for argument 1. Array or scalar value expected. */');
-        assert('is_null($name) || is_scalar($name); // Wrong argument type for argument 2. String expected.');
-        assert('$caseSensitive === CASE_MIXED || $caseSensitive === CASE_LOWER || $caseSensitive === CASE_UPPER; /* '.
-            'Invalid argument 3. Expected one of the following constants: CASE_MIXED, CASE_LOWER, CASE_UPPER. */');
-        assert('is_int($indent); // Wrong argument type for argument 4. Integer expected.');
+        assert(is_null($data) || is_scalar($data) || is_array($data) || is_object($data),
+            'Wrong argument type for argument 1. Array or scalar value expected.');
+        assert(is_null($name) || is_scalar($name), 'Wrong argument type for argument 2. String expected.');
+        assert($caseSensitive === CASE_MIXED || $caseSensitive === CASE_LOWER || $caseSensitive === CASE_UPPER,
+            'Invalid argument 3. Expected one of the following constants: CASE_MIXED, CASE_LOWER, CASE_UPPER.');
+        assert(is_int($indent), 'Wrong argument type for argument 4. Integer expected.');
 
         /* settype to STRING
          *            INTEGER
@@ -280,7 +279,7 @@ class SML extends \Yana\Core\StdObject implements \Yana\Files\Decoders\IsDecoder
      */
     public function decode($input, $caseSensitive = CASE_MIXED)
     {
-        assert('is_string($input); // Wrong argument type for argument 1. String expected.');
+        assert(is_string($input), 'Wrong argument type for argument 1. String expected.');
         $input = explode("\n", "$input");
         return $this->getFile($input, $caseSensitive);
     }

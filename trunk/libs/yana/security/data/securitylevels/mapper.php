@@ -52,18 +52,18 @@ class Mapper extends \Yana\Core\StdObject implements \Yana\Security\Data\Securit
     public function toEntity(array $databaseRow)
     {
         $databaseRowLower = \Yana\Util\Hashtable::changeCase($databaseRow, \CASE_LOWER);
-        assert('!isset($level); // Cannot redeclare var $level');
+        assert(!isset($level), 'Cannot redeclare var $level');
         $level = 0;
         if (isset($databaseRowLower[\Yana\Security\Data\Tables\LevelEnumeration::LEVEL])) {
             $level = (int) $databaseRowLower[\Yana\Security\Data\Tables\LevelEnumeration::LEVEL];
         }
-        assert('!isset($isProxy); // Cannot redeclare var $isProxy');
+        assert(!isset($isProxy), 'Cannot redeclare var $isProxy');
         $isProxy = false; // when the database value is NULL, it must be mapped to false
         if (isset($databaseRowLower[\Yana\Security\Data\Tables\LevelEnumeration::HAS_GRANT_OPTION])) {
             $isProxy = (bool) $databaseRowLower[\Yana\Security\Data\Tables\LevelEnumeration::HAS_GRANT_OPTION];
         }
 
-        assert('!isset($entity); // Cannot redeclare var $entity');
+        assert(!isset($entity), 'Cannot redeclare var $entity');
         $entity = new \Yana\Security\Data\SecurityLevels\Level($level, $isProxy);
 
         if (isset($databaseRowLower[\Yana\Security\Data\Tables\LevelEnumeration::ID])) {
@@ -89,7 +89,7 @@ class Mapper extends \Yana\Core\StdObject implements \Yana\Security\Data\Securit
      */
     public function toDatabaseRow(\Yana\Data\Adapters\IsEntity $entity)
     {
-        assert('!isset($row); // Cannot redeclare var $row');
+        assert(!isset($row), 'Cannot redeclare var $row');
         $row = array();
         if ($entity->getId() >= 0) {
             // We will not add the ID when none has been set (to allow AUTO-INCREMENT to do its job)

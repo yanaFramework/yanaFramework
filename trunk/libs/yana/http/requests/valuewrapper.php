@@ -60,14 +60,14 @@ class ValueWrapper extends \Yana\Http\Requests\AbstractValueWrapper
      */
     public function value($id, $default = null)
     {
-        assert('is_scalar($id); // Invalid argument: $id. Scalar expected');
+        assert(is_scalar($id), 'Invalid argument: $id. Scalar expected');
 
-        assert('!isset($lowerId); // Cannot redeclare var $lowerId');
+        assert(!isset($lowerId), 'Cannot redeclare var $lowerId');
         $lowerId = \strtolower($id);
-        assert('!isset($value); // Cannot redeclare var $value');
+        assert(!isset($value), 'Cannot redeclare var $value');
         $value = $default;
         if ($this->has($lowerId)) {
-            assert('!isset($values); // Cannot redeclare var $values');
+            assert(!isset($values), 'Cannot redeclare var $values');
             $values = $this->_getValues();
             $value = $values[$lowerId];
             unset($values);
@@ -114,17 +114,17 @@ class ValueWrapper extends \Yana\Http\Requests\AbstractValueWrapper
      */
     private function _untaintArray(array $unsafeValues, $unquote = false)
     {
-        assert('is_bool($unquote); // Invalid argument $unquote. Bool expected.');
+        assert(is_bool($unquote), 'Invalid argument $unquote. Bool expected.');
 
-        assert('!isset($value); // Cannot redeclare var $value');
+        assert(!isset($value), 'Cannot redeclare var $value');
         $value = array_change_key_case($unsafeValues, CASE_LOWER);
-        assert('!isset($sanitizer); // Cannot redeclare var $sanitizer');
+        assert(!isset($sanitizer), 'Cannot redeclare var $sanitizer');
         $sanitizer = new \Yana\Data\StringValidator();
         $sanitizer->setMaxLength(50000)
             ->addOption(\Yana\Data\StringValidator::TOKEN);
 
-        assert('!isset($i); // Cannot redeclare var $i');
-        assert('!isset($item); // Cannot redeclare var $item');
+        assert(!isset($i), 'Cannot redeclare var $i');
+        assert(!isset($item), 'Cannot redeclare var $item');
         foreach ($value as $i => $item)
         {
             if (is_array($item)) {

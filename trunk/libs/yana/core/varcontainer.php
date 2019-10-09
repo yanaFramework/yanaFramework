@@ -55,7 +55,7 @@ class VarContainer extends \Yana\Core\StdObject implements \Yana\Core\IsVarConta
      */
     protected function _toArrayOffset($key)
     {
-        assert('is_scalar($key); // Invalid argument $key: string expected');
+        assert(is_scalar($key), 'Invalid argument $key: string expected');
         return (string) $key;
     }
 
@@ -67,7 +67,7 @@ class VarContainer extends \Yana\Core\StdObject implements \Yana\Core\IsVarConta
      */
     public function __get($id)
     {
-        assert('is_string($id); // Invalid argument $id: string expected');
+        assert(is_string($id), 'Invalid argument $id: string expected');
         return $this->getVar($id);
     }
 
@@ -82,7 +82,7 @@ class VarContainer extends \Yana\Core\StdObject implements \Yana\Core\IsVarConta
      */
     public function __set($id, $value)
     {
-        assert('is_string($id); // Invalid argument $id: string expected');
+        assert(is_string($id), 'Invalid argument $id: string expected');
         $this->setVar($id, $value);
         return $value;
     }
@@ -99,8 +99,8 @@ class VarContainer extends \Yana\Core\StdObject implements \Yana\Core\IsVarConta
      */
     public function getVar($key)
     {
-        assert('is_string($key); // $key expected to be String');
-        assert('!isset($offset); // Cannot redeclare var $offset');
+        assert(is_string($key), '$key expected to be String');
+        assert(!isset($offset), 'Cannot redeclare var $offset');
         $offset = $this->_toArrayOffset($key);
         return (isset($this->_contents[$offset])) ? $this->_contents[$offset] : null;
     }
@@ -125,8 +125,8 @@ class VarContainer extends \Yana\Core\StdObject implements \Yana\Core\IsVarConta
      */
     public function isVar($key)
     {
-        assert('is_string($key); // $key expected to be String');
-        assert('!isset($offset); // Cannot redeclare var $offset');
+        assert(is_string($key), '$key expected to be String');
+        assert(!isset($offset), 'Cannot redeclare var $offset');
         $offset = $this->_toArrayOffset($key);
         return (isset($this->_contents[$offset]));
     }
@@ -143,8 +143,8 @@ class VarContainer extends \Yana\Core\StdObject implements \Yana\Core\IsVarConta
      */
     public function setVarByReference($key, &$value)
     {
-        assert('is_string($key); // $key expected to be String');
-        assert('!isset($offset); // Cannot redeclare var $offset');
+        assert(is_string($key), '$key expected to be String');
+        assert(!isset($offset), 'Cannot redeclare var $offset');
         $offset = $this->_toArrayOffset($key);
         $this->_contents[$offset] =& $value;
         return $this;
@@ -174,7 +174,7 @@ class VarContainer extends \Yana\Core\StdObject implements \Yana\Core\IsVarConta
      */
     public function setVar($key, $value)
     {
-        assert('is_string($key); // $key expected to be String');
+        assert(is_string($key), '$key expected to be String');
         return $this->setVarByReference($key, $value);
     }
 

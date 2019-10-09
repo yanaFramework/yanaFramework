@@ -212,7 +212,7 @@ abstract class AbstractBuilder extends \Yana\Core\StdObject implements \Yana\For
      */
     protected function _setFile($file)
     {
-        assert('is_string($file); // Invalid argument $file: String expected');
+        assert(is_string($file), 'Invalid argument $file: String expected');
         $this->_file = (string) $file;
         return $this;
     }
@@ -271,7 +271,7 @@ abstract class AbstractBuilder extends \Yana\Core\StdObject implements \Yana\For
      */
     public function setId($id)
     {
-        assert('is_string($id); // Invalid argument $id: String expected');
+        assert(is_string($id), 'Invalid argument $id: String expected');
         $this->_id = (string) $id;
         return $this;
     }
@@ -294,7 +294,7 @@ abstract class AbstractBuilder extends \Yana\Core\StdObject implements \Yana\For
      */
     public function setTable($table)
     {
-        assert('is_string($table); // Invalid argument $table: String expected');
+        assert(is_string($table), 'Invalid argument $table: String expected');
         $this->_table = (string) $table;
         return $this;
     }
@@ -410,7 +410,7 @@ abstract class AbstractBuilder extends \Yana\Core\StdObject implements \Yana\For
      */
     public function setSort($sort)
     {
-        assert('is_string($sort); // Invalid argument $sort: String expected');
+        assert(is_string($sort), 'Invalid argument $sort: String expected');
         $this->_sort = (string) $sort;
         return $this;
     }
@@ -433,7 +433,7 @@ abstract class AbstractBuilder extends \Yana\Core\StdObject implements \Yana\For
      */
     public function setDescending($desc)
     {
-        assert('is_scalar($desc); // Invalid argument $desc: Scalar expected');
+        assert(is_scalar($desc), 'Invalid argument $desc: Scalar expected');
         $this->_desc = (bool) $desc;
         return $this;
     }
@@ -456,7 +456,7 @@ abstract class AbstractBuilder extends \Yana\Core\StdObject implements \Yana\For
      */
     public function setPage($page)
     {
-        assert('is_numeric($page); // Invalid argument $page: Number expected');
+        assert(is_numeric($page), 'Invalid argument $page: Number expected');
         $this->_page = (int) $page;
         return $this;
     }
@@ -481,7 +481,7 @@ abstract class AbstractBuilder extends \Yana\Core\StdObject implements \Yana\For
      */
     public function setEntries($entries)
     {
-        assert('is_numeric($entries); // Invalid argument $entries: Number expected');
+        assert(is_numeric($entries), 'Invalid argument $entries: Number expected');
         $this->_entries = (int) $entries;
         return $this;
     }
@@ -506,7 +506,7 @@ abstract class AbstractBuilder extends \Yana\Core\StdObject implements \Yana\For
      */
     public function setOninsert($oninsert)
     {
-        assert('is_string($oninsert); // Invalid argument $oninsert: String expected');
+        assert(is_string($oninsert), 'Invalid argument $oninsert: String expected');
         $this->_oninsert = (string) $oninsert;
         return $this;
     }
@@ -531,7 +531,7 @@ abstract class AbstractBuilder extends \Yana\Core\StdObject implements \Yana\For
      */
     public function setOnupdate($onupdate)
     {
-        assert('is_string($onupdate); // Invalid argument $onupdate: String expected');
+        assert(is_string($onupdate), 'Invalid argument $onupdate: String expected');
         $this->_onupdate = (string) $onupdate;
         return $this;
     }
@@ -556,7 +556,7 @@ abstract class AbstractBuilder extends \Yana\Core\StdObject implements \Yana\For
      */
     public function setOndelete($ondelete)
     {
-        assert('is_string($ondelete); // Invalid argument $ondelete: String expected');
+        assert(is_string($ondelete), 'Invalid argument $ondelete: String expected');
         $this->_ondelete = (string) $ondelete;
         return $this;
     }
@@ -581,7 +581,7 @@ abstract class AbstractBuilder extends \Yana\Core\StdObject implements \Yana\For
      */
     public function setOnsearch($onsearch)
     {
-        assert('is_string($onsearch); // Invalid argument $onsearch: String expected');
+        assert(is_string($onsearch), 'Invalid argument $onsearch: String expected');
         $this->_onsearch = (string) $onsearch;
         return $this;
     }
@@ -606,7 +606,7 @@ abstract class AbstractBuilder extends \Yana\Core\StdObject implements \Yana\For
      */
     public function setOndownload($ondownload)
     {
-        assert('is_string($ondownload); // Invalid argument $ondownload: String expected');
+        assert(is_string($ondownload), 'Invalid argument $ondownload: String expected');
         $this->_ondownload = (string) $ondownload;
         return $this;
     }
@@ -631,7 +631,7 @@ abstract class AbstractBuilder extends \Yana\Core\StdObject implements \Yana\For
      */
     public function setOnexport($onexport)
     {
-        assert('is_string($onexport); // Invalid argument $onexport: String expected');
+        assert(is_string($onexport), 'Invalid argument $onexport: String expected');
         $this->_onexport = (string) $onexport;
         return $this;
     }
@@ -656,7 +656,7 @@ abstract class AbstractBuilder extends \Yana\Core\StdObject implements \Yana\For
      */
     public function setLayout($layout)
     {
-        assert('is_numeric($layout); // Invalid argument $layout: Integer expected');
+        assert(is_numeric($layout), 'Invalid argument $layout: Integer expected');
         $this->_layout = (int) $layout;
         return $this;
     }

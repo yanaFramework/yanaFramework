@@ -44,7 +44,7 @@ interface IsFormContainer extends \Yana\Core\Dependencies\IsRequestContainer
      *
      * @return  \Yana\Db\IsConnectionFactory
      */
-    public function getConnectionFactory();
+    public function getConnectionFactory(): \Yana\Db\IsConnectionFactory;
 
     /**
      * Get language translation-repository.
@@ -53,7 +53,7 @@ interface IsFormContainer extends \Yana\Core\Dependencies\IsRequestContainer
      *
      * @return  \Yana\Translations\IsFacade
      */
-    public function getLanguage();
+    public function getLanguage(): \Yana\Translations\IsFacade;
 
     /**
      * Get plugin-manager.
@@ -63,7 +63,7 @@ interface IsFormContainer extends \Yana\Core\Dependencies\IsRequestContainer
      *
      * @return  \Yana\Plugins\Facade
      */
-    public function getPlugins();
+    public function getPlugins(): \Yana\Plugins\Facade;
 
     /**
      * Get security facade.
@@ -72,7 +72,7 @@ interface IsFormContainer extends \Yana\Core\Dependencies\IsRequestContainer
      * 
      * @return \Yana\Security\IsFacade
      */
-    public function getSecurity();
+    public function getSecurity(): \Yana\Security\IsFacade;
 
 }
 

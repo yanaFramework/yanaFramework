@@ -46,7 +46,7 @@ class FieldException extends \Yana\Core\Exceptions\Forms\FormException
      */
     public function setField($fieldName)
     {
-        assert('is_string($fieldName); // Invalid argument $fieldName: string expected');
+        assert(is_string($fieldName), 'Invalid argument $fieldName: string expected');
         $this->data['FIELD'] = $fieldName;
         return $this;
     }

@@ -770,7 +770,7 @@ class AutomatedHtmlBuilderTest extends \PHPUnit_Framework_TestCase
         $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::STRING);
         $this->_context->setValue('column', 123);
         $this->_field->getField()->addEvent('test')->setAction('action')->setLabel('label')->setIcon(__FILE__);
-        \Yana\Views\Helpers\Formatters\UrlFormatter::setBaseUrl('https://URL');
+        \Yana\Views\Helpers\Formatters\UrlFormatter::setDependencyContainer(new \Yana\Core\Dependencies\UrlFormatterContainer('https://URL'));
 
         $link = $this->object->__invoke($this->_field);
         $this->assertStringStartsWith('<span id="" title="" class="form-read-column">123</span>', $link);
@@ -778,7 +778,7 @@ class AutomatedHtmlBuilderTest extends \PHPUnit_Framework_TestCase
         $expected = '/<a id="form---column" class="gui_generator_int_link" title=".*?" ' .
             'href=".*?\?&amp;action=test&amp;target\[\]=&amp;target%5Bcolumn%5D=123">/';
         $this->assertRegExp($expected, $link);
-        \Yana\Views\Helpers\Formatters\UrlFormatter::setBaseUrl('');
+        \Yana\Views\Helpers\Formatters\UrlFormatter::setDependencyContainer(new \Yana\Core\Dependencies\UrlFormatterContainer(''));
     }
 
     /**

@@ -48,21 +48,21 @@ interface IsFacadeContainer extends \Yana\Security\Dependencies\IsContainer
      *
      * @return  \Yana\Data\Adapters\IsDataAdapter
      */
-    public function getCache();
+    public function getCache(): \Yana\Data\Adapters\IsDataAdapter;
 
     /**
      * Retrieve session wrapper.
      *
      * @return  \Yana\Security\Sessions\IsWrapper
      */
-    public function getSession();
+    public function getSession(): \Yana\Security\Sessions\IsWrapper;
 
     /**
      * Returns a ready-to-use factory to create open database connections.
      *
      * @return  \Yana\Db\IsConnectionFactory
      */
-    public function getConnectionFactory();
+    public function getConnectionFactory(): \Yana\Db\IsConnectionFactory;
 
     /**
      * Returns the stored list of events for plugins.
@@ -71,14 +71,14 @@ interface IsFacadeContainer extends \Yana\Security\Dependencies\IsContainer
      *
      * @return  \Yana\Plugins\Configs\MethodCollection
      */
-    public function getEventConfigurationsForPlugins();
+    public function getEventConfigurationsForPlugins(): \Yana\Plugins\Configs\MethodCollection;
 
     /**
      * Get default user settings.
      *
      * @return  array
      */
-    public function getDefaultUser();
+    public function getDefaultUser(): array;
 
     /**
      * Get event logger.
@@ -87,7 +87,7 @@ interface IsFacadeContainer extends \Yana\Security\Dependencies\IsContainer
      *
      * @return  \Yana\Log\IsLogHandler
      */
-    public function getLogger();
+    public function getLogger(): \Yana\Log\IsLogHandler;
 
 
     /**
@@ -95,42 +95,42 @@ interface IsFacadeContainer extends \Yana\Security\Dependencies\IsContainer
      *
      * @return  string
      */
-    public function getProfileId();
+    public function getProfileId(): string;
 
     /**
      * Get action for current request.
      *
      * @return  string
      */
-    public function getLastPluginAction();
+    public function getLastPluginAction(): string;
 
     /**
      * Builds and returns a rule-checker object.
      *
      * @return  \Yana\Security\Rules\IsChecker
      */
-    public function getRulesChecker();
+    public function getRulesChecker(): \Yana\Security\Rules\IsChecker;
 
     /**
      * Create and return data reader.
      *
      * @return \Yana\Security\Rules\Requirements\DataReader
      */
-    public function getDataReader();
+    public function getDataReader(): \Yana\Security\Rules\Requirements\DataReader;
 
     /**
      * Create and return data writer.
      *
      * @return \Yana\Security\Rules\Requirements\DataWriter
      */
-    public function getDataWriter();
+    public function getDataWriter(): \Yana\Security\Rules\Requirements\DataWriter;
 
     /**
      * Create and return user adapter.
      *
      * @return \Yana\Security\Data\Users\Adapter
      */
-    public function getUserAdapter();
+    public function getUserAdapter(): \Yana\Security\Data\Users\Adapter;
 
 }
 

@@ -109,7 +109,7 @@ class Reference extends \Yana\Core\StdObject
      */
     public function setTable($table)
     {
-        assert('is_string($table); // Invalid argument $table: string expected');
+        assert(is_string($table), 'Invalid argument $table: string expected');
         $this->_table = (string) $table;
         return $this;
     }
@@ -122,7 +122,7 @@ class Reference extends \Yana\Core\StdObject
      */
     public function setColumn($column)
     {
-        assert('is_string($column); // Invalid argument $column: string expected');
+        assert(is_string($column), 'Invalid argument $column: string expected');
         $this->_column = (string) $column;
         return $this;
     }
@@ -135,7 +135,7 @@ class Reference extends \Yana\Core\StdObject
      */
     public function setLabel($label)
     {
-        assert('is_string($label); // Invalid argument $label: string expected');
+        assert(is_string($label), 'Invalid argument $label: string expected');
         $this->_label = (string) $label;
         return $this;
     }

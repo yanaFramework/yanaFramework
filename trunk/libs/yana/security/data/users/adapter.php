@@ -102,7 +102,7 @@ class Adapter extends \Yana\Security\Data\Users\AbstractAdapter
      */
     public function offsetGet($userId)
     {
-        assert('is_string($userId); // Wrong type argument $userId. String expected.');
+        assert(is_string($userId), 'Wrong type argument $userId. String expected.');
 
         try {
             return parent::offsetGet(\Yana\Util\Strings::toUpperCase((string) $userId));
@@ -126,12 +126,12 @@ class Adapter extends \Yana\Security\Data\Users\AbstractAdapter
      */
     public function offsetSet($userId, $userEntity)
     {
-        assert('is_string($userId) || is_null($userId); // Wrong type argument $userId. String expected.');
+        assert(is_string($userId) || is_null($userId), 'Wrong type argument $userId. String expected.');
 
         if (!($userEntity instanceof \Yana\Security\Data\Users\IsEntity)) {
-            assert('!isset($className); // Cannot redeclare var $className');
+            assert(!isset($className), 'Cannot redeclare var $className');
             $className = \is_object($userEntity) ? \get_class($userEntity) : \gettype($userEntity);
-            assert('!isset($message); // Cannot redeclare var $message');
+            assert(!isset($message), 'Cannot redeclare var $message');
             $message = "Instance of \Yana\Security\Data\Users\IsEntity expected. Found " . $className . " instead.";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
         }
@@ -145,9 +145,9 @@ class Adapter extends \Yana\Security\Data\Users\AbstractAdapter
 
         } catch (\Yana\Db\DatabaseException $e) {
 
-            assert('!isset($message); // Cannot redeclare var $message');
+            assert(!isset($message), 'Cannot redeclare var $message');
             $message = "User not saved due to a database error.";
-            assert('!isset($level); // Cannot redeclare var $level');
+            assert(!isset($level), 'Cannot redeclare var $level');
             $level = \Yana\Log\TypeEnumeration::ERROR;
             throw new \Yana\Core\Exceptions\User\NotSavedException($message, $level, $e);
         }
@@ -183,21 +183,21 @@ class Adapter extends \Yana\Security\Data\Users\AbstractAdapter
      */
     public function offsetUnset($userId)
     {
-        assert('is_string($userId); // Wrong type argument $userId. String expected.');
+        assert(is_string($userId), 'Wrong type argument $userId. String expected.');
 
         // user does not exist
         if (!$this->offsetExists($userId)) {
-            assert('!isset($message); // Cannot redeclare var $message');
+            assert(!isset($message), 'Cannot redeclare var $message');
             $message = "No such user: '$userId'.";
-            assert('!isset($level); // Cannot redeclare var $level');
+            assert(!isset($level), 'Cannot redeclare var $level');
             $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Core\Exceptions\User\NotFoundException($message, $level);
         }
 
-        assert('!isset($upperCaseUserId); // Cannot redeclare var $upperCaseUserId');
+        assert(!isset($upperCaseUserId), 'Cannot redeclare var $upperCaseUserId');
         $upperCaseUserId = \Yana\Util\Strings::toUpperCase($userId);
 
-        assert('!isset($db); // Cannot redeclare var $db');
+        assert(!isset($db), 'Cannot redeclare var $db');
         $db = $this->_getDatabaseConnection();
         try {
 
@@ -273,7 +273,7 @@ class Adapter extends \Yana\Security\Data\Users\AbstractAdapter
      */
     public function getIds()
     {
-        assert('!isset($key); // Cannot redeclare var $key');
+        assert(!isset($key), 'Cannot redeclare var $key');
         $key = $this->_getTableName() . '.*.' . \Yana\Security\Data\Tables\UserEnumeration::ID;
         return $this->_getDatabaseConnection()->select($key);
     }
@@ -299,9 +299,9 @@ class Adapter extends \Yana\Security\Data\Users\AbstractAdapter
      */
     public function findUserByMail($mail)
     {
-        assert('is_string($mail); // Wrong type argument $mail. String expected.');
+        assert(is_string($mail), 'Wrong type argument $mail. String expected.');
 
-        assert('!isset($entities); // Cannot redeclare var $entities');
+        assert(!isset($entities), 'Cannot redeclare var $entities');
         $entities = parent::_findEntitiesByColumn(\Yana\Security\Data\Tables\UserEnumeration::MAIL, (string) $mail);
 
         if (count($entities) !== 1) {
@@ -310,7 +310,7 @@ class Adapter extends \Yana\Security\Data\Users\AbstractAdapter
             throw new \Yana\Core\Exceptions\User\MailNotFoundException($message, $level);
         }
 
-        assert('!isset($entity); // Cannot redeclare var $entity');
+        assert(!isset($entity), 'Cannot redeclare var $entity');
         $entity = current($entities);
         assert($entity instanceof \Yana\Security\Data\Users\IsEntity);
         return $entity;
@@ -325,7 +325,7 @@ class Adapter extends \Yana\Security\Data\Users\AbstractAdapter
      */
     public function findUserByRecoveryId($recoveryId)
     {
-        assert('is_string($recoveryId); // Invalid argument $recoveryId: string expected');
+        assert(is_string($recoveryId), 'Invalid argument $recoveryId: string expected');
 
         $entities = parent::_findEntitiesByColumn(\Yana\Security\Data\Tables\UserEnumeration::PASSWORD_RECOVERY_ID, (string) $recoveryId);
 
@@ -335,7 +335,7 @@ class Adapter extends \Yana\Security\Data\Users\AbstractAdapter
             throw new \Yana\Core\Exceptions\User\NotFoundException($message, $level);
         }
 
-        assert('!isset($entity); // Cannot redeclare var $entity');
+        assert(!isset($entity), 'Cannot redeclare var $entity');
         $entity = current($entities);
         assert($entity instanceof \Yana\Security\Data\Users\IsEntity);
         return $entity;

@@ -47,7 +47,7 @@ class PluginLoader extends \Yana\Plugins\Loaders\AbstractPluginLoader
      */
     public function loadPlugin($name)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert(is_string($name), 'Invalid argument $name: string expected');
         return \Yana\Plugins\AbstractPlugin::loadPlugin($name, $this->_getPluginDirectory(), $this->_getContainer());
     }
 

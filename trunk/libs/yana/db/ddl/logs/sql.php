@@ -129,7 +129,7 @@ class Sql extends \Yana\Db\Ddl\Logs\AbstractLog
      */
     public function setDBMS($dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
-        assert('is_string($dbms); // Invalid argument $dbms: String expected');
+        assert(is_string($dbms), 'Invalid argument $dbms: String expected');
 
         if (empty($dbms)) {
             $this->dbms = null;
@@ -161,7 +161,7 @@ class Sql extends \Yana\Db\Ddl\Logs\AbstractLog
      */
     public function setSQL($sql)
     {
-        assert('is_string($sql); // Invalid argument $sql: String expected');
+        assert(is_string($sql), 'Invalid argument $sql: String expected');
         if (empty($sql)) {
             $this->sql = null;
         } else {

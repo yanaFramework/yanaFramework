@@ -68,6 +68,14 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testGetApplicationUrlParameters()
+    {
+        $this->assertSame('?id=default', $this->object->getApplicationUrlParameters());
+    }
+
+    /**
+     * @test
+     */
     public function testGetPluginAdapter()
     {
         $adapter = $this->object->getPluginAdapter();
@@ -151,9 +159,11 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testGetId()
+    public function testGetProfileId()
     {
-        $this->assertTrue(is_string($this->object->getProfileId()));
+        $profileId = $this->object->getProfileId();
+        $this->assertSame("default", $profileId);
+        $this->assertSame($profileId, $this->object->getProfileId());
     }
 
     /**

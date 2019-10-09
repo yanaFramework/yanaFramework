@@ -42,7 +42,8 @@ interface IsApplicationContainer
     \Yana\Core\Dependencies\IsViewContainer,
     \Yana\Core\Dependencies\IsFormContainer,
     \Yana\Core\Dependencies\IsSecurityContainer,
-    \Yana\Core\Dependencies\IsPluginContainer
+    \Yana\Core\Dependencies\IsPluginContainer,
+    \Yana\Core\Dependencies\IsUrlFormatterContainer
 {
 
     /**
@@ -51,9 +52,9 @@ interface IsApplicationContainer
      * Builds and returns a class that converts exceptions to messages and passes them as var
      * "STDOUT" to a var-container for output in a template or on the command line.
      *
-     * @return  \Yana\Log\ExceptionLogger
+     * @return  \Yana\Log\IsLogger
      */
-    public function getExceptionLogger();
+    public function getExceptionLogger(): \Yana\Log\IsLogger;
 
     /**
      * Get current action.
@@ -80,7 +81,7 @@ interface IsApplicationContainer
      * @return  string
      * @throws  \Yana\Core\Exceptions\InvalidActionException  when the event is undefined
      */
-    public function getAction();
+    public function getAction(): string;
 
     /**
      * Get default configuration value.
@@ -103,7 +104,7 @@ interface IsApplicationContainer
      * Note: system default values are typically defined in the
      * 'default' section of the 'config/system.config' configurations file.
      *
-     * @param   string  $key  adress of data in memory (case insensitive)
+     * @param   scalar  $key  adress of data in memory (case insensitive)
      * @return  mixed
      */
     public function getDefault($key);
@@ -113,7 +114,7 @@ interface IsApplicationContainer
      *
      * @return  bool
      */
-    public function isSafemode();
+    public function isSafemode(): bool;
 
     /**
      * get skin
@@ -122,14 +123,14 @@ interface IsApplicationContainer
      *
      * @return  \Yana\Views\Skins\IsSkin
      */
-    public function getSkin();
+    public function getSkin(): \Yana\Views\Skins\IsSkin;
 
     /**
      * XML default configuration object.
      *
      * @return  \Yana\Util\Xml\IsObject
      */
-    public function getDefaultConfiguration();
+    public function getDefaultConfiguration(): \Yana\Util\Xml\IsObject;
 
 }
 

@@ -50,7 +50,7 @@ class GenericMapper extends \Yana\Core\Autoloaders\AbstractMapper
      */
     public function mapClassNameToFilePath($className)
     {
-        assert('is_string($className); // Invalid input $className. String expected');
+        assert(is_string($className), 'Invalid input $className. String expected');
 
         $classNameWithoutPrefix = $this->_removeNameSpacePrefix($className);
         $underScoresResolved = \preg_replace('/_(?=[^\\\\]+$)/', '/', $classNameWithoutPrefix);

@@ -130,7 +130,7 @@ abstract class AbstractLog extends \Yana\Db\Ddl\DDL
      */
     public function setVersion($version = "")
     {
-        assert('is_string($version); // Wrong type for argument 1. String expected');
+        assert(is_string($version), 'Wrong type for argument 1. String expected');
         if (empty($version)) {
             $this->version = null;
         } else {
@@ -163,7 +163,7 @@ abstract class AbstractLog extends \Yana\Db\Ddl\DDL
      */
     public function setDescription($description)
     {
-        assert('is_string($description); // Wrong type for argument 1. String expected');
+        assert(is_string($description), 'Wrong type for argument 1. String expected');
         if (empty($description)) {
             $this->description = null;
         } else {
@@ -190,7 +190,7 @@ abstract class AbstractLog extends \Yana\Db\Ddl\DDL
      */
     public function setIgnoreError($ignoreError)
     {
-        assert('is_bool($ignoreError); // Wrong argument type for argument 1. Boolean expected');
+        assert(is_bool($ignoreError), 'Wrong argument type for argument 1. Boolean expected');
         $this->ignoreError = (bool) $ignoreError;
         return $this;
     }

@@ -89,7 +89,7 @@ class UserBuilder extends \Yana\Core\StdObject implements \Yana\Security\Data\Is
     protected function _getUserAdapter()
     {
         if (!isset($this->_userAdapter)) {
-            assert('!isset($factory); // Cannot redeclare var $factory.');
+            assert(!isset($factory), 'Cannot redeclare var $factory.');
             $factory = new \Yana\Db\ConnectionFactory(new \Yana\Db\SchemaFactory());
             $this->_userAdapter = new \Yana\Security\Data\Users\Adapter($factory->createConnection('user'));
             unset($factory);
@@ -107,7 +107,7 @@ class UserBuilder extends \Yana\Core\StdObject implements \Yana\Security\Data\Is
      */
     public function isExistingUserName($userName)
     {
-        assert('is_string($userName); // Invalid argument $userName: string expected');
+        assert(is_string($userName), 'Invalid argument $userName: string expected');
         return $this->_getUserAdapter()->offsetExists((string) $userName);
     }
 
@@ -126,15 +126,15 @@ class UserBuilder extends \Yana\Core\StdObject implements \Yana\Security\Data\Is
         if (\is_null($session)) {
             $session = new \Yana\Security\Sessions\Wrapper();
         }
-        assert('!isset($userName); // Cannot redeclare var $userName');
+        assert(!isset($userName), 'Cannot redeclare var $userName');
         $userName = $session->getCurrentUserName();
         if ($userName == "") {
             return new \Yana\Security\Data\Users\Guest();
         }
 
-        assert('!isset($userAccount); // Cannot redeclare var $userAccount');
+        assert(!isset($userAccount), 'Cannot redeclare var $userAccount');
         $userAccount = $this->_buildFromUserName($userName);
-        assert('$userAccount instanceof \Yana\Security\Data\Users\IsEntity; // Return value must be an instance of IsEntity');
+        assert($userAccount instanceof \Yana\Security\Data\Users\IsEntity, 'Return value must be an instance of IsEntity');
 
         return $userAccount;
     }
@@ -148,18 +148,18 @@ class UserBuilder extends \Yana\Core\StdObject implements \Yana\Security\Data\Is
      */
     private function _buildFromUserName($userId)
     {
-        assert('is_string($userId); // Invalid argument $userId: string expected');
+        assert(is_string($userId), 'Invalid argument $userId: string expected');
 
-        assert('!isset($adapter); // Cannot redeclare var $adapter');
+        assert(!isset($adapter), 'Cannot redeclare var $adapter');
         $adapter = $this->_getUserAdapter();
 
         if (!$this->isExistingUserName($userId)) {
             throw new \Yana\Core\Exceptions\User\NotFoundException("User '" . $userId . "' not found.");
         }
-        assert('!isset($userAccount); // Cannot redeclare var $userAccount');
+        assert(!isset($userAccount), 'Cannot redeclare var $userAccount');
         $userAccount = $adapter[$userId];
 
-        assert('$userAccount instanceof \Yana\Security\Data\Users\IsEntity; // Return value must be an instance of IsEntity');
+        assert($userAccount instanceof \Yana\Security\Data\Users\IsEntity, 'Return value must be an instance of IsEntity');
         return $userAccount;
     }
 
@@ -172,7 +172,7 @@ class UserBuilder extends \Yana\Core\StdObject implements \Yana\Security\Data\Is
      */
     public function buildFromUserName($userId)
     {
-        assert('is_string($userId); // Invalid argument $userId: string expected');
+        assert(is_string($userId), 'Invalid argument $userId: string expected');
         return $this->_buildFromUserName((string) $userId);
     }
 
@@ -185,7 +185,7 @@ class UserBuilder extends \Yana\Core\StdObject implements \Yana\Security\Data\Is
      */
     public function buildFromUserMail($mail)
     {
-        assert('is_string($mail); // Invalid argument $mail: string expected');
+        assert(is_string($mail), 'Invalid argument $mail: string expected');
 
         return $this->_getUserAdapter()->findUserByMail($mail); // may throw exception
     }
@@ -199,7 +199,7 @@ class UserBuilder extends \Yana\Core\StdObject implements \Yana\Security\Data\Is
      */
     public function buildFromRecoveryId($recoveryId)
     {
-        assert('is_string($recoveryId); // Invalid argument $recoveryId: string expected');
+        assert(is_string($recoveryId), 'Invalid argument $recoveryId: string expected');
 
         return $this->_getUserAdapter()->findUserByRecoveryId($recoveryId); // may throw exception
     }
@@ -213,8 +213,8 @@ class UserBuilder extends \Yana\Core\StdObject implements \Yana\Security\Data\Is
      */
     public function buildNewUser($userId, $mail)
     {
-        assert('is_string($userId); // Invalid argument $userId: string expected');
-        assert('is_string($mail); // Invalid argument $mail: string expected');
+        assert(is_string($userId), 'Invalid argument $userId: string expected');
+        assert(is_string($mail), 'Invalid argument $mail: string expected');
 
         $user = new \Yana\Security\Data\Users\Entity(\Yana\Util\Strings::toUpperCase((string) $userId));
         $user->setMail((string) $mail);

@@ -123,7 +123,7 @@ class CanonicalUrlBuilder extends \Yana\Http\Uris\Container implements \Yana\Htt
             $uri = ($this->isHttps() ? 'https' : 'http') . '://' . $this->getServerAddress() . $this->getPhpSelf();
 
         } elseif (count($this->getCommandLineArguments()) > 0) {
-            assert('!isset($argv) && !isset($website_url);');
+            assert(!isset($argv) && !isset($website_url), '!isset($argv) && !isset($website_url)');
             $argv = $this->getCommandLineArguments();
             $uri = 'php ' . print_r(array_shift($argv), true);
             while (count($argv) > 0)

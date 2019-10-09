@@ -71,7 +71,7 @@ class File extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Views\Ico
      */
     public function setId($id)
     {
-        assert('is_string($id); // Invalid argument $id: string expected');
+        assert(is_string($id), 'Invalid argument $id: string expected');
         $this->_id = (string) $id;
         return $this;
     }
@@ -94,7 +94,7 @@ class File extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Views\Ico
      */
     public function setPath($path)
     {
-        assert('is_string($path); // Invalid argument $path: string expected');
+        assert(is_string($path), 'Invalid argument $path: string expected');
         $this->_path = (string) $path;
         return $this;
     }
@@ -117,7 +117,7 @@ class File extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Views\Ico
      */
     public function setRegularExpression($regex)
     {
-        assert('is_string($regex); // Invalid argument $regex: string expected');
+        assert(is_string($regex), 'Invalid argument $regex: string expected');
         $this->_regularExpression = (string) $regex;
         return $this;
     }

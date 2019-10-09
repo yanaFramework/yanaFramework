@@ -93,7 +93,7 @@ abstract class AbstractRegistryLoader extends \Yana\Core\StdObject implements \S
      */
     public function __get($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert(is_string($name), 'Wrong type for argument 1. String expected');
 
         return $this->getFileObjectFromRegistry($name);
     }
@@ -108,7 +108,7 @@ abstract class AbstractRegistryLoader extends \Yana\Core\StdObject implements \S
      */
     public function getFileObjectFromRegistry($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert(is_string($name), 'Wrong type for argument 1. String expected');
 
         $collection = $this->_getRegistries();
 

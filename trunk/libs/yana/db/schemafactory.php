@@ -64,7 +64,7 @@ class SchemaFactory extends \Yana\Core\StdObject implements \Yana\Db\IsSchemaFac
      */
     public function createSchema($schemaName)
     {
-        assert('is_string($schemaName); // Wrong type for argument 1. String expected');
+        assert(is_string($schemaName), 'Wrong type for argument 1. String expected');
         $schema = null;
 
         $lowerCaseSchemaName = mb_strtolower($schemaName);

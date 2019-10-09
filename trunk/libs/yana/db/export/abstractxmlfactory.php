@@ -78,7 +78,7 @@ abstract class AbstractXmlFactory extends \Yana\Core\StdObject
      */
     public function setUsingForeignKeys($useForeignKeys)
     {
-        assert('is_bool($useForeignKeys); // Invalid argument type: $useForeignKeys. Bool expected');
+        assert(is_bool($useForeignKeys), 'Invalid argument type: $useForeignKeys. Bool expected');
         $this->_usingForeignKeys = (bool) $useForeignKeys;
         return $this;
     }
@@ -91,7 +91,7 @@ abstract class AbstractXmlFactory extends \Yana\Core\StdObject
      */
     public function addDatabaseName($filterDatabaseName)
     {
-        assert('is_string($filterDatabaseName); // Invalid argument type: $filterDatabaseName. String expected');
+        assert(is_string($filterDatabaseName), 'Invalid argument type: $filterDatabaseName. String expected');
         $this->_databaseNames[] = (string) $filterDatabaseName;
         return $this;
     }

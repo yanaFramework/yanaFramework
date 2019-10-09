@@ -196,16 +196,16 @@ class Insert extends \Yana\Db\Queries\AbstractQuery implements \Yana\Db\Queries\
                 "Database values must be an array or scalar.");
         }
         $tableName = $this->getTable();
-        assert('!empty($tableName); // Cannot set values - need to set table first!');
+        assert(!empty($tableName), 'Cannot set values - need to set table first!');
 
         /*
          * 1.d) handle table inheritance
          */
         if ($this->getParent()) {
-            assert('!isset($columns); // Cannot redeclare var $columns');
+            assert(!isset($columns), 'Cannot redeclare var $columns');
             $columns = $this->getColumns();
             if (empty($columns)) {
-                assert('!isset($columnName); // Cannot redeclare var $columnName');
+                assert(!isset($columnName), 'Cannot redeclare var $columnName');
                 foreach (array_keys($values) as $columnName)
                 {
                     $columns[] = array($tableName, $columnName);
@@ -213,12 +213,12 @@ class Insert extends \Yana\Db\Queries\AbstractQuery implements \Yana\Db\Queries\
                 unset($columnName);
             }
 
-            assert('!isset($column); // Cannot redeclare var $column');
+            assert(!isset($column), 'Cannot redeclare var $column');
             foreach ($columns as $column)
             {
-                assert('is_array($column); // Invalid property "column". Two-dimensional array expected.');
-                assert('!isset($parent); // Cannot redeclare var $parent');
-                assert('!isset($columnName); // Cannot redeclare var $columnName');
+                assert(is_array($column), 'Invalid property "column". Two-dimensional array expected.');
+                assert(!isset($parent), 'Cannot redeclare var $parent');
+                assert(!isset($columnName), 'Cannot redeclare var $columnName');
                 $columnName = $column[1];
                 $parent = $this->getParentByColumn($columnName);
                 if ($parent > "") {
@@ -265,8 +265,8 @@ class Insert extends \Yana\Db\Queries\AbstractQuery implements \Yana\Db\Queries\
                     throw new \Yana\Db\Queries\Exceptions\InvalidPrimaryKeyException($message);
                 }
             } elseif ($this->getRow() !== '*' && strcasecmp($this->getRow(), (string) $values[$primaryKey]) !== 0) {
-                assert('!isset($message); // Cannot redeclare $message');
-                assert('!isset($level); // Cannot redeclare $level');
+                assert(!isset($message), 'Cannot redeclare $message');
+                assert(!isset($level), 'Cannot redeclare $level');
                 $message = "Cannot set values. The primary key is ambigious.\n\t\t" .
                     "The primary key has been set via " . __CLASS__ . "->setRow() or " .
                     __CLASS__ . "->setKey() to '" . $this->getRow() . "'.\n\t\t" .
@@ -282,7 +282,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery implements \Yana\Db\Queries\
         {
             // INSERT and UPDATE statements
             case \Yana\Db\ResultEnumeration::ROW:
-                assert('is_array($values); // Row must be an array');
+                assert(is_array($values), 'Row must be an array');
                 // upper-case primary key
                 if (isset($values[$primaryKey])) {
                     $values[$primaryKey] = mb_strtoupper((string) $values[$primaryKey]);
@@ -300,14 +300,14 @@ class Insert extends \Yana\Db\Queries\AbstractQuery implements \Yana\Db\Queries\
                     throw new \Yana\Db\Queries\Exceptions\InvalidResultTypeException($_message);
                 }
                 // @codeCoverageIgnoreEnd
-                assert('!$isInsert; // May only insert rows, not tables, cells or columns');
+                assert(!$isInsert, 'May only insert rows, not tables, cells or columns');
                 if (!$this->getArrayAddress() && isset($this->column[0]) && is_array($this->column[0])) {
                     assert(count($this->column) === 1);
                     assert(count($this->column[0]) === 2);
                     assert(isset($this->column[0][1]));
                     assert($this->getTable() === $this->column[0][0]);
                     assert($table->isColumn($this->column[0][1]));
-                    assert('!isset($column); // Cannot redeclare var $column');
+                    assert(!isset($column), 'Cannot redeclare var $column');
                     $column = $table->getColumn($this->column[0][1]);
                     assert($column instanceof \Yana\Db\Ddl\Column);
                     // check if value is valid (may throw exception)
@@ -322,7 +322,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery implements \Yana\Db\Queries\
          * 3) error - access denied
          */
         if (!$this->checkProfile($values)) {
-            assert('!isset($message); // Cannot redeclare $message');
+            assert(!isset($message), 'Cannot redeclare $message');
             $message = "Cannot set values. Profile constraint mismatch.";
             throw new \Yana\Db\Queries\Exceptions\ConstraintException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
@@ -357,8 +357,8 @@ class Insert extends \Yana\Db\Queries\AbstractQuery implements \Yana\Db\Queries\
      */
     private function _appendValue($table, $column, $value)
     {
-        assert('is_string($table); // Wrong type for argument 1. String expected');
-        assert('is_string($column); // Wrong type for argument 2. String expected');
+        assert(is_string($table), 'Wrong type for argument 1. String expected');
+        assert(is_string($column), 'Wrong type for argument 2. String expected');
 
         if (!isset($this->queue[$table])) {
             $this->queue[$table] = array();
@@ -366,7 +366,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery implements \Yana\Db\Queries\
 
         // error - duplicate value
         if (isset($this->queue[$table][$column])) {
-            assert('!isset($level); // Cannot redeclare $level');
+            assert(!isset($level), 'Cannot redeclare $level');
             $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Db\Queries\Exceptions\DuplicateValueException($column, $level);
         }
@@ -428,8 +428,8 @@ class Insert extends \Yana\Db\Queries\AbstractQuery implements \Yana\Db\Queries\
             $prevSetting = $this->isUsingInheritance();
             $this->useInheritance(false);
             $result = null;
-            assert('!isset($table); // Cannot redeclare var $table');
-            assert('!isset($values); // Cannot redeclare var $values');
+            assert(!isset($table), 'Cannot redeclare var $table');
+            assert(!isset($values), 'Cannot redeclare var $values');
             foreach ($this->queue as $table => $values)
             {
                 // Table not found
@@ -473,7 +473,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery implements \Yana\Db\Queries\
             $columnName = $column->getName();
             $fileId = $this->values[$columnName];
             if (!empty($fileId)) {
-                assert('!isset($helper); // Cannot redeclare var $helper');
+                assert(!isset($helper), 'Cannot redeclare var $helper');
                 if ($column->getType() === 'image') {
                     $helper = new \Yana\Db\Binaries\Uploads\FileUploader();
                     $helper->upload($file, $fileId, $column->getImageSettings());

@@ -118,7 +118,7 @@ class SqlKeywordChecker extends \Yana\Core\StdObject implements \Yana\Db\Helpers
      */
     public static function createFromFile(string $filename): \Yana\Db\Helpers\IsSqlKeywordChecker
     {
-        assert('!isset($reservedSqlKeywords); // Cannot redeclare $reservedSqlKeywords');
+        assert(!isset($reservedSqlKeywords), 'Cannot redeclare $reservedSqlKeywords');
         $reservedSqlKeywords = array();
 
         if (is_string($filename) && is_file($filename) && is_readable($filename)) {
@@ -127,7 +127,7 @@ class SqlKeywordChecker extends \Yana\Core\StdObject implements \Yana\Db\Helpers
                 $reservedSqlKeywords = array();
             }
         }
-        assert('!isset($instance); // Cannot redeclare $instance');
+        assert(!isset($instance), 'Cannot redeclare $instance');
         $instance = new self($reservedSqlKeywords);
         return $instance;
     }

@@ -82,7 +82,7 @@ class PackageMetaData extends \Yana\Core\StdObject implements \Yana\Core\MetaDat
      */
     public function setPreviewImage($previewImage)
     {
-        assert('is_string($previewImage); // Invalid argument $previewImage. String expected');
+        assert(is_string($previewImage), 'Invalid argument $previewImage. String expected');
         $this->_previewImage = $previewImage;
         return $this;
     }
@@ -105,7 +105,7 @@ class PackageMetaData extends \Yana\Core\StdObject implements \Yana\Core\MetaDat
      */
     public function setLastModified($lastModified)
     {
-        assert('is_int($lastModified); // Invalid argument $lastModified. Int expected');
+        assert(is_int($lastModified), 'Invalid argument $lastModified. Int expected');
         $this->_lastModified = (int) $lastModified;
         return $this;
     }
@@ -134,7 +134,7 @@ class PackageMetaData extends \Yana\Core\StdObject implements \Yana\Core\MetaDat
      */
     public function setTitle($title)
     {
-        assert('is_string($title); // Invalid argument $title. String expected');
+        assert(is_string($title), 'Invalid argument $title. String expected');
         $this->_title = $title;
         return $this;
     }
@@ -174,8 +174,8 @@ class PackageMetaData extends \Yana\Core\StdObject implements \Yana\Core\MetaDat
      */
     public function getText($language = "", $country = "")
     {
-        assert('is_string($language); // Invalid argument $language: string expected');
-        assert('is_string($country); // Invalid argument $country: string expected');
+        assert(is_string($language), 'Invalid argument $language: string expected');
+        assert(is_string($country), 'Invalid argument $country: string expected');
 
         $text = "";
         if (!empty($country) && isset($this->_texts["{$language}-{$country}"])) {
@@ -196,7 +196,7 @@ class PackageMetaData extends \Yana\Core\StdObject implements \Yana\Core\MetaDat
      */
     public function setAuthor($author)
     {
-        assert('is_string($author); // Invalid argument $author. String expected');
+        assert(is_string($author), 'Invalid argument $author. String expected');
         $this->_author = $author;
         return $this;
     }
@@ -222,7 +222,7 @@ class PackageMetaData extends \Yana\Core\StdObject implements \Yana\Core\MetaDat
      */
     public function setUrl($url)
     {
-        assert('is_string($url); // Invalid argument $url. String expected');
+        assert(is_string($url), 'Invalid argument $url. String expected');
         $this->_url = $url;
         return $this;
     }
@@ -251,7 +251,7 @@ class PackageMetaData extends \Yana\Core\StdObject implements \Yana\Core\MetaDat
      */
     public function setVersion($version)
     {
-        assert('is_string($version); // Invalid argument $version: string expected');
+        assert(is_string($version), 'Invalid argument $version: string expected');
         $this->_version = $version;
         return $this;
     }

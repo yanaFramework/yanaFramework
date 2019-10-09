@@ -204,7 +204,7 @@ class ConnectionFactory extends \Yana\Core\StdObject implements \Yana\Db\Doctrin
      */
     protected function _getDsnForDoctrine()
     {
-        assert('is_array($this->_dsn);');
+        assert(is_array($this->_dsn), 'is_array($this->_dsn)');
         $dsn = array();
 
         if (isset($this->_dsn['DBMS'])) {
@@ -228,7 +228,7 @@ class ConnectionFactory extends \Yana\Core\StdObject implements \Yana\Db\Doctrin
         if (isset($this->_dsn['CHARSET'])) {
             $dsn['charset'] = $this->_dsn['CHARSET'];
         }
-        assert('is_array($dsn);');
+        assert(is_array($dsn), 'is_array($dsn)');
         return $dsn;
     }
 
@@ -279,7 +279,7 @@ class ConnectionFactory extends \Yana\Core\StdObject implements \Yana\Db\Doctrin
      */
     public function getDsn()
     {
-        assert('is_array($this->_dsn);');
+        assert(is_array($this->_dsn), 'is_array($this->_dsn)');
         return (array) $this->_dsn;
     }
 

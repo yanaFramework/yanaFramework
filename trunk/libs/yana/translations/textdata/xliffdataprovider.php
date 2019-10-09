@@ -167,11 +167,11 @@ class XliffDataProvider extends \Yana\Core\StdObject implements \Yana\Translatio
 
         // check path
         if (!\file_exists($selectedFile)) {
-            assert('!isset($message); // Cannot redeclare var $message');
+            assert(!isset($message), 'Cannot redeclare var $message');
             $message = "No language-file found for id '{$id}'.";
-            assert('!isset($level); // Cannot redeclare variable $level');
+            assert(!isset($level), 'Cannot redeclare variable $level');
             $level = \Yana\Log\TypeEnumeration::INFO;
-            assert('!isset($exception); // Cannot redeclare variable $exception');
+            assert(!isset($exception), 'Cannot redeclare variable $exception');
             $exception = new \Yana\Core\Exceptions\Translations\LanguageFileNotFoundException($message, $level);
             throw $exception->setFilename($id);
         }
@@ -184,14 +184,14 @@ class XliffDataProvider extends \Yana\Core\StdObject implements \Yana\Translatio
          */
         try {
 
-            assert('!isset($xml); // cannot redeclare variable $xml');
+            assert(!isset($xml), 'cannot redeclare variable $xml');
             $xml = $this->_loadXmlByFileName($selectedFile); // May throw exception if XML is invalid
             $this->_fillContainer($xml, $container, $id);
             unset($xml);
         } catch (\Exception $e) {
-            assert('!isset($message); // Cannot redeclare var $message');
+            assert(!isset($message), 'Cannot redeclare var $message');
             $message = "Error in language file: '$id'.";
-            assert('!isset($level); // Cannot redeclare variable $level');
+            assert(!isset($level), 'Cannot redeclare variable $level');
             $level = \Yana\Log\TypeEnumeration::WARNING;
             $exception = new \Yana\Core\Exceptions\Translations\InvalidSyntaxException($message, $level, $e);
             $exception->setFilename($selectedFile);

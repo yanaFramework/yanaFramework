@@ -66,7 +66,7 @@ abstract class AbstractObject extends \Yana\Db\Ddl\DDL
      */
     public function setName($name)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert(is_string($name), 'Invalid argument $name: string expected');
         if ($name === "") {
             $this->name = null;
 

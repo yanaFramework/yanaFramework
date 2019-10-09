@@ -84,7 +84,7 @@ class Dispatcher extends \Yana\Core\StdObject implements \Serializable, \Yana\Pl
         $this->_lastResult = true;
 
         // next we find and instantiate all plugins that have subscribed to this event and proceed to call them one by one.
-        assert('!isset($element); // cannot redeclare variable $element');
+        assert(!isset($element), 'cannot redeclare variable $element');
         foreach ($subscribers as $element)
         {
             $lastResult = $this->_sendEvent($element, $event); // call the subscribing plugin

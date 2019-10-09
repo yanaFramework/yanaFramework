@@ -58,7 +58,7 @@ class XmlDataProvider extends \Yana\Core\MetaData\XmlDataProvider
      */
     protected function _loadXmlByFileName($file)
     {
-        assert('is_string($file); // Invalid argument $file: string expected');
+        assert(is_string($file), 'Invalid argument $file: string expected');
         return new \Yana\Views\MetaData\XmlMetaData($file, LIBXML_NOWARNING | LIBXML_NOERROR | LIBXML_NOENT, true);
     }
 
@@ -85,14 +85,14 @@ class XmlDataProvider extends \Yana\Core\MetaData\XmlDataProvider
      */
     protected function _fillMetaData(\Yana\Core\MetaData\IsPackageMetaData $metaData, \Yana\Core\MetaData\XmlMetaData $xml, $id)
     {
-        assert('is_string($id); // Invalid argument $id: string expected');
+        assert(is_string($id), 'Invalid argument $id: string expected');
 
         $metaData = parent::_fillMetaData($metaData, $xml, $id);
 
         if (!empty($xml) && $xml instanceof \Yana\Views\MetaData\XmlMetaData) {
 
             $directory = $this->_getDirectory() . '/';
-            assert('!isset($template); // cannot redeclare variable $template');
+            assert(!isset($template), 'cannot redeclare variable $template');
             foreach ($xml->getTemplates($directory) as $template)
             {
                 /* @var $template \Yana\Views\MetaData\TemplateMetaData */

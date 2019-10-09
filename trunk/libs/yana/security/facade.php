@@ -111,16 +111,16 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      */
     public function checkRules($profileId = null, $action = null, $userName = "")
     {
-        assert('is_null($profileId) || is_string($profileId); // Wrong type for argument $profileId. String expected');
-        assert('is_null($action) || is_string($action); // Wrong type for argument $action. String expected');
-        assert('is_string($userName); // Wrong type for argument $userName. String expected');
+        assert(is_null($profileId) || is_string($profileId), 'Wrong type for argument $profileId. String expected');
+        assert(is_null($action) || is_string($action), 'Wrong type for argument $action. String expected');
+        assert(is_string($userName), 'Wrong type for argument $userName. String expected');
 
         /* Argument 1 */
         if (empty($profileId)) {
             $profileId = $this->_getContainer()->getProfileId();
         }
-        assert('is_string($profileId);');
-        assert('!isset($uppderCaseProfileId); // Cannot redeclare $uppderCaseProfileId');
+        assert(is_string($profileId), 'is_string($profileId)');
+        assert(!isset($uppderCaseProfileId), 'Cannot redeclare $uppderCaseProfileId');
         $upperCaseProfileId = \Yana\Util\Strings::toUpperCase((string) $profileId);
 
         /* Argument 2 */
@@ -131,8 +131,8 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
                 return false;
             }
         }
-        assert('is_string($action);');
-        assert('!isset($lowerCaseAction); // Cannot redeclare $lowerCaseAction');
+        assert(is_string($action), 'is_string($action)');
+        assert(!isset($lowerCaseAction), 'Cannot redeclare $lowerCaseAction');
         $lowerCaseAction = \Yana\Util\Strings::toLowerCase((string) $action);
 
         /* Argument 3 */
@@ -145,13 +145,13 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
             $userName = $this->_getContainer()->getSession()->getCurrentUserName();
         }
 
-        assert('!isset($user); // Cannot redeclare $user');
+        assert(!isset($user), 'Cannot redeclare $user');
         $user = $this->_buildUserEntity((string) $userName);
 
-        assert('!isset($e); // Cannot redeclare $e');
+        assert(!isset($e), 'Cannot redeclare $e');
         try {
 
-            assert('!isset($result); // Cannot redeclare $result');
+            assert(!isset($result), 'Cannot redeclare $result');
             $result = $this->_getContainer()->getRulesChecker()->checkRules($upperCaseProfileId, $lowerCaseAction, $user);
 
         } catch (\Yana\Security\Rules\Requirements\NotFoundException $e) {
@@ -160,7 +160,7 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
             unset($e);
         }
 
-        assert('is_bool($result);');
+        assert(is_bool($result), 'is_bool($result)');
         return $result;
     }
 
@@ -175,9 +175,9 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      */
     public function checkByRequirement(\Yana\Security\Rules\Requirements\IsRequirement $requirement, $profileId, $action, $userName = "")
     {
-        assert('is_string($profileId); // Wrong type for argument $profileId. String expected');
-        assert('is_string($action); // Wrong type for argument $action. String expected');
-        assert('is_string($userName); // Wrong type for argument $userName. String expected');
+        assert(is_string($profileId), 'Wrong type for argument $profileId. String expected');
+        assert(is_string($action), 'Wrong type for argument $action. String expected');
+        assert(is_string($userName), 'Wrong type for argument $userName. String expected');
 
         return (bool) $this->_getContainer()->getRulesChecker()->checkByRequirement($requirement, $profileId, $action, $this->_buildUserEntity($userName));
     }
@@ -245,7 +245,7 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      */
     public function findUserByMail($mail)
     {
-        assert('is_string($mail); // Invalid argument $mail: string expected');
+        assert(is_string($mail), 'Invalid argument $mail: string expected');
 
         return $this->_createUserBuilder()->buildFromUserMail($mail);
     }
@@ -261,7 +261,7 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      */
     public function findUserByRecoveryId($recoveryId)
     {
-        assert('is_string($recoveryId); // Invalid argument $recoveryId: string expected');
+        assert(is_string($recoveryId), 'Invalid argument $recoveryId: string expected');
 
         return $this->_createUserBuilder()->buildFromRecoveryId($recoveryId);
     }
@@ -279,8 +279,8 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      */
     public function createUser($userName, $mail)
     {
-        assert('is_string($userName); // Wrong type for argument $userName. String expected');
-        assert('is_string($mail); // Wrong type for argument $mail. String expected');
+        assert(is_string($userName), 'Wrong type for argument $userName. String expected');
+        assert(is_string($mail), 'Wrong type for argument $mail. String expected');
 
         if (empty($userName)) {
             throw new \Yana\Core\Exceptions\User\MissingNameException("No user name given.", \Yana\Log\TypeEnumeration::WARNING);
@@ -290,7 +290,7 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
             throw new \Yana\Core\Exceptions\User\MissingMailException("No mail address given.", \Yana\Log\TypeEnumeration::WARNING);
         }
 
-        assert('!isset($builder); // $builder already declared');
+        assert(!isset($builder), '$builder already declared');
         $builder = $this->_createUserBuilder();
 
         if ($builder->isExistingUserName($userName)) {
@@ -325,12 +325,12 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      */
     public function createUserByFormData(array $formData)
     {
-        assert('!isset($entity); // $entity already declared');
+        assert(!isset($entity), '$entity already declared');
         $entity = $this->_getContainer()->getUserAdapter()->toEntity($formData);
         $entity->setDataAdapter($this->_getContainer()->getUserAdapter());
-        assert('!isset($builder); // $builder already declared');
+        assert(!isset($builder), '$builder already declared');
         $builder = $this->_createUserBuilder();
-        assert('!isset($user); // $user already declared');
+        assert(!isset($user), '$user already declared');
         $user = $builder->__invoke($entity);
 
         if ($user->getId() === "") {
@@ -371,8 +371,8 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      */
     public function removeUser($userName, $allowUserToDeleteSelf = false)
     {
-        assert('is_string($userName); // Wrong type for argument $userName. String expected');
-        assert('is_bool($allowUserToDeleteSelf); // Invalid argument $allowUserToDeleteSelf: bool expected');
+        assert(is_string($userName), 'Wrong type for argument $userName. String expected');
+        assert(is_bool($allowUserToDeleteSelf), 'Invalid argument $allowUserToDeleteSelf: bool expected');
 
         $upperCaseUserName = \Yana\Util\Strings::toUpperCase($userName);
         $user = $this->_buildUserEntity($upperCaseUserName); // throws NotFoundException
@@ -403,7 +403,7 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      */
     public function isExistingUserName($userName)
     {
-        assert('is_string($userName); // Wrong type for argument 1. String expected');
+        assert(is_string($userName), 'Wrong type for argument 1. String expected');
 
         return $this->_createUserBuilder()->isExistingUserName($userName);
     }

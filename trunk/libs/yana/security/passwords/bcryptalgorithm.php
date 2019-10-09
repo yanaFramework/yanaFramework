@@ -51,7 +51,7 @@ class BcryptAlgorithm extends \Yana\Security\Passwords\BasicAlgorithm
      */
     public function __invoke($password)
     {
-        assert('is_scalar($password); // Wrong argument type for argument 2. String expected.');
+        assert(is_scalar($password), 'Wrong argument type for argument 2. String expected.');
 
         return \password_hash($password, \PASSWORD_BCRYPT);
     }

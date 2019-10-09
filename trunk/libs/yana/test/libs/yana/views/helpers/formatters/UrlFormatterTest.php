@@ -34,6 +34,18 @@ require_once dirname(__FILE__) . '/../../../../../include.php';
 
 /**
  * @package  test
+ * @ignore
+ */
+class MyUrlFormatterDependencyContainer implements \Yana\Core\Dependencies\IsUrlFormatterContainer
+{
+    public function getApplicationUrlParameters(): string
+    {
+        return "";
+    }
+
+}
+/**
+ * @package  test
  */
 class UrlFormatterTest extends \PHPUnit_Framework_TestCase
 {
@@ -66,19 +78,20 @@ class UrlFormatterTest extends \PHPUnit_Framework_TestCase
      */
     public function test__invoke()
     {
-        \Yana\Views\Helpers\Formatters\UrlFormatter::setBaseUrl('test');
+        \Yana\Views\Helpers\Formatters\UrlFormatter::setDependencyContainer(new \Yana\Core\Dependencies\UrlFormatterContainer('test'));
         $_SERVER['PHP_SELF'] = "";
         $this->assertSame('http://test?&amp;a=1&amp;b=2', $this->object->__invoke('a=1&b=2'));
-        \Yana\Views\Helpers\Formatters\UrlFormatter::setBaseUrl('');
+        \Yana\Views\Helpers\Formatters\UrlFormatter::setDependencyContainer(new \Yana\Core\Dependencies\UrlFormatterContainer(''));
     }
 
     /**
      * @test
      */
-    public function testSetBaseUrl()
+    public function testSetDependencyContainer()
     {
-        \Yana\Views\Helpers\Formatters\UrlFormatter::setBaseUrl('test');
-        $this->assertSame('test', \Yana\Views\Helpers\Formatters\UrlFormatter::getBaseUrl());
+        $container = new \Yana\Views\Helpers\Formatters\MyUrlFormatterDependencyContainer();
+        \Yana\Views\Helpers\Formatters\UrlFormatter::setDependencyContainer($container);
+        $this->assertSame($container, \Yana\Views\Helpers\Formatters\UrlFormatter::getDependencyContainer());
     }
 
 }

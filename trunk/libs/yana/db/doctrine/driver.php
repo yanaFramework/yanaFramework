@@ -172,16 +172,16 @@ class Driver extends \Yana\Db\Doctrine\AbstractDriver
      */
     public function listSequences($database = null)
     {
-        assert('is_null($database) || is_string($database); // Invalid argument $database: string expected');
+        assert(is_null($database) || is_string($database), 'Invalid argument $database: string expected');
         try {
-            assert('!isset($connection); // Cannot redeclare var $connection');
+            assert(!isset($connection), 'Cannot redeclare var $connection');
             /* @var $connection \Doctrine\DBAL\Connection */
             $connection = $this->_getDecoratedObject();
-            assert('!isset($manager); // Cannot redeclare var $manager');
+            assert(!isset($manager), 'Cannot redeclare var $manager');
             /* @var $manager \Doctrine\DBAL\Schema\AbstractSchemaManager */
             $manager = $connection->getSchemaManager();
 
-            assert('!isset($sequencesNames); // Cannot redeclare var $sequencesNames');
+            assert(!isset($sequencesNames), 'Cannot redeclare var $sequencesNames');
             $sequencesNames = array();
             foreach ($manager->listSequences() as $sequence)
             {
@@ -208,18 +208,18 @@ class Driver extends \Yana\Db\Doctrine\AbstractDriver
      */
     public function listTableFields($table)
     {
-        assert('is_string($table); // Invalid argument $table: string expected');
+        assert(is_string($table), 'Invalid argument $table: string expected');
         try {
-            assert('!isset($connection); // Cannot redeclare var $connection');
+            assert(!isset($connection), 'Cannot redeclare var $connection');
             /* @var $connection \Doctrine\DBAL\Connection */
             $connection = $this->_getDecoratedObject();
-            assert('!isset($manager); // Cannot redeclare var $manager');
+            assert(!isset($manager), 'Cannot redeclare var $manager');
             /* @var $manager \Doctrine\DBAL\Schema\AbstractSchemaManager */
             $manager = $connection->getSchemaManager();
 
-            assert('!isset($columnNames); // Cannot redeclare var $columnNames');
+            assert(!isset($columnNames), 'Cannot redeclare var $columnNames');
             $columnNames = array();
-            assert('!isset($column); // Cannot redeclare var $column');
+            assert(!isset($column), 'Cannot redeclare var $column');
             foreach ($manager->listTableColumns($table) as $column)
             {
                 /* @var $column \Doctrine\DBAL\Schema\Column */
@@ -245,19 +245,19 @@ class Driver extends \Yana\Db\Doctrine\AbstractDriver
      */
     public function listTableIndexes($table)
     {
-        assert('is_string($table); // Invalid argument $table: string expected');
-        assert('is_string($table); // Invalid argument $table: string expected');
+        assert(is_string($table), 'Invalid argument $table: string expected');
+        assert(is_string($table), 'Invalid argument $table: string expected');
         try {
-            assert('!isset($connection); // Cannot redeclare var $connection');
+            assert(!isset($connection), 'Cannot redeclare var $connection');
             /* @var $connection \Doctrine\DBAL\Connection */
             $connection = $this->_getDecoratedObject();
-            assert('!isset($manager); // Cannot redeclare var $manager');
+            assert(!isset($manager), 'Cannot redeclare var $manager');
             /* @var $manager \Doctrine\DBAL\Schema\AbstractSchemaManager */
             $manager = $connection->getSchemaManager();
 
-            assert('!isset($indexNames); // Cannot redeclare var $indexNames');
+            assert(!isset($indexNames), 'Cannot redeclare var $indexNames');
             $indexNames = array();
-            assert('!isset($index); // Cannot redeclare var $index');
+            assert(!isset($index), 'Cannot redeclare var $index');
             foreach ($manager->listTableIndexes($table) as $index)
             {
                 /* @var $index \Doctrine\DBAL\Schema\Index */
@@ -298,12 +298,12 @@ class Driver extends \Yana\Db\Doctrine\AbstractDriver
      */
     public function sendQueryString($sqlStmt, $limit = 0, $offset = 0)
     {
-        assert('is_string($sqlStmt); // Invalid argument $sqlStmt: string expected');
-        assert('is_int($limit); // Invalid argument $limit: integer expected');
-        assert('is_int($offset); // Invalid argument $offset: integer expected');
+        assert(is_string($sqlStmt), 'Invalid argument $sqlStmt: string expected');
+        assert(is_int($limit), 'Invalid argument $limit: integer expected');
+        assert(is_int($offset), 'Invalid argument $offset: integer expected');
 
         try {
-            assert('!isset($connection); // Cannot redeclare var $connection');
+            assert(!isset($connection), 'Cannot redeclare var $connection');
             $connection = $this->_getDecoratedObject();
             if ($limit > 0 || $offset > 0) {
 
@@ -354,7 +354,7 @@ class Driver extends \Yana\Db\Doctrine\AbstractDriver
      */
     public function quoteIdentifier($value)
     {
-        assert('is_string($value); // Invalid argument $value: string expected');
+        assert(is_string($value), 'Invalid argument $value: string expected');
 
         return $this->_getDecoratedObject()->quoteIdentifier($value);
     }

@@ -218,21 +218,21 @@ class Facade extends \Yana\Core\StdObject implements \Yana\Http\IsFacade
      */
     public function getActionArgument()
     {
-        assert('!isset($actionName); // Cannot redeclare var $actionName');
+        assert(!isset($actionName), 'Cannot redeclare var $actionName');
         $actionName = "";
 
-        assert('!isset($collection); // Cannot redeclare var $collection');
+        assert(!isset($collection), 'Cannot redeclare var $collection');
         $collection = $this->_getRequest()->all();
 
         if ($collection->has('action')) {
 
-            assert('!isset($action); // Cannot redeclare var $action');
+            assert(!isset($action), 'Cannot redeclare var $action');
             $action = $collection->value('action');
 
             // work-around for IE-bug
             if ($action->isArray()) {
 
-                assert('!isset($actions); // Cannot redeclare var $actions');
+                assert(!isset($actions), 'Cannot redeclare var $actions');
                 $actions = $action->all()->asArrayOfStrings();
                 if (count($actions) === 1) {
                     // action[name]=1 -> action=name
@@ -259,10 +259,10 @@ class Facade extends \Yana\Core\StdObject implements \Yana\Http\IsFacade
      */
     public function getProfileArgument()
     {
-        assert('!isset($profileId); // Cannot redeclare var $profileId');
+        assert(!isset($profileId), 'Cannot redeclare var $profileId');
         $profileId = "";
 
-        assert('!isset($collection); // Cannot redeclare var $collection');
+        assert(!isset($collection), 'Cannot redeclare var $collection');
         $collection = $this->_getRequest()->all();
 
         if ($collection->has('id')) {

@@ -245,8 +245,8 @@ class Image extends \Yana\Core\StdObject
      */
     public function __construct($filename = null, $imageType = null)
     {
-        assert('is_null($filename) || is_string($filename); // Wrong type for argument 1. String expected');
-        assert('is_null($imageType) || is_string($imageType); // Wrong type for argument 2. String expected');
+        assert(is_null($filename) || is_string($filename), 'Wrong type for argument 1. String expected');
+        assert(is_null($imageType) || is_string($imageType), 'Wrong type for argument 2. String expected');
 
         if (!function_exists('imagecreate')) {
             // @codeCoverageIgnoreStart
@@ -292,8 +292,8 @@ class Image extends \Yana\Core\StdObject
 
                 /* determine image type by filename */
                 if (is_null($imageType)) {
-                    assert('!isset($pathInfo); // cannot redeclare variable $pathInfo     ');
-                    assert('!isset($fileExtension); // cannot redeclare variable $fileExtension');
+                    assert(!isset($pathInfo), 'cannot redeclare variable $pathInfo     ');
+                    assert(!isset($fileExtension), 'cannot redeclare variable $fileExtension');
                     $pathInfo      = pathinfo($this->getPath());
                     $fileExtension = $pathInfo['extension'];
                     $fileExtension = mb_strtolower($fileExtension);
@@ -421,7 +421,7 @@ class Image extends \Yana\Core\StdObject
      */
     public function isBroken()
     {
-        assert('is_bool($this->_isBroken);');
+        assert(is_bool($this->_isBroken), 'is_bool($this->_isBroken)');
         if (!is_resource($this->_image)) {
             return true;
 
@@ -506,7 +506,7 @@ class Image extends \Yana\Core\StdObject
      */
     public function equalsResoure($resource)
     {
-        assert('is_resource($resource); // Wrong type for argument 1. Resource expected');
+        assert(is_resource($resource), 'Wrong type for argument 1. Resource expected');
         return (is_resource($resource) && $this->_image === $resource);
     }
 
@@ -539,13 +539,13 @@ class Image extends \Yana\Core\StdObject
      */
     private function _createImage($width = 300, $height = 200)
     {
-        assert('is_int($width); // Wrong type for argument 1. Integer expected');
-        assert('is_int($height); // Wrong type for argument 2. Integer expected');
-        assert('$width > 0; // Width must be greater 0.');
-        assert('$height > 0; // Height must be greater 0.');
+        assert(is_int($width), 'Wrong type for argument 1. Integer expected');
+        assert(is_int($height), 'Wrong type for argument 2. Integer expected');
+        assert($width > 0, 'Width must be greater 0.');
+        assert($height > 0, 'Height must be greater 0.');
 
         /* backup background color */
-        assert('!isset($backgroundColor); // Cannot redeclare var $backgroundColor');
+        assert(!isset($backgroundColor), 'Cannot redeclare var $backgroundColor');
         $backgroundColor = null;
         if (!is_null($this->_backgroundColor)) {
             $backgroundColor = $this->getColorValues($this->_backgroundColor);
@@ -553,7 +553,7 @@ class Image extends \Yana\Core\StdObject
 
         /* backup transparency color */
         if (is_resource($this->_image) && is_null($this->_transparency)) {
-            assert('!isset($transparentColor); // Cannot redeclare var $transparentColor');
+            assert(!isset($transparentColor), 'Cannot redeclare var $transparentColor');
             $transparentColor = imagecolortransparent($this->_image);
             $this->_transparency = null;
             if ($transparentColor !== -1) {
@@ -719,10 +719,10 @@ class Image extends \Yana\Core\StdObject
      */
     public function drawPoint($x, $y, $color = null)
     {
-        assert('is_int($x); // Invalid argument $x: Integer expected');
-        assert('$x >= 0; // $x must not be negative.');
-        assert('$y >= 0; // $y must not be negative.');
-        assert('is_null($color) || is_int($color); // Wrong type for argument 3. Integer expected');
+        assert(is_int($x), 'Invalid argument $x: Integer expected');
+        assert($x >= 0, '$x must not be negative.');
+        assert($y >= 0, '$y must not be negative.');
+        assert(is_null($color) || is_int($color), 'Wrong type for argument 3. Integer expected');
 
         /**
          * error - broken image
@@ -756,15 +756,15 @@ class Image extends \Yana\Core\StdObject
      */
     public function drawLine($x1, $y1, $x2, $y2, $color = null)
     {
-        assert('is_int($x1); // Wrong type for argument 1. Integer expected');
-        assert('is_int($y1); // Wrong type for argument 2. Integer expected');
-        assert('is_int($x2); // Wrong type for argument 3. Integer expected');
-        assert('is_int($y2); // Wrong type for argument 4. Integer expected');
-        assert('$x1 >= 0; // $x1 must not be negative.');
-        assert('$y1 >= 0; // $y1 must not be negative.');
-        assert('$x2 >= 0; // $x2 must not be negative.');
-        assert('$y2 >= 0; // $y2 must not be negative.');
-        assert('is_null($color) || is_int($color); // Wrong type for argument 5. Integer expected');
+        assert(is_int($x1), 'Wrong type for argument 1. Integer expected');
+        assert(is_int($y1), 'Wrong type for argument 2. Integer expected');
+        assert(is_int($x2), 'Wrong type for argument 3. Integer expected');
+        assert(is_int($y2), 'Wrong type for argument 4. Integer expected');
+        assert($x1 >= 0, '$x1 must not be negative.');
+        assert($y1 >= 0, '$y1 must not be negative.');
+        assert($x2 >= 0, '$x2 must not be negative.');
+        assert($y2 >= 0, '$y2 must not be negative.');
+        assert(is_null($color) || is_int($color), 'Wrong type for argument 5. Integer expected');
 
         /**
          * error - broken image
@@ -825,12 +825,12 @@ class Image extends \Yana\Core\StdObject
      */
     public function drawString($text, $x = null, $y = null, $color = null, $font = null, $asVerticalString = false)
     {
-        assert('is_string($text); // Wrong type for argument 1. String expected');
-        assert('is_int($x) || is_null($x); // Wrong type for argument 2. Integer expected');
-        assert('is_int($y) || is_null($y); // Wrong type for argument 3. Integer expected');
-        assert('is_int($color) || is_null($color); // Wrong type for argument 4. Integer expected');
-        assert('is_int($font) || is_null($font); // Wrong type for argument 5. Integer expected');
-        assert('is_bool($asVerticalString); // Wrong type for argument 6. Boolean expected');
+        assert(is_string($text), 'Wrong type for argument 1. String expected');
+        assert(is_int($x) || is_null($x), 'Wrong type for argument 2. Integer expected');
+        assert(is_int($y) || is_null($y), 'Wrong type for argument 3. Integer expected');
+        assert(is_int($color) || is_null($color), 'Wrong type for argument 4. Integer expected');
+        assert(is_int($font) || is_null($font), 'Wrong type for argument 5. Integer expected');
+        assert(is_bool($asVerticalString), 'Wrong type for argument 6. Boolean expected');
 
         /**
          * error - broken image
@@ -904,13 +904,13 @@ class Image extends \Yana\Core\StdObject
      */
     public function drawFormattedString($text, $x = null, $y = null, $color = null, $fontfile = null, $fontsize = 10, $angle = 0)
     {
-        assert('is_string($text); // Wrong type for argument 1. String expected');
-        assert('is_int($x) || is_null($x); // Wrong type for argument 2. Integer expected');
-        assert('is_int($y) || is_null($y); // Wrong type for argument 3. Integer expected');
-        assert('is_int($color) || is_null($color); // Wrong type for argument 4. Integer expected');
-        assert('is_string($fontfile) || is_null($fontfile); // Wrong type for argument 5. String expected');
-        assert('is_int($fontsize); // Wrong type for argument 6. Integer expected');
-        assert('is_int($angle); // Wrong type for argument 7. Integer expected');
+        assert(is_string($text), 'Wrong type for argument 1. String expected');
+        assert(is_int($x) || is_null($x), 'Wrong type for argument 2. Integer expected');
+        assert(is_int($y) || is_null($y), 'Wrong type for argument 3. Integer expected');
+        assert(is_int($color) || is_null($color), 'Wrong type for argument 4. Integer expected');
+        assert(is_string($fontfile) || is_null($fontfile), 'Wrong type for argument 5. String expected');
+        assert(is_int($fontsize), 'Wrong type for argument 6. Integer expected');
+        assert(is_int($angle), 'Wrong type for argument 7. Integer expected');
 
         /*
          * error - broken image
@@ -990,14 +990,14 @@ class Image extends \Yana\Core\StdObject
      */
     public function drawEllipse($x, $y, $width, $height = null, $color = null, $fillColor = null, $start = null, $end = null)
     {
-        assert('is_int($x); // Wrong type for argument 1. Integer expected');
-        assert('is_int($y); // Wrong type for argument 2. Integer expected');
-        assert('is_int($width); // Wrong type for argument 3. Integer expected');
-        assert('is_null($height) || is_int($height); // Wrong type for argument 4. Integer expected');
-        assert('is_null($color) || is_int($color); // Wrong type for argument 5. Integer expected');
-        assert('is_null($fillColor) || is_int($fillColor); // Wrong type for argument 6. Integer expected');
-        assert('is_null($start) || is_int($start); // Wrong type for argument 7. Integer expected');
-        assert('is_null($end) || is_int($end); // Wrong type for argument 8. Integer expected');
+        assert(is_int($x), 'Wrong type for argument 1. Integer expected');
+        assert(is_int($y), 'Wrong type for argument 2. Integer expected');
+        assert(is_int($width), 'Wrong type for argument 3. Integer expected');
+        assert(is_null($height) || is_int($height), 'Wrong type for argument 4. Integer expected');
+        assert(is_null($color) || is_int($color), 'Wrong type for argument 5. Integer expected');
+        assert(is_null($fillColor) || is_int($fillColor), 'Wrong type for argument 6. Integer expected');
+        assert(is_null($start) || is_int($start), 'Wrong type for argument 7. Integer expected');
+        assert(is_null($end) || is_int($end), 'Wrong type for argument 8. Integer expected');
 
         /**
          * error - broken image
@@ -1082,12 +1082,12 @@ class Image extends \Yana\Core\StdObject
      */
     public function drawRectangle($x, $y, $width, $height = null, $color = null, $fillColor = null)
     {
-        assert('is_int($x); // Wrong type for argument 1. Integer expected');
-        assert('is_int($y); // Wrong type for argument 2. Integer expected');
-        assert('is_int($width); // Wrong type for argument 3. Integer expected');
-        assert('is_null($height) || is_int($height); // Wrong type for argument 4. Integer expected');
-        assert('is_null($color) || is_int($color); // Wrong type for argument 5. Integer expected');
-        assert('is_null($fillColor) || is_int($fillColor); // Wrong type for argument 6. Integer expected');
+        assert(is_int($x), 'Wrong type for argument 1. Integer expected');
+        assert(is_int($y), 'Wrong type for argument 2. Integer expected');
+        assert(is_int($width), 'Wrong type for argument 3. Integer expected');
+        assert(is_null($height) || is_int($height), 'Wrong type for argument 4. Integer expected');
+        assert(is_null($color) || is_int($color), 'Wrong type for argument 5. Integer expected');
+        assert(is_null($fillColor) || is_int($fillColor), 'Wrong type for argument 6. Integer expected');
 
         /**
          * error - broken image
@@ -1166,10 +1166,10 @@ class Image extends \Yana\Core\StdObject
      */
     public function drawPolygon(array $points, $x = 0, $y = 0, $color = null, $fillColor = null)
     {
-        assert('is_int($x); // Wrong type for argument 2. Integer expected');
-        assert('is_int($y); // Wrong type for argument 3. Integer expected');
-        assert('is_null($color) || is_int($color); // Wrong type for argument 4. Integer expected');
-        assert('is_null($fillColor) || is_int($fillColor); // Wrong type for argument 5. Integer expected');
+        assert(is_int($x), 'Wrong type for argument 2. Integer expected');
+        assert(is_int($y), 'Wrong type for argument 3. Integer expected');
+        assert(is_null($color) || is_int($color), 'Wrong type for argument 4. Integer expected');
+        assert(is_null($fillColor) || is_int($fillColor), 'Wrong type for argument 5. Integer expected');
 
         /**
          * error - broken image
@@ -1187,11 +1187,10 @@ class Image extends \Yana\Core\StdObject
 
         $mergedPoints = array();
         /* calculation */
-        assert('!isset($point); // cannot redeclare variable $point');
+        assert(!isset($point), 'cannot redeclare variable $point');
         foreach ($points as $point)
         {
-            assert('is_array($point) && count($point) === 2 && is_int($point[0]) && is_int($point[1]); /* ' .
-                    'Invalid value for argument 1. */');
+            assert(is_array($point) && count($point) === 2 && is_int($point[0]) && is_int($point[1]), 'Invalid value for argument 1.');
             $mergedPoints[] = $point[0] + $x;
             $mergedPoints[] = $point[1] + $y;
         }
@@ -1246,10 +1245,10 @@ class Image extends \Yana\Core\StdObject
      */
     public function fill($fillColor, $x = 0, $y = 0, $borderColor = null)
     {
-        assert('is_int($fillColor); // Wrong type for argument 1. Integer expected');
-        assert('is_int($x); // Wrong type for argument 2. Integer expected');
-        assert('is_int($y); // Wrong type for argument 3. Integer expected');
-        assert('is_null($borderColor) || is_int($borderColor); // Wrong type for argument 4. Integer expected');
+        assert(is_int($fillColor), 'Wrong type for argument 1. Integer expected');
+        assert(is_int($x), 'Wrong type for argument 2. Integer expected');
+        assert(is_int($y), 'Wrong type for argument 3. Integer expected');
+        assert(is_null($borderColor) || is_int($borderColor), 'Wrong type for argument 4. Integer expected');
 
         /**
          * error - broken image
@@ -1290,8 +1289,8 @@ class Image extends \Yana\Core\StdObject
      */
     public function enableAlpha($isEnabled = true, $saveAlpha = null)
     {
-        assert('is_bool($isEnabled); // Wrong type for argument 1. Boolean expected');
-        assert('is_null($saveAlpha) || is_bool($saveAlpha); // Wrong type for argument 2. Boolean expected');
+        assert(is_bool($isEnabled), 'Wrong type for argument 1. Boolean expected');
+        assert(is_null($saveAlpha) || is_bool($saveAlpha), 'Wrong type for argument 2. Boolean expected');
 
         if (is_null($saveAlpha)) {
             $saveAlpha = ( $isEnabled === true );
@@ -1331,7 +1330,7 @@ class Image extends \Yana\Core\StdObject
      */
     public function enableAntialias($isEnabled = true)
     {
-        assert('is_bool($isEnabled); // Wrong type for argument 1. Boolean expected');
+        assert(is_bool($isEnabled), 'Wrong type for argument 1. Boolean expected');
 
         /**
          * error - broken image
@@ -1364,7 +1363,7 @@ class Image extends \Yana\Core\StdObject
      */
     public static function getFontWidth($font)
     {
-        assert('is_int($font); // Wrong type for argument 1. Integer expected');
+        assert(is_int($font), 'Wrong type for argument 1. Integer expected');
 
         return imagefontwidth($font);
     }
@@ -1390,7 +1389,7 @@ class Image extends \Yana\Core\StdObject
      */
     public static function getFontHeight($font)
     {
-        assert('is_int($font); // Wrong type for argument 1. Integer expected');
+        assert(is_int($font), 'Wrong type for argument 1. Integer expected');
 
         return imagefontheight($font);
     }
@@ -1422,7 +1421,7 @@ class Image extends \Yana\Core\StdObject
      */
     public function getColorValues($color)
     {
-        assert('is_int($color); // Wrong type for argument 1. Integer expected');
+        assert(is_int($color), 'Wrong type for argument 1. Integer expected');
 
         /**
          * error - broken image
@@ -1448,8 +1447,8 @@ class Image extends \Yana\Core\StdObject
      */
     public function getColorAt($x, $y)
     {
-        assert('is_int($x); // Wrong type for argument 1. Integer expected');
-        assert('is_int($y); // Wrong type for argument 2. Integer expected');
+        assert(is_int($x), 'Wrong type for argument 1. Integer expected');
+        assert(is_int($y), 'Wrong type for argument 2. Integer expected');
 
         /**
          * error - broken image
@@ -1474,7 +1473,7 @@ class Image extends \Yana\Core\StdObject
                 $r = ($rgb >> 16) & 0xFF;
                 $g = ($rgb >> 8) & 0xFF;
                 $b = $rgb & 0xFF;
-                assert('is_int($r) && is_int($g) && is_int($b);');
+                assert(is_int($r) && is_int($g) && is_int($b), 'is_int($r) && is_int($g) && is_int($b)');
                 return $this->getColor($r, $g, $b);
             }
         }
@@ -1499,7 +1498,7 @@ class Image extends \Yana\Core\StdObject
      */
     public static function getSize($filename)
     {
-        assert('is_string($filename); // Wrong type for argument 1. String expected');
+        assert(is_string($filename), 'Wrong type for argument 1. String expected');
 
         return getimagesize("$filename");
     }
@@ -1533,14 +1532,14 @@ class Image extends \Yana\Core\StdObject
      */
     public function getColor($r, $g, $b, $opacity = null)
     {
-        assert('is_int($r); // Wrong type for argument 1. Integer expected');
-        assert('is_int($g); // Wrong type for argument 2. Integer expected');
-        assert('is_int($b); // Wrong type for argument 3. Integer expected');
-        assert('$r >= 0 && $r <= 255; // Invalid argument $r: must be in range [0,255].');
-        assert('$g >= 0 && $g <= 255; // Invalid argument $g: must be in range [0,255].');
-        assert('$b >= 0 && $b <= 255; // Invalid argument $b: must be in range [0,255].');
-        assert('is_null($opacity) || is_numeric($opacity); // Wrong type for argument 4. Float expected');
-        assert('!$opacity || ($opacity >= 0.0 && $opacity <= 1.0); // Invalid argument $opacity: must be in range [0.0,1.0].');
+        assert(is_int($r), 'Wrong type for argument 1. Integer expected');
+        assert(is_int($g), 'Wrong type for argument 2. Integer expected');
+        assert(is_int($b), 'Wrong type for argument 3. Integer expected');
+        assert($r >= 0 && $r <= 255, 'Invalid argument $r: must be in range [0,255].');
+        assert($g >= 0 && $g <= 255, 'Invalid argument $g: must be in range [0,255].');
+        assert($b >= 0 && $b <= 255, 'Invalid argument $b: must be in range [0,255].');
+        assert(is_null($opacity) || is_numeric($opacity), 'Wrong type for argument 4. Float expected');
+        assert(!$opacity || ($opacity >= 0.0 && $opacity <= 1.0), 'Invalid argument $opacity: must be in range [0.0,1.0].');
 
         if ($this->isBroken()) {
             return false;
@@ -1609,7 +1608,7 @@ class Image extends \Yana\Core\StdObject
      */
     public function setLineWidth($width)
     {
-        assert('is_int($width); // Wrong type for argument 1. Integer expected');
+        assert(is_int($width), 'Wrong type for argument 1. Integer expected');
 
         /**
          * error - broken image
@@ -1672,7 +1671,7 @@ class Image extends \Yana\Core\StdObject
         for ($i = 0; $i < func_num_args(); $i++)
         {
             $color = func_get_arg($i);
-            assert('is_int($color); // Wrong type for argument ' . $i . '. Integer expected');
+            assert(is_int($color), 'Wrong type for argument ' . $i . '. Integer expected');
             $style[] = (int) $color;
         }
 
@@ -1715,8 +1714,8 @@ class Image extends \Yana\Core\StdObject
      */
     public function replaceIndexColor($replacedColor, $newColor)
     {
-        assert('is_int($replacedColor); // Wrong type for argument 1. Integer expected');
-        assert('is_int($newColor) || is_array($newColor); // Wrong type for argument 2. Array or Integer expected');
+        assert(is_int($replacedColor), 'Wrong type for argument 1. Integer expected');
+        assert(is_int($newColor) || is_array($newColor), 'Wrong type for argument 2. Array or Integer expected');
 
         /*
          * error - broken image
@@ -1783,8 +1782,8 @@ class Image extends \Yana\Core\StdObject
      */
     public function replaceColor($replacedColor, $newColor)
     {
-        assert('is_int($replacedColor) && $replacedColor > 0; // Wrong type for argument 1. Positive integer expected');
-        assert('is_int($newColor) && $newColor > 0; // Wrong type for argument 2. Positive integer expected');
+        assert(is_int($replacedColor) && $replacedColor > 0, 'Wrong type for argument 1. Positive integer expected');
+        assert(is_int($newColor) && $newColor > 0, 'Wrong type for argument 2. Positive integer expected');
 
         /**
          * error - broken image
@@ -1894,8 +1893,8 @@ class Image extends \Yana\Core\StdObject
      */
     public function setBackgroundColor($backgroundColor = null, $replaceOldColor = true)
     {
-        assert('is_null($backgroundColor) || is_int($backgroundColor); // Wrong type for argument 1. Integer expected');
-        assert('is_bool($replaceOldColor); // Wrong type for argument 2. Boolean expected');
+        assert(is_null($backgroundColor) || is_int($backgroundColor), 'Wrong type for argument 1. Integer expected');
+        assert(is_bool($replaceOldColor), 'Wrong type for argument 2. Boolean expected');
 
         /**
          * error - broken image
@@ -1993,7 +1992,7 @@ class Image extends \Yana\Core\StdObject
      */
     public function enableInterlace($isInterlaced = true)
     {
-        assert('is_bool($isInterlaced); // Wrong type for argument 1. Boolean expected');
+        assert(is_bool($isInterlaced), 'Wrong type for argument 1. Boolean expected');
 
         /**
          * error - broken image
@@ -2049,7 +2048,7 @@ class Image extends \Yana\Core\StdObject
      */
     public function setGamma($gamma)
     {
-        assert('is_float($gamma); // Wrong type for argument 1. Float expected');
+        assert(is_float($gamma), 'Wrong type for argument 1. Float expected');
 
         /**
          * error - broken image
@@ -2081,7 +2080,7 @@ class Image extends \Yana\Core\StdObject
      */
     public function rotate($angle)
     {
-        assert('is_numeric($angle); // Wrong type for argument 1. Float expected');
+        assert(is_numeric($angle), 'Wrong type for argument 1. Float expected');
 
         /**
          * error - broken image
@@ -2168,11 +2167,11 @@ class Image extends \Yana\Core\StdObject
      */
     public function resizeCanvas($width = null, $height = null, $paddingLeft = null, $paddingTop = null, $canvasColor = null)
     {
-        assert('is_null($width) || is_int($width); // Wrong type for argument 1. Integer expected');
-        assert('is_null($height) || is_int($height); // Wrong type for argument 2. Integer expected');
-        assert('is_null($paddingLeft) || is_int($paddingLeft); // Wrong type for argument 3. Integer expected');
-        assert('is_null($paddingTop) || is_int($paddingTop); // Wrong type for argument 4. Integer expected');
-        assert('is_null($canvasColor) || is_array($canvasColor) || (is_int($canvasColor) && $canvasColor > 0); // '.
+        assert(is_null($width) || is_int($width), 'Wrong type for argument 1. Integer expected');
+        assert(is_null($height) || is_int($height), 'Wrong type for argument 2. Integer expected');
+        assert(is_null($paddingLeft) || is_int($paddingLeft), 'Wrong type for argument 3. Integer expected');
+        assert(is_null($paddingTop) || is_int($paddingTop), 'Wrong type for argument 4. Integer expected');
+        assert(is_null($canvasColor) || is_array($canvasColor) || (is_int($canvasColor) && $canvasColor > 0),
             'Wrong type for argument 5. Integer or array expected');
 
         /**
@@ -2195,7 +2194,7 @@ class Image extends \Yana\Core\StdObject
 
             /* proportional image scaling */
             $width = (int) floor(($height * $currentWidth) / $currentHeight);
-            assert('is_int($width);');
+            assert(is_int($width), 'is_int($width)');
 
         }
         if ($width < 1) {
@@ -2210,7 +2209,7 @@ class Image extends \Yana\Core\StdObject
 
             /* proportional image scaling */
             $height = (int) floor(($width * $currentHeight) / $currentWidth);
-            assert('is_int($height);');
+            assert(is_int($height), 'is_int($height)');
 
         }
         if ($height < 1) {
@@ -2225,7 +2224,7 @@ class Image extends \Yana\Core\StdObject
 
             /* horizontally center image */
             $paddingLeft = round(( $width - $currentWidth )  / 2);
-            assert('is_numeric($paddingLeft); // Unexpected result: $paddingLeft');
+            assert(is_numeric($paddingLeft), 'Unexpected result: $paddingLeft');
 
         }
         if (abs($paddingLeft) >= $width) {
@@ -2240,7 +2239,7 @@ class Image extends \Yana\Core\StdObject
 
             /* horizontally center image */
             $paddingTop = round(( $height - $currentHeight ) / 2);
-            assert('is_numeric($paddingTop); // Unexpected result: $paddingTop');
+            assert(is_numeric($paddingTop), 'Unexpected result: $paddingTop');
 
         }
         if (abs($paddingTop) >= $height) {
@@ -2337,8 +2336,8 @@ class Image extends \Yana\Core\StdObject
      */
     public function resizeImage($width = null, $height = null)
     {
-        assert('is_null($width) || is_int($width); // Wrong type for argument 1. Integer expected');
-        assert('is_null($height) || is_int($height); // Wrong type for argument 2. Integer expected');
+        assert(is_null($width) || is_int($width), 'Wrong type for argument 1. Integer expected');
+        assert(is_null($height) || is_int($height), 'Wrong type for argument 2. Integer expected');
         return $this->resize($width, $height);
     }
 
@@ -2360,8 +2359,8 @@ class Image extends \Yana\Core\StdObject
      */
     public function resize($width = null, $height = null)
     {
-        assert('is_null($width) || is_int($width); // Wrong type for argument 1. Integer expected');
-        assert('is_null($height) || is_int($height); // Wrong type for argument 2. Integer expected');
+        assert(is_null($width) || is_int($width), 'Wrong type for argument 1. Integer expected');
+        assert(is_null($height) || is_int($height), 'Wrong type for argument 2. Integer expected');
 
         if ($this->isBroken() || (is_null($width) && is_null($height))) {
             return false;
@@ -2375,7 +2374,7 @@ class Image extends \Yana\Core\StdObject
 
             /* proportional image scaling */
             $width = (int) floor(($height * $currentWidth) / $currentHeight);
-            assert('is_int($width);');
+            assert(is_int($width), 'is_int($width)');
 
         }
         if ($width < 1) {
@@ -2389,7 +2388,7 @@ class Image extends \Yana\Core\StdObject
 
             /* proportional image scaling */
             $height = (int) floor(($width * $currentHeight) / $currentWidth);
-            assert('is_int($height);');
+            assert(is_int($height), 'is_int($height)');
 
         }
         if ($height < 1) {
@@ -2470,8 +2469,7 @@ class Image extends \Yana\Core\StdObject
      */
     public function setTransparency($transparency = null)
     {
-        assert('is_array($transparency) || is_null($transparency) || is_int($transparency); // '.
-            'Wrong type for argument 1. Integer or array expected');
+        assert(is_array($transparency) || is_null($transparency) || is_int($transparency), 'Wrong type for argument 1. Integer or array expected');
 
         /*
          * error - broken image
@@ -2567,8 +2565,8 @@ class Image extends \Yana\Core\StdObject
      */
     public function reduceColorDepth($ammount, $dither = true)
     {
-        assert('is_int($ammount); // Wrong type for argument 1. Integer expected');
-        assert('is_bool($dither); // Wrong type for argument 2. Boolean expected');
+        assert(is_int($ammount), 'Wrong type for argument 1. Integer expected');
+        assert(is_bool($dither), 'Wrong type for argument 2. Boolean expected');
 
         /**
          * error - broken image
@@ -2666,13 +2664,13 @@ class Image extends \Yana\Core\StdObject
      */
     public function copyRegion($sourceImage, $sourceX = null, $sourceY = null, $width = null, $height = null, $destX = null, $destY = null, $opacity = null)
     {
-        assert('is_null($sourceX) || is_int($sourceX); // Wrong type for argument 2. Integer expected');
-        assert('is_null($sourceY) || is_int($sourceY); // Wrong type for argument 3. Integer expected');
-        assert('is_null($width) || is_int($width); // Wrong type for argument 4. Integer expected');
-        assert('is_null($height) || is_int($height); // Wrong type for argument 5. Integer expected');
-        assert('is_null($destX) || is_int($destX); // Wrong type for argument 6. Integer expected');
-        assert('is_null($destY) || is_int($destY); // Wrong type for argument 7. Integer expected');
-        assert('is_null($opacity) || is_numeric($opacity); // Wrong type for argument 8. Integer expected');
+        assert(is_null($sourceX) || is_int($sourceX), 'Wrong type for argument 2. Integer expected');
+        assert(is_null($sourceY) || is_int($sourceY), 'Wrong type for argument 3. Integer expected');
+        assert(is_null($width) || is_int($width), 'Wrong type for argument 4. Integer expected');
+        assert(is_null($height) || is_int($height), 'Wrong type for argument 5. Integer expected');
+        assert(is_null($destX) || is_int($destX), 'Wrong type for argument 6. Integer expected');
+        assert(is_null($destY) || is_int($destY), 'Wrong type for argument 7. Integer expected');
+        assert(is_null($opacity) || is_numeric($opacity), 'Wrong type for argument 8. Integer expected');
 
         /**
          * error - broken image
@@ -2682,7 +2680,7 @@ class Image extends \Yana\Core\StdObject
         }
 
         /* argument 1 */
-        assert('!isset($resource); // cannot redeclare variable $resource');
+        assert(!isset($resource), 'cannot redeclare variable $resource');
         if (is_string($sourceImage) && is_file($sourceImage)) {
             $sourceImage = new self($sourceImage);
             $resource = $sourceImage->_image;
@@ -2797,12 +2795,12 @@ class Image extends \Yana\Core\StdObject
      */
     public function monochromatic($r, $g, $b)
     {
-        assert('is_int($r); // Wrong type for argument 1. Integer expected');
-        assert('is_int($g); // Wrong type for argument 2. Integer expected');
-        assert('is_int($b); // Wrong type for argument 3. Integer expected');
-        assert('$r >= 0 && $r <= 255; // Invalid argument $r: must be in range [0,255].');
-        assert('$g >= 0 && $g <= 255; // Invalid argument $g: must be in range [0,255].');
-        assert('$b >= 0 && $b <= 255; // Invalid argument $b: must be in range [0,255].');
+        assert(is_int($r), 'Wrong type for argument 1. Integer expected');
+        assert(is_int($g), 'Wrong type for argument 2. Integer expected');
+        assert(is_int($b), 'Wrong type for argument 3. Integer expected');
+        assert($r >= 0 && $r <= 255, 'Invalid argument $r: must be in range [0,255].');
+        assert($g >= 0 && $g <= 255, 'Invalid argument $g: must be in range [0,255].');
+        assert($b >= 0 && $b <= 255, 'Invalid argument $b: must be in range [0,255].');
 
         if ($this->isBroken()) {
             return false;
@@ -2916,7 +2914,7 @@ class Image extends \Yana\Core\StdObject
      */
     public function brightness($ammount)
     {
-        assert('is_numeric($ammount); // Wrong type for argument 1. Float expected');
+        assert(is_numeric($ammount), 'Wrong type for argument 1. Float expected');
 
         /* argument 1 */
         if ($ammount < 0.0 || $ammount > 1.0) {
@@ -2955,7 +2953,7 @@ class Image extends \Yana\Core\StdObject
      */
     public function contrast($ammount)
     {
-        assert('is_numeric($ammount); // Wrong type for argument 1. Float expected');
+        assert(is_numeric($ammount), 'Wrong type for argument 1. Float expected');
 
         /**
          * error - broken image
@@ -3063,7 +3061,7 @@ class Image extends \Yana\Core\StdObject
      */
     public function applyFilter($filter)
     {
-        assert('is_int($filter); // Wrong type for argument 1. Integer expected');
+        assert(is_int($filter), 'Wrong type for argument 1. Integer expected');
 
         if ($this->isBroken() || !function_exists('imagefilter')) {
             return false;
@@ -3112,12 +3110,12 @@ class Image extends \Yana\Core\StdObject
      */
     public function colorize($r, $g, $b)
     {
-        assert('is_int($r); // Wrong type for argument 1. Integer expected');
-        assert('is_int($g); // Wrong type for argument 2. Integer expected');
-        assert('is_int($b); // Wrong type for argument 3. Integer expected');
-        assert('$r >= 0 && $r <= 255; // Invalid argument $r: must be in range [0,255].');
-        assert('$g >= 0 && $g <= 255; // Invalid argument $g: must be in range [0,255].');
-        assert('$b >= 0 && $b <= 255; // Invalid argument $b: must be in range [0,255].');
+        assert(is_int($r), 'Wrong type for argument 1. Integer expected');
+        assert(is_int($g), 'Wrong type for argument 2. Integer expected');
+        assert(is_int($b), 'Wrong type for argument 3. Integer expected');
+        assert($r >= 0 && $r <= 255, 'Invalid argument $r: must be in range [0,255].');
+        assert($g >= 0 && $g <= 255, 'Invalid argument $g: must be in range [0,255].');
+        assert($b >= 0 && $b <= 255, 'Invalid argument $b: must be in range [0,255].');
 
         /**
          * error - broken image
@@ -3166,12 +3164,12 @@ class Image extends \Yana\Core\StdObject
      */
     public function multiply($r, $g, $b)
     {
-        assert('is_int($r); // Wrong type for argument 1. Integer expected');
-        assert('is_int($g); // Wrong type for argument 2. Integer expected');
-        assert('is_int($b); // Wrong type for argument 3. Integer expected');
-        assert('$r >= 0 && $r <= 255; // Invalid argument $r: must be in range [0,255].');
-        assert('$g >= 0 && $g <= 255; // Invalid argument $g: must be in range [0,255].');
-        assert('$b >= 0 && $b <= 255; // Invalid argument $b: must be in range [0,255].');
+        assert(is_int($r), 'Wrong type for argument 1. Integer expected');
+        assert(is_int($g), 'Wrong type for argument 2. Integer expected');
+        assert(is_int($b), 'Wrong type for argument 3. Integer expected');
+        assert($r >= 0 && $r <= 255, 'Invalid argument $r: must be in range [0,255].');
+        assert($g >= 0 && $g <= 255, 'Invalid argument $g: must be in range [0,255].');
+        assert($b >= 0 && $b <= 255, 'Invalid argument $b: must be in range [0,255].');
 
         if ($this->isBroken()) {
             return false;
@@ -3211,7 +3209,7 @@ class Image extends \Yana\Core\StdObject
      */
     public function blur($ammount)
     {
-        assert('is_numeric($ammount); // Wrong type for argument 1. Float expected');
+        assert(is_numeric($ammount), 'Wrong type for argument 1. Float expected');
 
         /* argument 1 */
         if ($ammount < 0.0 || $ammount > 1.0) {
@@ -3248,7 +3246,7 @@ class Image extends \Yana\Core\StdObject
      */
     public function sharpen($ammount)
     {
-        assert('is_numeric($ammount); // Wrong type for argument 1. Float expected');
+        assert(is_numeric($ammount), 'Wrong type for argument 1. Float expected');
 
         /* argument 1 */
         if ($ammount < 0.0 || $ammount > 1.0) {
@@ -3321,7 +3319,7 @@ class Image extends \Yana\Core\StdObject
          */
         $tempImage = imagecreatetruecolor(1, $height);
 
-        assert('!isset($left);');
+        assert(!isset($left), '!isset($left)');
         for ($left = 0; $left < floor($width / 2); $left++)
         {
             /*
@@ -3378,7 +3376,7 @@ class Image extends \Yana\Core\StdObject
 
         $tempImage = imagecreatetruecolor($width, 1);
 
-        assert('!isset($top);');
+        assert(!isset($top), '!isset($top)');
         for ($top = 0; $top < floor($height / 2); $top++)
         {
             /*
@@ -3470,7 +3468,7 @@ class Image extends \Yana\Core\StdObject
      */
     public function outputToScreen($imageType = null)
     {
-        assert('is_null($imageType) || is_string($imageType); // Wrong type for argument 1. String expected');
+        assert(is_null($imageType) || is_string($imageType), 'Wrong type for argument 1. String expected');
         /**
          * If headers are already sent, first try to erase the output buffer.
          * Only if this does not work, throw an error.
@@ -3559,8 +3557,8 @@ class Image extends \Yana\Core\StdObject
      */
     public function outputToFile($filename, $imageType = null)
     {
-        assert('is_string($filename); // Wrong type for argument 1. String expected');
-        assert('is_null($imageType) || is_string($imageType); // Wrong type for argument 2. String expected');
+        assert(is_string($filename), 'Wrong type for argument 1. String expected');
+        assert(is_null($imageType) || is_string($imageType), 'Wrong type for argument 2. String expected');
 
         if (!is_resource($this->_image)) {
             return false;
@@ -3652,9 +3650,9 @@ class Image extends \Yana\Core\StdObject
      */
     public function createThumbnail($width = 100, $height = 100, $keepAspectRatio = true, array $backgroundColor = null)
     {
-        assert('is_null($width) || is_int($width); // Wrong type for argument 1. Integer expected');
-        assert('is_null($height) || is_int($height); // Wrong type for argument 2. Integer expected');
-        assert('is_bool($keepAspectRatio); // Wrong type for argument 3. Boolean expected');
+        assert(is_null($width) || is_int($width), 'Wrong type for argument 1. Integer expected');
+        assert(is_null($height) || is_int($height), 'Wrong type for argument 2. Integer expected');
+        assert(is_bool($keepAspectRatio), 'Wrong type for argument 3. Boolean expected');
 
         /**
          * Check if the "broken" flag has been set.
@@ -3794,12 +3792,12 @@ class Image extends \Yana\Core\StdObject
                 $c = (abs($color['blue'] - 127) / 128);
                 $diff += ($a + $b + $c) / 3;
             }
-            assert('$h != 0; // Division by zero');
+            assert($h != 0, 'Division by zero');
             $difference += $diff / $h;
         }
         $otherImage->__destruct();
 
-        assert('$w != 0; // Division by zero');
+        assert($w != 0, 'Division by zero');
         return ($difference / $w);
     }
 

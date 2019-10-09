@@ -238,7 +238,7 @@ class ConnectionFactory extends \Yana\Core\StdObject implements \Yana\Db\Mdb2\Is
      */
     public function getDsn()
     {
-        assert('is_array($this->_dsn);');
+        assert(is_array($this->_dsn), 'is_array($this->_dsn)');
         return (array) $this->_dsn;
     }
 
@@ -260,11 +260,11 @@ class ConnectionFactory extends \Yana\Core\StdObject implements \Yana\Db\Mdb2\Is
      */
     protected function _getDsnForMdb2()
     {
-        assert('!isset($dsn); // Cannot redeclare var $dsn');
+        assert(!isset($dsn), 'Cannot redeclare var $dsn');
         $dsn = $this->getDsn();
-        assert('!isset($dsnForMdb2); // Cannot redeclare var $dsnForMdb2');
+        assert(!isset($dsnForMdb2), 'Cannot redeclare var $dsnForMdb2');
         $dsnForMdb2 = array();
-        assert('!isset($requireOdbc); // Cannot redeclare var $requireOdbc');
+        assert(!isset($requireOdbc), 'Cannot redeclare var $requireOdbc');
         $requireOdbc = $this->_getOdbcSettings();
 
         /* 1 determine if odbc is required to connect to this dbms */
@@ -294,7 +294,7 @@ class ConnectionFactory extends \Yana\Core\StdObject implements \Yana\Db\Mdb2\Is
         if (!empty($dsn['PASSWORD'])) {
             $dsnForMdb2['password'] = (string) $dsn['PASSWORD'];
         }
-        assert('is_array($dsnForMdb2);');
+        assert(is_array($dsnForMdb2), 'is_array($dsnForMdb2)');
         return $dsnForMdb2;
     }
 
@@ -316,7 +316,7 @@ class ConnectionFactory extends \Yana\Core\StdObject implements \Yana\Db\Mdb2\Is
                 // no default options available
                 $this->_options = array();
             }
-            assert('is_array($this->_options);');
+            assert(is_array($this->_options), 'is_array($this->_options)');
 
             // there are some static options that always have to be there and can't be changed
             $this->_options['portability'] = \MDB2_PORTABILITY_ALL ^ \MDB2_PORTABILITY_FIX_CASE;
@@ -331,11 +331,11 @@ class ConnectionFactory extends \Yana\Core\StdObject implements \Yana\Db\Mdb2\Is
      */
     private function _getOdbcSettings()
     {
-        assert('!isset($builder); // Cannot redeclare var $builder');
+        assert(!isset($builder), 'Cannot redeclare var $builder');
         $builder = new \Yana\ApplicationBuilder();
-        assert('!isset($application); // Cannot redeclare var $application');
+        assert(!isset($application), 'Cannot redeclare var $application');
         $application = $builder->buildApplication();
-        assert('!isset($requireOdbc); // Cannot redeclare var $requireOdbc');
+        assert(!isset($requireOdbc), 'Cannot redeclare var $requireOdbc');
         $requireOdbc = $application->getDefault('database.require_odbc');
         if (!is_array($requireOdbc)) {
             // no ODBC-settings available

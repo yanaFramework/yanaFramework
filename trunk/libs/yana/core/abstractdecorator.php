@@ -97,7 +97,7 @@ abstract class AbstractDecorator extends \Yana\Core\StdObject
      */
     protected function _setDecoratedObject($object)
     {
-        assert('is_object($object); // $object expected to be an object');
+        assert(is_object($object), '$object expected to be an object');
         $this->_object = $object;
         return $this;
     }
@@ -123,7 +123,7 @@ abstract class AbstractDecorator extends \Yana\Core\StdObject
      */
     public function __get($name)
     {
-        assert('is_string($name); // $name expected to be String');
+        assert(is_string($name), '$name expected to be String');
         return $this->_object->$name;
     }
 
@@ -137,7 +137,7 @@ abstract class AbstractDecorator extends \Yana\Core\StdObject
      */
     public function __set($name, $value)
     {
-        assert('is_string($name); // $name expected to be String');
+        assert(is_string($name), '$name expected to be String');
         return $this->_object->$name = $value;
     }
 

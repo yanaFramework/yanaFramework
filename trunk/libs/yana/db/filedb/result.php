@@ -84,7 +84,7 @@ class Result extends \Yana\Core\StdObject implements \Yana\Db\IsResult
      */
     public function fetchRow($rowNumber)
     {
-        assert('is_int($rowNumber); // Invalid argument $rowNumber: int expected');
+        assert(is_int($rowNumber), 'Invalid argument $rowNumber: int expected');
 
         $row = array();
         if (isset($this->_result[$rowNumber])) {
@@ -113,7 +113,7 @@ class Result extends \Yana\Core\StdObject implements \Yana\Db\IsResult
      */
     public function fetchColumn($column = 0)
     {
-        assert('is_string($column) || is_int($column); // Invalid argument $column: int expected');
+        assert(is_string($column) || is_int($column), 'Invalid argument $column: int expected');
 
         $result = array();
         foreach ((array) $this->fetchAll() as $row)
@@ -132,8 +132,8 @@ class Result extends \Yana\Core\StdObject implements \Yana\Db\IsResult
      */
     public function fetchOne($column = 0, $rowNumber = 0)
     {
-        assert('is_string($column) || is_int($column); // Invalid argument $column: int expected');
-        assert('is_int($rowNumber); // Invalid argument $rowNumber: int expected');
+        assert(is_string($column) || is_int($column), 'Invalid argument $column: int expected');
+        assert(is_int($rowNumber), 'Invalid argument $rowNumber: int expected');
 
         $row = $this->fetchRow($rowNumber);
         return $this->_fetchCellFromRow($row, $column);
@@ -148,7 +148,7 @@ class Result extends \Yana\Core\StdObject implements \Yana\Db\IsResult
      */
     private function _fetchCellFromRow(array $row, $column)
     {
-        assert('is_string($column) || is_int($column); // Invalid argument $column: int expected');
+        assert(is_string($column) || is_int($column), 'Invalid argument $column: int expected');
 
         switch (true)
         {

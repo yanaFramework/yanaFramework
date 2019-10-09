@@ -50,9 +50,9 @@ class StandardAlgorithm extends \Yana\Security\Passwords\Generators\AbstractAlgo
      */
     public function __invoke($length = 8)
     {
-        assert('is_int($length); // Wrong argument type: $length. Integer expected');
-        assert('$length > 7;  // Invalid argument value: $length. Must be 8 or greater');
-        assert('$length < 24;  // Invalid argument value: $length. Must be 23 or smaller');
+        assert(is_int($length), 'Wrong argument type: $length. Integer expected');
+        assert($length > 7, 'Invalid argument value: $length. Must be 8 or greater');
+        assert($length < 24, 'Invalid argument value: $length. Must be 23 or smaller');
         if (function_exists('random_bytes')) {
             random_bytes($length);
         }
@@ -61,7 +61,7 @@ class StandardAlgorithm extends \Yana\Security\Passwords\Generators\AbstractAlgo
          * the first eight numbers are not as unique as the rest.
          * Thus to reverse the string ac
          */
-        assert('!isset($randomId); // Cannot redeclare var $randomId');
+        assert(!isset($randomId), 'Cannot redeclare var $randomId');
         $randomId = \base64_encode(\uniqid('', true));
         return substr($randomId, strlen($randomId) - ($length >= 8 ? (int) $length : 8));
     }

@@ -73,7 +73,7 @@ class Strings extends \Yana\Core\AbstractUtility
      */
     public static function toInt($string)
     {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
+        assert(is_string($string), 'Wrong argument type for argument 1. String expected.');
         if (is_numeric($string)) {
             return intval($string);
         } else {
@@ -97,7 +97,7 @@ class Strings extends \Yana\Core\AbstractUtility
      */
     public static function toFloat($string)
     {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
+        assert(is_string($string), 'Wrong argument type for argument 1. String expected.');
         if (is_numeric($string)) {
             return floatval($string);
         } else {
@@ -136,7 +136,7 @@ class Strings extends \Yana\Core\AbstractUtility
      */
     public static function toBool($string)
     {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
+        assert(is_string($string), 'Wrong argument type for argument 1. String expected.');
         
         return filter_var($string, FILTER_VALIDATE_BOOLEAN);
     }
@@ -156,8 +156,8 @@ class Strings extends \Yana\Core\AbstractUtility
      */
     public static function addSlashes($string, $charlist = "")
     {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
-        assert('is_string($charlist); // Wrong argument type for argument 2. String expected.');
+        assert(is_string($string), 'Wrong argument type for argument 1. String expected.');
+        assert(is_string($charlist), 'Wrong argument type for argument 2. String expected.');
         if (!empty($charlist)) {
             return addcslashes($string, $charlist);
         } else {
@@ -179,7 +179,7 @@ class Strings extends \Yana\Core\AbstractUtility
      */
     public static function removeSlashes($string)
     {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
+        assert(is_string($string), 'Wrong argument type for argument 1. String expected.');
         return stripslashes($string);
     }
 
@@ -201,8 +201,8 @@ class Strings extends \Yana\Core\AbstractUtility
      */
     public static function charAt($string, $index)
     {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
-        assert('is_int($index); // Wrong argument type for argument 2. Integer expected.');
+        assert(is_string($string), 'Wrong argument type for argument 1. String expected.');
+        assert(is_int($index), 'Wrong argument type for argument 2. Integer expected.');
         /* check if $index is in bounds */
         /* If the input is no integer at all, throw an exception. */
         if ($index < 0 || $index >= mb_strlen($string)) {
@@ -228,8 +228,8 @@ class Strings extends \Yana\Core\AbstractUtility
      */
     public static function trim($string, $type = self::BOTH)
     {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
-        assert('is_int($type); // Wrong argument type for argument 2. Integer expected.');
+        assert(is_string($string), 'Wrong argument type for argument 1. String expected.');
+        assert(is_int($type), 'Wrong argument type for argument 2. Integer expected.');
         switch ($type)
         {
             case self::LEFT:
@@ -315,9 +315,9 @@ class Strings extends \Yana\Core\AbstractUtility
      */
     public static function encrypt($string, $encryption = "md5", $salt = "")
     {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
-        assert('is_string($encryption); // Wrong argument type for argument 2. String expected.');
-        assert('is_string($salt); // Wrong argument type for argument 3. String expected.');
+        assert(is_string($string), 'Wrong argument type for argument 1. String expected.');
+        assert(is_string($encryption), 'Wrong argument type for argument 2. String expected.');
+        assert(is_string($salt), 'Wrong argument type for argument 3. String expected.');
 
         switch (mb_strtolower($encryption))
         {
@@ -473,10 +473,10 @@ class Strings extends \Yana\Core\AbstractUtility
      */
     public static function encode($string, $encoding, $style = ENT_COMPAT, $charset = "UTF-8")
     {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
-        assert('is_string($encoding); // Wrong argument type for argument 2. String expected.');
-        assert('is_int($style); // Wrong argument type for argument 3. Integer expected.');
-        assert('is_string($charset); // Wrong argument type for argument 4. String expected.');
+        assert(is_string($string), 'Wrong argument type for argument 1. String expected.');
+        assert(is_string($encoding), 'Wrong argument type for argument 2. String expected.');
+        assert(is_int($style), 'Wrong argument type for argument 3. Integer expected.');
+        assert(is_string($charset), 'Wrong argument type for argument 4. String expected.');
 
         switch (mb_strtolower($encoding))
         {
@@ -538,10 +538,10 @@ class Strings extends \Yana\Core\AbstractUtility
      */
     public static function decode($string, $encoding, $style = ENT_COMPAT, $charset = "")
     {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
-        assert('is_string($encoding); // Wrong argument type for argument 2. String expected.');
-        assert('is_int($style); // Wrong argument type for argument 3. Integer expected.');
-        assert('is_string($charset); // Wrong argument type for argument 4. String expected.');
+        assert(is_string($string), 'Wrong argument type for argument 1. String expected.');
+        assert(is_string($encoding), 'Wrong argument type for argument 2. String expected.');
+        assert(is_int($style), 'Wrong argument type for argument 3. Integer expected.');
+        assert(is_string($charset), 'Wrong argument type for argument 4. String expected.');
 
         switch (mb_strtolower($encoding))
         {
@@ -586,7 +586,7 @@ class Strings extends \Yana\Core\AbstractUtility
      */
     public static function toLowerCase($string)
     {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
+        assert(is_string($string), 'Wrong argument type for argument 1. String expected.');
         return mb_strtolower($string);
     }
 
@@ -603,7 +603,7 @@ class Strings extends \Yana\Core\AbstractUtility
      */
     public static function toUpperCase($string)
     {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
+        assert(is_string($string), 'Wrong argument type for argument 1. String expected.');
         return mb_strtoupper($string);
     }
 
@@ -627,9 +627,9 @@ class Strings extends \Yana\Core\AbstractUtility
      */
     public static function substring($string, $start, $length = 0)
     {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
-        assert('is_int($start); // Wrong argument type for argument 2. Integer expected.');
-        assert('is_int($length); // Wrong argument type for argument 3. Integer expected.');
+        assert(is_string($string), 'Wrong argument type for argument 1. String expected.');
+        assert(is_int($start), 'Wrong argument type for argument 2. Integer expected.');
+        assert(is_int($length), 'Wrong argument type for argument 3. Integer expected.');
 
         if ($length != 0) {
             return mb_substr($string, $start, $length);
@@ -664,8 +664,8 @@ class Strings extends \Yana\Core\AbstractUtility
      */
     public static function compareTo($string, $anotherString)
     {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
-        assert('is_string($anotherString); // Wrong argument type for argument 2. String expected.');
+        assert(is_string($string), 'Wrong argument type for argument 1. String expected.');
+        assert(is_string($anotherString), 'Wrong argument type for argument 2. String expected.');
         return strcmp($string, $anotherString);
     }
 
@@ -695,8 +695,8 @@ class Strings extends \Yana\Core\AbstractUtility
      */
     public static function compareToIgnoreCase($string, $anotherString)
     {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
-        assert('is_string($anotherString); // Wrong argument type for argument 2. String expected.');
+        assert(is_string($string), 'Wrong argument type for argument 1. String expected.');
+        assert(is_string($anotherString), 'Wrong argument type for argument 2. String expected.');
         return strcasecmp($string, $anotherString);
     }
 
@@ -718,12 +718,12 @@ class Strings extends \Yana\Core\AbstractUtility
      */
     public static function match($string, $regularExpression, &$count = null)
     {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
-        assert('is_string($regularExpression); // Wrong argument type for argument 2. String expected.');
+        assert(is_string($string), 'Wrong argument type for argument 1. String expected.');
+        assert(is_string($regularExpression), 'Wrong argument type for argument 2. String expected.');
         $matches = array();
         $count = (int) preg_match($regularExpression, $string, $matches);
         if ($count > 0) {
-            assert('is_array($matches);');
+            assert(is_array($matches), 'is_array($matches)');
             return $matches;
         } else {
             return false;
@@ -748,12 +748,12 @@ class Strings extends \Yana\Core\AbstractUtility
      */
     public static function matchAll($string, $regularExpression, &$count = null)
     {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
-        assert('is_string($regularExpression); // Wrong argument type for argument 2. String expected.');
+        assert(is_string($string), 'Wrong argument type for argument 1. String expected.');
+        assert(is_string($regularExpression), 'Wrong argument type for argument 2. String expected.');
         $matches = array();
         $count = (int) preg_match_all($regularExpression, $string, $matches);
         if ($count > 0) {
-            assert('is_array($matches);');
+            assert(is_array($matches), 'is_array($matches)');
             return $matches;
         } else {
             return false;
@@ -792,8 +792,8 @@ class Strings extends \Yana\Core\AbstractUtility
      */
     public static function contains($string, $needle)
     {
-        assert('is_string($string); // Invalid argument $string: string expected');
-        assert('is_string($needle); // Invalid argument $needle: string expected');
+        assert(is_string($string), 'Invalid argument $string: string expected');
+        assert(is_string($needle), 'Invalid argument $needle: string expected');
 
         return mb_strpos($string, $needle) !== false;
     }
@@ -817,10 +817,10 @@ class Strings extends \Yana\Core\AbstractUtility
      */
     public static function replaceRegExp($string, $regularExpression, $substitute = "", $limit = -1, &$count = null)
     {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
-        assert('is_string($regularExpression); // Wrong argument type for argument 2. String expected.');
-        assert('is_string($substitute); // Wrong argument type for argument 3. String expected.');
-        assert('is_int($limit); // Wrong argument type for argument 4. Integer expected.');
+        assert(is_string($string), 'Wrong argument type for argument 1. String expected.');
+        assert(is_string($regularExpression), 'Wrong argument type for argument 2. String expected.');
+        assert(is_string($substitute), 'Wrong argument type for argument 3. String expected.');
+        assert(is_int($limit), 'Wrong argument type for argument 4. Integer expected.');
 
         /**
          * Limit must be a positive integer > 0.
@@ -848,7 +848,7 @@ class Strings extends \Yana\Core\AbstractUtility
      */
     public static function length($string)
     {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
+        assert(is_string($string), 'Wrong argument type for argument 1. String expected.');
         return mb_strlen($string);
     }
 
@@ -868,9 +868,9 @@ class Strings extends \Yana\Core\AbstractUtility
      */
     public static function split($string, $separator, $limit = 0)
     {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
-        assert('is_string($separator); // Wrong argument type for argument 2. String expected.');
-        assert('is_int($limit); // Wrong argument type for argument 3. Integer expected.');
+        assert(is_string($string), 'Wrong argument type for argument 1. String expected.');
+        assert(is_string($separator), 'Wrong argument type for argument 2. String expected.');
+        assert(is_int($limit), 'Wrong argument type for argument 3. Integer expected.');
 
         if ($limit > 0) {
             return explode($separator, $string, $limit);
@@ -895,9 +895,9 @@ class Strings extends \Yana\Core\AbstractUtility
      */
     public static function splitRegExp($string, $separator, $limit = 0)
     {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
-        assert('is_string($separator); // Wrong argument type for argument 2. String expected.');
-        assert('is_int($limit); // Wrong argument type for argument 3. Integer expected.');
+        assert(is_string($string), 'Wrong argument type for argument 1. String expected.');
+        assert(is_string($separator), 'Wrong argument type for argument 2. String expected.');
+        assert(is_int($limit), 'Wrong argument type for argument 3. Integer expected.');
 
         if ($limit > 0) {
             return preg_split($separator, $string, $limit);
@@ -934,9 +934,9 @@ class Strings extends \Yana\Core\AbstractUtility
      */
     public static function indexOf($string, $needle, $offset = 0)
     {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
-        assert('is_string($needle); // Wrong argument type for argument 2. String expected.');
-        assert('is_int($offset); // Wrong argument type for argument 3. Integer expected.');
+        assert(is_string($string), 'Wrong argument type for argument 1. String expected.');
+        assert(is_string($needle), 'Wrong argument type for argument 2. String expected.');
+        assert(is_int($offset), 'Wrong argument type for argument 3. Integer expected.');
 
         if ($offset <= 0) {
             $offset = null;
@@ -964,10 +964,10 @@ class Strings extends \Yana\Core\AbstractUtility
      */
     public static function wrap($string, $width = 75, $break = "\n", $cut = false)
     {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
-        assert('is_int($width); // Wrong argument type for argument 2. Integer expected.');
-        assert('is_string($break); // Wrong argument type for argument 3. String expected.');
-        assert('is_bool($cut); // Wrong argument type for argument 4. Boolean expected.');
+        assert(is_string($string), 'Wrong argument type for argument 1. String expected.');
+        assert(is_int($width), 'Wrong argument type for argument 2. Integer expected.');
+        assert(is_string($break), 'Wrong argument type for argument 3. String expected.');
+        assert(is_bool($cut), 'Wrong argument type for argument 4. Boolean expected.');
 
         return wordwrap($string, $width, $break, $cut);
     }
@@ -985,7 +985,7 @@ class Strings extends \Yana\Core\AbstractUtility
      */
     public static function shuffle($string)
     {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
+        assert(is_string($string), 'Wrong argument type for argument 1. String expected.');
         $shuffle = (string) $string;
         if (strlen($shuffle) > 1) {
             $array = array();
@@ -1010,7 +1010,7 @@ class Strings extends \Yana\Core\AbstractUtility
      */
     public static function reverse($string)
     {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
+        assert(is_string($string), 'Wrong argument type for argument 1. String expected.');
         $reverse = (string) $string;
         if (strlen($reverse) > 1) {
             $array = array();
@@ -1032,7 +1032,7 @@ class Strings extends \Yana\Core\AbstractUtility
      */
     public static function htmlEntities($string)
     {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
+        assert(is_string($string), 'Wrong argument type for argument 1. String expected.');
         return self::encode($string, 'entities', ENT_FULL);
     }
 
@@ -1056,10 +1056,10 @@ class Strings extends \Yana\Core\AbstractUtility
      */
     public static function htmlSpecialChars($string, $quoteStyle = ENT_COMPAT, $charset = 'UTF-8', $doubleEncode = true)
     {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
-        assert('is_int($quoteStyle); // Wrong argument type for argument 2. Integer expected.');
-        assert('is_string($charset); // Wrong argument type for argument 3. String expected.');
-        assert('is_bool($doubleEncode); // Wrong argument type for argument 4. Boolean expected.');
+        assert(is_string($string), 'Wrong argument type for argument 1. String expected.');
+        assert(is_int($quoteStyle), 'Wrong argument type for argument 2. Integer expected.');
+        assert(is_string($charset), 'Wrong argument type for argument 3. String expected.');
+        assert(is_bool($doubleEncode), 'Wrong argument type for argument 4. Boolean expected.');
 
         return htmlspecialchars($string, $quoteStyle, $charset, $doubleEncode);
     }
@@ -1077,8 +1077,8 @@ class Strings extends \Yana\Core\AbstractUtility
      */
     public static function startsWith($string, $needle)
     {
-        assert('is_string($string); // Invalid argument $string: string expected');
-        assert('is_string($needle); // Invalid argument $needle: string expected');
+        assert(is_string($string), 'Invalid argument $string: string expected');
+        assert(is_string($needle), 'Invalid argument $needle: string expected');
 
         // We don't care for UTF-8 here, since 0 equals 0 - Unicode or not.
         return strpos($string, $needle) === 0;
@@ -1098,10 +1098,10 @@ class Strings extends \Yana\Core\AbstractUtility
      */
     public static function endsWith($string, $needle)
     {
-        assert('is_string($string); // Invalid argument $string: string expected');
-        assert('is_string($needle); // Invalid argument $needle: string expected');
+        assert(is_string($string), 'Invalid argument $string: string expected');
+        assert(is_string($needle), 'Invalid argument $needle: string expected');
 
-        assert('!isset($needleLength); // Cannot redeclare var $needleLength');
+        assert(!isset($needleLength), 'Cannot redeclare var $needleLength');
         $needleLength = strlen($needle);
         // No need to check for Unicode here, binary comparison will be fine.
         return strlen($string) >= $needleLength && strrpos($string, $needle, $needleLength) !== false;
@@ -1120,7 +1120,7 @@ class Strings extends \Yana\Core\AbstractUtility
      */
     public static function replaceToken($string, array $array, $lDelim = null, $rDelim = null)
     {
-        assert('is_string($string); // Wrong type for argument 1. String expected');
+        assert(is_string($string), 'Wrong type for argument 1. String expected');
 
         if (is_null($lDelim)) {
             $lDelim = YANA_LEFT_DELIMITER . '$';
@@ -1148,17 +1148,17 @@ class Strings extends \Yana\Core\AbstractUtility
                  * we recursivle replace them.
                  */
                 if (mb_strpos($tmp, $lDelim) !== false) {
-                    assert('is_string($tmp); // Unexpected result: $tmp is supposed to be a string');
+                    assert(is_string($tmp), 'Unexpected result: $tmp is supposed to be a string');
                     self::replaceToken($tmp, $array, $lDelim, $rDelim);
                 }
-                assert('is_string($tmp); // Unexpected result: $tmp is supposed to be a string');
+                assert(is_string($tmp), 'Unexpected result: $tmp is supposed to be a string');
                 $regExpMatch = preg_quote($currentMatch, '/');
                 $string = preg_replace("/(<[^\!^>]+){$ldimRegExp}{$regExpMatch}{$rdimRegExp}([^>]+>)/Usi", '${1}'.
                     addcslashes(htmlspecialchars($tmp, ENT_COMPAT, 'UTF-8'), '\\') . '${2}', $string);
                 $string = str_replace($lDelim . $currentMatch . $rDelim, $tmp, $string);
             } // end for
         } // end if
-        assert('is_string($string); // Unexpected result: $string is supposed to be a string');
+        assert(is_string($string), 'Unexpected result: $string is supposed to be a string');
         return $string;
     }
 

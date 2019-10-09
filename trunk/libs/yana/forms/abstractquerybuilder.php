@@ -85,7 +85,7 @@ class AbstractQueryBuilder extends \Yana\Core\StdObject
      */
     protected function _setCache($key, \Yana\Db\Queries\Select $value)
     {
-        assert('is_string($key); // Invalid argument type $key: String expected.');
+        assert(is_string($key), 'Invalid argument type $key: String expected.');
         $this->_cache[(string) $key] = $value;
         return $this;
     }

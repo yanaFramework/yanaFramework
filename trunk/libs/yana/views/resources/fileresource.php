@@ -74,8 +74,8 @@ class FileResource extends \Yana\Views\Resources\AbstractResource
     protected function _getSkin()
     {
         if (!isset($this->_skin)) {
-            assert('!isset($builder); // Cannot redeclare var $builder');
-            assert('!isset($application); // Cannot redeclare var $application');
+            assert(!isset($builder), 'Cannot redeclare var $builder');
+            assert(!isset($application), 'Cannot redeclare var $application');
             $builder = new \Yana\ApplicationBuilder();
             $application = $builder->buildApplication();
             unset($builder);
@@ -94,7 +94,7 @@ class FileResource extends \Yana\Views\Resources\AbstractResource
      */
     protected function fetch($filename, &$output, &$mtime)
     {
-        assert('is_string($filename); // Wrong argument type argument 1. String expected');
+        assert(is_string($filename), 'Wrong argument type argument 1. String expected');
         if (is_file($filename)) {
             $mtime = filemtime($filename);
             $fileContents = file_get_contents($filename);
@@ -114,7 +114,7 @@ class FileResource extends \Yana\Views\Resources\AbstractResource
      */
     protected function fetchTimestamp($filename)
     {
-        assert('is_string($filename); // Wrong argument type argument 1. String expected');
+        assert(is_string($filename), 'Wrong argument type argument 1. String expected');
         if (is_file($filename)) {
             return filemtime($filename);
         } else {

@@ -108,21 +108,21 @@ trait HasSecurity
      *
      * @return  array
      */
-    abstract public function getDefaultUser();
+    abstract public function getDefaultUser(): array;
 
     /**
      * Returns a ready-to-use factory to create open database connections.
      *
      * @return  \Yana\Db\IsConnectionFactory
      */
-    abstract public function getConnectionFactory();
+    abstract public function getConnectionFactory(): \Yana\Db\IsConnectionFactory;
 
     /**
      * Get database connection.
      *
      * @return  \Yana\Db\IsConnection
      */
-    protected function _getDataConnection()
+    protected function _getDataConnection(): \Yana\Db\IsConnection
     {
         if (!isset($this->_dataConnection)) {
             $this->_dataConnection = $this->getConnectionFactory()->createConnection('user');
@@ -147,7 +147,7 @@ trait HasSecurity
      *
      * @return  \Yana\Security\Rules\IsChecker
      */
-    public function getRulesChecker()
+    public function getRulesChecker(): \Yana\Security\Rules\IsChecker
     {
         if (!isset($this->_rulesChecker)) {
             $rulesChecker = new \Yana\Security\Rules\CacheableChecker($this->getRequirementsDataReader());
@@ -164,7 +164,7 @@ trait HasSecurity
      *
      * @return \Yana\Security\Rules\Requirements\IsDataReader
      */
-    public function getRequirementsDataReader()
+    public function getRequirementsDataReader(): \Yana\Security\Rules\Requirements\IsDataReader
     {
         if (!isset($this->_requirementsDataReader)) {
             $this->_requirementsDataReader = new \Yana\Security\Rules\Requirements\DefaultableDataReader(
@@ -240,7 +240,7 @@ trait HasSecurity
      *
      * @return  \Yana\Security\Passwords\Builders\IsBuilder
      */
-    public function getPasswordAlgorithmBuilder()
+    public function getPasswordAlgorithmBuilder(): \Yana\Security\Passwords\Builders\IsBuilder
     {
         if (!isset($this->_passwordAlgorithmBuilder)) {
             $this->_passwordAlgorithmBuilder = new \Yana\Security\Passwords\Builders\Builder();
@@ -253,7 +253,7 @@ trait HasSecurity
      *
      * @return  \Yana\Security\Logins\IsBehavior
      */
-    public function getLoginBehavior()
+    public function getLoginBehavior(): \Yana\Security\Logins\IsBehavior
     {
         if (!isset($this->_loginBehavior)) {
             $this->_loginBehavior = new \Yana\Security\Logins\StandardBehavior($this->getSession());
@@ -266,7 +266,7 @@ trait HasSecurity
      *
      * @return  \Yana\Security\Passwords\IsAlgorithm
      */
-    public function getPasswordAlgorithm()
+    public function getPasswordAlgorithm(): \Yana\Security\Passwords\IsAlgorithm
     {
         if (!isset($this->_passwordAlgorithm)) {
             $this->_passwordAlgorithm =
@@ -286,7 +286,7 @@ trait HasSecurity
      *
      * @return  \Yana\Security\Passwords\Generators\IsAlgorithm
      */
-    public function getPasswordGenerator()
+    public function getPasswordGenerator(): \Yana\Security\Passwords\Generators\IsAlgorithm
     {
         if (!isset($this->_passwordGenerator)) {
             $this->_passwordGenerator = new \Yana\Security\Passwords\Generators\StandardAlgorithm();
@@ -299,7 +299,7 @@ trait HasSecurity
      *
      * @return  \Yana\Security\Passwords\Behaviors\IsBehavior
      */
-    public function getPasswordBehavior()
+    public function getPasswordBehavior(): \Yana\Security\Passwords\Behaviors\IsBehavior
     {
         if (!isset($this->_passwordBehavior)) {
             $this->_passwordBehavior = new \Yana\Security\Passwords\Behaviors\StandardBehavior(
@@ -314,7 +314,7 @@ trait HasSecurity
      *
      * @return  \Yana\Security\Data\SecurityLevels\Adapter
      */
-    public function getLevelsAdapter()
+    public function getLevelsAdapter(): \Yana\Security\Data\SecurityLevels\Adapter
     {
         if (!isset($this->_levelsAdapter)) {
             $this->_levelsAdapter = new \Yana\Security\Data\SecurityLevels\Adapter($this->_getDataConnection());
@@ -327,7 +327,7 @@ trait HasSecurity
      *
      * @return  \Yana\Security\Data\SecurityRules\Adapter
      */
-    public function getRulesAdapter()
+    public function getRulesAdapter(): \Yana\Security\Data\SecurityRules\Adapter
     {
         if (!isset($this->_rulesAdapter)) {
             $this->_rulesAdapter = new \Yana\Security\Data\SecurityRules\Adapter($this->_getDataConnection());
@@ -340,7 +340,7 @@ trait HasSecurity
      *
      * @return \Yana\Security\Rules\Requirements\DataReader
      */
-    public function getDataReader()
+    public function getDataReader(): \Yana\Security\Rules\Requirements\DataReader
     {
         return new \Yana\Security\Rules\Requirements\DefaultableDataReader($this->_getDataConnection(), $this->getDefaultUser());
     }
@@ -350,7 +350,7 @@ trait HasSecurity
      *
      * @return \Yana\Security\Rules\Requirements\DataWriter
      */
-    public function getDataWriter()
+    public function getDataWriter(): \Yana\Security\Rules\Requirements\DataWriter
     {
         return new \Yana\Security\Rules\Requirements\DataWriter($this->_getDataConnection());
     }
@@ -360,7 +360,7 @@ trait HasSecurity
      *
      * @return \Yana\Security\Data\Users\Adapter
      */
-    public function getUserAdapter()
+    public function getUserAdapter(): \Yana\Security\Data\Users\Adapter
     {
         return new \Yana\Security\Data\Users\Adapter($this->_getDataConnection(), $this->_getUserMapper());
     }
@@ -370,7 +370,7 @@ trait HasSecurity
      *
      * @return  \Yana\Data\Adapters\IsEntityMapper
      */
-    protected function _getUserMapper()
+    protected function _getUserMapper(): \Yana\Data\Adapters\IsEntityMapper
     {
         return new \Yana\Security\Data\Users\Mapper();
     }

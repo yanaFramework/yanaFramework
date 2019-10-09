@@ -81,7 +81,7 @@ class Skin extends \Yana\Core\StdObject implements \Yana\Views\Skins\IsSkin
      */
     public function __construct($skinName)
     {
-        assert('is_string($skinName); // Wrong type for argument 1. String expected');
+        assert(is_string($skinName), 'Wrong type for argument 1. String expected');
 
         $this->_name = (string) $skinName;
     }
@@ -121,8 +121,8 @@ class Skin extends \Yana\Core\StdObject implements \Yana\Views\Skins\IsSkin
      */
     public static function setBaseDirectory($baseDirectory)
     {
-        assert('is_string($baseDirectory); // Wrong argument type argument 1. String expected');
-        assert('is_dir($baseDirectory);');
+        assert(is_string($baseDirectory), 'Wrong argument type argument 1. String expected');
+        assert(is_dir($baseDirectory), 'is_dir($baseDirectory)');
         self::$_baseDirectory = $baseDirectory;
     }
 
@@ -195,13 +195,13 @@ class Skin extends \Yana\Core\StdObject implements \Yana\Views\Skins\IsSkin
      */
     public function getTemplateData($templateId)
     {
-        assert('is_string($templateId); // Invalid argument $templateId: string expected');
+        assert(is_string($templateId), 'Invalid argument $templateId: string expected');
 
         $templateId = mb_strtoupper("$templateId");
         $templatesFound = array();
         /* @var $templatesFound \Yana\Views\MetaData\TemplateMetaData[] */
 
-        assert('!isset($templates); // Cannot redeclare var $templates');
+        assert(!isset($templates), 'Cannot redeclare var $templates');
         foreach ($this->_getConfigurations() as $config)
         {
             $templates = $config->getTemplates();
@@ -258,7 +258,7 @@ class Skin extends \Yana\Core\StdObject implements \Yana\Views\Skins\IsSkin
             }
             $skins[$id] = $title;
         }
-        assert('is_array($skins);');
+        assert(is_array($skins), 'is_array($skins)');
         return $skins;
     }
 
@@ -271,7 +271,7 @@ class Skin extends \Yana\Core\StdObject implements \Yana\Views\Skins\IsSkin
      */
     public function getName()
     {
-        assert('is_string($this->_name);');
+        assert(is_string($this->_name), 'is_string($this->_name)');
         return $this->_name;
     }
 
@@ -295,7 +295,7 @@ class Skin extends \Yana\Core\StdObject implements \Yana\Views\Skins\IsSkin
      */
     public static function getSkinDirectory($skinName)
     {
-        assert('is_string($skinName); // Wrong type for argument 1. String expected');
+        assert(is_string($skinName), 'Wrong type for argument 1. String expected');
         return self::$_baseDirectory . "$skinName/";
     }
 
@@ -336,7 +336,7 @@ class Skin extends \Yana\Core\StdObject implements \Yana\Views\Skins\IsSkin
         $report->addText("Skin directory: {$skinName}");
 
         $configurations = $this->_getConfigurations();
-        assert('isset($configurations[$skinName]);');
+        assert(isset($configurations[$skinName]), 'isset($configurations[$skinName])');
         $configuration = $configurations[$this->getName()];
         /* @var $configuration \Yana\Views\MetaData\SkinMetaData */
         assert($configuration instanceof \Yana\Views\MetaData\SkinMetaData);

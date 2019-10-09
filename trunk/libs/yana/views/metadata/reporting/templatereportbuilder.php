@@ -54,9 +54,9 @@ class TemplateReportBuilder extends \Yana\Views\MetaData\Reporting\AbstractTempl
             return true;
         }
 
-        assert('!isset($filename); // Cannot redeclare var $filename');
+        assert(!isset($filename), 'Cannot redeclare var $filename');
         $filename = $template->getFile();
-        assert('!isset($fileExists); // Cannot redeclare var $fileExists');
+        assert(!isset($fileExists), 'Cannot redeclare var $fileExists');
         $fileExists = file_exists($filename);
 
         if (!$fileExists) {
@@ -68,7 +68,7 @@ class TemplateReportBuilder extends \Yana\Views\MetaData\Reporting\AbstractTempl
         }
         unset($filename);
 
-        assert('is_bool($fileExists)');
+        assert(is_bool($fileExists));
         return $fileExists;
     }
 
@@ -87,10 +87,10 @@ class TemplateReportBuilder extends \Yana\Views\MetaData\Reporting\AbstractTempl
             return true;
         }
 
-        assert('!isset($filesExist); // Cannot redeclare var $filesExist');
+        assert(!isset($filesExist), 'Cannot redeclare var $filesExist');
         $filesExist = true;
 
-        assert('!isset($value); // Cannot redeclare var $value');
+        assert(!isset($value), 'Cannot redeclare var $value');
         foreach ($template->getLanguages() as $value)
         {
             if (!empty($value)) {
@@ -109,7 +109,7 @@ class TemplateReportBuilder extends \Yana\Views\MetaData\Reporting\AbstractTempl
         }
         unset($value);
 
-        assert('is_bool($filesExist)');
+        assert(is_bool($filesExist));
         return $filesExist;
     }
 
@@ -128,13 +128,13 @@ class TemplateReportBuilder extends \Yana\Views\MetaData\Reporting\AbstractTempl
             return true;
         }
 
-        assert('!isset($filesExist); // Cannot redeclare var $filesExist');
+        assert(!isset($filesExist), 'Cannot redeclare var $filesExist');
         $filesExist = true;
 
         /*
          * check stylesheet references
          */
-        assert('!isset($value); // cannot redeclare variable $value');
+        assert(!isset($value), 'cannot redeclare variable $value');
         foreach ($template->getStyles() as $value)
         {
             if (!file_exists($value)) {
@@ -145,7 +145,7 @@ class TemplateReportBuilder extends \Yana\Views\MetaData\Reporting\AbstractTempl
         }
         unset($value);
 
-        assert('is_bool($filesExist)');
+        assert(is_bool($filesExist));
         return $filesExist;
     }
 
@@ -164,10 +164,10 @@ class TemplateReportBuilder extends \Yana\Views\MetaData\Reporting\AbstractTempl
             return true;
         }
 
-        assert('!isset($filesExist); // Cannot redeclare var $filesExist');
+        assert(!isset($filesExist), 'Cannot redeclare var $filesExist');
         $filesExist = true;
 
-        assert('!isset($value); // cannot redeclare variable $value');
+        assert(!isset($value), 'cannot redeclare variable $value');
         foreach ($template->getScripts() as $value)
         {
             if (!file_exists($value)) {
@@ -178,7 +178,7 @@ class TemplateReportBuilder extends \Yana\Views\MetaData\Reporting\AbstractTempl
         }
         unset($value);
 
-        assert('is_bool($filesExist)');
+        assert(is_bool($filesExist));
         return $filesExist;
     }
 

@@ -109,7 +109,7 @@ class IbanValidator extends \Yana\Data\AbstractValidator
      */
     public function setAllowInvalidCountryCode($allowInvalidCountryCode)
     {
-        assert('is_bool($allowInvalidCountryCode); // Invalid argument $allowInvalidCountryCode: bool expected');
+        assert(is_bool($allowInvalidCountryCode), 'Invalid argument $allowInvalidCountryCode: bool expected');
         $this->_allowInvalidCountryCode = (bool) $allowInvalidCountryCode;
         return $this;
     }
@@ -154,7 +154,7 @@ class IbanValidator extends \Yana\Data\AbstractValidator
      */
     private function _buildRegExp($country)
     {
-        assert('is_string($country); // Invalid argument $country: string expected');
+        assert(is_string($country), 'Invalid argument $country: string expected');
 
         if (count($this->getLimitCountries()) > 0 && !\in_array($country, $this->getLimitCountries())) {
             throw new \Yana\Data\IbanCountryDisallowedException($country);
@@ -273,7 +273,7 @@ class IbanValidator extends \Yana\Data\AbstractValidator
 
         $countryRegEx += $unofficialCountriesRegEx; // this adds the unofficial codes
 
-        assert('!isset($regExp); // Cannot redeclare var $regExp');
+        assert(!isset($regExp), 'Cannot redeclare var $regExp');
         if (!isset($countryRegEx[$country])) {
 
             if (!$this->allowInvalidCountryCode()) {
@@ -300,12 +300,12 @@ class IbanValidator extends \Yana\Data\AbstractValidator
      */
     private function _isStructureValid($iban)
     {
-        assert('is_string($iban); // Invalid argument $iban: string expected');
+        assert(is_string($iban), 'Invalid argument $iban: string expected');
 
         $string = strtoupper($iban);
         $country = (strlen($string) > 1) ? $string[0] . $string[1] : "";
 
-        assert('!isset($isValid); // Cannot redeclare var $isValid');
+        assert(!isset($isValid), 'Cannot redeclare var $isValid');
         try {
             $countryRegEx = $this->_buildRegExp($country);
             $isValid = 1 === \preg_match($countryRegEx, $string);
@@ -314,7 +314,7 @@ class IbanValidator extends \Yana\Data\AbstractValidator
             $isValid = false;
         }
 
-        assert('is_bool($isValid); // Boolean expected');
+        assert(is_bool($isValid), 'Boolean expected');
         return $isValid;
     }
 
@@ -330,7 +330,7 @@ class IbanValidator extends \Yana\Data\AbstractValidator
      */
     private function _toNumericString($iban)
     {
-        assert('is_string($iban); // Invalid argument $iban: string expected');
+        assert(is_string($iban), 'Invalid argument $iban: string expected');
 
         $string = strtoupper(substr($iban, 4) . substr($iban, 0, 4));
         $number = "";
@@ -357,8 +357,8 @@ class IbanValidator extends \Yana\Data\AbstractValidator
      */
     private function _mod($leftNumber, $rightNumber)
     {
-        assert('is_string($leftNumber); // Invalid argument $leftNumber: string expected');
-        assert('is_scalar($rightNumber); // Invalid argument $rightNumber: scalar expected');
+        assert(is_string($leftNumber), 'Invalid argument $leftNumber: string expected');
+        assert(is_scalar($rightNumber), 'Invalid argument $rightNumber: scalar expected');
 
         $modNumber = 0;
 
@@ -382,7 +382,7 @@ class IbanValidator extends \Yana\Data\AbstractValidator
      */
     public static function validate($iban, $allowInvalidCountryCode = false, array $limitCountries = array())
     {
-        assert('is_bool($allowInvalidCountryCode); // Invalid argument $allowInvalidCountryCode: bool expected');
+        assert(is_bool($allowInvalidCountryCode), 'Invalid argument $allowInvalidCountryCode: bool expected');
 
         $validator = new self();
         $validator->setAllowInvalidCountryCode($allowInvalidCountryCode)->setLimitCountries($limitCountries);
@@ -429,9 +429,9 @@ class IbanValidator extends \Yana\Data\AbstractValidator
      */
     public function __invoke($value)
     {
-        assert('!isset($trimmedString); // Cannot redeclare var $trimmedString');
+        assert(!isset($trimmedString), 'Cannot redeclare var $trimmedString');
         $trimmedString = static::sanitize($value);
-        assert('!isset($result); // Cannot redeclare var $result');
+        assert(!isset($result), 'Cannot redeclare var $result');
         $result = ($this->_isStructureValid($trimmedString) && $this->_isChecksumValid($trimmedString)) ? $trimmedString : null;
         return $result;
     }

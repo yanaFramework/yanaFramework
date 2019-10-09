@@ -63,8 +63,8 @@ abstract class AbstractLoader extends \Yana\Core\StdObject implements \Yana\View
     protected function _getAdapter()
     {
         if (!isset($this->_adapter)) {
-            assert('!isset($builder); // Cannot redeclare var $builder');
-            assert('!isset($application); // Cannot redeclare var $application');
+            assert(!isset($builder), 'Cannot redeclare var $builder');
+            assert(!isset($application), 'Cannot redeclare var $application');
             $builder = new \Yana\ApplicationBuilder();
             $application = $builder->buildApplication();
             $file = $application->getResource('system:/smile/config.text');

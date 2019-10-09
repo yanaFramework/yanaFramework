@@ -292,7 +292,7 @@ class ValueSanitizer extends \Yana\Core\StdObject implements \Yana\Db\Helpers\Is
 
             // @codeCoverageIgnoreStart
             default:
-                assert('!in_array($value, \Yana\Db\Ddl\ColumnTypeEnumeration::getSupportedTypes()); // Unhandled column type. ');
+                assert(!in_array($value, \Yana\Db\Ddl\ColumnTypeEnumeration::getSupportedTypes()), 'Unhandled column type.');
                 throw new \Yana\Core\Exceptions\NotImplementedException(
                     "Type '" . $refColumn->getType() . "' not implemented.", \Yana\Log\TypeEnumeration::ERROR
                 );

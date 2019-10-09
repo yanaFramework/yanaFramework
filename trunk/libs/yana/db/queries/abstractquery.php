@@ -187,7 +187,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      */
     public function __get($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert(is_string($name), 'Wrong type for argument 1. String expected');
         return $this->getDatabase()->getSchema()->{$name};
     }
 
@@ -202,7 +202,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      */
     public function __call($name, array $arguments)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert(is_string($name), 'Wrong type for argument 1. String expected');
         return call_user_func_array(array($this->getDatabase()->getSchema(), $name), $arguments);
     }
 
@@ -330,7 +330,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      */
     public function getType(): int
     {
-        assert('is_int($this->type); // Expecting member "type" to be an integer');
+        assert(is_int($this->type), 'Expecting member "type" to be an integer');
         return $this->type;
     }
 
@@ -357,7 +357,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      */
     public function getExpectedResult(): int
     {
-        assert('is_int($this->type); // Expecting member "expectedResult" to be an integer');
+        assert(is_int($this->type), 'Expecting member "expectedResult" to be an integer');
         return $this->expectedResult;
     }
 
@@ -511,8 +511,8 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
             $table = $this->currentTable(); // may throw exception
 
         } elseif (!empty($this->joins)) {
-            assert('!isset($joinedTable); // Cannot redeclare var $joinedTable');
-            assert('!isset($joinCondition); // Cannot redeclare var $joinCondition');
+            assert(!isset($joinedTable), 'Cannot redeclare var $joinedTable');
+            assert(!isset($joinCondition), 'Cannot redeclare var $joinCondition');
             foreach ($this->joins as $joinCondition)
             {
                 $joinedTable = $dbSchema->getTable($joinCondition->getJoinedTableName());
@@ -591,7 +591,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
          */
         $primaryKey = mb_strtoupper($table->getPrimaryKey());
         $primaryKeyColumn = $table->getColumn($primaryKey);
-        assert('$primaryKeyColumn instanceof \Yana\Db\Ddl\Column; // Misspelled primary key column: ' . $primaryKey);
+        assert($primaryKeyColumn instanceof \Yana\Db\Ddl\Column, 'Misspelled primary key column: ' . $primaryKey);
         while ($primaryKeyColumn->isForeignKey())
         {
             $fTableKey = mb_strtoupper($table->getTableByForeignKey($primaryKey));
@@ -601,7 +601,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
             }
 
             $foreignTable = $dbSchema->getTable($fTableKey);
-            assert('$foreignTable instanceof \Yana\Db\Ddl\Table; // Misspelled foreign key in table: ' . $tableName);
+            assert($foreignTable instanceof \Yana\Db\Ddl\Table, 'Misspelled foreign key in table: ' . $tableName);
             $foreignKey = mb_strtoupper($foreignTable->getPrimaryKey());
             $this->setJoin($fTableKey, $foreignKey, $tableName, $primaryKey);
             $this->_setParentTable($table, $foreignTable);
@@ -636,11 +636,11 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      */
     protected function setJoin($joinedTableName, $targetKey = null, $sourceTableName = null, $foreignKey = null, $isLeftJoin = false)
     {
-        assert('is_string($joinedTableName); // Wrong type for argument 1. String expected');
-        assert('is_null($targetKey) || is_string($targetKey); // Wrong type for argument 2. String expected');
-        assert('is_null($sourceTableName) || is_string($sourceTableName); // Wrong type for argument 3. String expected');
-        assert('is_null($foreignKey) || is_string($foreignKey); // Wrong type for argument 4. String expected');
-        assert('is_bool($isLeftJoin); // Wrong type for argument 5. Boolean expected');
+        assert(is_string($joinedTableName), 'Wrong type for argument 1. String expected');
+        assert(is_null($targetKey) || is_string($targetKey), 'Wrong type for argument 2. String expected');
+        assert(is_null($sourceTableName) || is_string($sourceTableName), 'Wrong type for argument 3. String expected');
+        assert(is_null($foreignKey) || is_string($foreignKey), 'Wrong type for argument 4. String expected');
+        assert(is_bool($isLeftJoin), 'Wrong type for argument 5. Boolean expected');
 
         $joinedTableName = mb_strtolower((string) $joinedTableName);
         $joinedTable = $this->getDatabase()->getSchema()->getTable($joinedTableName);
@@ -655,11 +655,11 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
             throw new \Yana\Db\Queries\Exceptions\TableNotFoundException("Table not found '" . $sourceTableName . "'.");
         }
         // error - no such column in current table
-        assert('is_null($targetKey) || $joinedTable->isColumn($targetKey); // ' .
+        assert(is_null($targetKey) || $joinedTable->isColumn($targetKey),
             "Cannot join tables '" . $sourceTableName . "' and '" . $joinedTableName . "'. " .
             "Field '" . $targetKey . "' does not exist in table '" . $joinedTableName . "'.");
         // error - no such column in referenced table
-        assert('is_null($foreignKey) || $sourceTable->isColumn($foreignKey); // ' .
+        assert(is_null($foreignKey) || $sourceTable->isColumn($foreignKey),
             "Cannot join tables '" . $sourceTableName . "' and '" . $joinedTableName . "'. " .
             "Field '" . $foreignKey . "' does not exist in table '" . $sourceTableName . "'.");
 
@@ -681,11 +681,11 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
         $foreignKey = mb_strtolower((string) $foreignKey); // lower-case input
 
         // expecting both keys to be resolved and valid at this point
-        assert('$sourceTable->isColumn($foreignKey);');
-        assert('$joinedTable->isColumn($targetKey);');
+        assert((bool) $sourceTable->isColumn($foreignKey), '$sourceTable->isColumn($foreignKey)');
+        assert((bool) $joinedTable->isColumn($targetKey), '$joinedTable->isColumn($targetKey)');
 
         // create new join condition
-        assert('!isset($joinType); // Cannot redeclare variable $joinType');
+        assert(!isset($joinType), 'Cannot redeclare variable $joinType');
         $joinType = ($isLeftJoin) ? \Yana\Db\Queries\JoinTypeEnumeration::LEFT_JOIN : \Yana\Db\Queries\JoinTypeEnumeration::INNER_JOIN;
         $this->addJoinCondition(new \Yana\Db\Queries\JoinCondition($joinedTableName, $targetKey, $sourceTableName, $foreignKey, $joinType));
         return $this;
@@ -731,17 +731,17 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
 
             /* if no key is provided, take the first association available */
 
-            assert('!isset($foreignKeys); // Cannot redeclare variable $foreignKeys');
+            assert(!isset($foreignKeys), 'Cannot redeclare variable $foreignKeys');
             $foreignKeys = $sourceTable->getForeignKeys();
 
             if (empty($foreignKeys)) {
                 return false;
             }
-            assert('!isset($foreignTable); // Cannot redeclare variable $foreignTable');
-            assert('!isset($foreignKey); // Cannot redeclare variable $foreignKey');
-            assert('!isset($foreignPrimaryKey); // Cannot redeclare variable $foreignPrimaryKey');
-            assert('!isset($baseColumn); // Cannot redeclare variable $baseColumn');
-            assert('!isset($foreignColumn); // Cannot redeclare variable $foreignColumn');
+            assert(!isset($foreignTable), 'Cannot redeclare variable $foreignTable');
+            assert(!isset($foreignKey), 'Cannot redeclare variable $foreignKey');
+            assert(!isset($foreignPrimaryKey), 'Cannot redeclare variable $foreignPrimaryKey');
+            assert(!isset($baseColumn), 'Cannot redeclare variable $baseColumn');
+            assert(!isset($foreignColumn), 'Cannot redeclare variable $foreignColumn');
             /* @var $foreignKey \Yana\Db\Ddl\ForeignKey */
             foreach ($foreignKeys as $foreignKey)
             {
@@ -797,7 +797,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      */
     public function setTable(string $table)
     {
-        assert('is_string($table); // Wrong type for argument 1. String expected');
+        assert(is_string($table), 'Wrong type for argument 1. String expected');
         $this->resetId();
 
         $tableName = mb_strtolower($table);
@@ -902,8 +902,8 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      */
     protected function setColumnWithAlias($column = '*', $alias = "")
     {
-        assert('is_string($column); // Wrong type for argument 1. String expected');
-        assert('is_string($alias); // Wrong type for argument 2. String expected');
+        assert(is_string($column), 'Wrong type for argument 1. String expected');
+        assert(is_string($alias), 'Wrong type for argument 2. String expected');
         $this->resetId();
 
         /**
@@ -939,7 +939,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
             /*
              * 3.1) extract table, where provided
              */
-            assert('!isset($table); // Cannot redeclare var $table');
+            assert(!isset($table), 'Cannot redeclare var $table');
             if (strpos($column, '.')) {
                 list($table, $column) = explode('.', $column);
                 $this->setTable($table);
@@ -962,7 +962,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
             /*
              * 3.3) set column
              */
-            assert('!isset($columnValue); // Cannot redeclare var $columnValue');
+            assert(!isset($columnValue), 'Cannot redeclare var $columnValue');
             $this->column = array();
             $alias = $alias > "" ? (string) $alias : 0;
             $this->column[$alias] = array($this->_tableName, mb_strtolower($column));
@@ -1131,7 +1131,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      */
     public function setRow($row)
     {
-        assert('is_scalar($row); // Wrong argument type for argument 1. Scalar expected.');
+        assert(is_scalar($row), 'Wrong argument type for argument 1. Scalar expected.');
         $this->resetId();
 
         /*
@@ -1231,19 +1231,18 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      */
     public function setKey(string $key)
     {
-        assert('is_scalar($key); // Wrong argument type for argument 1. String expected.');
-        assert('preg_match("/^[\w\d\-_]+(\.(\w[^\.]*|\*|\?)){0,}(\.\*)?$/i", $key);'
-            . " // Syntax error. The key '{$key}' is not valid.");
+        assert(is_scalar($key), 'Wrong argument type for argument 1. String expected.');
+        assert((bool) preg_match("/^[\w\d\-_]+(\.(\w[^\.]*|\*|\?)){0,}(\.\*)?$/i", $key), " // Syntax error. The key '{$key}' is not valid.");
 
         $key = preg_replace("/\.(\*)?$/", '', $key);
         $array = explode(".", $key);
-        assert('!empty($array); // Invalid argument $key');
+        assert(!empty($array), 'Invalid argument $key');
         $dbSchema = $this->getDatabase()->getSchema();
 
         // get table definition
-        assert('!isset($table); // cannot redeclare variable $table');
+        assert(!isset($table), 'cannot redeclare variable $table');
         $table = $dbSchema->getTable($array[0]);
-        if (! $table instanceof \Yana\Db\Ddl\Table) {
+        if (!$table instanceof \Yana\Db\Ddl\Table) {
             $message = "Table not found '{$array[0]}' in schema '{$dbSchema->getName()}'.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Db\Queries\Exceptions\TableNotFoundException($message, $level);
@@ -1255,18 +1254,18 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
          * 2.1) resolve foreign keys to get true adress
          */
         if (count($array) > 3) {
-            assert('!isset($column); // cannot redeclare variable $column');
+            assert(!isset($column), 'cannot redeclare variable $column');
             $column = $table->getColumn($array[2]);
             if (! $column instanceof \Yana\Db\Ddl\Column) {
                 $message = "Column not found '{$array[2]}'";
                 $level = \Yana\Log\TypeEnumeration::WARNING;
                 throw new \Yana\Db\Queries\Exceptions\ColumnNotFoundException($message, $level);
             }
-            assert('!isset($isArray); // cannot redeclare variable $isArray');
+            assert(!isset($isArray), 'cannot redeclare variable $isArray');
             $isArray = ($column->getType() === 'array');
 
-            assert('!isset($a); // cannot redeclare variable $a');
-            assert('!isset($foreignTable); // cannot redeclare variable $foreignTable');
+            assert(!isset($a), 'cannot redeclare variable $a');
+            assert(!isset($foreignTable), 'cannot redeclare variable $foreignTable');
             while (!$isArray && count($array) > 3 && $column->isForeignKey())
             {
                 $a = $this->getDatabase()->select($array[0] . "." . $array[1] . "." . $array[2]);
@@ -1283,9 +1282,9 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
                 array_unshift($array, $a);
                 array_unshift($array, $foreignTable);
                 $table = $dbSchema->getTable($array[0]);
-                assert('$table instanceof \Yana\Db\Ddl\Table; // Table not found');
+                assert($table instanceof \Yana\Db\Ddl\Table, 'Table not found');
                 $column = $table->getColumn($array[2]);
-                assert('$column instanceof \Yana\Db\Ddl\Column; // Column not found');
+                assert($column instanceof \Yana\Db\Ddl\Column, 'Column not found');
                 $isArray = ($column->getType() === 'array');
             }
             unset($a, $foreignTable, $column);
@@ -1348,8 +1347,8 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      */
     protected function addOrderBy($column, $desc = false)
     {
-        assert('is_string($column); // Wrong argument type for argument 1. String expected.');
-        assert('is_bool($desc); // Wrong argument type for argument 2. Boolean expected.');
+        assert(is_string($column), 'Wrong argument type for argument 1. String expected.');
+        assert(is_bool($desc), 'Wrong argument type for argument 2. Boolean expected.');
 
         /*
          * 2.2.1) get base table
@@ -1497,7 +1496,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
          */
         if (YANA_DB_STRICT) {
             $table = $this->getDatabase()->getSchema()->getTable($tableName);
-            assert('is_string($column); // Unexpected result: $column. String expected.');
+            assert(is_string($column), 'Unexpected result: $column. String expected.');
 
             if (! $table instanceof \Yana\Db\Ddl\Table) {
                 $message = "Invalid where clause. The name '{$tableName}' is not a table.";
@@ -1537,12 +1536,12 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
         {
             // is array
             case $operator === \Yana\Db\Queries\OperatorEnumeration::IN || $operator === \Yana\Db\Queries\OperatorEnumeration::NOT_IN:
-                assert('is_array($rightOperand) || $rightOperand instanceof \Yana\Db\Queries\Select;');
+                assert(is_array($rightOperand) || $rightOperand instanceof \Yana\Db\Queries\Select, 'is_array($rightOperand) || $rightOperand instanceof \Yana\Db\Queries\Select');
             break;
 
             // is sub-query
             case $operator === \Yana\Db\Queries\OperatorEnumeration::EXISTS || $operator === \Yana\Db\Queries\OperatorEnumeration::NOT_EXISTS:
-                assert('$rightOperand instanceof \Yana\Db\Queries\SelectExist;');
+                assert($rightOperand instanceof \Yana\Db\Queries\SelectExist, '$rightOperand instanceof \Yana\Db\Queries\SelectExist');
             break;
 
             // is column name
@@ -1762,7 +1761,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
             }
         }
         if ($this->type === \Yana\Db\Queries\TypeEnumeration::EXISTS && !empty($this->column)) {
-            assert('!isset($column); // Cannot redeclare var $column');
+            assert(!isset($column), 'Cannot redeclare var $column');
             foreach ($this->getColumns() as $column)
             {
                 if (empty($where)) {
@@ -1963,11 +1962,11 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
             if (!$column instanceof \Yana\Db\Ddl\Column) {
                 $column = $column['column'];
             }
-            assert('$column instanceof \Yana\Db\Ddl\Column;');
+            assert($column instanceof \Yana\Db\Ddl\Column, '$column instanceof \Yana\Db\Ddl\Column');
             $columnName = mb_strtoupper($column->getName());
             // delete old files
             if (isset($values[$columnName]) && $values[$columnName] > "") {
-                assert('is_string($values[$columnName]);');
+                assert(is_string($values[$columnName]), 'is_string($values[$columnName])');
 
                 try {
                     \Yana\Db\Binaries\File::removeFile($values[$columnName]);
@@ -1976,7 +1975,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
                     // @codeCoverageIgnoreStart
 
                     // Create a database event log entry for each file that was not found.
-                    assert('!isset($message); // Cannot redeclare var $message');
+                    assert(!isset($message), 'Cannot redeclare var $message');
                     $message = $e->getMessage();
                     try {
                         $message = "Error while trying to delete a row in table '" .

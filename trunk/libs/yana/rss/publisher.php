@@ -71,7 +71,7 @@ class Publisher extends \Yana\Core\AbstractUtility
      */
     public static function publishFeed($action)
     {
-        assert('is_string($action); // Wrong argument type argument 1. String expected');
+        assert(is_string($action), 'Wrong argument type argument 1. String expected');
 
         self::$_feeds[] = "$action";
         array_unique(self::$_feeds);
@@ -84,7 +84,7 @@ class Publisher extends \Yana\Core\AbstractUtility
      */
     public static function getFeeds()
     {
-        assert('is_array(self::$_feeds); // Member "feeds" should be an array.');
+        assert(is_array(self::$_feeds), 'Member "feeds" should be an array.');
         return self::$_feeds;
     }
 

@@ -63,7 +63,7 @@ trait HasApplicationContainer
      *
      * @return  \Yana\Core\Dependencies\IsApplicationContainer
      */
-    protected function _getDependencyContainer()
+    protected function _getDependencyContainer(): \Yana\Core\Dependencies\IsApplicationContainer
     {
         return $this->_dependencyContainer;
     }

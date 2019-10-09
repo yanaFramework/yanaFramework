@@ -235,7 +235,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                 $items = $field->getForm()->getSetup()->getReferenceValues($column->getName());
                 return $this->buildSelect($items, $value, $null);
             case \Yana\Db\Ddl\ColumnTypeEnumeration::SET:
-                assert('!isset($items); // Cannot redeclare var $items');
+                assert(!isset($items), 'Cannot redeclare var $items');
                 $items = $column->getEnumerationItems();
                 if (empty($value)) {
                     $value = array();
@@ -447,7 +447,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                 if (empty($value)) {
                     $value = array();
                 }
-                assert('!isset($items); // Cannot redeclare var $items');
+                assert(!isset($items), 'Cannot redeclare var $items');
                 $items = $column->getEnumerationItems();
                 $this->setCssClass("gui_generator_set");
                 $result = "";
@@ -534,7 +534,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                 switch (strtolower((string) $event->getLanguage()))
                 {
                     case 'javascript':
-                        assert('!isset($actionId);');
+                        assert(!isset($actionId), '!isset($actionId)');
                         $actionId = \Yana\Util\Strings::htmlSpecialChars((string) $event->getAction());
                         $href = 'href="javascript://" ' . $event->getName() . '="' . $actionId . '"';
                         unset($actionId);

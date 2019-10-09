@@ -47,7 +47,7 @@ interface IsBehavior
      *
      * @return  string
      */
-    public function getId();
+    public function getId(): string;
 
     /**
      * Get session-checksum.
@@ -57,7 +57,7 @@ interface IsBehavior
      * 
      * @return  string
      */
-    public function getSessionCheckSum();
+    public function getSessionCheckSum(): string;
 
     /**
      * Update language.
@@ -67,14 +67,14 @@ interface IsBehavior
      * @param   string  $language  language or locale string
      * @return  self
      */
-    public function setLanguage($language);
+    public function setLanguage(string $language);
 
     /**
      * Get selected language.
      *
      * @return  string
      */
-    public function getLanguage();
+    public function getLanguage(): string;
 
     /**
      * Get failure count.
@@ -86,7 +86,7 @@ interface IsBehavior
      *
      * @return  int
      */
-    public function getFailureCount();
+    public function getFailureCount(): int;
 
     /**
      * Get failure time.
@@ -98,7 +98,7 @@ interface IsBehavior
      *
      * @return  int
      */
-    public function getFailureTime();
+    public function getFailureTime(): int;
 
     /**
      * Get login count.
@@ -108,7 +108,7 @@ interface IsBehavior
      * The default is 0.
      * @return  int
      */
-    public function getLoginCount();
+    public function getLoginCount(): int;
 
     /**
      * Get the timestamp when user last sucessfully logged-in.
@@ -120,14 +120,14 @@ interface IsBehavior
      *
      * @return  int
      */
-    public function getLoginTime();
+    public function getLoginTime(): int;
 
     /**
      * Get mail address.
      *
      * @return  string
      */
-    public function getMail();
+    public function getMail(): string;
 
     /**
      * Update expert setting.
@@ -138,7 +138,7 @@ interface IsBehavior
      * @param   bool  $isExpert  use expert settings (yes/no)
      * @return  self
      */
-    public function setExpert($isExpert);
+    public function setExpert(bool $isExpert);
 
     /**
      * User prefers expert settings.
@@ -146,9 +146,9 @@ interface IsBehavior
      * Returns bool(true) if the user prefers to see expert applications settings and bool(false)
      * if a simpler GUI is prefered.
      *
-     * @return  string
+     * @return  bool
      */
-    public function isExpert();
+    public function isExpert(): bool;
 
     /**
      * Update expert setting.
@@ -159,7 +159,7 @@ interface IsBehavior
      * @param   bool  $isActive  use expert settings (yes/no)
      * @return  self
      */
-    public function setActive($isActive);
+    public function setActive(bool $isActive);
 
     /**
      * User is active.
@@ -168,14 +168,14 @@ interface IsBehavior
      *
      * @return  bool
      */
-    public function isActive();
+    public function isActive(): bool;
 
     /**
      * Get the time when the user was created.
      *
      * @return  int
      */
-    public function getTimeCreated();
+    public function getTimeCreated(): int;
 
     /**
      * Get time when password was last changed.
@@ -188,7 +188,7 @@ interface IsBehavior
      *
      * @return  int
      */
-    public function getPasswordChangedTime();
+    public function getPasswordChangedTime(): int;
 
     /**
      * Get list of 10 recent passwords.
@@ -202,7 +202,7 @@ interface IsBehavior
      *
      * @return  array
      */
-    public function getRecentPasswords();
+    public function getRecentPasswords(): array;
 
     /**
      * Get password recovery time.
@@ -214,7 +214,7 @@ interface IsBehavior
      *
      * @return  int
      */
-    public function getPasswordRecoveryTime();
+    public function getPasswordRecoveryTime(): int;
 
     /**
      * Create new password recovery id.
@@ -227,7 +227,7 @@ interface IsBehavior
      *
      * @return  string
      */
-    public function generatePasswordRecoveryId();
+    public function generatePasswordRecoveryId(): string;
 
     /**
      * Update login password.
@@ -235,7 +235,7 @@ interface IsBehavior
      * @param   string  $password  user password
      * @return  self
      */
-    public function changePassword($password);
+    public function changePassword(string $password);
 
     /**
      * Update mail.
@@ -245,7 +245,7 @@ interface IsBehavior
      * @param   string  $mail  e-mail address
      * @return  self
      */
-    public function setMail($mail);
+    public function setMail(string $mail);
 
     /**
      * Compare password with password of current user.
@@ -255,7 +255,7 @@ interface IsBehavior
      * @param   string  $userPwd  user password
      * @return  bool
      */
-    public function checkPassword($userPwd);
+    public function checkPassword(string $userPwd): bool;
 
     /**
      * Compare recovery id with recovery id of current user.
@@ -265,7 +265,7 @@ interface IsBehavior
      * @param   string  $recoveryId  user password recovery id
      * @return  bool
      */
-    public function checkRecoveryId($recoveryId);
+    public function checkRecoveryId(string $recoveryId): bool;
 
     /**
      * Reset to new random password and return it.
@@ -274,7 +274,7 @@ interface IsBehavior
      *
      * @return  string
      */
-    public function generateRandomPassword();
+    public function generateRandomPassword(): string;
 
     /**
      * Get valid combination of user groups and roles.
@@ -284,7 +284,7 @@ interface IsBehavior
      * @param   string  $profileId  profile id
      * @return  \Yana\Security\Data\SecurityRules\IsCollection
      */
-    public function getSecurityGroupsAndRoles($profileId);
+    public function getSecurityGroupsAndRoles(string $profileId): \Yana\Security\Data\SecurityRules\IsCollection;
 
     /**
      * Get all combinations of user groups and roles.
@@ -293,7 +293,7 @@ interface IsBehavior
      *
      * @return  \Yana\Security\Data\SecurityRules\IsCollection
      */
-    public function getAllSecurityGroupsAndRoles();
+    public function getAllSecurityGroupsAndRoles(): \Yana\Security\Data\SecurityRules\IsCollection;
 
     /**
      * Find all security rules given to other users.
@@ -305,7 +305,7 @@ interface IsBehavior
      *
      * @return  \Yana\Security\Data\SecurityRules\IsCollection
      */
-    public function getAllSecurityGroupsAndRolesGrantedToOthers();
+    public function getAllSecurityGroupsAndRolesGrantedToOthers(): \Yana\Security\Data\SecurityRules\IsCollection;
 
     /**
      * Check and delete the given rule.
@@ -325,10 +325,11 @@ interface IsBehavior
      * Returns the user's security level as an integer value.
      * The default is 0.
      *
-     * @param   string  $profileId  profile id
+     * @param   string  $profileId         profile id
+     * @param   string  $defaultProfileId  fallback of nothing is defined for given profile
      * @return  int
      */
-    public function getSecurityLevel($profileId);
+    public function getSecurityLevel(string $profileId, string $defaultProfileId = ""): int;
 
     /**
      * Get security levels.
@@ -338,7 +339,7 @@ interface IsBehavior
      * @param   string  $profileId  profile id
      * @return  \Yana\Security\Data\SecurityLevels\IsCollection
      */
-    public function getAllSecurityLevels();
+    public function getAllSecurityLevels(): \Yana\Security\Data\SecurityLevels\IsCollection;
 
     /**
      * Find all security levels given to other users.
@@ -351,7 +352,7 @@ interface IsBehavior
      *
      * @return  \Yana\Security\Data\SecurityLevels\IsCollection
      */
-    public function getAllSecurityLevelsGrantedToOthers();
+    public function getAllSecurityLevelsGrantedToOthers(): \Yana\Security\Data\SecurityLevels\IsCollection;
 
     /**
      * Check and delete the given level.
@@ -377,7 +378,7 @@ interface IsBehavior
      * @throws  \Yana\Core\Exceptions\Security\PermissionDeniedException  when the user is temporarily blocked
      * @throws  \Yana\Core\Exceptions\Security\InvalidLoginException      when the credentials are invalid
      */
-    public function login($password);
+    public function login(string $password);
 
     /**
      * Destroy the current session and clear all session data.
@@ -394,7 +395,7 @@ interface IsBehavior
      *
      * @return  bool
      */
-    public function isLoggedIn();
+    public function isLoggedIn(): bool;
 
     /**
      * Saves all changes to the user.

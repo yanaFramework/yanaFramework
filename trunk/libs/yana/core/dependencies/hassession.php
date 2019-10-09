@@ -49,7 +49,7 @@ trait HasSession
      *
      * @return  \Yana\Security\Sessions\IsWrapper
      */
-    public function getSession()
+    public function getSession(): \Yana\Security\Sessions\IsWrapper
     {
         if (!isset($this->_session)) {
             $this->_session = new \Yana\Security\Sessions\Wrapper();

@@ -61,8 +61,8 @@ class UrlValidator extends AbstractValidator
      */
     public function setMaxLength($length)
     {
-        assert('is_int($length); // Invalid argument $length: int expected');
-        assert('$length >= 0; // $length must not be negative');
+        assert(is_int($length), 'Invalid argument $length: int expected');
+        assert($length >= 0, '$length must not be negative');
         $this->_length = (int) $length;
         return $this;
     }
@@ -76,7 +76,7 @@ class UrlValidator extends AbstractValidator
      */
     public static function validate($url, $maxLength = 0)
     {
-        assert('is_int($maxLength); // Invalid argument $maxLength: int expected');
+        assert(is_int($maxLength), 'Invalid argument $maxLength: int expected');
         return filter_var($url, FILTER_VALIDATE_URL) && (!$maxLength || mb_strlen($url) <= $maxLength) && !self::_hasJavaScriptScheme($url)
             && !self::_hasFileScheme($url);
     }
@@ -142,7 +142,7 @@ class UrlValidator extends AbstractValidator
      */
     public static function sanitize($url, $maxLength = 0)
     {
-        assert('is_int($maxLength); // Invalid argument $maxLength: int expected');
+        assert(is_int($maxLength), 'Invalid argument $maxLength: int expected');
         $validator = new self();
         return $validator->setMaxLength($maxLength)
             ->__invoke($url, $maxLength);

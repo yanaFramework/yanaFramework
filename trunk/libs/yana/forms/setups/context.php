@@ -98,7 +98,7 @@ class Context extends \Yana\Core\StdObject implements \Yana\Forms\Setups\IsConte
      */
     public function __construct($name)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert(is_string($name), 'Invalid argument $name: string expected');
         $this->_contextName = (string) $name;
         $this->_rows = new \Yana\Forms\RowIterator();
     }
@@ -121,7 +121,7 @@ class Context extends \Yana\Core\StdObject implements \Yana\Forms\Setups\IsConte
      */
     public function getValue($key)
     {
-        assert('is_string($key); // Wrong argument type argument 1. String expected');
+        assert(is_string($key), 'Wrong argument type argument 1. String expected');
         return \Yana\Util\Hashtable::get($this->_values, strtolower($key));
     }
 
@@ -132,7 +132,7 @@ class Context extends \Yana\Core\StdObject implements \Yana\Forms\Setups\IsConte
      */
     public function getValues()
     {
-        assert('is_array($this->_values); // Member "values" is expected to be an array.');
+        assert(is_array($this->_values), 'Member "values" is expected to be an array.');
         return $this->_values;
     }
 
@@ -145,7 +145,7 @@ class Context extends \Yana\Core\StdObject implements \Yana\Forms\Setups\IsConte
      */
     public function setValue($key, $value)
     {
-        assert('is_string($key); // Wrong argument type argument 1. String expected');
+        assert(is_string($key), 'Wrong argument type argument 1. String expected');
         $this->_values[$key] = $value;
         return $this;
     }
@@ -233,7 +233,7 @@ class Context extends \Yana\Core\StdObject implements \Yana\Forms\Setups\IsConte
      */
     public function setFooter($footer)
     {
-        assert('is_string($footer); // Invalid argument $footer: string expected');
+        assert(is_string($footer), 'Invalid argument $footer: string expected');
         $this->_footer = (string) $footer;
         return $this;
     }
@@ -256,7 +256,7 @@ class Context extends \Yana\Core\StdObject implements \Yana\Forms\Setups\IsConte
      */
     public function setHeader($header)
     {
-        assert('is_string($header); // Invalid argument $footer: string expected');
+        assert(is_string($header), 'Invalid argument $footer: string expected');
         $this->_header = (string) $header;
         return $this;
     }
@@ -279,7 +279,7 @@ class Context extends \Yana\Core\StdObject implements \Yana\Forms\Setups\IsConte
      */
     public function setAction($action)
     {
-        assert('is_string($action); // Wrong type for argument 1. String expected');
+        assert(is_string($action), 'Wrong type for argument 1. String expected');
         $this->_action = $action;
         return $this;
     }
@@ -301,7 +301,7 @@ class Context extends \Yana\Core\StdObject implements \Yana\Forms\Setups\IsConte
      */
     public function hasColumnName($columnName)
     {
-        assert('is_string($columnName); // Wrong type for argument 1. String expected');
+        assert(is_string($columnName), 'Wrong type for argument 1. String expected');
         $upperCaseColumnName = \Yana\Util\Strings::toUpperCase((string) $columnName);
         return \in_array($upperCaseColumnName, $this->getColumnNames());
     }
@@ -359,7 +359,7 @@ class Context extends \Yana\Core\StdObject implements \Yana\Forms\Setups\IsConte
      */
     public function addColumnName($columnName)
     {
-        assert('is_string($columnName); // Wrong type for argument 1. String expected');
+        assert(is_string($columnName), 'Wrong type for argument 1. String expected');
         $this->_columnNames[] = \Yana\Util\Strings::toUpperCase((string) $columnName);
         return $this;
     }

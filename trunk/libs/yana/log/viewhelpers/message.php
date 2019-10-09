@@ -64,7 +64,7 @@ class Message extends \Yana\Core\StdObject
      */
     public function setHeader($header)
     {
-        assert('is_string($header); // Invalid argument $header: string expected');
+        assert(is_string($header), 'Invalid argument $header: string expected');
 
         $this->_header = $header;
         return $this;
@@ -88,7 +88,7 @@ class Message extends \Yana\Core\StdObject
      */
     public function setText($text)
     {
-        assert('is_string($text); // Invalid argument $text: string expected');
+        assert(is_string($text), 'Invalid argument $text: string expected');
 
         $this->_text = $text;
         return $this;

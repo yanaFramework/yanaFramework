@@ -26,6 +26,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana;
 
@@ -110,7 +111,7 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
      */
     public function execute($action = "", array $args = null)
     {
-        assert('is_string($action); // Invalid argument $action: string expected');
+        assert(is_string($action), 'Invalid argument $action: string expected');
 
         /**
          * 1) check for default arguments
@@ -125,8 +126,8 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
         /**
          * 2) load language strings
          */
-        assert('!isset($eventConfiguration); // Cannot redeclare var $eventConfiguration');
-        assert('!isset($plugins); // Cannot redeclare var $plugins');
+        assert(!isset($eventConfiguration), 'Cannot redeclare var $eventConfiguration');
+        assert(!isset($plugins), 'Cannot redeclare var $plugins');
         $plugins = $this->getPlugins();
         $eventConfiguration = $plugins->getEventConfiguration($action);
         if (!($eventConfiguration instanceof \Yana\Plugins\Configs\IsMethodConfiguration)) {
@@ -135,13 +136,13 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
             return false;
         }
 
-        assert('!isset($paths); // Cannot redeclare var $paths');
+        assert(!isset($paths), 'Cannot redeclare var $paths');
         $paths = $eventConfiguration->getPaths();
         if ($paths) {
-            assert('!isset($language); // Cannot redeclare var $language');
+            assert(!isset($language), 'Cannot redeclare var $language');
             $language = $this->getLanguage();
             // mount language directory, if it exists
-            assert('!isset($langDir); // Cannot redeclare var $langDir');
+            assert(!isset($langDir), 'Cannot redeclare var $langDir');
             foreach ($eventConfiguration->getPaths() as $langDir)
             {
                 $langDir = $langDir . "/languages/";
@@ -153,12 +154,12 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
         }
         unset($paths);
         // load language files
-        assert('!isset($languages); // Cannot redeclare var $languages');
+        assert(!isset($languages), 'Cannot redeclare var $languages');
         $languages = $eventConfiguration->getLanguages();
         if ($languages) {
-            assert('!isset($language); // Cannot redeclare var $language');
+            assert(!isset($language), 'Cannot redeclare var $language');
             $language = $this->getLanguage();
-            assert('!isset($languageId); // Cannot redeclare var $languageId');
+            assert(!isset($languageId), 'Cannot redeclare var $languageId');
             foreach ($languages as $languageId)
             {
                 try {
@@ -178,13 +179,13 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
             unset($language, $languageId);
         }
         unset($languages);
-        assert('!isset($styles); // Cannot redeclare var $styles');
+        assert(!isset($styles), 'Cannot redeclare var $styles');
         $styles = $eventConfiguration->getStyles();
         if ($styles) {
             $this->getView()->addStyles($styles);
         }
         unset($styles);
-        assert('!isset($scripts); // Cannot redeclare var $scripts');
+        assert(!isset($scripts), 'Cannot redeclare var $scripts');
         $scripts = $eventConfiguration->getScripts();
         if ($scripts) {
             $this->getView()->addScripts($scripts);
@@ -353,7 +354,7 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
      */
     public function isVar($key)
     {
-        assert('is_scalar($key); // Invalid argument $key: scalar expected');
+        assert(is_scalar($key), 'Invalid argument $key: scalar expected');
         $registry = $this->getRegistry();
         return $registry->isVar("$key");
     }
@@ -378,7 +379,7 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
      */
     public function getVar($key)
     {
-        assert('is_scalar($key); // Invalid argument $key: scalar expected');
+        assert(is_scalar($key), 'Invalid argument $key: scalar expected');
         $registry = $this->getRegistry();
         return $registry->getVar("$key");
     }
@@ -417,7 +418,7 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
      */
     public function setVarByReference($key, &$value)
     {
-        assert('is_scalar($key); // Invalid argument $key: scalar expected');
+        assert(is_scalar($key), 'Invalid argument $key: scalar expected');
         $this->getRegistry()->setVarByReference((string) $key, $value);
         return $this;
     }
@@ -487,7 +488,7 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
      */
     public function getResource($path)
     {
-        assert('is_string($path); // Invalid argument $path: string expected');
+        assert(is_string($path), 'Invalid argument $path: string expected');
         return $this->getRegistry()->getResource($path);
     }
 
@@ -537,7 +538,7 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
      */
     public function exitTo($event = 'null', array $args = array())
     {
-        assert('is_string($event); // Invalid argument $event: string expected');
+        assert(is_string($event), 'Invalid argument $event: string expected');
         $this->_getOutputBehavior()->relocateTo($event, $args);
         exit(0);
     }
@@ -581,7 +582,7 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
      */
     public function getDefault($key)
     {
-        assert('is_scalar($key); // Invalid argument $key: scalar expected');
+        assert(is_scalar($key), 'Invalid argument $key: scalar expected');
         return $this->_getDependencyContainer()->getDefault($key);
     }
 

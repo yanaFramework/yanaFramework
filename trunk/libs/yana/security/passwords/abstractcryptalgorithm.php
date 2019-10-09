@@ -63,8 +63,8 @@ abstract class AbstractCryptAlgorithm extends \Yana\Security\Passwords\AbstractA
      */
     public function isEqual($password, $hash)
     {
-        assert('is_string($password); // Wrong argument type for argument $password. String expected.');
-        assert('is_string($hash); // Wrong argument type for argument $hash. String expected.');
+        assert(is_string($password), 'Wrong argument type for argument $password. String expected.');
+        assert(is_string($hash), 'Wrong argument type for argument $hash. String expected.');
         return \password_verify($password, $hash);
     }
 

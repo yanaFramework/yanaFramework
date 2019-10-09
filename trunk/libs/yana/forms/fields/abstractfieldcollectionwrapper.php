@@ -235,7 +235,7 @@ abstract class AbstractFieldCollectionWrapper extends \Yana\Core\StdObject imple
      */
     public function offsetExists($offset)
     {
-        assert('is_string($offset); // Invalid argument type: $offset. String expected.');
+        assert(is_string($offset), 'Invalid argument type: $offset. String expected.');
         return $this->_getCollection()->offsetExists($offset);
     }
 
@@ -248,7 +248,7 @@ abstract class AbstractFieldCollectionWrapper extends \Yana\Core\StdObject imple
      */
     public function offsetGet($offset)
     {
-        assert('is_string($offset); // Invalid argument type: $offset. String expected.');
+        assert(is_string($offset), 'Invalid argument type: $offset. String expected.');
         return $this->_getCollection()->offsetGet($offset);
     }
 
@@ -262,7 +262,7 @@ abstract class AbstractFieldCollectionWrapper extends \Yana\Core\StdObject imple
      */
     public function offsetSet($offset, $value)
     {
-        assert('is_string($offset); // Invalid argument type: $offset. String expected.');
+        assert(is_string($offset), 'Invalid argument type: $offset. String expected.');
         return $this->_getCollection()->offsetSet($offset, $value);
     }
 
@@ -274,7 +274,7 @@ abstract class AbstractFieldCollectionWrapper extends \Yana\Core\StdObject imple
      */
     public function offsetUnset($offset)
     {
-        assert('is_string($offset); // Invalid argument type: $offset. String expected.');
+        assert(is_string($offset), 'Invalid argument type: $offset. String expected.');
         $this->_getCollection()->offsetUnset($offset);
     }
 

@@ -91,8 +91,8 @@ class ArrayValidator extends AbstractValidator
      */
     public function setMaxCount($maxCount)
     {
-        assert('is_int($maxCount); // Invalid argument $maxCount: int expected');
-        assert('$maxCount >= 0; // $maxCount must not be negative');
+        assert(is_int($maxCount), 'Invalid argument $maxCount: int expected');
+        assert($maxCount >= 0, '$maxCount must not be negative');
         $this->_maxCount = (int) $maxCount;
         return $this;
     }
@@ -105,7 +105,7 @@ class ArrayValidator extends AbstractValidator
      */
     public function addOption($option)
     {
-        assert('is_int($option); // Invalid argument $option: int expected');
+        assert(is_int($option), 'Invalid argument $option: int expected');
         $this->_options = $this->_options | $option;
         return $this;
     }
@@ -134,8 +134,8 @@ class ArrayValidator extends AbstractValidator
      */
     public static function sanitize($array, $maxCount = 0, $options = 0)
     {
-        assert('is_int($maxCount); // Invalid argument $options: int expected');
-        assert('is_int($options); // Invalid argument $options: int expected');
+        assert(is_int($maxCount), 'Invalid argument $options: int expected');
+        assert(is_int($options), 'Invalid argument $options: int expected');
 
         $validator = new self();
         return $validator->setMaxCount($maxCount)

@@ -46,7 +46,7 @@ class UploadWrapper extends \Yana\Http\Uploads\AbstractUploadWrapper
      */
     public function has($key)
     {
-        assert('is_string($key); // Invalid argument type: $key. String expected');
+        assert(is_string($key), 'Invalid argument type: $key. String expected');
         return !is_null($this->_getEntry((string) $key));
     }
 
@@ -58,7 +58,7 @@ class UploadWrapper extends \Yana\Http\Uploads\AbstractUploadWrapper
      */
     public function isFile($key)
     {
-        assert('is_string($key); // Invalid argument type: $key. String expected');
+        assert(is_string($key), 'Invalid argument type: $key. String expected');
         return $this->_isFile($this->_getEntry((string) $key));
     }
 
@@ -70,7 +70,7 @@ class UploadWrapper extends \Yana\Http\Uploads\AbstractUploadWrapper
      */
     public function isListOfFiles($key)
     {
-        assert('is_string($key); // Invalid argument type: $key. String expected');
+        assert(is_string($key), 'Invalid argument type: $key. String expected');
         return $this->_isList($this->_getEntry((string) $key));
     }
 
@@ -83,8 +83,8 @@ class UploadWrapper extends \Yana\Http\Uploads\AbstractUploadWrapper
      */
     public function file($key)
     {
-        assert('is_string($key); // Invalid argument type: $key. String expected');
-        assert('!isset($file); // Cannot redeclare var $file');
+        assert(is_string($key), 'Invalid argument type: $key. String expected');
+        assert(!isset($file), 'Cannot redeclare var $file');
         $file = $this->_getEntry((string) $key);
         if (!$this->_isFile($file)) {
             throw new \Yana\Http\Uploads\NotFoundException('No such file "' . (string) $key . '"');
@@ -109,17 +109,17 @@ class UploadWrapper extends \Yana\Http\Uploads\AbstractUploadWrapper
      */
     public function all($key)
     {
-        assert('is_string($key); // Invalid argument type: $key. String expected');
-        assert('!isset($files); // Cannot redeclare var $files');
+        assert(is_string($key), 'Invalid argument type: $key. String expected');
+        assert(!isset($files), 'Cannot redeclare var $files');
         $files = $this->_getEntry((string) $key);
         if (!$this->_isList($files)) {
             throw new \Yana\Http\Uploads\NotFoundException('No such files "' . (string) $key . '"');
         }
 
-        assert('!isset($collection); // Cannot redeclare $collection');
+        assert(!isset($collection), 'Cannot redeclare $collection');
         $collection = new \Yana\Http\Uploads\FileCollection();
-        assert('!isset($id); // Cannot redeclare $id');
-        assert('!isset($file); // Cannot redeclare $file');
+        assert(!isset($id), 'Cannot redeclare $id');
+        assert(!isset($file), 'Cannot redeclare $file');
         foreach ($files as $id => $file)
         {
             $collection[$id] = new \Yana\Http\Uploads\File($file['name'], $file['type'], $file['tmp_name'], $file['size'], $file['error']);

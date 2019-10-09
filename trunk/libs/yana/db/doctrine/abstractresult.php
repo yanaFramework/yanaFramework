@@ -56,7 +56,7 @@ abstract class AbstractResult extends \Yana\Core\StdObject implements \Yana\Db\I
      */
     protected function _getRow($rowNumber)
     {
-        assert('is_int($rowNumber); // Invalid argument $rowNumber: Integer expected');
+        assert(is_int($rowNumber), 'Invalid argument $rowNumber: Integer expected');
 
         if (!isset($this->_cache[$rowNumber])) {
             $result = $this->_getResult();
@@ -96,7 +96,7 @@ abstract class AbstractResult extends \Yana\Core\StdObject implements \Yana\Db\I
      */
     public function fetchRow($rowNumber)
     {
-        assert('is_int($rowNumber); // Invalid argument $rowNumber: Integer expected');
+        assert(is_int($rowNumber), 'Invalid argument $rowNumber: Integer expected');
         return $this->_getRow((int) $rowNumber);
     }
 
@@ -131,8 +131,8 @@ abstract class AbstractResult extends \Yana\Core\StdObject implements \Yana\Db\I
      */
     public function fetchOne($column = 0, $rowNumber = 0)
     {
-        assert('is_int($column); // Invalid argument $column: Integer expected');
-        assert('is_int($rowNumber); // Invalid argument $rowNumber: Integer expected');
+        assert(is_int($column), 'Invalid argument $column: Integer expected');
+        assert(is_int($rowNumber), 'Invalid argument $rowNumber: Integer expected');
         $row = $this->fetchRow((int) $rowNumber);
         $numberedRow = \array_values($row);
         return isset($numberedRow[$column]) ? $numberedRow[$column] : null;

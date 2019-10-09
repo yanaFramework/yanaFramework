@@ -57,7 +57,7 @@ abstract class AbstractSql extends \Yana\Db\Queries\AbstractConnectionWrapper
      */
     public function __construct(\Yana\Db\IsConnection $database, $sqlStatement)
     {
-        assert('is_string($sqlStatement); // Wrong argument type: $sqlStatement. String expected');
+        assert(is_string($sqlStatement), 'Wrong argument type: $sqlStatement. String expected');
         parent::__construct($database);
         $this->_setSqlStatement($sqlStatement);
     }
@@ -82,7 +82,7 @@ abstract class AbstractSql extends \Yana\Db\Queries\AbstractConnectionWrapper
      */
     protected function _setSqlStatement($sqlStatement)
     {
-        assert('is_string($sqlStatement); // Wrong argument type: $sqlStatement. String expected');
+        assert(is_string($sqlStatement), 'Wrong argument type: $sqlStatement. String expected');
         $this->_sqlStatement = (string) $sqlStatement;
         return $this;
     }

@@ -59,14 +59,14 @@ class XmlMetaData extends \Yana\Core\MetaData\XmlMetaData
                 $template->setId($id);
 
                 if (!empty($attributes['file'])) {
-                    assert('!isset($file); // Cannot redeclare $file');
+                    assert(!isset($file), 'Cannot redeclare $file');
                     $file = $directory . $attributes['file'];
                     $template->setFile($file);
                     unset($file);
                 } // end if
                 unset($attributes);
 
-                assert('!isset($values); // cannot redeclare variable $values');
+                assert(!isset($values), 'cannot redeclare variable $values');
                 $values = array(
                     'SCRIPT' => array(),
                     'STYLE' => array(),

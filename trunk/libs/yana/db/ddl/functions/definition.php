@@ -109,7 +109,7 @@ class Definition extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Dd
      */
     public function __construct($name, \Yana\Db\Ddl\Database $parent = null)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert(is_string($name), 'Invalid argument $name: string expected');
         parent::__construct($name);
         $this->parent = $parent;
     }
@@ -153,7 +153,7 @@ class Definition extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Dd
      */
     public function setTitle($title = "")
     {
-        assert('is_string($title); // Invalid argument $title: string expected');
+        assert(is_string($title), 'Invalid argument $title: string expected');
         if (empty($title)) {
             $this->title = null;
         } else {
@@ -203,7 +203,7 @@ class Definition extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Dd
      */
     public function setDescription($description)
     {
-        assert('is_string($description); // Invalid argument $description: string expected');
+        assert(is_string($description), 'Invalid argument $description: string expected');
         if (empty($description)) {
             $this->description = null;
         } else {
@@ -224,7 +224,7 @@ class Definition extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Dd
      */
     public function getImplementation($dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
-        assert('is_string($dbms); // Invalid argument $dbms: string expected');
+        assert(is_string($dbms), 'Invalid argument $dbms: string expected');
         $lcDbms = strtolower($dbms);
         if (!isset($this->implementations[$lcDbms])) {
             return null;
@@ -261,7 +261,7 @@ class Definition extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Dd
      */
     public function addImplementation($dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
-        assert('is_string($dbms); // Invalid argument $dbms: string expected');
+        assert(is_string($dbms), 'Invalid argument $dbms: string expected');
         if (!isset($this->implementations[$dbms])) {
             $implementation = new \Yana\Db\Ddl\Functions\Implementation($dbms);
             $this->implementations[$dbms] = $implementation;

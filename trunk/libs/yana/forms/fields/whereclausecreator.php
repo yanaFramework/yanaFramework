@@ -45,7 +45,7 @@ class WhereClauseCreator extends \Yana\Forms\Fields\AbstractWhereClauseCreator
      */
     public function __construct(\Yana\Db\Ddl\Column $column, $tableName)
     {
-        assert('is_string($tableName); // Invalid argument $tableName: string expected');
+        assert(is_string($tableName), 'Invalid argument $tableName: string expected');
         $this->_setColumn($column);
         $this->_setTableName($tableName);
     }
@@ -100,7 +100,7 @@ class WhereClauseCreator extends \Yana\Forms\Fields\AbstractWhereClauseCreator
         if (empty($rightOperand)) {
             return null;
         }
-        assert('is_array($rightOperand);');
+        assert(is_array($rightOperand), 'is_array($rightOperand)');
         return array($this->_buildLeftOperand(), 'IN', $rightOperand);
     }
 

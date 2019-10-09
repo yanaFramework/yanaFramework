@@ -90,7 +90,7 @@ abstract class AbstractCountableArray extends \Yana\Core\StdObject implements \Y
      */
     public function offsetExists($offset)
     {
-        assert('is_scalar($offset); // $offset expected to be Scalar');
+        assert(is_scalar($offset), '$offset expected to be Scalar');
         $items = $this->_getItems();
         return isset($items[$offset]);
     }
@@ -109,7 +109,7 @@ abstract class AbstractCountableArray extends \Yana\Core\StdObject implements \Y
      */
     public function offsetGet($offset)
     {
-        assert('is_scalar($offset); // $offset expected to be Scalar');
+        assert(is_scalar($offset), '$offset expected to be Scalar');
         $items = $this->_getItems();
         if (isset($items[$offset])) {
             return $items[$offset];
@@ -144,7 +144,7 @@ abstract class AbstractCountableArray extends \Yana\Core\StdObject implements \Y
      */
     public function offsetSet($offset, $value)
     {
-        assert('is_null($offset) || is_scalar($offset); // $offset expected to be Scalar');
+        assert(is_null($offset) || is_scalar($offset), '$offset expected to be Scalar');
         $items = $this->_getItems();
         if (!is_null($offset)) {
             $items[$offset] = $value;
@@ -170,7 +170,7 @@ abstract class AbstractCountableArray extends \Yana\Core\StdObject implements \Y
      */
     public function offsetUnset($offset)
     {
-        assert('is_scalar($offset); // $offset expected to be Scalar');
+        assert(is_scalar($offset), '$offset expected to be Scalar');
         $items = $this->_getItems();
         if (isset($items[$offset])) {
             unset($items[$offset]);

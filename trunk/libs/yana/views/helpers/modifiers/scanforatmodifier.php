@@ -53,11 +53,11 @@ class ScanForAtModifier extends \Yana\Views\Helpers\AbstractViewHelper implement
         $matches = array();
         if (is_string($source) && preg_match_all("/[\w\.\-_]+@[\w\.\-_]+/", $source, $matches)) {
 
-            assert('!isset($match); // $match already declared');
+            assert(!isset($match), '$match already declared');
             foreach ($matches[0] as $match)
             {
-                assert('!isset($exceptionMatch); // $exceptionMatch already declared');
-                assert('!isset($encodedMatch); // $encodedMatch already declared');
+                assert(!isset($exceptionMatch), '$exceptionMatch already declared');
+                assert(!isset($encodedMatch), '$encodedMatch already declared');
 
                 $encodedMatch = \Yana\Util\Strings::htmlEntities($match); // the replacement string
 

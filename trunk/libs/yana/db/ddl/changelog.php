@@ -147,10 +147,10 @@ class ChangeLog extends \Yana\Db\Ddl\DDL
     public function getEntries($startVersion = null, $dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         $dbms = strtolower($dbms);
-        assert('is_array($this->changes); // Member "changes" has unexpected type. Array expected.');
+        assert(is_array($this->changes), 'Member "changes" has unexpected type. Array expected.');
         $log = array();
 
-        assert('!isset($entry); // Cannot redeclare var $entry');
+        assert(!isset($entry), 'Cannot redeclare var $entry');
         foreach ($this->changes as $entry)
         {
             /* @var $entry \Yana\Db\Ddl\Logs\Sql */

@@ -47,9 +47,11 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      *
      * @return  \Yana\Security\Passwords\Behaviors\IsBehavior
      */
-    protected function _getPasswordBehavior()
+    protected function _getPasswordBehavior(): \Yana\Security\Passwords\Behaviors\IsBehavior
     {
-        return $this->_getDependencies()->getPasswordBehavior()->setUser($this->_getEntity());
+        $passwordBehavior = $this->_getDependencies()->getPasswordBehavior();
+        $passwordBehavior->setUser($this->_getEntity());
+        return $passwordBehavior;
     }
 
     /**
@@ -68,7 +70,7 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      *
      * @return  string
      */
-    public function getId()
+    public function getId(): string
     {
         return (string) $this->_getEntity()->getId();
     }
@@ -81,7 +83,7 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      * 
      * @return  string
      */
-    public function getSessionCheckSum()
+    public function getSessionCheckSum(): string
     {
         return (string) $this->_getEntity()->getSessionCheckSum();
     }
@@ -94,9 +96,8 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      * @param   string  $language  language or locale string
      * @return  self
      */
-    public function setLanguage($language)
+    public function setLanguage(string $language)
     {
-        assert('is_string($language); // Wrong type for argument: $language. String expected');
         $this->_getEntity()->setLanguage((string) $language);
         return $this;
     }
@@ -106,7 +107,7 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      *
      * @return  string
      */
-    public function getLanguage()
+    public function getLanguage(): string
     {
         return (string) $this->_getEntity()->getLanguage();
     }
@@ -121,7 +122,7 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      *
      * @return  int
      */
-    public function getFailureCount()
+    public function getFailureCount(): int
     {
         return (int) $this->_getEntity()->getFailureCount();
     }
@@ -136,7 +137,7 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      *
      * @return  int
      */
-    public function getFailureTime()
+    public function getFailureTime(): int
     {
         return (int) $this->_getEntity()->getFailureTime();
     }
@@ -149,7 +150,7 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      * The default is 0.
      * @return  int
      */
-    public function getLoginCount()
+    public function getLoginCount(): int
     {
         return (int) $this->_getEntity()->getLoginCount();
     }
@@ -164,7 +165,7 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      *
      * @return  int
      */
-    public function getLoginTime()
+    public function getLoginTime(): int
     {
         return (int) $this->_getEntity()->getLoginTime();
     }
@@ -174,7 +175,7 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      *
      * @return  string
      */
-    public function getMail()
+    public function getMail(): string
     {
         return (string) $this->_getEntity()->getMail();
     }
@@ -188,9 +189,8 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      * @param   bool  $isExpert  use expert settings (yes/no)
      * @return  self
      */
-    public function setExpert($isExpert)
+    public function setExpert(bool $isExpert)
     {
-        assert('is_bool($isExpert); // Wrong type for argument: $isExpert. Boolean expected');
         $this->_getEntity()->setExpert((bool) $isExpert);
         return $this;
     }
@@ -201,9 +201,9 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      * Returns bool(true) if the user prefers to see expert applications settings and bool(false)
      * if a simpler GUI is prefered.
      *
-     * @return  string
+     * @return  bool
      */
-    public function isExpert()
+    public function isExpert(): bool
     {
         return (bool) $this->_getEntity()->isExpert();
     }
@@ -217,9 +217,8 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      * @param   bool  $isActive  use expert settings (yes/no)
      * @return  self
      */
-    public function setActive($isActive)
+    public function setActive(bool $isActive)
     {
-        assert('is_bool($isActive); // Wrong type for argument: $isActive. Boolean expected');
         $this->_getEntity()->setActive((bool) $isActive);
         return $this;
     }
@@ -231,7 +230,7 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      *
      * @return  bool
      */
-    public function isActive()
+    public function isActive(): bool
     {
         return (bool) $this->_getEntity()->isActive();
     }
@@ -241,7 +240,7 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      *
      * @return  int
      */
-    public function getTimeCreated()
+    public function getTimeCreated(): int
     {
         return (int) $this->_getEntity()->getTimeCreated();
     }
@@ -257,7 +256,7 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      *
      * @return  int
      */
-    public function getPasswordChangedTime()
+    public function getPasswordChangedTime(): int
     {
         return (int) $this->_getEntity()->getPasswordChangedTime();
     }
@@ -274,7 +273,7 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      *
      * @return  array
      */
-    public function getRecentPasswords()
+    public function getRecentPasswords(): array
     {
         return (array) $this->_getEntity()->getRecentPasswords();
     }
@@ -289,7 +288,7 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      *
      * @return  int
      */
-    public function getPasswordRecoveryTime()
+    public function getPasswordRecoveryTime(): int
     {
         return (int) $this->_getEntity()->getPasswordRecoveryTime();
     }
@@ -305,7 +304,7 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      *
      * @return  string
      */
-    public function generatePasswordRecoveryId()
+    public function generatePasswordRecoveryId(): string
     {
         $passwordRecoveryId = (string) $this->_getPasswordBehavior()->generatePasswordRecoveryId();
         return $passwordRecoveryId;
@@ -317,9 +316,9 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      * @param   string  $password  user password
      * @return  self
      */
-    public function changePassword($password)
+    public function changePassword(string $password)
     {
-        assert('is_string($password); // Wrong type for argument: $password. String expected');
+        assert(is_string($password), 'Wrong type for argument: $password. String expected');
         $this->_getPasswordBehavior()->changePassword((string) $password);
         return $this;
     }
@@ -333,9 +332,9 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      * @return  self
      * @throws  \Yana\Core\Exceptions\Mails\InvalidMailException  when given e-mail address isn't valid
      */
-    public function setMail($mail)
+    public function setMail(string $mail)
     {
-        assert('is_string($mail); // Wrong type for argument: $mail. String expected');
+        assert(is_string($mail), 'Wrong type for argument: $mail. String expected');
         if (\Yana\Data\MailValidator::validate($mail) === false) {
             throw new \Yana\Core\Exceptions\Mails\InvalidMailException('Given e-mail address is not valid');
         }
@@ -351,9 +350,9 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      * @param   string  $plainText  user password
      * @return  bool
      */
-    public function checkPassword($plainText)
+    public function checkPassword(string $plainText): bool
     {
-        assert('is_string($plainText); // Wrong type for argument: $plainText. String expected');
+        assert(is_string($plainText), 'Wrong type for argument: $plainText. String expected');
         return (bool) $this->_getPasswordBehavior()->checkPassword((string) $plainText);
     }
 
@@ -365,9 +364,9 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      * @param   string  $recoveryId  user password recovery id
      * @return  bool
      */
-    public function checkRecoveryId($recoveryId)
+    public function checkRecoveryId(string $recoveryId): bool
     {
-        assert('is_string($recoveryId); // Wrong type for argument: $recoveryId. String expected');
+        assert(is_string($recoveryId), 'Wrong type for argument: $recoveryId. String expected');
         return (bool) $this->_getPasswordBehavior()->checkRecoveryId((string) $recoveryId);
     }
 
@@ -378,10 +377,10 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      *
      * @return  string
      */
-    public function generateRandomPassword()
+    public function generateRandomPassword(): string
     {
         $randomPassword = $this->_getPasswordBehavior()->generateRandomPassword();
-        assert('is_string($randomPassword); // Invalid return type: String expected');
+        assert(is_string($randomPassword), 'Invalid return type: String expected');
         return (string) $randomPassword;
     }
 
@@ -393,7 +392,7 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      * @param   string  $profileId  profile id
      * @return  \Yana\Security\Data\SecurityRules\IsCollection
      */
-    public function getSecurityGroupsAndRoles($profileId)
+    public function getSecurityGroupsAndRoles(string $profileId): \Yana\Security\Data\SecurityRules\IsCollection
     {
         try {
             $entities = $this->_getDependencies()->getRulesAdapter()
@@ -414,7 +413,7 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      *
      * @return  \Yana\Security\Data\SecurityRules\IsCollection
      */
-    public function getAllSecurityGroupsAndRoles()
+    public function getAllSecurityGroupsAndRoles(): \Yana\Security\Data\SecurityRules\IsCollection
     {
         try {
             $entities = $this->_getDependencies()->getRulesAdapter()
@@ -439,7 +438,7 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      *
      * @return  \Yana\Security\Data\SecurityRules\IsCollection
      */
-    public function getAllSecurityGroupsAndRolesGrantedToOthers()
+    public function getAllSecurityGroupsAndRolesGrantedToOthers(): \Yana\Security\Data\SecurityRules\IsCollection
     {
         try {
             $entities = $this->_getDependencies()->getRulesAdapter()
@@ -511,23 +510,21 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      * Returns the user's security level as an integer value.
      * The default is 0.
      *
-     * @param   string  $profileId  profile id
+     * @param   string  $profileId         profile id
+     * @param   string  $defaultProfileId  fallback of nothing is defined for given profile
      * @return  int
      */
-    public function getSecurityLevel($profileId)
+    public function getSecurityLevel(string $profileId, string $defaultProfileId = ""): int
     {
-        assert('is_string($profileId); // Invalid argument $profileId: string expected');
-
         try {
-            $securityLevelEntity = $this->_getDependencies()->getLevelsAdapter()
-                ->findEntityOwnedByUser($this->getId(), $profileId);
+            return (int) $securityLevelEntity = $this->_getDependencies()->getLevelsAdapter()
+                ->findEntityOwnedByUser($this->getId(), $profileId)->getSecurityLevel();
 
         } catch (\Yana\Core\Exceptions\User\NotFoundException $e) {
 
-            $securityLevelEntity = new \Yana\Security\Data\SecurityLevels\Level(0, true); // 0 is default
             unset($e);
+            return (int) $defaultProfileId !== "" ? $this->getSecurityLevel($defaultProfileId) : 0; // 0 is default
         }
-        return (int) $securityLevelEntity->getSecurityLevel();
     }
 
     /**
@@ -537,7 +534,7 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      *
      * @return  \Yana\Security\Data\SecurityLevels\IsCollection
      */
-    public function getAllSecurityLevels()
+    public function getAllSecurityLevels(): \Yana\Security\Data\SecurityLevels\IsCollection
     {
         try {
             $securityLevelEntities = $this->_getDependencies()->getLevelsAdapter()
@@ -563,7 +560,7 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      *
      * @return  \Yana\Security\Data\SecurityLevels\IsCollection
      */
-    public function getAllSecurityLevelsGrantedToOthers()
+    public function getAllSecurityLevelsGrantedToOthers(): \Yana\Security\Data\SecurityLevels\IsCollection
     {
         try {
             $securityLevelEntities = $this->_getDependencies()->getLevelsAdapter()
@@ -587,11 +584,9 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      * @throws  \Yana\Core\Exceptions\Security\PermissionDeniedException  when the user is temporarily blocked
      * @throws  \Yana\Core\Exceptions\Security\InvalidLoginException      when the credentials are invalid
      */
-    public function login($password)
+    public function login(string $password)
     {
-        assert('is_string($password); // Invalid argument $password: string expected');
-
-        assert('!isset($user); // Cannot redeclare var $userEntity');
+        assert(!isset($user), 'Cannot redeclare var $userEntity');
         $user = $this->_getEntity();
 
         /* 1. reset failure count if failure time has expired */
@@ -631,7 +626,7 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      *
      * @return  bool
      */
-    public function isLoggedIn()
+    public function isLoggedIn(): bool
     {
         return $this->_getDependencies()->getLoginBehavior()->isLoggedIn($this->_getEntity());
     }

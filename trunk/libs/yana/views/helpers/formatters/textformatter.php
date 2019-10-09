@@ -57,8 +57,8 @@ class TextFormatter extends \Yana\Views\Helpers\Formatters\AbstractFormatter
     protected function _getDataDir()
     {
         if (!isset(self::$_dataDir)) {
-            assert('!isset($builder); // Cannot redeclare var $builder');
-            assert('!isset($application); // Cannot redeclare var $application');
+            assert(!isset($builder), 'Cannot redeclare var $builder');
+            assert(!isset($application), 'Cannot redeclare var $application');
             $builder = new \Yana\ApplicationBuilder();
             $application = $builder->buildApplication();
             unset($builder);
@@ -76,8 +76,8 @@ class TextFormatter extends \Yana\Views\Helpers\Formatters\AbstractFormatter
     protected function _getUserDefinedTags()
     {
         if (!isset(self::$_userDefinedTags)) {
-            assert('!isset($builder); // Cannot redeclare var $builder');
-            assert('!isset($application); // Cannot redeclare var $application');
+            assert(!isset($builder), 'Cannot redeclare var $builder');
+            assert(!isset($application), 'Cannot redeclare var $application');
             $builder = new \Yana\ApplicationBuilder();
             $application = $builder->buildApplication();
             unset($builder);
@@ -123,7 +123,7 @@ class TextFormatter extends \Yana\Views\Helpers\Formatters\AbstractFormatter
      */
     public function __invoke($string)
     {
-        assert('is_string($string); // Invalid argument $string: string expected');
+        assert(is_string($string), 'Invalid argument $string: string expected');
 
         /*
          * if not necessary -> skip the whole section for better performance
@@ -349,10 +349,10 @@ class TextFormatter extends \Yana\Views\Helpers\Formatters\AbstractFormatter
                     // load and apply embedded tags from system configuration
                     // @codeCoverageIgnoreStart
                     default:
-                        assert('!isset($userTag); // Cannot redeclare var $userTag');
-                        assert('!isset($opt); // Cannot redeclare var $opt');
-                        assert('!isset($regExp); // Cannot redeclare var $regExp');
-                        assert('!isset($replace); // Cannot redeclare var $replace');
+                        assert(!isset($userTag), 'Cannot redeclare var $userTag');
+                        assert(!isset($opt), 'Cannot redeclare var $opt');
+                        assert(!isset($regExp), 'Cannot redeclare var $regExp');
+                        assert(!isset($replace), 'Cannot redeclare var $replace');
                         foreach ((array) $this->_getUserDefinedTags() as $tagName => $opt)
                         {
                             $tagName = mb_strtolower($tagName);
@@ -396,7 +396,7 @@ class TextFormatter extends \Yana\Views\Helpers\Formatters\AbstractFormatter
 
         } // end if
 
-        assert('is_string($string); // Unexpected result: $txt is supposed to be a string.');
+        assert(is_string($string), 'Unexpected result: $txt is supposed to be a string.');
         return $string;
     }
 

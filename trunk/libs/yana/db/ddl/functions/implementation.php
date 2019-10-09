@@ -111,7 +111,7 @@ class Implementation extends \Yana\Db\Ddl\DDL
      */
     public function __get($name)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert(is_string($name), 'Invalid argument $name: string expected');
         return $this->getParameter($name);
     }
 
@@ -145,7 +145,7 @@ class Implementation extends \Yana\Db\Ddl\DDL
      */
     public function __construct($dbms =\Yana\Db\DriverEnumeration::GENERIC)
     {
-        assert('is_string($dbms); // Invalid argument $dbms: string expected');
+        assert(is_string($dbms), 'Invalid argument $dbms: string expected');
         $this->dbms = strtolower($dbms);
     }
 
@@ -176,7 +176,7 @@ class Implementation extends \Yana\Db\Ddl\DDL
      */
     public function setReturn($type = "")
     {
-        assert('is_string($type); // Invalid argument $type: string expected');
+        assert(is_string($type), 'Invalid argument $type: string expected');
         if (empty($type)) {
             $this->return = null;
         } else {
@@ -197,7 +197,7 @@ class Implementation extends \Yana\Db\Ddl\DDL
      */
     public function getParameter($name)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert(is_string($name), 'Invalid argument $name: string expected');
         $tableName = mb_strtolower($name);
         if (isset($this->parameters[$tableName])) {
             return $this->parameters[$tableName];
@@ -220,7 +220,7 @@ class Implementation extends \Yana\Db\Ddl\DDL
      */
     public function getParameters()
     {
-        assert('is_array($this->parameters); // member "parameters" is expected to be an array');
+        assert(is_array($this->parameters), 'member "parameters" is expected to be an array');
         return $this->parameters;
     }
 
@@ -233,7 +233,7 @@ class Implementation extends \Yana\Db\Ddl\DDL
      */
     public function getParameterNames()
     {
-        assert('is_array($this->parameters); // member "parameters" is expected to be an array');
+        assert(is_array($this->parameters), 'member "parameters" is expected to be an array');
         return array_keys($this->parameters);
     }
 
@@ -254,7 +254,7 @@ class Implementation extends \Yana\Db\Ddl\DDL
      */
     public function addParameter($name)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert(is_string($name), 'Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->parameters[$name])) {
             $message = "Another parameter with the name '$name' is already defined.";
@@ -276,7 +276,7 @@ class Implementation extends \Yana\Db\Ddl\DDL
      */
     public function dropParameter($name)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert(is_string($name), 'Invalid argument $name: string expected');
         if (isset($this->parameters[$name])) {
             unset($this->parameters[$name]);
         }
@@ -289,7 +289,7 @@ class Implementation extends \Yana\Db\Ddl\DDL
      */
     public function getCode()
     {
-        assert('is_string($this->code); // Invalid argument $this->code: string expected');
+        assert(is_string($this->code), 'Invalid argument $this->code: string expected');
         return $this->code;
     }
 
@@ -304,7 +304,7 @@ class Implementation extends \Yana\Db\Ddl\DDL
      */
     public function setCode($code)
     {
-        assert('is_string($code); // Invalid argument $code: string expected');
+        assert(is_string($code), 'Invalid argument $code: string expected');
         $this->code = "$code";
         return $this;
     }
@@ -348,7 +348,7 @@ class Implementation extends \Yana\Db\Ddl\DDL
      */
     public function setLanguage($language)
     {
-        assert('is_string($language); // Invalid argument $language: string expected');
+        assert(is_string($language), 'Invalid argument $language: string expected');
         $this->language = "$language";
         return $this;
     }

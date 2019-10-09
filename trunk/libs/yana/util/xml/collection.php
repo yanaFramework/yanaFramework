@@ -52,7 +52,7 @@ class Collection extends \Yana\Core\AbstractCollection
         if (\is_scalar($value)) {
             $value = new \Yana\Util\Xml\StdObject((string) $value);
         }
-        assert('is_null($offset) || is_scalar($offset); // $offset expected to be Scalar');
+        assert(is_null($offset) || is_scalar($offset), '$offset expected to be Scalar');
         if (!$value instanceof \Yana\Util\Xml\IsObject) {
             $message = "Instance of \Yana\Util\Xml\IsObject expected. " .
                 "Found " . gettype($value) . "(" . get_class($value) . ") instead.";

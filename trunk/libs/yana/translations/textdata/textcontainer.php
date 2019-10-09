@@ -55,7 +55,7 @@ class TextContainer extends \Yana\Core\VarContainer implements \Yana\Translation
      */
     protected function _toArrayOffset($key)
     {
-        assert('is_scalar($key); // Invalid argument $key: string expected');
+        assert(is_scalar($key), 'Invalid argument $key: string expected');
         return (string) \mb_strtolower($key);
     }
 
@@ -70,19 +70,19 @@ class TextContainer extends \Yana\Core\VarContainer implements \Yana\Translation
      */
     public function replaceToken($string)
     {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
+        assert(is_string($string), 'Wrong argument type for argument 1. String expected.');
 
-        assert('!isset($pattern); // Cannot redeclare var $pattern');
+        assert(!isset($pattern), 'Cannot redeclare var $pattern');
         $pattern = '/'. YANA_LEFT_DELIMITER_REGEXP . 'lang id=["\']([\w_\.]+)["\']' . YANA_RIGHT_DELIMITER_REGEXP .'/';
-        assert('!isset($matches); // Cannot redeclare var $matches');
+        assert(!isset($matches), 'Cannot redeclare var $matches');
         $matches = array();
         // Search for {lang id="($key)"} and replace with translation string
         if (preg_match_all($pattern, $string, $matches)) {
-            assert('!isset($i); // Cannot redeclare var $i');
-            assert('!isset($key); // Cannot redeclare var $key');
+            assert(!isset($i), 'Cannot redeclare var $i');
+            assert(!isset($key), 'Cannot redeclare var $key');
             foreach ($matches[1] as $i => $key)
             {
-                assert('!isset($translation); // Cannot redeclare var $translation');
+                assert(!isset($translation), 'Cannot redeclare var $translation');
                 $translation = ($this->isVar($key)) ? $this->getVar($key) : $key;
                 $string = str_replace($matches[0][$i], $translation, $string);
                 unset($translation);
@@ -100,7 +100,7 @@ class TextContainer extends \Yana\Core\VarContainer implements \Yana\Translation
      */
     public function isLoaded($id)
     {
-        assert('is_string($id); // Invalid argument $id: string expected');
+        assert(is_string($id), 'Invalid argument $id: string expected');
         $lowerCasedId = $this->_toArrayOffset($id);
         return !empty($this->_loaded[$lowerCasedId]);
     }
@@ -113,7 +113,7 @@ class TextContainer extends \Yana\Core\VarContainer implements \Yana\Translation
      */
     public function setLoaded($id)
     {
-        assert('is_string($id); // Invalid argument $id: string expected');
+        assert(is_string($id), 'Invalid argument $id: string expected');
         $lowerCasedId = $this->_toArrayOffset($id);
         $this->_loaded[$lowerCasedId] = true;
         return $this;
@@ -129,11 +129,11 @@ class TextContainer extends \Yana\Core\VarContainer implements \Yana\Translation
      */
     public function addVars(array $strings)
     {
-        assert('!isset($lcStrings); // Cannot redeclare var $lcStrings');
+        assert(!isset($lcStrings), 'Cannot redeclare var $lcStrings');
         $lcStrings = \array_change_key_case($strings, CASE_LOWER);
         // This uses the union operator. It adds all elements of the right array, that are missing in the left array
         // The operator is diffrenent from array_merge() in the sense that it doesn't create duplicate values
-        assert('!isset($combinedStrings); // Cannot redeclare var $combinedStrings');
+        assert(!isset($combinedStrings), 'Cannot redeclare var $combinedStrings');
         $combinedStrings = $lcStrings + $this->getVars();
         $this->setVars($combinedStrings);
         return $this;
@@ -164,7 +164,7 @@ class TextContainer extends \Yana\Core\VarContainer implements \Yana\Translation
      */
     public function addGroups(array $groups)
     {
-        assert('!isset($lcGroups); // Cannot redeclare var $lcGroups');
+        assert(!isset($lcGroups), 'Cannot redeclare var $lcGroups');
         $lcGroups = \array_change_key_case($groups, CASE_LOWER);
         $this->_groups = \Yana\Util\Hashtable::merge($this->_groups, $lcGroups);
         return $this;
@@ -178,7 +178,7 @@ class TextContainer extends \Yana\Core\VarContainer implements \Yana\Translation
      */
     public function isGroup($groupName)
     {
-        assert('is_string($groupName); // Invalid argument $groupName: string expected');
+        assert(is_string($groupName), 'Invalid argument $groupName: string expected');
         $lcGroupName = $this->_toArrayOffset($groupName);
         return isset($this->_groups[$lcGroupName]);
     }
@@ -213,7 +213,7 @@ class TextContainer extends \Yana\Core\VarContainer implements \Yana\Translation
      */
     public function getGroupMembers($groupName)
     {
-        assert('is_string($groupName); // Invalid argument $groupName: string expected');
+        assert(is_string($groupName), 'Invalid argument $groupName: string expected');
         $lcGroupName = $this->_toArrayOffset($groupName);
 
         $groupMembers = array();
@@ -228,7 +228,7 @@ class TextContainer extends \Yana\Core\VarContainer implements \Yana\Translation
             unset($globalId, $localId);
 
         }
-        assert('is_array($groupMembers)');
+        assert(is_array($groupMembers));
         return $groupMembers;
     }
 
@@ -242,7 +242,7 @@ class TextContainer extends \Yana\Core\VarContainer implements \Yana\Translation
      */
     public function isVar($key)
     {
-        assert('is_string($key); // Wrong argument type for argument 1. String expected.');
+        assert(is_string($key), 'Wrong argument type for argument 1. String expected.');
 
         $isVar = parent::isVar($key) || $this->isGroup($key);
         return $isVar;
@@ -260,18 +260,18 @@ class TextContainer extends \Yana\Core\VarContainer implements \Yana\Translation
      */
     public function getVar($key)
     {
-        assert('is_string($key); // Wrong argument type for argument 1. String expected.');
+        assert(is_string($key), 'Wrong argument type for argument 1. String expected.');
 
         $translationResult = "";
         if (parent::isVar($key)) {
 
             $translationResult = parent::getVar($key);
-            assert('is_string($translationResult)');
+            assert(is_string($translationResult));
 
         } elseif ($this->isGroup($key)) {
 
             $translationResult = $this->getGroupMembers($key);
-            assert('is_array($translationResult)');
+            assert(is_array($translationResult));
 
         } else {
 

@@ -260,7 +260,7 @@ abstract class DDL extends \Yana\Core\StdObject
                 case 'array':
                     // is list of complex child-tags
                     if (isset($tag[2])) {
-                        assert('!isset($className); // Cannot redeclare var $className');
+                        assert(!isset($className), 'Cannot redeclare var $className');
                         $className = $tag[2];
                         foreach ($this->$property as $object)
                         {
@@ -290,9 +290,9 @@ abstract class DDL extends \Yana\Core\StdObject
                             $valAttr = $tag[4];
                         }
                         // iterate through
-                        assert('!isset($key);');
-                        assert('!isset($value);');
-                        assert('!isset($childNode);');
+                        assert(!isset($key), '!isset($key)');
+                        assert(!isset($value), '!isset($value)');
+                        assert(!isset($childNode), '!isset($childNode)');
                         $childNode = null;
                         foreach ($this->$property as $key => $value)
                         {
@@ -510,8 +510,8 @@ abstract class DDL extends \Yana\Core\StdObject
      */
     public static function setDirectory($directory)
     {
-        assert('is_string($directory); // Wrong argument type argument 1. String expected');
-        assert('is_dir($directory); // Wrong argument type argument 1. Directory expected');
+        assert(is_string($directory), 'Wrong argument type argument 1. String expected');
+        assert(is_dir($directory), 'Wrong argument type argument 1. Directory expected');
 
         self::$databaseDirectory = "$directory";
     }
@@ -526,12 +526,12 @@ abstract class DDL extends \Yana\Core\StdObject
      */
     public static function getPath($databaseName)
     {
-        assert('is_string($databaseName); // Wrong type for argument 1. String expected');
+        assert(is_string($databaseName), 'Wrong type for argument 1. String expected');
         if (!preg_match('/^([\w\d_]+)$/', $databaseName)) {
             return "$databaseName";
         }
         $file = self::getDirectory() . "$databaseName" . \Yana\Db\Ddl\DDL::$extension;
-        assert('is_file($file); // File not found: ' . $file);
+        assert((bool) is_file($file), 'File not found');
         return $file;
     }
 
@@ -546,7 +546,7 @@ abstract class DDL extends \Yana\Core\StdObject
      */
     public static function getNameFromPath($path)
     {
-        assert('is_string($path); // Wrong type for argument 1. String expected');
+        assert(is_string($path), 'Wrong type for argument 1. String expected');
         return basename("$path", \Yana\Db\Ddl\DDL::$extension);
     }
 
@@ -567,7 +567,7 @@ abstract class DDL extends \Yana\Core\StdObject
      */
     public static function getListOfFiles($useFullFilename = false)
     {
-        assert('is_bool($useFullFilename); // Wrong type for argument 1. Boolean expected');
+        assert(is_bool($useFullFilename), 'Wrong type for argument 1. Boolean expected');
         $dbDir = self::getDirectory();
         $list = array();
         $dirList = glob($dbDir . "/*" . \Yana\Db\Ddl\DDL::$extension);

@@ -46,7 +46,7 @@ class NullHandler extends \Yana\Log\Errors\AbstractHandler
      * @param   string  $file         ignored
      * @param   int     $lineNumber   ignored
      */
-    public function handleError($errorNumber, $description, $file, $lineNumber)
+    public function handleError(int $errorNumber, string $description, string $file, int $lineNumber)
     {
         // intentionally left blank
     }
@@ -59,7 +59,7 @@ class NullHandler extends \Yana\Log\Errors\AbstractHandler
      * @param   string  $code         ignored
      * @param   string  $description  ignored
      */
-    public function handleAssertion($pathToFile, $lineNumber, $code, $description = "")
+    public function handleAssertion(string $pathToFile, int $lineNumber, string $code, string $description = "")
     {
         // intentionally left blank
     }
@@ -67,9 +67,9 @@ class NullHandler extends \Yana\Log\Errors\AbstractHandler
     /**
      * Handles uncaught exceptions.
      *
-     * @param  mixed  $e  ignored
+     * @param  \Throwable  $e  ignored
      */
-    public function handleException($e)
+    public function handleException(\Throwable $e)
     {
         // intentionally left blank
     }

@@ -86,9 +86,9 @@ class Rule extends \Yana\Security\Data\SecurityRules\AbstractRule
      */
     public function __construct($group, $role, $isProxy)
     {
-        assert('is_string($group); // Wrong type for argument $group. String expected');
-        assert('is_string($role); // Wrong type for argument $role. String expected');
-        assert('is_bool($isProxy); // Wrong type for argument $isProxy. Boolean expected');
+        assert(is_string($group), 'Wrong type for argument $group. String expected');
+        assert(is_string($role), 'Wrong type for argument $role. String expected');
+        assert(is_bool($isProxy), 'Wrong type for argument $isProxy. Boolean expected');
 
         $this->_group = (string) $group;
         $this->_role = (string) $role;
@@ -103,7 +103,7 @@ class Rule extends \Yana\Security\Data\SecurityRules\AbstractRule
      */
     public function setId($id)
     {
-        assert('is_numeric($id); // Invalid argument type: $id. Integer expected');
+        assert(is_numeric($id), 'Invalid argument type: $id. Integer expected');
         $this->_id = (int) $id;
         return $this;
     }
@@ -202,7 +202,7 @@ class Rule extends \Yana\Security\Data\SecurityRules\AbstractRule
      */
     public function setProfile($profileName)
     {
-        assert('is_string($profileName); // Invalid argument $profileName: string expected');
+        assert(is_string($profileName), 'Invalid argument $profileName: string expected');
         $this->_profile = (string) $profileName;
         return $this;
     }
@@ -215,7 +215,7 @@ class Rule extends \Yana\Security\Data\SecurityRules\AbstractRule
      */
     public function setUserName($userName)
     {
-        assert('is_string($userName); // Invalid argument $userName: string expected');
+        assert(is_string($userName), 'Invalid argument $userName: string expected');
 
         $this->_userName = (string) $userName;
         return $this;
@@ -229,7 +229,7 @@ class Rule extends \Yana\Security\Data\SecurityRules\AbstractRule
      */
     public function setGrantedByUser($createdByUser)
     {
-        assert('is_string($createdByUser); // Invalid argument $createdByUser: string expected');
+        assert(is_string($createdByUser), 'Invalid argument $createdByUser: string expected');
 
         $this->_grantedByUser = (string) $createdByUser;
         return $this;
@@ -246,7 +246,7 @@ class Rule extends \Yana\Security\Data\SecurityRules\AbstractRule
      */
     public function grantTo($userName)
     {
-        assert('is_string($userName); // Invalid argument $userName: string expected');
+        assert(is_string($userName), 'Invalid argument $userName: string expected');
         if (!$this->isUserProxyActive()) {
             $message = "This permission cannot be granted to another user.";
             $code = \Yana\Log\TypeEnumeration::WARNING;

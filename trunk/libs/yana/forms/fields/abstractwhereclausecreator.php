@@ -94,7 +94,7 @@ abstract class AbstractWhereClauseCreator extends \Yana\Core\StdObject implement
      */
     protected function _setTableName($tableName)
     {
-        assert('is_string($tableName); // Invalid argument $tableName: string expected');
+        assert(is_string($tableName), 'Invalid argument $tableName: string expected');
         $this->_tableName = \Yana\Util\Strings::toLowerCase((string) $tableName);
         return $this;
     }

@@ -50,7 +50,7 @@ class Method extends \Yana\Core\StdObject implements \Yana\Http\Requests\IsMetho
      */
     public function __construct($methodName)
     {
-        assert('is_string($methodName); // Invalid argument type: $methodName. String expected.');
+        assert(is_string($methodName), 'Invalid argument type: $methodName. String expected.');
         assert($methodName === "" || \Yana\Http\Requests\MethodEnumeration::isValidItem($methodName));
         $this->_method = (string) $methodName;
     }

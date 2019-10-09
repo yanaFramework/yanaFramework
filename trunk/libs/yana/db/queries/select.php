@@ -169,7 +169,7 @@ class Select extends \Yana\Db\Queries\SelectCount implements \Yana\Db\Queries\Is
          */
         if (count($columns) === 1) {
             $column = array_pop($columns);
-            assert('is_string($column); // String expected');
+            assert(is_string($column), 'String expected');
             $this->setColumn($column);
             return $this;
 
@@ -185,8 +185,8 @@ class Select extends \Yana\Db\Queries\SelectCount implements \Yana\Db\Queries\Is
         }
 
         $result = array();
-        assert('!isset($column); // Cannot redeclare var $column');
-        assert('!isset($alias); // Cannot redeclare var $alias');
+        assert(!isset($column), 'Cannot redeclare var $column');
+        assert(!isset($alias), 'Cannot redeclare var $alias');
         foreach ($columns as $alias => $column)
         {
             $alias = mb_strtoupper((string) $alias);
@@ -253,7 +253,7 @@ class Select extends \Yana\Db\Queries\SelectCount implements \Yana\Db\Queries\Is
         if (is_array($column)) {
             return $column;
         }
-        assert('is_string($column); // Wrong argument type argument 1. String expected');
+        assert(is_string($column), 'Wrong argument type argument 1. String expected');
         if (strpos($column, '.')) {
             list($tableName, $column) = explode('.', $column);
         } else {
@@ -462,7 +462,7 @@ class Select extends \Yana\Db\Queries\SelectCount implements \Yana\Db\Queries\Is
      */
     public function getHaving(): array
     {
-        assert('is_array($this->having);');
+        assert(is_array($this->having), 'is_array($this->having)');
         return $this->having;
     }
 
@@ -548,9 +548,9 @@ class Select extends \Yana\Db\Queries\SelectCount implements \Yana\Db\Queries\Is
      */
     public function toCSV(string $colSep = ';', string $rowSep = "\n", bool $hasHeader = true): string
     {
-        assert('is_string($colSep); // Wrong argument type for argument 1. String expected.');
-        assert('is_string($rowSep); // Wrong argument type for argument 2. String expected.');
-        assert('is_bool($hasHeader); // Wrong argument type for argument 4. Boolean expected.');
+        assert(is_string($colSep), 'Wrong argument type for argument 1. String expected.');
+        assert(is_string($rowSep), 'Wrong argument type for argument 2. String expected.');
+        assert(is_bool($hasHeader), 'Wrong argument type for argument 4. Boolean expected.');
         $csv = "";
         $resultset = $this->getResults(); // array of data
         switch ($this->getExpectedResult())
@@ -623,8 +623,8 @@ class Select extends \Yana\Db\Queries\SelectCount implements \Yana\Db\Queries\Is
      */
     private static function _rowToCsv(array $row, $colSep, $rowSep)
     {
-        assert('is_string($colSep); // Wrong argument type for argument 2. String expected.');
-        assert('is_string($rowSep); // Wrong argument type for argument 3. String expected.');
+        assert(is_string($colSep), 'Wrong argument type for argument 2. String expected.');
+        assert(is_string($rowSep), 'Wrong argument type for argument 3. String expected.');
         $csv = "";
         foreach ($row as $value)
         {
@@ -722,24 +722,24 @@ class Select extends \Yana\Db\Queries\SelectCount implements \Yana\Db\Queries\Is
      */
     public function setNaturalJoin($joinedTableName)
     {
-        assert('!isset($schema); // Cannot redeclare variable $schema');
+        assert(!isset($schema), 'Cannot redeclare variable $schema');
         $schema = $this->getDatabase()->getSchema();
-        assert('!isset($joinedTable); // Cannot redeclare variable $joinedTable');
+        assert(!isset($joinedTable), 'Cannot redeclare variable $joinedTable');
         $joinedTable = $schema->getTable($joinedTableName);
         // error: table not found
         if (! $joinedTable instanceof \Yana\Db\Ddl\Table) {
             throw new \Yana\Db\Queries\Exceptions\TableNotFoundException("Table '" . $joinedTableName . "' not found.");
         }
-        assert('!isset($columns); // Cannot redeclare variable $columns');
+        assert(!isset($columns), 'Cannot redeclare variable $columns');
         $columns = $joinedTable->getColumnNames();
-        assert('!isset($foundAtLeastOneMatch); // Cannot redeclare variable $foundAtLeastOneMatch');
+        assert(!isset($foundAtLeastOneMatch), 'Cannot redeclare variable $foundAtLeastOneMatch');
         $foundAtLeastOneMatch = false;
 
-        assert('!isset($tableName); // Cannot redeclare variable $tableName');
-        assert('!isset($table); // Cannot redeclare variable $table');
+        assert(!isset($tableName), 'Cannot redeclare variable $tableName');
+        assert(!isset($table), 'Cannot redeclare variable $table');
         foreach ($this->getTables() as $tableName)
         {
-            assert('!isset($columnName); // Cannot redeclare variable $columnName');
+            assert(!isset($columnName), 'Cannot redeclare variable $columnName');
             foreach ($schema->getTable($tableName)->getColumnNames() as $columnName)
             {
                 if (in_array($columnName, $columns)) {
@@ -789,9 +789,9 @@ class Select extends \Yana\Db\Queries\SelectCount implements \Yana\Db\Queries\Is
 
         $returnedType = $this->getExpectedResult();
         $table = $this->getDatabase()->getSchema()->getTable($this->getTable());
-        assert('$table instanceof \Yana\Db\Ddl\Table;');
+        assert($table instanceof \Yana\Db\Ddl\Table, '$table instanceof \Yana\Db\Ddl\Table');
 
-        assert('!isset($output); // Cannot redeclare var $output');
+        assert(!isset($output), 'Cannot redeclare var $output');
         $output = array();
         $id = $table->getPrimaryKey();
 
@@ -810,13 +810,13 @@ class Select extends \Yana\Db\Queries\SelectCount implements \Yana\Db\Queries\Is
             switch ($returnedType)
             {
                 case \Yana\Db\ResultEnumeration::TABLE:
-                    assert('!isset($rowId); // Cannot redeclare var $rowId');
+                    assert(!isset($rowId), 'Cannot redeclare var $rowId');
                     if (isset($row[$id])) {
                         $rowId = mb_strtoupper((string) $row[$id]);
                     } else {
                         $rowId = $i;
                     }
-                    assert('!isset($refKey); // Cannot redeclare var $refKey');
+                    assert(!isset($refKey), 'Cannot redeclare var $refKey');
                     if (!empty($output[$rowId])) {
                         $output[$rowId] = array($output[$rowId]);
                         $output[$rowId][1] = false;
@@ -837,11 +837,11 @@ class Select extends \Yana\Db\Queries\SelectCount implements \Yana\Db\Queries\Is
                     }
                 break;
             }
-            assert('!isset($alias); // Cannot redeclare var $alias');
-            assert('!isset($columnName); // Cannot redeclare var $columnName');
-            assert('!isset($value); // Cannot redeclare var $value');
-            assert('!isset($column); // Cannot redeclare var $column');
-            assert('!isset($arrayAddress); // Cannot redeclare var $arrayAddress');
+            assert(!isset($alias), 'Cannot redeclare var $alias');
+            assert(!isset($columnName), 'Cannot redeclare var $columnName');
+            assert(!isset($value), 'Cannot redeclare var $value');
+            assert(!isset($column), 'Cannot redeclare var $column');
+            assert(!isset($arrayAddress), 'Cannot redeclare var $arrayAddress');
             foreach ($row as $alias => $value)
             {
                 if (!is_null($value)) {
@@ -854,9 +854,9 @@ class Select extends \Yana\Db\Queries\SelectCount implements \Yana\Db\Queries\Is
                         case \Yana\Db\ResultEnumeration::ROW:
                             // get name of parent table (if any)
                             try {
-                                assert('!isset($currentTable); // Cannot redeclare var $currentTable');
+                                assert(!isset($currentTable), 'Cannot redeclare var $currentTable');
                                 $currentTable = $this->getTableByColumn($columnName);
-                                assert('$currentTable instanceof \Yana\Db\Ddl\Table;');
+                                assert($currentTable instanceof \Yana\Db\Ddl\Table, '$currentTable instanceof \Yana\Db\Ddl\Table');
                                 // get column definition
                                 $column = $currentTable->getColumn($columnName);
                                 unset($currentTable);
@@ -882,7 +882,7 @@ class Select extends \Yana\Db\Queries\SelectCount implements \Yana\Db\Queries\Is
                                 "The input is not a valid key address.");
                     } // end switch
                     // decode cell
-                    assert('$column instanceof \Yana\Db\Ddl\Column;');
+                    assert($column instanceof \Yana\Db\Ddl\Column, '$column instanceof \Yana\Db\Ddl\Column');
                     $value = $column->interpretValue($value, $arrayAddress, $this->getDatabase()->getDBMS());
                     unset($columnName, $arrayAddress, $currentTable, $column);
                 }

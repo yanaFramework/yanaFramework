@@ -66,7 +66,7 @@ abstract class AbstractResource extends \Yana\Core\StdObject implements \Yana\Fi
      */
     public function __construct($filename)
     {
-        assert('is_string($filename); // Wrong argument type for argument 1. String expected.');
+        assert(is_string($filename), 'Wrong argument type for argument 1. String expected.');
         $this->_setPath((string) $filename);
         $this->_resetStats();
     }
@@ -106,7 +106,7 @@ abstract class AbstractResource extends \Yana\Core\StdObject implements \Yana\Fi
      */
     public function getPath()
     {
-        assert('is_string($this->_path); // Unexpected result: $this->_path is not a string');
+        assert(is_string($this->_path), 'Unexpected result: $this->_path is not a string');
         return $this->_path;
     }
 
@@ -119,8 +119,8 @@ abstract class AbstractResource extends \Yana\Core\StdObject implements \Yana\Fi
      */
     protected function _setPath($path)
     {
-        assert('is_string($path); // Wrong argument type for argument 1. String expected.');
-        assert('$path > ""; // Argument 1 must not be empty.');
+        assert(is_string($path), 'Wrong argument type for argument 1. String expected.');
+        assert($path > "", 'Argument 1 must not be empty.');
         $this->_path = (string) $path;
         return $this;
     }

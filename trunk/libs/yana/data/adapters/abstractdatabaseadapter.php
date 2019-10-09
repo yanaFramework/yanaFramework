@@ -98,7 +98,7 @@ abstract class AbstractDatabaseAdapter extends \Yana\Core\StdObject implements \
      */
     public function count()
     {
-        assert('!isset($query); // Cannot redeclare var $query');
+        assert(!isset($query), 'Cannot redeclare var $query');
         $query = new \Yana\Db\Queries\SelectCount($this->_getDatabaseConnection());
         $query->setTable($this->_getTableName());
         return $query->countResults();
@@ -118,7 +118,7 @@ abstract class AbstractDatabaseAdapter extends \Yana\Core\StdObject implements \
      */
     public function offsetExists($offset)
     {
-        assert('!isset($query); // Cannot redeclare var $query');
+        assert(!isset($query), 'Cannot redeclare var $query');
         $query = new \Yana\Db\Queries\SelectExist($this->_getDatabaseConnection());
         $query->setTable($this->_getTableName());
         $query->setRow($offset);
@@ -139,13 +139,13 @@ abstract class AbstractDatabaseAdapter extends \Yana\Core\StdObject implements \
      */
     public function offsetGet($offset)
     {
-        assert('!isset($query); // Cannot redeclare var $query');
+        assert(!isset($query), 'Cannot redeclare var $query');
         $query = new \Yana\Db\Queries\Select($this->_getDatabaseConnection());
         $query->setTable($this->_getTableName());
         $query->setRow($offset);
-        assert('!isset($dataSet); // Cannot redeclare var $dataSet');
+        assert(!isset($dataSet), 'Cannot redeclare var $dataSet');
         $dataSet = $query->getResults();
-        assert('!isset($entity); // Cannot redeclare var $entity');
+        assert(!isset($entity), 'Cannot redeclare var $entity');
         $entity = $this->_unserializeEntity($dataSet);
         return $entity;
     }
@@ -203,7 +203,7 @@ abstract class AbstractDatabaseAdapter extends \Yana\Core\StdObject implements \
      */
     private function _selectId(\Yana\Data\Adapters\IsEntity $entity, $optionalId)
     {
-        assert('!isset($id); // Cannot redeclare var $id');
+        assert(!isset($id), 'Cannot redeclare var $id');
         $id = $optionalId;
         if (is_null($id) || !is_scalar($id)) {
             $id = $entity->getId();
@@ -223,7 +223,7 @@ abstract class AbstractDatabaseAdapter extends \Yana\Core\StdObject implements \
      */
     protected function _onInsert(\Yana\Data\Adapters\IsEntity $entity, $optionalId = null)
     {
-        assert('!isset($id); // Cannot redeclare var $id');
+        assert(!isset($id), 'Cannot redeclare var $id');
         $id = $this->_selectId($entity, $optionalId);
 
         $query = new \Yana\Db\Queries\Insert($this->_getDatabaseConnection());
@@ -252,7 +252,7 @@ abstract class AbstractDatabaseAdapter extends \Yana\Core\StdObject implements \
      */
     protected function _onUpdate(\Yana\Data\Adapters\IsEntity $entity, $optionalId = null)
     {
-        assert('!isset($id); // Cannot redeclare var $id');
+        assert(!isset($id), 'Cannot redeclare var $id');
         $id = $this->_selectId($entity, $optionalId);
 
         $query = new \Yana\Db\Queries\Update($this->_getDatabaseConnection());

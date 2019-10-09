@@ -51,7 +51,7 @@ class IdGenerator extends \Yana\Core\StdObject implements \Yana\Security\Session
      */
     protected function _getRemoteAddress()
     {
-        assert('!isset($remoteAddress); // Cannot redeclare var $remoteAddress');
+        assert(!isset($remoteAddress), 'Cannot redeclare var $remoteAddress');
         $remoteAddress = '127.0.0.1';
         if (isset($_SERVER['REMOTE_ADDR']) && is_string($_SERVER['REMOTE_ADDR'])) {
             $remoteAddress = $_SERVER['REMOTE_ADDR'];
@@ -92,9 +92,9 @@ class IdGenerator extends \Yana\Core\StdObject implements \Yana\Security\Session
      */
     public function createAuthenticatedSessionId()
     {
-        assert('!isset($sessionId); // Cannot redeclare var $sessionId');
+        assert(!isset($sessionId), 'Cannot redeclare var $sessionId');
         $sessionId = uniqid($this->createApplicationUserId(), true);
-        assert('!isset($encryptedId); // Cannot redeclare var $encryptedId');
+        assert(!isset($encryptedId), 'Cannot redeclare var $encryptedId');
         // @codeCoverageIgnoreStart
         if (function_exists('sha1')) {
             $encryptedId = sha1($sessionId);

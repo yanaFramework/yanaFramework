@@ -51,9 +51,9 @@ class ConfigurationFactory extends \Yana\Core\StdObject implements \Yana\IsConfi
      */
     public function loadConfiguration($filename)
     {
-        assert('is_string($filename); // Wrong type for argument 1. String expected');
-        assert('is_file($filename); // Invalid argument 1. Input is not a file.');
-        assert('is_readable($filename); // Invalid argument 1. Configuration file is not readable.');
+        assert(is_string($filename), 'Wrong type for argument 1. String expected');
+        assert(is_file($filename), 'Invalid argument 1. Input is not a file.');
+        assert(is_readable($filename), 'Invalid argument 1. Configuration file is not readable.');
         // get System Config file
         $xmlSource = simplexml_load_file($filename);
         $configuration = \Yana\Util\Xml\Converter::convertXmlToObject($xmlSource);
@@ -90,7 +90,7 @@ class ConfigurationFactory extends \Yana\Core\StdObject implements \Yana\IsConfi
      */
     private function _activateCDApplication(\Yana\Util\Xml\IsObject $configuration)
     {
-        assert('isset($this->_configuration); // Configuration must be loaded first');
+        assert(isset($this->_configuration), 'Configuration must be loaded first');
         if (!file_exists(YANA_CDROM_DIR)) {
             mkdir(YANA_CDROM_DIR);
             chmod(YANA_CDROM_DIR, 0777);

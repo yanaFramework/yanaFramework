@@ -46,7 +46,7 @@ class PluginNameMapper extends \Yana\Core\AbstractUtility
      */
     public static function toClassName($id)
     {
-        assert('is_string($id); // Invalid argument $id: string expected');
+        assert(is_string($id), 'Invalid argument $id: string expected');
         return $id . 'Plugin';
     }
 
@@ -58,7 +58,7 @@ class PluginNameMapper extends \Yana\Core\AbstractUtility
      */
     public static function toClassNameWithNamespace($id)
     {
-        assert('is_string($id); // Invalid argument $id: string expected');
+        assert(is_string($id), 'Invalid argument $id: string expected');
         return self::toNamespace($id) . '\\' . self::toClassName($id);
     }
 
@@ -70,7 +70,7 @@ class PluginNameMapper extends \Yana\Core\AbstractUtility
      */
     public static function toNamespace($id)
     {
-        assert('is_string($id); // Invalid argument $id: string expected');
+        assert(is_string($id), 'Invalid argument $id: string expected');
         return '\\Plugins\\' . $id;
     }
 
@@ -82,7 +82,7 @@ class PluginNameMapper extends \Yana\Core\AbstractUtility
      */
     public static function toClassFilename($id)
     {
-        assert('is_string($id); // Invalid argument $id: string expected');
+        assert(is_string($id), 'Invalid argument $id: string expected');
         return $id . '.plugin.php';
     }
 
@@ -94,7 +94,7 @@ class PluginNameMapper extends \Yana\Core\AbstractUtility
      */
     public static function fromClassname($className)
     {
-        assert('is_string($className); // Invalid argument $className: string expected');
+        assert(is_string($className), 'Invalid argument $className: string expected');
         $lowerCaseClassName = \mb_strtolower($className);
         $id = \preg_replace('/^.*?([^\\\\]+)plugin$/', '$1', $lowerCaseClassName);
         return $id;
@@ -109,7 +109,7 @@ class PluginNameMapper extends \Yana\Core\AbstractUtility
      */
     public static function toClassFilenameWithDirectory($id, \Yana\Files\IsDir $baseDirectory)
     {
-        assert('is_string($id); // Invalid argument $id: string expected');
+        assert(is_string($id), 'Invalid argument $id: string expected');
         return self::toDirectory($id, $baseDirectory) . self::toClassFilename($id);
     }
 
@@ -121,7 +121,7 @@ class PluginNameMapper extends \Yana\Core\AbstractUtility
      */
     public static function toVDriveFilename($id)
     {
-        assert('is_string($id); // Invalid argument $id: string expected');
+        assert(is_string($id), 'Invalid argument $id: string expected');
         return $id . '.drive.xml';
     }
 
@@ -134,7 +134,7 @@ class PluginNameMapper extends \Yana\Core\AbstractUtility
      */
     public static function toVDriveFilenameWithDirectory($id, \Yana\Files\IsDir $baseDirectory)
     {
-        assert('is_string($id); // Invalid argument $id: string expected');
+        assert(is_string($id), 'Invalid argument $id: string expected');
         return self::toDirectory($id, $baseDirectory) . self::toVDriveFilename($id);
     }
 
@@ -147,7 +147,7 @@ class PluginNameMapper extends \Yana\Core\AbstractUtility
      */
     public static function toDirectory($id, \Yana\Files\IsDir $baseDirectory)
     {
-        assert('is_string($id); // Invalid argument $id: string expected');
+        assert(is_string($id), 'Invalid argument $id: string expected');
         return $baseDirectory->getPath() . '/' . $id .  '/';
     }
 

@@ -134,7 +134,7 @@ abstract class AbstractMapper extends \Yana\Core\StdObject implements \Yana\Core
      */
     public function setBaseDirectory($baseDirectory)
     {
-        assert('is_string($baseDirectory); // Invalid input $baseDirectory. String expected');
+        assert(is_string($baseDirectory), 'Invalid input $baseDirectory. String expected');
         $this->_baseDirectory = (string) $baseDirectory;
         return $this;
     }
@@ -149,7 +149,7 @@ abstract class AbstractMapper extends \Yana\Core\StdObject implements \Yana\Core
      */
     public function setFileExtension($fileExtension)
     {
-        assert('is_string($fileExtension); // Invalid input $fileExtension. String expected');
+        assert(is_string($fileExtension), 'Invalid input $fileExtension. String expected');
         $this->_fileExtension = (string) $fileExtension;
         return $this;
     }
@@ -165,7 +165,7 @@ abstract class AbstractMapper extends \Yana\Core\StdObject implements \Yana\Core
      */
     public function setFilePrefix($filePrefix)
     {
-        assert('is_string($filePrefix); // Invalid input $filePrefix. String expected');
+        assert(is_string($filePrefix), 'Invalid input $filePrefix. String expected');
         $this->_filePrefix = (string) $filePrefix;
         return $this;
     }
@@ -178,7 +178,7 @@ abstract class AbstractMapper extends \Yana\Core\StdObject implements \Yana\Core
      */
     public function setNameSpace($nameSpace)
     {
-        assert('is_string($nameSpace); // Invalid input $nameSpace. String expected');
+        assert(is_string($nameSpace), 'Invalid input $nameSpace. String expected');
         $this->_nameSpace = (string) $nameSpace;
         return $this;
     }
@@ -193,7 +193,7 @@ abstract class AbstractMapper extends \Yana\Core\StdObject implements \Yana\Core
      */
     public function setNameSpacePrefix($nameSpacePrefix)
     {
-        assert('is_string($nameSpacePrefix); // Invalid input $nameSpacePrefix. String expected');
+        assert(is_string($nameSpacePrefix), 'Invalid input $nameSpacePrefix. String expected');
         $this->_nameSpacePrefix = (string) $nameSpacePrefix;
         return $this;
     }

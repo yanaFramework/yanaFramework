@@ -51,7 +51,7 @@ class Sha256Algorithm extends \Yana\Security\Passwords\AbstractCryptAlgorithm
      */
     public function __invoke($password)
     {
-        assert('is_scalar($password); // Wrong argument type for argument 2. String expected.');
+        assert(is_scalar($password), 'Wrong argument type for argument 2. String expected.');
 
         if (CRYPT_SHA256 === 1) {
             $hashString = crypt($password, '$5$rounds=5000$' . $this->_createSalt() . '$');

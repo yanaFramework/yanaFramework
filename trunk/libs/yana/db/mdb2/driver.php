@@ -191,7 +191,7 @@ class Driver extends \Yana\Core\AbstractDecorator implements \Yana\Db\IsDriver
      */
     public function listTableFields($table)
     {
-        assert('is_string($table); // Invalid argument $table: string expected');
+        assert(is_string($table), 'Invalid argument $table: string expected');
 
         $connection = $this->_getDecoratedObject();
         /* @var $connection \MDB2_Driver_Manager_Common */
@@ -209,7 +209,7 @@ class Driver extends \Yana\Core\AbstractDecorator implements \Yana\Db\IsDriver
      */
     public function listTableIndexes($table)
     {
-        assert('is_string($table); // Invalid argument $table: string expected');
+        assert(is_string($table), 'Invalid argument $table: string expected');
 
         $connection = $this->_getDecoratedObject();
         /* @var $connection \MDB2_Driver_Manager_Common */
@@ -244,7 +244,7 @@ class Driver extends \Yana\Core\AbstractDecorator implements \Yana\Db\IsDriver
      */
     public function sendQueryString($sqlStmt, $limit = 0, $offset = 0)
     {
-        assert('is_string($sqlStmt); // Invalid argument $sqlStmt: string expected');
+        assert(is_string($sqlStmt), 'Invalid argument $sqlStmt: string expected');
 
         $this->_getDecoratedObject()->setLimit($limit, $offset > 0 ? $offset : null);
         $resultObject = $this->_checkReturnValue($this->_getDecoratedObject()->query($sqlStmt));
@@ -278,7 +278,7 @@ class Driver extends \Yana\Core\AbstractDecorator implements \Yana\Db\IsDriver
      */
     public function quoteIdentifier($value)
     {
-        assert('is_string($value); // Invalid argument $value: string expected');
+        assert(is_string($value), 'Invalid argument $value: string expected');
 
         return $this->_getDecoratedObject()->quoteIdentifier($value);
     }

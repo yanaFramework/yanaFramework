@@ -377,7 +377,7 @@ class DirTest extends \PHPUnit_Framework_TestCase
     public function testCopy()
     {
         $destDir = $this->nonExistingDir->getPath();
-        assert('!is_dir($destDir); // Target-directory already exists!');
+        assert(!is_dir($destDir), 'Target-directory already exists!');
         $this->existingDir->copy($destDir, true, 0766, false, '*.txt|*.sml');
         $this->assertTrue(is_dir($destDir), 'Copied directory does not exist.');
     }

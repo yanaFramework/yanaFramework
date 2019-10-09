@@ -121,7 +121,7 @@ abstract class AbstractBuilder extends \Yana\Core\StdObject implements \Yana\Plu
      */
     public function setLocale($locale)
     {
-        assert('is_string($locale); // Invalid argument type: $locale. String expected.');
+        assert(is_string($locale), 'Invalid argument type: $locale. String expected.');
         $this->_locale = (string) $locale;
         return $this;
     }
@@ -137,20 +137,20 @@ abstract class AbstractBuilder extends \Yana\Core\StdObject implements \Yana\Plu
      */
     public function buildMenu()
     {
-        assert('!isset($locale); // Cannot redeclare var $locale');
+        assert(!isset($locale), 'Cannot redeclare var $locale');
         $locale = $this->getLocale();
-        assert('!isset($menus); // Cannot redeclare var $menus');
+        assert(!isset($menus), 'Cannot redeclare var $menus');
         $menus = $this->_getMenus();
 
         if (!isset($menus[$locale]) || !$menus[$locale] instanceof \Yana\Plugins\Menus\IsMenu) {
 
             // Create instance and inject dependencies
             $textMenuBuilder = new \Yana\Plugins\Menus\TextMenuBuilder($this->_getDependencies());
-            assert('!isset($menu); // Cannot redeclare var $menu');
+            assert(!isset($menu), 'Cannot redeclare var $menu');
             $menu = new \Yana\Plugins\Menus\Menu($textMenuBuilder);
 
             /* @var $pluginConfiguration \Yana\Plugins\Configs\IsClassConfiguration */
-            assert('!isset($pluginConfiguration); // Cannot redeclare var $pluginConfiguration');
+            assert(!isset($pluginConfiguration), 'Cannot redeclare var $pluginConfiguration');
             foreach ($this->_getListOfActivePlugins() as $pluginConfiguration)
             {
                 $this->_determineMenuNames($menu, $pluginConfiguration);
@@ -276,10 +276,10 @@ abstract class AbstractBuilder extends \Yana\Core\StdObject implements \Yana\Plu
      */
     protected function _getListOfActivePlugins()
     {
-        assert('!isset($pluginFacade); // Cannot redeclare var $pluginFacade');
+        assert(!isset($pluginFacade), 'Cannot redeclare var $pluginFacade');
         $pluginFacade = $this->_getDependencies()->getPluginFacade();
         /* @var $pluginFacade \Yana\Plugins\Facade */
-        assert('!isset($plugins); // Cannot redeclare var $plugins');
+        assert(!isset($plugins), 'Cannot redeclare var $plugins');
         $plugins = $pluginFacade->getPluginConfigurations()->toArray();
 
         /* @var $pluginConfiguration PluginConfigurationClass */

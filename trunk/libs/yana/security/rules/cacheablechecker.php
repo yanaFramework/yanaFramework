@@ -58,13 +58,13 @@ class CacheableChecker extends \Yana\Security\Rules\Checker implements \Yana\Dat
      */
     public function checkRules($profileId, $action, \Yana\Security\Data\Behaviors\IsBehavior $user)
     {
-        assert('is_string($profileId); // Invalid argument type: $profileId. String expected');
-        assert('is_string($action); // Invalid argument type: $action. String expected');
+        assert(is_string($profileId), 'Invalid argument type: $profileId. String expected');
+        assert(is_string($action), 'Invalid argument type: $action. String expected');
 
-        assert('!isset($cache); // Cannot redeclare $cache');
+        assert(!isset($cache), 'Cannot redeclare $cache');
         $cache = $this->_getCache();
 
-        assert('!isset($userName); // Cannot redeclare $userName');
+        assert(!isset($userName), 'Cannot redeclare $userName');
         $userName = $user->getId();
         /**
          * {@internal
@@ -78,7 +78,7 @@ class CacheableChecker extends \Yana\Security\Rules\Checker implements \Yana\Dat
             $cache["$profileId\\$userName\\$action"] = parent::checkRules($profileId, $action, $user);
         }
 
-        assert('is_bool($cache["$profileId\\\\$userName\\\\$action"]); /* unexpected result in cached value */');
+        assert(is_bool($cache["$profileId\\$userName\\$action"]), 'unexpected result in cached value');
         return $cache["$profileId\\$userName\\$action"];
     }
 

@@ -80,18 +80,18 @@ class QuerySerializer extends \Yana\Db\Queries\AbstractQuerySerializer
      */
     protected function _toSetClause(\Yana\Db\Queries\IsQueryWithValue $query): string
     {
-        assert('!isset($set); // Cannot redeclare $set');
+        assert(!isset($set), 'Cannot redeclare $set');
         $set = "";
-        assert('!isset($values); // Cannot redeclare $values');
+        assert(!isset($values), 'Cannot redeclare $values');
         $values = $query->getValues();
         if (!$this->_isCollectingParametersForBinding()) {
-            assert('!isset($valueConverter); // Cannot redeclare $valueConverter');
+            assert(!isset($valueConverter), 'Cannot redeclare $valueConverter');
             $valueConverter = new \Yana\Db\Helpers\ValueConverter($query->getDatabase()->getDBMS());
             $valueConverter->setQuotingAlgorithm(new \Yana\Db\Sql\Quoting\ConnectionAlgorithm($query->getDatabase()));
             if ($query->getExpectedResult() === \Yana\Db\ResultEnumeration::ROW && \is_array($values)) {
                 $values = $valueConverter->convertRowToString($query->getDatabase()->getSchema()->getTable($query->getTable()), $values);
             } elseif ($query instanceof \Yana\Db\Queries\IsQueryWithColumn) {
-                assert('!isset($table); // Cannot redeclare $table');
+                assert(!isset($table), 'Cannot redeclare $table');
                 $table = $query->getDatabase()->getSchema()->getTable($query->getTable());
                 $values = $valueConverter->convertValueToString($values, $table->getColumn($query->getColumn())->getType());
                 unset($table);
@@ -103,8 +103,8 @@ class QuerySerializer extends \Yana\Db\Queries\AbstractQuerySerializer
         {
             case \Yana\Db\ResultEnumeration::ROW:
                 if (\is_array($values)) {
-                    assert('!isset($column); // Cannot redeclare $column');
-                    assert('!isset($value); // Cannot redeclare $value');
+                    assert(!isset($column), 'Cannot redeclare $column');
+                    assert(!isset($value), 'Cannot redeclare $value');
                     foreach ($values as $column => $value)
                     {
                         if ($set !== '') {
@@ -173,7 +173,7 @@ class QuerySerializer extends \Yana\Db\Queries\AbstractQuerySerializer
             return "";
         }
         /* if all required information is provided */
-        assert('count($where) === 3; // Where clause must have exactly 3 items: left + right operands + operator');
+        assert(count($where) === 3, 'Where clause must have exactly 3 items: left + right operands + operator');
         $leftOperand = $where[0];
         $operator = $where[1];
         $rightOperand = $where[2];
@@ -205,12 +205,12 @@ class QuerySerializer extends \Yana\Db\Queries\AbstractQuerySerializer
                 $rightOperand = "(" . $this->fromSelectQuery($rightOperand) . ")";
             }
         } elseif ($operator === \Yana\Db\Queries\OperatorEnumeration::IN || $operator === \Yana\Db\Queries\OperatorEnumeration::NOT_IN) {
-            assert('!isset($list); // cannot redeclare variable $list');
+            assert(!isset($list), 'cannot redeclare variable $list');
             $list = "";
             if ($rightOperand instanceof \Yana\Db\Queries\Select) {
                 $list = $this->fromSelectQuery($rightOperand);
             } else {
-                assert('!isset($value); // cannot redeclare variable $value');
+                assert(!isset($value), 'cannot redeclare variable $value');
                 foreach ($rightOperand as $value)
                 {
                     if ($list > "") {
@@ -260,19 +260,19 @@ class QuerySerializer extends \Yana\Db\Queries\AbstractQuerySerializer
      */
     protected function _toOrderBy(\Yana\Db\Queries\IsQueryWithOrderClause $query): string
     {
-        assert('!isset($orderByString); // Cannot redeclare var $orderByString');
+        assert(!isset($orderByString), 'Cannot redeclare var $orderByString');
         $orderByString = "";
 
-        assert('!isset($tableName); // Cannot redeclare var $tableName');
+        assert(!isset($tableName), 'Cannot redeclare var $tableName');
         $tableName = $query->getTable();
-        assert('!isset($orderBy); // Cannot redeclare var $orderBy');
+        assert(!isset($orderBy), 'Cannot redeclare var $orderBy');
         $orderBy = $query->getOrderBy();
-        assert('!isset($desc); // Cannot redeclare var $desc');
+        assert(!isset($desc), 'Cannot redeclare var $desc');
         $desc = $query->getDescending();
         if (count($orderBy) > 0) {
             $orderByString = ' ORDER BY ';
-            assert('!isset($i); // Cannot redeclare var $i');
-            assert('!isset($element); // Cannot redeclare var $element');
+            assert(!isset($i), 'Cannot redeclare var $i');
+            assert(!isset($element), 'Cannot redeclare var $element');
             foreach ($orderBy as $i => $element)
             {
                 if (is_array($element)) {
@@ -301,10 +301,10 @@ class QuerySerializer extends \Yana\Db\Queries\AbstractQuerySerializer
      */
     protected function _toKeyClause(\Yana\Db\Queries\IsQueryWithValue $query): string
     {
-        assert('!isset($keys); // Cannot redeclare $keys');
+        assert(!isset($keys), 'Cannot redeclare $keys');
         $keys = "";
         // quote id's to avoid conflicts with reserved keywords
-        assert('!isset($key); // Cannot redeclare var $key');
+        assert(!isset($key), 'Cannot redeclare var $key');
         foreach (array_keys($query->getValues()) as $key)
         {
             if ($keys != "") {
@@ -325,7 +325,7 @@ class QuerySerializer extends \Yana\Db\Queries\AbstractQuerySerializer
      */
     protected function _toValueClause(\Yana\Db\Queries\IsQueryWithValue $query): string
     {
-        assert('!isset($values); // Cannot redeclare $values');
+        assert(!isset($values), 'Cannot redeclare $values');
         if ($this->_isCollectingParametersForBinding()) {
             $values = array();
             foreach ($query->getValues() as $value)
@@ -334,9 +334,9 @@ class QuerySerializer extends \Yana\Db\Queries\AbstractQuerySerializer
                 $this->_bindQueryParameter((string) $value);
             }
         } else {
-            assert('!isset($table); // Cannot redeclare $table');
+            assert(!isset($table), 'Cannot redeclare $table');
             $table = $query->getDatabase()->getSchema()->getTable($query->getTable());
-            assert('!isset($valueConverter); // Cannot redeclare $valueConverter');
+            assert(!isset($valueConverter), 'Cannot redeclare $valueConverter');
             $valueConverter = new \Yana\Db\Helpers\ValueConverter($query->getDatabase()->getDBMS());
             $valueConverter->setQuotingAlgorithm(new \Yana\Db\Sql\Quoting\ConnectionAlgorithm($query->getDatabase()));
             $values = $valueConverter->convertRowToString($table, \array_change_key_case($query->getValues(), CASE_LOWER));
@@ -354,12 +354,12 @@ class QuerySerializer extends \Yana\Db\Queries\AbstractQuerySerializer
      */
     protected function _toJoinClause(\Yana\Db\Queries\IsQueryWithJoins $query): string
     {
-        assert('!isset($joins ); // cannot redeclare variable $joins ');
+        assert(!isset($joins ), 'cannot redeclare variable $joins ');
         $joins = "";
-        assert('!isset($connection); // cannot redeclare variable $connection');
+        assert(!isset($connection), 'cannot redeclare variable $connection');
         $connection = $query->getDatabase();
 
-        assert('!isset($join); // cannot redeclare variable $join');
+        assert(!isset($join), 'cannot redeclare variable $join');
         foreach ($query->getJoins() as $join)
         {
             /** @var \Yana\Db\Queries\JoinCondition $join */
@@ -404,7 +404,7 @@ class QuerySerializer extends \Yana\Db\Queries\AbstractQuerySerializer
      */
     protected function _toColumnName(\Yana\Db\Queries\IsQueryWithColumn $query): string
     {
-        assert('!isset($columnName); // Cannot redeclare $columnName');
+        assert(!isset($columnName), 'Cannot redeclare $columnName');
         $columnName = $query->getColumn();
         if ($query->getColumn() === '*') {
             return $columnName;
@@ -423,13 +423,13 @@ class QuerySerializer extends \Yana\Db\Queries\AbstractQuerySerializer
         if ($query->getColumn() === '*') {
             return '*';
         }
-        assert('!isset($columnName); // Cannot redeclare $columnName');
+        assert(!isset($columnName), 'Cannot redeclare $columnName');
         $columnName = "";
 
-        assert('!isset($connection); // Cannot redeclare var $connection');
+        assert(!isset($connection), 'Cannot redeclare var $connection');
         $connection = $query->getDatabase();
-        assert('!isset($alias); // Cannot redeclare var $alias');
-        assert('!isset($item); // Cannot redeclare var $item');
+        assert(!isset($alias), 'Cannot redeclare var $alias');
+        assert(!isset($item), 'Cannot redeclare var $item');
         foreach ($query->getColumns() as $alias => $item)
         {
             // @codeCoverageIgnoreStart

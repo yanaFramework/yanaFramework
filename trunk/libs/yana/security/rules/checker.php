@@ -76,14 +76,14 @@ class Checker extends \Yana\Security\Rules\AbstractChecker
      */
     public function checkRules($profileId, $action, \Yana\Security\Data\Behaviors\IsBehavior $user)
     {
-        assert('is_string($profileId); // Invalid argument type: $profileId. String expected');
-        assert('is_string($action); // Invalid argument type: $action. String expected');
+        assert(is_string($profileId), 'Invalid argument type: $profileId. String expected');
+        assert(is_string($action), 'Invalid argument type: $action. String expected');
 
-        assert('!isset($adapter); // Cannot redeclare var $adapter');
+        assert(!isset($adapter), 'Cannot redeclare var $adapter');
         $adapter = $this->_getRequirementsAdapter();
 
         // find out what the required permission level is to perform the current action
-        assert('!isset($requiredLevels); // Cannot redeclare var $requiredLevels');
+        assert(!isset($requiredLevels), 'Cannot redeclare var $requiredLevels');
         $requiredLevels = $adapter->loadRequirementsByAssociatedAction($action); // May throw a NotFoundException if table is empty.
         /**
          * NotFoundException: Because For security reasons we consider an empty requirements table an illegal state
@@ -96,7 +96,7 @@ class Checker extends \Yana\Security\Rules\AbstractChecker
         }
 
         //  ... else check user permissions
-        assert('!isset($requirement); // cannot redeclare $requirement');
+        assert(!isset($requirement), 'cannot redeclare $requirement');
         foreach ($requiredLevels as $requirement)
         {
             switch ($this->_checkByRequirement($requirement, $profileId, $action, $user))
@@ -145,8 +145,8 @@ class Checker extends \Yana\Security\Rules\AbstractChecker
      */
     public function checkByRequirement(\Yana\Security\Rules\Requirements\IsRequirement $requirement, $profileId, $action, \Yana\Security\Data\Behaviors\IsBehavior $user)
     {
-        assert('is_string($profileId); // Invalid argument type: $profileId. String expected');
-        assert('is_string($action); // Invalid argument type: $action. String expected');
+        assert(is_string($profileId), 'Invalid argument type: $profileId. String expected');
+        assert(is_string($action), 'Invalid argument type: $action. String expected');
 
         /* Note: Altough we should always return bool(true) for an empty set of requirements,
          * we don't check for an empty set of requirements here; because this function is explicitly given a requirement,
@@ -168,14 +168,14 @@ class Checker extends \Yana\Security\Rules\AbstractChecker
      */
     private function _checkByRequirement(\Yana\Security\Rules\Requirements\IsRequirement $requirement, $profileId, $action, \Yana\Security\Data\Behaviors\IsBehavior $user)
     {
-        assert('is_string($profileId); // Invalid argument type: $profileId. String expected');
-        assert('is_string($action); // Invalid argument type: $action. String expected');
+        assert(is_string($profileId), 'Invalid argument type: $profileId. String expected');
+        assert(is_string($action), 'Invalid argument type: $action. String expected');
 
-        assert('!isset($result); // cannot redeclare $result');
+        assert(!isset($result), 'cannot redeclare $result');
         $result = 0; // By default no rules do apply, so that this works for empty ruleset as well
 
         // loop through rules
-        assert('!isset($rule); // cannot redeclare $rule');
+        assert(!isset($rule), 'cannot redeclare $rule');
         foreach ($this->_getRules()->toArray() as $rule)
         {
             switch ($rule($requirement, $profileId, $action, $user)) // Can return TRUE, FALSE, or NULL.
@@ -189,8 +189,8 @@ class Checker extends \Yana\Security\Rules\AbstractChecker
         }
         unset($rule);
 
-        assert('is_int($result); // return type should be integer');
-        assert('$result === -1 || $result === 0 || $result === 1; // returned value must be either 0, 1, or -1');
+        assert(is_int($result), 'return type should be integer');
+        assert($result === -1 || $result === 0 || $result === 1, 'returned value must be either 0, 1, or -1');
         return $result;
     }
 

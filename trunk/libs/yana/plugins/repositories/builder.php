@@ -82,10 +82,10 @@ class Builder extends \Yana\Plugins\Repositories\AbstractBuilder
         /**
          * 1) build plugin repository
          */
-        assert('!isset($reflectionClass); // Cannot redeclare var $reflectionClass');
-        assert('!isset($className); // Cannot redeclare var $className');
-        assert('!isset($config); // Cannot redeclare var $config');
-        assert('!isset($id); // Cannot redeclare var $id');
+        assert(!isset($reflectionClass), 'Cannot redeclare var $reflectionClass');
+        assert(!isset($className), 'Cannot redeclare var $className');
+        assert(!isset($config), 'Cannot redeclare var $config');
+        assert(!isset($id), 'Cannot redeclare var $id');
         foreach ($this->_plugins as $id => $className)
         {
             $configBuilder->createNewConfiguration();
@@ -150,13 +150,13 @@ class Builder extends \Yana\Plugins\Repositories\AbstractBuilder
         /**
          * plugin multicast-groups configuration
          */
-        assert('!isset($builder); // Cannot redeclare var $builder');
-        assert('!isset($application); // Cannot redeclare var $application');
+        assert(!isset($builder), 'Cannot redeclare var $builder');
+        assert(!isset($application), 'Cannot redeclare var $application');
         $builder = new \Yana\ApplicationBuilder();
         $application = $builder->buildApplication();
         $mulitcastGroups = $application->getDefault("multicast_groups");
         unset($builder, $application);
-        assert('is_array($mulitcastGroups);');
+        assert(is_array($mulitcastGroups), 'is_array($mulitcastGroups)');
         // default value
         if (empty($mulitcastGroups)) {
             $mulitcastGroups = array
@@ -207,8 +207,8 @@ class Builder extends \Yana\Plugins\Repositories\AbstractBuilder
         } // end if
 
         // load configuration settings for each method and build list of implementing classes
-        assert('!isset($methodName); // Cannot redeclare var $methodName');
-        assert('!isset($methodConfig); // Cannot redeclare var $methodConfig');
+        assert(!isset($methodName), 'Cannot redeclare var $methodName');
+        assert(!isset($methodConfig), 'Cannot redeclare var $methodConfig');
         foreach ($this->object->getEvents() as $methodName => $methodConfig)
         {
             // get type of current event
@@ -217,7 +217,7 @@ class Builder extends \Yana\Plugins\Repositories\AbstractBuilder
 
             // copy properties from subscribers
             if (!empty($subscribers[$methodName])) {
-                assert('!isset($subscriberConfig); // Cannot redeclare var $subscriberConfig');
+                assert(!isset($subscriberConfig), 'Cannot redeclare var $subscriberConfig');
                 foreach ($subscribers[$methodName] as $subscriberConfig)
                 {
                     $methodConfig->addSubscription($subscriberConfig);
@@ -225,8 +225,8 @@ class Builder extends \Yana\Plugins\Repositories\AbstractBuilder
                 unset($subscriberConfig);
             }
 
-            assert('!isset($pluginName); // Cannot redeclare var $pluginName');
-            assert('!isset($pluginConfig); // Cannot redeclare var $pluginConfig');
+            assert(!isset($pluginName), 'Cannot redeclare var $pluginName');
+            assert(!isset($pluginConfig), 'Cannot redeclare var $pluginConfig');
             foreach ($pluginsWithDefaultMethods as $pluginName => $pluginConfig)
             {
                 // get type of current plugin

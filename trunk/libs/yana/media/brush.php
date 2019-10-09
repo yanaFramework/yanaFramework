@@ -93,7 +93,7 @@ class Brush extends \Yana\Core\StdObject
      */
     public function __construct($brushname = 'point')
     {
-        assert('is_string($brushname); // Wrong type for argument 1. String expected');
+        assert(is_string($brushname), 'Wrong type for argument 1. String expected');
 
         // Check if GD-libary is available and able to handle PNG images.
         if (!function_exists('imagecreate') || !function_exists('imagecreatefrompng')) {
@@ -142,8 +142,8 @@ class Brush extends \Yana\Core\StdObject
      */
     public static function setDirectory($directory)
     {
-        assert('is_string($directory); // Invalid argument $directory: string expected');
-        assert('is_dir($directory); // Invalid argument $directory: must be a valid path');
+        assert(is_string($directory), 'Invalid argument $directory: string expected');
+        assert(is_dir($directory), 'Invalid argument $directory: must be a valid path');
         self::$_brushdir = (string) $directory;
     }
 
@@ -168,7 +168,7 @@ class Brush extends \Yana\Core\StdObject
     {
         if (is_null(self::$_brushdir)) {
             self::resetDirectory();
-            assert('is_dir(self::$_brushdir);');
+            assert(is_dir(self::$_brushdir), 'is_dir(self::$_brushdir)');
         }
         return self::$_brushdir;
     }
@@ -194,8 +194,8 @@ class Brush extends \Yana\Core\StdObject
      */
     public function setSize($size)
     {
-        assert('is_int($size); // Invalid argument $size: int expected');
-        assert('$size > 0; // Invalid argument $size: string expected');
+        assert(is_int($size), 'Invalid argument $size: int expected');
+        assert($size > 0, 'Invalid argument $size: string expected');
 
         $currentSize = $this->getSize();
 
@@ -225,12 +225,12 @@ class Brush extends \Yana\Core\StdObject
      */
     public function setColor($red, $green, $blue)
     {
-        assert('is_int($red); // Wrong type for argument 1. Integer expected');
-        assert('is_int($green); // Wrong type for argument 2. Integer expected');
-        assert('is_int($blue); // Wrong type for argument 3. Integer expected');
-        assert('$red >= 0 && $red <= 255; // Invalid argument $red: must be in range [0,255].');
-        assert('$green >= 0 && $green <= 255; // Invalid argument $green: must be in range [0,255].');
-        assert('$blue >= 0 && $blue <= 255; // Invalid argument $blue: must be in range [0,255].');
+        assert(is_int($red), 'Wrong type for argument 1. Integer expected');
+        assert(is_int($green), 'Wrong type for argument 2. Integer expected');
+        assert(is_int($blue), 'Wrong type for argument 3. Integer expected');
+        assert($red >= 0 && $red <= 255, 'Invalid argument $red: must be in range [0,255].');
+        assert($green >= 0 && $green <= 255, 'Invalid argument $green: must be in range [0,255].');
+        assert($blue >= 0 && $blue <= 255, 'Invalid argument $blue: must be in range [0,255].');
         imagecolorset($this->_image, 0, $red, $green, $blue);
         return $this;
     }
@@ -325,7 +325,7 @@ class Brush extends \Yana\Core\StdObject
      */
     public function equalsResoure($resource)
     {
-        assert('is_resource($resource); // Wrong type for argument 1. Resource expected');
+        assert(is_resource($resource), 'Wrong type for argument 1. Resource expected');
         return is_resource($resource) && $this->_image === $resource;
     }
 

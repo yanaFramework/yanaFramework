@@ -135,7 +135,7 @@ class Builder extends \Yana\Security\Data\UserBuilder implements \Yana\Security\
      */
     public function buildFromUserMail($mail)
     {
-        assert('is_string($mail); // Invalid argument $mail: string expected');
+        assert(is_string($mail), 'Invalid argument $mail: string expected');
 
         $entity = parent::buildFromUserMail($mail); // may throw exception
         return $this($entity);
@@ -150,7 +150,7 @@ class Builder extends \Yana\Security\Data\UserBuilder implements \Yana\Security\
      */
     public function buildFromRecoveryId($recoveryId)
     {
-        assert('is_string($recoveryId); // Invalid argument $recoveryId: string expected');
+        assert(is_string($recoveryId), 'Invalid argument $recoveryId: string expected');
 
         $entity = parent::buildFromRecoveryId($recoveryId); // may throw exception
         return $this($entity);

@@ -47,7 +47,7 @@ class MethodParameterCollection extends \Yana\Core\AbstractCollection implements
      */
     public function offsetUnset($offset)
     {
-        assert('is_string($offset); // Invalid argument $offset: string expected');
+        assert(is_string($offset), 'Invalid argument $offset: string expected');
         parent::offsetUnset(mb_strtolower($offset));
     }
 
@@ -59,7 +59,7 @@ class MethodParameterCollection extends \Yana\Core\AbstractCollection implements
      */
     public function offsetExists($offset)
     {
-        assert('is_string($offset); // Invalid argument $offset: string expected');
+        assert(is_string($offset), 'Invalid argument $offset: string expected');
         return parent::offsetExists(mb_strtolower($offset));
     }
 
@@ -71,7 +71,7 @@ class MethodParameterCollection extends \Yana\Core\AbstractCollection implements
      */
     public function offsetGet($offset)
     {
-        assert('is_string($offset); // Invalid argument $offset: string expected');
+        assert(is_string($offset), 'Invalid argument $offset: string expected');
         return parent::offsetGet(mb_strtolower($offset));
     }
 

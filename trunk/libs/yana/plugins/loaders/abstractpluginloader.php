@@ -123,7 +123,7 @@ abstract class AbstractPluginLoader extends \Yana\Core\StdObject implements \Ser
      */
     public function isLoaded($pluginName)
     {
-        assert('is_string($pluginName); // Invalid argument $pluginName: string expected');
+        assert(is_string($pluginName), 'Invalid argument $pluginName: string expected');
         return isset($this->_loadedPlugins[mb_strtolower("$pluginName")]);
     }
 
@@ -139,7 +139,7 @@ abstract class AbstractPluginLoader extends \Yana\Core\StdObject implements \Ser
      */
     public function isInstalled($pluginName)
     {
-        assert('is_bool($this->_isLoaded);');
+        assert(is_bool($this->_isLoaded), 'is_bool($this->_isLoaded)');
         return (bool) ($this->_isLoaded && isset($this->_plugins[mb_strtolower("$pluginName")]));
     }
 

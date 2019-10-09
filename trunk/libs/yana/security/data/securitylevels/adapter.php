@@ -115,7 +115,7 @@ class Adapter extends \Yana\Security\Data\SecurityLevels\AbstractAdapter
     protected function _onInsert(\Yana\Data\Adapters\IsEntity $entity, $optionalId = null)
     {
         if ($this->hasEntitiesLike($entity)) {
-            assert('!isset($message); // Cannot redeclare var $message');
+            assert(!isset($message), 'Cannot redeclare var $message');
             $message = "A similar entry does already exists. " .
                 "Can't save entity, as this would violate the unique constraint.";
             throw new \Yana\Core\Exceptions\User\LevelAlreadyExistsException($message);
@@ -135,10 +135,10 @@ class Adapter extends \Yana\Security\Data\SecurityLevels\AbstractAdapter
      */
     public function findEntityOwnedByUser($userId, $profileId)
     {
-        assert('is_string($userId); // Wrong type for argument $userId. String expected');
-        assert('is_string($profileId); // Wrong type for argument $profileId. String expected');
+        assert(is_string($userId), 'Wrong type for argument $userId. String expected');
+        assert(is_string($profileId), 'Wrong type for argument $profileId. String expected');
 
-        assert('!isset($listOfEntities); // Cannot redeclare var $listOfEntities');
+        assert(!isset($listOfEntities), 'Cannot redeclare var $listOfEntities');
         $listOfEntities = $this->_getEntities(
             array(\Yana\Security\Data\Tables\LevelEnumeration::USER, '=', \Yana\Util\Strings::toUpperCase($userId)),
             $profileId
@@ -146,9 +146,9 @@ class Adapter extends \Yana\Security\Data\SecurityLevels\AbstractAdapter
         if (!is_array($listOfEntities) || count($listOfEntities) === 0) {
             throw new \Yana\Core\Exceptions\User\NotFoundException();
         }
-        assert('!isset($maxEntity); // Cannot redeclare var $maxEntity');
+        assert(!isset($maxEntity), 'Cannot redeclare var $maxEntity');
         $maxEntity = current($listOfEntities);
-        assert('!isset($entity); // Cannot redeclare var $entity');
+        assert(!isset($entity), 'Cannot redeclare var $entity');
         foreach ($listOfEntities as $entity)
         {
             /* @var $entity \Yana\Security\Data\SecurityLevels\IsLevel */
@@ -172,16 +172,16 @@ class Adapter extends \Yana\Security\Data\SecurityLevels\AbstractAdapter
      */
     public function findEntitiesOwnedByUser($userId)
     {
-        assert('is_string($userId); // Wrong type for argument $userId. String expected');
+        assert(is_string($userId), 'Wrong type for argument $userId. String expected');
 
-        assert('!isset($listOfEntities); // Cannot redeclare var $listOfEntities');
+        assert(!isset($listOfEntities), 'Cannot redeclare var $listOfEntities');
         $listOfEntities = $this->_getEntities(
             array(\Yana\Security\Data\Tables\LevelEnumeration::USER, '=', \Yana\Util\Strings::toUpperCase($userId))
         );
         if (!is_array($listOfEntities) || count($listOfEntities) === 0) {
             throw new \Yana\Core\Exceptions\User\NotFoundException();
         }
-        assert('!isset($entities); // Cannot redeclare var $entities');
+        assert(!isset($entities), 'Cannot redeclare var $entities');
         $entities = new \Yana\Security\Data\SecurityLevels\Collection();
         $entities->setItems($listOfEntities);
 
@@ -200,9 +200,9 @@ class Adapter extends \Yana\Security\Data\SecurityLevels\AbstractAdapter
      */
     public function findEntitiesGrantedByUser($userId, $profileId = "")
     {
-        assert('is_string($userId); // Wrong type for argument $userId. String expected');
+        assert(is_string($userId), 'Wrong type for argument $userId. String expected');
 
-        assert('!isset($listOfEntities); // Cannot redeclare var $listOfEntities');
+        assert(!isset($listOfEntities), 'Cannot redeclare var $listOfEntities');
         $listOfEntities = $this->_getEntities(
             array(
                 array(\Yana\Security\Data\Tables\LevelEnumeration::USER, '!=', \Yana\Util\Strings::toUpperCase($userId)),
@@ -214,7 +214,7 @@ class Adapter extends \Yana\Security\Data\SecurityLevels\AbstractAdapter
         if (!is_array($listOfEntities) || count($listOfEntities) === 0) {
             throw new \Yana\Core\Exceptions\User\NotFoundException();
         }
-        assert('!isset($entities); // Cannot redeclare var $entities');
+        assert(!isset($entities), 'Cannot redeclare var $entities');
         $entities = new \Yana\Security\Data\SecurityLevels\Collection();
         $entities->setItems($listOfEntities);
 
@@ -253,13 +253,13 @@ class Adapter extends \Yana\Security\Data\SecurityLevels\AbstractAdapter
      */
     public function offsetUnset($offset)
     {
-        assert('is_int($offset); // Invalid argument $offset: int expected');
+        assert(is_int($offset), 'Invalid argument $offset: int expected');
 
         // entry does not exist
         if (!$this->offsetExists($offset)) {
-            assert('!isset($message); // Cannot redeclare var $message');
+            assert(!isset($message), 'Cannot redeclare var $message');
             $message = "No such level: '$offset'.";
-            assert('!isset($level); // Cannot redeclare var $level');
+            assert(!isset($level), 'Cannot redeclare var $level');
             $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Core\Exceptions\User\NotFoundException($message, $level);
         }
@@ -269,9 +269,9 @@ class Adapter extends \Yana\Security\Data\SecurityLevels\AbstractAdapter
 
         } catch (\Exception $e) {
 
-            assert('!isset($message); // Cannot redeclare var $message');
+            assert(!isset($message), 'Cannot redeclare var $message');
             $message = "Unable to commit changes to the database server while trying to remove level '{$offset}'.";
-            assert('!isset($level); // Cannot redeclare var $level');
+            assert(!isset($level), 'Cannot redeclare var $level');
             $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Db\Queries\Exceptions\NotDeletedException($message, $level, $e);
         }
@@ -290,11 +290,11 @@ class Adapter extends \Yana\Security\Data\SecurityLevels\AbstractAdapter
      */
     public function hasEntitiesLike(\Yana\Security\Data\SecurityLevels\IsLevelEntity $level)
     {
-        assert('!isset($where); // Cannot redeclare var $where');
+        assert(!isset($where), 'Cannot redeclare var $where');
         $where = array();
-        assert('!isset($columnName); // Cannot redeclare var $columnName');
-        assert('!isset($value); // Cannot redeclare var $value');
-        assert('!isset($clause); // Cannot redeclare var $clause');
+        assert(!isset($columnName), 'Cannot redeclare var $columnName');
+        assert(!isset($value), 'Cannot redeclare var $value');
+        assert(!isset($clause), 'Cannot redeclare var $clause');
         foreach ($this->_serializeEntity($level) as $columnName => $value)
         {
             // We skip the empty entries
@@ -315,7 +315,7 @@ class Adapter extends \Yana\Security\Data\SecurityLevels\AbstractAdapter
             }
         }
         unset($columnName, $value, $clause);
-        assert('!isset($query); // Cannot redeclare var $query');
+        assert(!isset($query), 'Cannot redeclare var $query');
         $query = new \Yana\Db\Queries\SelectExist($this->_getDatabaseConnection());
         $query->setTable($this->_getTableName())->setWhere($where);
         return $query->doesExist();
@@ -335,12 +335,12 @@ class Adapter extends \Yana\Security\Data\SecurityLevels\AbstractAdapter
      */
     public function offsetSet($offset, $entity)
     {
-        assert('is_int($offset) || is_null($offset); // Wrong type argument $offset. Integer expected.');
+        assert(is_int($offset) || is_null($offset), 'Wrong type argument $offset. Integer expected.');
 
         if (!($entity instanceof \Yana\Security\Data\SecurityLevels\IsLevelEntity)) {
-            assert('!isset($className); // Cannot redeclare var $className');
+            assert(!isset($className), 'Cannot redeclare var $className');
             $className = \is_object($entity) ? \get_class($entity) : \gettype($entity);
-            assert('!isset($message); // Cannot redeclare var $message');
+            assert(!isset($message), 'Cannot redeclare var $message');
             $message = "Instance of IsLevelEntity expected. Found " . $className . " instead.";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
         }
@@ -350,9 +350,9 @@ class Adapter extends \Yana\Security\Data\SecurityLevels\AbstractAdapter
 
         } catch (\Yana\Db\DatabaseException $e) {
 
-            assert('!isset($message); // Cannot redeclare var $message');
+            assert(!isset($message), 'Cannot redeclare var $message');
             $message = "Entity not saved due to a database error.";
-            assert('!isset($level); // Cannot redeclare var $level');
+            assert(!isset($level), 'Cannot redeclare var $level');
             $level = \Yana\Log\TypeEnumeration::ERROR;
             throw new \Yana\Core\Exceptions\User\LevelNotSavedException($message, $level, $e);
         }

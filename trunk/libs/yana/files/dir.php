@@ -56,7 +56,7 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
      */
     public function __construct($path)
     {
-        assert('is_string($path); // Wrong argument type for argument 1. String expected.');
+        assert(is_string($path), 'Wrong argument type for argument 1. String expected.');
         if (!preg_match('/.*\/$/', $path)) { // auto-append path seperator
             $path .= '/';
         }
@@ -89,7 +89,7 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
      */
     public function getContent($index = null)
     {
-        assert('is_null($index) || is_int($index); // Wrong type for argument 1. Integer expected');
+        assert(is_null($index) || is_int($index), 'Wrong type for argument 1. Integer expected');
         if ($this->isEmpty()) {
 
             try { // automatically try to read directory contents
@@ -102,16 +102,16 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
             }
 
         }
-        assert('is_array($this->content); // Unexpected return type. Array expected');
+        assert(is_array($this->content), 'Unexpected return type. Array expected');
 
         // Retrieve directory contents
         $content = null;
         if (is_null($index)) {
-            assert('is_array($this->content); // Unexpected return type. Array expected');
+            assert(is_array($this->content), 'Unexpected return type. Array expected');
             $content = (array) $this->content;
   
         } elseif (isset($this->content[$index])) {
-            assert('is_string($this->content[$index]); // Unexpected return type. String expected');
+            assert(is_string($this->content[$index]), 'Unexpected return type. String expected');
             $content = (string) $this->content[$index];
         }
 
@@ -130,7 +130,7 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
      */
     public function getFilter()
     {
-        assert('is_string($this->filter); // Wrong type for argument filter');
+        assert(is_string($this->filter), 'Wrong type for argument filter');
         return $this->filter;
     }
 
@@ -146,7 +146,7 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
      */
     public function setFilter($filter = "")
     {
-        assert('is_string($filter); // Wrong type for argument 1. String expected');
+        assert(is_string($filter), 'Wrong type for argument 1. String expected');
         $this->filter = (string) $filter;
         return $this;
     }
@@ -168,7 +168,7 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
      */
     public function create($mode = 0777)
     {
-        assert('is_int($mode); // Wrong argument type argument 1. Integer expected');
+        assert(is_int($mode), 'Wrong argument type argument 1. Integer expected');
 
         if ($mode > 0777 || $mode < 1) {
             $message = "Argument mode must be an octal number in range: [1,0777].";
@@ -212,14 +212,14 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
      */
     public function delete($isRecursive = false)
     {
-        assert('is_bool($isRecursive); // Wrong argument type argument 1. Boolean expected');
+        assert(is_bool($isRecursive), 'Wrong argument type argument 1. Boolean expected');
 
         if ($isRecursive === true) {
             if ($this->getFilter()) {
                 $this->setFilter(); // removes any previously set file-filter
                 $this->read(); // reloads the directory contents, may throw \Yana\Core\Exceptions\NotFoundException
             }
-            assert('!isset($element); // cannot redeclare variable $element');
+            assert(!isset($element), 'cannot redeclare variable $element');
             foreach ($this->listFiles() as $element)
             {
                 $element = '/'.$element;
@@ -319,7 +319,7 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
      */
     public function listFiles($filter = "")
     {
-        assert('is_string($filter); // Wrong type for argument 1. String expected');
+        assert(is_string($filter), 'Wrong type for argument 1. String expected');
 
         $this->setFilter($filter);
         $this->content = \Yana\Util\Dir::listFiles($this->getPath(), $this->getFilter());
@@ -339,7 +339,7 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
      */
     public function listFilesAndDirectories($filter = "")
     {
-        assert('is_string($filter); // Wrong type for argument 1. String expected');
+        assert(is_string($filter), 'Wrong type for argument 1. String expected');
 
         $this->setFilter($filter);
         $this->content = \Yana\Util\Dir::listFilesAndDirectories($this->getPath(), $this->getFilter());
@@ -361,7 +361,7 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
      */
     public function getSize($countSubDirs = true)
     {
-        assert('is_bool($countSubDirs); // Wrong argument type $countSubDirs: Boolean expected.');
+        assert(is_bool($countSubDirs), 'Wrong argument type $countSubDirs: Boolean expected.');
 
         return \Yana\Util\Dir::getSize($this->getPath(), $countSubDirs);
     }
@@ -461,13 +461,13 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
      */
     public function copy($destDir, $overwrite = true, $mode = 0766, $copySubDirs = false, $fileFilter = null, $dirFilter = null, $useRegExp = false)
     {
-        assert('is_string($destDir); // Wrong type for argument 1. String expected');
-        assert('is_bool($overwrite); // Wrong type for argument 2. Boolean expected');
-        assert('is_int($mode); // Wrong type for argument 3. Integer expected');
-        assert('is_bool($copySubDirs); // Wrong type for argument 4. Boolean expected');
-        assert('is_string($fileFilter) || is_null($fileFilter); // Wrong type for argument 5. String expected');
-        assert('is_string($dirFilter) || is_null($dirFilter); // Wrong type for argument 6. String expected');
-        assert('is_bool($useRegExp); // Wrong type for argument 7. Boolean expected');
+        assert(is_string($destDir), 'Wrong type for argument 1. String expected');
+        assert(is_bool($overwrite), 'Wrong type for argument 2. Boolean expected');
+        assert(is_int($mode), 'Wrong type for argument 3. Integer expected');
+        assert(is_bool($copySubDirs), 'Wrong type for argument 4. Boolean expected');
+        assert(is_string($fileFilter) || is_null($fileFilter), 'Wrong type for argument 5. String expected');
+        assert(is_string($dirFilter) || is_null($dirFilter), 'Wrong type for argument 6. String expected');
+        assert(is_bool($useRegExp), 'Wrong type for argument 7. Boolean expected');
 
         if ($mode > 0777 || $mode < 1) {
             $message = "Argument mode must be an octal number in range: [1,0777].";
@@ -501,7 +501,7 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
         if (!is_null($fileFilter) && $useRegExp === false) {
             if (strpos($fileFilter, '|') !== false) {
                 $fileFilter = preg_replace("/[^\.\-\_\w\d\|]/", "", $fileFilter);
-                assert('!isset($tok); // cannot redeclare variable $tok');
+                assert(!isset($tok), 'cannot redeclare variable $tok');
                 $tok = strtok($fileFilter, "|");
                 $fileFilter = "";
                 while ($tok !== false)
@@ -528,14 +528,14 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
             $dirFilter = '/' . $dirFilter . '$/i';
         } /* end if */
 
-        assert('is_string($destDir); // Unexpected result: $destDir. String expected.');
+        assert(is_string($destDir), 'Unexpected result: $destDir. String expected.');
 
         /* recursively create directories */
         if (!empty($destDir) && !is_dir($destDir)) {
-            assert('!isset($currentDir); // cannot redeclare variable $currentDir');
+            assert(!isset($currentDir), 'cannot redeclare variable $currentDir');
             $currentDir = '';
-            assert('!isset($current); // cannot redeclare variable $dir');
-            assert('!isset($dir); // cannot redeclare variable $dir');
+            assert(!isset($current), 'cannot redeclare variable $dir');
+            assert(!isset($dir), 'cannot redeclare variable $dir');
             foreach (explode('/', $destDir) as $dir)
             {
                 if (!is_dir($currentDir . $dir)) {
@@ -548,10 +548,10 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
         } /* end if */
 
         /* copy directory */
-        assert('!isset($path); // cannot redeclare variable $path');
-        assert('!isset($dir); // cannot redeclare variable $dir');
-        assert('!isset($item); // cannot redeclare variable $item');
-        assert('!isset($handle); // cannot redeclare variable $handle');
+        assert(!isset($path), 'cannot redeclare variable $path');
+        assert(!isset($dir), 'cannot redeclare variable $dir');
+        assert(!isset($item), 'cannot redeclare variable $item');
+        assert(!isset($handle), 'cannot redeclare variable $handle');
         $path = $this->getPath();
         $handle = opendir($this->getPath());
         while ($item = readdir($handle))
@@ -567,7 +567,7 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
                 /* if sub-dir matches the directory pattern ... */
                 if (is_null($dirFilter) || preg_match($dirFilter, $item)) {
                     $dir = new \Yana\Files\Dir($path . $item);
-                    assert('!isset($copySucceeded); // Cannot redeclare var $copySucceeded');
+                    assert(!isset($copySucceeded), 'Cannot redeclare var $copySucceeded');
                     $dir->copy($destDir . $item . '/', $overwrite, $mode, $copySubDirs, $fileFilter, $dirFilter, true);
                     if (chmod($destDir . $item, decoct($mode)) === false) {
                         $message = "Unable to set mode (access level) for directory '{$destDir}{$item}'.";

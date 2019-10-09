@@ -286,7 +286,7 @@ class ApplicationReportBuilder extends \Yana\Core\StdObject
         $iconIntegrityReport = $this->_getReport()->addReport("Searching for icon images");
 
         /* @var $dir \Dir */
-        assert('!isset($dir); // Cannot redeclare var $dir');
+        assert(!isset($dir), 'Cannot redeclare var $dir');
         $dir = $registry->getResource('system:/smile');
         /* @var $dir \Yana\Files\Dir */
 

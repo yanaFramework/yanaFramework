@@ -78,8 +78,8 @@ class FileNameCache extends \Yana\Core\StdObject implements \Yana\Db\Binaries\Is
      */
     public function getFilename($id, $fullsize = false)
     {
-        assert('is_int($id); // Wrong type for argument 1. Integer expected');
-        assert('is_bool($fullsize); // Wrong type for argument 2. Boolean expected');
+        assert(is_int($id), 'Wrong type for argument 1. Integer expected');
+        assert(is_bool($fullsize), 'Wrong type for argument 2. Boolean expected');
 
         $file = $this->_getFilenameFromCache($id); // may throw exception
 
@@ -114,7 +114,7 @@ class FileNameCache extends \Yana\Core\StdObject implements \Yana\Db\Binaries\Is
      */
     protected function _getFilenameFromCache($id)
     {
-        assert('is_int($id); // Wrong type for argument 1. Integer expected');
+        assert(is_int($id), 'Wrong type for argument 1. Integer expected');
 
         $fileId = (int) $id;
 
@@ -140,7 +140,7 @@ class FileNameCache extends \Yana\Core\StdObject implements \Yana\Db\Binaries\Is
      */
     public function storeFilename($file)
     {
-        assert('is_string($file); // Wrong argument type argument 1. String expected');
+        assert(is_string($file), 'Wrong argument type argument 1. String expected');
         if (!is_file($file)) {
             $message = "File was not found '{$file}'.";
             $code = \Yana\Log\TypeEnumeration::ERROR;

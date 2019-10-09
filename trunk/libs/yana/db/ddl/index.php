@@ -125,7 +125,7 @@ class Index extends \Yana\Db\Ddl\AbstractUnnamedObject
      */
     public function __construct($name = "", \Yana\Db\Ddl\Table $parent = null)
     {
-        assert('is_string($name); // Invalid argument $name: String expected');
+        assert(is_string($name), 'Invalid argument $name: String expected');
 
         $this->setName($name);
         $this->parent = $parent;
@@ -170,7 +170,7 @@ class Index extends \Yana\Db\Ddl\AbstractUnnamedObject
      */
     public function setTitle($title = "")
     {
-        assert('is_string($title); // Invalid argument $title: String expected');
+        assert(is_string($title), 'Invalid argument $title: String expected');
 
         if (empty($title)) {
             $this->title = null;
@@ -221,7 +221,7 @@ class Index extends \Yana\Db\Ddl\AbstractUnnamedObject
      */
     public function setDescription($description = "")
     {
-        assert('is_string($description); // Invalid argument $description: String expected');
+        assert(is_string($description), 'Invalid argument $description: String expected');
 
         if (empty($description)) {
             $this->description = null;
@@ -257,7 +257,7 @@ class Index extends \Yana\Db\Ddl\AbstractUnnamedObject
      */
     public function getColumns()
     {
-        assert('is_array($this->columns); // member "columns" is expected to be an array');
+        assert(is_array($this->columns), 'member "columns" is expected to be an array');
         return $this->columns;
     }
 
@@ -276,8 +276,8 @@ class Index extends \Yana\Db\Ddl\AbstractUnnamedObject
      */
     public function addColumn($name, $isAscending = true)
     {
-        assert('is_string($name); // Invalid argument $name: String expected');
-        assert('is_bool($isAscending); // Invalid argument $isAscending: Boolean expected');
+        assert(is_string($name), 'Invalid argument $name: String expected');
+        assert(is_bool($isAscending), 'Invalid argument $isAscending: Boolean expected');
 
         if (isset($this->parent) && !$this->parent->isColumn($name)) {
             $message = "No such column '$name' in table '{$this->parent->getName()}'.";
@@ -287,7 +287,7 @@ class Index extends \Yana\Db\Ddl\AbstractUnnamedObject
         $indexColumn = new \Yana\Db\Ddl\IndexColumn($name);
         $indexColumn->setSorting($isAscending);
         $name = $indexColumn->getName();
-        assert('is_string($name);');
+        assert(is_string($name), 'is_string($name)');
 
         if (isset($this->columns[$name])) {
             $message = "Column '$name' already defined in index.";
@@ -309,7 +309,7 @@ class Index extends \Yana\Db\Ddl\AbstractUnnamedObject
      */
     public function dropColumn($name)
     {
-        assert('is_string($name); // Invalid argument $name: String expected');
+        assert(is_string($name), 'Invalid argument $name: String expected');
 
         $name = mb_strtolower($name);
         if (isset($this->columns[$name])) {
@@ -342,7 +342,7 @@ class Index extends \Yana\Db\Ddl\AbstractUnnamedObject
      */
     public function setUnique($isUnique)
     {
-        assert('is_bool($isUnique); // Invalid argument $isUnique: Boolean expected');
+        assert(is_bool($isUnique), 'Invalid argument $isUnique: Boolean expected');
 
         $this->unique = (bool) $isUnique;
         return $this;
@@ -385,7 +385,7 @@ class Index extends \Yana\Db\Ddl\AbstractUnnamedObject
      */
     public function setClustered($isClustered)
     {
-        assert('is_bool($isClustered); // Invalid argument $isClustered: Boolean expected');
+        assert(is_bool($isClustered), 'Invalid argument $isClustered: Boolean expected');
 
         if ($isClustered) {
 
@@ -418,7 +418,7 @@ class Index extends \Yana\Db\Ddl\AbstractUnnamedObject
      */
     public function setFulltext($isFulltext)
     {
-        assert('is_bool($isFulltext); // Invalid argument $isFulltext: Boolean expected');
+        assert(is_bool($isFulltext), 'Invalid argument $isFulltext: Boolean expected');
 
         if ($isFulltext) {
             $this->fulltext = true;

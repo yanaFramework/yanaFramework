@@ -39,6 +39,32 @@ class SecurityLevelRule extends \Yana\Security\Rules\AbstractRule
 {
 
     /**
+     * @var  string
+     */
+    private $_defaultProfileId = "";
+
+    /**
+     * Initialize dependencies
+     *
+     * @param  string  $defaultProfileId  used as fallback
+     */
+    public function __construct($defaultProfileId)
+    {
+        assert(is_string($defaultProfileId), 'Wrong type for argument: $defaultProfileId. String expected');
+        $this->_defaultProfileId = (string) $defaultProfileId;
+    }
+
+    /**
+     * Returns the name of a profile to be used as default.
+     *
+     * @return  string
+     */
+    protected function _getDefaultProfileId()
+    {
+        return $this->_defaultProfileId;
+    }
+
+   /**
      * Check security level.
      *
      * @param   \Yana\Security\Rules\Requirements\IsRequirement  $required   list of required permissions
@@ -61,7 +87,7 @@ class SecurityLevelRule extends \Yana\Security\Rules\AbstractRule
             return false;
         }
 
-        return $required->getLevel() <= (int) $user->getSecurityLevel($profileId);
+        return $required->getLevel() <= (int) $user->getSecurityLevel($profileId, $this->_getDefaultProfileId());
     }
 
 }

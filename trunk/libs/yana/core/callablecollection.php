@@ -49,7 +49,7 @@ class CallableCollection extends \Yana\Core\AbstractCollection
      */
     public function offsetSet($offset, $value)
     {
-        assert('is_null($offset) || is_scalar($offset); // $offset expected to be Scalar');
+        assert(is_null($offset) || is_scalar($offset), '$offset expected to be Scalar');
         if (!\is_callable($value)) {
             throw new \Yana\Core\Exceptions\InvalidArgumentException("Callable resource expected.");
         }

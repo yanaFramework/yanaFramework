@@ -86,7 +86,7 @@ class UserPermissionRule extends \Yana\Core\StdObject implements \Yana\Plugins\C
      */
     public function setRole($role)
     {
-        assert('is_string($role); // Wrong type for argument 1. String expected');
+        assert(is_string($role), 'Wrong type for argument 1. String expected');
         if (!preg_match('/^[\d\w\-_]*$/si', $role)) {
             $message = "Invalid characters in role '$role'.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
@@ -127,7 +127,7 @@ class UserPermissionRule extends \Yana\Core\StdObject implements \Yana\Plugins\C
      */
     public function setGroup($group)
     {
-        assert('is_string($group); // Invalid argument $group: string expected');
+        assert(is_string($group), 'Invalid argument $group: string expected');
         if (!preg_match('/^[\d\w\-_]*$/si', $group)) {
             $message = "Invalid characters in group '$group'.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
@@ -164,7 +164,7 @@ class UserPermissionRule extends \Yana\Core\StdObject implements \Yana\Plugins\C
      */
     public function setLevel($level)
     {
-        assert('is_int($level); // Wrong type for argument 1. Integer expected');
+        assert(is_int($level), 'Wrong type for argument 1. Integer expected');
         if ($level < 0 || $level > 100) {
             $message = "Security level '$level' outside range [0,100].";
             $level = \Yana\Log\TypeEnumeration::WARNING;

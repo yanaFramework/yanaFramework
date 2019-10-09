@@ -50,7 +50,7 @@ class SecurityGroupRule extends \Yana\Security\Rules\AbstractRule
      */
     public function __construct($defaultProfileId)
     {
-        assert('is_string($defaultProfileId); // Wrong type for argument: $defaultProfileId. String expected');
+        assert(is_string($defaultProfileId), 'Wrong type for argument: $defaultProfileId. String expected');
         $this->_defaultProfileId = (string) $defaultProfileId;
     }
 

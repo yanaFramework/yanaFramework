@@ -61,8 +61,8 @@ class MailValidator extends AbstractValidator
      */
     public function setMaxLength($length)
     {
-        assert('is_int($length); // Invalid argument $length: int expected');
-        assert('$length >= 0; // $length must not be negative');
+        assert(is_int($length), 'Invalid argument $length: int expected');
+        assert($length >= 0, '$length must not be negative');
         $this->_length = (int) $length;
         return $this;
     }
@@ -76,7 +76,7 @@ class MailValidator extends AbstractValidator
      */
     public static function validate($mail, $maxLength = 0)
     {
-        assert('is_int($maxLength); // Invalid argument $maxLength: int expected');
+        assert(is_int($maxLength), 'Invalid argument $maxLength: int expected');
         return filter_var($mail, FILTER_VALIDATE_EMAIL) && (!$maxLength || mb_strlen($mail) <= $maxLength);
     }
 
@@ -108,7 +108,7 @@ class MailValidator extends AbstractValidator
      */
     public static function sanitize($mail, $maxLength = 0)
     {
-        assert('is_int($maxLength); // Invalid argument $maxLength: int expected');
+        assert(is_int($maxLength), 'Invalid argument $maxLength: int expected');
         $validator = new self();
         return $validator->setMaxLength($maxLength)
             ->__invoke($mail, $maxLength);

@@ -77,9 +77,9 @@ class FileUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
      */
     public function upload(array $file, $fileId)
     {
-        assert('is_string($fileId); // Wrong argument type for argument 3. String expected');
+        assert(is_string($fileId), 'Wrong argument type for argument 3. String expected');
 
-        assert('!isset($dir); // Cannot redeclare var $dir');
+        assert(!isset($dir), 'Cannot redeclare var $dir');
         $dir = $this->_getConfiguration()->getDirectory();
 
         $fileTempName = $this->_getTempName($file);
@@ -102,7 +102,7 @@ class FileUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
          *
          * The Mime-type is saved, so it may be sent to the client on download.
          */
-        assert('!isset($mimetype); // Cannot redeclare var $mimetype');
+        assert(!isset($mimetype), 'Cannot redeclare var $mimetype');
         $mimetype = "";
         if (!empty($file['type'])) {
             $mimetype = preg_replace('/\s/', ' ', (string) $file['type']);
@@ -123,7 +123,7 @@ class FileUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
      */
     protected function _createCompressedFile($path, $filename, $fileTempName, $mimetype)
     {
-        assert('!isset($gz); // Cannot redeclare var $gz');
+        assert(!isset($gz), 'Cannot redeclare var $gz');
         $gz = gzopen($path, 'w9');
         /*
          * insert Header information

@@ -53,7 +53,7 @@ class MapperCollection extends \Yana\Core\AbstractCollection
      */
     public function offsetSet($offset, $value)
     {
-        assert('is_null($offset) || is_scalar($offset); // $offset expected to be Scalar');
+        assert(is_null($offset) || is_scalar($offset), '$offset expected to be Scalar');
         if (!$value instanceof \Yana\Core\Autoloaders\IsMapper) {
             $message = "Instance of \Yana\Core\Autoloaders\IsMapper expected.";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message);

@@ -104,7 +104,7 @@ class Wrapper extends \Yana\Core\Sessions\Wrapper implements \Yana\Security\Sess
      */
     public function setApplicationUserId($applicationUserId)
     {
-        assert('is_string($applicationUserId); // Wrong argument type: $applicationUserId. String expected.');
+        assert(is_string($applicationUserId), 'Wrong argument type: $applicationUserId. String expected.');
         $this->offsetSet($this->_applicationUserId, (string) $applicationUserId);
         return $this;
     }
@@ -127,7 +127,7 @@ class Wrapper extends \Yana\Core\Sessions\Wrapper implements \Yana\Security\Sess
      */
     public function setSessionUserId($sessionUserId)
     {
-        assert('is_string($sessionUserId); // Wrong argument type: $sessionUserId. String expected.');
+        assert(is_string($sessionUserId), 'Wrong argument type: $sessionUserId. String expected.');
         $this->offsetSet($this->_sessionUserId, (string) $sessionUserId);
         return $this;
     }
@@ -150,7 +150,7 @@ class Wrapper extends \Yana\Core\Sessions\Wrapper implements \Yana\Security\Sess
      */
     public function setCurrentLanguage($language)
     {
-        assert('is_string($language); // Wrong argument type: $language. String expected.');
+        assert(is_string($language), 'Wrong argument type: $language. String expected.');
         $this->offsetSet($this->_languageKey, (string) $language);
         return $this;
     }

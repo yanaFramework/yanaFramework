@@ -115,7 +115,7 @@ class Adapter extends \Yana\Security\Data\SecurityRules\AbstractAdapter
     protected function _onInsert(\Yana\Data\Adapters\IsEntity $entity, $optionalId = null)
     {
         if ($this->hasEntitiesLike($entity)) {
-            assert('!isset($message); // Cannot redeclare var $message');
+            assert(!isset($message), 'Cannot redeclare var $message');
             $message = "A similar entry does already exists. " .
                 "Can't save entity, as this would violate the unique constraint.";
             throw new \Yana\Core\Exceptions\User\RuleAlreadyExistsException($message);
@@ -134,12 +134,12 @@ class Adapter extends \Yana\Security\Data\SecurityRules\AbstractAdapter
      */
     public function offsetSet($offset, $entity)
     {
-        assert('is_int($offset) || is_null($offset); // Wrong type argument $offset. Integer expected.');
+        assert(is_int($offset) || is_null($offset), 'Wrong type argument $offset. Integer expected.');
 
         if (!($entity instanceof \Yana\Security\Data\SecurityRules\IsRuleEntity)) {
-            assert('!isset($className); // Cannot redeclare var $className');
+            assert(!isset($className), 'Cannot redeclare var $className');
             $className = \is_object($entity) ? \get_class($entity) : \gettype($entity);
-            assert('!isset($message); // Cannot redeclare var $message');
+            assert(!isset($message), 'Cannot redeclare var $message');
             $message = "Instance of \Yana\Security\Data\SecurityRules\IsRuleEntity expected. Found " . $className . " instead.";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
         }
@@ -149,9 +149,9 @@ class Adapter extends \Yana\Security\Data\SecurityRules\AbstractAdapter
 
         } catch (\Exception $e) {
 
-            assert('!isset($message); // Cannot redeclare var $message');
+            assert(!isset($message), 'Cannot redeclare var $message');
             $message = "Rule not saved due to a database error.";
-            assert('!isset($level); // Cannot redeclare var $level');
+            assert(!isset($level), 'Cannot redeclare var $level');
             $level = \Yana\Log\TypeEnumeration::ERROR;
             throw new \Yana\Core\Exceptions\User\RuleNotSavedException($message, $level, $e);
         }
@@ -166,13 +166,13 @@ class Adapter extends \Yana\Security\Data\SecurityRules\AbstractAdapter
      */
     public function offsetUnset($offset)
     {
-        assert('is_int($offset); // Invalid argument $offset: int expected');
+        assert(is_int($offset), 'Invalid argument $offset: int expected');
 
         // entry does not exist
         if (!$this->offsetExists($offset)) {
-            assert('!isset($message); // Cannot redeclare var $message');
+            assert(!isset($message), 'Cannot redeclare var $message');
             $message = "No such rule: '$offset'.";
-            assert('!isset($level); // Cannot redeclare var $level');
+            assert(!isset($level), 'Cannot redeclare var $level');
             $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Core\Exceptions\User\NotFoundException($message, $level);
         }
@@ -182,9 +182,9 @@ class Adapter extends \Yana\Security\Data\SecurityRules\AbstractAdapter
 
         } catch (\Exception $e) {
 
-            assert('!isset($message); // Cannot redeclare var $message');
+            assert(!isset($message), 'Cannot redeclare var $message');
             $message = "Unable to commit changes to the database server while trying to remove rule '{$offset}'.";
-            assert('!isset($level); // Cannot redeclare var $level');
+            assert(!isset($level), 'Cannot redeclare var $level');
             $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Db\Queries\Exceptions\NotDeletedException($message, $level, $e);
         }
@@ -202,10 +202,10 @@ class Adapter extends \Yana\Security\Data\SecurityRules\AbstractAdapter
      */
     public function findEntitiesOwnedByUser($userId, $profileId = "")
     {
-        assert('is_string($userId); // Wrong type for argument $userId. String expected');
-        assert('is_string($profileId); // Wrong type for argument $profileId. String expected');
+        assert(is_string($userId), 'Wrong type for argument $userId. String expected');
+        assert(is_string($profileId), 'Wrong type for argument $profileId. String expected');
 
-        assert('!isset($entities); // Cannot redeclare var $entities');
+        assert(!isset($entities), 'Cannot redeclare var $entities');
         $entities = new \Yana\Security\Data\SecurityRules\Collection();
 
         $entities->setItems( // From Table ...
@@ -234,10 +234,10 @@ class Adapter extends \Yana\Security\Data\SecurityRules\AbstractAdapter
      */
     public function findEntitiesGrantedByUser($userId, $profileId = "")
     {
-        assert('is_string($userId); // Wrong type for argument $userId. String expected');
-        assert('is_string($profileId); // Wrong type for argument $profileId. String expected');
+        assert(is_string($userId), 'Wrong type for argument $userId. String expected');
+        assert(is_string($profileId), 'Wrong type for argument $profileId. String expected');
 
-        assert('!isset($entities); // Cannot redeclare var $entities');
+        assert(!isset($entities), 'Cannot redeclare var $entities');
         $entities = new \Yana\Security\Data\SecurityRules\Collection();
 
         $entities->setItems( // From Table ...
@@ -271,11 +271,11 @@ class Adapter extends \Yana\Security\Data\SecurityRules\AbstractAdapter
      */
     public function hasEntitiesLike(\Yana\Security\Data\SecurityRules\IsRuleEntity $rule)
     {
-        assert('!isset($where); // Cannot redeclare var $where');
+        assert(!isset($where), 'Cannot redeclare var $where');
         $where = array();
-        assert('!isset($columnName); // Cannot redeclare var $columnName');
-        assert('!isset($value); // Cannot redeclare var $value');
-        assert('!isset($clause); // Cannot redeclare var $clause');
+        assert(!isset($columnName), 'Cannot redeclare var $columnName');
+        assert(!isset($value), 'Cannot redeclare var $value');
+        assert(!isset($clause), 'Cannot redeclare var $clause');
         foreach ($this->_serializeEntity($rule) as $columnName => $value)
         {
             // We skip the empty entries
@@ -296,7 +296,7 @@ class Adapter extends \Yana\Security\Data\SecurityRules\AbstractAdapter
             }
         }
         unset($columnName, $value, $clause);
-        assert('!isset($query); // Cannot redeclare var $query');
+        assert(!isset($query), 'Cannot redeclare var $query');
         $query = new \Yana\Db\Queries\SelectExist($this->_getDatabaseConnection());
         $query->setTable($this->_getTableName())->setWhere($where);
         return $query->doesExist();

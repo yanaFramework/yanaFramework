@@ -194,8 +194,8 @@ class File extends \Yana\Files\Readonly
      */
     public static function removeFile($fileToDelete)
     {
-        assert('is_string($fileToDelete); // Wrong type for argument 1. String expected.');
-        assert('$fileToDelete !== ""; // Invalid argument 1. Filename cannot be empty.');
+        assert(is_string($fileToDelete), 'Wrong type for argument 1. String expected.');
+        assert($fileToDelete !== "", 'Invalid argument 1. Filename cannot be empty.');
 
         $mapper = new \Yana\Db\Binaries\FileMapper();
         $id = $mapper->toFileId($fileToDelete);
@@ -210,12 +210,12 @@ class File extends \Yana\Files\Readonly
 
         // delete file
         unlink($fileToDelete);
-        assert('!is_file($fileToDelete); // file was not deleted');
+        assert(!is_file($fileToDelete), 'file was not deleted');
 
         // applies to images only:
         if (is_file($thumbFile)) {
             unlink($thumbFile);
-            assert('!is_file($thumbFile); // file was not deleted');
+            assert(!is_file($thumbFile), 'file was not deleted');
             /* Note: we intentionally (and silently) ignore the case,
              * that an image file exists, but no thumbnail is found.
              */

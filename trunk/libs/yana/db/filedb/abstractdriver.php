@@ -210,7 +210,7 @@ abstract class AbstractDriver extends \Yana\Core\StdObject implements \Yana\Db\I
      */
     protected function _setDatabaseName($database)
     {
-        assert('is_string($database); // Invalid argument $database: string expected');
+        assert(is_string($database), 'Invalid argument $database: string expected');
 
         $this->_databaseName = (string) $database;
         return $this;
@@ -236,7 +236,7 @@ abstract class AbstractDriver extends \Yana\Core\StdObject implements \Yana\Db\I
      */
     protected function _setTableName($tableName)
     {
-        assert('is_string($tableName); // Invalid argument variable: string expected');
+        assert(is_string($tableName), 'Invalid argument variable: string expected');
 
         $this->_tableName = (string) $tableName;
         return $this;
@@ -276,7 +276,7 @@ abstract class AbstractDriver extends \Yana\Core\StdObject implements \Yana\Db\I
      */
     protected function _setAutoCommit($autoCommit)
     {
-        assert('is_bool($autoCommit); // Invalid argument $autoCommit: bool expected');
+        assert(is_bool($autoCommit), 'Invalid argument $autoCommit: bool expected');
 
         $this->_autoCommit = (bool) $autoCommit;
         return $this;

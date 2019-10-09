@@ -55,7 +55,7 @@ class Loader extends \Yana\Views\Icons\AbstractLoader
     {
         if (empty(self::$_icons)) {
 
-            assert('!isset($collection); // Cannot redeclare var $collection');
+            assert(!isset($collection), 'Cannot redeclare var $collection');
             $collection = $this->_getCollectionOfFiles();
             if ($collection->count() === 0) {
                 $message = "Unable to load icons. Invalid configuration.";

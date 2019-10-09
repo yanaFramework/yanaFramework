@@ -70,19 +70,19 @@ class DataReader extends \Yana\Security\Rules\Requirements\AbstractDataObject im
      */
     public function loadRequirementsByAssociatedAction($action)
     {
-        assert('is_string($action); // Invalid argument type: $action. String expected');
+        assert(is_string($action), 'Invalid argument type: $action. String expected');
 
-        assert('!isset($database); // Cannot redeclare var $database');
+        assert(!isset($database), 'Cannot redeclare var $database');
         $database = $this->_getDatasource();
 
         if ($database->isEmpty(\Yana\Security\Data\Tables\RequirementEnumeration::TABLE)) {
             throw new \Yana\Security\Rules\Requirements\NotFoundException("No security settings found. Trying to auto-refresh table 'securityactionrules'.");
         }
 
-        assert('!isset($requirements); // Cannot redeclare var $requirements');
+        assert(!isset($requirements), 'Cannot redeclare var $requirements');
         $requirements = new \Yana\Security\Rules\Requirements\Collection();
 
-        assert('!isset($whereClause); // Cannot redeclare var $whereClause');
+        assert(!isset($whereClause), 'Cannot redeclare var $whereClause');
         $whereClause = array(
             array(\Yana\Security\Data\Tables\RequirementEnumeration::ACTION, '=', (string) $action),
             'and',
@@ -90,7 +90,7 @@ class DataReader extends \Yana\Security\Rules\Requirements\AbstractDataObject im
         );
 
         // find the required permission levels to perform the requested action
-        assert('!isset($row); // Cannot redeclare var $row');
+        assert(!isset($row), 'Cannot redeclare var $row');
         foreach ($database->select(\Yana\Security\Data\Tables\RequirementEnumeration::TABLE, $whereClause) as $row)
         {
             $requirements[] = $this->_mapRowFromDatabasetoEntity($row);
@@ -109,9 +109,9 @@ class DataReader extends \Yana\Security\Rules\Requirements\AbstractDataObject im
      */
     public function loadRequirementById($id)
     {
-        assert('is_int($id); // Invalid argument type: $id. Integer expected');
+        assert(is_int($id), 'Invalid argument type: $id. Integer expected');
 
-        assert('!isset($row); // Cannot redeclare var $row');
+        assert(!isset($row), 'Cannot redeclare var $row');
         $row = $this->_getDatasource()->select(\Yana\Security\Data\Tables\RequirementEnumeration::TABLE . '.' . (string) $id,
             array(\Yana\Security\Data\Tables\RequirementEnumeration::IS_ACTIVE, '=', true));
 

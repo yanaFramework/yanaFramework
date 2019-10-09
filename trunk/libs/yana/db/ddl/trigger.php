@@ -142,7 +142,7 @@ class Trigger extends \Yana\Db\Ddl\AbstractUnnamedObject
      */
     public function setDBMS($dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
-        assert('is_string($dbms); // Wrong type for argument 1. String expected');
+        assert(is_string($dbms), 'Wrong type for argument 1. String expected');
 
         if (empty($dbms)) {
             $this->dbms = null;
@@ -190,7 +190,7 @@ class Trigger extends \Yana\Db\Ddl\AbstractUnnamedObject
      */
     public function setTrigger($trigger)
     {
-        assert('is_string($trigger); // Wrong type for argument 1. String expected');
+        assert(is_string($trigger), 'Wrong type for argument 1. String expected');
         $this->trigger = "$trigger";
         return $this;
     }
@@ -347,7 +347,7 @@ class Trigger extends \Yana\Db\Ddl\AbstractUnnamedObject
      */
     public function setInsert($isInsert = true)
     {
-        assert('is_bool($isInsert); // Wrong type for argument 1. Boolean expected');
+        assert(is_bool($isInsert), 'Wrong type for argument 1. Boolean expected');
         $this->insert = (bool) $isInsert;
         return $this;
     }
@@ -366,7 +366,7 @@ class Trigger extends \Yana\Db\Ddl\AbstractUnnamedObject
      */
     public function setUpdate($isUpdate = true)
     {
-        assert('is_bool($isUpdate); // Wrong type for argument 1. Boolean expected');
+        assert(is_bool($isUpdate), 'Wrong type for argument 1. Boolean expected');
         $this->update = (bool) $isUpdate;
         return $this;
     }
@@ -385,7 +385,7 @@ class Trigger extends \Yana\Db\Ddl\AbstractUnnamedObject
      */
     public function setDelete($isDelete = true)
     {
-        assert('is_bool($isDelete); // Wrong type for argument 1. Boolean expected');
+        assert(is_bool($isDelete), 'Wrong type for argument 1. Boolean expected');
         $this->delete = (bool) $isDelete;
         return $this;
     }

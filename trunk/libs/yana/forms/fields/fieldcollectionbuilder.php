@@ -44,14 +44,14 @@ class FieldCollectionBuilder extends \Yana\Core\StdObject implements \Yana\Forms
      */
     public function __invoke(\Yana\Forms\Fields\IsFieldCollectionWrapper $parentForm)
     {
-        assert('!isset($form); // Cannot redeclare var $form');
+        assert(!isset($form), 'Cannot redeclare var $form');
         $form = $parentForm->getForm();
-        assert('!isset($context); // Cannot redeclare var $context');
+        assert(!isset($context), 'Cannot redeclare var $context');
         $context = $parentForm->getContext();
-        assert('!isset($collection); // Cannot redeclare var $collection');
+        assert(!isset($collection), 'Cannot redeclare var $collection');
         $collection = new \Yana\Forms\Fields\FieldCollection();
         try {
-            assert('!isset($columnName); // Cannot redeclare var $columnName');
+            assert(!isset($columnName), 'Cannot redeclare var $columnName');
             foreach ($form->getTable()->getColumnNames() as $columnName)
             {
                 assert(\is_string($columnName));
@@ -60,7 +60,7 @@ class FieldCollectionBuilder extends \Yana\Core\StdObject implements \Yana\Forms
                 $isInForm = $form->hasAllInput() || $form->isField($columnName); // if the forms either allows any column, or lists it explicitly
 
                 if ($doesNotExistYet && $isInContext && $isInForm) {
-                    assert('!isset($fieldFacade); // Cannot redeclare var $fieldFacade');
+                    assert(!isset($fieldFacade), 'Cannot redeclare var $fieldFacade');
                     $fieldFacade = $this->_buildFormFieldFacade($collection, $parentForm, $columnName);
                     $collection->offsetSet($columnName, $fieldFacade);
                     unset($fieldFacade);
@@ -84,19 +84,19 @@ class FieldCollectionBuilder extends \Yana\Core\StdObject implements \Yana\Forms
      */
     private function _buildFormFieldFacade(\Yana\Forms\Fields\FieldCollection $collection, \Yana\Forms\Fields\IsFieldCollectionWrapper $parentForm, $columnName)
     {
-        assert('!isset($form); // Cannot redeclare var $form');
+        assert(!isset($form), 'Cannot redeclare var $form');
         $form = $parentForm->getForm();
-        assert('!isset($table); // Cannot redeclare var $table');
+        assert(!isset($table), 'Cannot redeclare var $table');
         $table = $form->getTable();
-        assert('!isset($column); // Cannot redeclare var $column');
+        assert(!isset($column), 'Cannot redeclare var $column');
         $column = $table->getColumn($columnName);
 
-        assert('!isset($field); // Cannot redeclare var $field');
+        assert(!isset($field), 'Cannot redeclare var $field');
         $field = null;
         if ($form->isField($columnName)) {
             $field = $form->getField($columnName);
         }
-        assert('!isset($facade); // Cannot redeclare var $facade');
+        assert(!isset($facade), 'Cannot redeclare var $facade');
         $facade = new \Yana\Forms\Fields\Field($parentForm, $column, $field);
         return $facade;
     }

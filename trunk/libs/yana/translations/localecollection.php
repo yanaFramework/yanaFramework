@@ -46,7 +46,7 @@ class LocaleCollection extends \Yana\Core\AbstractCollection
      */
     public function offsetSet($offset, $value)
     {
-        assert('is_null($offset) || is_scalar($offset); // $offset expected to be Scalar');
+        assert(is_null($offset) || is_scalar($offset), '$offset expected to be Scalar');
         if (!$value instanceof \Yana\Translations\IsLocale) {
             $message = "Instance of \Yana\Translations\IsLocale expected. " .
                 "Found " . gettype($value) . "(" . get_class($value) . ") instead.";

@@ -143,8 +143,8 @@ class DefaultBehavior extends \Yana\Core\StdObject implements \Yana\Core\Output\
         if (empty($target)) {
             // if no other destination is defined, route back to default homepage
             $target = $this->_getDependencyContainer()->getDefault("homepage");
-            assert('!empty($target); // Configuration error: No default homepage set.');
-            assert('is_string($target); // Configuration error: Default homepage invalid.');
+            assert(!empty($target), 'Configuration error: No default homepage set.');
+            assert(is_string($target), 'Configuration error: Default homepage invalid.');
         }
         $this->_getDependencyContainer()->getRegistry()->setVar('STDOUT', $logger->getMessages());
 
@@ -226,7 +226,7 @@ class DefaultBehavior extends \Yana\Core\StdObject implements \Yana\Core\Output\
      */
     public function relocateTo(string $action, array $args)
     {
-        assert('!isset($actionLowerCase); // Cannot redeclare var $actionLowerCase');
+        assert(!isset($actionLowerCase), 'Cannot redeclare var $actionLowerCase');
         $actionLowerCase = mb_strtolower((string) $action);
         unset($action);
 
@@ -236,7 +236,7 @@ class DefaultBehavior extends \Yana\Core\StdObject implements \Yana\Core\Output\
          * By default this will output any messages to a table of the database named 'log'.
          */
 
-        assert('!isset($template); // Cannot redeclare var $template');
+        assert(!isset($template), 'Cannot redeclare var $template');
         $templateName = 'id:MESSAGE';
 
         /**

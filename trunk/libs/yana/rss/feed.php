@@ -259,7 +259,7 @@ class Feed extends \Yana\Core\StdObject implements \Yana\RSS\IsFeed
      */
     public function setLanguage(string $language)
     {
-        assert('preg_match("/^(?:|\w{2}(?:-\w{2})?)$/s", $language); // Invalid syntax: $language');
+        assert((bool) preg_match("/^(?:|\w{2}(?:\-\w{2})?)$/s", $language), 'Invalid syntax: $language');
 
         $this->_language = $language;
         return $this;
@@ -550,10 +550,10 @@ class Feed extends \Yana\Core\StdObject implements \Yana\RSS\IsFeed
         $channel->addChild('pubDate', date('r'));
         $channel->addChild('generator', "Yana Framework " . YANA_VERSION);
 
-        assert('!isset($lastBuildDate); // Cannot redeclare var $lastBuildDate');
+        assert(!isset($lastBuildDate), 'Cannot redeclare var $lastBuildDate');
         $lastBuildDate = 0;
         $items = $this->getItems();
-        assert('!isset($item); // Cannot redeclare var $item');
+        assert(!isset($item), 'Cannot redeclare var $item');
         foreach ($items as $item)
         {
             $tmp = strtotime($item->getPubDate());
@@ -582,14 +582,14 @@ class Feed extends \Yana\Core\StdObject implements \Yana\RSS\IsFeed
             $channel->addChild('ttl', (string) $this->getTimeToLive());
         }
 
-        assert('!isset($category); // Cannot redeclare var $category');
+        assert(!isset($category), 'Cannot redeclare var $category');
         foreach ($this->getCategory() as $category)
         {
             $channel->addChild('category', $category);
         }
         unset($category);
 
-        assert('!isset($imageXML); // Cannot redeclare var $imageXML');
+        assert(!isset($imageXML), 'Cannot redeclare var $imageXML');
         if ($this->getImage()) {
             $imageXML = $channel->addChild('image');
             $imageXML->addChild('title', $this->getTitle());
@@ -598,7 +598,7 @@ class Feed extends \Yana\Core\StdObject implements \Yana\RSS\IsFeed
         }
         unset($imageXML);
 
-        assert('!isset($item); // Cannot redeclare var $item');
+        assert(!isset($item), 'Cannot redeclare var $item');
         /* @var $item Item */
         foreach ($items as $item)
         {

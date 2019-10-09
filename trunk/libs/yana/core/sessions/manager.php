@@ -63,7 +63,7 @@ class Manager extends \Yana\Core\StdObject implements \Yana\Core\Sessions\IsMana
      */
     public function setSaveHandler(\Yana\Core\Sessions\IsSessionSaveHandler $handler, $autoSave = false)
     {
-        assert('is_bool($autoSave); // $autoSave expected to be Boolean');
+        assert(is_bool($autoSave), '$autoSave expected to be Boolean');
         // Register a custom session save handler
         session_set_save_handler(array($handler, 'open'), array($handler, 'close'), array($handler, 'read'),
             array($handler, 'write'), array($handler, 'destroy'), array($handler, 'gc'));

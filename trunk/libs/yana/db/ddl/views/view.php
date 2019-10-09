@@ -225,7 +225,7 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function setTitle($title = "")
     {
-        assert('is_string($title); // Wrong type for argument 1. String expected');
+        assert(is_string($title), 'Wrong type for argument 1. String expected');
         if (empty($title)) {
             $this->title = null;
         } else {
@@ -275,7 +275,7 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function setDescription($description)
     {
-        assert('is_string($description); // Wrong type for argument 1. String expected');
+        assert(is_string($description), 'Wrong type for argument 1. String expected');
         if (empty($description)) {
             $this->description = null;
         } else {
@@ -310,7 +310,7 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function setReadonly($isReadonly)
     {
-        assert('is_bool($isReadonly); // Wrong type for argument 1. Boolean expected');
+        assert(is_bool($isReadonly), 'Wrong type for argument 1. Boolean expected');
         $this->readonly = (bool) $isReadonly;
         return $this;
     }
@@ -377,7 +377,7 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function setCheckOption($checkOption)
     {
-        assert('is_numeric($checkOption); // Wrong type for argument 1. Integer expected');
+        assert(is_numeric($checkOption), 'Wrong type for argument 1. Integer expected');
         switch($checkOption) {
             case \Yana\Db\Ddl\Views\ConstraintEnumeration::NONE:
             case \Yana\Db\Ddl\Views\ConstraintEnumeration::CASCADED:
@@ -403,7 +403,7 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function getField($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert(is_string($name), 'Wrong type for argument 1. String expected');
         if (isset($this->fields[$name])) {
             return $this->fields[$name];
         } else {
@@ -422,7 +422,7 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function getFields()
     {
-        assert('is_array($this->fields); // Wrong type for argument 1. array expected');
+        assert(is_array($this->fields), 'Wrong type for argument 1. array expected');
         if (count($this->fields) != 0) {
             return $this->fields;
         } else {
@@ -442,7 +442,7 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function addField($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert(is_string($name), 'Wrong type for argument 1. String expected');
         if (!isset($this->fields[$name])) {
             $this->fields[$name] = new \Yana\Db\Ddl\Views\Field($name);
             return $this->fields[$name];
@@ -462,7 +462,7 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function dropField($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert(is_string($name), 'Wrong type for argument 1. String expected');
         if (isset($this->fields[$name])) {
             unset($this->fields[$name]);
         }
@@ -478,7 +478,7 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function getQuery($dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
-        assert('is_string($dbms); // Wrong type for argument 1. String expected');
+        assert(is_string($dbms), 'Wrong type for argument 1. String expected');
         $lcDbms = strtolower($dbms);
 
         if (isset($this->queries[$lcDbms])) {
@@ -518,8 +518,8 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function setQuery($query, $dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
-        assert('is_string($query); // Wrong type for argument 1. String expected');
-        assert('is_string($dbms); // Wrong type for argument 2. String expected');
+        assert(is_string($query), 'Wrong type for argument 1. String expected');
+        assert(is_string($dbms), 'Wrong type for argument 2. String expected');
         $lcDbms = strtolower($dbms);
 
         if (empty($query)) {
@@ -537,7 +537,7 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function dropQuery($dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
-        assert('is_string($dbms); // Wrong type for argument 1. String expected');
+        assert(is_string($dbms), 'Wrong type for argument 1. String expected');
         $lcDbms = strtolower($dbms);
 
         if (isset($this->queries[$lcDbms])) {
@@ -560,7 +560,7 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function getTables()
     {
-        assert('is_array($this->tables); // Wrong type for argument 1. array expected');
+        assert(is_array($this->tables), 'Wrong type for argument 1. array expected');
         return $this->tables;
     }
 
@@ -585,7 +585,7 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function setTables(array $tables)
     {
-        assert('is_array($tables); // Wrong type for argument 1. array expected');
+        assert(is_array($tables), 'Wrong type for argument 1. array expected');
         if (isset($this->parent)) {
             foreach ($tables as $table)
             {
@@ -643,7 +643,7 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function setWhere($where)
     {
-        assert('is_string($where); // Wrong type for argument 1. String expected');
+        assert(is_string($where), 'Wrong type for argument 1. String expected');
         if (empty($where)) {
             $this->where = null;
         } else {
@@ -661,7 +661,7 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function getOrderBy()
     {
-        assert('is_array($this->orderBy); // Wrong type for argument 1. Array expected');
+        assert(is_array($this->orderBy), 'Wrong type for argument 1. Array expected');
         return (!empty($this->orderBy)) ? $this->orderBy : array();
     }
 
@@ -683,8 +683,8 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function setOrderBy(array $orderBy, $isDesc = false)
     {
-        assert('is_array($orderBy); // Wrong type for argument 1. Array expected');
-        assert('is_bool($isDesc); // Wrong type for argument 2. Boolean expected');
+        assert(is_array($orderBy), 'Wrong type for argument 1. Array expected');
+        assert(is_bool($isDesc), 'Wrong type for argument 2. Boolean expected');
 
         $this->orderBy = $orderBy;
         $this->descendingOrder = (bool) $isDesc;
@@ -719,7 +719,7 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function getGrants()
     {
-        assert('is_array($this->grants); // Member "grants" is expected to be an array.');
+        assert(is_array($this->grants), 'Member "grants" is expected to be an array.');
         return $this->grants;
     }
 
@@ -770,9 +770,9 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function addGrant($user = null, $role = null, $level = null)
     {
-        assert('is_null($user) || is_string($user); // Wrong type for argument 1. String expected');
-        assert('is_null($role) || is_string($role); // Wrong type for argument 2. String expected');
-        assert('is_null($level) || is_int($level); // Wrong type for argument 3. Integer expected');
+        assert(is_null($user) || is_string($user), 'Wrong type for argument 1. String expected');
+        assert(is_null($role) || is_string($role), 'Wrong type for argument 2. String expected');
+        assert(is_null($level) || is_int($level), 'Wrong type for argument 3. Integer expected');
         $grant = new \Yana\Db\Ddl\Grant();
         if (!empty($user)) {
             $grant->setUser($user);

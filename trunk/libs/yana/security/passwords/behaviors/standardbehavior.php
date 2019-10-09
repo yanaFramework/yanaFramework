@@ -90,11 +90,11 @@ class StandardBehavior extends \Yana\Security\Passwords\Behaviors\AbstractBehavi
      */
     public function checkRecoveryId($recoveryId)
     {
-        assert('is_string($recoveryId); // Wrong type for argument $userPwd. String expected');
+        assert(is_string($recoveryId), 'Wrong type for argument $userPwd. String expected');
 
-        assert('!isset($user); // Cannot redeclare variable $user');
+        assert(!isset($user), 'Cannot redeclare variable $user');
         $user = $this->getUser();
-        assert('!isset($isCorrect); // Cannot redeclare variable $isCorrect');
+        assert(!isset($isCorrect), 'Cannot redeclare variable $isCorrect');
         $isCorrect = false;
         if ($recoveryId > "") {
             $isCorrect = $this->_getAlgorithm()->isEqual($recoveryId, (string) $user->getPasswordRecoveryId());
@@ -120,11 +120,11 @@ class StandardBehavior extends \Yana\Security\Passwords\Behaviors\AbstractBehavi
      */
     public function checkPassword($userPwd)
     {
-        assert('is_string($userPwd); // Wrong type for argument $userPwd. String expected');
+        assert(is_string($userPwd), 'Wrong type for argument $userPwd. String expected');
 
-        assert('!isset($user); // Cannot redeclare variable $user');
+        assert(!isset($user), 'Cannot redeclare variable $user');
         $user = $this->getUser();
-        assert('!isset($isCorrect); // Cannot redeclare variable $isCorrect');
+        assert(!isset($isCorrect), 'Cannot redeclare variable $isCorrect');
         $isCorrect = false;
         switch (true)
         {
@@ -153,7 +153,7 @@ class StandardBehavior extends \Yana\Security\Passwords\Behaviors\AbstractBehavi
      */
     public function changePassword($password)
     {
-        assert('is_string($password) && strlen($password) > 0; // Wrong type for argument 1. String expected');
+        assert(is_string($password) && strlen($password) > 0, 'Wrong type for argument 1. String expected');
 
         $user = $this->getUser();
         // calculate the hash-value for the new password

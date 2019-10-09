@@ -47,7 +47,7 @@ class DirectMapper extends \Yana\Core\Autoloaders\AbstractMapper
      */
     public function mapClassNameToFilePath($className)
     {
-        assert('is_string($className); // $className expected to be String');
+        assert(is_string($className), '$className expected to be String');
         return $this->getBaseDirectory() . $this->getFilePrefix() . $this->_removeNameSpacePrefix($className) . $this->getFileExtension();
     }
 

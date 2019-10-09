@@ -52,23 +52,23 @@ class Mapper extends \Yana\Core\StdObject implements \Yana\Security\Data\Securit
     public function toEntity(array $databaseRow)
     {
         $databaseRowLower = \Yana\Util\Hashtable::changeCase($databaseRow, \CASE_LOWER);
-        assert('!isset($group); // Cannot redeclare var $group');
+        assert(!isset($group), 'Cannot redeclare var $group');
         $group = "";
         if (isset($databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::GROUP])) {
             $group = (string) $databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::GROUP];
         }
-        assert('!isset($role); // Cannot redeclare var $role');
+        assert(!isset($role), 'Cannot redeclare var $role');
         $role = "";
         if (isset($databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::ROLE])) {
             $role = (string) $databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::ROLE];
         }
-        assert('!isset($isProxy); // Cannot redeclare var $isProxy');
+        assert(!isset($isProxy), 'Cannot redeclare var $isProxy');
         $isProxy = false; // when the database value is NULL, it must be mapped to false
         if (isset($databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::HAS_GRANT_OPTION])) {
             $isProxy = (bool) $databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::HAS_GRANT_OPTION];
         }
 
-        assert('!isset($entity); // Cannot redeclare var $entity');
+        assert(!isset($entity), 'Cannot redeclare var $entity');
         $entity = new \Yana\Security\Data\SecurityRules\Rule($group, $role, $isProxy);
 
         if (isset($databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::ID])) {
@@ -94,7 +94,7 @@ class Mapper extends \Yana\Core\StdObject implements \Yana\Security\Data\Securit
      */
     public function toDatabaseRow(\Yana\Data\Adapters\IsEntity $entity)
     {
-        assert('!isset($row); // Cannot redeclare var $row');
+        assert(!isset($row), 'Cannot redeclare var $row');
         $row = array();
         if ($entity->getId() >= 0) {
             // We will not add the ID when none has been set (to allow AUTO-INCREMENT to do its job)

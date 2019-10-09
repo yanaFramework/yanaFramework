@@ -76,9 +76,9 @@ class Locale extends \Yana\Core\StdObject implements \Yana\Translations\IsLocale
      */
     public function setLanguage($selectedLanguage)
     {
-        assert('is_string($selectedLanguage); // Invalid argument $selectedLanguage: string expected');
+        assert(is_string($selectedLanguage), 'Invalid argument $selectedLanguage: string expected');
 
-        assert('!isset($selectedLanguageLowercased); // Cannot redeclare var $selectedLanguageLowercased');
+        assert(!isset($selectedLanguageLowercased), 'Cannot redeclare var $selectedLanguageLowercased');
         $selectedLanguageLowercased = mb_strtolower($selectedLanguage);
 
         // check if locale is valid
@@ -102,9 +102,9 @@ class Locale extends \Yana\Core\StdObject implements \Yana\Translations\IsLocale
      */
     public function setCountry($selectedCountry)
     {
-        assert('is_string($selectedCountry); // Invalid argument $selectedCountry: string expected');
+        assert(is_string($selectedCountry), 'Invalid argument $selectedCountry: string expected');
 
-        assert('!isset($selectedCountryUppercased); // Cannot redeclare var $selectedCountryUppercased');
+        assert(!isset($selectedCountryUppercased), 'Cannot redeclare var $selectedCountryUppercased');
         $selectedCountryUppercased = mb_strtoupper($selectedCountry);
 
         // check if locale is valid
@@ -143,10 +143,10 @@ class Locale extends \Yana\Core\StdObject implements \Yana\Translations\IsLocale
      */
     public function toString()
     {
-        assert('!isset($locale); // Cannot redeclare var $locale');
+        assert(!isset($locale), 'Cannot redeclare var $locale');
         $locale = $this->getLanguage();
 
-        assert('!isset($country); // Cannot redeclare var $country');
+        assert(!isset($country), 'Cannot redeclare var $country');
         $country = $this->getCountry();
         if (!empty($country)) {
             $locale .= '-' . $country;

@@ -47,9 +47,9 @@ class NativeStrategy extends \Yana\Mails\Strategies\AbstractStrategy
      */
     public function __invoke($recipient, $subject, $text, array $header = array())
     {
-        assert('is_string($recipient); // Wrong type for argument 1. String expected');
-        assert('is_string($subject); // Wrong type for argument 2. String expected');
-        assert('is_string($text); // Wrong type for argument 3. String expected');
+        assert(is_string($recipient), 'Wrong type for argument 1. String expected');
+        assert(is_string($subject), 'Wrong type for argument 2. String expected');
+        assert(is_string($text), 'Wrong type for argument 3. String expected');
 
         $headerString = $this->_convertHeadersToString($header);
 

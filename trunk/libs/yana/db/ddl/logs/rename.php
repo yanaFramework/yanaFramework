@@ -100,7 +100,7 @@ class Rename extends \Yana\Db\Ddl\Logs\Create
      */
     public function setOldName($oldName)
     {
-        assert('is_string($oldName); // Wrong type for argument 1. String expected');
+        assert(is_string($oldName), 'Wrong type for argument 1. String expected');
         if (empty($oldName)) {
             $this->oldName = null;
         } else {

@@ -89,10 +89,10 @@ abstract class AbstractPlugin extends \stdClass implements \Yana\IsPlugin
      */
     public static function loadPlugin($name, \Yana\Files\IsDir $fromDirectory, \Yana\Plugins\Dependencies\IsPluginContainer $container)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert(is_string($name), 'Invalid argument $name: string expected');
 
         // load base class, if it exists
-        assert('!isset($classFile); // Cannot redeclare var $classFile');
+        assert(!isset($classFile), 'Cannot redeclare var $classFile');
         $classFile = \Yana\Plugins\PluginNameMapper::toClassFilenameWithDirectory($name, $fromDirectory);
         if (is_file($classFile)) {
             include_once "$classFile";
@@ -100,7 +100,7 @@ abstract class AbstractPlugin extends \stdClass implements \Yana\IsPlugin
         unset($classFile);
 
         // instantiate class, if it exists
-        assert('!isset($className); // Cannot redeclare var $className');
+        assert(!isset($className), 'Cannot redeclare var $className');
         $className = \Yana\Plugins\PluginNameMapper::toClassNameWithNamespace($name);
         if (!class_exists($className)) {
             throw new \Yana\Core\Exceptions\NotFoundException("Plugin base-class not found: " . $className);
@@ -170,7 +170,7 @@ abstract class AbstractPlugin extends \stdClass implements \Yana\IsPlugin
      */
     protected function _connectToDatabase($schema)
     {
-        assert('is_string($schema); // Invalid argument $schema: string expected');
+        assert(is_string($schema), 'Invalid argument $schema: string expected');
 
         return $this->_getApplication()->connect($schema);
     }

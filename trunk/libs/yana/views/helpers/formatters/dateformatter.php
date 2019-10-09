@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Views\Helpers\Formatters;
 
@@ -54,7 +55,7 @@ class DateFormatter extends \Yana\Views\Helpers\Formatters\AbstractFormatter
      * @return  \Yana\Core\IsVarContainer
      * @codeCoverageIgnore
      */
-    protected function _getConfiguration()
+    protected function _getConfiguration(): \Yana\Core\IsVarContainer
     {
         $builder = new \Yana\ApplicationBuilder();
         return $builder->buildApplication();
@@ -66,7 +67,6 @@ class DateFormatter extends \Yana\Views\Helpers\Formatters\AbstractFormatter
      * Sets self::$_javaScriptFormat with "date.toLocaleString()" as default.
      * Sets self::$_phpFormat with "r" as default.
      *
-     * @return  array
      * @codeCoverageIgnore
      */
     protected function _loadDefaultDateFormat()
@@ -74,7 +74,7 @@ class DateFormatter extends \Yana\Views\Helpers\Formatters\AbstractFormatter
         $varContainer = $this->_getConfiguration();
         $profileTimeFormat = (int) $varContainer->getVar("PROFILE.TIMEFORMAT");
         $timeformat = $varContainer->getVar("DATE." . $profileTimeFormat);
-        assert('is_array($timeformat); // Time-format is expected to be an array.');
+        assert(is_array($timeformat), 'Time-format is expected to be an array.');
 
         self::$_javaScriptFormat = "date.toLocaleString()";
         if (isset($timeformat["JS"]) && is_string($timeformat["JS"])) {
@@ -93,7 +93,7 @@ class DateFormatter extends \Yana\Views\Helpers\Formatters\AbstractFormatter
      * @param  string  $phpFormat
      * @param  string  $javaScriptFormat 
      */
-    public static function setFormat($phpFormat, $javaScriptFormat)
+    public static function setFormat(string $phpFormat, string $javaScriptFormat)
     {
         self::$_phpFormat = $phpFormat;
         self::$_javaScriptFormat = $javaScriptFormat;
@@ -104,7 +104,7 @@ class DateFormatter extends \Yana\Views\Helpers\Formatters\AbstractFormatter
      *
      * @return  string
      */
-    protected function _getPhpFormat()
+    protected function _getPhpFormat(): string
     {
         if (self::$_phpFormat === "") {
             $this->_loadDefaultDateFormat();
@@ -117,7 +117,7 @@ class DateFormatter extends \Yana\Views\Helpers\Formatters\AbstractFormatter
      *
      * @return  string
      */
-    protected function _getJavaScriptFormat()
+    protected function _getJavaScriptFormat(): string
     {
         if (self::$_javaScriptFormat === "") {
             $this->_loadDefaultDateFormat();
@@ -135,10 +135,10 @@ class DateFormatter extends \Yana\Views\Helpers\Formatters\AbstractFormatter
     {
         // provide javascript
         $script = '<script type="text/javascript" language="JavaScript">' .
-            'date=new Date(' . $time . "000);document.write(" . $this->_getJavaScriptFormat() . ");</script>";
+            'date=new Date(' . (string) (int) $time . "000);document.write(" . $this->_getJavaScriptFormat() . ");</script>";
 
         // provide textual representation as a fallback
-        $script .= '<span class="yana_noscript">' . date($this->_getPhpFormat(), $time) . '</span>';
+        $script .= '<span class="yana_noscript">' . date($this->_getPhpFormat(), (int) $time) . '</span>';
 
         return $script;
     }

@@ -141,7 +141,7 @@ class Change extends \Yana\Db\Ddl\Logs\AbstractLog
      */
     public function setDBMS($dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
-        assert('is_string($dbms); // Wrong type for argument 1. String expected');
+        assert(is_string($dbms), 'Wrong type for argument 1. String expected');
         if (empty($dbms)) {
             $this->dbms = null;
         } else {
@@ -178,7 +178,7 @@ class Change extends \Yana\Db\Ddl\Logs\AbstractLog
      */
     public function setType($type = "default")
     {
-        assert('is_string($type); // Wrong type for argument 1. String expected');
+        assert(is_string($type), 'Wrong type for argument 1. String expected');
         if (empty($type)) {
             $this->type = null;
         } else {
@@ -197,7 +197,7 @@ class Change extends \Yana\Db\Ddl\Logs\AbstractLog
      */
     public function getParameters()
     {
-        assert('is_array($this->parameters); // Member "parameters" is expected to be an array.');
+        assert(is_array($this->parameters), 'Member "parameters" is expected to be an array.');
         return $this->parameters;
     }
 
@@ -211,9 +211,9 @@ class Change extends \Yana\Db\Ddl\Logs\AbstractLog
      */
     public function addParameter($value, $name = null)
     {
-        assert('is_string($value); // Wrong type for argument 1. String expected');
-        assert('is_null($name) || is_string($name); // Wrong type for argument 2. String expected');
-        assert('is_array($this->parameters); // Member "parameters" is expected to be an array.');
+        assert(is_string($value), 'Wrong type for argument 1. String expected');
+        assert(is_null($name) || is_string($name), 'Wrong type for argument 2. String expected');
+        assert(is_array($this->parameters), 'Member "parameters" is expected to be an array.');
         if (is_null($name)) {
             $this->parameters[] = "$value";
         } else {
@@ -240,7 +240,7 @@ class Change extends \Yana\Db\Ddl\Logs\AbstractLog
      */
     public static function setHandler($functionName, $functionType = "default")
     {
-        assert('is_string($functionType); // Wrong argument type for argument 2. String expected');
+        assert(is_string($functionType), 'Wrong argument type for argument 2. String expected');
         if (is_callable($functionName)) {
             self::$handlers["$functionType"] = $functionName;
         } else {

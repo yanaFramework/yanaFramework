@@ -60,7 +60,7 @@ class Mdb2Worker extends \Yana\Db\Ddl\Factories\AbstractMdb2Worker
         /*
          * build tables
          */
-        assert('!isset($tableName); // Cannot redeclare var $tableName');
+        assert(!isset($tableName), 'Cannot redeclare var $tableName');
         foreach ($connection->listTables() as $tableName)
         {
             /*
@@ -87,11 +87,11 @@ class Mdb2Worker extends \Yana\Db\Ddl\Factories\AbstractMdb2Worker
      */
     protected function _createSequences(\Yana\Db\Ddl\Database $database)
     {
-        assert('!isset($mapper); // Cannot redeclare var $mapper');
+        assert(!isset($mapper), 'Cannot redeclare var $mapper');
         $mapper = $this->_getMapper();
 
-        assert('!isset($sequenceName); // Cannot redeclare var $sequenceName');
-        assert('!isset($sequenceInfo); // Cannot redeclare var $sequenceInfo');
+        assert(!isset($sequenceName), 'Cannot redeclare var $sequenceName');
+        assert(!isset($sequenceInfo), 'Cannot redeclare var $sequenceInfo');
         foreach ($this->_getWrapper()->listSequences() as $sequenceName => $sequenceInfo)
         {
             try {
@@ -111,11 +111,11 @@ class Mdb2Worker extends \Yana\Db\Ddl\Factories\AbstractMdb2Worker
      */
     protected function _createColumns(\Yana\Db\Ddl\Table $table, string $tableName)
     {
-        assert('!isset($mapper); // Cannot redeclare var $mapper');
+        assert(!isset($mapper), 'Cannot redeclare var $mapper');
         $mapper = $this->_getMapper();
 
-        assert('!isset($columnInfo); // Cannot redeclare var $columnInfo');
-        assert('!isset($columnName); // Cannot redeclare var $columnName');
+        assert(!isset($columnInfo), 'Cannot redeclare var $columnInfo');
+        assert(!isset($columnName), 'Cannot redeclare var $columnName');
         foreach ($this->_getWrapper()->listTableColumns($tableName) as $columnName => $columnInfo)
         {
             $mapper->createColumn($table, $columnInfo, $columnName);
@@ -131,11 +131,11 @@ class Mdb2Worker extends \Yana\Db\Ddl\Factories\AbstractMdb2Worker
      */
     protected function _createIndexes(\Yana\Db\Ddl\Table $table, string $tableName)
     {
-        assert('!isset($mapper); // Cannot redeclare var $mapper');
+        assert(!isset($mapper), 'Cannot redeclare var $mapper');
         $mapper = $this->_getMapper();
 
-        assert('!isset($indexInfo); // Cannot redeclare var $indexInfo');
-        assert('!isset($indexName); // Cannot redeclare var $indexName');
+        assert(!isset($indexInfo), 'Cannot redeclare var $indexInfo');
+        assert(!isset($indexName), 'Cannot redeclare var $indexName');
         foreach ($this->_getWrapper()->listTableIndexes($tableName) as $indexName => $indexInfo)
         {
             $mapper->createIndex($table, $indexInfo, $indexName);
@@ -151,11 +151,11 @@ class Mdb2Worker extends \Yana\Db\Ddl\Factories\AbstractMdb2Worker
      */
     protected function _createConstraints(\Yana\Db\Ddl\Table $table, string $tableName)
     {
-        assert('!isset($mapper); // Cannot redeclare var $mapper');
+        assert(!isset($mapper), 'Cannot redeclare var $mapper');
         $mapper = $this->_getMapper();
 
-        assert('!isset($contraintInfo); // Cannot redeclare var $contraintInfo');
-        assert('!isset($contraintName); // Cannot redeclare var $contraintName');
+        assert(!isset($contraintInfo), 'Cannot redeclare var $contraintInfo');
+        assert(!isset($contraintName), 'Cannot redeclare var $contraintName');
         foreach ($this->_getWrapper()->listTableConstraints($tableName) as $contraintName => $contraintInfo)
         {
             $mapper->createConstraint($table, $contraintInfo, $contraintName);

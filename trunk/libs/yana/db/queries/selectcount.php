@@ -164,7 +164,7 @@ class SelectCount extends \Yana\Db\Queries\SelectExist implements \Yana\Db\Queri
         }
 
         $rowCount = $result->fetchOne();
-        assert('is_null($rowCount) || is_numeric($rowCount)');
+        assert(is_null($rowCount) || is_numeric($rowCount));
 
         return (int) $rowCount;
     }

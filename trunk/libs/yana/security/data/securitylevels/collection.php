@@ -50,7 +50,7 @@ class Collection extends \Yana\Core\AbstractCollection implements \Yana\Security
      */
     public function offsetSet($offset, $value)
     {
-        assert('is_null($offset) || is_scalar($offset); // $offset expected to be Scalar');
+        assert(is_null($offset) || is_scalar($offset), '$offset expected to be Scalar');
         if (!$value instanceof \Yana\Security\Data\SecurityLevels\IsLevel) {
             $message = "Instance of \Yana\Security\Data\SecurityLevels\IsLevel expected. " .
                 "Found " . gettype($value) . "(" . get_class($value) . ") instead.";

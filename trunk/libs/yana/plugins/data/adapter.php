@@ -82,7 +82,7 @@ class Adapter extends \Yana\Plugins\Data\AbstractAdapter
      */
     public function offsetGet($id)
     {
-        assert('is_string($id); // Wrong type argument $id. String expected.');
+        assert(is_string($id), 'Wrong type argument $id. String expected.');
 
         try {
             return parent::offsetGet(\Yana\Util\Strings::toUpperCase((string) $id));
@@ -106,7 +106,7 @@ class Adapter extends \Yana\Plugins\Data\AbstractAdapter
      */
     public function offsetSet($id, $entity)
     {
-        assert('is_string($id) || is_null($id); // Wrong type argument $id. String expected.');
+        assert(is_string($id) || is_null($id), 'Wrong type argument $id. String expected.');
 
         if (!($entity instanceof \Yana\Plugins\Data\IsEntity)) {
             throw new \Yana\Core\Exceptions\InvalidArgumentException('Instance of "\Yana\Plugins\Data\IsEntity" expected.');
@@ -142,13 +142,13 @@ class Adapter extends \Yana\Plugins\Data\AbstractAdapter
      */
     public function filterActivePlugins(array $plugins)
     {
-        assert('!isset($filteredPlugins); // Cannot redeclare var $filteredPlugins');
+        assert(!isset($filteredPlugins), 'Cannot redeclare var $filteredPlugins');
         $filteredPlugins = array();
 
-        assert('!isset($pluginName); // Cannot redeclare var $pluginName');
+        assert(!isset($pluginName), 'Cannot redeclare var $pluginName');
         foreach ($plugins as $pluginName)
         {
-            assert('is_string($pluginName); // Invalid argument $pluginName: string expected');
+            assert(is_string($pluginName), 'Invalid argument $pluginName: string expected');
             if ($this->isActive($pluginName)) {
                 $filteredPlugins[] = $pluginName;
             }
@@ -169,9 +169,9 @@ class Adapter extends \Yana\Plugins\Data\AbstractAdapter
      */
     public function isActive($pluginName)
     {
-        assert('is_string($pluginName); // Invalid argument $pluginName: string expected');
+        assert(is_string($pluginName), 'Invalid argument $pluginName: string expected');
 
-        assert('!isset($query); // Cannot redeclare var $query');
+        assert(!isset($query), 'Cannot redeclare var $query');
         $query = new \Yana\Db\Queries\SelectExist($this->_getDatabaseConnection());
         $query->setTable($this->_getTableName());
         $query->setRow($pluginName);

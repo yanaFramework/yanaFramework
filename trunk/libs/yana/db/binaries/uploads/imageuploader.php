@@ -92,8 +92,8 @@ class ImageUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
         /* name of output files */
         $path = "{$dir}/{$fileId}";
         $thumbnailPath = "{$dir}/thumb.{$fileId}";
-        assert('is_string($path); // Wrong argument type for argument 2. String expected');
-        assert('is_string($thumbnailPath); // Wrong argument type for argument 3. String expected');
+        assert(is_string($path), 'Wrong argument type for argument 2. String expected');
+        assert(is_string($thumbnailPath), 'Wrong argument type for argument 3. String expected');
 
         /*
          * process image

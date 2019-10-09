@@ -158,7 +158,7 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractUnnamedObject
      */
     public function __construct($name = "", \Yana\Db\Ddl\Table $parent = null)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert(is_string($name), 'Invalid argument $name: string expected');
         parent::__construct($name);
         $this->parent = $parent;
     }
@@ -202,7 +202,7 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractUnnamedObject
      */
     public function setTargetTable($name)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert(is_string($name), 'Invalid argument $name: string expected');
         if (empty($name)) {
             $this->targetTable = null;
         } else {
@@ -237,7 +237,7 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractUnnamedObject
      */
     public function getColumns()
     {
-        assert('is_array($this->columns); // member "columns" is expected to be an array');
+        assert(is_array($this->columns), 'member "columns" is expected to be an array');
         return $this->columns;
     }
 
@@ -287,8 +287,8 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractUnnamedObject
      */
     public function setColumn($source, $target = "")
     {
-        assert('is_string($source); // Invalid argument $source: String expected');
-        assert('is_string($target); // Invalid argument $target: String expected');
+        assert(is_string($source), 'Invalid argument $source: String expected');
+        assert(is_string($target), 'Invalid argument $target: String expected');
 
         $source = mb_strtolower($source);
         // set target column to primary key
@@ -356,7 +356,7 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractUnnamedObject
      */
     public function getMatch()
     {
-        assert('is_int($this->match); // Member "match" is expected to be an integer');
+        assert(is_int($this->match), 'Member "match" is expected to be an integer');
         return $this->match;
     }
 
@@ -376,7 +376,7 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractUnnamedObject
      */
     public function setMatch($match)
     {
-        assert('is_numeric($match); // Invalid argument $match: Integer expected');
+        assert(is_numeric($match), 'Invalid argument $match: Integer expected');
         switch($match)
         {
             case \Yana\Db\Ddl\KeyMatchStrategyEnumeration::SIMPLE:
@@ -437,7 +437,7 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractUnnamedObject
      */
     public function getOnDelete()
     {
-        assert('is_int($this->onDelete); // Member "onDelete" is expected to be an integer');
+        assert(is_int($this->onDelete), 'Member "onDelete" is expected to be an integer');
         return $this->onDelete;
     }
 
@@ -461,7 +461,7 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractUnnamedObject
      */
     public function setOnDelete($match)
     {
-        assert('is_int($match); // Invalid argument $match: Integer expected');
+        assert(is_int($match), 'Invalid argument $match: Integer expected');
 
         switch($match)
         {
@@ -498,7 +498,7 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractUnnamedObject
      */
     public function getOnUpdate()
     {
-        assert('is_int($this->onUpdate); // Member "onUpdate" is expected to be an integer');
+        assert(is_int($this->onUpdate), 'Member "onUpdate" is expected to be an integer');
         return $this->onUpdate;
     }
 
@@ -522,7 +522,7 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractUnnamedObject
      */
     public function setOnUpdate($match)
     {
-        assert('is_int($match); // Invalid argument $match: Integer expected');
+        assert(is_int($match), 'Invalid argument $match: Integer expected');
         switch($match)
         {
             case \Yana\Db\Ddl\KeyUpdateStrategyEnumeration::NOACTION:
@@ -583,7 +583,7 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractUnnamedObject
      */
     public function setDeferrable($isDeferrable)
     {
-        assert('is_bool($isDeferrable); // Invalid argument $isDeferrable: Boolean expected');
+        assert(is_bool($isDeferrable), 'Invalid argument $isDeferrable: Boolean expected');
         $this->deferrable = (bool) $isDeferrable;
         return $this;
     }

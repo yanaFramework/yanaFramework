@@ -47,7 +47,7 @@ abstract class AbstractCaseSensitiveNamedObject extends \Yana\Db\Ddl\AbstractObj
      */
     public function __construct(string $name)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert(is_string($name), 'Invalid argument $name: string expected');
         $this->setName($name);
     }
 
@@ -62,7 +62,7 @@ abstract class AbstractCaseSensitiveNamedObject extends \Yana\Db\Ddl\AbstractObj
      */
     public function setName($name)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert(is_string($name), 'Invalid argument $name: string expected');
         if ($name === "") {
             $message = "Object name cannot be empty.";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message);

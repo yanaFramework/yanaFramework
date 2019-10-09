@@ -111,8 +111,8 @@ abstract class AbstractVarContainer extends \Yana\Files\File implements \Yana\Co
      */
     public function __construct($filename, $caseSensitive = CASE_MIXED)
     {
-        assert('is_string($filename); // Wrong argument type for argument 1. String expected');
-        assert('is_int($caseSensitive); // Wrong type for argument 2. Integer expected');
+        assert(is_string($filename), 'Wrong argument type for argument 1. String expected');
+        assert(is_int($caseSensitive), 'Wrong type for argument 2. Integer expected');
 
         parent::__construct($filename);
 
@@ -188,7 +188,7 @@ abstract class AbstractVarContainer extends \Yana\Files\File implements \Yana\Co
      */
     public function &getVarByReference($key = "*")
     {
-        assert('is_string($key); // Wrong argument type for argument 1. String expected.');
+        assert(is_string($key), 'Wrong argument type for argument 1. String expected.');
 
         $key = $this->_convertKey($key);
 
@@ -247,7 +247,7 @@ abstract class AbstractVarContainer extends \Yana\Files\File implements \Yana\Co
      */
     public function setVarByReference($key, &$value)
     {
-        assert('is_scalar($key); // Wrong argument type for argument 1. String expected.');
+        assert(is_scalar($key), 'Wrong argument type for argument 1. String expected.');
         $key = $this->_convertKey($key);
         $this->_isReady = true;
         if (is_array($value)) {
@@ -340,10 +340,10 @@ abstract class AbstractVarContainer extends \Yana\Files\File implements \Yana\Co
     {
         if (!$this->_isReady) {
             parent::read();
-            assert('is_array($this->content); // unexpected result: $this->content');
+            assert(is_array($this->content), 'unexpected result: $this->content');
 
             $this->content = $this->decoder->getFile($this->content, $this->caseSensitive);
-            assert('is_array($this->content); // unexpected result: $this->content');
+            assert(is_array($this->content), 'unexpected result: $this->content');
 
             $this->_isReady = true; // setting $this->ready state
         }
@@ -366,7 +366,7 @@ abstract class AbstractVarContainer extends \Yana\Files\File implements \Yana\Co
      */
     public function length($key = "*")
     {
-        assert('is_scalar($key); // Wrong argument type for argument 1. String expected.');
+        assert(is_scalar($key), 'Wrong argument type for argument 1. String expected.');
         $key = $this->_convertKey($key);
 
         /* auto-load */
@@ -389,7 +389,7 @@ abstract class AbstractVarContainer extends \Yana\Files\File implements \Yana\Co
         if (is_null($result)) {
             return 0;
         } else {
-            assert('is_array($result);');
+            assert(is_array($result), 'is_array($result)');
             return count($result);
         }
     }
@@ -419,7 +419,7 @@ abstract class AbstractVarContainer extends \Yana\Files\File implements \Yana\Co
             return true;
         }
 
-        assert('is_string($key); // Wrong argument type for argument 1. String expected.');
+        assert(is_string($key), 'Wrong argument type for argument 1. String expected.');
         $key = $this->_convertKey($key);
 
         /* auto-load */
@@ -460,7 +460,7 @@ abstract class AbstractVarContainer extends \Yana\Files\File implements \Yana\Co
      */
     public function exists($key = '*')
     {
-        assert('is_string($key); // Wrong argument type for argument 1. String expected.');
+        assert(is_string($key), 'Wrong argument type for argument 1. String expected.');
         $key = $this->_convertKey($key);
 
         /* return result */
@@ -635,7 +635,7 @@ abstract class AbstractVarContainer extends \Yana\Files\File implements \Yana\Co
      */
     private function _convertKey($key)
     {
-        assert('is_string($key); // Wrong argument type for argument 1. String expected.');
+        assert(is_string($key), 'Wrong argument type for argument 1. String expected.');
 
         /* Convert empty strings to wildcard.
          * This is to evade problems when testing for bool(false)

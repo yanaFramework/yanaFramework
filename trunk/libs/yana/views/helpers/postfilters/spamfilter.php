@@ -117,7 +117,7 @@ class SpamFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana
      */
     public function __invoke($source)
     {
-        assert('is_string($source); // Wrong type for argument 1. String expected');
+        assert(is_string($source), 'Wrong type for argument 1. String expected');
 
         if (!$this->getUser()->isLoggedIn()) {
             $replace = "<span class=\"yana_button\"><input type=\"text\" name=\"yana_url\"/></span>\n</form>";

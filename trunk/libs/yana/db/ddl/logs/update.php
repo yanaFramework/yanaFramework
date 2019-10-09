@@ -117,7 +117,7 @@ class Update extends \Yana\Db\Ddl\Logs\Create
      */
     public function setPropertyName($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert(is_string($name), 'Wrong type for argument 1. String expected');
         if (empty($name)) {
             $this->propertyName = null;
         } else {
@@ -154,7 +154,7 @@ class Update extends \Yana\Db\Ddl\Logs\Create
      */
     public function setPropertyValue($value)
     {
-        assert('is_string($value); // Wrong type for argument 1. String expected');
+        assert(is_string($value), 'Wrong type for argument 1. String expected');
         if (empty($value)) {
             $this->propertyValue = null;
         } else {
@@ -190,7 +190,7 @@ class Update extends \Yana\Db\Ddl\Logs\Create
      */
     public function setOldPropertyValue($oldValue)
     {
-        assert('is_string($oldValue); // Wrong type for argument 1. String expected');
+        assert(is_string($oldValue), 'Wrong type for argument 1. String expected');
         if (empty($oldValue)) {
             $this->oldPropertyValue = null;
         } else {

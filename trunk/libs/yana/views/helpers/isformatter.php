@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Views\Helpers;
 
@@ -41,7 +42,7 @@ interface IsFormatter
     /**
      * Converting an input to text, using a preset format.
      *
-     * @param   mixed  $source  some source
+     * @param   scalar  $source  some source
      * @return  scalar
      */
     public function __invoke($source);

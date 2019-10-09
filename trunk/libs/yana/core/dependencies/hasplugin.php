@@ -51,7 +51,7 @@ trait HasPlugin
      *
      * @return  \Yana\Plugins\Events\IsDispatcher
      */
-    public function getDispatcher()
+    public function getDispatcher(): \Yana\Plugins\Events\IsDispatcher
     {
         if (!isset($this->_dispatcher)) {
             $this->_dispatcher = new \Yana\Plugins\Events\Dispatcher();

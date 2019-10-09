@@ -79,7 +79,7 @@ class Queue extends \Yana\Core\StdObject implements \Yana\Plugins\Subscriptions\
      */
     public function unsubscribe($classId)
     {
-        assert('is_string($classId); // Invalid argument $classId: string expected');
+        assert(is_string($classId), 'Invalid argument $classId: string expected');
         if (isset($this->_subscribers[$classId])) {
             unset($this->_subscribers[$classId]);
         }

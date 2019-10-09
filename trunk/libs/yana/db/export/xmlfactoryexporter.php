@@ -194,8 +194,8 @@ class XmlFactoryExporter extends \Yana\Core\AbstractUtility
      */
     private static function _handleTable($tableName, array $table, $indent = 1)
     {
-        assert('is_string($tableName); // Invalid argument type: $tableName. String expected.');
-        assert('is_int($indent); // Invalid argument type: $indent. Integer expected.');
+        assert(is_string($tableName), 'Invalid argument type: $tableName. String expected.');
+        assert(is_int($indent), 'Invalid argument type: $indent. Integer expected.');
 
         /*
          * Create xml body.
@@ -226,8 +226,8 @@ class XmlFactoryExporter extends \Yana\Core\AbstractUtility
      */
     private static function _handleRow($rowId, array $row, $indent)
     {
-        assert('is_string($rowId); // Invalid argument type: $rowId. String expected.');
-        assert('is_int($indent); // Invalid argument type: $indent. Integer expected.');
+        assert(is_string($rowId), 'Invalid argument type: $rowId. String expected.');
+        assert(is_int($indent), 'Invalid argument type: $indent. Integer expected.');
 
         $tab = str_repeat("\t", $indent);
 
@@ -251,8 +251,8 @@ class XmlFactoryExporter extends \Yana\Core\AbstractUtility
      */
     private static function _handleColumn($columnName, $value, $indent)
     {
-        assert('is_string($columnName); // Invalid argument type: $columnName. String expected.');
-        assert('is_int($indent); // Invalid argument type: $indent. Integer expected.');
+        assert(is_string($columnName), 'Invalid argument type: $columnName. String expected.');
+        assert(is_int($indent), 'Invalid argument type: $indent. Integer expected.');
 
         $tab = str_repeat("\t", $indent);
 

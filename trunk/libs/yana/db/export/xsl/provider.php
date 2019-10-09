@@ -55,7 +55,7 @@ class Provider extends \Yana\Core\StdObject implements \Yana\Db\Export\Xsl\IsPro
      */
     public function getXslDocument($name)
     {
-        assert('is_int($name); // Invalid argument type: $name. Integer expected');
+        assert(is_int($name), 'Invalid argument type: $name. Integer expected');
 
         if (!isset(self::$_instances[$name])) {
 

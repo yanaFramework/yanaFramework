@@ -68,7 +68,7 @@ class InsertParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
 
         // combine arrays of keys and values
         $set = $this->_parseSet($query, $keys, $values); // combined array of $keys and $values
-        assert('!empty($set); // Cannot be empty - the parser must not allow ');
+        assert(!empty($set), 'Cannot be empty - the parser must not allow ');
         $query->setValues($set); // may throw \Yana\Core\Exceptions\InvalidArgumentException or \Yana\Db\Queries\Exceptions\InvalidPrimaryKeyException
         unset($keys, $values);
 
@@ -83,8 +83,8 @@ class InsertParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
      */
     protected function _mapValues(array $values)
     {
-        assert('!isset($value); // Cannot redeclare var $value');
-        assert('!isset($i); // Cannot redeclare var $i');
+        assert(!isset($value), 'Cannot redeclare var $value');
+        assert(!isset($i), 'Cannot redeclare var $i');
         foreach ($values as $i => $value)
         {
             if (array_key_exists('value', $value)) {
@@ -110,13 +110,13 @@ class InsertParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
      */
     protected function _parseSet(\Yana\Db\Queries\AbstractQuery $query, array $keys, array $values)
     {
-        assert('count($keys) >= count($values);');
+        assert(count($keys) >= count($values), 'count($keys) >= count($values)');
 
         // combine keys and values
         $set = array();
         $table = $this->_getDatabase()->getSchema()->getTable($query->getTable());
-        assert('!isset($column); // Cannot redeclare var $column');
-        assert('!isset($i); // Cannot redeclare var $i');
+        assert(!isset($column), 'Cannot redeclare var $column');
+        assert(!isset($i), 'Cannot redeclare var $i');
         for ($i = 0; $i < count($keys); $i++)
         {
             if (!array_key_exists($i, $values)) {
@@ -136,7 +136,7 @@ class InsertParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
         } // end foreach
         unset($i, $column);
 
-        assert('is_array($set);');
+        assert(is_array($set), 'is_array($set)');
         return $set;
     }
 

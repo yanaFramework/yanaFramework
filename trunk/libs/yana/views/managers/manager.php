@@ -90,8 +90,8 @@ class Manager extends \Yana\Views\Managers\AbstractManager implements \Yana\View
      */
     public function createLayoutTemplate($filename, $mainContentTemplateName, array $templateVars)
     {
-        assert('is_string($filename); // Invalid argument $filename: string expected');
-        assert('is_string($mainContentTemplateName); // Invalid argument $mainContentTemplate: string expected');
+        assert(is_string($filename), 'Invalid argument $filename: string expected');
+        assert(is_string($mainContentTemplateName), 'Invalid argument $mainContentTemplate: string expected');
 
         /**
          * If this is an AJAX request we should only output the content, leaving off the frame.
@@ -119,7 +119,7 @@ class Manager extends \Yana\Views\Managers\AbstractManager implements \Yana\View
      */
     protected function _createLayoutTemplateForAjaxRequest($filename)
     {
-        assert('is_string($filename); // Invalid argument $filename: string expected');
+        assert(is_string($filename), 'Invalid argument $filename: string expected');
 
         /**
          * For AJAX-Requests we leave off the layout and just output the template's body-tag (if any).
@@ -142,7 +142,7 @@ class Manager extends \Yana\Views\Managers\AbstractManager implements \Yana\View
      */
     protected function _createLayoutTemplateForStandardRequest($filename, $mainContentTemplateName)
     {
-        assert('is_string($filename); // Invalid argument $filename: string expected');
+        assert(is_string($filename), 'Invalid argument $filename: string expected');
 
         $internalTemplate = $this->_createTemplate($filename);
         $internalTemplate->assign('FILE_IS_INCLUDE', false);
@@ -176,7 +176,7 @@ class Manager extends \Yana\Views\Managers\AbstractManager implements \Yana\View
      */
     public function createContentTemplate($filename)
     {
-        assert('is_string($filename); // Invalid argument $filename: string expected');
+        assert(is_string($filename), 'Invalid argument $filename: string expected');
 
         $internalTemplate = $this->_createTemplate($filename, $this->_layoutTemplate);
         return $this->_wrapTemplate($internalTemplate);
@@ -225,7 +225,7 @@ class Manager extends \Yana\Views\Managers\AbstractManager implements \Yana\View
                 $query = $_REQUEST;
                 ksort($query);
                 unset($query[YANA_SESSION_NAME]);
-                assert('is_array($query); // Array expected: $query');
+                assert(is_array($query), 'Array expected: $query');
                 $queryString = http_build_query($query);
                 unset($query);
             }
@@ -245,7 +245,7 @@ class Manager extends \Yana\Views\Managers\AbstractManager implements \Yana\View
 
             // move id to cache;
             self::$_templateId = md5($id);
-            assert('is_string(self::$_templateId) && self::$_templateId > ""; // failure calculating cache id');
+            assert(is_string(self::$_templateId) && self::$_templateId > "", 'failure calculating cache id');
         }
         return self::$_templateId;
     }
@@ -302,8 +302,8 @@ class Manager extends \Yana\Views\Managers\AbstractManager implements \Yana\View
      */
     public function setFunction($name, $code)
     {
-        assert('is_string($name); // Wrong type for argument $name. String expected.');
-        assert('is_callable($code); // Wrong type for argument $code. Not a callable resource.');
+        assert(is_string($name), 'Wrong type for argument $name. String expected.');
+        assert(is_callable($code), 'Wrong type for argument $code. Not a callable resource.');
 
         try {
             $this->getSmarty()->registerPlugin(\Smarty::PLUGIN_FUNCTION, $name, $code);
@@ -332,8 +332,8 @@ class Manager extends \Yana\Views\Managers\AbstractManager implements \Yana\View
      */
     public function setModifier($name, $code)
     {
-        assert('is_string($name); // Wrong type for argument $name. String expected.');
-        assert('is_callable($code); // Wrong type for argument $code. Not a callable resource.');
+        assert(is_string($name), 'Wrong type for argument $name. String expected.');
+        assert(is_callable($code), 'Wrong type for argument $code. Not a callable resource.');
 
         try {
             $this->getSmarty()->registerPlugin(\Smarty::PLUGIN_MODIFIER, $name, $code);
@@ -362,8 +362,8 @@ class Manager extends \Yana\Views\Managers\AbstractManager implements \Yana\View
      */
     public function setBlockFunction($name, $code)
     {
-        assert('is_string($name); // Wrong type for argument $name. String expected.');
-        assert('is_callable($code); // Wrong type for argument $code. Not a callable resource.');
+        assert(is_string($name), 'Wrong type for argument $name. String expected.');
+        assert(is_callable($code), 'Wrong type for argument $code. Not a callable resource.');
 
         try {
             $this->getSmarty()->registerPlugin(\Smarty::PLUGIN_BLOCK, $name, $code);
@@ -388,8 +388,8 @@ class Manager extends \Yana\Views\Managers\AbstractManager implements \Yana\View
      */
     public function unsetFunction($name)
     {
-        assert('is_string($name); // Wrong argument type for argument 2. String expected.');
-        assert('!empty($name); // Name cannot be empty.');
+        assert(is_string($name), 'Wrong argument type for argument 2. String expected.');
+        assert(!empty($name), 'Name cannot be empty.');
 
         $this->getSmarty()->unregisterPlugin(\Smarty::PLUGIN_FUNCTION, $name);
         return $this;
@@ -408,8 +408,8 @@ class Manager extends \Yana\Views\Managers\AbstractManager implements \Yana\View
      */
     public function unsetModifier($name)
     {
-        assert('is_string($name); // Wrong argument type for argument 2. String expected.');
-        assert('!empty($name); // Name cannot be empty.');
+        assert(is_string($name), 'Wrong argument type for argument 2. String expected.');
+        assert(!empty($name), 'Name cannot be empty.');
 
         $this->getSmarty()->unregisterPlugin(\Smarty::PLUGIN_MODIFIER, $name);
         return $this;
@@ -428,8 +428,8 @@ class Manager extends \Yana\Views\Managers\AbstractManager implements \Yana\View
      */
     public function unsetBlockFunction($name)
     {
-        assert('is_string($name); // Wrong argument type for argument 2. String expected.');
-        assert('!empty($name); // Name cannot be empty.');
+        assert(is_string($name), 'Wrong argument type for argument 2. String expected.');
+        assert(!empty($name), 'Name cannot be empty.');
 
         $this->getSmarty()->unregisterPlugin(\Smarty::PLUGIN_BLOCK, $name);
         return $this;

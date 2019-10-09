@@ -99,8 +99,8 @@ class Configuration extends \Yana\Util\XmlArray implements \Yana\VDrive\IsConfig
      */
     public static function createInstanceFromFile($path)
     {
-        assert('is_string($path); // Wrong type for argument 1. String expected');
-        assert('$path > ""; // Argument 1 must not be empty');
+        assert(is_string($path), 'Wrong type for argument 1. String expected');
+        assert($path > "", 'Argument 1 must not be empty');
         if (!is_file($path)) {
             $message = 'VDrive configuration file not found: "' . $path . '"';
             $level = \Yana\Log\TypeEnumeration::WARNING;
@@ -119,7 +119,7 @@ class Configuration extends \Yana\Util\XmlArray implements \Yana\VDrive\IsConfig
      */
     public static function createInstanceFromString($string)
     {
-        assert('is_string($string); // Wrong type for argument 1. String expected');
+        assert(is_string($string), 'Wrong type for argument 1. String expected');
         return \simplexml_load_string($string, __CLASS__);
     }
 
@@ -143,7 +143,7 @@ class Configuration extends \Yana\Util\XmlArray implements \Yana\VDrive\IsConfig
      */
     public function setNodeName($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert(is_string($name), 'Wrong type for argument 1. String expected');
 
         if ($this->isMountpoint() || $this->isVar()) {
             if (!isset($this->attributes()->name)) {
@@ -207,7 +207,7 @@ class Configuration extends \Yana\Util\XmlArray implements \Yana\VDrive\IsConfig
      */
     public function setNodeNamespace($namespace)
     {
-        assert('is_string($namespace); // Invalid argument $namespace: string expected');
+        assert(is_string($namespace), 'Invalid argument $namespace: string expected');
 
         if ($this->isFile()) {
             if (!isset($this->attributes()->namespace)) {
@@ -227,7 +227,7 @@ class Configuration extends \Yana\Util\XmlArray implements \Yana\VDrive\IsConfig
      */
     public function setNodeFilter($filter)
     {
-        assert('is_string($filter); // Wrong type for argument 1. String expected');
+        assert(is_string($filter), 'Wrong type for argument 1. String expected');
 
         if ($this->isDir()) {
             if (!isset($this->attributes()->filter)) {
@@ -261,7 +261,7 @@ class Configuration extends \Yana\Util\XmlArray implements \Yana\VDrive\IsConfig
      */
     public function setNodeAutomount($isAutomount)
     {
-        assert('is_bool($isAutomount); // Invalid argument $isAutomount: bool expected');
+        assert(is_bool($isAutomount), 'Invalid argument $isAutomount: bool expected');
 
         if ($this->isMountpoint()) {
             $isAutomount = ($isAutomount) ? "yes" : "no";
@@ -301,8 +301,8 @@ class Configuration extends \Yana\Util\XmlArray implements \Yana\VDrive\IsConfig
      */
     public function addNodeVar($name, $value)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
-        assert('is_string($value); // Wrong type for argument 2. String expected');
+        assert(is_string($name), 'Wrong type for argument 1. String expected');
+        assert(is_string($value), 'Wrong type for argument 2. String expected');
 
         $var = null;
         if ($this->isDrive()) {
@@ -338,8 +338,8 @@ class Configuration extends \Yana\Util\XmlArray implements \Yana\VDrive\IsConfig
      */
     public function addNodeFile($name, $isAutomount = false)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
-        assert('is_bool($isAutomount); // Wrong type for argument 2. Boolean expected');
+        assert(is_string($name), 'Wrong type for argument 1. String expected');
+        assert(is_bool($isAutomount), 'Wrong type for argument 2. Boolean expected');
 
         $file = null;
         if ($this->isDrive() || $this->isDir()) {
@@ -376,9 +376,9 @@ class Configuration extends \Yana\Util\XmlArray implements \Yana\VDrive\IsConfig
      */
     public function addNodeDir($name, $automount = false, $filter = "")
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
-        assert('is_bool($automount); // Wrong type for argument 2. Boolean expected');
-        assert('is_string($filter); // Wrong type for argument 3. String expected');
+        assert(is_string($name), 'Wrong type for argument 1. String expected');
+        assert(is_bool($automount), 'Wrong type for argument 2. Boolean expected');
+        assert(is_string($filter), 'Wrong type for argument 3. String expected');
 
         $dir = null;
         if ($this->isDrive() || $this->isDir()) {
@@ -414,7 +414,7 @@ class Configuration extends \Yana\Util\XmlArray implements \Yana\VDrive\IsConfig
      */
     public function addNodeInclude($path)
     {
-        assert('is_string($path); // Wrong type for argument 1. String expected');
+        assert(is_string($path), 'Wrong type for argument 1. String expected');
 
         $include = null;
         if ($this->isDrive()) {
@@ -454,7 +454,7 @@ class Configuration extends \Yana\Util\XmlArray implements \Yana\VDrive\IsConfig
      */
     public function addNodeSource($path)
     {
-        assert('is_string($path); // Invalid argument $path: string expected');
+        assert(is_string($path), 'Invalid argument $path: string expected');
 
         $source = null;
         if ($this->isMountpoint()) {
@@ -489,9 +489,9 @@ class Configuration extends \Yana\Util\XmlArray implements \Yana\VDrive\IsConfig
      */
     public function setNodeRequirements($readable = false, $writeable = false, $executable = false)
     {
-        assert('is_bool($readable); // Wrong type for argument 1. Boolean expected');
-        assert('is_bool($writeable); // Wrong type for argument 2. Boolean expected');
-        assert('is_bool($executable); // Wrong type for argument 3. Boolean expected');
+        assert(is_bool($readable), 'Wrong type for argument 1. Boolean expected');
+        assert(is_bool($writeable), 'Wrong type for argument 2. Boolean expected');
+        assert(is_bool($executable), 'Wrong type for argument 3. Boolean expected');
 
         $requirements = null;
         if ($this->isMountpoint()) {

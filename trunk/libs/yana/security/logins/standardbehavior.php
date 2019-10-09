@@ -61,9 +61,9 @@ class StandardBehavior extends \Yana\Security\Logins\AbstractBehavior
      */
     public function isLoggedIn(\Yana\Security\Data\Users\IsEntity $user)
     {
-        assert('!isset($session); // Cannot redeclare var $session');
+        assert(!isset($session), 'Cannot redeclare var $session');
         $session = $this->_getSession();
-        assert('!isset($isLoggedIn); // Cannot redeclare var $isLoggedIn');
+        assert(!isset($isLoggedIn), 'Cannot redeclare var $isLoggedIn');
         $isLoggedIn = true;
         switch (true)
         {
@@ -94,7 +94,7 @@ class StandardBehavior extends \Yana\Security\Logins\AbstractBehavior
      */
     public function handleLogin(\Yana\Security\Data\Users\IsEntity $user)
     {
-        assert('!isset($session); // Cannot redeclare var $session');
+        assert(!isset($session), 'Cannot redeclare var $session');
         $session = $this->_getSession();
 
         if (!$user->isActive()) {
@@ -188,7 +188,7 @@ class StandardBehavior extends \Yana\Security\Logins\AbstractBehavior
      */
     public function handleLogout(\Yana\Security\Data\Users\IsEntity $user)
     {
-        assert('!isset($session); // Cannot redeclare var $session');
+        assert(!isset($session), 'Cannot redeclare var $session');
         $session = $this->_getSession();
         // backup language setting before destroying old session
         if ($session->getCurrentLanguage() > "") {

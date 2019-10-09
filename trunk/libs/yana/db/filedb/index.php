@@ -71,7 +71,7 @@ class Index extends \Yana\Core\StdObject
      */
     public function __construct(\Yana\Db\Ddl\Table $table, \Yana\Files\SML $data, $filename)
     {
-        assert('is_string($filename); // Wrong type for argument 3. String expected');
+        assert(is_string($filename), 'Wrong type for argument 3. String expected');
 
         $this->_table = $table;
         $this->_data = $data;
@@ -107,7 +107,7 @@ class Index extends \Yana\Core\StdObject
         if (!isset($this->_indexes)) {
             $this->rollback();
         }
-        assert('is_array($this->_indexes);');
+        assert(is_array($this->_indexes), 'is_array($this->_indexes)');
         return $this->_indexes;
     }
 
@@ -119,8 +119,8 @@ class Index extends \Yana\Core\StdObject
      */
     protected function setColumnIndex($column, array $values)
     {
-        assert('is_string($column); // Wrong argument type argument 1. String expected');
-        assert('is_array($this->_indexes);');
+        assert(is_string($column), 'Wrong argument type argument 1. String expected');
+        assert(is_array($this->_indexes), 'is_array($this->_indexes)');
         ksort($values);
         $this->_indexes[$column] = $values;
     }
@@ -132,8 +132,8 @@ class Index extends \Yana\Core\StdObject
      */
     protected function unsetColumnIndex($column)
     {
-        assert('is_string($column); // Wrong argument type argument 1. String expected');
-        assert('is_array($this->_indexes);');
+        assert(is_string($column), 'Wrong argument type argument 1. String expected');
+        assert(is_array($this->_indexes), 'is_array($this->_indexes)');
         unset($this->_indexes[$column]);
     }
 
@@ -151,15 +151,15 @@ class Index extends \Yana\Core\StdObject
      */
     public function create($column = null, array $update = array())
     {
-        assert('is_null($column) || is_string($column); // Wrong type for argument 1. String expected');
-        assert('is_array($update); // Wrong type for argument 2. Array expected');
-        assert('count($update)===0 || count($update)===2; // Argument $update must have 2 items');
-        assert('empty($update) || is_scalar($update[0]); // 1st item of argument 2 is not scalar');
-        assert('empty($update) || is_scalar($update[1]); // 2nd item of argument 2 is not scalar');
+        assert(is_null($column) || is_string($column), 'Wrong type for argument 1. String expected');
+        assert(is_array($update), 'Wrong type for argument 2. Array expected');
+        assert(count($update)===0 || count($update)===2, 'Argument $update must have 2 items');
+        assert(empty($update) || is_scalar($update[0]), '1st item of argument 2 is not scalar');
+        assert(empty($update) || is_scalar($update[1]), '2nd item of argument 2 is not scalar');
 
         /* autoscan */
         if (is_null($column)) {
-            assert('empty($update); // No column name provided. Unable to build index');
+            assert(empty($update), 'No column name provided. Unable to build index');
             $indexes = $this->_findIndexes($this->_table);
             // remove duplicate entries
             foreach ($indexes as $columnName)
@@ -169,7 +169,7 @@ class Index extends \Yana\Core\StdObject
             return true;
         }
 
-        assert('$this->_table->isColumn($column); // No such column: ' . $column);
+        assert($this->_table->isColumn($column), 'No such column.');
         $primaryKey = \mb_strtoupper($this->_table->getPrimaryKey());
 
         /* no need to index primary key, it is an index by itself */
@@ -191,12 +191,12 @@ class Index extends \Yana\Core\StdObject
             $data = array();
             // target column provided
             if (!empty($update)) {
-                assert('!isset($updateSet); // Cannot redeclar var $updateSet');
+                assert(!isset($updateSet), 'Cannot redeclar var $updateSet');
                 $updateSet = array(mb_strtoupper((string) $update[0]) => array($column => $update[1]));
                 $dataset = \Yana\Util\Hashtable::merge($dataset, $updateSet);
                 unset($updateSet);
             }
-            assert('is_array($dataset);');
+            assert(is_array($dataset), 'is_array($dataset)');
 
         /* update index */
         } else {
@@ -288,8 +288,8 @@ class Index extends \Yana\Core\StdObject
      */
     public function getVar($column, $value = null)
     {
-        assert('is_string($column); // Wrong argument type for argument 1. String expected.');
-        assert('is_null($value) || is_scalar($value); // Wrong argument type for argument 2. Scalar expected.');
+        assert(is_string($column), 'Wrong argument type for argument 1. String expected.');
+        assert(is_null($value) || is_scalar($value), 'Wrong argument type for argument 2. Scalar expected.');
 
         $index = $this->_getVar($column, $value);
         if (count($index) === 0) {
@@ -303,10 +303,10 @@ class Index extends \Yana\Core\StdObject
 
     private function _getVar(string $column, $value = null)
     {
-        assert('is_null($value) || is_scalar($value); // Wrong argument type for argument 2. Scalar expected.');
+        assert(is_null($value) || is_scalar($value), 'Wrong argument type for argument 2. Scalar expected.');
 
         $column = mb_strtoupper("$column");
-        assert('!isset($index); // Cannot redeclare var $index');
+        assert(!isset($index), 'Cannot redeclare var $index');
         $index = $this->getColumnValues($column);
 
         if (is_null($value)) {

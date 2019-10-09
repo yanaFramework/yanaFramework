@@ -47,9 +47,9 @@ class File extends AbstractMountpoint
      */
     public function __construct($path, $className = '')
     {
-        assert('is_string($path); // Wrong type for argument 1. String expected');
-        assert('$path > ""; // Argument 1 must not be empty');
-        assert('is_string($className); // Wrong type for argument 2. String expected');
+        assert(is_string($path), 'Wrong type for argument 1. String expected');
+        assert($path > "", 'Argument 1 must not be empty');
+        assert(is_string($className), 'Wrong type for argument 2. String expected');
 
         $this->path = (string) $path;
 

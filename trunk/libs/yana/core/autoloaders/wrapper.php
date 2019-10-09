@@ -82,7 +82,7 @@ class Wrapper extends \Yana\Core\StdObject
      */
     public function loadClass($className)
     {
-        assert('is_string($className); // $className expected to be String');
+        assert(is_string($className), '$className expected to be String');
         \spl_autoload_call($className);
     }
 

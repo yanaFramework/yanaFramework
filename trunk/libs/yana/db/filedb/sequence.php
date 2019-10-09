@@ -94,7 +94,7 @@ class Sequence extends \Yana\Core\StdObject
      */
     public function __construct($name)
     {
-        assert('is_string($name); // Invalid argument type argument 1. String expected.');
+        assert(is_string($name), 'Invalid argument type argument 1. String expected.');
 
         $query = new \Yana\Db\Queries\Select(self::_getDb());
         $query->setTable("sequences")
@@ -188,7 +188,7 @@ class Sequence extends \Yana\Core\StdObject
      */
     public function setIncrement($increment)
     {
-        assert('is_int($increment); // Invalid argument type argument 1. Integer expected.');
+        assert(is_int($increment), 'Invalid argument type argument 1. Integer expected.');
         $this->increment = (int) $increment;
     }
 
@@ -210,7 +210,7 @@ class Sequence extends \Yana\Core\StdObject
      */
     public function setMax($max)
     {
-        assert('is_int($max); // Invalid argument type argument 1. Integer expected.');
+        assert(is_int($max), 'Invalid argument type argument 1. Integer expected.');
         if ($max >= $this->min) {
             $this->max = (int) $max;
         } else {
@@ -238,7 +238,7 @@ class Sequence extends \Yana\Core\StdObject
      */
     public function setMin($min)
     {
-        assert('is_int($min); // Invalid argument type argument 1. Integer expected.');
+        assert(is_int($min), 'Invalid argument type argument 1. Integer expected.');
         if ($min <= $this->max) {
             $this->min = (int) $min;
         } else {
@@ -265,7 +265,7 @@ class Sequence extends \Yana\Core\StdObject
      */
     public function setCycle($cycle)
     {
-        assert('is_bool($cycle); // Invalid argument type argument 1. Boolean expected.');
+        assert(is_bool($cycle), 'Invalid argument type argument 1. Boolean expected.');
         $this->cycle = (bool) $cycle;
     }
 
@@ -288,12 +288,12 @@ class Sequence extends \Yana\Core\StdObject
      */
     public static function create($name, $increment = 1, $start = null, $min = null, $max = null, $cycle = false)
     {
-        assert('is_string($name); // Invalid argument type argument 1. String expected.');
-        assert('is_int($increment); // Invalid argument type argument 2. Integer expected.');
-        assert('is_null($start) || is_int($start); // Invalid argument type argument 3. Integer expected.');
-        assert('is_null($min) || is_int($min); // Invalid argument type argument 4. Integer expected.');
-        assert('is_null($max) || is_int($max); // Invalid argument type argument 5. Integer expected.');
-        assert('is_bool($cycle); // Invalid argument type argument 6. Boolean expected.');
+        assert(is_string($name), 'Invalid argument type argument 1. String expected.');
+        assert(is_int($increment), 'Invalid argument type argument 2. Integer expected.');
+        assert(is_null($start) || is_int($start), 'Invalid argument type argument 3. Integer expected.');
+        assert(is_null($min) || is_int($min), 'Invalid argument type argument 4. Integer expected.');
+        assert(is_null($max) || is_int($max), 'Invalid argument type argument 5. Integer expected.');
+        assert(is_bool($cycle), 'Invalid argument type argument 6. Boolean expected.');
 
         // ascending sequence
         if ($increment > 0) {
@@ -354,7 +354,7 @@ class Sequence extends \Yana\Core\StdObject
      */
     public static function drop($name)
     {
-        assert('is_string($name); // Invalid argument type argument 1. String expected.');
+        assert(is_string($name), 'Invalid argument type argument 1. String expected.');
 
         // remove datbase entry
         try {
@@ -421,7 +421,7 @@ class Sequence extends \Yana\Core\StdObject
      */
     public static function exists($name)
     {
-        assert('is_string($name); // Invalid argument type argument 1. String expected.');
+        assert(is_string($name), 'Invalid argument type argument 1. String expected.');
 
         return (self::_getDb()->exists("sequence.$name") === true);
     }
@@ -434,7 +434,7 @@ class Sequence extends \Yana\Core\StdObject
      */
     public function setCurrentValue($value)
     {
-        assert('is_int($value); // Invalid argument type argument 1. Integer expected.');
+        assert(is_int($value), 'Invalid argument type argument 1. Integer expected.');
         if ($value >= $this->min && $value <= $this->max) {
             $this->value = $value;
         } else {

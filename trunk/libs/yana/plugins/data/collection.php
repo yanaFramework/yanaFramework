@@ -46,7 +46,7 @@ class Collection extends \Yana\Core\AbstractCollection
      */
     public function offsetSet($offset, $value)
     {
-        assert('is_null($offset) || is_string($offset); // $offset expected to be String');
+        assert(is_null($offset) || is_string($offset), '$offset expected to be String');
         if (!$value instanceof \Yana\Plugins\Data\IsEntity) {
             $message = "Instance of \Yana\Plugins\Data\IsEntity expected.";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message);

@@ -80,7 +80,7 @@ class TextFormatterTest extends \PHPUnit_Framework_TestCase
     public function testFormatAssertion()
     {
         $formattedString = $this->object->format(\Yana\Log\TypeEnumeration::ASSERT, __METHOD__, 'test.php', 10);
-        $this->assertSame("Assertion failed: Assertion " . __METHOD__ . " failed in file 'test.php' on line 10.", $formattedString);
+        $this->assertSame("Assertion failed: " . __METHOD__ . " in file 'test.php' on line 10.", $formattedString);
     }
 
     /**

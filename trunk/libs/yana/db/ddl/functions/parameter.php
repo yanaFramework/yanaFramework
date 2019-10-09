@@ -105,7 +105,7 @@ class Parameter extends \Yana\Db\Ddl\AbstractNamedObject
      */
     public function setType($type)
     {
-        assert('is_string($type); // Invalid argument $type: string expected');
+        assert(is_string($type), 'Invalid argument $type: string expected');
         $this->type = "$type";
         return $this;
     }
@@ -144,7 +144,7 @@ class Parameter extends \Yana\Db\Ddl\AbstractNamedObject
      */
     public function setMode($mode = \Yana\Db\Ddl\Functions\ParameterTypeEnumeration::IN)
     {
-        assert('is_int($mode); // Invalid argument $mode: integer expected');
+        assert(is_int($mode), 'Invalid argument $mode: integer expected');
         switch($mode)
         {
             case \Yana\Db\Ddl\Functions\ParameterTypeEnumeration::IN:

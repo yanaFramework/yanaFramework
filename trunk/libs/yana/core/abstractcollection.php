@@ -165,7 +165,7 @@ abstract class AbstractCollection extends \Yana\Core\StdObject implements \Yana\
      */
     public function offsetGet($offset)
     {
-        assert('is_scalar($offset); // $offset expected to be Scalar');
+        assert(is_scalar($offset), '$offset expected to be Scalar');
         $value = null;
         if (isset($this->_items[$offset])) {
             $value = $this->_items[$offset];
@@ -201,7 +201,7 @@ abstract class AbstractCollection extends \Yana\Core\StdObject implements \Yana\
      */
     protected function _offsetSet($offset, $value)
     {
-        assert('is_null($offset) || is_scalar($offset); // $offset expected to be Scalar');
+        assert(is_null($offset) || is_scalar($offset), '$offset expected to be Scalar');
         if (!is_null($offset)) {
             $this->_items[$offset] = $value;
         } else {
@@ -225,7 +225,7 @@ abstract class AbstractCollection extends \Yana\Core\StdObject implements \Yana\
      */
     public function offsetUnset($offset)
     {
-        assert('is_scalar($offset); // $offset expected to be Scalar');
+        assert(is_scalar($offset), '$offset expected to be Scalar');
         if (isset($this->_items[$offset])) {
             unset($this->_items[$offset]);
         }

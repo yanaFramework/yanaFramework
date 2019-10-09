@@ -204,10 +204,10 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Forms\Setups\IsBuild
      */
     public function updateValues(array $request = array())
     {
-        assert('!isset($setup); // Cannot redeclare var $setup');
+        assert(!isset($setup), 'Cannot redeclare var $setup');
         $setup = $this->object;
 
-        assert('!isset($contextNames); // Cannot redeclare var $contextNames');
+        assert(!isset($contextNames), 'Cannot redeclare var $contextNames');
         $contextNames = array();
         if ($setup->getInsertAction()) {
             $contextNames[] = \Yana\Forms\Setups\ContextNameEnumeration::INSERT;
@@ -219,23 +219,23 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Forms\Setups\IsBuild
             $contextNames[] = \Yana\Forms\Setups\ContextNameEnumeration::UPDATE;
         }
 
-        assert('!isset($name); // Cannot redeclare var $name');
+        assert(!isset($name), 'Cannot redeclare var $name');
         foreach ($contextNames as $name)
         {
             if (!isset($request[$name]) || !is_array($request[$name])) {
                 continue;
             }
-            assert('!isset($requestValues); // Cannot redeclare var $requestValues');
+            assert(!isset($requestValues), 'Cannot redeclare var $requestValues');
             $requestValues = \Yana\Util\Hashtable::changeCase($request[$name], \CASE_UPPER);
-            assert('!isset($context); // Cannot redeclare var $context');
-            assert('!isset($columnNames); // Cannot redeclare var $columnNames');
+            assert(!isset($context), 'Cannot redeclare var $context');
+            assert(!isset($columnNames), 'Cannot redeclare var $columnNames');
             $context = $setup->getContext($name);
             if ($name === \Yana\Forms\Setups\ContextNameEnumeration::UPDATE) {
                 $this->setRows($requestValues);
 
             } else {
                 $columnNames = array_flip($context->getColumnNames());
-                assert('!isset($values); // Cannot redeclare var $values');
+                assert(!isset($values), 'Cannot redeclare var $values');
                 // security check: allow only fields, that exist in the form
                 $values = array_intersect_key($requestValues, $columnNames);
                 $context->setValues($values);
@@ -279,13 +279,13 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Forms\Setups\IsBuild
      */
     private function _setUpdateContextRows(array $rows)
     {
-        assert('!isset($columnNames); // Cannot redeclare var $columnNames');
+        assert(!isset($columnNames), 'Cannot redeclare var $columnNames');
         $columnNames = array_flip($this->object->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE)->getColumnNames());
-        assert('!isset($context); // Cannot redeclare var $context');
+        assert(!isset($context), 'Cannot redeclare var $context');
         $context = $this->object->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE);
 
-        assert('!isset($key); // Cannot redeclare var $key');
-        assert('!isset($row); // Cannot redeclare var $row');
+        assert(!isset($key), 'Cannot redeclare var $key');
+        assert(!isset($row), 'Cannot redeclare var $row');
         foreach ($rows as $key => $row)
         {
             if (is_array($row)) {
@@ -337,10 +337,10 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Forms\Setups\IsBuild
         $lastPage = $pageCount - 1;
         $entryCount = $this->object->getEntryCount();
 
-        assert('$entriesPerPage > 0; // invalid number of entries to view per page');
+        assert($entriesPerPage > 0, 'invalid number of entries to view per page');
         $currentPage = $this->object->getPage();
         $listOfEntries = "";
-        assert('!isset($pluginManager); // Cannot redeclare var $pluginManager');
+        assert(!isset($pluginManager), 'Cannot redeclare var $pluginManager');
         $pluginManager = $this->_getDependencyContainer()->getPlugins();
         $action = $pluginManager->getFirstEvent();
         $lang = $this->_getDependencyContainer()->getLanguage();
@@ -688,9 +688,9 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Forms\Setups\IsBuild
      */
     private function _applyWhitelistColumnNames()
     {
-        assert('!isset($whiteList); // Cannot redeclare var $whiteList');
+        assert(!isset($whiteList), 'Cannot redeclare var $whiteList');
         $whiteList = \array_change_key_case($this->getColumnsWhitelist(), CASE_UPPER);
-        assert('!isset($blackList); // Cannot redeclare var $blackList');
+        assert(!isset($blackList), 'Cannot redeclare var $blackList');
         $blackList = \array_change_key_case($this->getColumnsBlacklist(), CASE_UPPER);
         foreach ($this->object->getContexts() as $context)
         {

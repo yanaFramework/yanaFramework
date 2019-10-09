@@ -108,14 +108,14 @@ class ApplicationBuilder extends \Yana\Core\StdObject
         switch ($logging)
         {
             case YANA_ERROR_ON:
-                error_reporting(~E_DEPRECATED);
+                error_reporting(E_ALL);
                 if ($this->_isCommandLineCall()) {
                     $formatter = new \Yana\Log\Formatter\TextFormatter();
                 } else {
                     $formatter = new \Yana\Log\Formatter\HtmlFormatter();
                 }
                 $this->_errorLogger = new \Yana\Log\ScreenLogger();
-                $this->_errorLogger->setLogLevel(~E_DEPRECATED);
+                $this->_errorLogger->setLogLevel(E_ALL);
                 $isActive = true;
                 break;
             case YANA_ERROR_LOG:
@@ -321,7 +321,7 @@ class ApplicationBuilder extends \Yana\Core\StdObject
         \Yana\Log\LogManager::setLoggers(new \Yana\Log\LoggerCollection()); // reset
         \Yana\Log\LogManager::attachLogger($this->_getErrorLogger()); // add default logger
         \Yana\Core\Exceptions\AbstractException::setDependencyContainer($dependencyContainer);
-        $this->_setBaseUrl($dependencyContainer);
+        \Yana\Views\Helpers\Formatters\UrlFormatter::setDependencyContainer($dependencyContainer);
         return $dependencyContainer;
     }
 
@@ -352,20 +352,6 @@ class ApplicationBuilder extends \Yana\Core\StdObject
         }
 
         return $configuration;
-    }
-
-    /**
-     * Returns the prefix for the generated URL.
-     *
-     * @return string
-     */
-    private function _setBaseUrl(\Yana\Core\Dependencies\Container $container)
-    {
-        $baseUrl = "?id=" . $container->getProfileId();
-        if (empty($_COOKIE) && @session_id() != "") {
-            $baseUrl .= "&" . session_name() . "=" . session_id();
-        }
-        \Yana\Views\Helpers\Formatters\UrlFormatter::setBaseUrl($baseUrl);
     }
 
 }

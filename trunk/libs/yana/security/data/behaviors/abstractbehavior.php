@@ -150,8 +150,8 @@ abstract class AbstractBehavior extends \Yana\Core\StdObject implements \Yana\Se
      */
     private function _setMaxFailureCount($maxFailureCount)
     {
-        assert('is_int($maxFailureCount); // Invalid argument $maxFailureCount: integer expected');
-        assert('$maxFailureCount >= 0; // Invalid argument $maxFailureCount: must not be negative');
+        assert(is_int($maxFailureCount), 'Invalid argument $maxFailureCount: integer expected');
+        assert($maxFailureCount >= 0, 'Invalid argument $maxFailureCount: must not be negative');
         $this->_maxFailureCount = (int) $maxFailureCount;
         return $this;
     }
@@ -166,8 +166,8 @@ abstract class AbstractBehavior extends \Yana\Core\StdObject implements \Yana\Se
      */
     private function _setMaxFailureTime($maxFailureTime)
     {
-        assert('is_int($maxFailureTime); // Invalid argument $maxFailureTime: integer expected');
-        assert('$maxFailureTime >= 0; // Invalid argument $maxFailureTime: must not be negative');
+        assert(is_int($maxFailureTime), 'Invalid argument $maxFailureTime: integer expected');
+        assert($maxFailureTime >= 0, 'Invalid argument $maxFailureTime: must not be negative');
         $this->_maxFailureTime = (int) $maxFailureTime;
         return $this;
     }

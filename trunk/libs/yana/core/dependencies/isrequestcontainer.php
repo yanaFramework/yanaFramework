@@ -46,28 +46,28 @@ interface IsRequestContainer
      *
      * @return  \Yana\Http\IsFacade
      */
-    public function getRequest();
+    public function getRequest(): \Yana\Http\IsFacade;
 
     /**
      * Builds and returns request helper object.
      *
      * @return  \Yana\Http\Requests\IsRequest
      */
-    public function getRequestBuilder();
+    public function getRequestBuilder(): \Yana\Http\Requests\IsRequest;
 
     /**
      * Builds and returns upload helper object.
      *
      * @return  \Yana\Http\Uploads\IsUploadWrapper
      */
-    public function getUploadBuilder();
+    public function getUploadBuilder(): \Yana\Http\Uploads\IsUploadWrapper;
 
     /**
      * Builds and returns URL helper object.
      *
      * @return  \Yana\Http\Uris\IsUrlBuilder
      */
-    public function getUrlBuilder();
+    public function getUrlBuilder(): \Yana\Http\Uris\IsUrlBuilder;
 
 }
 

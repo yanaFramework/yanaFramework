@@ -63,7 +63,7 @@ class ExceptionContainer extends \Yana\Core\StdObject implements \Yana\Core\Depe
      *
      * @return  \Yana\Translations\IsFacade
      */
-    public function getLanguage()
+    public function getLanguage(): \Yana\Translations\IsFacade
     {
         return $this->_language;
     }

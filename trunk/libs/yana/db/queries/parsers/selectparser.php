@@ -94,8 +94,8 @@ class SelectParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
          * Resolve natural join to inner joins by automatically finding appropriate keys.
          */
         if (count($tableJoins) > 0) {
-            assert('!isset($i); // Cannot redeclare variable $i');
-            assert('!isset($join); // Cannot redeclare variable $join');
+            assert(!isset($i), 'Cannot redeclare variable $i');
+            assert(!isset($join), 'Cannot redeclare variable $join');
             $dbSchema = $database->getSchema();
             $tablesAlreadyJoined = array();
 
@@ -156,8 +156,8 @@ class SelectParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
         if (!empty($orderBy)) {
             $orderByColumns = array();
             $orderByDirections = array();
-            assert('!isset($columnName); // Cannot redeclare variable $columnName');
-            assert('!isset($direction); // Cannot redeclare variable $direction');
+            assert(!isset($columnName), 'Cannot redeclare variable $columnName');
+            assert(!isset($direction), 'Cannot redeclare variable $direction');
             foreach ($orderBy as $columnName => $direction)
             {
                 $orderByColumns[] = $columnName;
@@ -188,8 +188,8 @@ class SelectParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
      */
     private function _parseJoin(\Yana\Db\Queries\Select $query, array $baseTables, $joinedTable, array $where, $isLeftJoin = false)
     {
-        assert('is_string($joinedTable); // Wrong argument type for argument 2. String expected.');
-        assert('is_bool($isLeftJoin); // Wrong argument type for argument 4. String expected.');
+        assert(is_string($joinedTable), 'Wrong argument type for argument 2. String expected.');
+        assert(is_bool($isLeftJoin), 'Wrong argument type for argument 4. String expected.');
         if (empty($where)) {
             /* We can't join two tables if there is no join-condition.
              * Or, to be more precise, we "could" but we don't "want" to.

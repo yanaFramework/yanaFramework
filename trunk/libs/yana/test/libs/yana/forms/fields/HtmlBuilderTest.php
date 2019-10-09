@@ -56,7 +56,7 @@ class HtmlBuilderTest extends \PHPUnit_Framework_TestCase
                 ->setId('Id')
                 ->setTitle('Title')
                 ->setCssClass('Class');
-        \Yana\Views\Helpers\Formatters\UrlFormatter::setBaseUrl('URL');
+        \Yana\Views\Helpers\Formatters\UrlFormatter::setDependencyContainer(new \Yana\Core\Dependencies\UrlFormatterContainer('URL'));
     }
 
     /**
@@ -65,7 +65,7 @@ class HtmlBuilderTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        \Yana\Views\Helpers\Formatters\UrlFormatter::setBaseUrl('');
+        \Yana\Views\Helpers\Formatters\UrlFormatter::setDependencyContainer(new \Yana\Core\Dependencies\UrlFormatterContainer(''));
     }
 
     /**

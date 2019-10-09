@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Views\Helpers\Formatters;
 
@@ -39,28 +40,33 @@ class UrlFormatter extends \Yana\Views\Helpers\Formatters\AbstractFormatter
 {
 
     /**
-     * @var string
+     * @var \Yana\Core\Dependencies\IsUrlFormatterContainer
      */
-    private static $_baseUrl = "";
+    private static $_dependencyContainer = null;
 
     /**
-     * Sets the prefix for the generated URL.
+     * Return dependencies.
      *
-     * @param  string  $url  prefix, possibly including protocol part and server address
+     * @return  \Yana\Core\Dependencies\IsUrlFormatterContainer
      */
-    public static function setBaseUrl($url)
+    public static function getDependencyContainer(): \Yana\Core\Dependencies\IsUrlFormatterContainer
     {
-        self::$_baseUrl = $url;
+        if (!isset(self::$_dependencyContainer)) {
+            // @codeCoverageIgnoreStart
+            self::$_dependencyContainer = new \Yana\Core\Dependencies\UrlFormatterContainer("");
+            // @codeCoverageIgnoreEnd
+        }
+        return self::$_dependencyContainer;
     }
 
     /**
-     * Returns the prefix for the generated URL.
+     * Inject dependencies.
      *
-     * @return string
+     * @param \Yana\Core\Dependencies\IsUrlFormatterContainer $dependencyContainer
      */
-    public static function getBaseUrl()
+    public static function setDependencyContainer(\Yana\Core\Dependencies\IsUrlFormatterContainer $dependencyContainer)
     {
-        return self::$_baseUrl;
+        self::$_dependencyContainer = $dependencyContainer;
     }
 
     /**
@@ -75,7 +81,7 @@ class UrlFormatter extends \Yana\Views\Helpers\Formatters\AbstractFormatter
      *
      * @return    bool
      */
-    private function _isHttps()
+    private function _isHttps(): bool
     {
         return (!empty($_SERVER['HTTPS']) && strcasecmp($_SERVER['HTTPS'], "off") !== 0) ||
             (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], "https") === 0);
@@ -89,15 +95,13 @@ class UrlFormatter extends \Yana\Views\Helpers\Formatters\AbstractFormatter
      * @param   string  $parameterList  url parameter list
      * @return  string
      */
-    private function _encodeParameters($parameterList)
+    private function _encodeParameters(string $parameterList): string
     {
-        assert('is_string($parameterList); // Invalid argument $parameterList: string expected');
-
-        assert('!isset($m); // Cannot redeclare var $m');
+        assert(!isset($m), 'Cannot redeclare var $m');
         $m = array();
         preg_match_all("/(&|^)(.*)=(.*)(&|$)/U", $parameterList, $m);
-        assert('!isset($i); // Cannot redeclare var $i');
-        assert('!isset($replace); // Cannot redeclare var $replace');
+        assert(!isset($i), 'Cannot redeclare var $i');
+        assert(!isset($replace), 'Cannot redeclare var $replace');
         for ($i = 0; $i < count($m[0]); $i++)
         {
             $replace = $m[1][$i] . urlencode($m[2][$i]) . "=" . urlencode($m[3][$i]) . $m[4][$i];
@@ -116,13 +120,11 @@ class UrlFormatter extends \Yana\Views\Helpers\Formatters\AbstractFormatter
      * @param   bool     $asAbsolutePath   decide wether function should return relative or absolut path
      * @return  string
      */
-    public function __invoke($string, $asString = false, $asAbsolutePath = true)
+    public function __invoke($string, bool $asString = false, bool $asAbsolutePath = true)
     {
-        assert('is_string($string); // Wrong type for argument "string". String expected');
-        assert('is_bool($asString); // Invalid argument $asString: bool expected');
-        assert('is_bool($asAbsolutePath); // Invalid argument $asAbsolutePath: bool expected');
+        assert(is_string($string), 'Wrong type for argument "string". String expected');
 
-        assert('!isset($url); // Cannot redeclare var $url');
+        assert(!isset($url), 'Cannot redeclare var $url');
         $url = "";
 
         /**
@@ -141,7 +143,7 @@ class UrlFormatter extends \Yana\Views\Helpers\Formatters\AbstractFormatter
             } elseif (isset($_SERVER['SERVER_NAME'])) {
                 $url .= $_SERVER['SERVER_NAME'];
             }
-            assert('!isset($dirname); // Cannot redeclare var $dirname');
+            assert(!isset($dirname), 'Cannot redeclare var $dirname');
             $dirname = dirname($_SERVER['PHP_SELF']);
             if ($dirname === DIRECTORY_SEPARATOR || $dirname === "/") {
                 $url .= '/';
@@ -157,11 +159,12 @@ class UrlFormatter extends \Yana\Views\Helpers\Formatters\AbstractFormatter
          * This encodes special characters found in the fragment,
          * depending on the $asString argument.
          */
-        assert('!isset($urlPath); // Cannot redeclare var $urlPath');
-        $baseUrl = self::getBaseUrl();
+        assert(!isset($baseUrl), 'Cannot redeclare var $baseUrl');
+        $baseUrl = self::getDependencyContainer()->getApplicationUrlParameters();
         if (\strpos($baseUrl, '?') === false) {
             $baseUrl .= '?';
         }
+        assert(!isset($urlPath), 'Cannot redeclare var $urlPath');
         $urlPath = $baseUrl . '&' . $this->_encodeParameters($string);
         if ($asString === false) {
             $urlPath = \Yana\Util\Strings::htmlSpecialChars($urlPath);

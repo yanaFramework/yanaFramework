@@ -141,8 +141,8 @@ class QueryBuilder extends \Yana\Forms\AbstractQueryBuilder
      */
     public function buildAutocompleteQuery(\Yana\Db\Ddl\Reference $targetReference, $searchTerm, $limit)
     {
-        assert('is_string($searchTerm); // Invalid argument $searchTerm: string expected');
-        assert('is_int($limit); // Invalid argument $limit: int expected');
+        assert(is_string($searchTerm), 'Invalid argument $searchTerm: string expected');
+        assert(is_int($limit), 'Invalid argument $limit: int expected');
 
         $query = new \Yana\Db\Queries\Select($this->getDatabase());
         $query->setTable($targetReference->getTable());
@@ -202,7 +202,7 @@ class QueryBuilder extends \Yana\Forms\AbstractQueryBuilder
      */
     private function _processSearchTerm(\Yana\Db\Queries\Select $select, $searchTerm, \Yana\Forms\Fields\FieldCollectionWrapper $columnList)
     {
-        assert('is_string($searchTerm); // Invalid argument type: $searchTerm. String expected.');
+        assert(is_string($searchTerm), 'Invalid argument type: $searchTerm. String expected.');
         if (!empty($searchTerm)) {
 
             $searchTerm = preg_replace('/\s+/', '%', $searchTerm);
@@ -262,7 +262,7 @@ class QueryBuilder extends \Yana\Forms\AbstractQueryBuilder
     private function _applySetupFilters(\Yana\Db\Queries\Select $select, \Yana\Forms\IsSetup $setup)
     {
         if ($setup->hasFilter()) {
-            assert('!isset($updateForm); // Cannot redeclare var $updateForm');
+            assert(!isset($updateForm), 'Cannot redeclare var $updateForm');
             $updateForm = $this->getForm()->getUpdateForm();
             foreach ($setup->getFilters() as $columnName => $filter)
             {
@@ -284,9 +284,9 @@ class QueryBuilder extends \Yana\Forms\AbstractQueryBuilder
      */
     private function _buildSelectForSubForm(\Yana\Db\Queries\Select $select)
     {
-        assert('!isset($form); // Cannot redeclare var $form');
+        assert(!isset($form), 'Cannot redeclare var $form');
         $form = $this->getForm();
-        assert('!isset($parentForm); // Cannot redeclare var $parentForm');
+        assert(!isset($parentForm), 'Cannot redeclare var $parentForm');
         $parentForm = $form->getParent();
         // copy foreign key from parent query
         if ($parentForm instanceof \Yana\Forms\Facade) {
@@ -299,8 +299,8 @@ class QueryBuilder extends \Yana\Forms\AbstractQueryBuilder
                 }
                 $form->getSetup()->setEntriesPerPage(1);
             } else {
-                assert('!isset($sourceColumnName); // Cannot redeclare var $sourceColumnName');
-                assert('!isset($targetColumnName); // Cannot redeclare var $targetColumnName');
+                assert(!isset($sourceColumnName), 'Cannot redeclare var $sourceColumnName');
+                assert(!isset($targetColumnName), 'Cannot redeclare var $targetColumnName');
                 list($sourceColumnName, $targetColumnName) = $this->getForeignKey();
                 $targetColumnName = strtoupper($targetColumnName);
                 $results = $parentResults->toArray();
@@ -356,26 +356,26 @@ class QueryBuilder extends \Yana\Forms\AbstractQueryBuilder
      */
     protected function getForeignKey()
     {
-        assert('!isset($form); // Cannot redeclare var $form');
+        assert(!isset($form), 'Cannot redeclare var $form');
         $form = $this->getForm();
-        assert('$form instanceof \Yana\Forms\Facade;');
-        assert('!isset($baseForm); // Cannot redeclare var $baseForm');
+        assert($form instanceof \Yana\Forms\Facade, '$form instanceof \Yana\Forms\Facade');
+        assert(!isset($baseForm), 'Cannot redeclare var $baseForm');
         $baseForm = $form->getBaseForm();
-        assert('!isset($parentForm); // Cannot redeclare var $parentForm');
+        assert(!isset($parentForm), 'Cannot redeclare var $parentForm');
         $parentForm = $baseForm->getParent();
         if (!$parentForm instanceof \Yana\Db\Ddl\Form) {
             return null;
         }
-        assert('!isset($db); // Cannot redeclare var $db');
+        assert(!isset($db), 'Cannot redeclare var $db');
         $db = $baseForm->getDatabase();
 
-        assert('!isset($targetTable); // Cannot redeclare var $targetTable');
+        assert(!isset($targetTable), 'Cannot redeclare var $targetTable');
         $targetTable = $parentForm->getTable();
-        assert('!isset($sourceTable); // Cannot redeclare var $sourceTable');
+        assert(!isset($sourceTable), 'Cannot redeclare var $sourceTable');
         $sourceTable = $form->getTable();
-        assert('!isset($keyName); // Cannot redeclare var $keyName');
+        assert(!isset($keyName), 'Cannot redeclare var $keyName');
         $keyName = $baseForm->getKey();
-        assert('!isset($columnName); // Cannot redeclare var $columnName');
+        assert(!isset($columnName), 'Cannot redeclare var $columnName');
         $columnName = "";
         /* @var $foreign \Yana\Db\Ddl\ForeignKey */
         foreach ($sourceTable->getForeignKeys() as $foreign)

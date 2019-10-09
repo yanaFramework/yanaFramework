@@ -91,7 +91,7 @@ class FileMapper extends \Yana\Files\Readonly
      */
     public function toFileId($filename)
     {
-        assert('is_string($filename); // Wrong argument type for argument 1. String expected');
+        assert(is_string($filename), 'Wrong argument type for argument 1. String expected');
         return preg_replace('/^.*?([\w\-_]+)\.\w+$/', '$1', $filename);
     }
 
@@ -104,8 +104,8 @@ class FileMapper extends \Yana\Files\Readonly
      */
     public function toFileName($fileId, $type)
     {
-        assert('is_string($fileId); // Invalid argument $fileId: string expected');
-        assert('is_string($type); // Invalid argument $type: string expected');
+        assert(is_string($fileId), 'Invalid argument $fileId: string expected');
+        assert(is_string($type), 'Invalid argument $type: string expected');
 
         $directory = $this->_getConfiguration()->getDirectory();
         $file = $directory; // and ...

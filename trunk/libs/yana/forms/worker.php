@@ -192,9 +192,9 @@ class Worker extends \Yana\Forms\QueryBuilder
      */
     public function create()
     {
-        assert('!isset($result); // Cannot redeclare var $result');
+        assert(!isset($result), 'Cannot redeclare var $result');
         $result = false;
-        assert('!isset($form); // Cannot redeclare var $form');
+        assert(!isset($form), 'Cannot redeclare var $form');
         $form = $this->getForm();
         if ($form) {
             $newEntry = $form->getSetup()->getContext(\Yana\Forms\Setups\ContextNameEnumeration::INSERT)->getValues();
@@ -222,7 +222,7 @@ class Worker extends \Yana\Forms\QueryBuilder
                 throw new \Yana\Core\Exceptions\Forms\MissingInputException($message, $level);
             }
 
-            assert('!isset($database); // Cannot redeclare var $database');
+            assert(!isset($database), 'Cannot redeclare var $database');
             $database = $this->getDatabase();
 
             // execute hooks
@@ -278,12 +278,12 @@ class Worker extends \Yana\Forms\QueryBuilder
      */
     public function autocomplete($columnName, $searchTerm = "", $limit = 50)
     {
-        assert('is_string($columnName); // Invalid argument $columnName: string expected');
-        assert('is_string($searchTerm); // Invalid argument $searchTerm: string expected');
+        assert(is_string($columnName), 'Invalid argument $columnName: string expected');
+        assert(is_string($searchTerm), 'Invalid argument $searchTerm: string expected');
 
-        assert('!isset($referenceValues); // Cannot redeclare var $referenceValues');
+        assert(!isset($referenceValues), 'Cannot redeclare var $referenceValues');
         $referenceValues = array();
-        assert('!isset($form); // Cannot redeclare var $form');
+        assert(!isset($form), 'Cannot redeclare var $form');
         $form = $this->getForm();
         if ($form) {
             $references = $form->getSetup()->getForeignKeys();
@@ -308,9 +308,9 @@ class Worker extends \Yana\Forms\QueryBuilder
      */
     public function export()
     {
-        assert('!isset($csv); // Cannot redeclare var $csv');
+        assert(!isset($csv), 'Cannot redeclare var $csv');
         $csv = "";
-        assert('!isset($form); // Cannot redeclare var $form');
+        assert(!isset($form), 'Cannot redeclare var $form');
         $form = $this->getForm();
         if ($form) {
             $updatedEntries = $form->getSetup()->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE)->getRows()->toArray();
@@ -332,9 +332,9 @@ class Worker extends \Yana\Forms\QueryBuilder
      */
     public function update()
     {
-        assert('!isset($result); // Cannot redeclare var $result');
+        assert(!isset($result), 'Cannot redeclare var $result');
         $result = false;
-        assert('!isset($form); // Cannot redeclare var $form');
+        assert(!isset($form), 'Cannot redeclare var $form');
         $form = $this->getForm();
         if ($form) {
             $updatedEntries = $form->getUpdateValues();
@@ -345,7 +345,7 @@ class Worker extends \Yana\Forms\QueryBuilder
                 $level = \Yana\Log\TypeEnumeration::WARNING;
                 throw new \Yana\Core\Exceptions\Forms\MissingInputException($message, $level);
             }
-            assert('!isset($database); // Cannot redeclare var $database');
+            assert(!isset($database), 'Cannot redeclare var $database');
             $database = $this->getDatabase();
 
             foreach ($updatedEntries as $id => $entry)
@@ -396,9 +396,9 @@ class Worker extends \Yana\Forms\QueryBuilder
      */
     public function delete(array $selectedEntries)
     {
-        assert('!isset($result); // Cannot redeclare var $result');
+        assert(!isset($result), 'Cannot redeclare var $result');
         $result = false;
-        assert('!isset($form); // Cannot redeclare var $form');
+        assert(!isset($form), 'Cannot redeclare var $form');
         $form = $this->getForm();
         if ($form) {
             if (empty($selectedEntries)) {
@@ -406,7 +406,7 @@ class Worker extends \Yana\Forms\QueryBuilder
                 $level = \Yana\Log\TypeEnumeration::WARNING;
                 throw new \Yana\Core\Exceptions\Forms\MissingInputException($message, $level);
             }
-            assert('!isset($database); // Cannot redeclare var $database');
+            assert(!isset($database), 'Cannot redeclare var $database');
             $database = $this->getDatabase();
             $tableName = $form->getBaseForm()->getTable();
             // remove entry from database

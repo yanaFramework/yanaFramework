@@ -82,7 +82,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Security\Dependenc
      *
      * @return  \Yana\Db\IsConnectionFactory
      */
-    public function getConnectionFactory()
+    public function getConnectionFactory(): \Yana\Db\IsConnectionFactory 
     {
         return new \Yana\Db\ConnectionFactory(new \Yana\Db\SchemaFactory($this->getCache()));
     }
@@ -92,7 +92,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Security\Dependenc
      *
      * @return  \Yana\Db\IsConnection
      */
-    public function getConnectionToUserData()
+    public function getConnectionToUserData(): \Yana\Db\IsConnection
     {
         return $this->getConnectionFactory()->createConnection('user');
     }
@@ -102,7 +102,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Security\Dependenc
      *
      * @return  \Yana\Plugins\Facade
      */
-    public function getPlugins()
+    public function getPlugins(): \Yana\Plugins\Facade
     {
         if (!isset($this->_plugins)) {
             $this->_plugins = new \Yana\Plugins\Facade(new \Yana\Plugins\Dependencies\Container(new \Yana\Security\Sessions\Wrapper(), array()));
@@ -130,7 +130,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Security\Dependenc
      *
      * @return  \Yana\Data\Adapters\IsDataAdapter
      */
-    public function getCache()
+    public function getCache(): \Yana\Data\Adapters\IsDataAdapter
     {
         return $this->_getCache();
     }
@@ -140,7 +140,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Security\Dependenc
      *
      * @return  \Yana\Db\IsConnection
      */
-    public function getDataConnection()
+    public function getDataConnection(): \Yana\Db\IsConnection
     {
         return $this->_getDataConnection();
     }
@@ -161,7 +161,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Security\Dependenc
      *
      * @return  array
      */
-    public function getDefaultUser()
+    public function getDefaultUser(): array
     {
         return $this->_defaultUser;
     }
@@ -197,7 +197,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Security\Dependenc
      *
      * @return  \Yana\Plugins\Configs\MethodCollection
      */
-    public function getEventConfigurationsForPlugins()
+    public function getEventConfigurationsForPlugins(): \Yana\Plugins\Configs\MethodCollection
     {
         if (!isset($this->_eventConfigurationsForPlugins)) {
             $this->_eventConfigurationsForPlugins = $this->getPlugins()->getEventConfigurations();
@@ -212,7 +212,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Security\Dependenc
      *
      * @return  \Yana\Log\IsLogHandler
      */
-    public function getLogger()
+    public function getLogger(): \Yana\Log\IsLogHandler
     {
         return \Yana\Log\LogManager::getLogger();
     }
@@ -222,7 +222,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Security\Dependenc
      *
      * @return  string
      */
-    public function getProfileId()
+    public function getProfileId(): string
     {
         return $this->_profileId;
     }
@@ -232,7 +232,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Security\Dependenc
      *
      * @return  string
      */
-    public function getLastPluginAction()
+    public function getLastPluginAction(): string
     {
         return (string) $this->getPlugins()->getLastEvent();
     }
@@ -243,10 +243,9 @@ class Container extends \Yana\Core\StdObject implements \Yana\Security\Dependenc
      * @param   string  $profileId  from request to application
      * @return  $this
      */
-    public function setProfileId($profileId)
+    public function setProfileId(string $profileId)
     {
-        assert('is_string($profileId); // $profileId expected to be String');
-        $this->_profileId = (string) $profileId;
+        $this->_profileId = $profileId;
         return $this;
     }
 

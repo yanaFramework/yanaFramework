@@ -79,13 +79,13 @@ class DefaultableDataReader extends \Yana\Security\Rules\Requirements\DataReader
      */
     public function loadRequirementsByAssociatedAction($action)
     {
-        assert('is_string($action); // Invalid argument type: $action. String expected');
+        assert(is_string($action), 'Invalid argument type: $action. String expected');
 
-        assert('!isset($requirements); // Cannot redeclare var $requirements');
+        assert(!isset($requirements), 'Cannot redeclare var $requirements');
         $requirements = parent::loadRequirementsByAssociatedAction($action);
 
         if ($requirements->count() === 0) {
-            assert('!isset($default); // Cannot redeclare var $default');
+            assert(!isset($default), 'Cannot redeclare var $default');
             $default = $this->_getDefault();
             if (!empty($default)) {
                 $requirements[] = $this->_mapRowFromDatabasetoEntity($default);

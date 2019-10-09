@@ -182,7 +182,7 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery implements \Yana\Db\Que
      */
     public function unsetJoin(string $table)
     {
-        assert('is_string($table); // Wrong type for argument 1. String expected');
+        assert(is_string($table), 'Wrong type for argument 1. String expected');
         $table = mb_strtolower($table);
 
         if (YANA_DB_STRICT && !$this->getDatabase()->getSchema()->isTable($table)) {
@@ -202,7 +202,7 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery implements \Yana\Db\Que
      */
     public function getJoin(string $table): \Yana\Db\Queries\JoinCondition
     {
-        assert('is_string($table); // Wrong type for argument 1. String expected');
+        assert(is_string($table), 'Wrong type for argument 1. String expected');
         $table = mb_strtolower($table);
 
         if (!isset($this->joins[$table])) {            

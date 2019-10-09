@@ -88,11 +88,11 @@ class Builder extends \Yana\Plugins\Menus\AbstractBuilder implements \Yana\Plugi
      */
     public function buildMenu()
     {
-        assert('!isset($locale); // Cannot redeclare var $locale');
+        assert(!isset($locale), 'Cannot redeclare var $locale');
         $locale = $this->getLocale();
-        assert('!isset($cache); // Cannot redeclare var $cache');
+        assert(!isset($cache), 'Cannot redeclare var $cache');
         $cache = $this->_getCache();
-        assert('!isset($menus); // Cannot redeclare var $menus');
+        assert(!isset($menus), 'Cannot redeclare var $menus');
         $menus = $this->_getMenus();
 
         /* Retrieve the menu settings, either:
@@ -100,7 +100,7 @@ class Builder extends \Yana\Plugins\Menus\AbstractBuilder implements \Yana\Plugi
          * - restoring settings from the cache
          * - or loading the defaults
          */
-        assert('!isset($menu); // Cannot redeclare var $menu');
+        assert(!isset($menu), 'Cannot redeclare var $menu');
         if (isset($menus[$locale])) {
             $menu = $menus[$locale];
 
@@ -135,11 +135,11 @@ class Builder extends \Yana\Plugins\Menus\AbstractBuilder implements \Yana\Plugi
      */
     public function clearMenuCache()
     {
-        assert('!isset($cache); // Cannot redeclare var $cache');
+        assert(!isset($cache), 'Cannot redeclare var $cache');
         $cache = $this->_getCache();
 
         // reset
-        assert('!isset($id); // Cannot redeclare var $id');
+        assert(!isset($id), 'Cannot redeclare var $id');
         foreach ($cache->getIds() as $id) {
             unset($cache[$id]);
         }

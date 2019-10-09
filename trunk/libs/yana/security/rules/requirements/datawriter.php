@@ -50,7 +50,7 @@ class DataWriter extends \Yana\Security\Rules\Requirements\AbstractDataObject im
      */
     public function __invoke(\Yana\Plugins\Configs\MethodCollection $eventConfigurations)
     {
-        assert('!isset($wrappedConfigurations); // Cannot redeclare var $wrappedConfigurations');
+        assert(!isset($wrappedConfigurations), 'Cannot redeclare var $wrappedConfigurations');
         $wrappedConfigurations = new \Yana\Security\Rules\Requirements\DataWriterHelper($eventConfigurations);
 
         $this
@@ -127,7 +127,7 @@ class DataWriter extends \Yana\Security\Rules\Requirements\AbstractDataObject im
     {
         $database = $this->_getDatasource();
 
-        assert('!isset($row); // Cannot redeclare var $row');
+        assert(!isset($row), 'Cannot redeclare var $row');
         foreach ($rows as $row)
         {
             try {
@@ -156,8 +156,8 @@ class DataWriter extends \Yana\Security\Rules\Requirements\AbstractDataObject im
     {
         $database = $this->_getDatasource();
 
-        assert('!isset($roleId); // Cannot redeclare var $roleId');
-        assert('!isset($role); // Cannot redeclare var $role');
+        assert(!isset($roleId), 'Cannot redeclare var $roleId');
+        assert(!isset($role), 'Cannot redeclare var $role');
         foreach (array_unique($roles) as $roleId)
         {
             if ($database->exists(\Yana\Security\Data\Tables\RoleEnumeration::TABLE . "." . $roleId)) {
@@ -193,8 +193,8 @@ class DataWriter extends \Yana\Security\Rules\Requirements\AbstractDataObject im
     {
         $database = $this->_getDatasource();
 
-        assert('!isset($groupId); // Cannot redeclare var $groupId');
-        assert('!isset($group); // Cannot redeclare var $group');
+        assert(!isset($groupId), 'Cannot redeclare var $groupId');
+        assert(!isset($group), 'Cannot redeclare var $group');
         foreach (array_unique($groups) as $groupId)
         {
             if ($database->exists(\Yana\Security\Data\Tables\GroupEnumeration::TABLE . "." . $groupId)) {
@@ -230,9 +230,9 @@ class DataWriter extends \Yana\Security\Rules\Requirements\AbstractDataObject im
     {
         $database = $this->_getDatasource();
 
-        assert('!isset($name); // Cannot redeclare var $name');
-        assert('!isset($title); // Cannot redeclare var $title');
-        assert('!isset($action); // Cannot redeclare var $action');
+        assert(!isset($name), 'Cannot redeclare var $name');
+        assert(!isset($title), 'Cannot redeclare var $title');
+        assert(!isset($action), 'Cannot redeclare var $action');
         foreach ($actions as $name => $title)
         {
             $action = array(

@@ -103,7 +103,7 @@ class MemcacheSaveHandler extends \Yana\Core\StdObject implements \Yana\Core\Ses
      */
     public function read($id)
     {
-        assert('is_string($id); // $id expected to be String');
+        assert(is_string($id), '$id expected to be String');
         return $this->_getMemCache()->offsetGet($id);
     }
 
@@ -116,8 +116,8 @@ class MemcacheSaveHandler extends \Yana\Core\StdObject implements \Yana\Core\Ses
      */
     public function write($id, $data)
     {
-        assert('is_string($id); // $id expected to be String');
-        assert('is_string($data); // $data expected to be String');
+        assert(is_string($id), '$id expected to be String');
+        assert(is_string($data), '$data expected to be String');
         return $this->_getMemCache()->offsetSet($id, $data);
     }
 
@@ -129,7 +129,7 @@ class MemcacheSaveHandler extends \Yana\Core\StdObject implements \Yana\Core\Ses
      */
     public function destroy($id)
     {
-        assert('is_string($id); // $id expected to be String');
+        assert(is_string($id), '$id expected to be String');
         return $this->_getMemCache()->offsetUnset($id);
     }
 

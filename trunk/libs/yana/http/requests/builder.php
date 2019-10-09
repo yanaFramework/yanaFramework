@@ -57,7 +57,7 @@ class Builder extends \Yana\Http\Requests\Container
      */
     public static function buildFromSuperGlobals()
     {
-        assert('!isset($methodName); // Cannot redeclare var $methodName.');
+        assert(!isset($methodName), 'Cannot redeclare var $methodName.');
         $methodName = (string) (isset($_SERVER["REQUEST_METHOD"]) ? $_SERVER["REQUEST_METHOD"] : \Yana\Http\Requests\MethodEnumeration::CLI);
         $builder = new self();
         $builder
@@ -78,14 +78,14 @@ class Builder extends \Yana\Http\Requests\Container
      */
     private static function _createArgumentsFromSuperGlobals()
     {
-        assert('!isset($arguments); // Cannot redeclare var $arguments');
+        assert(!isset($arguments), 'Cannot redeclare var $arguments');
         $arguments = array();
         if (!empty($_SERVER['argv'])) { // for calls via command line - interface
             $arguments = array();
-            assert('!isset($argument); // Cannot redeclare var $argument');
+            assert(!isset($argument), 'Cannot redeclare var $argument');
             foreach ($_SERVER['argv'] as $argument)
             {
-                assert('!isset($m); // Cannot redeclare var $m');
+                assert(!isset($m), 'Cannot redeclare var $m');
                 if (preg_match('/^([\w\d\-\_\.]*)=(.*)$/', "$argument", $m)) {
                     \Yana\Util\Hashtable::set($arguments, mb_strtolower($m[1]), $m[2]);
                 }
@@ -93,7 +93,7 @@ class Builder extends \Yana\Http\Requests\Container
             }
             unset($argument);
         }
-        assert('is_array($arguments); // Invalid post-condition: array expected for var $arguments');
+        assert(is_array($arguments), 'Invalid post-condition: array expected for var $arguments');
         return $arguments;
     }
 

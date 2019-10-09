@@ -66,9 +66,9 @@ trait HasRequest
      *
      * By default this will be done by using the respective super-globals like $_GET, $_POST aso.
      *
-     * @return  \Yana\Http\Facade
+     * @return  \Yana\Http\IsFacade
      */
-    public function getRequest()
+    public function getRequest(): \Yana\Http\IsFacade
     {
         if (!isset($this->_request)) {
             $this->_request = new \Yana\Http\Facade($this->getRequestBuilder(), $this->getUploadBuilder(), $this->getUrlBuilder());
@@ -81,7 +81,7 @@ trait HasRequest
      *
      * @return  \Yana\Http\Requests\IsRequest
      */
-    public function getRequestBuilder()
+    public function getRequestBuilder(): \Yana\Http\Requests\IsRequest
     {
         if (!isset($this->_requestBuilder)) {
             $this->_requestBuilder = \Yana\Http\Requests\Builder::buildFromSuperGlobals();
@@ -94,7 +94,7 @@ trait HasRequest
      *
      * @return  \Yana\Http\Uploads\IsUploadWrapper
      */
-    public function getUploadBuilder()
+    public function getUploadBuilder(): \Yana\Http\Uploads\IsUploadWrapper
     {
         if (!isset($this->_uploadBuilder)) {
             $this->_uploadBuilder = \Yana\Http\Uploads\Builder::buildFromSuperGlobals();
@@ -107,7 +107,7 @@ trait HasRequest
      *
      * @return  \Yana\Http\Uris\IsUrlBuilder
      */
-    public function getUrlBuilder()
+    public function getUrlBuilder(): \Yana\Http\Uris\IsUrlBuilder
     {
         if (!isset($this->_urlBuilder)) {
             $this->_urlBuilder = \Yana\Http\Uris\CanonicalUrlBuilder::buildFromSuperGlobals();

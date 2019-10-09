@@ -72,7 +72,7 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
      */
     protected function _setSystemLocale($locale)
     {
-        assert('is_string($locale); // Invalid argument $locale: string expected');
+        assert(is_string($locale), 'Invalid argument $locale: string expected');
 
         // set system locale
         setlocale(LC_ALL, $locale);
@@ -112,7 +112,7 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
      */
     public function __get($id)
     {
-        assert('is_string($id); // Invalid argument $id: string expected');
+        assert(is_string($id), 'Invalid argument $id: string expected');
         return $this->_getManager()->getVar($id);
     }
 
@@ -190,7 +190,7 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
      */
     public function readFile($file)
     {
-        assert('is_string($file); // Wrong type for argument 1. String expected');
+        assert(is_string($file), 'Wrong type for argument 1. String expected');
 
         $this->_getManager()->loadTranslations($file);
         return $this;
@@ -214,7 +214,7 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
      */
     public function getVar($key)
     {
-        assert('is_string($key); // Wrong argument type for argument 1. String expected.');
+        assert(is_string($key), 'Wrong argument type for argument 1. String expected.');
 
         return $this->_getManager()->getVar($key);
     }
@@ -239,7 +239,7 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
      */
     public function isVar($key)
     {
-        assert('is_string($key); // Wrong argument type for argument 1. String expected.');
+        assert(is_string($key), 'Wrong argument type for argument 1. String expected.');
         return $this->_getManager()->isVar($key);
     }
 
@@ -267,7 +267,7 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
      */
     public function addDirectory($directory)
     {
-        assert('is_string($directory); // Wrong type for argument 1. String expected');
+        assert(is_string($directory), 'Wrong type for argument 1. String expected');
 
         $dir = new \Yana\Files\Dir($directory);
         $textProvider = new \Yana\Translations\TextData\XliffDataProvider($dir);
@@ -286,8 +286,8 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
      */
     public function setLocale($selectedLanguage, $selectedCountry = "")
     {
-        assert('is_string($selectedLanguage); // Wrong type for argument 1. String expected');
-        assert('is_string($selectedCountry); // Wrong argument type for argument 2. String expected.');
+        assert(is_string($selectedLanguage), 'Wrong type for argument 1. String expected');
+        assert(is_string($selectedCountry), 'Wrong argument type for argument 2. String expected.');
 
         $this->_locale = new \Yana\Translations\Locale($selectedLanguage, $selectedCountry);
         $this->_setSystemLocale($this->_locale->toString());
@@ -307,7 +307,7 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
      */
     public function getMetaData($languageName)
     {
-        assert('is_string($languageName); // Wrong type for argument 1. String expected');
+        assert(is_string($languageName), 'Wrong type for argument 1. String expected');
 
         return $this->_getManager()->getMetaData($languageName);
     }
@@ -357,7 +357,7 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
      */
     public function replaceToken($string)
     {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
+        assert(is_string($string), 'Wrong argument type for argument 1. String expected.');
 
         return $this->_getManager()->replaceToken($string);
     }

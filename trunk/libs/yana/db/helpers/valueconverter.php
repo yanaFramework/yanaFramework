@@ -119,10 +119,10 @@ class ValueConverter extends \Yana\Core\StdObject implements \Yana\Db\Helpers\Is
             case \Yana\Db\Ddl\ColumnTypeEnumeration::LST:
             case \Yana\Db\Ddl\ColumnTypeEnumeration::SET:
                 if (!is_array($value)) {
-                    assert('is_string($value);');
+                    assert(is_string($value), 'is_string($value)');
                     $value = json_decode($value, true);
                 }
-                assert('is_array($value); // Unexpected result: $value should be an array.');
+                assert(is_array($value), 'Unexpected result: $value should be an array.');
                 if ($key !== "") {
                     $value = \Yana\Util\Hashtable::get($value, mb_strtolower($key));
                     if (is_null($value)) {
@@ -171,7 +171,7 @@ class ValueConverter extends \Yana\Core\StdObject implements \Yana\Db\Helpers\Is
                     return null;
                 }
                 $value = (float) $value;
-                assert('!isset($precision); // Cannot redeclare var $precision');
+                assert(!isset($precision), 'Cannot redeclare var $precision');
                 $precision = $column->getPrecision();
                 /* apply precision */
                 if ($precision > 0) {
@@ -249,12 +249,12 @@ class ValueConverter extends \Yana\Core\StdObject implements \Yana\Db\Helpers\Is
      */
     public function convertRowToString(\Yana\Db\Ddl\Table $table, array $row): array
     {
-        assert('!isset($outputRow); // Cannot redeclare var $outputRow');
+        assert(!isset($outputRow), 'Cannot redeclare var $outputRow');
         $outputRow = array();
 
-        assert('!isset($column); // Cannot redeclare var $column');
-        assert('!isset($columnName); // Cannot redeclare var $columnName');
-        assert('!isset($columnType); // Cannot redeclare var $columnType');
+        assert(!isset($column), 'Cannot redeclare var $column');
+        assert(!isset($columnName), 'Cannot redeclare var $columnName');
+        assert(!isset($columnType), 'Cannot redeclare var $columnType');
         /* @var $column \Yana\Db\Ddl\Column */
         foreach ($table->getColumns() as $column)
         {

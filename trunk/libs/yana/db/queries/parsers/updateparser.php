@@ -76,15 +76,15 @@ class UpdateParser extends \Yana\Db\Queries\Parsers\InsertParser implements \Yan
      */
     protected function _mapSet(\Yana\Db\Queries\AbstractQuery $query, array $syntaxTree)
     {
-        assert('!isset($keys); // Cannot redeclare variable $keys');
+        assert(!isset($keys), 'Cannot redeclare variable $keys');
         $keys = array();
-        assert('!isset($values); // Cannot redeclare variable $values');
+        assert(!isset($values), 'Cannot redeclare variable $values');
         $values = array();
 
         if (isset($syntaxTree['sets']) && is_array($syntaxTree['sets'])) {
 
-            assert('!isset($set); // Cannot redeclare variable $set');
-            assert('!isset($value); // Cannot redeclare variable $value');
+            assert(!isset($set), 'Cannot redeclare variable $set');
+            assert(!isset($value), 'Cannot redeclare variable $value');
             foreach ($syntaxTree['sets'] as $set)
             {
                 if (isset($set['name']) && isset($set['value']['args']) && is_array($set['value']['args'])) {

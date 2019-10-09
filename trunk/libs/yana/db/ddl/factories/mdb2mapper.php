@@ -205,9 +205,9 @@ class Mdb2Mapper extends \Yana\Core\StdObject implements \Yana\Db\Ddl\Factories\
                     $message = "The foreign key must reference a foreign table.";
                     throw new \Yana\Core\Exceptions\InvalidSyntaxException($message);
                 }
-                assert('!isset($targetTable); // Cannot redeclare var $targetTable');
+                assert(!isset($targetTable), 'Cannot redeclare var $targetTable');
                 $targetTable = $info['references']['table'];
-                assert('!isset($foreign); // Cannot redeclare var $foreign');
+                assert(!isset($foreign), 'Cannot redeclare var $foreign');
                 $foreign = $table->addForeignKey($targetTable, $name);
                 $this->_mapForeignKey($foreign, $info);
                 
@@ -255,20 +255,20 @@ class Mdb2Mapper extends \Yana\Core\StdObject implements \Yana\Db\Ddl\Factories\
             $foreign->setDeferrable(true);
         }
 
-        assert('!isset($sourceFieldNames); // Cannot redeclare var $sourceFieldNames');
-        assert('!isset($targetFieldNames); // Cannot redeclare var $targetFieldNames');
+        assert(!isset($sourceFieldNames), 'Cannot redeclare var $sourceFieldNames');
+        assert(!isset($targetFieldNames), 'Cannot redeclare var $targetFieldNames');
         $sourceFieldNames = array_keys($mdb2ForeignKeyInfo['fields']);
         $targetFieldNames = array_keys($mdb2ForeignKeyInfo['references']['fields']);
 
-        assert('!isset($i); // Cannot redeclare var $i');
-        assert('!isset($sourceFieldName); // Cannot redeclare var $sourceFieldName');
-        assert('!isset($targetFieldName); // Cannot redeclare var $targetFieldName');
+        assert(!isset($i), 'Cannot redeclare var $i');
+        assert(!isset($sourceFieldName), 'Cannot redeclare var $sourceFieldName');
+        assert(!isset($targetFieldName), 'Cannot redeclare var $targetFieldName');
         for ($i = 0; $i < count($sourceFieldNames); $i++)
         {
             $sourceFieldName = $sourceFieldNames[$i];
-            assert('is_string($sourceFieldName);');
+            assert(is_string($sourceFieldName), 'is_string($sourceFieldName)');
             $targetFieldName = $targetFieldNames[$i];
-            assert('is_string($targetFieldName);');
+            assert(is_string($targetFieldName), 'is_string($targetFieldName)');
             $foreign->setColumn((string) $sourceFieldName, (string) $targetFieldName); // may throw exception
         }
         unset($i, $sourceFieldNames, $sourceFieldName, $targetFieldNames, $targetFieldName);
@@ -282,7 +282,7 @@ class Mdb2Mapper extends \Yana\Core\StdObject implements \Yana\Db\Ddl\Factories\
      */
     private function _mapKeyUpdateStrategy(string $mdb2Strategy): int
     {
-        assert('is_string($mdb2Strategy); // Invalid argument type: $mdb2Strategy. String expected.');
+        assert(is_string($mdb2Strategy), 'Invalid argument type: $mdb2Strategy. String expected.');
         $strategy = \Yana\Db\Ddl\KeyUpdateStrategyEnumeration::NOACTION;
         switch ($mdb2Strategy)
         {
@@ -339,7 +339,7 @@ class Mdb2Mapper extends \Yana\Core\StdObject implements \Yana\Db\Ddl\Factories\
         {
             case 'string':
             case 'text':
-                assert('!isset($lowerCaseName); // Cannot redeclare var $lowerCaseName');
+                assert(!isset($lowerCaseName), 'Cannot redeclare var $lowerCaseName');
                 $lowerCaseName = \Yana\Util\Strings::toLowerCase($name);
                 if (\Yana\Util\Strings::startsWith($lowerCaseName, 'array') || \Yana\Util\Strings::endsWith($lowerCaseName, 'array')) {
                     $type = \Yana\Db\Ddl\ColumnTypeEnumeration::ARR;
@@ -429,7 +429,7 @@ class Mdb2Mapper extends \Yana\Core\StdObject implements \Yana\Db\Ddl\Factories\
      */
     private function _mapColumnType(string $mdb2Type, int $length): string
     {
-        assert('is_string($mdb2Type); // Invalid argument type: $mdb2Type. String expected.');
+        assert(is_string($mdb2Type), 'Invalid argument type: $mdb2Type. String expected.');
         switch ($mdb2Type)
         {
 

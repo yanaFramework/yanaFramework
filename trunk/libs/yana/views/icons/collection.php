@@ -48,7 +48,7 @@ class Collection extends \Yana\Core\AbstractCollection
      */
     public function offsetSet($offset, $value)
     {
-        assert('is_null($offset) || is_scalar($offset); // $offset expected to be Scalar');
+        assert(is_null($offset) || is_scalar($offset), '$offset expected to be Scalar');
         if (!$value instanceof \Yana\Views\Icons\IsFile) {
             $message = "Instance of \Yana\Views\Icons\IsFile expected. " .
                 "Found " . gettype($value) . "(" . get_class($value) . ") instead.";

@@ -69,10 +69,10 @@ class Server extends \Yana\Core\StdObject
      */
     public function __construct($hostName = '127.0.0.1', $port = 11211, $weight = 1)
     {
-        assert('is_string($hostName); // Invalid argument $hostName: string expected');
-        assert('is_int($port); // Invalid argument $port: int expected');
-        assert('is_int($weight); // Invalid argument $weight: int expected');
-        assert('$weight > 0; // The weight for the server must be a positive integer greater than 0.');
+        assert(is_string($hostName), 'Invalid argument $hostName: string expected');
+        assert(is_int($port), 'Invalid argument $port: int expected');
+        assert(is_int($weight), 'Invalid argument $weight: int expected');
+        assert($weight > 0, 'The weight for the server must be a positive integer greater than 0.');
 
         $this->_host = (string) $hostName;
         $this->_port = (int) $port;

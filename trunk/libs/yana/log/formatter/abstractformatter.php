@@ -151,25 +151,8 @@ abstract class AbstractFormatter extends \Yana\Core\StdObject implements \Yana\L
             $level = \Yana\Log\TypeEnumeration::UNKNOWN;
         }
 
-        /* Note: for readability assertions can have a description in form of a comment.
-         * Example: assert('some_test; // comment');
-         *
-         * Where a comment is provided, this function will show the comment rather than
-         * the assert code.
-         *
-         * Example of usage:
-         * assert('$input >= 3 and $input <= 15; // argument '$input' is out of range [3..15]');
-         */
-        if ($level === \Yana\Log\TypeEnumeration::ASSERT) {
-            $description = preg_replace('/^.*;\s*(?:\/\/|\/\*|#)\s*(\S+.*)\s*(?:\*\/)?\s*$/Us', '$1', $description);
-            if ($asHtml !== true) {
-                $description = "Assertion $description failed";
-            }
-        }
-
         // shorten file path for readability
         $shortenFilepath = '/^' . preg_quote(getcwd(), '/') . '/';
-        assert('isset($shortenFilepath);');
         $filename = preg_replace($shortenFilepath, '.', $filename);
 
         if ($asHtml === true) {

@@ -77,7 +77,7 @@ class Counter extends \Yana\Db\FileDb\Sequence
      */
     public function __construct($name)
     {
-        assert('is_string($name); // Invalid argument type argument 1. String expected.');
+        assert(is_string($name), 'Invalid argument type argument 1. String expected.');
 
         // establish datbase connection
         $db = self::_getDb();
@@ -148,8 +148,8 @@ class Counter extends \Yana\Db\FileDb\Sequence
      */
     public static function create($name, $increment = 1, $start = null, $min = null, $max = null, $cycle = false, $useIP = true)
     {
-        assert('is_string($name); // Invalid argument type argument 1. String expected.');
-        assert('is_bool($useIP); // Invalid argument type argument 2. Boolean expected.');
+        assert(is_string($name), 'Invalid argument type argument 1. String expected.');
+        assert(is_bool($useIP), 'Invalid argument type argument 2. Boolean expected.');
 
         if (parent::create($name, $increment, $start, $min, $max, $cycle)) {
 
@@ -185,7 +185,7 @@ class Counter extends \Yana\Db\FileDb\Sequence
      */
     public static function exists($name)
     {
-        assert('is_string($name); // Invalid argument type argument 1. String expected.');
+        assert(is_string($name), 'Invalid argument type argument 1. String expected.');
 
         return (self::_getDb()->exists("counter.$name") === true);
     }
@@ -200,7 +200,7 @@ class Counter extends \Yana\Db\FileDb\Sequence
      */
     public static function drop($name)
     {
-        assert('is_string($name); // Invalid argument type argument 1. String expected.');
+        assert(is_string($name), 'Invalid argument type argument 1. String expected.');
 
         // remove database entry
         try {
@@ -231,7 +231,7 @@ class Counter extends \Yana\Db\FileDb\Sequence
      */
     public function useIp($useIp = true)
     {
-        assert('is_bool($useIp); // Invalid argument type argument 1. Boolean expected.');
+        assert(is_bool($useIp), 'Invalid argument type argument 1. Boolean expected.');
         $this->useIp = (bool) $useIp;
         return $this;
     }
@@ -262,7 +262,7 @@ class Counter extends \Yana\Db\FileDb\Sequence
      */
     public function setInfo($info)
     {
-        assert('is_string($info); // Invalid argument type argument 1. String expected.');
+        assert(is_string($info), 'Invalid argument type argument 1. String expected.');
         $this->info = $info;
         return $this;
     }
@@ -351,14 +351,14 @@ class Counter extends \Yana\Db\FileDb\Sequence
      */
     public static function getInstance($name)
     {
-        assert('is_string($name); // Invalid argument type argument 1. String expected.');
+        assert(is_string($name), 'Invalid argument type argument 1. String expected.');
         if (!isset(self::$instances[$name])) {
             if (!self::exists($name)) {
                 self::create($name);
             }
             self::$instances[$name] = new self($name);
         }
-        assert('isset(self::$instances[$name]);');
+        assert(isset(self::$instances[$name]), 'isset(self::$instances[$name])');
         return self::$instances[$name];
     }
 

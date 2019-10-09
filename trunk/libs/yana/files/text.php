@@ -47,8 +47,8 @@ class Text extends \Yana\Files\File implements \Yana\Files\IsTextFile
      */
     public function setContent($content)
     {
-        assert('is_string($content); // Invalid argument type argument 1. String expected.');
-        assert('is_array($this->content);');
+        assert(is_string($content), 'Invalid argument type argument 1. String expected.');
+        assert(is_array($this->content), 'is_array($this->content)');
         $content = explode("\n", (string) $content);
         $this->content = $content;
     }
@@ -65,7 +65,7 @@ class Text extends \Yana\Files\File implements \Yana\Files\IsTextFile
      */
     public function getLine($lineNr)
     {
-        assert('is_int($lineNr); // Invalid argument type argument 1. Integer expected.');
+        assert(is_int($lineNr), 'Invalid argument type argument 1. Integer expected.');
         if (!isset($this->content[$lineNr])) {
             $message = "There is no line '$lineNr' in file '" . $this->getPath() . "'.";
             throw new \Yana\Core\Exceptions\OutOfBoundsException($message, \Yana\Log\TypeEnumeration::INFO);
@@ -80,8 +80,8 @@ class Text extends \Yana\Files\File implements \Yana\Files\IsTextFile
      */
     public function appendLine($content)
     {
-        assert('is_scalar($content); // Wrong argument type $content. Scalar value expected.');
-        assert('is_array($this->content);');
+        assert(is_scalar($content), 'Wrong argument type $content. Scalar value expected.');
+        assert(is_array($this->content), 'is_array($this->content)');
         array_push($this->content, "$content");
     }
 
@@ -94,10 +94,10 @@ class Text extends \Yana\Files\File implements \Yana\Files\IsTextFile
      */
     public function setLine($lineNr, $content)
     {
-        assert('is_int($lineNr); // Invalid argument type argument 1. Integer expected.');
-        assert('is_string($content); // Invalid argument type argument 2. String expected.');
+        assert(is_int($lineNr), 'Invalid argument type argument 1. Integer expected.');
+        assert(is_string($content), 'Invalid argument type argument 2. String expected.');
         if (isset($this->content[$lineNr])) {
-            assert('is_array($this->content);');
+            assert(is_array($this->content), 'is_array($this->content)');
             $this->content[$lineNr] = (string) $content;
         } else {
             $message = "Line '$lineNr' does not exist in file '{$this->getPath()}'.";
@@ -118,7 +118,7 @@ class Text extends \Yana\Files\File implements \Yana\Files\IsTextFile
      */
     public function removeLine($lineNr = null)
     {
-        assert('is_int($lineNr) || is_null($lineNr); // Wrong type for argument 1. Integer expected');
+        assert(is_int($lineNr) || is_null($lineNr), 'Wrong type for argument 1. Integer expected');
 
         if (is_null($lineNr)) {
             $this->content = array();
@@ -143,7 +143,7 @@ class Text extends \Yana\Files\File implements \Yana\Files\IsTextFile
     {
         $count = 0;
         if (isset($this->content)) {
-            assert('is_array($this->content);');
+            assert(is_array($this->content), 'is_array($this->content)');
             $count = count($this->content);
         }
         return $count;

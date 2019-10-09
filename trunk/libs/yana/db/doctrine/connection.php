@@ -108,7 +108,7 @@ class Connection extends \Yana\Db\AbstractConnection
      */
     public function getDBMS()
     {
-        assert('!isset($dbms); // Cannot redeclare var $dbms');
+        assert(!isset($dbms), 'Cannot redeclare var $dbms');
         $dbms = \Yana\Db\DriverEnumeration::GENERIC;
         if (!empty($this->_dsn['DBMS'])) {
             $dbms = strtolower($this->_dsn['DBMS']);
@@ -166,9 +166,9 @@ class Connection extends \Yana\Db\AbstractConnection
      */
     public function sendQueryString($sqlStmt, $offset = 0, $limit = 0)
     {
-        assert('is_string($sqlStmt); // Invalid argument $sqlStmt: string expected');
-        assert('is_int($offset) && $offset >= 0; // Invalid argument $offset. Must be a positive integer.');
-        assert('is_int($limit) && $limit >= 0; // Invalid argument $limit. Must be a positive integer.');
+        assert(is_string($sqlStmt), 'Invalid argument $sqlStmt: string expected');
+        assert(is_int($offset) && $offset >= 0, 'Invalid argument $offset. Must be a positive integer.');
+        assert(is_int($limit) && $limit >= 0, 'Invalid argument $limit. Must be a positive integer.');
 
         /* Add this line for debugging purposes:
          * error_log($sqlStmt . " LIMIT $offset, $limit\n", 3, 'test.log');
@@ -241,8 +241,8 @@ class Connection extends \Yana\Db\AbstractConnection
      */
     public function importSQL($sqlFile)
     {
-        assert('is_string($sqlFile) || is_array($sqlFile); // Wrong argument type: $sqlFile. String or array expected');
-        assert('!empty($sqlFile); // Argument \$sqlFile must not be empty.');
+        assert(is_string($sqlFile) || is_array($sqlFile), 'Wrong argument type: $sqlFile. String or array expected');
+        assert(!empty($sqlFile), 'Argument \$sqlFile must not be empty.');
 
         if ($this->getSchema()->isReadonly()) {
             throw new \Yana\Core\Exceptions\NotWriteableException("Database is readonly. SQL import aborted.", \Yana\Log\TypeEnumeration::INFO);
@@ -274,9 +274,9 @@ class Connection extends \Yana\Db\AbstractConnection
             // add items
             $sqlFile = explode("[NEXT_COMMAND]", $rawData);
         }
-        assert('\is_array($sqlFile); // Invalid result. Array expected for $sqlFile');
+        assert(\is_array($sqlFile), 'Invalid result. Array expected for $sqlFile');
 
-        assert('!isset($sqlStatement); // Cannot redeclare var $sqlStatement');
+        assert(!isset($sqlStatement), 'Cannot redeclare var $sqlStatement');
         foreach ($sqlFile as $sqlStatement)
         {
             $transaction->sql(new \Yana\Db\Queries\Sql($this, (string) $sqlStatement));
@@ -312,7 +312,7 @@ class Connection extends \Yana\Db\AbstractConnection
      */
     public function quoteId($value): string
     {
-        assert('is_string($value); // Wrong argument type for argument 1. String expected.');
+        assert(is_string($value), 'Wrong argument type for argument 1. String expected.');
         $value = (string) $value;
 
         // @codeCoverageIgnoreStart

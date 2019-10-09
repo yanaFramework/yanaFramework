@@ -106,7 +106,7 @@ class ColumnTypeEnumeration extends \Yana\Core\AbstractEnumeration
      */
     public static function isSingleLine($type)
     {
-        assert('is_string($type); // Invalid argument type $type: String expected');
+        assert(is_string($type), 'Invalid argument type $type: String expected');
         // filter by column type
         switch ($type)
         {

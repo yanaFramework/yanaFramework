@@ -73,17 +73,17 @@ class DoctrineMapper extends \Yana\Core\StdObject implements \Yana\Db\Ddl\Factor
             $this->_createPrimaryKey($table, $info); // may throw exception
             return $this;
         }
-        assert('!isset($index); // Cannot redeclare var $index');
+        assert(!isset($index), 'Cannot redeclare var $index');
         $index = $table->addIndex($name);
         $index->setUnique($info->isUnique());
 
-        assert('!isset($flags); // Cannot redeclare var $flags');
+        assert(!isset($flags), 'Cannot redeclare var $flags');
         $flags = $info->getFlags();
         if (array_search('fulltext', $flags) !== false) {
             $index->setFulltext(true);
         }
 
-        assert('!isset($fieldName); // Cannot redeclare var $fieldName');
+        assert(!isset($fieldName), 'Cannot redeclare var $fieldName');
         foreach ($info->getColumns() as $fieldName)
         {
             $index->addColumn($fieldName);
@@ -128,9 +128,9 @@ class DoctrineMapper extends \Yana\Core\StdObject implements \Yana\Db\Ddl\Factor
             $message = "The foreign key must reference a foreign table.";
             throw new \Yana\Core\Exceptions\InvalidSyntaxException($message);
         }
-        assert('!isset($targetTable); // Cannot redeclare var $targetTable');
+        assert(!isset($targetTable), 'Cannot redeclare var $targetTable');
         $targetTable = $info->getForeignTableName();
-        assert('!isset($foreign); // Cannot redeclare var $foreign');
+        assert(!isset($foreign), 'Cannot redeclare var $foreign');
         $foreign = $table->addForeignKey($targetTable, $name);
 
         $strategy = $this->_mapKeyUpdateStrategy((string) $info->onUpdate());
@@ -144,8 +144,8 @@ class DoctrineMapper extends \Yana\Core\StdObject implements \Yana\Db\Ddl\Factor
             }
         }
 
-        assert('!isset($sourceFieldNames); // Cannot redeclare var $sourceFieldNames');
-        assert('!isset($targetFieldNames); // Cannot redeclare var $targetFieldNames');
+        assert(!isset($sourceFieldNames), 'Cannot redeclare var $sourceFieldNames');
+        assert(!isset($targetFieldNames), 'Cannot redeclare var $targetFieldNames');
         $sourceFieldNames = $info->getColumns();
         $targetFieldNames = $info->getForeignColumns();
 
@@ -159,15 +159,15 @@ class DoctrineMapper extends \Yana\Core\StdObject implements \Yana\Db\Ddl\Factor
             throw new \Yana\Core\Exceptions\InvalidSyntaxException($message);
         }
 
-        assert('!isset($i); // Cannot redeclare var $i');
-        assert('!isset($sourceFieldName); // Cannot redeclare var $sourceFieldName');
-        assert('!isset($targetFieldName); // Cannot redeclare var $targetFieldName');
+        assert(!isset($i), 'Cannot redeclare var $i');
+        assert(!isset($sourceFieldName), 'Cannot redeclare var $sourceFieldName');
+        assert(!isset($targetFieldName), 'Cannot redeclare var $targetFieldName');
         for ($i = 0; $i < count($sourceFieldNames); $i++)
         {
             $sourceFieldName = $sourceFieldNames[$i];
-            assert('is_string($sourceFieldName);');
+            assert(is_string($sourceFieldName), 'is_string($sourceFieldName)');
             $targetFieldName = $targetFieldNames[$i];
-            assert('is_string($targetFieldName);');
+            assert(is_string($targetFieldName), 'is_string($targetFieldName)');
             $foreign->setColumn((string) $sourceFieldName, (string) $targetFieldName); // may throw exception
         }
         unset($i, $sourceFieldNames, $sourceFieldName, $targetFieldNames, $targetFieldName);
@@ -183,7 +183,7 @@ class DoctrineMapper extends \Yana\Core\StdObject implements \Yana\Db\Ddl\Factor
      */
     private function _mapKeyUpdateStrategy($mdb2Strategy)
     {
-        assert('is_string($mdb2Strategy); // Invalid argument type: $mdb2Strategy. String expected.');
+        assert(is_string($mdb2Strategy), 'Invalid argument type: $mdb2Strategy. String expected.');
         $strategy =  \Yana\Db\Ddl\KeyUpdateStrategyEnumeration::NOACTION;
         switch ($mdb2Strategy)
         {
@@ -211,7 +211,7 @@ class DoctrineMapper extends \Yana\Core\StdObject implements \Yana\Db\Ddl\Factor
      */
     public function createColumn(\Yana\Db\Ddl\Table $table, \Doctrine\DBAL\Schema\Column $info, $name)
     {
-        assert('!isset($type); // Cannot redeclare var $type');
+        assert(!isset($type), 'Cannot redeclare var $type');
         $type = $this->_mapColumnType($info->getType()->getName()); // may throw \Yana\Core\Exceptions\NotImplementedException
         /*
          * set type
@@ -220,7 +220,7 @@ class DoctrineMapper extends \Yana\Core\StdObject implements \Yana\Db\Ddl\Factor
         {
             case 'text':
             case 'string':
-                assert('!isset($lowerCaseName); // Cannot redeclare var $lowerCaseName');
+                assert(!isset($lowerCaseName), 'Cannot redeclare var $lowerCaseName');
                 $lowerCaseName = \Yana\Util\Strings::toLowerCase($name);
                 if (\Yana\Util\Strings::startsWith($lowerCaseName, 'array') || \Yana\Util\Strings::endsWith($lowerCaseName, 'array')) {
                     $type = "array";
@@ -291,7 +291,7 @@ class DoctrineMapper extends \Yana\Core\StdObject implements \Yana\Db\Ddl\Factor
      */
     private function _mapColumnType($mdb2Type)
     {
-        assert('is_string($mdb2Type); // Invalid argument type: $mdb2Type. String expected.');
+        assert(is_string($mdb2Type), 'Invalid argument type: $mdb2Type. String expected.');
         switch ($mdb2Type)
         {
             case 'binary':

@@ -44,9 +44,9 @@ interface IsExceptionContainer
      *
      * This returns the language component. If none exists, a new instance is created.
      *
-     * @return  \Yana\Translations\Facade
+     * @return  \Yana\Translations\IsFacade
      */
-    public function getLanguage();
+    public function getLanguage(): \Yana\Translations\IsFacade;
 
 }
 

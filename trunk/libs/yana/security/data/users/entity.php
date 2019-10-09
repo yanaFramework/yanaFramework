@@ -66,7 +66,7 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      */
     public function __construct($userName)
     {
-        assert('is_string($userName); // Wrong type for argument 1. String expected');
+        assert(is_string($userName), 'Wrong type for argument 1. String expected');
 
         $this->setId((string) $userName);
     }
@@ -89,7 +89,7 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      */
     public function setId($userName)
     {
-        assert('is_string($userName); // Wrong type for argument 1. String expected');
+        assert(is_string($userName), 'Wrong type for argument 1. String expected');
         $this->_id = (string) $userName;
         return $this;
     }
@@ -104,8 +104,8 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      */
     public function setFailureCount($failureCount)
     {
-        assert('is_int($failureCount); // Wrong type for argument 1. Integer expected');
-        assert('$failureCount >= 0; // Integer must be positive');
+        assert(is_int($failureCount), 'Wrong type for argument 1. Integer expected');
+        assert($failureCount >= 0, 'Integer must be positive');
         $this->_failureCount = (int) $failureCount;
         return $this;
     }
@@ -120,7 +120,7 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      */
     public function setFailureTime($failureTime)
     {
-        assert('is_int($failureTime); // Wrong type for argument 1. Integer expected');
+        assert(is_int($failureTime), 'Wrong type for argument 1. Integer expected');
         $this->_failureTime = (int) $failureTime;
         return $this;
     }
@@ -135,8 +135,8 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      */
     public function setLoginCount($loginCount)
     {
-        assert('is_int($loginCount); // Wrong type for argument 1. Integer expected');
-        assert('$loginCount >= 0; // Integer must be positive');
+        assert(is_int($loginCount), 'Wrong type for argument 1. Integer expected');
+        assert($loginCount >= 0, 'Integer must be positive');
         $this->_loginCount = (int) $loginCount;
         return $this;
     }
@@ -151,7 +151,7 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      */
     public function setLoginTime($loginTime)
     {
-        assert('is_int($loginTime); // Wrong type for argument 1. Integer expected');
+        assert(is_int($loginTime), 'Wrong type for argument 1. Integer expected');
         $this->_loginTime = (int) $loginTime;
         return $this;
     }
@@ -166,7 +166,7 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      */
     public function setPasswordRecoveryId($passwordRecoveryId)
     {
-        assert('is_string($passwordRecoveryId); // Wrong type for argument 1. String expected');
+        assert(is_string($passwordRecoveryId), 'Wrong type for argument 1. String expected');
         $this->_passwordRecoveryId = (string) $passwordRecoveryId;
         return $this;
     }
@@ -179,7 +179,7 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      */
     public function setPasswordRecoveryTime($passwordRecoveryTime)
     {
-        assert('is_int($passwordRecoveryTime); // Wrong type for argument 1. Integer expected');
+        assert(is_int($passwordRecoveryTime), 'Wrong type for argument 1. Integer expected');
         $this->_passwordRecoveryTime = (int) $passwordRecoveryTime;
         return $this;
     }
@@ -192,7 +192,7 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      */
     public function setPasswordChangedTime($passwordChangedTime)
     {
-        assert('is_int($passwordChangedTime); // Wrong type for argument 1. Integer expected');
+        assert(is_int($passwordChangedTime), 'Wrong type for argument 1. Integer expected');
         $this->_passwordChangedTime = (int) $passwordChangedTime;
         return $this;
     }
@@ -221,7 +221,7 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      */
     public function setTimeCreated($timeCreated)
     {
-        assert('is_int($timeCreated); // Wrong type for argument 1. Integer expected');
+        assert(is_int($timeCreated), 'Wrong type for argument 1. Integer expected');
         $this->_timeCreated = (int) $timeCreated;
         return $this;
     }
@@ -236,7 +236,7 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      */
     public function setSessionCheckSum($checkSum)
     {
-        assert('is_string($checkSum); // Invalid argument $checkSum: string expected');
+        assert(is_string($checkSum), 'Invalid argument $checkSum: string expected');
 
         $this->_sessionCheckSum = (string) $checkSum;
         return $this;
@@ -273,7 +273,7 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      */
     public function setPassword($password)
     {
-        assert('is_string($password); // Wrong type for argument 1. String expected');
+        assert(is_string($password), 'Wrong type for argument 1. String expected');
 
         $this->_password = "$password";
         return $this;
@@ -289,7 +289,7 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      */
     public function setLanguage($language)
     {
-        assert('is_string($language); // Wrong type for argument 1. String expected');
+        assert(is_string($language), 'Wrong type for argument 1. String expected');
 
         $this->_language = "$language";
         return $this;
@@ -373,7 +373,7 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      */
     public function setMail($mail)
     {
-        assert('is_string($mail); // Wrong type for argument 1. String expected');
+        assert(is_string($mail), 'Wrong type for argument 1. String expected');
 
         $this->_mail = "$mail";
         return $this;
@@ -400,7 +400,7 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      */
     public function setExpert($isExpert)
     {
-        assert('is_bool($isExpert); // Wrong type for argument 1. Boolean expected');
+        assert(is_bool($isExpert), 'Wrong type for argument 1. Boolean expected');
 
         $this->_isExpert = !empty($isExpert);
         return $this;
@@ -430,7 +430,7 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      */
     public function setActive($isActive)
     {
-        assert('is_bool($isActive); // Wrong type for argument 1. Boolean expected');
+        assert(is_bool($isActive), 'Wrong type for argument 1. Boolean expected');
 
         $this->_isActive = (bool) $isActive;
         return $this;

@@ -50,7 +50,7 @@ abstract class AbstractNamedObject extends \Yana\Db\Ddl\AbstractCaseSensitiveNam
      */
     public function setName($name)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert(is_string($name), 'Invalid argument $name: string expected');
         return parent::setName(mb_strtolower($name));
     }
 

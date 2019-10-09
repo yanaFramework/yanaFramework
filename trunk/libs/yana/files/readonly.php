@@ -204,11 +204,11 @@ class Readonly extends \Yana\Files\AbstractResource implements \Yana\Files\IsRea
      */
     public function getCrc32($filename = "")
     {
-        assert('is_string($filename); // Wrong type for argument 1. String expected');
+        assert(is_string($filename), 'Wrong type for argument 1. String expected');
 
         if (empty($filename)) {
             $filename = $this->getPath();
-            assert('is_file($filename); // Expected $filename to be a file, but it does not exist.');
+            assert(is_file($filename), 'Expected $filename to be a file, but it does not exist.');
         }
         if (!is_file("$filename")) {
             $message = "Unable to calculate checksum. The file '{$filename}' does not exist.";
@@ -262,7 +262,7 @@ class Readonly extends \Yana\Files\AbstractResource implements \Yana\Files\IsRea
      */
     public function getMd5($filename = "")
     {
-        assert('is_string($filename); // Wrong type for argument 1. String expected');
+        assert(is_string($filename), 'Wrong type for argument 1. String expected');
 
         // for static calls
         if ($filename > "") {
@@ -282,7 +282,7 @@ class Readonly extends \Yana\Files\AbstractResource implements \Yana\Files\IsRea
             $this->checkSum = md5_file($filename);
         }
 
-        assert('is_string($this->checkSum); // Unexpected member type for "checkSum". String expected.');
+        assert(is_string($this->checkSum), 'Unexpected member type for "checkSum". String expected.');
         return $this->checkSum;
     }
 

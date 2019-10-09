@@ -147,7 +147,7 @@ class ArrayMapper extends \Yana\Core\StdObject implements \Yana\Http\Uploads\IsA
      */
     private function _buildFileArray($files, $property)
     {
-        assert('is_array($files) || is_scalar($files); // $files expected to be Array or Scalar');
+        assert(is_array($files) || is_scalar($files), '$files expected to be Array or Scalar');
         if (is_array($files)) {
             $result = array();
             $files = array_change_key_case($files, CASE_LOWER);

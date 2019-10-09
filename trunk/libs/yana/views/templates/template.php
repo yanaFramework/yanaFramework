@@ -97,7 +97,7 @@ class Template extends \Yana\Views\Templates\AbstractTemplate implements \Yana\V
      */
     public function isVar($key)
     {
-        assert('is_scalar($key); // Invalid argument $key: scalar expected');
+        assert(is_scalar($key), 'Invalid argument $key: scalar expected');
 
         return !is_null($this->getVar($key));
     }
@@ -112,10 +112,10 @@ class Template extends \Yana\Views\Templates\AbstractTemplate implements \Yana\V
      */
     public function getVar($key)
     {
-        assert('is_string($key); // Wrong argument type for argument 1. String expected.');
+        assert(is_string($key), 'Wrong argument type for argument 1. String expected.');
 
         $resource = $this->getVars();
-        assert('is_array($resource); // unexpected result: $resource should be an array');
+        assert(is_array($resource), 'unexpected result: $resource should be an array');
         return \Yana\Util\Hashtable::get($resource, "$key");
     }
 
@@ -128,7 +128,7 @@ class Template extends \Yana\Views\Templates\AbstractTemplate implements \Yana\V
      */
     public function setVar($varName, $var)
     {
-        assert('is_string($varName); // Wrong argument type for argument 1. String expected.');
+        assert(is_string($varName), 'Wrong argument type for argument 1. String expected.');
         $this->_getTemplate()->assign($varName, $var);
         return $this;
     }
@@ -159,7 +159,7 @@ class Template extends \Yana\Views\Templates\AbstractTemplate implements \Yana\V
      */
     public function setVarByReference($varName, &$var)
     {
-        assert('is_string($varName); // Invalid argument $varName: string expected');
+        assert(is_string($varName), 'Invalid argument $varName: string expected');
 
         $this->_getTemplate()->assignByRef($varName, $var);
         return $this;

@@ -47,7 +47,7 @@ class Mapper extends \Yana\Core\StdObject implements \Yana\Data\Adapters\IsEntit
      */
     public function toEntity(array $databaseRow)
     {
-        assert('!isset($row); // Cannot redeclare var $row');
+        assert(!isset($row), 'Cannot redeclare var $row');
         $row = \array_change_key_case($databaseRow);
         if (!isset($row[\Yana\Plugins\Data\Tables\PluginEnumeration::ID])) {
             throw new \Yana\Core\Exceptions\InvalidArgumentException("Can't create entity without an ID.");
@@ -70,7 +70,7 @@ class Mapper extends \Yana\Core\StdObject implements \Yana\Data\Adapters\IsEntit
      */
     public function toDatabaseRow(\Yana\Data\Adapters\IsEntity $entity)
     {
-        assert('!isset($row); // Cannot redeclare var $row');
+        assert(!isset($row), 'Cannot redeclare var $row');
         $row = array();
 
         if ($entity instanceof \Yana\Plugins\Data\IsEntity) {

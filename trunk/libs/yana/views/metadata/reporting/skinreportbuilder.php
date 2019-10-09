@@ -77,12 +77,12 @@ class SkinReportBuilder extends \Yana\Views\MetaData\Reporting\AbstractBuilder i
      */
     public function buildReport()
     {
-        assert('!isset($report); // $report already declared');
+        assert(!isset($report), '$report already declared');
         $report = $this->_getReport();
 
         // loop through template definition and create a report for each
         if ($this->getSkinConfiguration()) {
-            assert('!isset($template); // Cannot redeclare var $template');
+            assert(!isset($template), 'Cannot redeclare var $template');
             foreach ($this->getSkinConfiguration()->getTemplates() as $key => $template)
             {
                 // Create template sub-report

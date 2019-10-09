@@ -61,7 +61,7 @@ abstract class AbstractManager extends \Yana\Core\StdObject
      */
     public function addStyle($file)
     {
-        assert('is_string($file); // Wrong argument type argument 1. String expected');
+        assert(is_string($file), 'Wrong argument type argument 1. String expected');
         if (!\in_array($file, $this->_styles)) {
             $this->_styles[] = "$file";
         }
@@ -76,7 +76,7 @@ abstract class AbstractManager extends \Yana\Core\StdObject
      */
     public function addScript($file)
     {
-        assert('is_string($file); // Wrong argument type argument 1. String expected');
+        assert(is_string($file), 'Wrong argument type argument 1. String expected');
         if (!\in_array($file, $this->_scripts)) {
             $this->_scripts[] = "$file";
         }

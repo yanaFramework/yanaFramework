@@ -203,7 +203,7 @@ class ClassConfiguration extends \Yana\Core\StdObject implements \Yana\Plugins\C
      */
     public function setId($id)
     {
-        assert('is_string($id); // Invalid argument $id: String expected');
+        assert(is_string($id), 'Invalid argument $id: String expected');
         $this->_id = (string) $id;
         return $this;
     }
@@ -226,7 +226,7 @@ class ClassConfiguration extends \Yana\Core\StdObject implements \Yana\Plugins\C
      */
     public function setNamespace($namespace)
     {
-        assert('is_string($namespace); // Invalid argument $namespace: string expected');
+        assert(is_string($namespace), 'Invalid argument $namespace: string expected');
         $this->_namespace = $namespace;
         return $this;
     }
@@ -239,7 +239,7 @@ class ClassConfiguration extends \Yana\Core\StdObject implements \Yana\Plugins\C
      */
     public function setClassName($className)
     {
-        assert('is_string($className); // Invalid argument $className: string expected');
+        assert(is_string($className), 'Invalid argument $className: string expected');
         $this->_className = $className;
         return $this;
     }
@@ -252,7 +252,7 @@ class ClassConfiguration extends \Yana\Core\StdObject implements \Yana\Plugins\C
      */
     public function setDirectory($directory)
     {
-        assert('is_string($directory); // Invalid argument $directory: string expected');
+        assert(is_string($directory), 'Invalid argument $directory: string expected');
         $this->_directory = $directory;
         return $this;
     }
@@ -279,7 +279,7 @@ class ClassConfiguration extends \Yana\Core\StdObject implements \Yana\Plugins\C
      */
     public function setDefaultTitle($defaultTitle)
     {
-        assert('is_string($defaultTitle); // Invalid argument $defaultTitle: string expected');
+        assert(is_string($defaultTitle), 'Invalid argument $defaultTitle: string expected');
         $this->_defaultTitle = $defaultTitle;
         return $this;
     }
@@ -304,7 +304,7 @@ class ClassConfiguration extends \Yana\Core\StdObject implements \Yana\Plugins\C
      */
     public function setDefaultText($defaultText)
     {
-        assert('is_string($defaultText); // Invalid argument $defaultText: string expected');
+        assert(is_string($defaultText), 'Invalid argument $defaultText: string expected');
         $this->_defaultText = $defaultText;
         return $this;
     }
@@ -319,7 +319,7 @@ class ClassConfiguration extends \Yana\Core\StdObject implements \Yana\Plugins\C
      */
     public function setType($type)
     {
-        assert('is_string($type); // Invalid argument $type: string expected');
+        assert(is_string($type), 'Invalid argument $type: string expected');
         $this->_type = \Yana\Plugins\TypeEnumeration::fromString($type);
         return $this;
     }
@@ -347,7 +347,7 @@ class ClassConfiguration extends \Yana\Core\StdObject implements \Yana\Plugins\C
         if (is_string($priority)) {
             $priority = \Yana\Plugins\PriorityEnumeration::fromString($priority);
         }
-        assert('is_int($priority); // Invalid argument $priority: Integer expected');
+        assert(is_int($priority), 'Invalid argument $priority: Integer expected');
         if ($priority < \Yana\Plugins\PriorityEnumeration::LOWEST) {
             $priority = \Yana\Plugins\PriorityEnumeration::LOWEST;
         }
@@ -366,7 +366,7 @@ class ClassConfiguration extends \Yana\Core\StdObject implements \Yana\Plugins\C
      */
     public function setGroup($group)
     {
-        assert('is_string($group); // Invalid argument $group: string expected');
+        assert(is_string($group), 'Invalid argument $group: string expected');
         $this->_group = $group;
         return $this;
     }
@@ -379,7 +379,7 @@ class ClassConfiguration extends \Yana\Core\StdObject implements \Yana\Plugins\C
      */
     public function setParent($parent)
     {
-        assert('is_string($parent); // Invalid argument $parent: string expected');
+        assert(is_string($parent), 'Invalid argument $parent: string expected');
         $this->_parent = $parent;
         return $this;
     }
@@ -404,7 +404,7 @@ class ClassConfiguration extends \Yana\Core\StdObject implements \Yana\Plugins\C
      */
     public function setLicense($license)
     {
-        assert('is_string($license); // Invalid argument $license: string expected');
+        assert(is_string($license), 'Invalid argument $license: string expected');
         $this->_license = $license;
         return $this;
     }
@@ -417,7 +417,7 @@ class ClassConfiguration extends \Yana\Core\StdObject implements \Yana\Plugins\C
      */
     public function setUrl($url)
     {
-        assert('is_string($url); // Invalid argument $url: string expected');
+        assert(is_string($url), 'Invalid argument $url: string expected');
         $this->_url = $url;
         return $this;
     }
@@ -430,7 +430,7 @@ class ClassConfiguration extends \Yana\Core\StdObject implements \Yana\Plugins\C
      */
     public function setVersion($version)
     {
-        assert('is_string($version); // Invalid argument $version: string expected');
+        assert(is_string($version), 'Invalid argument $version: string expected');
         $this->_version = $version;
         return $this;
     }
@@ -443,7 +443,7 @@ class ClassConfiguration extends \Yana\Core\StdObject implements \Yana\Plugins\C
      */
     public function setLastModified($lastModified)
     {
-        assert('is_int($lastModified); // Invalid argument $lastModified: int expected');
+        assert(is_int($lastModified), 'Invalid argument $lastModified: int expected');
         $this->_lastModified = $lastModified;
         return $this;
     }
@@ -483,7 +483,7 @@ class ClassConfiguration extends \Yana\Core\StdObject implements \Yana\Plugins\C
      */
     public function setActive($active)
     {
-        assert('is_int($active); // Invalid argument $active: int expected');
+        assert(is_int($active), 'Invalid argument $active: int expected');
         $this->_active = (int) $active;
         return $this;
     }
@@ -509,8 +509,8 @@ class ClassConfiguration extends \Yana\Core\StdObject implements \Yana\Plugins\C
      */
     public function getTitle($language = null, $country = null)
     {
-        assert('is_null($language) || is_string($language); // Wrong type for argument 1. String expected');
-        assert('is_null($country) || is_string($country); // Wrong type for argument 2. String expected');
+        assert(is_null($language) || is_string($language), 'Wrong type for argument 1. String expected');
+        assert(is_null($country) || is_string($country), 'Wrong type for argument 2. String expected');
 
         // get defaults
         if (is_null($language)) {
@@ -537,8 +537,8 @@ class ClassConfiguration extends \Yana\Core\StdObject implements \Yana\Plugins\C
      */
     public function getText($language = "", $country = "")
     {
-        assert('is_string($language); // Invalid argument $language: string expected');
-        assert('is_string($country); // Invalid argument $country: string expected');
+        assert(is_string($language), 'Invalid argument $language: string expected');
+        assert(is_string($country), 'Invalid argument $country: string expected');
 
         if (!empty($country) && isset($this->_texts["{$language}-{$country}"])) {
             return $this->_texts["{$language}-{$country}"];
@@ -729,7 +729,7 @@ class ClassConfiguration extends \Yana\Core\StdObject implements \Yana\Plugins\C
      */
     public function getMenuEntries($group = null)
     {
-        assert('is_null($group) || is_string($group); // Wrong type for argument 1. String expected');
+        assert(is_null($group) || is_string($group), 'Wrong type for argument 1. String expected');
         $menuEntries = array();
         /* @var $method \Yana\Plugins\Configs\IsMethodConfiguration */
         foreach ($this->getMethods() as $name => $method)
@@ -819,7 +819,7 @@ class ClassConfiguration extends \Yana\Core\StdObject implements \Yana\Plugins\C
      */
     public function getMethod($methodName)
     {
-        assert('is_string($methodName); // Wrong argument type for argument 1. String expected.');
+        assert(is_string($methodName), 'Wrong argument type for argument 1. String expected.');
 
         $methods = $this->getMethods();
         if (isset($methods[(string) $methodName])) {

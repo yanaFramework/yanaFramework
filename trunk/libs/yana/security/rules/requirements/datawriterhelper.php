@@ -155,8 +155,8 @@ class DataWriterHelper extends \Yana\Core\StdObject
         /* @var $configuration \Yana\Plugins\Configs\IsMethodConfiguration */
         foreach ($this->_getMethodCollection() as $configuration)
         {
-            assert('!isset($row); // Cannot redeclare var $row');
-            assert('!isset($level); // Cannot redeclare var $level');
+            assert(!isset($row), 'Cannot redeclare var $row');
+            assert(!isset($level), 'Cannot redeclare var $level');
             foreach ($configuration->getUserLevels() as $level)
             {
                 if ($level->getGroup() === '' && $level->getRole() === '' && $level->getLevel() === 0) {
@@ -181,7 +181,7 @@ class DataWriterHelper extends \Yana\Core\StdObject
      */
     private function _mapRequirement(\Yana\Plugins\Configs\IsUserPermissionRule $rule, $name)
     {
-        assert('is_string($name); // Invalid argument type: $name. String expected');
+        assert(is_string($name), 'Invalid argument type: $name. String expected');
 
         $row = array(
             \Yana\Security\Data\Tables\RequirementEnumeration::IS_PREDEFINED => true,

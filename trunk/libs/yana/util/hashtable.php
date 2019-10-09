@@ -88,7 +88,7 @@ class Hashtable extends \Yana\Core\AbstractUtility
             return $hash;
         } else {
             $listOfKeys = explode(".", $key);
-            assert('is_array($listOfKeys) && count($listOfKeys) > 0;');
+            assert(is_array($listOfKeys) && count($listOfKeys) > 0, 'is_array($listOfKeys) && count($listOfKeys) > 0');
             $a =& self::_get($hash, $listOfKeys);
             return $a;
         }
@@ -137,9 +137,9 @@ class Hashtable extends \Yana\Core\AbstractUtility
      */
     public static function setByReference(array &$hash, $key, &$value)
     {
-        assert('is_string($key); // wrong argument type for argument 2, string expected');
+        assert(is_string($key), 'wrong argument type for argument 2, string expected');
         if ($key === '' || $key === '*') {
-            assert('is_array($value); // Only values of type array may be assigned to a Hashtable.');
+            assert(is_array($value), 'Only values of type array may be assigned to a Hashtable.');
             $value = (array) $value;
             foreach ($value as $id => &$var)
             {
@@ -147,7 +147,7 @@ class Hashtable extends \Yana\Core\AbstractUtility
             }
         } else {
             $list_of_keys = explode(".", $key);
-            assert('is_array($list_of_keys) && count($list_of_keys) > 0;');
+            assert(is_array($list_of_keys) && count($list_of_keys) > 0, 'is_array($list_of_keys) && count($list_of_keys) > 0');
             $result = &$hash;
             for ($i = 0; $i < (count($list_of_keys) -1); $i++)
             {
@@ -175,7 +175,7 @@ class Hashtable extends \Yana\Core\AbstractUtility
      */
     public static function set(array &$hash, $key, $value)
     {
-        assert('is_string($key); // wrong argument type for argument 2, string expected');
+        assert(is_string($key), 'wrong argument type for argument 2, string expected');
         self::setByReference($hash, $key, $value);
     }
 
@@ -195,7 +195,7 @@ class Hashtable extends \Yana\Core\AbstractUtility
      */
     public static function setType(array &$hash, $key, $type)
     {
-        assert('is_string($type)&& !empty($type); // Wrong type for argument 1. String expected');
+        assert(is_string($type)&& !empty($type), 'Wrong type for argument 1. String expected');
         $field =& self::get($hash, $key);
         return !is_null($field) && settype($field, $type);
     }
@@ -236,7 +236,7 @@ class Hashtable extends \Yana\Core\AbstractUtility
         }
 
         $listOfKeys = explode(".", $key);
-        assert('is_array($listOfKeys) && count($listOfKeys) > 0;');
+        assert(is_array($listOfKeys) && count($listOfKeys) > 0, 'is_array($listOfKeys) && count($listOfKeys) > 0');
         $stack = array();
         $stack[0] = &$hash;
         $result = &$hash;
@@ -282,8 +282,7 @@ class Hashtable extends \Yana\Core\AbstractUtility
      */
     public static function changeCase(array $input, $case = CASE_LOWER)
     {
-        assert('$case === CASE_UPPER || $case === CASE_LOWER; // '.
-            'Wrong argument type for $case. Expected CASE_UPPER or CASE_LOWER.');
+        assert($case === CASE_UPPER || $case === CASE_LOWER, 'Wrong argument type for $case. Expected CASE_UPPER or CASE_LOWER.');
 
         /* Map boolean input to constant */
         if ($case !== CASE_UPPER) {
@@ -298,7 +297,7 @@ class Hashtable extends \Yana\Core\AbstractUtility
                 $input[$k] = self::changeCase($e, $case);
             }
         } // end foreach
-        assert('is_array($input); // Unexpected result: $input. Array expected.');
+        assert(is_array($input), 'Unexpected result: $input. Array expected.');
         return $input;
     }
 
@@ -374,7 +373,7 @@ class Hashtable extends \Yana\Core\AbstractUtility
                 $a[$k] = $e; // overwrite
             }
         } // end foreach
-        assert('is_array($a);');
+        assert(is_array($a), 'is_array($a)');
         return $a;
     }
 
@@ -406,12 +405,12 @@ class Hashtable extends \Yana\Core\AbstractUtility
      */
     public static function toXML($data, $name = "root", $caseSensitive = CASE_MIXED, $indent = 0)
     {
-        assert('is_null($data) || is_scalar($data) || is_array($data) || is_object($data);'.
-            '// Wrong argument type for argument 1. Array or scalar value expected.');
-        assert('is_scalar($name); // Wrong argument type for argument 2. String expected.');
-        assert('$caseSensitive === CASE_MIXED || $caseSensitive === CASE_LOWER || $caseSensitive === CASE_UPPER; '.
-            '// Invalid argument 3. Expected one of the following constants: CASE_MIXED, CASE_LOWER, CASE_UPPER.');
-        assert('is_int($indent); // Wrong argument type for argument 4. Integer expected.');
+        assert(is_null($data) || is_scalar($data) || is_array($data) || is_object($data),
+            'Wrong argument type for argument 1. Array or scalar value expected.');
+        assert(is_scalar($name), 'Wrong argument type for argument 2. String expected.');
+        assert($caseSensitive === CASE_MIXED || $caseSensitive === CASE_LOWER || $caseSensitive === CASE_UPPER,
+            'Invalid argument 3. Expected one of the following constants: CASE_MIXED, CASE_LOWER, CASE_UPPER.');
+        assert(is_int($indent), 'Wrong argument type for argument 4. Integer expected.');
 
         /*
          * settype to STRING
@@ -594,7 +593,7 @@ class Hashtable extends \Yana\Core\AbstractUtility
      */
     public static function quickSearch(array &$array, $needle)
     {
-        assert('is_scalar($needle); // Wrong type for argument 2. Scalar expected');
+        assert(is_scalar($needle), 'Wrong type for argument 2. Scalar expected');
 
         /* Input handling */
         /* settype to STRING */

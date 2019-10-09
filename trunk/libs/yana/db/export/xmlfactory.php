@@ -131,7 +131,7 @@ class XmlFactory extends \Yana\Db\Export\AbstractXmlFactory
         /*
          * loop through files
          */
-        assert('!isset($databaseName); // Cannot redeclare var $databaseName');
+        assert(!isset($databaseName), 'Cannot redeclare var $databaseName');
         /* @var $databaseName string */
         foreach ($this->getDatabaseNames() as $databaseName)
         {
@@ -179,12 +179,12 @@ class XmlFactory extends \Yana\Db\Export\AbstractXmlFactory
         /**
          * loop through tables
          */
-        assert('!isset($tableName); // Cannot redeclare var $tableName');
-        assert('!isset($table); // Cannot redeclare var $table');
-        assert('!isset($hasFKey); // Cannot redeclare var $hasFKey');
+        assert(!isset($tableName), 'Cannot redeclare var $tableName');
+        assert(!isset($table), 'Cannot redeclare var $table');
+        assert(!isset($hasFKey), 'Cannot redeclare var $hasFKey');
         /* declare temporary variables */
-        assert('!isset($_attr); // Cannot redeclare var $_attr');
-        assert('!isset($_fKey); // Cannot redeclare var $_fKey');
+        assert(!isset($_attr), 'Cannot redeclare var $_attr');
+        assert(!isset($_fKey), 'Cannot redeclare var $_fKey');
 
         foreach (array_keys($nodes) as $tableName)
         {
@@ -196,13 +196,13 @@ class XmlFactory extends \Yana\Db\Export\AbstractXmlFactory
             /**
              * loop through foreign keys
              */
-            assert('!isset($fCol); // Cannot redeclare var $fCol');
-            assert('!isset($fTableName); // Cannot redeclare var $fTable');
-            assert('!isset($column); // Cannot redeclare var $column');
+            assert(!isset($fCol), 'Cannot redeclare var $fCol');
+            assert(!isset($fTableName), 'Cannot redeclare var $fTable');
+            assert(!isset($column), 'Cannot redeclare var $column');
             foreach ($table->getForeignKeys() as $column)
             {
                 /* @var $column \Yana\Db\Ddl\ForeignKey */
-                assert('!isset($_fKeys); // Cannot redeclare var $_fKeys');
+                assert(!isset($_fKeys), 'Cannot redeclare var $_fKeys');
                 $_fKeys = $column->getColumns();
                 $fTableName = $column->getTargetTable();
                 if (count($_fKeys) > 1) {
@@ -228,7 +228,7 @@ class XmlFactory extends \Yana\Db\Export\AbstractXmlFactory
                  *
                  * loop through rows in foreign table
                  */
-                assert('!isset($pKey); // Cannot redeclare var $pKey');
+                assert(!isset($pKey), 'Cannot redeclare var $pKey');
                 foreach (array_keys($nodes[$tableName]) as $pKey)
                 {
                     if (isset($nodes[$tableName][$pKey][$fCol])) {

@@ -73,7 +73,7 @@ class MemcacheWrapper extends \Yana\Core\StdObject implements \Yana\Data\Adapter
      */
     public function getVar($key)
     {
-        assert('is_string($key); // Invalid argument $key: string expected');
+        assert(is_string($key), 'Invalid argument $key: string expected');
 
         return $this->_getMemCache()->get($key);
     }
@@ -103,8 +103,8 @@ class MemcacheWrapper extends \Yana\Core\StdObject implements \Yana\Data\Adapter
      */
     public function setVar($key, $var, $expire = 0)
     {
-        assert('is_string($key); // Invalid argument $key: string expected');
-        assert('is_int($expire); // Invalid argument $expire: int expected');
+        assert(is_string($key), 'Invalid argument $key: string expected');
+        assert(is_int($expire), 'Invalid argument $expire: int expected');
 
         return $this->_getMemCache()->set($key, $var, 0, (int) $expire);
     }

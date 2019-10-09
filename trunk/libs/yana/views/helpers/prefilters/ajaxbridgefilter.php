@@ -51,10 +51,10 @@ class AjaxBridgeFilter extends \Yana\Views\Helpers\AbstractViewHelper implements
      */
     public function __invoke($source, \Smarty_Internal_Template $templateClass)
     {
-        assert('is_string($source); // Wrong type for argument 1. String expected');
+        assert(is_string($source), 'Wrong type for argument 1. String expected');
 
         if (mb_strpos($source, '<head') > -1) {
-            assert('!isset($script); // Cannot redeclare var $script');
+            assert(!isset($script), 'Cannot redeclare var $script');
             $script = "\n        " . '<script type="text/javascript" language="javascript"><!--' . "\n" .
                 '        window.yanaProfileId="' . $this->_getProfileId() . '";' . "\n" .
                 '        window.yanaSessionName="{$SESSION_NAME}";' . "\n" .

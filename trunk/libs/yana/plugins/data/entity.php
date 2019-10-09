@@ -66,7 +66,7 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Plugins
      */
     public function setId($pluginName)
     {
-        assert('is_string($pluginName); // Wrong type for argument 1. String expected');
+        assert(is_string($pluginName), 'Wrong type for argument 1. String expected');
         $this->_id = (string) $pluginName;
         return $this;
     }
@@ -82,7 +82,7 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Plugins
      */
     public function setActive($isActive)
     {
-        assert('is_bool($isActive); // Wrong type for argument 1. Boolean expected');
+        assert(is_bool($isActive), 'Wrong type for argument 1. Boolean expected');
 
         $this->_isActive = (bool) $isActive;
         return $this;

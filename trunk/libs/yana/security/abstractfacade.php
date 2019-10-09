@@ -83,7 +83,7 @@ abstract class AbstractFacade extends \Yana\Core\StdObject implements \Yana\Secu
      */
     protected function _buildUserEntity($userName = "")
     {
-        assert('is_string($userName); // Invalid argument $userName: string expected');
+        assert(is_string($userName), 'Invalid argument $userName: string expected');
         $builder = $this->_createUserBuilder();
         if ($userName > "") {
             $user = $builder->buildFromUserName($userName);
