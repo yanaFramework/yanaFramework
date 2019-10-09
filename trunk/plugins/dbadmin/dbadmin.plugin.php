@@ -213,11 +213,11 @@ class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
 
             /* initialize tables (store)
              */
-            assert('!isset($initStmts); // Cannot redeclare var $initStmts');
+            assert(!isset($initStmts), 'Cannot redeclare var $initStmts');
             $initStmts = $dbSchema->getInit();
             if (is_array($initStmts) && !empty($initStmts)) {
-                assert('!isset($parser); // Cannot redeclare var $parser');
-                assert('!isset($stmt); // Cannot redeclare var $stmt');
+                assert(!isset($parser), 'Cannot redeclare var $parser');
+                assert(!isset($stmt), 'Cannot redeclare var $stmt');
                 foreach ($initStmts as $stmt)
                 {
                     $parser = new \Yana\Db\Queries\Parser($database);
@@ -277,7 +277,7 @@ class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
             throw new \Yana\Core\Exceptions\Forms\MissingInputException($message, $level);
         }
 
-        assert('!isset($dbSchema); // Cannot redeclare var $dbSchema');
+        assert(!isset($dbSchema), 'Cannot redeclare var $dbSchema');
         foreach ($list as $item)
         {
             /**
@@ -377,7 +377,7 @@ class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
                  * synchronize: file -> database
                  */
                 $i = 0;
-                assert('!isset($diff); // Cannot redeclare var $diff');
+                assert(!isset($diff), 'Cannot redeclare var $diff');
                 $diff = array_diff($file_keys, $db_keys);
                 if (!empty($diff)) {
                     $fileSelectQuery->setTable($tableName);
@@ -615,7 +615,7 @@ class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
         if (!defined('YANA_DATABASE_PASSWORD')) define('YANA_DATABASE_PASSWORD', \"$password\");
         if (!defined('YANA_DATABASE_PREFIX'))   define('YANA_DATABASE_PREFIX', \"$prefix\");
         if (!defined('YANA_DATABASE_NAME'))     define('YANA_DATABASE_NAME', \"$name\");\n?>";
-        assert('!isset($file); // Cannot redeclare var $file');
+        assert(!isset($file), 'Cannot redeclare var $file');
         /* @var $file \Yana\Files\Text */
         $file = $this->_getApplication()->getPlugins()->{"dbadmin:/dbconfig.text"};
         if (!$file->exists()) {

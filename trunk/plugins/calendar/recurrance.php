@@ -130,7 +130,7 @@ class RecurranceRule extends \Yana\Core\StdObject
      */
     protected function setRuleProperties($rule)
     {
-        assert('is_string($rule); // Wrong argument type argument 1. String expected');
+        assert(is_string($rule), 'Wrong argument type argument 1. String expected');
         $properties = explode(';', $rule);
         $allProperties = array();
         if (!empty($properties)) {
@@ -1044,7 +1044,7 @@ class RecurranceRule extends \Yana\Core\StdObject
      */
     protected function setAllDay($allDay)
     {
-        assert('is_bool($allDay); // Wrong argument type argument 1. Boolean expected');
+        assert(is_bool($allDay), 'Wrong argument type argument 1. Boolean expected');
         $this->allDay = $allDay;
 
     }
@@ -1546,7 +1546,7 @@ class RecurranceRule extends \Yana\Core\StdObject
      */
     protected function endlessSerial(array $start)
     {
-        assert('is_array($start); // Wrong argument type argument 1. Array expected');
+        assert(is_array($start), 'Wrong argument type argument 1. Array expected');
 
         // get the endles serial end date
         $endlessSerial = $this->getEndlessSerialEndDate();
@@ -1558,7 +1558,7 @@ class RecurranceRule extends \Yana\Core\StdObject
         // set the end date for this serial
         $until = array('', $start[1] + $endlessSerial, $start[2], $start[3], $start[4], $start[5], $start[6]);
         $diff = $this->diffDay($start, $until);
-        assert('is_int($diff); // Wrong argument type argument 1. Integer expected');
+        assert(is_int($diff), 'Wrong argument type argument 1. Integer expected');
         $result = $diff;
         return $result;
     }
@@ -1574,7 +1574,7 @@ class RecurranceRule extends \Yana\Core\StdObject
      */
     public function setEndlessSerialEndDate($number)
     {
-        assert('is_int($number); // Wrong argument type argument 1. Integer expected');
+        assert(is_int($number), 'Wrong argument type argument 1. Integer expected');
         $this->endlessSerial = $number;
         return true;
     }
@@ -1983,13 +1983,13 @@ class RecurranceRule extends \Yana\Core\StdObject
      */
     protected function getSpecialDayResult($start, $end, $repeatInterval, $day = 0, $addmonth = 0, $addYear = 0, $isCount = false, $isUntil = false)
     {
-        assert('is_array($start);          // Wrong argument type argument 1. Array expected');
-        assert('is_array($end);            // Wrong argument type argument 2. Array expected');
-        assert('is_string($repeatInterval);   // Wrong argument type argument 3. String expected');
-        assert('is_int($day);              // Wrong argument type argument 4. Integer expected');
-        assert('is_int($addmonth);         // Wrong argument type argument 5. Integer expected');
-        assert('is_bool($isCount);         // Wrong argument type argument 6. Boolean expected');
-        assert('is_bool($isCount);         // Wrong argument type argument 7. Boolean expected');
+        assert(is_array($start), 'Wrong argument type argument 1. Array expected');
+        assert(is_array($end), 'Wrong argument type argument 2. Array expected');
+        assert(is_string($repeatInterval), 'Wrong argument type argument 3. String expected');
+        assert(is_int($day), 'Wrong argument type argument 4. Integer expected');
+        assert(is_int($addmonth), 'Wrong argument type argument 5. Integer expected');
+        assert(is_bool($isCount), 'Wrong argument type argument 6. Boolean expected');
+        assert(is_bool($isCount), 'Wrong argument type argument 7. Boolean expected');
         $addToDay = 0;
         if($this->isAllDay()) {
             $addToDay = 1;
@@ -2514,12 +2514,12 @@ class RecurranceRule extends \Yana\Core\StdObject
      */
     protected function getSpecialYearResult($dateSet, $month, $monthDay = 0, $isInterval = false ,$isCount = false, $isUntil = false)
     {
-        assert('is_array($dateSet);          // Wrong argument type argument 1. Array expected');
-        assert('is_int($month);            // Wrong argument type argument 2. Integer expected');
-        assert('is_int($monthDay);         // Wrong argument type argument 3. Integer expected');
-        assert('is_bool($isInterval);         // Wrong argument type argument 4. Boolean expected');
-        assert('is_bool($isCount);         // Wrong argument type argument 5. Boolean expected');
-        assert('is_bool($isUntil);         // Wrong argument type argument 5. Boolean expected');
+        assert(is_array($dateSet), 'Wrong argument type argument 1. Array expected');
+        assert(is_int($month), 'Wrong argument type argument 2. Integer expected');
+        assert(is_int($monthDay), 'Wrong argument type argument 3. Integer expected');
+        assert(is_bool($isInterval), 'Wrong argument type argument 4. Boolean expected');
+        assert(is_bool($isCount), 'Wrong argument type argument 5. Boolean expected');
+        assert(is_bool($isUntil), 'Wrong argument type argument 5. Boolean expected');
 
         $addToDay = 0;
         if($this->isAllDay()) {

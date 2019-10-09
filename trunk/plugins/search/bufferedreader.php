@@ -68,7 +68,7 @@ class BufferedReader extends \Yana\Files\Readonly
      */
     public function __construct($filename, $bufferSize = 8192)
     {
-        assert('is_int($bufferSize); // Invalid argument $bufferSize: int expected');
+        assert(is_int($bufferSize), 'Invalid argument $bufferSize: int expected');
         $this->_bufferSize = (int) $bufferSize;
         $this->_file = fopen($filename, "r");
         if ($this->_file === false) {

@@ -159,15 +159,15 @@ class MDB2 extends \Yana\Files\File implements \Plugins\DbTools\IsImport
      */
     public static function getStructureFromString($mdb2Schema)
     {
-        assert('is_string($mdb2Schema); // Wrong argument type $dbDesignerConfig. String expected.');
+        assert(is_string($mdb2Schema), 'Wrong argument type $dbDesignerConfig. String expected.');
         if (is_file($mdb2Schema)) {
             $MDB2 = new \Plugins\DbTools\MDB2($mdb2Schema);
             $MDB2->read();
         } else {
             $MDB2 = new \Plugins\DbTools\MDB2('');
-            assert('empty($MDB2->content);');
+            assert(empty($MDB2->content), 'empty($MDB2->content);');
             $MDB2->content = explode("\n", $mdb2Schema);
-            assert('is_array($MDB2->content);');
+            assert(is_array($MDB2->content), 'is_array($MDB2->content);');
         }
         $structure = $MDB2->getStructure();
         if (is_object($structure)) {
@@ -347,12 +347,12 @@ class MDB2 extends \Yana\Files\File implements \Plugins\DbTools\IsImport
                 }
             break;
             case $this->_xPath('//table/initialization$'):
-                assert('!isset($_); // Cannot redeclare var $_');
+                assert(!isset($_), 'Cannot redeclare var $_');
                 if (!isset($this->content)) {
                     $this->content = $this->getContent();
                 }
                 if (isset($this->currentTable['name'])) {
-                    assert('!isset($regExp); // Cannot redeclare var $regExp');
+                    assert(!isset($regExp), 'Cannot redeclare var $regExp');
                     $regExp = '<table>.*?<name>' . preg_quote($this->currentTable['name'], '/') .
                         '<\/name>.*?<\/table>';
                     if (preg_match("/$regExp/si", $this->content, $_)) {
@@ -360,14 +360,14 @@ class MDB2 extends \Yana\Files\File implements \Plugins\DbTools\IsImport
                         $_ = $_[0];
                         if (preg_match("/(?<=<initialization>).*?(?=<\/initialization>)/si", $_, $_)) {
                             $_ = $_[0];
-                            assert('!isset($stmts); // Cannot redeclare var $stmts');
+                            assert(!isset($stmts), 'Cannot redeclare var $stmts');
                             $stmts = array();
-                            assert('!isset($m); // Cannot redeclare var $m');
+                            assert(!isset($m), 'Cannot redeclare var $m');
                             while (preg_match('/^\s*<(insert|update|delete)>(.*?)<\/(?:(insert|update|delete))>/si', $_, $m))
                             {
                                 $_ = str_replace($m[0], '', $_);
 
-                                assert('!isset($stmt); // Cannot redeclare var $stmt');
+                                assert(!isset($stmt), 'Cannot redeclare var $stmt');
                                 /**
                                  * query type
                                  */
@@ -401,10 +401,10 @@ class MDB2 extends \Yana\Files\File implements \Plugins\DbTools\IsImport
                                  * set, keys, values
                                  */
                                 if (mb_strpos($stmt, '%SET%') !== false && isset($set)) {
-                                    assert('!isset($_set); // Cannot redeclare var $_set');
+                                    assert(!isset($_set), 'Cannot redeclare var $_set');
                                     $_set = "";
-                                    assert('!isset($key); // Cannot redeclare var $key');
-                                    assert('!isset($value); // Cannot redeclare var $value');
+                                    assert(!isset($key), 'Cannot redeclare var $key');
+                                    assert(!isset($value), 'Cannot redeclare var $value');
                                     foreach ($set as $key => $value)
                                     {
                                         if ($_set !== '') {
@@ -430,7 +430,7 @@ class MDB2 extends \Yana\Files\File implements \Plugins\DbTools\IsImport
                                 /**
                                  * where
                                  */
-                                assert('!isset($m1); // Cannot redeclare var $m1');
+                                assert(!isset($m1), 'Cannot redeclare var $m1');
                                 if (mb_strpos($stmt, '%WHERE%') !== false) {
                                     if (preg_match('/^.*?<where>\s*<expression>(.*?)<\/expression>\s*<\/where>.*$/si', $m[0], $m1)) {
                                         $m1 = $this->_handleExpression($m1[1]);
@@ -480,9 +480,9 @@ class MDB2 extends \Yana\Files\File implements \Plugins\DbTools\IsImport
     {
         $set = array();
 
-        assert('!isset($m1); // Cannot redeclare var $m1');
+        assert(!isset($m1), 'Cannot redeclare var $m1');
         if (preg_match_all('/<field>(.*?)<\/field>/si', $data, $m1)) {
-            assert('!isset($field); // Cannot redeclare var $field');
+            assert(!isset($field), 'Cannot redeclare var $field');
             foreach ($m1[1] as $string)
             {
                 $field = \Yana\Files\SML::decode($string);

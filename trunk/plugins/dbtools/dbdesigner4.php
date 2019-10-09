@@ -151,15 +151,15 @@ class DbDesigner4 extends \Yana\Files\File implements \Plugins\DbTools\IsImport
      */
     public static function getStructureFromString($dbDesignerConfig)
     {
-        assert('is_string($dbDesignerConfig); // Wrong argument type $dbDesignerConfig. String expected.');
+        assert(is_string($dbDesignerConfig), 'Wrong argument type $dbDesignerConfig. String expected.');
         if (is_file($dbDesignerConfig)) {
             $DbDesigner4 = new \Plugins\DbTools\DbDesigner4($dbDesignerConfig);
             $DbDesigner4->read();
         } else {
             $DbDesigner4 = new \Plugins\DbTools\DbDesigner4('');
-            assert('empty($DbDesigner4->content);');
+            assert(empty($DbDesigner4->content), 'empty($DbDesigner4->content);');
             $DbDesigner4->content = explode("\n", $dbDesignerConfig);
-            assert('is_array($DbDesigner4->content);');
+            assert(is_array($DbDesigner4->content), 'is_array($DbDesigner4->content);');
         }
         $structure = $DbDesigner4->getStructure();
         if (is_object($structure)) {
@@ -222,13 +222,13 @@ class DbDesigner4 extends \Yana\Files\File implements \Plugins\DbTools\IsImport
                  * <table UseStandardInserts ...>  is "0" if the sql statements are meant to be ignored
                  */
                 if (!empty($attrs['STANDARDINSERTS']) && !empty($attrs['USESTANDARDINSERTS'])) {
-                    assert('!isset($init); // Cannot redeclare var $init');
-                    assert('!isset($m); // Cannot redeclare var $m');
+                    assert(!isset($init), 'Cannot redeclare var $init');
+                    assert(!isset($m), 'Cannot redeclare var $m');
                     $init = $attrs['STANDARDINSERTS'];
                     /**
                      * quote values
                      */
-                    assert('!isset($quotedValue); // Cannot redeclare var $quotedValue');
+                    assert(!isset($quotedValue), 'Cannot redeclare var $quotedValue');
                     while (preg_match('/(?<=\\\\a).*?(?=\\\\a)/is', $init, $m))
                     {
                         $quotedValue = preg_replace('/(?<!\\\\)\\\\(\d+)/ise', 'chr($1)', $m[0]);

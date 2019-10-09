@@ -43,7 +43,8 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
     public function __construct()
     {
         $security = $this->_getSecurityFacade();
-        $security->addSecurityRule(new \Yana\Security\Rules\SecurityLevelRule());
+        $defaultProfileId = $this->_getApplication()->getDefault('profile');
+        $security->addSecurityRule(new \Yana\Security\Rules\SecurityLevelRule($defaultProfileId));
 
         $session = $this->_getSession();
         $YANA = $this->_getApplication();
@@ -116,7 +117,7 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
             $message = "The login is valid, but the access rights are not enough to access the function.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             new \Yana\Core\Exceptions\Security\InsufficientRightsException($message, $level);
-            $YANA->exitTo();
+            $YANA->exitTo("sitemap");
         }
     }
     /**
@@ -208,9 +209,9 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
          */
         $userName = $user->getId();
         $recipient = $user->getMail();
-        assert('is_string($userName); // $userName must be of type String');
-        assert('is_string($recipient); // $recipient must be of type String');
-        assert('filter_var($recipient, FILTER_VALIDATE_EMAIL); // $recipient not a valid e-mail');
+        assert(is_string($userName), '$userName must be of type String');
+        assert(is_string($recipient), '$recipient must be of type String');
+        assert($recipient === filter_var($recipient, FILTER_VALIDATE_EMAIL), '$recipient not a valid e-mail');
 
         // calculate unique recovery-key and update the user record with time() and uniqueID for verification
         try {
@@ -219,11 +220,11 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
             return false; // unsuccessful user record update
         }
 
-        assert('isset($userName); // variable $userName is not set');
+        assert(isset($userName), 'variable $userName is not set');
 
         $subject = $YANA->getLanguage()->getVar('user.6');
         $sender = $YANA->getVar('PROFILE.MAIL');
-        assert('filter_var($sender, FILTER_VALIDATE_EMAIL); // $sender not a valid e-mail');
+        assert($sender === filter_var($sender, FILTER_VALIDATE_EMAIL), '$sender not a valid e-mail');
 
         // get the mail template
         $viewManager = $this->_getApplication()->getView();
@@ -275,7 +276,7 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function reset_pwd($key, $new_pwd, $repeat_pwd)
     {
-        assert('!isset($isSuccess); // $isSuccess already declared');
+        assert(!isset($isSuccess), '$isSuccess already declared');
         $isSuccess = true;
         try {
 
@@ -383,7 +384,7 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function check_login($user, $pass = "")
     {
-        assert('!isset($session); // Cannot redeclare var $nextAction');
+        assert(!isset($session), 'Cannot redeclare var $nextAction');
         $session = $this->_getSession();
         try {
             $this->_getSecurityFacade()->loadUser($user)->login($pass);
@@ -414,7 +415,7 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
         /* route next action */
         if (isset($session['on_login_goto']) && is_string($session['on_login_goto']) && $session['on_login_goto'] > "") {
 
-            assert('!isset($nextAction); // Cannot redeclare var $nextAction');
+            assert(!isset($nextAction), 'Cannot redeclare var $nextAction');
             $nextAction = $session['on_login_goto'];
             unset($session['on_login_goto']);
             $this->_getApplication()->exitTo($nextAction);

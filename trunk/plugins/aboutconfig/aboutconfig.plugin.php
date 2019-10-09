@@ -193,13 +193,13 @@ class AboutConfigPlugin extends \Yana\Plugins\AbstractPlugin
 
         /* first reinitialize the config file, so we can be sure it contains the most recent data */
         /* @var $configFile SML */
-        assert('!isset($configFile); // Cannot redeclare var $configFile');
+        assert(!isset($configFile), 'Cannot redeclare var $configFile');
         $configFile = $YANA->getResource('system:/config/profiledir/default_config.sml');
         $configFile->read();
 
         /* then overwrite previous settings with new settings provided by the user form */
         $array = $this->_genProfile($ARGS);
-        assert('is_array($array); /* unexpected result: $array */');
+        assert(is_array($array), 'unexpected result: $array');
         if (!is_array($array)) {
             return false;
         }

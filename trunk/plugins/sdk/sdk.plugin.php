@@ -109,7 +109,7 @@ class SdkPlugin extends \Yana\Plugins\AbstractPlugin
         }
 
         // SQL files
-        assert('!isset($dbms); // Cannot redeclare $dbms');
+        assert(!isset($dbms), 'Cannot redeclare $dbms');
         foreach (array_keys(self::$_listOfDBMS) as $dbms)
         {
             if (!empty($_FILES[$dbms]['tmp_name'])) {
@@ -127,7 +127,7 @@ class SdkPlugin extends \Yana\Plugins\AbstractPlugin
 
         // Schema file
         if (!empty($_FILES['sourcefile']['tmp_name'])) {
-            assert('!isset($node); // Cannot redeclare var $node');
+            assert(!isset($node), 'Cannot redeclare var $node');
             $node = simplexml_load_file($_FILES['sourcefile']['tmp_name']);
             if (!isset($node['name'])) {
                 $node->addAttribute('name', $plugin->getId());

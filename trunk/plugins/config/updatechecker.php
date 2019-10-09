@@ -115,10 +115,10 @@ class UpdateChecker extends \Yana\Core\StdObject implements \Yana\Views\Helpers\
         $url = html_entity_decode($url);
         $link = '<a href="' . $href .  '" target="_blank">' . $language->getVar('INDEX_13') . '</a>';
 
-        assert('!isset($urlInfo); // Cannot redeclare var $urlInfo');
-        assert('!isset($errno); // Cannot redeclare var $errno');
-        assert('!isset($errstr); // Cannot redeclare var $errstr');
-        assert('!isset($latestVersion); // Cannot redeclare var $latestVersion');
+        assert(!isset($urlInfo), 'Cannot redeclare var $urlInfo');
+        assert(!isset($errno), 'Cannot redeclare var $errno');
+        assert(!isset($errstr), 'Cannot redeclare var $errstr');
+        assert(!isset($latestVersion), 'Cannot redeclare var $latestVersion');
         $latestVersion = "";
 
         $urlInfo = parse_url($url);

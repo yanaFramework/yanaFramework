@@ -82,7 +82,7 @@ class UserPwdAdminPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function check_login($user, $pass = "")
     {
-        assert('!isset($YANA); // Cannot redeclare var $YANA');
+        assert(!isset($YANA), 'Cannot redeclare var $YANA');
         $YANA = $this->_getApplication();
         $timeDuration = (int) $YANA->getVar("PROFILE.USER.PASSWORD.TIME");
         if ($timeDuration > 0) {
@@ -139,8 +139,8 @@ class UserPwdAdminPlugin extends \Yana\Plugins\AbstractPlugin
      */
     private function _getQuality($password)
     {
-        assert('is_string($password); // $password must be of type string');
-        assert('!empty($password); // $password can not be empty');
+        assert(is_string($password), '$password must be of type string');
+        assert(!empty($password), '$password can not be empty');
 
         /*  count the length of the password */
         $level = 0;
@@ -216,9 +216,9 @@ class UserPwdAdminPlugin extends \Yana\Plugins\AbstractPlugin
      */
     private function _isExpired($userName, $timeDuration)
     {
-        assert('is_string($userName); // $userName must be of type string');
-        assert('!empty($userName); // $userName can not be empty');
-        assert('is_int($timeDuration); // $timeDuration must be of type int');
+        assert(is_string($userName), '$userName must be of type string');
+        assert(!empty($userName), '$userName can not be empty');
+        assert(is_int($timeDuration), '$timeDuration must be of type int');
 
         /* get the current user password expiry time */
         $time = $this->_getSecurityFacade()->loadUser($userName)->getPasswordChangedTime();
@@ -246,8 +246,8 @@ class UserPwdAdminPlugin extends \Yana\Plugins\AbstractPlugin
      */
     private function _isAllowedPwd($old_password, $new_password)
     {
-        assert('is_string($new_password); // $new_password must be of type string');
-        assert('!empty($new_password); // $new_password can not be empty');
+        assert(is_string($new_password), '$new_password must be of type string');
+        assert(!empty($new_password), '$new_password can not be empty');
 
         /* get the database information from the user table for the curren user */
         $userEntity = $this->_getSecurityFacade()->loadUser();

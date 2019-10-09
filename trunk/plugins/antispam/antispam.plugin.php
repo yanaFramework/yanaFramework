@@ -52,7 +52,7 @@ class AntiSpamPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function catchAll($event, array $ARGS)
     {
-        assert('is_string($event); // Wrong type for argument 1. String expected');
+        assert(is_string($event), 'Wrong type for argument 1. String expected');
 
         $yana = $this->_getApplication();
         $eventType = mb_strtolower($yana->getPlugins()->getEventType("$event"));
@@ -144,7 +144,7 @@ class AntiSpamPlugin extends \Yana\Plugins\AbstractPlugin
             if (empty($time)) {
 
                 if (!empty($settings['LOG'])) {
-                    assert('!isset($log); // Cannot redeclare var $log');
+                    assert(!isset($log), 'Cannot redeclare var $log');
                     $log = 'SPAM: blocked entry because no timestamp present ' .
                         '(possibly the form was never displayed).';
                     $level = \Yana\Log\TypeEnumeration::INFO;
@@ -161,7 +161,7 @@ class AntiSpamPlugin extends \Yana\Plugins\AbstractPlugin
             if (time() - $time < 5) {
 
                 if (!empty($settings['LOG'])) {
-                    assert('!isset($log); // Cannot redeclare var $log');
+                    assert(!isset($log), 'Cannot redeclare var $log');
                     $log = 'SPAM: blocked entry because a previous entry ' .
                         'has been issued within the last 5 seconds.';
                     $level = \Yana\Log\TypeEnumeration::INFO;
@@ -175,7 +175,7 @@ class AntiSpamPlugin extends \Yana\Plugins\AbstractPlugin
             if (time() - $time > 3600) {
 
                 if (!empty($settings['LOG'])) {
-                    assert('!isset($log); // Cannot redeclare var $log');
+                    assert(!isset($log), 'Cannot redeclare var $log');
                     $log = 'SPAM: blocked entry because maximum time of ' .
                         'life (60 minutes) for the form has been exceeded.';
                     $level = \Yana\Log\TypeEnumeration::INFO;
@@ -193,7 +193,7 @@ class AntiSpamPlugin extends \Yana\Plugins\AbstractPlugin
             if (!empty($ARGS['yana_url'])) {
 
                 if (!empty($settings['LOG'])) {
-                    assert('!isset($log); // Cannot redeclare var $log');
+                    assert(!isset($log), 'Cannot redeclare var $log');
                     $log = 'SPAM: blocked entry because a field that is ' .
                         'not visible to human visitors has been filled.';
                     $level = \Yana\Log\TypeEnumeration::INFO;

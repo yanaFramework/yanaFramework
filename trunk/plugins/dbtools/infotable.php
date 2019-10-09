@@ -104,7 +104,7 @@ class InfoTable extends \Yana\Core\StdObject
      */
     public function __construct($table)
     {
-        assert('is_string($table); // Wrong type for argument 1. String expected.');
+        assert(is_string($table), 'Wrong type for argument 1. String expected.');
         $this->table = (string) $table;
     }
 
@@ -166,7 +166,7 @@ class InfoTable extends \Yana\Core\StdObject
      */
     public function setComment($comment)
     {
-        assert('is_string($comment); // Wrong type for argument 1. String expected.');
+        assert(is_string($comment), 'Wrong type for argument 1. String expected.');
         $this->comment = (string) $comment;
         return $this;
     }
@@ -194,7 +194,7 @@ class InfoTable extends \Yana\Core\StdObject
      */
     public function setPrimaryKey($column)
     {
-        assert('is_string($column); // Wrong type for argument 1. String expected.');
+        assert(is_string($column), 'Wrong type for argument 1. String expected.');
         $column = mb_strtolower($column);
 
         if (!isset($this->columns[$column])) {
@@ -239,9 +239,9 @@ class InfoTable extends \Yana\Core\StdObject
      */
     public function setForeignKey($column, $foreignTable, $foreignColumn = "")
     {
-        assert('is_string($column); // Wrong type for argument 1. String expected.');
-        assert('is_string($foreignTable); // Wrong type for argument 2. String expected.');
-        assert('is_string($foreignColumn); // Wrong type for argument 3. String expected.');
+        assert(is_string($column), 'Wrong type for argument 1. String expected.');
+        assert(is_string($foreignTable), 'Wrong type for argument 2. String expected.');
+        assert(is_string($foreignColumn), 'Wrong type for argument 3. String expected.');
 
         /* apply default value */
         $column = mb_strtolower($column);
@@ -298,7 +298,7 @@ class InfoTable extends \Yana\Core\StdObject
      */
     public function getColumns()
     {
-        assert('is_array($this->columns);');
+        assert(is_array($this->columns), 'is_array($this->columns);');
         return $this->columns;
     }
 

@@ -295,7 +295,7 @@ class GuestbookPlugin extends \Yana\Plugins\AbstractPlugin
 
         /* get entries */
         $rows = $this->_getTable();
-        assert('is_array($rows); /* unexpected result: $rows */');
+        assert(is_array($rows), 'unexpected result: $rows');
 
         /* create RSS feed */
         $rss = new \Yana\RSS\Feed($YANA->getLanguage()->getVar('RSS_DESCRIPTION'));
@@ -409,7 +409,7 @@ class GuestbookPlugin extends \Yana\Plugins\AbstractPlugin
             \Yana\Log\LogManager::getLogger()->addLog($message, $code);
             throw new \Yana\Core\Exceptions\Forms\FloodException($message, $code);
         }
-        assert('!isset($where); // Cannot redeclare var $where');
+        assert(!isset($where), 'Cannot redeclare var $where');
         $where = array('profile_id', '=', $YANA->getProfileId());
         $recent_entry = $database->select("guestbook.?.guestbook_message", $where);
         unset($where);
@@ -471,7 +471,7 @@ class GuestbookPlugin extends \Yana\Plugins\AbstractPlugin
         if (empty($row)) {
             return false;
         } else {
-            assert('is_array($row); /* unexpected result: $row */');
+            assert(is_array($row), 'unexpected result: $row');
             $YANA->setVar('CURRENT', $row);
             return true;
         }
@@ -502,7 +502,7 @@ class GuestbookPlugin extends \Yana\Plugins\AbstractPlugin
 
         /* get entries */
         $rows = $this->_getTable($page, $entries);
-        assert('is_array($rows); /* unexpected result: $rows */');
+        assert(is_array($rows), 'unexpected result: $rows');
 
         // create link to user profile (if profile viewer is installed)
         if ($YANA->getPlugins()->isActive('user_admin')) {
@@ -590,11 +590,11 @@ class GuestbookPlugin extends \Yana\Plugins\AbstractPlugin
         $database = $this->_getDatabase();
         /* check if $table really is a table */
         $table = $database->getSchema()->getTable("guestbook");
-        assert('$table instanceof \Yana\Db\Ddl\Table;');
+        assert($table instanceof \Yana\Db\Ddl\Table, '$table instanceof \Yana\Db\Ddl\Table;');
 
         /* get the name of the primary key */
         $primary_key = $table->getPrimaryKey();
-        assert('is_string($primary_key); /* unexpected result: $primary_key */');
+        assert(is_string($primary_key), 'unexpected result: $primary_key');
 
         if (empty($entPerPage)) {
             $entPerPage = (int) $YANA->getVar("PROFILE.GUESTBOOK.ENTPERPAGE");

@@ -60,9 +60,9 @@ class DiagnosticsPlugin extends \Yana\Plugins\AbstractPlugin
         $YANA = $this->_getApplication();
 
         /* get report */
-        assert('!isset($report); // Cannot redeclare var $report');
+        assert(!isset($report), 'Cannot redeclare var $report');
         $report = $YANA->getReport();
-        assert('$report instanceof \Yana\Report\IsReport; // unexpected return type - instance of Report\IsReport expected');
+        assert($report instanceof \Yana\Report\IsReport, 'unexpected return type - instance of Report\IsReport expected');
 
         if ($xml) {
 
@@ -73,9 +73,9 @@ class DiagnosticsPlugin extends \Yana\Plugins\AbstractPlugin
         } else {
 
             /* create objects */
-            assert('!isset($doc); // Cannot redeclare var $doc');
+            assert(!isset($doc), 'Cannot redeclare var $doc');
             $doc = new \DOMDocument();
-            assert('!isset($xsl); // Cannot redeclare var $xsl');
+            assert(!isset($xsl), 'Cannot redeclare var $xsl');
             $xsl = new \XSLTProcessor();
             $xslFile = $YANA->getPlugins()->{'diagnostics:/report.file'};
 

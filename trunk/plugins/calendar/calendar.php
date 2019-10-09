@@ -124,7 +124,7 @@ class Calendar extends \Yana\Files\AbstractResource
      */
     public function __construct($filename, \Yana\Core\IsVarContainer $container, $id = 0)
     {
-        assert('is_int($id); // Wrong argument type argument 2. Integer expected');
+        assert(is_int($id), 'Wrong argument type argument 2. Integer expected');
 
         parent::__construct($filename);
         $this->varContainer = $container;
@@ -164,7 +164,7 @@ class Calendar extends \Yana\Files\AbstractResource
      */
     public function setColor($className)
     {
-        assert('is_string($className); // Wrong argument type argument 1. String expected');
+        assert(is_string($className), 'Wrong argument type argument 1. String expected');
         $this->className = $className;
     }
 
@@ -191,7 +191,7 @@ class Calendar extends \Yana\Files\AbstractResource
      */
     public function setDisableEvents($readonly = false)
     {
-        assert('is_bool($readonly); // Wrong argument type argument 1. Boolean expected');
+        assert(is_bool($readonly), 'Wrong argument type argument 1. Boolean expected');
         $this->readonly = (bool) $readonly;
     }
 
@@ -231,7 +231,7 @@ class Calendar extends \Yana\Files\AbstractResource
      */
     public static function setCategories(array $categories)
     {
-        assert('is_array($categories); // Wrong argument type argument 1. Array expected');
+        assert(is_array($categories), 'Wrong argument type argument 1. Array expected');
         if (empty($categories)) {
             self::$categories = array();
         } else {
@@ -263,7 +263,7 @@ class Calendar extends \Yana\Files\AbstractResource
      */
     public function setOwner($user)
     {
-        assert('is_string($user); // Wrong argument type argument 1. String expected');
+        assert(is_string($user), 'Wrong argument type argument 1. String expected');
         $this->owner = $user;
     }
 
@@ -289,7 +289,7 @@ class Calendar extends \Yana\Files\AbstractResource
      */
     public function setName($name)
     {
-        assert('is_string($name); // Wrong argument type argument 1. String expected');
+        assert(is_string($name), 'Wrong argument type argument 1. String expected');
         $this->name = "$name";
     }
 
@@ -731,8 +731,8 @@ class Calendar extends \Yana\Files\AbstractResource
      */
     public function removeEventById($eventID)
     {
-        assert('is_string($eventID); // Wrong argument type argument 1. String expected');
-        assert('!empty($eventID); // Wrong argument type argument 1. can not be empty');
+        assert(is_string($eventID), 'Wrong argument type argument 1. String expected');
+        assert(!empty($eventID), 'Wrong argument type argument 1. can not be empty');
 
         $xml = $this->getContent();
         foreach ($xml->xpath('//vevent') as $key => $id)
@@ -757,8 +757,8 @@ class Calendar extends \Yana\Files\AbstractResource
      */
     public function setEventById($eventID)
     {
-        assert('is_string($eventID); // Wrong argument type argument 1. String expected');
-        assert('!empty($eventID); // Wrong argument type argument 1. can not be empty');
+        assert(is_string($eventID), 'Wrong argument type argument 1. String expected');
+        assert(!empty($eventID), 'Wrong argument type argument 1. can not be empty');
         // this is needed for get the new content
         $this->content = null;
 
@@ -841,8 +841,8 @@ class Calendar extends \Yana\Files\AbstractResource
      */
     public function setExdate($eventID, $date)
     {
-        assert('is_string($eventID); // Wrong argument type argument 1. String expected');
-        assert('is_array($date); // Wrong argument type argument 1. Array expected');
+        assert(is_string($eventID), 'Wrong argument type argument 1. String expected');
+        assert(is_array($date), 'Wrong argument type argument 1. Array expected');
 
         $xml = $this->getContent();
         $setDate = $date;
@@ -1140,8 +1140,8 @@ class Calendar extends \Yana\Files\AbstractResource
      */
     protected function updateEvent($eventData, $uid)
     {
-        assert('is_array($eventData); // Wrong argument type argument 1. Array expected');
-        assert('!empty($uid); // Wrong argument type argument 2. can not be empty');
+        assert(is_array($eventData), 'Wrong argument type argument 1. Array expected');
+        assert(!empty($uid), 'Wrong argument type argument 2. can not be empty');
         $xml = $this->getContent();
         $updated = array();
         $set = '';
@@ -1344,7 +1344,7 @@ class Calendar extends \Yana\Files\AbstractResource
          * This is: it has no hours, minutes, seconds and no timezone.
          */
         $date = getdate($value);
-        assert('!isset($isAllDay); // Cannot redeclare var $isAllDay');
+        assert(!isset($isAllDay), 'Cannot redeclare var $isAllDay');
         $isAllDay = empty($date['hours']) && empty($date['minutes']);
 
         if (is_int($value)) {
@@ -1534,7 +1534,7 @@ class Calendar extends \Yana\Files\AbstractResource
         if (is_null($content)) {
             return $this->getContent()->asXML($path) !== false;
         }
-        assert('is_string($content); // Wrong argument type argument 1. String expected');
+        assert(is_string($content), 'Wrong argument type argument 1. String expected');
 
         $file = new \Yana\Files\Text($path);
         if (!$file->exists()) {

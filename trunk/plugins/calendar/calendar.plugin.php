@@ -101,7 +101,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
             // read the selected calendar id from session cache
             $id = $_SESSION[__CLASS__]['calendar_id'];
         }
-        assert('is_int($id); // Wrong argument type argument 1. Integer expected');
+        assert(is_int($id), 'Wrong argument type argument 1. Integer expected');
         if (!isset($this->_calendars[$id])) {
 
             // get calendar settings from database
@@ -316,7 +316,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
      */
     protected function createCalendar($name)
     {
-        assert('is_string($name); // Wrong argument type argument 1. String expected');
+        assert(is_string($name), 'Wrong argument type argument 1. String expected');
 
         if (empty($name)) {
             return false;
@@ -831,8 +831,8 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
      */
     protected function writeXml($content, $fileName)
     {
-        assert('is_string($content); // Wrong argument type argument 1. String expected');
-        assert('is_string($filename); // Wrong argument type argument 2. String expected');
+        assert(is_string($content), 'Wrong argument type argument 1. String expected');
+        assert(is_string($filename), 'Wrong argument type argument 2. String expected');
 
         /* @var $YANA \Yana\Application */
         $YANA = $this->_getApplication();
@@ -916,7 +916,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
      */
     protected function iCalToXCal($path)
     {
-        assert('is_string($path); // Wrong argument type argument 1. String expected');
+        assert(is_string($path), 'Wrong argument type argument 1. String expected');
 
         $icalendarData = @file_get_contents($path);
         if ($icalendarData == false) {
@@ -1116,7 +1116,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function set_xcal($calendar_name)
     {
-        assert('is_string($calendar_name); // Wrong argument type argument 1. String expected');
+        assert(is_string($calendar_name), 'Wrong argument type argument 1. String expected');
 
         // check if name is set
         if (empty($calendar_name)) {

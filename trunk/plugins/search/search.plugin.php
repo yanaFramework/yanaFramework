@@ -99,15 +99,15 @@ class SearchPlugin extends \Yana\Plugins\AbstractPlugin
                 return;
             }
             $db = $this->_connectToDatabase('search');
-            assert('!isset($temp);');
+            assert(!isset($temp), '!isset($temp);');
             $temp = explode(" ", mb_strtolower($this->searchString));
             for ($i = 0; $i < count($temp); $i++)
             {
                 /* update counter value */
-                assert('!isset($counterId);');
-                assert('!isset($counterInfo);');
-                assert('!isset($counterValue);');
-                assert('!isset($statistics);');
+                assert(!isset($counterId), '!isset($counterId);');
+                assert(!isset($counterInfo), '!isset($counterInfo);');
+                assert(!isset($counterValue), '!isset($counterValue);');
+                assert(!isset($statistics), '!isset($statistics);');
                 $dummy = null;
                 $counterId = $this->_applyStemming($temp[$i], $dummy);
                 unset($dummy);
@@ -227,8 +227,8 @@ class SearchPlugin extends \Yana\Plugins\AbstractPlugin
         /*
          * 4) Scan dir
          */
-        assert('!isset($i); // Cannot redeclare var $i');
-        assert('!isset($file); // Cannot redeclare var $file');
+        assert(!isset($i), 'Cannot redeclare var $i');
+        assert(!isset($file), 'Cannot redeclare var $file');
         foreach ($this->_getListOfFiles($dir, '*.htm,*.html,*.xml,*.shtml,*.pdf', $recurse) as $i =>  $file)
         {
             try {
@@ -245,18 +245,18 @@ class SearchPlugin extends \Yana\Plugins\AbstractPlugin
 
             print "({$i}) {$file}\n";
 
-            assert('!isset($docTitle); // Cannot redeclare var $docTitle');
+            assert(!isset($docTitle), 'Cannot redeclare var $docTitle');
             $docTitle = false;
-            assert('!isset($docDesc); // Cannot redeclare var $docDesc');
+            assert(!isset($docDesc), 'Cannot redeclare var $docDesc');
             $docDesc = "";
-            assert('!isset($keywords); // Cannot redeclare var $keywords');
+            assert(!isset($keywords), 'Cannot redeclare var $keywords');
             $keywords = false;
-            assert('!isset($headContent); // Cannot redeclare var $headContent');
+            assert(!isset($headContent), 'Cannot redeclare var $headContent');
             $headContent = null;
 
-            assert('!isset($content); // Cannot redeclare var $content');
+            assert(!isset($content), 'Cannot redeclare var $content');
             $content = '';
-            assert('!isset($h); // Cannot redeclare var $h');
+            assert(!isset($h), 'Cannot redeclare var $h');
             while ($fileReader->hasMoreContent())
             {
                 $fileReader->read();
@@ -365,10 +365,10 @@ class SearchPlugin extends \Yana\Plugins\AbstractPlugin
         /**
          * 5) compress results
          */
-        assert('!isset($keyword); // Cannot redeclare var $keyword');
-        assert('!isset($array); // Cannot redeclare var $array');
-        assert('!isset($compare); // Cannot redeclare var $compare');
-        assert('!isset($newKeyword); // Cannot redeclare var $newKeyword');
+        assert(!isset($keyword), 'Cannot redeclare var $keyword');
+        assert(!isset($array), 'Cannot redeclare var $array');
+        assert(!isset($compare), 'Cannot redeclare var $compare');
+        assert(!isset($newKeyword), 'Cannot redeclare var $newKeyword');
         foreach ($resultKeywords as $keyword => $array)
         {
             $compare = "";
@@ -390,7 +390,7 @@ class SearchPlugin extends \Yana\Plugins\AbstractPlugin
                             $resultKeywords[$newKeyword][0][] = $compare;
                         }
                     }
-                    assert('!isset($id); // Cannot redeclare var $id');
+                    assert(!isset($id), 'Cannot redeclare var $id');
                     foreach ($array[1] as $id)
                     {
                         if (!in_array($id, $resultKeywords[$newKeyword][1])) {
@@ -429,8 +429,8 @@ class SearchPlugin extends \Yana\Plugins\AbstractPlugin
             return false;
         }
 
-        assert('!isset($keyword); // Cannot redeclare var $keyword');
-        assert('!isset($array); // Cannot redeclare var $array');
+        assert(!isset($keyword), 'Cannot redeclare var $keyword');
+        assert(!isset($array), 'Cannot redeclare var $array');
         foreach ($resultKeywords as $keyword => $array)
         {
             fwrite($hKeywords, $keyword . '=');
@@ -549,7 +549,7 @@ class SearchPlugin extends \Yana\Plugins\AbstractPlugin
      */
     private function _commit($subject)
     {
-        assert('is_string($subject); // Wrong type for argument 1. String expected');
+        assert(is_string($subject), 'Wrong type for argument 1. String expected');
 
         $yana = $this->_getApplication();
         $plugins = $yana->getPlugins();
@@ -573,7 +573,7 @@ class SearchPlugin extends \Yana\Plugins\AbstractPlugin
         $KEYS = preg_replace("/\n/u", "", $keywords->getContent());
         $KEYS = explode(", ", $KEYS);
 
-        assert('!isset($i); // Cannot redeclare var $i');
+        assert(!isset($i), 'Cannot redeclare var $i');
         for ($i = 0; $i < count($request); $i++)
         {
             $dummy = null;
@@ -631,11 +631,11 @@ class SearchPlugin extends \Yana\Plugins\AbstractPlugin
         }
 
         /* BEGIN logical AND */
-        assert('!isset($i); // Cannot redeclare var $i');
+        assert(!isset($i), 'Cannot redeclare var $i');
         for ($i = 1; $i < count($request); $i++)
         {
             $myTemp = array();
-            assert('!isset($j); // Cannot redeclare var $j');
+            assert(!isset($j), 'Cannot redeclare var $j');
             for ($j = 1; $j < count($hits[$request[$i]]); $j++)
             {
                 if (in_array($hits[$request[$i]][$j], $hitlist)) {
@@ -675,7 +675,7 @@ class SearchPlugin extends \Yana\Plugins\AbstractPlugin
             /* resolve Ids */
             sort($request);
             $this->_toCache(implode(" ", $request), $hitlist, $documentList);
-            assert('!isset($i); // Cannot redeclare var $i');
+            assert(!isset($i), 'Cannot redeclare var $i');
             for ($i = 0; $i < count($hitlist); $i++)
             {
                 if (isset($hitlist[$i]) && $hitlist[$i] != "") {
@@ -700,7 +700,7 @@ class SearchPlugin extends \Yana\Plugins\AbstractPlugin
      */
     private function _toCache($subject, array &$value, array &$documents)
     {
-        assert('is_string($subject); // Wrong type for argument 1. String expected');
+        assert(is_string($subject), 'Wrong type for argument 1. String expected');
 
         $YANA = $this->_getApplication();
 
@@ -755,7 +755,7 @@ class SearchPlugin extends \Yana\Plugins\AbstractPlugin
      */
     private function _getCacheId(&$subject)
     {
-        assert('is_string($subject); // Wrong type for argument 1. String expected');
+        assert(is_string($subject), 'Wrong type for argument 1. String expected');
         $temp = explode(" ", "$subject");
         $dummy = null;
         for ($i = 0; $i < sizeOf($temp); $i++)
@@ -800,7 +800,7 @@ class SearchPlugin extends \Yana\Plugins\AbstractPlugin
      */
     private function _applyStemming($inputString, &$compare)
     {
-        assert('is_string($inputString); // Wrong type for argument 1. String expected');
+        assert(is_string($inputString), 'Wrong type for argument 1. String expected');
         $compare = "";
 
         $inputString = mb_strtolower($inputString);
@@ -814,7 +814,7 @@ class SearchPlugin extends \Yana\Plugins\AbstractPlugin
         /* @var $YANA \Yana\Application */
         $YANA = $this->_getApplication();
         $grammar = $YANA->getPlugins()->search->getVar('GRAMMAR');
-        assert('is_array($grammar);');
+        assert(is_array($grammar), 'is_array($grammar);');
 
         if (in_array($inputString, $grammar['STOPWORDS'])) {
             $inputString = "";
@@ -864,17 +864,17 @@ class SearchPlugin extends \Yana\Plugins\AbstractPlugin
      */
     private function _getListOfFiles($dir, $filter, $recurse)
     {
-        assert('is_string($dir); // Wrong type for argument 1. String expected');
-        assert('is_dir($dir); // Invalid argument 1. Directory expected');
-        assert('is_string($filter); // Wrong type for argument 2. String expected');
-        assert('is_bool($recurse); // Wrong type for argument 3. Boolean expected');
+        assert(is_string($dir), 'Wrong type for argument 1. String expected');
+        assert(is_dir($dir), 'Invalid argument 1. Directory expected');
+        assert(is_string($filter), 'Wrong type for argument 2. String expected');
+        assert(is_bool($recurse), 'Wrong type for argument 3. Boolean expected');
         $list = array();
 
         $dir .= '/';
 
         /* 1 recurse sub-directories */
         if ($recurse) {
-            assert('!isset($subdir); // Cannot redeclare var $subdir');
+            assert(!isset($subdir), 'Cannot redeclare var $subdir');
             foreach (glob($dir . "*", \GLOB_ONLYDIR) as $subdir)
             {
                 // ignore directories, which start with an underscore (some
@@ -892,7 +892,7 @@ class SearchPlugin extends \Yana\Plugins\AbstractPlugin
             $list = array_merge($list, glob($dir . "{" . $filter . "}", \GLOB_BRACE));
 
         } else { // Workaround for Solaris
-            assert('!isset($_filter); // Cannot redeclare var $_filter');
+            assert(!isset($_filter), 'Cannot redeclare var $_filter');
             foreach (explode(',', $filter) as $_filter) {
                 $list = array_merge($list, glob($dir . $_filter));
             }
@@ -910,7 +910,7 @@ class SearchPlugin extends \Yana\Plugins\AbstractPlugin
      */
     private function _getFromCache($subject)
     {
-        assert('is_string($subject); // Wrong type for argument 1. String expected');
+        assert(is_string($subject), 'Wrong type for argument 1. String expected');
         $YANA = $this->_getApplication();
 
         $id = $YANA->getVar('ID');
@@ -940,7 +940,7 @@ class SearchPlugin extends \Yana\Plugins\AbstractPlugin
         if (!empty($temp)) {
             $temp = explode(";", $temp);
             $this->searchString = rawurldecode($temp[0]);
-            assert('!isset($i); // Cannot redeclare var $i');
+            assert(!isset($i), 'Cannot redeclare var $i');
             for ($i = 1; $i < count($temp); $i++)
             {
                 $hitlist[] = explode(',', rawurldecode($temp[$i]));

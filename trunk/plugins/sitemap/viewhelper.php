@@ -43,7 +43,7 @@ class ViewHelper extends \Yana\Core\StdObject implements \Yana\Views\Helpers\IsF
      */
     public function __construct($pluginDir, \Yana\Plugins\Menus\IsMenu $menu, \Yana\Translations\Facade $translations)
     {
-        assert('is_string($pluginDir); // Invalid argument type $pluginDir: string expected.');
+        assert(is_string($pluginDir), 'Invalid argument type $pluginDir: string expected.');
         $this->_pluginDir = (string) $pluginDir;
         $this->_menu = $menu;
         $this->_translations = $translations;

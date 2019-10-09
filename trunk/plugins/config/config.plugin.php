@@ -41,8 +41,7 @@ class ConfigPlugin extends \Yana\Plugins\AbstractPlugin
     /**
      * is user expert mode
      *
-     * @access  private
-     * @var     bool
+     * @var  bool
      */
     private $_isExpert = null;
 
@@ -56,8 +55,6 @@ class ConfigPlugin extends \Yana\Plugins\AbstractPlugin
      * @user        group: admin, level: 1
      * @menu        group: start
      * @title       {lang id="configmenu"}
-     *
-     * @access      public
      */
     public function index()
     {
@@ -69,11 +66,11 @@ class ConfigPlugin extends \Yana\Plugins\AbstractPlugin
         $YANA->setVar('SKINFILES', $YANA->getSkin()->getSkins());
         // create a list of profiles
         /* @var $profileDirectory \Yana\Files\Dir */
-        assert('!isset($profileDirectory); // Cannot redeclare var $profileDirectory');
+        assert(!isset($profileDirectory), 'Cannot redeclare var $profileDirectory');
         $profileDirectory = $YANA->getResource('system:/config/profiledir');
-        assert('!isset($profiles); // Cannot redeclare var $profiles');
+        assert(!isset($profiles), 'Cannot redeclare var $profiles');
         $profiles = array();
-        assert('!isset($profile); // Cannot redeclare var $profile');
+        assert(!isset($profile), 'Cannot redeclare var $profile');
         foreach ($profileDirectory->listFiles('*.cfg') as $profile)
         {
             $profiles[$profile] = mb_substr($profile, 0, mb_strrpos($profile, "."));
@@ -134,8 +131,8 @@ class ConfigPlugin extends \Yana\Plugins\AbstractPlugin
         /* output vars */
         $plugins = array();
 
-        assert('!isset($j); // Cannot redeclare var $j');
-        assert('!isset($item); // Cannot redeclare var $item');
+        assert(!isset($j), 'Cannot redeclare var $j');
+        assert(!isset($item), 'Cannot redeclare var $item');
         foreach ($pluginNames as $j => $item)
         {
             /* $j is a counter variable */
@@ -170,7 +167,7 @@ class ConfigPlugin extends \Yana\Plugins\AbstractPlugin
 
             /* get setup information */
             if ($active !== 0) {
-                assert('!isset($method); // Cannot redeclare var $method');
+                assert(!isset($method), 'Cannot redeclare var $method');
                 /* @var $setup PluginMenuEntry */
                 foreach ($pluginConfiguration->getMenuEntries('setup') as $action => $setup)
                 {
@@ -184,7 +181,7 @@ class ConfigPlugin extends \Yana\Plugins\AbstractPlugin
                         continue;
                     }
                     /* @var $title string */
-                    assert('!isset($title); // Cannot redeclare var $title');
+                    assert(!isset($title), 'Cannot redeclare var $title');
                     $title = $pluginTitle;
                     if ($setup->getTitle()) {
                         $title = $setup->getTitle();

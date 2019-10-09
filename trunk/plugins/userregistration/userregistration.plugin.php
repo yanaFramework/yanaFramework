@@ -215,7 +215,7 @@ class UserRegistrationPlugin extends \Yana\Plugins\AbstractPlugin
         $select->setWhere(array('newuser_key', '=', $target));
         $select->setLimit(1);
         $entry = $database->select($select);
-        assert('is_array($entry); // Array expected: $entry. Invalid dataset or invalid query.');
+        assert(is_array($entry), 'Array expected: $entry. Invalid dataset or invalid query.');
         if (empty($entry)) {
             throw new \Yana\Core\Exceptions\User\NotFoundException();
         }
@@ -253,8 +253,8 @@ class UserRegistrationPlugin extends \Yana\Plugins\AbstractPlugin
      */
     private function _sendMail($recipient, \Yana\Views\Templates\IsTemplate $template, $sender = "")
     {
-        assert('is_string($recipient); // Invalid argument $recipient: string expected');
-        assert('is_string($sender); // Invalid argument $sender: string expected');
+        assert(is_string($recipient), 'Invalid argument $recipient: string expected');
+        assert(is_string($sender), 'Invalid argument $sender: string expected');
         $YANA = $this->_getApplication();
 
         $templateMailer = new \Yana\Mails\TemplateMailer($template);

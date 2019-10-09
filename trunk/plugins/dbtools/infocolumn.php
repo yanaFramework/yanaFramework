@@ -238,7 +238,7 @@ class InfoColumn extends \Yana\Core\StdObject
      */
     public function __construct($column = null)
     {
-        assert('is_null($column) || is_string($column); // Wrong type for argument 1. String expected');
+        assert(is_null($column) || is_string($column), 'Wrong type for argument 1. String expected');
         $this->setName($column);
     }
 
@@ -250,7 +250,7 @@ class InfoColumn extends \Yana\Core\StdObject
      */
     public function setType($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert(is_string($name), 'Wrong type for argument 1. String expected');
         $this->type = mb_strtolower("$name");
     }
 
@@ -264,7 +264,7 @@ class InfoColumn extends \Yana\Core\StdObject
      */
     public function getType()
     {
-        assert('is_string($this->type); // Member "type" is expected to be a string');
+        assert(is_string($this->type), 'Member "type" is expected to be a string');
         return (string) $this->type;
     }
 
@@ -276,7 +276,7 @@ class InfoColumn extends \Yana\Core\StdObject
      */
     public function setNullable($isNullable)
     {
-        assert('is_bool($isNullable); // Wrong type for argument 1. Boolean expected');
+        assert(is_bool($isNullable), 'Wrong type for argument 1. Boolean expected');
         if ($isNullable) {
             $this->nullable = true;
 
@@ -294,7 +294,7 @@ class InfoColumn extends \Yana\Core\StdObject
      */
     public function isNullable()
     {
-        assert('is_bool($this->nullable); // Member "nullable" is expected to be a boolean');
+        assert(is_bool($this->nullable), 'Member "nullable" is expected to be a boolean');
         if ($this->nullable) {
             return true;
 
@@ -312,7 +312,7 @@ class InfoColumn extends \Yana\Core\StdObject
      */
     public function setPrimaryKey($isPrimaryKey)
     {
-        assert('is_bool($isPrimaryKey); // Wrong type for argument 1. Boolean expected');
+        assert(is_bool($isPrimaryKey), 'Wrong type for argument 1. Boolean expected');
         if ($isPrimaryKey) {
             $this->primaryKey = true;
 
@@ -330,7 +330,7 @@ class InfoColumn extends \Yana\Core\StdObject
      */
     public function isPrimaryKey()
     {
-        assert('is_bool($this->primaryKey); // Member "primaryKey" is expected to be a boolean');
+        assert(is_bool($this->primaryKey), 'Member "primaryKey" is expected to be a boolean');
         if ($this->primaryKey) {
             return true;
 
@@ -348,7 +348,7 @@ class InfoColumn extends \Yana\Core\StdObject
      */
     public function setForeignKey($isForeignKey)
     {
-        assert('is_bool($isForeignKey); // Wrong type for argument 1. Boolean expected');
+        assert(is_bool($isForeignKey), 'Wrong type for argument 1. Boolean expected');
         if ($isForeignKey) {
             $this->foreignKey = true;
 
@@ -366,7 +366,7 @@ class InfoColumn extends \Yana\Core\StdObject
      */
     public function isForeignKey()
     {
-        assert('is_bool($this->foreignKey); // Member "foreignKey" is expected to be a boolean');
+        assert(is_bool($this->foreignKey), 'Member "foreignKey" is expected to be a boolean');
         if ($this->foreignKey) {
             return true;
 
@@ -385,7 +385,7 @@ class InfoColumn extends \Yana\Core\StdObject
      */
     public function setUnique($isUnique)
     {
-        assert('is_bool($isUnique); // Wrong type for argument 1. Boolean expected');
+        assert(is_bool($isUnique), 'Wrong type for argument 1. Boolean expected');
         if ($isUnique) {
             $this->unique = true;
 
@@ -403,7 +403,7 @@ class InfoColumn extends \Yana\Core\StdObject
      */
     public function isUnique()
     {
-        assert('is_bool($this->unique); // Member "unique" is expected to be a boolean');
+        assert(is_bool($this->unique), 'Member "unique" is expected to be a boolean');
         if ($this->unique) {
             return true;
 
@@ -422,7 +422,7 @@ class InfoColumn extends \Yana\Core\StdObject
      */
     public function setIndex($hasIndex)
     {
-        assert('is_bool($hasIndex); // Wrong type for argument 1. Boolean expected');
+        assert(is_bool($hasIndex), 'Wrong type for argument 1. Boolean expected');
         if ($hasIndex) {
             $this->index = true;
 
@@ -440,7 +440,7 @@ class InfoColumn extends \Yana\Core\StdObject
      */
     public function hasIndex()
     {
-        assert('is_bool($this->index); // Member "index" is expected to be a boolean');
+        assert(is_bool($this->index), 'Member "index" is expected to be a boolean');
         if ($this->index) {
             return true;
 
@@ -458,7 +458,7 @@ class InfoColumn extends \Yana\Core\StdObject
      */
     public function setAuto($isAuto)
     {
-        assert('is_bool($isAuto); // Wrong type for argument 1. Boolean expected');
+        assert(is_bool($isAuto), 'Wrong type for argument 1. Boolean expected');
         if ($isAuto) {
             $this->auto = true;
 
@@ -477,7 +477,7 @@ class InfoColumn extends \Yana\Core\StdObject
      */
     public function isAuto()
     {
-        assert('is_bool($this->auto); // Member "auto" is expected to be a boolean');
+        assert(is_bool($this->auto), 'Member "auto" is expected to be a boolean');
         if ($this->auto) {
             return true;
 
@@ -495,7 +495,7 @@ class InfoColumn extends \Yana\Core\StdObject
      */
     public function setUpdate($isUpdatable)
     {
-        assert('is_bool($isUpdatable); // Wrong type for argument 1. Boolean expected');
+        assert(is_bool($isUpdatable), 'Wrong type for argument 1. Boolean expected');
         if ($isUpdatable) {
             $this->update = true;
 
@@ -513,7 +513,7 @@ class InfoColumn extends \Yana\Core\StdObject
      */
     public function isUpdatable()
     {
-        assert('is_bool($this->update); // Member "update" is expected to be a boolean');
+        assert(is_bool($this->update), 'Member "update" is expected to be a boolean');
         if ($this->update) {
             return true;
 
@@ -531,7 +531,7 @@ class InfoColumn extends \Yana\Core\StdObject
      */
     public function setSelect($isSelectable)
     {
-        assert('is_bool($isSelectable); // Wrong type for argument 1. Boolean expected');
+        assert(is_bool($isSelectable), 'Wrong type for argument 1. Boolean expected');
         if ($isSelectable) {
             $this->select = true;
 
@@ -549,7 +549,7 @@ class InfoColumn extends \Yana\Core\StdObject
      */
     public function isSelectable()
     {
-        assert('is_bool($this->select); // Member "select" is expected to be a boolean');
+        assert(is_bool($this->select), 'Member "select" is expected to be a boolean');
         if ($this->select) {
             return true;
 
@@ -568,7 +568,7 @@ class InfoColumn extends \Yana\Core\StdObject
      */
     public function setInsert($isInsertable)
     {
-        assert('is_bool($isInsertable); // Wrong type for argument 1. Boolean expected');
+        assert(is_bool($isInsertable), 'Wrong type for argument 1. Boolean expected');
         if ($isInsertable) {
             $this->insert = true;
 
@@ -586,7 +586,7 @@ class InfoColumn extends \Yana\Core\StdObject
      */
     public function isInsertable()
     {
-        assert('is_bool($this->insert); // Member "insert" is expected to be a boolean');
+        assert(is_bool($this->insert), 'Member "insert" is expected to be a boolean');
         if ($this->insert) {
             return true;
 
@@ -605,7 +605,7 @@ class InfoColumn extends \Yana\Core\StdObject
      */
     public function setUnsigned($isUnsigned)
     {
-        assert('is_bool($isUnsigned); // Wrong type for argument 1. Boolean expected');
+        assert(is_bool($isUnsigned), 'Wrong type for argument 1. Boolean expected');
         if ($isUnsigned) {
             $this->unsigned = true;
 
@@ -623,7 +623,7 @@ class InfoColumn extends \Yana\Core\StdObject
      */
     public function isUnsigned()
     {
-        assert('is_bool($this->unsigned); // Member "unsigned" is expected to be a boolean');
+        assert(is_bool($this->unsigned), 'Member "unsigned" is expected to be a boolean');
         if ($this->unsigned) {
             return true;
 
@@ -642,7 +642,7 @@ class InfoColumn extends \Yana\Core\StdObject
      */
     public function setZerofill($isZerofill)
     {
-        assert('is_bool($isZerofill); // Wrong type for argument 1. Boolean expected');
+        assert(is_bool($isZerofill), 'Wrong type for argument 1. Boolean expected');
         if ($isZerofill) {
             $this->zerofill = true;
 
@@ -660,7 +660,7 @@ class InfoColumn extends \Yana\Core\StdObject
      */
     public function isZerofill()
     {
-        assert('is_bool($this->zerofill); // Member "zerofill" is expected to be a boolean');
+        assert(is_bool($this->zerofill), 'Member "zerofill" is expected to be a boolean');
         if ($this->zerofill) {
             return true;
 
@@ -679,7 +679,7 @@ class InfoColumn extends \Yana\Core\StdObject
      */
     public function setTable($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected.');
+        assert(is_string($name), 'Wrong type for argument 1. String expected.');
         $this->table = (string) $name;
     }
 
@@ -693,7 +693,7 @@ class InfoColumn extends \Yana\Core\StdObject
      */
     public function getTable()
     {
-        assert('is_string($this->table); // Member "table" is expected to be a string');
+        assert(is_string($this->table), 'Member "table" is expected to be a string');
         return (string) $this->table;
     }
 
@@ -706,7 +706,7 @@ class InfoColumn extends \Yana\Core\StdObject
      */
     public function setName($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert(is_string($name), 'Wrong type for argument 1. String expected');
         $this->name = mb_strtolower("$name");
     }
 
@@ -720,7 +720,7 @@ class InfoColumn extends \Yana\Core\StdObject
      */
     public function getName()
     {
-        assert('is_string($this->name); // Member "name" is expected to be a string');
+        assert(is_string($this->name), 'Member "name" is expected to be a string');
         return mb_strtolower($this->name);
     }
 
@@ -751,7 +751,7 @@ class InfoColumn extends \Yana\Core\StdObject
      */
     public function setDefault($default)
     {
-        assert('is_string($default); // Wrong type for argument 1. String expected');
+        assert(is_string($default), 'Wrong type for argument 1. String expected');
         $this->default = $default;
     }
 
@@ -765,7 +765,7 @@ class InfoColumn extends \Yana\Core\StdObject
      */
     public function getComment()
     {
-        assert('is_string($this->comment); // Member "comment" is expected to be a string');
+        assert(is_string($this->comment), 'Member "comment" is expected to be a string');
         return (string) $this->comment;
     }
 
@@ -777,7 +777,7 @@ class InfoColumn extends \Yana\Core\StdObject
      */
     public function setComment($comment)
     {
-        assert('is_string($comment); // Wrong type for argument 1. String expected');
+        assert(is_string($comment), 'Wrong type for argument 1. String expected');
         $this->comment = "$comment";
     }
 
@@ -808,7 +808,7 @@ class InfoColumn extends \Yana\Core\StdObject
      */
     public function setLength($length)
     {
-        assert('is_int($length); // Wrong type for argument 1. Integer expected');
+        assert(is_int($length), 'Wrong type for argument 1. Integer expected');
         if ($length > 0) {
             $this->length = (int) $length;
 
@@ -841,8 +841,8 @@ class InfoColumn extends \Yana\Core\StdObject
      */
     public function setReference($foreignTable, $foreignColumn)
     {
-        assert('is_string($foreignTable); // Wrong type for argument 1. String expected');
-        assert('is_string($foreignColumn); // Wrong type for argument 2. String expected');
+        assert(is_string($foreignTable), 'Wrong type for argument 1. String expected');
+        assert(is_string($foreignColumn), 'Wrong type for argument 2. String expected');
         $this->foreignKey = true;
         $this->references = array("$foreignTable", mb_strtolower("$foreignColumn"));
     }

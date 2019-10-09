@@ -111,19 +111,19 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
      */
     private function _generateRandomPassword(\Yana\Security\Data\Behaviors\IsBehavior $user)
     {
-        assert('!isset($password); // $password already declared');
+        assert(!isset($password), '$password already declared');
         $password = $user->generateRandomPassword();
 
         if (!$password) {
             return false;
         }
 
-        assert('!isset($YANA); // $YANA already declared');
+        assert(!isset($YANA), '$YANA already declared');
         $YANA = $this->_getApplication();
         $YANA->setVar('PASSWORT', $password);
         $YANA->setVar('NAME', $user->getId());
         if (filter_var($user->getMail(), FILTER_VALIDATE_EMAIL)) {
-            assert('!isset($sender); // Cannot redeclare var $sender');
+            assert(!isset($sender), 'Cannot redeclare var $sender');
             $sender = (string) $YANA->getVar("PROFILE.MAIL");
             if (filter_var($sender, FILTER_VALIDATE_EMAIL)) {
                 $template = $YANA->getView()->createContentTemplate("id:USER_PASSWORD_MAIL");
@@ -251,7 +251,7 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
         // reset Id-setting (just in case some plugin changed this)
         $YANA->setVar('ID', $YANA->getProfileId());
 
-        assert('!isset($user); // $user already declared');
+        assert(!isset($user), '$user already declared');
         $user = $this->_getSecurityFacade()->createUserByFormData($this->_getUserForm()->getInsertValues());
         try {
             $user->saveChanges();

@@ -198,8 +198,8 @@ class ConfigurationBuilder extends \Yana\Plugins\Configs\AbstractBuilder
      */
     public function addSqlFile($dbms, $file)
     {
-        assert('is_string($dbms); // Wrong argument type argument 1. String expected');
-        assert('is_string($file); // Wrong argument type argument 2. String expected');
+        assert(is_string($dbms), 'Wrong argument type argument 1. String expected');
+        assert(is_string($file), 'Wrong argument type argument 2. String expected');
         $yana = $this->_getApplication();
         $installDirectory = $yana->getResource('system:/dbinstall/' . mb_strtolower($dbms));
         if (!is_object($installDirectory)) {
@@ -259,7 +259,7 @@ class ConfigurationBuilder extends \Yana\Plugins\Configs\AbstractBuilder
      */
     public function setSchemaXml(\SimpleXMLElement $node, $path)
     {
-        assert('is_string($path); // Wrong argument type argument 2. String expected');
+        assert(is_string($path), 'Wrong argument type argument 2. String expected');
         $this->_schema = \Yana\Db\Ddl\Database::unserializeFromXDDL($node);
         $this->findTranslations($this->_schema);
         $this->buildForms($this->_schema);
@@ -281,7 +281,7 @@ class ConfigurationBuilder extends \Yana\Plugins\Configs\AbstractBuilder
     protected function buildForms(\Yana\Db\Ddl\Database $schema)
     {
         /* @var $table \Yana\Db\Ddl\Table */
-        assert('!isset($table); // Cannot redeclare var $table');
+        assert(!isset($table), 'Cannot redeclare var $table');
         foreach ($schema->getTables() as $table)
         {
             // tables imported from another file using the "include" tag have a different parent schema
@@ -314,7 +314,7 @@ class ConfigurationBuilder extends \Yana\Plugins\Configs\AbstractBuilder
 
             // auto-generate links between tables along existing foreign keys
             /* @var $foreign \Yana\Db\Ddl\ForeignKey */
-            assert('!isset($foreign); // Cannot redeclare var $foreign');
+            assert(!isset($foreign), 'Cannot redeclare var $foreign');
             foreach ($table->getForeignKeys() as $foreign)
             {
                 $targetTable = $foreign->getTargetTable();
@@ -361,8 +361,8 @@ class ConfigurationBuilder extends \Yana\Plugins\Configs\AbstractBuilder
      */
     protected function getXliff($source = "en", $target = "en")
     {
-        assert('is_string($source); // Wrong argument type argument 1. String expected');
-        assert('is_string($target); // Wrong argument type argument 2. String expected');
+        assert(is_string($source), 'Wrong argument type argument 1. String expected');
+        assert(is_string($target), 'Wrong argument type argument 2. String expected');
 
         $yana = $this->_getApplication();
         /* @var $xliffTemplate \Yana\Files\File */
@@ -383,7 +383,7 @@ class ConfigurationBuilder extends \Yana\Plugins\Configs\AbstractBuilder
      */
     public function buildPlugin($overwrite = false)
     {
-        assert('is_bool($overwrite); // Wrong argument type argument 1. Bool expected');
+        assert(is_bool($overwrite), 'Wrong argument type argument 1. Bool expected');
 
         $pluginId = strtolower($this->object->getId());
 
@@ -416,7 +416,7 @@ class ConfigurationBuilder extends \Yana\Plugins\Configs\AbstractBuilder
          */
 
         // copy files
-        assert('!isset($file); // Cannot redeclare var $file');
+        assert(!isset($file), 'Cannot redeclare var $file');
         foreach ($this->_filesToCopy as $file)
         {
             if (isset($file['src'])) {
@@ -441,8 +441,8 @@ class ConfigurationBuilder extends \Yana\Plugins\Configs\AbstractBuilder
         unset($file);
 
         // copy templates
-        assert('!isset($fileName); // Cannot redeclare var $fileName');
-        assert('!isset($content); // Cannot redeclare var $content');
+        assert(!isset($fileName), 'Cannot redeclare var $fileName');
+        assert(!isset($content), 'Cannot redeclare var $content');
         foreach ($this->_templates as $fileName => $content)
         {
             file_put_contents($skinDir->getPath() . '/' . $fileName, $content);
@@ -528,9 +528,9 @@ class ConfigurationBuilder extends \Yana\Plugins\Configs\AbstractBuilder
      */
     protected function addTranslation($id, $source, $target = "")
     {
-        assert('is_string($id); // Invalid argument $id: String expected');
-        assert('is_string($source) || is_null($source); // Invalid argument $source: String expected');
-        assert('is_string($target); // Invalid argument $target: string expected');
+        assert(is_string($id), 'Invalid argument $id: String expected');
+        assert(is_string($source) || is_null($source), 'Invalid argument $source: String expected');
+        assert(is_string($target), 'Invalid argument $target: string expected');
 
         if (!empty($source) && strpos($source, YANA_LEFT_DELIMITER) === false) {
             $i = "";
@@ -559,13 +559,13 @@ class ConfigurationBuilder extends \Yana\Plugins\Configs\AbstractBuilder
     {
         $text = $this->addTranslation($schema->getName(), $schema->getTitle());
         $schema->setTitle($text);
-        assert('!isset($table); // Cannot redeclare var $table');
+        assert(!isset($table), 'Cannot redeclare var $table');
         foreach ($schema->getTables() as $table)
         {
             $text = $this->addTranslation($table->getName(), $table->getTitle());
             $table->setTitle($text);
             unset($text);
-            assert('!isset($column); // Cannot redeclare var $column');
+            assert(!isset($column), 'Cannot redeclare var $column');
             foreach ($table->getColumns() as $column)
             {
                 /* @var $column \Yana\Db\Ddl\Column */
@@ -586,12 +586,12 @@ class ConfigurationBuilder extends \Yana\Plugins\Configs\AbstractBuilder
             unset($column);
         }
         unset($table);
-        assert('!isset($form); // Cannot redeclare var $form');
+        assert(!isset($form), 'Cannot redeclare var $form');
         foreach ($schema->getForms() as $form)
         {
             $text = $this->addTranslation($form->getName(), $form->getTitle());
             $form->setTitle($text);
-            assert('!isset($field); // Cannot redeclare var $field');
+            assert(!isset($field), 'Cannot redeclare var $field');
             foreach ($form->getFields() as $field)
             {
                 $text = $this->addTranslation($field->getName(), $field->getTitle());
