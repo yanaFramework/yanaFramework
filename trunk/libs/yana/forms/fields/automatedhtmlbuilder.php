@@ -114,12 +114,10 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
         switch ($field->getContext()->getContextName())
         {
             case \Yana\Forms\Setups\ContextNameEnumeration::UPDATE:
-                if ($field->isUpdatable() && $field->getForm()->getSetup()->getUpdateAction()) {
+                if (!$field->getColumn()->isReadonly() && $field->isUpdatable() && $field->getForm()->getSetup()->getUpdateAction()) {
                     $this->_setIdByRow($field);
                     return $this->buildByTypeUpdatable($field, $setup) . $this->createLink($field);
                 }
-            // fall through
-            case \Yana\Forms\Setups\ContextNameEnumeration::READ:
                 $this->_setCssClass($field);
                 return $this->buildByTypeNonUpdatable($field, $setup) . $this->createLink($field);
             case \Yana\Forms\Setups\ContextNameEnumeration::SEARCH:
@@ -171,9 +169,9 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
             case \Yana\Db\Ddl\ColumnTypeEnumeration::LST:
                 return $this->buildList((array) $value, true);
             case \Yana\Db\Ddl\ColumnTypeEnumeration::BOOL:
-                return $this->buildBoolCheckbox($value);
+                return $this->buildBoolCheckbox(!empty($value));
             case \Yana\Db\Ddl\ColumnTypeEnumeration::COLOR:
-                return $this->buildColorpicker($value);
+                return $this->buildColorpicker(is_string($value) ? $value : "");
             case \Yana\Db\Ddl\ColumnTypeEnumeration::ENUM:
                 $items = $column->getEnumerationItems();
                 $null = "";
@@ -210,10 +208,10 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                 $this->setTitle($field->getTitle() . ': ' . (($length < 8) ? str_pad('', $length, '#') : '########') .
                      '.' . (($precision < 8) ? str_pad('', $precision, '#') : '########'));
                 $this->setMaxLength($length + 1);
-                return $this->buildTextfield($value);
+                return $this->buildTextfield(is_scalar($value) ? $value : "");
             case \Yana\Db\Ddl\ColumnTypeEnumeration::HTML:
                 $this->setCssClass("editable");
-                return $this->buildTextarea($value);
+                return $this->buildTextarea(is_string($value) ? $value : "");
             case \Yana\Db\Ddl\ColumnTypeEnumeration::PASSWORD:
                 return $this->buildTextfield('', 'password');
             case \Yana\Db\Ddl\ColumnTypeEnumeration::RANGE:
@@ -233,7 +231,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                 }
                 $this->setCssClass("gui_generator_reference");
                 $items = $field->getForm()->getSetup()->getReferenceValues($column->getName());
-                return $this->buildSelect($items, $value, $null);
+                return $this->buildSelect($items, is_scalar($value) ? $value : "", $null);
             case \Yana\Db\Ddl\ColumnTypeEnumeration::SET:
                 assert(!isset($items), 'Cannot redeclare var $items');
                 $items = $column->getEnumerationItems();
@@ -243,13 +241,13 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                 $this->setCssClass("gui_generator_set");
                 $result = "";
                 if (count($items) < 5) {
-                    $result = $this->buildCheckboxes($items, $value);
+                    $result = $this->buildCheckboxes($items, (array) $value);
                 } else {
-                    $result = $this->buildSelectMultiple($items, $value);
+                    $result = $this->buildSelectMultiple($items, (array) $value);
                 }
                 return $result;
             case \Yana\Db\Ddl\ColumnTypeEnumeration::TEXT:
-                return $this->buildTextarea($value);
+                return $this->buildTextarea(is_string($value) ? $value : "");
             case \Yana\Db\Ddl\ColumnTypeEnumeration::DATE:
                 if (is_string($value)) {
                     $value = strtotime($value);
@@ -267,7 +265,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                     );
                 }
                 $this->setCssClass("gui_generator_date");
-                return $this->buildSpan($this->buildDateSelector($value));
+                return $this->buildSpan($this->buildDateSelector(is_array($value) ? $value : array()));
             case \Yana\Db\Ddl\ColumnTypeEnumeration::TIME:
             case \Yana\Db\Ddl\ColumnTypeEnumeration::TIMESTAMP:
                 if (is_string($value)) {
@@ -287,13 +285,12 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                 }
                 $this->setCssClass("gui_generator_time");
                 return $this->buildSpan(
-                    $this->buildDateSelector($value) .
-                    $this->buildTimeSelector($value)
+                    $this->buildDateSelector(is_array($value) ? $value : array()) .
+                    $this->buildTimeSelector(is_array($value) ? $value : array())
                 );
             case \Yana\Db\Ddl\ColumnTypeEnumeration::URL:
-                return $this->buildTextfield($value);
             default:
-                return $this->buildTextfield($value);
+                return $this->buildTextfield(is_string($value) ? $value : "");
         }
     }
 

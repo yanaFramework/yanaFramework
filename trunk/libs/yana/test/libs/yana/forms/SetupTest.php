@@ -397,8 +397,8 @@ class SetupTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetContext()
     {
-        $expected = new \Yana\Forms\Setups\Context(\Yana\Forms\Setups\ContextNameEnumeration::READ);
-        $this->assertEquals($expected, $this->object->getContext(\Yana\Forms\Setups\ContextNameEnumeration::READ));
+        $expected = new \Yana\Forms\Setups\Context(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE);
+        $this->assertEquals($expected, $this->object->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE));
     }
 
     /**
@@ -406,7 +406,7 @@ class SetupTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetContext()
     {
-        $name = \Yana\Forms\Setups\ContextNameEnumeration::READ;
+        $name = \Yana\Forms\Setups\ContextNameEnumeration::UPDATE;
         $expected = new \Yana\Forms\Setups\Context($name);
         $expected->setFooter('footer')->setHeader('header');
         $this->assertSame($expected, $this->object->setContext($expected)->getContext($name));

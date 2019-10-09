@@ -540,7 +540,6 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Forms\Setups\IsBuild
     {
         $form = $this->getForm();
         $table = $this->_getTable();
-        $readCollection = new \Yana\Db\Ddl\ColumnCollection();
         $updateCollection = new \Yana\Db\Ddl\ColumnCollection();
         $insertCollection = new \Yana\Db\Ddl\ColumnCollection();
         $searchCollection = new \Yana\Db\Ddl\ColumnCollection();
@@ -566,7 +565,7 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Forms\Setups\IsBuild
                 }
             }
             if ($field->isVisible() && $field->isSelectable()) {
-                $readCollection[$columnName] = $column;
+                $updateCollection[$columnName] = $column;
                 // filter fields by column type
                 switch ($column->getType())
                 {
@@ -593,19 +592,14 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Forms\Setups\IsBuild
                     if ($field->isInsertable()) {
                         $insertCollection[$columnName] = $column;
                     }
-                    if ($column->isUpdatable() && $field->isUpdatable()) {
-                        $updateCollection[$columnName] = $column;
-                    }
                 }
             }
         }
-        $this->object->getContext(\Yana\Forms\Setups\ContextNameEnumeration::EDITABLE)->setColumnNames(array_keys($updateCollection->toArray()));
         $this->object->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE)->setColumnNames(array_keys($updateCollection->toArray()));
         $this->object->getContext(\Yana\Forms\Setups\ContextNameEnumeration::INSERT)->setColumnNames(array_keys($insertCollection->toArray()));
         $this->object->getContext(\Yana\Forms\Setups\ContextNameEnumeration::SEARCH)->setColumnNames(array_keys($searchCollection->toArray()));
-        $this->object->getContext(\Yana\Forms\Setups\ContextNameEnumeration::READ)->setColumnNames(array_keys($readCollection->toArray()));
         $this->_applyWhitelistColumnNames();
-        $this->_buildForeignKeyReferences($readCollection);
+        $this->_buildForeignKeyReferences($updateCollection);
         return $this;
     }
 

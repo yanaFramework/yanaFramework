@@ -52,7 +52,7 @@ class AutomatedHtmlBuilderTest extends \PHPUnit_Framework_TestCase
     /**
      * @var string
      */
-    private $_contextName = \Yana\Forms\Setups\ContextNameEnumeration::EDITABLE;
+    private $_contextName = \Yana\Forms\Setups\ContextNameEnumeration::UPDATE;
 
     /**
      * @var \Yana\Forms\Facade
@@ -372,9 +372,9 @@ class AutomatedHtmlBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testBuildByTypeNonUpdatableEmpty()
     {
-        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::READ;
+        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::UPDATE;
         $this->setUp();
-        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::STRING);
+        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::STRING)->setReadonly(true);
 
         $expected = '&ndash;';
         $this->assertSame($expected, $this->object->__invoke($this->_field));
@@ -385,12 +385,12 @@ class AutomatedHtmlBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testBuildByTypeNonUpdatableString()
     {
-        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::READ;
+        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::UPDATE;
         $this->setUp();
-        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::STRING);
+        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::STRING)->setReadonly(true);
         $this->_context->setValue('column', 'value');
 
-        $expected = '<span id="" title="" class="form-read-column">value</span>';
+        $expected = '<span id="" title="" class="form-update-column">value</span>';
         $this->assertSame($expected, $this->object->__invoke($this->_field));
     }
 
@@ -399,9 +399,9 @@ class AutomatedHtmlBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testBuildByTypeNonUpdatableArray()
     {
-        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::READ;
+        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::UPDATE;
         $this->setUp();
-        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::ARR);
+        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::ARR)->setReadonly(true);
         $this->_context->setValue('column', array('key' => 'value'));
 
         $expected = '<div id="" title="" class="gui_generator_array"><ul class="gui_array_list">' .
@@ -414,9 +414,9 @@ class AutomatedHtmlBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testBuildByTypeNonUpdatableBool()
     {
-        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::READ;
+        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::UPDATE;
         $this->setUp();
-        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::BOOL);
+        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::BOOL)->setReadonly(true);
         $this->_context->setValue('column', '1');
 
         $expected = '<span id="" title="" class="gui_generator_bool icon_true">&nbsp;</span>';
@@ -428,9 +428,9 @@ class AutomatedHtmlBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testBuildByTypeNonUpdatableColor()
     {
-        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::READ;
+        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::UPDATE;
         $this->setUp();
-        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::COLOR);
+        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::COLOR)->setReadonly(true);
         $this->_context->setValue('column', '#f0f0f0');
 
         $expected = '<span style="background-color: #f0f0f0" id="" title="" class="gui_generator_color">#f0f0f0</span>';
@@ -442,9 +442,9 @@ class AutomatedHtmlBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testBuildByTypeNonUpdatableFile()
     {
-        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::READ;
+        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::UPDATE;
         $this->setUp();
-        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::FILE);
+        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::FILE)->setReadonly(true);
         $this->_context->setValue('column', 1);
 
         $expected = '<span id="" title="" class="gui_generator_file_download"><span class="icon_blank">&nbsp;</span></span>';
@@ -456,12 +456,12 @@ class AutomatedHtmlBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testBuildByTypeNonUpdatableText()
     {
-        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::READ;
+        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::UPDATE;
         $this->setUp();
-        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::TEXT);
+        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::TEXT)->setReadonly(true);
         $this->_context->setValue('column', '<p>myText</p>');
 
-        $expected = '<div id="" title="" class="form-read-column">&lt;p&gt;myText&lt;/p&gt;</div>';
+        $expected = '<div id="" title="" class="form-update-column">&lt;p&gt;myText&lt;/p&gt;</div>';
         $this->assertSame($expected, $this->object->__invoke($this->_field));
     }
 
@@ -470,12 +470,12 @@ class AutomatedHtmlBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testBuildByTypeNonUpdatableHtml()
     {
-        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::READ;
+        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::UPDATE;
         $this->setUp();
-        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::HTML);
+        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::HTML)->setReadonly(true);
         $this->_context->setValue('column', '<p>myText</p>');
 
-        $expected = '<div id="" title="" class="form-read-column"><p>myText</p></div>';
+        $expected = '<div id="" title="" class="form-update-column"><p>myText</p></div>';
         $this->assertSame($expected, $this->object->__invoke($this->_field));
     }
 
@@ -484,9 +484,9 @@ class AutomatedHtmlBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testBuildByTypeNonUpdatableHtmlLong()
     {
-        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::READ;
+        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::UPDATE;
         $this->setUp();
-        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::HTML);
+        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::HTML)->setReadonly(true);
         $this->_context->setValue('column', '<p>abcdefghijklmnopqrstuvwxyz</p>');
 
         $expected = '<div id="" title="" class="gui_generator_readonly_textarea"><p>abcdefghijklmnopqrstuvwxyz</p></div>';
@@ -498,9 +498,9 @@ class AutomatedHtmlBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testBuildByTypeNonUpdatableImage()
     {
-        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::READ;
+        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::UPDATE;
         $this->setUp();
-        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::IMAGE);
+        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::IMAGE)->setReadonly(true);
         $this->_context->setValue('column', 0);
 
         $expected = '<div id="" title="" class="gui_generator_image"><span class="icon_blank">&nbsp;</span></div>';
@@ -512,9 +512,9 @@ class AutomatedHtmlBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testBuildByTypeNonUpdatableListString()
     {
-        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::READ;
+        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::UPDATE;
         $this->setUp();
-        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::LST)->setEnumerationItem('test', 'value');
+        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::LST)->setEnumerationItem('test', 'value')->setReadonly(true);;
         $this->_context->setValue('column', 'test');
 
         $expected = '<div id="" title="" class="gui_generator_array">test</div>';
@@ -526,9 +526,9 @@ class AutomatedHtmlBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testBuildByTypeNonUpdatableList()
     {
-        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::READ;
+        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::UPDATE;
         $this->setUp();
-        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::LST);
+        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::LST)->setReadonly(true);
         $this->_context->setValue('column', array('a' => '1', 'b' => '2'));
 
         $expected = '<div id="" title="" class="gui_generator_array"><ul class="gui_array_list">' .
@@ -542,9 +542,9 @@ class AutomatedHtmlBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testBuildByTypeNonUpdatablePassword()
     {
-        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::READ;
+        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::UPDATE;
         $this->setUp();
-        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::PASSWORD);
+        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::PASSWORD)->setReadonly(true);;
         $this->_context->setValue('column', 'this_should_never_be_shown');
 
         $expected = '&ndash;';
@@ -556,12 +556,12 @@ class AutomatedHtmlBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testBuildByTypeNonUpdatableReferenceWrongDataType()
     {
-        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::READ;
+        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::UPDATE;
         $this->setUp();
-        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::REFERENCE);
+        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::REFERENCE)->setReadonly(true);
         $this->_context->setValue('column', array('test'));
 
-        $expected = '<span id="" title="" class="form-read-column"></span>';
+        $expected = '<span id="" title="" class="form-update-column"></span>';
         $this->assertSame($expected, $this->object->__invoke($this->_field));
     }
 
@@ -570,14 +570,14 @@ class AutomatedHtmlBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testBuildByTypeNonUpdatableReference()
     {
-        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::READ;
+        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::UPDATE;
         $this->setUp();
-        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::REFERENCE);
+        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::REFERENCE)->setReadonly(true);
         $this->_context->setValue('column', 'test');
         $this->_field->getColumn()->setReferenceSettings('table', 'column', 'label');
         $this->_field->getContext()->setRows(array(array('COLUMN' => '1', 'LABEL' => '2')));
 
-        $expected = '<span id="" title="" class="form-read-column">2</span>';
+        $expected = '<span id="" title="" class="form-update-column">2</span>';
         $this->assertSame($expected, $this->object->__invoke($this->_field));
     }
 
@@ -586,13 +586,13 @@ class AutomatedHtmlBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testBuildByTypeNonUpdatableDate()
     {
-        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::READ;
+        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::UPDATE;
         $this->setUp();
-        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::DATE);
+        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::DATE)->setReadonly(true);
         $this->_context->setValue('column', 1);
         \Yana\Views\Helpers\Formatters\DateFormatter::setFormat('d/m/Y', 'date.toLocaleString()');
 
-        $expected = '<span id="" title="" class="form-read-column">' .
+        $expected = '<span id="" title="" class="form-update-column">' .
             '<script type="text/javascript" language="JavaScript">date=new Date(1000);document.write(date.toLocaleString());</script>' .
             '<span class="yana_noscript">01/01/1970</span></span>';
         $this->assertSame($expected, $this->object->__invoke($this->_field));
@@ -603,9 +603,9 @@ class AutomatedHtmlBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testBuildByTypeNonUpdatableUrlWrongDataType()
     {
-        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::READ;
+        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::UPDATE;
         $this->setUp();
-        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::URL);
+        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::URL)->setReadonly(true);
         $this->_context->setValue('column', array('test'));
 
         $expected = '&ndash;';
@@ -617,12 +617,12 @@ class AutomatedHtmlBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testBuildByTypeNonUpdatableUrl()
     {
-        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::READ;
+        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::UPDATE;
         $this->setUp();
-        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::URL);
+        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::URL)->setReadonly(true);
         $this->_context->setValue('column', 'url?a=1&b=2');
 
-        $expected = '/<a id="" title=".*?" class="form-read-column" ' .
+        $expected = '/<a id="" title=".*?" class="form-update-column" ' .
             'onclick="return confirm\(\'.*?\'\)" href="url\?a=1&amp;b=2">url\?a=1&b=2<\/a>/';
         $this->assertRegExp($expected, $this->object->__invoke($this->_field));
     }
@@ -632,12 +632,12 @@ class AutomatedHtmlBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testBuildByTypeStringWrongDataType()
     {
-        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::READ;
+        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::UPDATE;
         $this->setUp();
-        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::STRING);
+        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::STRING)->setReadonly(true);
         $this->_context->setValue('column', array('test'));
 
-        $expected = '<span id="" title="" class="form-read-column">&ndash;</span>';
+        $expected = '<span id="" title="" class="form-update-column">&ndash;</span>';
         $this->assertSame($expected, $this->object->__invoke($this->_field));
     }
 
@@ -646,12 +646,12 @@ class AutomatedHtmlBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testBuildByTypeString()
     {
-        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::READ;
+        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::UPDATE;
         $this->setUp();
-        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::STRING);
+        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::STRING)->setReadonly(true);
         $this->_context->setValue('column', '<p>test</p>');
 
-        $expected = '<span id="" title="" class="form-read-column">&lt;p&gt;test&lt;/p&gt;</span>';
+        $expected = '<span id="" title="" class="form-update-column">&lt;p&gt;test&lt;/p&gt;</span>';
         $this->assertSame($expected, $this->object->__invoke($this->_field));
     }
 
@@ -660,12 +660,12 @@ class AutomatedHtmlBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testBuildByTypeStringLong()
     {
-        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::READ;
+        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::UPDATE;
         $this->setUp();
-        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::STRING);
+        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::STRING)->setReadonly(true);
         $this->_context->setValue('column', 'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabc');
 
-        $expected = '<span id="" title="" class="form-read-column">' .
+        $expected = '<span id="" title="" class="form-update-column">' .
             'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwx&nbsp;...</span>';
         $this->assertSame($expected, $this->object->__invoke($this->_field));
     }
@@ -765,15 +765,15 @@ class AutomatedHtmlBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateLink()
     {
-        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::READ;
+        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::UPDATE;
         $this->setUp();
-        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::STRING);
+        $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::STRING)->setReadonly(true);
         $this->_context->setValue('column', 123);
         $this->_field->getField()->addEvent('test')->setAction('action')->setLabel('label')->setIcon(__FILE__);
         \Yana\Views\Helpers\Formatters\UrlFormatter::setDependencyContainer(new \Yana\Core\Dependencies\UrlFormatterContainer('https://URL'));
 
         $link = $this->object->__invoke($this->_field);
-        $this->assertStringStartsWith('<span id="" title="" class="form-read-column">123</span>', $link);
+        $this->assertStringStartsWith('<span id="" title="" class="form-update-column">123</span>', $link);
         $this->assertRegExp('/<img src="[^"]+" alt="[^"]*"\/>/', $link);
         $expected = '/<a id="form---column" class="gui_generator_int_link" title=".*?" ' .
             'href=".*?\?&amp;action=test&amp;target\[\]=&amp;target%5Bcolumn%5D=123">/';
@@ -786,14 +786,14 @@ class AutomatedHtmlBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateJavascriptEvents()
     {
-        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::READ;
+        $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::UPDATE;
         $this->setUp();
         $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::STRING);
         $this->_context->setValue('column', 'test');
-        $this->_field->getField()->addEvent('ontest')->setAction('action')->setLanguage('javascript');
+        $this->_field->getField()->setReadonly(true)->addEvent('ontest')->setAction('action')->setLanguage('javascript');
 
         $javascript = $this->object->__invoke($this->_field);
-        $this->assertSame('<span ontest="action" id="" title="" class="form-read-column">test</span>', $javascript);
+        $this->assertSame('<span ontest="action" id="" title="" class="form-update-column">test</span>', $javascript);
     }
 
 }

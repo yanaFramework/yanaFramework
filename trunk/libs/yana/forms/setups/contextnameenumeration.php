@@ -37,11 +37,6 @@ class ContextNameEnumeration extends \Yana\Core\AbstractEnumeration
 {
 
     /**
-     * For forms that are meant to browse data only.
-     */
-    const READ = 'read';
-
-    /**
      * If the form is meant to browse AND update data.
      */
     const UPDATE = 'update';
@@ -55,13 +50,6 @@ class ContextNameEnumeration extends \Yana\Core\AbstractEnumeration
      * For forms that don't show any pre-existing data, and are meant to create a new data sets only.
      */
     const INSERT = 'insert';
-
-    /**
-     * A meta-context, that stores a collection of editable fields to describe other "editable" contexts, such as "update".
-     *
-     * @ignore
-     */
-    const EDITABLE = 'editable';
 
 }
 
