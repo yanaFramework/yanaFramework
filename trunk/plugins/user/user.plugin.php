@@ -51,7 +51,6 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
         if (isset($YANA)) {
             $userName = $session->getCurrentUserName();
             if ($userName > "") {
-                $YANA->setVar("SESSION_USER_ID", $userName);
                 $profileId = $YANA->getProfileId();
                 $user = $security->loadUser($userName);
                 $securityLevel = $user->getSecurityLevel($profileId);
