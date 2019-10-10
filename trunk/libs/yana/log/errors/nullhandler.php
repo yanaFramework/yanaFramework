@@ -56,10 +56,10 @@ class NullHandler extends \Yana\Log\Errors\AbstractHandler
      *
      * @param   string  $pathToFile   ignored
      * @param   int     $lineNumber   ignored
-     * @param   string  $code         ignored
+     * @param   scalar  $code         ignored
      * @param   string  $description  ignored
      */
-    public function handleAssertion(string $pathToFile, int $lineNumber, string $code, string $description = "")
+    public function handleAssertion(string $pathToFile, int $lineNumber, $code, string $description = "")
     {
         // intentionally left blank
     }
