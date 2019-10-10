@@ -806,16 +806,20 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
     {
         switch ($this->type)
         {
-            case 'integer':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::INT:
                 return $this->isAutoIncrement();
 
-            case 'inet':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::INET:
                 return ($this->getDefault() === 'REMOTE_ADDR');
 
-            case 'time':
-            case 'date':
-            case 'timestamp':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::TIME:
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::DATE:
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::TIMESTAMP:
                 return ($this->getDefault() === 'CURRENT_TIMESTAMP');
+
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::STRING:
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::REFERENCE:
+                return in_array($this->name, array('profile_id', 'user_created', 'user_modified')) || $this->getDefault() === 'CURRENT_USER';
 
             default:
                 return false;
@@ -1652,7 +1656,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
         switch ($this->type)
         {
             // IPs
-            case 'inet':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::INET:
                 if ($default === 'REMOTE_ADDR') {
                     // The fall-back is here to avoid errors when the framework is used in command-line mode
                     return (isset($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : '0.0.0.0';
@@ -1660,25 +1664,30 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
                 return $default;
 
             // dates and times
-            case 'time':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::TIME:
                 if ($default === 'CURRENT_TIMESTAMP') {
                     return date('c');
                 }
                 return $default;
 
-            case 'date':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::DATE:
                 if ($default === 'CURRENT_TIMESTAMP') {
                     return date('Y-m-d');
                 }
                 return $default;
 
-            case 'timestamp':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::TIMESTAMP:
                 if ($default === 'CURRENT_TIMESTAMP') {
                     return time();
                 }
                 return $default;
 
-            case 'string':
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::STRING:
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::REFERENCE:
+                if ($default === 'CURRENT_USER') {
+                    $session = new \Yana\Security\Sessions\Wrapper();
+                    return $session->getCurrentUserName();
+                }
                 switch ($this->name)
                 {
                     case 'profile_id':
