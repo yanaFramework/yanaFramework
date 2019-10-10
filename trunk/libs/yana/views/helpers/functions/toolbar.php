@@ -49,7 +49,12 @@ class Toolbar extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vi
      */
     public function __invoke(array $params, \Smarty_Internal_Template $smarty)
     {
-        $menuHelper = \Yana\Views\Helpers\Html\MenuHelper::factory(3);
+        $isVertical = isset($params['vertical']) ? \filter_var($params['vertical'], FILTER_VALIDATE_BOOLEAN) : false;
+        if ($isVertical) {
+            $menuHelper = \Yana\Views\Helpers\Html\MenuHelper::factory(\Yana\Views\Helpers\Html\MenuLayouts\LayoutEnumeration::VERTICAL);
+        } else {
+            $menuHelper = \Yana\Views\Helpers\Html\MenuHelper::factory(\Yana\Views\Helpers\Html\MenuLayouts\LayoutEnumeration::HORIZONTAL);
+        }
         /* @var $menuHelper \Yana\Views\Helpers\Html\MenuHelper */
         $menuHelper->setAllowHtml(true)
             ->setUseKeys(\Yana\Views\Helpers\Html\MenuLayouts\KeyEnumeration::CONVERT_HREF);
