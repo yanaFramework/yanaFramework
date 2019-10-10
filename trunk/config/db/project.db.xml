@@ -68,7 +68,7 @@
                 length="100"
                 notnull="yes"
                 title='{lang id="PRJ.USER"}'>
-                <default>{$SESSION_USER_ID}</default>
+                <default>CURRENT_USER</default>
             </string>
             <string
                 name="effort_short"

@@ -91,7 +91,7 @@
     </table>
     <table name="userprofile">
         <primarykey>user_id</primarykey>
-        <foreign table="user">
+        <foreign table="user" ondelete="cascade">
             <key name="user_id"/>
         </foreign>
         <declaration>
@@ -185,11 +185,11 @@
                 name="security_id"
                 notnull="yes"
                 autoincrement="yes">
-<!--
-                <DISPLAY>
-                    <HIDDEN>true</HIDDEN>
-                </DISPLAY>
--->
+                <!--
+                                <DISPLAY>
+                                    <HIDDEN>true</HIDDEN>
+                                </DISPLAY>
+                -->
             </integer>
             <reference
                 name="user_id"
@@ -198,11 +198,11 @@
                 label="user_name"
                 readonly="yes"
                 title='{lang id="USER.OPTION.0"}'>
-<!--
-                <DISPLAY>
-                    <READONLY>100</READONLY>
-                </DISPLAY>
--->
+                <!--
+                                <DISPLAY>
+                                    <READONLY>100</READONLY>
+                                </DISPLAY>
+                -->
             </reference>
             <range
                 name="security_level"
@@ -218,11 +218,11 @@
                 length="32"
                 notnull="yes"
                 title='{lang id="PROFILE_ID"}'>
-<!--
-                <DISPLAY>
-                    <READONLY>100</READONLY>
-                </DISPLAY>
--->
+                <!--
+                                <DISPLAY>
+                                    <READONLY>100</READONLY>
+                                </DISPLAY>
+                -->
             </string>
             <reference
                 name="user_created"
@@ -230,11 +230,11 @@
                 column="user_id"
                 table="user"
                 notnull="yes">
-<!--
-                <DISPLAY>
-                    <READONLY>100</READONLY>
-                </DISPLAY>
--->
+                <!--
+                                <DISPLAY>
+                                    <READONLY>100</READONLY>
+                                </DISPLAY>
+                -->
             </reference>
             <bool
                 name="user_proxy_active"
@@ -281,8 +281,8 @@
                 title='{lang id="USER.OPTION.24"}'>
             </string>
         </declaration>
-      </table>
-      <table name="securityaction">
+    </table>
+    <table name="securityaction">
         <primarykey>action_id</primarykey>
         <declaration>
             <string
@@ -295,16 +295,16 @@
                 length="128">
             </string>
         </declaration>
-      </table>
+    </table>
     <table name="securityrules">
         <primarykey>rule_id</primarykey>
-        <foreign table="securitygroup">
+        <foreign table="securitygroup" ondelete="cascade">
             <key name="group_id"/>
         </foreign>
-        <foreign table="securityrole">
+        <foreign table="securityrole" ondelete="cascade">
             <key name="role_id"/>
         </foreign>
-        <foreign table="user">
+        <foreign table="user" ondelete="cascade">
             <key name="user_id"/>
         </foreign>
         <declaration>
@@ -344,11 +344,11 @@
                 column="user_id"
                 table="user"
                 notnull="yes">
-<!--
-                <DISPLAY>
-                    <READONLY>100</READONLY>
-                </DISPLAY>
--->
+                <!--
+                                <DISPLAY>
+                                    <READONLY>100</READONLY>
+                                </DISPLAY>
+                -->
             </reference>
             <bool
                 name="user_proxy_active"
@@ -364,12 +364,12 @@
             <column name="role_id"/>
         </index>
     </table>
-      <table name="securityactionrules">
+    <table name="securityactionrules">
         <primarykey>actionrule_id</primarykey>
-        <foreign table="securitygroup">
+        <foreign table="securitygroup" ondelete="cascade">
             <key name="group" column="group_id"/>
         </foreign>
-        <foreign table="securityrole">
+        <foreign table="securityrole" ondelete="cascade">
             <key name="role" column="role_id"/>
         </foreign>
         <declaration>
@@ -404,14 +404,14 @@
                 title='{lang id="USER.OPTION.23"}'>
             </integer>
             <bool
-                 name="actionrule_active"
-                 title='Active'>
-                 <default>true</default>
+                name="actionrule_active"
+                title='Active'>
+                <default>true</default>
             </bool>
             <bool
-                 name="actionrule_predefined">
-                 <default>false</default>
+                name="actionrule_predefined">
+                <default>false</default>
             </bool>
         </declaration>
-      </table>
+    </table>
 </database>

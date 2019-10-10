@@ -29,7 +29,7 @@
                 notnull="yes"
                 length="128"
                 title="User">
-                <default>{$SESSION_USER_ID}</default>
+                <default>CURRENT_USER</default>
             </string>
             <timestamp
                 name="log_time"
