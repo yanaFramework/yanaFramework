@@ -523,7 +523,7 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
         } catch (\Yana\Core\Exceptions\User\NotFoundException $e) {
 
             unset($e);
-            return (int) $defaultProfileId !== "" ? $this->getSecurityLevel($defaultProfileId) : 0; // 0 is default
+            return (int) ($defaultProfileId !== "" ? $this->getSecurityLevel($defaultProfileId) : 0); // 0 is default
         }
     }
 
