@@ -89,7 +89,7 @@ class MenuHelper extends \Yana\Core\StdObject
      * @param   int  $layoutNumber  select a registered layout
      * @return  \Yana\Views\Helpers\Html\MenuHelper
      */
-    public static function factory($layoutNumber = 1)
+    public static function factory($layoutNumber = \Yana\Views\Helpers\Html\MenuLayouts\LayoutEnumeration::SIMPLE)
     {
         switch ($layoutNumber)
         {
