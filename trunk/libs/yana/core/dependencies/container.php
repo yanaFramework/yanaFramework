@@ -343,8 +343,8 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
 
             // set user name
             $session = $this->getSession();
-            if (!empty($session['user_name'])) {
-                $this->_registry->setVar("SESSION_USER_ID", $session['user_name']);
+            if ($this->getSession()->getCurrentUserName()) {
+                $this->_registry->setVar("SESSION_USER_ID", $this->getSession()->getCurrentUserName());
             }
             unset($session);
 
