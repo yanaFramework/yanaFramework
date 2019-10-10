@@ -498,6 +498,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
             $listOfResultSets = array();
             foreach ($joins as $joinCondition)
             {
+                /** @var \Yana\Db\Queries\JoinCondition $joinCondition */
                 $resultset = $this->_join(
                     $joinCondition->getSourceTableName(),
                     $joinCondition->getJoinedTableName(),
