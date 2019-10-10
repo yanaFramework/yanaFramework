@@ -197,19 +197,33 @@ class Worker extends \Yana\Forms\QueryBuilder
         assert(!isset($form), 'Cannot redeclare var $form');
         $form = $this->getForm();
         if ($form) {
+            assert(!isset($newEntry), 'Cannot redeclare var $newEntry');
             $newEntry = $form->getSetup()->getContext(\Yana\Forms\Setups\ContextNameEnumeration::INSERT)->getValues();
+            assert(!isset($tableName), 'Cannot redeclare var $tableName');
+            $tableName = $form->getBaseForm()->getTable();
+            assert(!isset($baseTable), 'Cannot redeclare var $baseTable');
+            $baseTable = $form->getBaseForm()->getDatabase()->getTable($tableName);
 
             /**
              * We need to copy the primary key of the parent form to the foreign key column of the child form.
              * Otherwise the inserted row would get rejected for a foreign key constraint mismatch.
              */
             $parentForm = $form->getParent();
-            if ($parentForm && $parentForm->getBaseForm()->getTable() !== $form->getBaseForm()->getTable()) {
+            if ($parentForm && $parentForm->getBaseForm()->getTable() !== $tableName) {
                 $results = $parentForm->getUpdateValues();
                 if (count($results) === 1) {
-                    $foreignKeyArray = $this->getForeignKey(); // Returns array, where the first entry is the source column in the sub-form
-                    $foreignKey = \array_shift($foreignKeyArray);
-                    $newEntry[$foreignKey] = key($results);
+                    foreach ($this->getForeignKeys() as $foreignKeyArray)
+                    {
+                        // $foreignKeyArray is an array, where the first entry is the source column in the sub-form
+                        $foreignKey = \mb_strtoupper(\array_shift($foreignKeyArray));
+                        if ((!isset($newEntry[$foreignKey]) || $newEntry[$foreignKey] === "")) {
+                            if ($baseTable->getColumn($foreignKey)->hasDefault()) {
+                                unset($newEntry[$foreignKey]);
+                            } else {
+                                $newEntry[$foreignKey] = key($results);
+                            }
+                        }
+                    }
                 }
                 unset($results, $foreignKey, $foreignKeyArray);
             }

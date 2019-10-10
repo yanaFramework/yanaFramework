@@ -307,14 +307,7 @@ class QueryBuilder extends \Yana\Forms\AbstractQueryBuilder
                 if (count($results) === 1) {
                     $results = current($results);
                     if (isset($results[$targetColumnName])) {
-                        $where = $select->getWhere();
-                        $foreignKeyClause = array($sourceColumnName, '=', $results[$targetColumnName]);
-                        if (empty($where)) {
-                            $where = $foreignKeyClause;
-                        } else {
-                            $where = array($where, 'AND', $foreignKeyClause);
-                        }
-                        $select->setWhere($where);
+                        $select->addWhere(array($sourceColumnName, '=', $results[$targetColumnName]));
                     }
                 }
             }
@@ -354,7 +347,7 @@ class QueryBuilder extends \Yana\Forms\AbstractQueryBuilder
      * @return  array
      * @throws  \Yana\Db\Queries\Exceptions\NotFoundException  when no foreign key is found
      */
-    protected function getForeignKey()
+    protected function getForeignKeys()
     {
         assert(!isset($form), 'Cannot redeclare var $form');
         $form = $this->getForm();
@@ -371,37 +364,80 @@ class QueryBuilder extends \Yana\Forms\AbstractQueryBuilder
 
         assert(!isset($targetTable), 'Cannot redeclare var $targetTable');
         $targetTable = $parentForm->getTable();
-        assert(!isset($sourceTable), 'Cannot redeclare var $sourceTable');
-        $sourceTable = $form->getTable();
+
+        assert(!isset($foreignKeys), 'Cannot redeclare var $foreignKeys');
+        $foreignKeys = array();
+
+        assert(!isset($columns), 'Cannot redeclare var $columns');
         assert(!isset($keyName), 'Cannot redeclare var $keyName');
-        $keyName = $baseForm->getKey();
         assert(!isset($columnName), 'Cannot redeclare var $columnName');
-        $columnName = "";
         /* @var $foreign \Yana\Db\Ddl\ForeignKey */
-        foreach ($sourceTable->getForeignKeys() as $foreign)
+        foreach ($form->getTable()->getForeignKeys() as $foreign)
         {
             if ($targetTable !== $foreign->getTargetTable()) {
                 continue;
             }
             $columns = $foreign->getColumns();
-            if (!empty($keyName)) {
-                // Form explicitely defines a key-column, so all we need is the target
-                if (!isset($columns[$keyName])) {
-                    continue;
-                } elseif (!empty($columns[$keyName])) {
-                    $columnName = $columns[$keyName];
-                }
-            } else {
-                // try to determine a matching source and target column
-                $keyName = key($columns);
-                $columnName = current($columns);
-                reset($columns);
-            }
+            $keyName = key($columns);
+            $columnName = current($columns);
+            reset($columns);
             // fall back to primary key, if the target is undefined
             if (empty($columnName)) {
                 $columnName = $db->getTable($targetTable)->getPrimaryKey();
             }
-            break;
+            $foreignKeys[] = array($keyName, $columnName);
+        }
+        if (empty($foreignKeys)) {
+            $message = "No suitable foreign-key found in form '" . $baseForm->getName() . "'.";
+            $level = \Yana\Log\TypeEnumeration::ERROR;
+            throw new \Yana\Db\Queries\Exceptions\NotFoundException($message, $level);
+        }
+        return $foreignKeys;
+    }
+
+    /**
+     * Get the foreign key definition for subforms.
+     *
+     * If the form is associated with the parent form via a foreign key,
+     * this function will return it. If there is none, it will return NULL instead.
+     *
+     * If no key is set this function will try to resolve it.
+     *
+     * The return value is an array of the source-column in the table of the subform and
+     * the target-column in the table of the base-form.
+     *
+     * @return  array
+     * @throws  \Yana\Db\Queries\Exceptions\NotFoundException  when no foreign key is found
+     */
+    protected function getForeignKey()
+    {
+        assert(!isset($form), 'Cannot redeclare var $form');
+        $form = $this->getForm();
+        assert($form instanceof \Yana\Forms\Facade);
+        assert(!isset($baseForm), 'Cannot redeclare var $baseForm');
+        $baseForm = $form->getBaseForm();
+        assert($baseForm instanceof \Yana\Db\Ddl\Form);
+
+        assert(!isset($keyName), 'Cannot redeclare var $keyName');
+        $keyName = $baseForm->getKey();
+        assert(!isset($columnName), 'Cannot redeclare var $columnName');
+        $columnName = "";
+        assert(!isset($columns), 'Cannot redeclare var $columns');
+        foreach ($this->getForeignKeys() as $columns)
+        {
+            assert(is_array($columns));
+            if (!empty($keyName)) {
+                // Form explicitely defines a key-column, so all we need is the target
+                if ($keyName === $columns[0]) {
+                    $columnName = $columns[1];
+                    break;
+                }
+            } else {
+                // try to determine a matching source and target column
+                $keyName = $columns[0];
+                $columnName = $columns[1];
+                break;
+            }
         }
         if (empty($keyName) || empty($columnName)) {
             $message = "No suitable foreign-key found in form '" . $baseForm->getName() . "'.";
