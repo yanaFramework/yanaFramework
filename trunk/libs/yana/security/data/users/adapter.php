@@ -94,6 +94,18 @@ class Adapter extends \Yana\Security\Data\Users\AbstractAdapter
     }
 
     /**
+     * Unserializes the table-row to an entity object.
+     *
+     * @param   array  $formData  user data
+     * @return  \Yana\Data\Adapters\IsEntity
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the given data is invalid
+     */
+    public function toEntity(array $formData)
+    {
+        return $this->_unserializeEntity($formData);
+    }
+
+    /**
      * Loads and returns an user account from the database.
      *
      * @param   string  $userId  name of the account
