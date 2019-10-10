@@ -94,10 +94,6 @@ class Transaction extends \Yana\Core\StdObject implements \Yana\Db\IsTransaction
      */
     public function commit(\Yana\Db\IsDriver $driver)
     {
-        if (count($this->_queue) == 0) {
-            return $this; // nothing to commit
-        }
-
         // start transaction
         $driver->beginTransaction();
 
