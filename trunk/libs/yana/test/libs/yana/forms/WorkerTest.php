@@ -302,7 +302,17 @@ class WorkerTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateMissingInputException()
     {
-        $this->object->create();
+        $this->object->create(); // missing table (don't know where to insert)
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\Forms\MissingInputException
+     */
+    public function testCreateMissingInputException2()
+    {
+        $this->form->getBaseForm()->setTable('ft');
+        $this->object->create(); // missing data (don't know what to insert)
     }
 
     /**
