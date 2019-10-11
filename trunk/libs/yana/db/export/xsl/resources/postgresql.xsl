@@ -242,7 +242,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     
     <!-- Add UNIQUE constraints -->
     <xsl:if test="declaration/*[@unique = 'yes']">
-        <xsl:value-of select="concat(', &#10;&#09;UNIQUE &#34;', $tableName, '&#34; (')"/>
+        <xsl:value-of select="concat(',&#10;&#09;UNIQUE &#34;', $tableName, '&#34; (')"/>
         <xsl:for-each select="declaration/*[@unique = 'yes']">
             <xsl:value-of select="concat('&#34;', @name, '&#34;')"/>
             <xsl:if test="position() != last()">
@@ -328,8 +328,8 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
             <xsl:when test="default[@dbms = 'postgresql']">
                 <xsl:value-of select="default[@dbms = 'postgresql']/."/>
             </xsl:when>
-            <xsl:when test="default[not(@dbms)]">
-                <xsl:value-of select="default[not(@dbms)]/."/>
+            <xsl:when test="default[not(@dbms) or @dbms = 'generic']">
+                <xsl:value-of select="default[not(@dbms) or @dbms = 'generic']/."/>
             </xsl:when>
             <xsl:otherwise>NULL</xsl:otherwise>
         </xsl:choose>
@@ -347,14 +347,18 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
         </xsl:when>
         <!-- Type default value REMOTE_ADDR is not supported and must be simulated -->
         <xsl:when test="name() = 'inet' and $default = 'REMOTE_ADDR'">NULL</xsl:when>
+        <!-- CURRENT_USER must be mapped for types String and Reference
+        -->
+        <xsl:when test="(name() = 'string') and $default = 'CURRENT_USER'"><xsl:text>NULL</xsl:text></xsl:when>
+        <xsl:when test="(name() = 'reference') and $default = 'CURRENT_USER'">NULL</xsl:when>
         <!-- CURRENT_TIMESTAMP must be mapped for types Date and DateTime
 
              There is an issue with CURRENT_TIMESTAMP: MySQL allows at most ONE column
              with this default value. Otherwise it reports an error.
              Thus this feature must be simulated.
         -->
-        <xsl:when test="(name() = 'date') and $default = 'CURRENT_TIMESTAMP'">NULL</xsl:when>
-        <xsl:when test="(name() = 'time') and $default = 'CURRENT_TIMESTAMP'">NULL</xsl:when>
+        <xsl:when test="(name() = 'date') and $default = 'CURRENT_TIMESTAMP'">CURRENT_DATE</xsl:when>
+        <xsl:when test="(name() = 'time') and $default = 'CURRENT_TIMESTAMP'">CURRENT_TIMESTAMP(0)</xsl:when>
         <xsl:when test="(name() = 'timestamp') and $default = 'CURRENT_TIMESTAMP'">NULL</xsl:when>
         <!-- Number types -->
         <xsl:when test="name() = 'integer' or name() = 'float'">
