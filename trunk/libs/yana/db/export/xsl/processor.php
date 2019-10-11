@@ -1,5 +1,4 @@
 <?php
-
 /**
  * YANA library
  *
@@ -25,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Export\Xsl;
 
@@ -81,9 +81,15 @@ class Processor extends \Yana\Core\StdObject implements \Yana\Db\Export\Xsl\IsPr
         $xsltProcessor->importStyleSheet($xslDocument); // attach the xsl rules
 
         // Transform to SQL
-        $sql = trim($xsltProcessor->transformToXml($xmlDocument));
-        $array = preg_split('/(?<=;)$/m', $sql);
-        assert(is_array($array), 'is_array($array)');
+        $sql = $xsltProcessor->transformToXml($xmlDocument);
+        $array = array();
+        foreach (preg_split('/(?<=;)$/m', $sql) as $line)
+        {
+            $line = trim($line);
+            if ($line !== "") {
+                $array[] = $line;
+            }
+        }
         return $array;
     }
 
