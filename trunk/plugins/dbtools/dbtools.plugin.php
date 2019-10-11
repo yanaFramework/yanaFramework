@@ -281,6 +281,7 @@ class DbToolsPlugin extends \Yana\Plugins\AbstractPlugin
                 continue;
             }
 
+            $fileContents .= "-- Export for database '" . $dbName . "'\n\n";
             /* Mapping the DBMS to the SQL export function in class \Yana\Db\Export\SqlFactory */
             switch ($dbms)
             {
@@ -312,7 +313,7 @@ class DbToolsPlugin extends \Yana\Plugins\AbstractPlugin
             }
             $dbc = new \Yana\Db\Export\SqlFactory( \Yana\Files\XDDL::getDatabase($dbName) );
             $arrayOfStmts = $dbc->$methodName();
-            $fileContents .= implode("\n", $arrayOfStmts) . "\n";
+            $fileContents .= implode("\n\n", $arrayOfStmts) . "\n\n";
         }
 
         $filename = mb_strtolower(preg_replace('/\W/', '_', $dbms) . '.sql');
