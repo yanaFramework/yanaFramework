@@ -29,18 +29,31 @@
 declare(strict_types=1);
 
 /**
+ * Check system requirements
+ */
+switch (false)
+{
+    case \function_exists('mb_http_input'):
+        $message = "The Multibyte String PHP extension is required for UTF-8 support. However, this exentsion was not found. "
+            . "Linux users: install this feature via 'sudo apt-get install php7.0-mbstring'. "
+            . "Windows users: edit php.ini and add 'extension=php_mbstring.dll'.";
+        \trigger_error($message, \E_USER_ERROR);
+        exit;
+    case \function_exists('simplexml_load_file'):
+        $message = "The SimpleXML PHP extension is required to load the primary configuration file. However, this exentsion was not found. "
+            . "Linux users: install this feature via 'sudo apt-get install php-xml'. "
+            . "Windows users: edit php.ini and add 'extension=php_xsl.dll'.";
+        \trigger_error($message, \E_USER_ERROR);
+        exit;
+}
+
+/**
  * Set encoding to UTF-8
  */
-if (PHP_VERSION_ID < 50600) {
-    iconv_set_encoding('input_encoding', 'UTF-8');
-    iconv_set_encoding('output_encoding', 'UTF-8');
-    iconv_set_encoding('internal_encoding', 'UTF-8');
-} else {
-    ini_set('default_charset', 'UTF-8');
-    ini_set('input_encoding', 'UTF-8');
-    ini_set('output_encoding', 'UTF-8');
-    ini_set('internal_encoding', 'UTF-8');
-}
+ini_set('default_charset', 'UTF-8');
+ini_set('input_encoding', 'UTF-8');
+ini_set('output_encoding', 'UTF-8');
+ini_set('internal_encoding', 'UTF-8');
 mb_http_input("UTF-8");
 mb_internal_encoding("UTF-8");
 mb_http_output("UTF-8");
