@@ -201,8 +201,14 @@ class Worker extends \Yana\Forms\QueryBuilder
             $newEntry = $form->getSetup()->getContext(\Yana\Forms\Setups\ContextNameEnumeration::INSERT)->getValues();
             assert(!isset($tableName), 'Cannot redeclare var $tableName');
             $tableName = $form->getBaseForm()->getTable();
+            if ($tableName == "") {
+                $message = "No base table defined for the given form.";
+                throw new \Yana\Core\Exceptions\Forms\MissingInputException($message, \Yana\Log\TypeEnumeration::WARNING);
+            }
+            assert(!isset($database), 'Cannot redeclare var $database');
+            $database = $this->getDatabase();
             assert(!isset($baseTable), 'Cannot redeclare var $baseTable');
-            $baseTable = $form->getBaseForm()->getDatabase()->getTable($tableName);
+            $baseTable = $database->getTable($tableName);
 
             /**
              * We need to copy the primary key of the parent form to the foreign key column of the child form.
@@ -235,9 +241,6 @@ class Worker extends \Yana\Forms\QueryBuilder
                 $level = \Yana\Log\TypeEnumeration::WARNING;
                 throw new \Yana\Core\Exceptions\Forms\MissingInputException($message, $level);
             }
-
-            assert(!isset($database), 'Cannot redeclare var $database');
-            $database = $this->getDatabase();
 
             // execute hooks
             foreach ($this->_callbackCache->getBeforeCreate() as $callback)
