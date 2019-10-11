@@ -182,10 +182,21 @@ class ApplicationReportBuilder extends \Yana\Core\StdObject
         // @codeCoverageIgnoreStart
         if (!class_exists("MDB2", false)) {
             $message = "PHP PEAR-MDB2 module not found. " .
-                "Database plugins require PEAR-MDB2 and will not run unless you install it.";
+                "Some database systems that work with YANA require PEAR-MDB2 and will not be able to connect unless you install it.";
+            $subReport->addWarning($message);
+        } else {
+            $subReport->addText(
+                "PHP PEAR-MDB2 found. Yana supports the following drivers: " . \implode(", ", \Yana\Db\Mdb2\DriverEnumeration::getValidItems())
+            );
+        }
+        if (!class_exists('\Doctrine\DBAL\Driver', false)) {
+            $message = "Doctrine DBAL module not found. " .
+                "Some database systems that work with YANA require Doctrine DBAL and will not be able to connect unless you install it.";
             $subReport->addError($message);
         } else {
-            $subReport->addText("PHP PEAR-MDB2 found (required to run database plugins)");
+            $subReport->addText(
+                "Doctrine DBAL found. Supported drivers: " . \implode(", ", \Yana\Db\Doctrine\DriverEnumeration::getValidItems())
+            );
         }
 
         if (YANA_CDROM === true) {
