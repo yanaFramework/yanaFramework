@@ -66,7 +66,7 @@ interface IsBehavior
      * Set login password to $password for current user.
      *
      * @param   string  $password  non-empty alpha-numeric text with optional special characters
-     * @return  \Yana\Security\Passwords\Behaviors\IsBehavior
+     * @return  $this
      */
     public function changePassword($password);
 
@@ -103,7 +103,7 @@ interface IsBehavior
      * Replaces currently wrapped user.
      *
      * @param   \Yana\Security\Data\Users\IsEntity  $user  entity to wrap
-     * @return  \Yana\Security\Passwords\Behaviors\IsBehavior
+     * @return  $this
      */
     public function setUser(\Yana\Security\Data\Users\IsEntity $user);
 
