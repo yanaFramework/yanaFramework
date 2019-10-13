@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Security\Passwords\Providers;
 
@@ -35,32 +36,9 @@ namespace Yana\Security\Passwords\Providers;
  * @package     yana
  * @subpackage  security
  */
-abstract class AbstractProvider extends \Yana\Core\StdObject implements \Yana\Security\Passwords\Providers\IsProvider
+abstract class AbstractProvider extends \Yana\Core\StdObject implements \Yana\Security\Passwords\Providers\IsAuthenticationProvider
 {
-
-    /**
-     * @var \Yana\Security\Data\Users\IsEntity
-     */
-    private $_user = null;
-
-    /**
-     * <<construct>> Initialize user entity.
-     *
-     * @param  \Yana\Security\Data\Users\IsEntity  $user  from database
-     */
-    public function __construct(\Yana\Security\Data\Users\IsEntity $user)
-    {
-        $this->_user = $user;
-    }
-
-    /**
-     * @return \Yana\Security\Data\Users\IsEntity
-     */
-    protected function _getUser(): \Yana\Security\Data\Users\IsEntity
-    {
-        return $this->_user;
-    }
-
+    // intentionally left blank
 }
 
 ?>

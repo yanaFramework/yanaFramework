@@ -54,10 +54,17 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Security\Passwords\B
     private $_passwordGenerator = null;
 
     /**
+     * Used to change and check passwords.
+     *
+     * @var  \Yana\Security\Passwords\Providers\IsAuthenticationProvider
+     */
+    private $_authenticationProvider = null;
+
+    /**
      * Set password algorithm builder dependency.
      *
      * @param   \Yana\Security\Passwords\Builders\Builder  $passwordAlgorithmBuilder  dependency
-     * @return  self
+     * @return  $this
      */
     public function setPasswordAlgorithmBuilder(\Yana\Security\Passwords\Builders\Builder $passwordAlgorithmBuilder)
     {
@@ -69,7 +76,7 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Security\Passwords\B
      * Set password algorithm dependency.
      *
      * @param   \Yana\Security\Passwords\IsAlgorithm  $passwordAlgorithm  dependency
-     * @return  self
+     * @return  $this
      */
     public function setPasswordAlgorithm(\Yana\Security\Passwords\IsAlgorithm $passwordAlgorithm)
     {
@@ -81,7 +88,7 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Security\Passwords\B
      * Set password generator dependency.
      *
      * @param   \Yana\Security\Passwords\Generators\IsAlgorithm  $passwordGenerator  dependency
-     * @return  self
+     * @return  $this
      */
     public function setPasswordGenerator(\Yana\Security\Passwords\Generators\IsAlgorithm $passwordGenerator)
     {
@@ -90,11 +97,23 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Security\Passwords\B
     }
 
     /**
+     * Set auhtentication provider dependency.
+     *
+     * @param   \Yana\Security\Passwords\Providers\IsAuthenticationProvider  $provider  dependency
+     * @return  $this
+     */
+    public function setAuthenticationProvider(\Yana\Security\Passwords\Providers\IsAuthenticationProvider $provider)
+    {
+        $this->_authenticationProvider = $provider;
+        return $this;
+    }
+
+    /**
      * Retrieve password algorithm builder.
      *
      * @return  \Yana\Security\Passwords\Builders\IsBuilder
      */
-    public function getPasswordAlgorithmBuilder()
+    public function getPasswordAlgorithmBuilder(): \Yana\Security\Passwords\Builders\IsBuilder
     {
         if (!isset($this->_passwordAlgorithmBuilder)) {
             $this->_passwordAlgorithmBuilder = new \Yana\Security\Passwords\Builders\Builder();
@@ -107,7 +126,7 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Security\Passwords\B
      *
      * @return  \Yana\Security\Passwords\IsAlgorithm
      */
-    public function getPasswordAlgorithm()
+    public function getPasswordAlgorithm(): \Yana\Security\Passwords\IsAlgorithm
     {
         if (!isset($this->_passwordAlgorithm)) {
             $this->_passwordAlgorithm =
@@ -126,7 +145,7 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Security\Passwords\B
      *
      * @return  \Yana\Security\Passwords\Generators\IsAlgorithm
      */
-    public function getPasswordGenerator()
+    public function getPasswordGenerator(): \Yana\Security\Passwords\Generators\IsAlgorithm
     {
         if (!isset($this->_passwordGenerator)) {
             $this->_passwordGenerator = new \Yana\Security\Passwords\Generators\StandardAlgorithm();
@@ -135,13 +154,31 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Security\Passwords\B
     }
 
     /**
+     * Returns an authentication provider.
+     *
+     * The authentication provider is used to check and/or change passwords.
+     * If none has been set, this function will initialize and return a standard
+     * authentication provider by default.
+     *
+     * @return  \Yana\Security\Passwords\Providers\IsAuthenticationProvider
+     */
+    public function getAuthenticationProvider(): \Yana\Security\Passwords\Providers\IsAuthenticationProvider
+    {
+        if (!isset($this->_authenticationProvider)) {
+            $this->_authenticationProvider =
+                new \Yana\Security\Passwords\Providers\Standard($this->getPasswordAlgorithm());
+        }
+        return $this->_authenticationProvider;
+    }
+
+    /**
      * Retrieve password behavior dependency.
      *
      * @return  \Yana\Security\Passwords\Behaviors\IsBehavior
      */
-    public function __invoke()
+    public function __invoke(): \Yana\Security\Passwords\Behaviors\IsBehavior
     {
-        return new \Yana\Security\Passwords\Behaviors\StandardBehavior($this->getPasswordAlgorithm(), $this->getPasswordGenerator());
+        return new \Yana\Security\Passwords\Behaviors\StandardBehavior($this->getPasswordAlgorithm(), $this->getPasswordGenerator(), $this->getAuthenticationProvider());
     }
 
 }

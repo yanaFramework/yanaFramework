@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Security\Passwords\Providers;
 
@@ -35,7 +36,7 @@ namespace Yana\Security\Passwords\Providers;
  * @package     yana
  * @subpackage  security
  */
-class Standard extends \Yana\Security\Passwords\Providers\AbstractProvider implements \Yana\Security\Passwords\Providers\IsProvider
+class Standard extends \Yana\Security\Passwords\Providers\AbstractProvider implements \Yana\Security\Passwords\Providers\IsAuthenticationProvider
 {
 
     /**
@@ -51,12 +52,10 @@ class Standard extends \Yana\Security\Passwords\Providers\AbstractProvider imple
     /**
      * <<construct>> Initialize user entity.
      *
-     * @param  \Yana\Security\Data\Users\IsEntity    $user  from database
      * @param  \Yana\Security\Passwords\IsAlgorithm  $algorithm  to encode and compare passwords
      */
-    public function __construct(\Yana\Security\Data\Users\IsEntity $user, \Yana\Security\Passwords\IsAlgorithm $algorithm)
+    public function __construct(\Yana\Security\Passwords\IsAlgorithm $algorithm)
     {
-        parent::__construct($user);
         $this->_algorithm = $algorithm;
     }
 
@@ -73,25 +72,41 @@ class Standard extends \Yana\Security\Passwords\Providers\AbstractProvider imple
     /**
      * Returns TRUE if the provider supports changing passwords.
      *
-     * Returns TRUE for active users and FALSE for inactive users.
-     *
      * @return  bool
      */
     public function isAbleToChangePassword(): bool
     {
-        return $this->_getUser()->isActive();
+        return true;
     }
 
     /**
      * Update login password.
      *
-     * @param   string  $oldPassword  current user password
-     * @param   string  $newPassword  new user password
+     * @param  \Yana\Security\Data\Users\IsEntity  $user         holds password information
+     * @param  string                              $newPassword  new user password
      */
-    public function changePassword(string $oldPassword, string $newPassword)
+    public function changePassword(\Yana\Security\Data\Users\IsEntity $user, string $newPassword)
     {
-        if ($this->isAbleToChangePassword() && $this->checkPassword($oldPassword)) {
-            $this->_getUser()->setPassword($newPassword);
+        if ($this->isAbleToChangePassword($user)) {
+            // calculate the hash-value for the new password
+            $passwordHash = $this->_getAlgorithm()->__invoke($newPassword);
+
+            // add the hash to the list of recently used passwords
+            $recentPasswords = $user->getRecentPasswords();
+            $recentPasswords[] = $passwordHash;
+            // cut the list back to 10 passwords if necessary
+            if (count($recentPasswords) > 10) {
+                $recentPasswords = \array_slice($recentPasswords, 1, 10);
+            }
+
+            // update the user entity
+            $user
+                // replace password hash
+                ->setPassword($passwordHash)
+                ->setPasswordChangedTime(time())
+                // update list of recently used passwords
+                ->setRecentPasswords($recentPasswords)
+                ->saveEntity();
         }
     }
 
@@ -100,12 +115,13 @@ class Standard extends \Yana\Security\Passwords\Providers\AbstractProvider imple
      *
      * Returns bool(true) if the password is correct an bool(false) otherwise.
      *
-     * @param   string  $password  user password
+     * @param   \Yana\Security\Data\Users\IsEntity  $user      holds password information
+     * @param   string                              $password  user password
      * @return  bool
      */
-    public function checkPassword(string $password): bool
+    public function checkPassword(\Yana\Security\Data\Users\IsEntity $user, string $password): bool
     {
-        return $this->_getAlgorithm()->isEqual($password, $this->_getUser()->getPassword());
+        return $this->_getAlgorithm()->isEqual($password, (string) $user->getPassword());
     }
 
 }

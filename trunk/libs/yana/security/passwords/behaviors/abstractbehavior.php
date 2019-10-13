@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Security\Passwords\Behaviors;
 
@@ -56,15 +57,36 @@ abstract class AbstractBehavior extends \Yana\Core\StdObject implements \Yana\Se
     private $_generator = null;
 
     /**
+     * Can be injected. Used to change and check passwords.
+     *
+     * @var  \Yana\Security\Passwords\Providers\IsAuthenticationProvider
+     */
+    private $_authenticationProvider = null;
+
+    /**
      * Initialize dependencies.
      *
-     * @param  \Yana\Security\Passwords\IsAlgorithm             $algorithm  to encode and compare passwords
-     * @param  \Yana\Security\Passwords\Generators\IsAlgorithm  $generator  to generade new random passwords
+     * @param  \Yana\Security\Passwords\IsAlgorithm                         $algorithm  to encode and compare passwords
+     * @param  \Yana\Security\Passwords\Generators\IsAlgorithm              $generator  to generade new random passwords
+     * @param  \Yana\Security\Passwords\Providers\IsAuthenticationProvider  $provider   used to check and change passwords
      */
-    public function __construct(\Yana\Security\Passwords\IsAlgorithm $algorithm, \Yana\Security\Passwords\Generators\IsAlgorithm $generator)
+    public function __construct(\Yana\Security\Passwords\IsAlgorithm $algorithm, \Yana\Security\Passwords\Generators\IsAlgorithm $generator, \Yana\Security\Passwords\Providers\IsAuthenticationProvider $provider)
     {
         $this->_algorithm = $algorithm;
         $this->_generator = $generator;
+        $this->_authenticationProvider = $provider;
+    }
+
+    /**
+     * Returns an authentication provider.
+     *
+     * The authentication provider is used to check and/or change passwords.
+     *
+     * @return  \Yana\Security\Passwords\Providers\IsAuthenticationProvider
+     */
+    protected function _getAuthenticationProvider(): \Yana\Security\Passwords\Providers\IsAuthenticationProvider
+    {
+        return $this->_authenticationProvider;
     }
 
     /**

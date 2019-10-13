@@ -48,10 +48,8 @@ class Guest extends \Yana\Security\Data\Users\Entity
      *
      * @param  string  $userName  current user name
      */
-    public function __construct($userName = "")
+    public function __construct(string $userName = "")
     {
-        assert(is_string($userName), 'Wrong type for argument 1. String expected');
-
         parent::__construct('');
     }
 

@@ -61,18 +61,18 @@ class LdapTest extends \PHPUnit_Framework_TestCase
     protected $object;
 
     /**
+     * @var \Yana\Security\Data\Users\IsEntity
+     */
+    protected $user;
+
+    /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
     protected function setUp()
     {
-        if ($this->userName === "" || $this->userName === "") {
-            $this->markTestSkipped("Activate this if you have a Active Directory server for testing purposes");
-        } else {
-            putenv('LDAPTLS_REQCERT=never');
-            $user = new \Yana\Security\Data\Users\Entity($this->userName);
-            $this->object = new \Yana\Security\Passwords\Providers\Ldap($user, $this->server);
-        }
+        $this->user = new \Yana\Security\Data\Users\Entity($this->userName);
+        $this->object = new \Yana\Security\Passwords\Providers\Ldap($this->server);
     }
 
     /**
@@ -94,10 +94,11 @@ class LdapTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @expectedException \Yana\Core\Exceptions\NotImplementedException
      */
     public function testChangePassword()
     {
-        $this->object->changePassword("", "");
+        $this->object->changePassword($this->user, "");
     }
 
     /**
@@ -105,7 +106,14 @@ class LdapTest extends \PHPUnit_Framework_TestCase
      */
     public function testCheckPassword()
     {
-        $this->assertTrue($this->object->checkPassword($this->userPassword));
+        if ($this->server === "") {
+            $this->markTestSkipped("Activate this if you have an Active Directory server for testing purposes");
+        }
+
+        // The following line means that we don't verify the certificate presented by the server.
+        // This is for testing purposes only, do NOT do that on a productive system.
+        putenv('LDAPTLS_REQCERT=never');
+        $this->assertTrue($this->object->checkPassword($this->user, $this->userPassword));
     }
 
 }

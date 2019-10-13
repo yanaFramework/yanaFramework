@@ -104,6 +104,20 @@ trait HasSecurity
     private $_passwordBehavior = null;
 
     /**
+     * Used to change and check passwords.
+     *
+     * @var  \Yana\Security\Passwords\Providers\IsAuthenticationProvider
+     */
+    private $_authenticationProvider = null;
+
+    /**
+     * Used to change and check passwords.
+     *
+     * @var  \Yana\Security\Passwords\Behaviors\IsBuilder
+     */
+    private $_passwordBehaviorBuilder = null;
+
+    /**
      * Get default user settings.
      *
      * @return  array
@@ -234,6 +248,48 @@ trait HasSecurity
     }
 
     /**
+     * Inject password behavior builder.
+     *
+     * @param   \Yana\Security\Passwords\Behaviors\IsBuilder  $builder  dependency
+     * @return  $this
+     */
+    public function setPasswordBehaviorBuilder(\Yana\Security\Passwords\Behaviors\IsBuilder $builder)
+    {
+        $this->_passwordBehaviorBuilder = $builder;
+        return $this;
+    }
+
+    /**
+     * Set auhtentication provider dependency.
+     *
+     * @param   \Yana\Security\Passwords\Providers\IsAuthenticationProvider  $provider  dependency
+     * @return  $this
+     */
+    public function setAuthenticationProvider(\Yana\Security\Passwords\Providers\IsAuthenticationProvider $provider)
+    {
+        $this->_authenticationProvider = $provider;
+        return $this;
+    }
+
+    /**
+     * Retrieve authentication provider dependency.
+     *
+     * The authentication provider is used to check and/or change passwords.
+     * If none has been set, this function will initialize and return a standard
+     * authentication provider by default.
+     *
+     * @return  \Yana\Security\Passwords\Providers\IsAuthenticationProvider
+     */
+    public function getAuthenticationProvider(): \Yana\Security\Passwords\Providers\IsAuthenticationProvider
+    {
+        if (!isset($this->_authenticationProvider)) {
+            $this->_authenticationProvider =
+                new \Yana\Security\Passwords\Providers\Standard($this->getPasswordAlgorithm());
+        }
+        return $this->_authenticationProvider;
+    }
+
+    /**
      * Retrieve algorithm builder.
      *
      * The builder's purpose is to select and create instances of hashing algorithms used to create and compare password hashes.
@@ -295,6 +351,24 @@ trait HasSecurity
     }
 
     /**
+     * Retrieve password behavior builder dependency.
+     *
+     * @return \Yana\Security\Passwords\Behaviors\IsBuilder
+     */
+    public function getPasswordBehaviorBuilder(): \Yana\Security\Passwords\Behaviors\IsBuilder
+    {
+        if (!isset($this->_passwordBehaviorBuilder)) {
+            $this->_passwordBehaviorBuilder = new \Yana\Security\Passwords\Behaviors\Builder();
+            $this->_passwordBehaviorBuilder
+                    ->setPasswordAlgorithm($this->getPasswordAlgorithm())
+                    ->setPasswordGenerator($this->getPasswordGenerator())
+                    ->setPasswordAlgorithmBuilder($this->getPasswordAlgorithmBuilder())
+                    ->setAuthenticationProvider($this->getAuthenticationProvider());
+        }
+        return $this->_passwordBehaviorBuilder;
+    }
+
+    /**
      * Retrieve password behavior dependency.
      *
      * @return  \Yana\Security\Passwords\Behaviors\IsBehavior
@@ -302,9 +376,8 @@ trait HasSecurity
     public function getPasswordBehavior(): \Yana\Security\Passwords\Behaviors\IsBehavior
     {
         if (!isset($this->_passwordBehavior)) {
-            $this->_passwordBehavior = new \Yana\Security\Passwords\Behaviors\StandardBehavior(
-                $this->getPasswordAlgorithm(), $this->getPasswordGenerator()
-            );
+            $builder = $this->getPasswordBehaviorBuilder();
+            $this->_passwordBehavior = $builder->__invoke();
         }
         return $this->_passwordBehavior;
     }

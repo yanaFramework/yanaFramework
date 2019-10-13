@@ -42,7 +42,7 @@ interface IsBuilder
      * Set password algorithm builder dependency.
      *
      * @param   \Yana\Security\Passwords\Builders\Builder  $passwordAlgorithmBuilder  dependency
-     * @return  self
+     * @return  $this
      */
     public function setPasswordAlgorithmBuilder(\Yana\Security\Passwords\Builders\Builder $passwordAlgorithmBuilder);
 
@@ -50,7 +50,7 @@ interface IsBuilder
      * Set password algorithm dependency.
      *
      * @param   \Yana\Security\Passwords\IsAlgorithm  $passwordAlgorithm  dependency
-     * @return  self
+     * @return  $this
      */
     public function setPasswordAlgorithm(\Yana\Security\Passwords\IsAlgorithm $passwordAlgorithm);
 
@@ -58,7 +58,7 @@ interface IsBuilder
      * Set password generator dependency.
      *
      * @param   \Yana\Security\Passwords\Generators\IsAlgorithm  $passwordGenerator  dependency
-     * @return  self
+     * @return  $this
      */
     public function setPasswordGenerator(\Yana\Security\Passwords\Generators\IsAlgorithm $passwordGenerator);
 
@@ -67,7 +67,7 @@ interface IsBuilder
      *
      * @return  \Yana\Security\Passwords\Behaviors\IsBehavior
      */
-    public function __invoke();
+    public function __invoke(): \Yana\Security\Passwords\Behaviors\IsBehavior;
 
 }
 

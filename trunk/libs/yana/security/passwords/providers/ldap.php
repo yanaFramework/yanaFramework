@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Security\Passwords\Providers;
 
@@ -36,7 +37,7 @@ namespace Yana\Security\Passwords\Providers;
  * @subpackage  security
  * @codeCoverageIgnore
  */
-class Ldap extends \Yana\Security\Passwords\Providers\AbstractProvider implements \Yana\Security\Passwords\Providers\IsProvider
+class Ldap extends \Yana\Security\Passwords\Providers\AbstractProvider implements \Yana\Security\Passwords\Providers\IsAuthenticationProvider
 {
 
     /**
@@ -52,12 +53,10 @@ class Ldap extends \Yana\Security\Passwords\Providers\AbstractProvider implement
     /**
      * <<construct>> Initialize user entity.
      *
-     * @param  \Yana\Security\Data\Users\IsEntity  $user        from database
-     * @param  string                              $ldapServer  IP or host name of LDAP server
+     * @param  string  $ldapServer  IP or host name of LDAP server
      */
-    public function __construct(\Yana\Security\Data\Users\IsEntity $user, string $ldapServer)
+    public function __construct(string $ldapServer)
     {
-        parent::__construct($user);
         $this->_ldapServer = $ldapServer;
     }
 
@@ -91,8 +90,6 @@ class Ldap extends \Yana\Security\Passwords\Providers\AbstractProvider implement
     /**
      * Returns TRUE if the provider supports changing passwords.
      *
-     * Returns TRUE for active users and FALSE for inactive users.
-     *
      * @return  bool
      */
     public function isAbleToChangePassword(): bool
@@ -103,10 +100,10 @@ class Ldap extends \Yana\Security\Passwords\Providers\AbstractProvider implement
     /**
      * Update login password.
      *
-     * @param   string  $oldPassword  current user password
-     * @param   string  $newPassword  new user password
+     * @param  \Yana\Security\Data\Users\IsEntity  $user         holds password information
+     * @param  string                              $newPassword  new user password
      */
-    public function changePassword(string $oldPassword, string $newPassword)
+    public function changePassword(\Yana\Security\Data\Users\IsEntity $user, string $newPassword)
     {
         $message = "Changing passwords is not implemented for LDAP.";
         throw new \Yana\Core\Exceptions\NotImplementedException($message, \Yana\Log\TypeEnumeration::ERROR);
@@ -117,12 +114,13 @@ class Ldap extends \Yana\Security\Passwords\Providers\AbstractProvider implement
      *
      * Returns bool(true) if the password is correct an bool(false) otherwise.
      *
-     * @param   string  $password  user password
+     * @param   \Yana\Security\Data\Users\IsEntity  $user      holds password information
+     * @param   string                              $password  user password
      * @return  bool
      */
-    public function checkPassword(string $password): bool
+    public function checkPassword(\Yana\Security\Data\Users\IsEntity $user, string $password): bool
     {
-        $userId = $this->_getUser()->getId() . "@" . $this->_getLdapServer();
+        $userId = $user->getId() . "@" . $this->_getLdapServer();
         $connection = $this->_createLdapConnection();
         if (!\ldap_bind($connection, $userId, $password)) {
             return false;

@@ -143,9 +143,27 @@ class HasSecurityTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testSetAuthenticationProvider()
+    {
+        $object = new \Yana\Security\Passwords\Providers\Ldap("");
+        $this->assertSame($object, $this->object->setAuthenticationProvider($object)->getAuthenticationProvider());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetPasswordBehaviorBuilder()
+    {
+        $object = new \Yana\Security\Passwords\Behaviors\Builder();
+        $this->assertSame($object, $this->object->setPasswordBehaviorBuilder($object)->getPasswordBehaviorBuilder());
+    }
+
+    /**
+     * @test
+     */
     public function testSetPasswordBehavior()
     {
-        $object = new \Yana\Security\Passwords\Behaviors\StandardBehavior($this->object->getPasswordAlgorithm(), $this->object->getPasswordGenerator());
+        $object = new \Yana\Security\Passwords\Behaviors\StandardBehavior($this->object->getPasswordAlgorithm(), $this->object->getPasswordGenerator(), $this->object->getAuthenticationProvider());
         $this->assertSame($object, $this->object->setPasswordBehavior($object)->getPasswordBehavior());
     }
 
@@ -210,6 +228,24 @@ class HasSecurityTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertTrue($this->object->getRulesAdapter() instanceof \Yana\Security\Data\SecurityRules\AbstractAdapter);
         $this->assertTrue($this->object->getRulesAdapter() instanceof \Yana\Security\Data\SecurityRules\Adapter);
+    }
+
+    /**
+     * @test
+     */
+    public function testGetAuthenticationProvider()
+    {
+        $this->assertTrue(($provider = $this->object->getAuthenticationProvider()) instanceof \Yana\Security\Passwords\Providers\Standard);
+        $this->assertSame($provider, $this->object->getAuthenticationProvider());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetPasswordBehaviorBuilder()
+    {
+        $this->assertTrue(($builder = $this->object->getPasswordBehaviorBuilder()) instanceof \Yana\Security\Passwords\Behaviors\Builder);
+        $this->assertSame($builder, $this->object->getPasswordBehaviorBuilder());
     }
 
 }

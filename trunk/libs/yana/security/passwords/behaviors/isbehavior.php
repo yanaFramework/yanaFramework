@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Security\Passwords\Behaviors;
 
@@ -58,7 +59,7 @@ interface IsBehavior
      * @param   string  $userPwd  user password
      * @return  bool
      */
-    public function checkPassword($userPwd);
+    public function checkPassword(string $userPwd): bool;
 
     /**
      * Change password.

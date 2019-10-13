@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Security\Data\Behaviors;
 
@@ -318,7 +319,6 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      */
     public function changePassword(string $password)
     {
-        assert(is_string($password), 'Wrong type for argument: $password. String expected');
         $this->_getPasswordBehavior()->changePassword((string) $password);
         return $this;
     }
@@ -334,7 +334,6 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      */
     public function setMail(string $mail)
     {
-        assert(is_string($mail), 'Wrong type for argument: $mail. String expected');
         if (\Yana\Data\MailValidator::validate($mail) === false) {
             throw new \Yana\Core\Exceptions\Mails\InvalidMailException('Given e-mail address is not valid');
         }

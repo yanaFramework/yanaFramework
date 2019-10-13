@@ -58,7 +58,7 @@ class StandardTest extends \PHPUnit_Framework_TestCase
     {
         $this->user = new \Yana\Security\Data\Users\Entity('test');
         $this->user->setPassword("test")->setActive(true);
-        $this->object = new \Yana\Security\Passwords\Providers\Standard($this->user, new \Yana\Security\Passwords\NullAlgorithm());
+        $this->object = new \Yana\Security\Passwords\Providers\Standard(new \Yana\Security\Passwords\NullAlgorithm());
     }
 
     /**
@@ -76,8 +76,6 @@ class StandardTest extends \PHPUnit_Framework_TestCase
     public function testIsAbleToChangePassword()
     {
         $this->assertTrue($this->object->isAbleToChangePassword());
-        $this->user->setActive(false);
-        $this->assertFalse($this->object->isAbleToChangePassword());
     }
 
     /**
@@ -85,7 +83,7 @@ class StandardTest extends \PHPUnit_Framework_TestCase
      */
     public function testChangePassword()
     {
-        $this->assertNull($this->object->changePassword("test", "test2"));
+        $this->assertNull($this->object->changePassword($this->user, "test2"));
         $this->assertSame("test2", $this->user->getPassword());
     }
 
@@ -94,8 +92,8 @@ class StandardTest extends \PHPUnit_Framework_TestCase
      */
     public function testCheckPassword()
     {
-        $this->assertTrue($this->object->checkPassword("test"));
-        $this->assertFalse($this->object->checkPassword("test2"));
+        $this->assertTrue($this->object->checkPassword($this->user, "test"));
+        $this->assertFalse($this->object->checkPassword($this->user, "test2"));
     }
 
 }

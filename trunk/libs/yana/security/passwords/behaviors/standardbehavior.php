@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Security\Passwords\Behaviors;
 
@@ -77,7 +78,7 @@ class StandardBehavior extends \Yana\Security\Passwords\Behaviors\AbstractBehavi
      */
     protected function _isUninitializedPassword(\Yana\Security\Data\Users\IsEntity $user)
     {
-        return \strcasecmp($user->getPassword(), 'UNINITIALIZED') === 0;
+        return \strcasecmp((string) $user->getPassword(), 'UNINITIALIZED') === 0;
     }
 
     /**
@@ -118,10 +119,8 @@ class StandardBehavior extends \Yana\Security\Passwords\Behaviors\AbstractBehavi
      * @param   string  $userPwd  user password
      * @return  bool
      */
-    public function checkPassword($userPwd)
+    public function checkPassword(string $userPwd): bool
     {
-        assert(is_string($userPwd), 'Wrong type for argument $userPwd. String expected');
-
         assert(!isset($user), 'Cannot redeclare variable $user');
         $user = $this->getUser();
         assert(!isset($isCorrect), 'Cannot redeclare variable $isCorrect');
@@ -129,7 +128,7 @@ class StandardBehavior extends \Yana\Security\Passwords\Behaviors\AbstractBehavi
         switch (true)
         {
             case $this->_isUninitializedPassword($user):
-            case $userPwd > "" && $this->_getAlgorithm()->isEqual($userPwd, (string) $user->getPassword()): // getPassword may return NULL
+            case $userPwd > "" && $this->_getAuthenticationProvider()->checkPassword($user, $userPwd):
                 $isCorrect = true;
         }
 
@@ -156,28 +155,11 @@ class StandardBehavior extends \Yana\Security\Passwords\Behaviors\AbstractBehavi
         assert(is_string($password) && strlen($password) > 0, 'Wrong type for argument 1. String expected');
 
         $user = $this->getUser();
-        // calculate the hash-value for the new password
-        $newPassword = $this->_getAlgorithm()->__invoke($password);
-
-        // add the hash to the list of recently used passwords
-        $recentPasswords = $user->getRecentPasswords();
-        $recentPasswords[] = $newPassword;
-        // cut the list back to 10 passwords if necessary
-        if (count($recentPasswords) > 10) {
-            $recentPasswords = \array_slice($recentPasswords, 1, 10);
-        }
-
-        // update the user entity
         $user
-            // replace password hash
-            ->setPassword($newPassword)
-            ->setPasswordChangedTime(time())
-            // update list of recently used passwords
-            ->setRecentPasswords($recentPasswords)
-            // reset password recovery id if there is any
-            ->setPasswordRecoveryId("")
-            ->setPasswordRecoveryTime(0)
-            ->saveEntity();
+                // reset password recovery id if there is any
+                ->setPasswordRecoveryId("")
+                ->setPasswordRecoveryTime(0);
+        $this->_getAuthenticationProvider()->changePassword($user, $password);
 
         return $this;
     }

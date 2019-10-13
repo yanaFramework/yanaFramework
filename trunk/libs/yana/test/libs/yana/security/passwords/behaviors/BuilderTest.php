@@ -93,6 +93,24 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testSetAuthenticationProvider()
+    {
+        $provider = new \Yana\Security\Passwords\Providers\Ldap("");
+        $this->assertSame($provider, $this->object->setAuthenticationProvider($provider)->getAuthenticationProvider());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetAuthenticationProvider()
+    {
+        $provider = new \Yana\Security\Passwords\Providers\Standard($this->object->getPasswordAlgorithm());
+        $this->assertEquals($provider, $this->object->getAuthenticationProvider());
+    }
+
+    /**
+     * @test
+     */
     public function testGetPasswordAlgorithmBuilder()
     {
         $passwordAlgorithmBuilder = new \Yana\Security\Passwords\Builders\Builder();

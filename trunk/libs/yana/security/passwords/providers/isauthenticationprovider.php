@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Security\Passwords\Providers;
 
@@ -35,26 +36,34 @@ namespace Yana\Security\Passwords\Providers;
  * @package     yana
  * @subpackage  security
  */
-interface IsProvider
+interface IsAuthenticationProvider
 {
+
+    /**
+     * Returns TRUE if the provider supports changing passwords.
+     *
+     * @return  bool
+     */
+    public function isAbleToChangePassword(): bool;
 
     /**
      * Update login password.
      *
-     * @param   string  $oldPassword  current user password
-     * @param   string  $newPassword  new user password
+     * @param  \Yana\Security\Data\Users\IsEntity  $user         holds password information
+     * @param  string                              $newPassword  new user password
      */
-    public function changePassword(string $oldPassword, string $newPassword);
+    public function changePassword(\Yana\Security\Data\Users\IsEntity $user, string $newPassword);
 
     /**
      * Compare password with password of current user.
      *
      * Returns bool(true) if the password is correct an bool(false) otherwise.
      *
-     * @param   string  $password  user password
+     * @param   \Yana\Security\Data\Users\IsEntity  $user      holds password information
+     * @param   string                              $password  user password
      * @return  bool
      */
-    public function checkPassword(string $password): bool;
+    public function checkPassword(\Yana\Security\Data\Users\IsEntity $user, string $password): bool;
 
 }
 

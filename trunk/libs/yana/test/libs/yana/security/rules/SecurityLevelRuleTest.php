@@ -49,8 +49,7 @@ class SecurityLevelRuleTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $session = new \Yana\Security\Sessions\NullWrapper();
-        $this->object = new \Yana\Security\Rules\SecurityLevelRule($session);
+        $this->object = new \Yana\Security\Rules\SecurityLevelRule("");
     }
 
     /**
