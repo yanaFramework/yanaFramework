@@ -1,5 +1,5 @@
 <!-- auto-generated DTD -->
-<!ELEMENT system (date|default|templates|php_self|skindir|blobdir|plugindir|tempdir|configdrive|configdir)*>
+<!ELEMENT system (configdir, configdrive, tempdir, plugindir, skindir, blobdir, php_self, templates, default, date+)>
 <!ELEMENT configdir (#PCDATA)>
 <!ELEMENT configdrive (#PCDATA)>
 <!ELEMENT tempdir (#PCDATA)>
@@ -7,7 +7,7 @@
 <!ELEMENT skindir (#PCDATA)>
 <!ELEMENT blobdir (#PCDATA)>
 <!ELEMENT php_self (#PCDATA)>
-<!ELEMENT templates (security|usesubdirs|defaultresourcetype|outputfilter|postfilter|prefilter|varfilter|blockfunction|function|modifier|resourcetype|leftdelimiter|rightdelimiter|templatedir|cachedir|caching|cachelifetime|cachingtype|compilecheck|compiledir|configdir|debugging|defaultmodifier)*>
+<!ELEMENT templates (leftdelimiter, rightdelimiter, templatedir+, cachedir, caching, cachelifetime, cachingtype, compilecheck, compiledir, configdir, debugging, defaultmodifier*, resourcetype*, modifier*, function*, blockfunction*, prefilter*, postfilter*, varfilter*, outputfilter*, defaultresourcetype, usesubdirs, security)*>
 <!ELEMENT leftdelimiter (#PCDATA)>
 <!ELEMENT rightdelimiter (#PCDATA)>
 <!ELEMENT varfilter (#PCDATA)>
@@ -44,7 +44,8 @@
 <!ELEMENT postfilter (#PCDATA)>
 <!ELEMENT outputfilter (#PCDATA)>
 <!ELEMENT defaultresourcetype (#PCDATA)>
-<!ELEMENT usesubdirs (#PCDATA)><!ELEMENT security (#PCDATA|library|security|phphandling|securedir|trusteddir|staticclass|phpfunction|phpmodifier|stream|allowedmodifier|disabledmodifier|allowedtag|disabledtag|allowconstants|allowsuperglobals)*>
+<!ELEMENT usesubdirs (#PCDATA)>
+<!ELEMENT security (#PCDATA|library|security|phphandling|securedir|trusteddir|staticclass|phpfunction|phpmodifier|stream|allowedmodifier|disabledmodifier|allowedtag|disabledtag|allowconstants|allowsuperglobals)*>
 <!ELEMENT phphandling (#PCDATA)>
 <!ELEMENT securedir (#PCDATA)>
 <!ELEMENT trusteddir (#PCDATA)>
@@ -58,7 +59,7 @@
 <!ELEMENT disabledtag (#PCDATA)>
 <!ELEMENT allowconstants (#PCDATA)>
 <!ELEMENT allowsuperglobals (#PCDATA)>
-<!ELEMENT default (#PCDATA|profile|homepage|message|event|skin|language|database|user|multicast_groups|security|library|default|update_server)*>
+<!ELEMENT default (#PCDATA|profile|homepage|message|event|skin|language|database|user|user_requirements|multicast_groups|security|library|default|update_server)*>
 <!ELEMENT profile (#PCDATA)>
 <!ELEMENT homepage (#PCDATA)>
 <!ELEMENT message (#PCDATA)>
@@ -75,6 +76,7 @@
 <!ELEMENT ssl (#PCDATA)>
 <!ELEMENT require_odbc (#PCDATA)>
 <!ELEMENT user (user_active|level|role|group)*>
+<!ELEMENT user_requirements (level|role|group)*>
 <!ELEMENT group (#PCDATA)>
 <!ELEMENT role (#PCDATA)>
 <!ELEMENT level (#PCDATA)>

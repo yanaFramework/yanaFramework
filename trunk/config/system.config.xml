@@ -269,45 +269,52 @@
     	<user>
     		<group>REGISTERED</group>
     		<role>DEFAULT</role>
-    		<level>0</level>
+    		<level>1</level>
     		<user_active>true</user_active>
     	</user>
+        <!-- Default for newly created users
+    	<user_requirements>
+    		<group>REGISTERED</group>
+    		<role>DEFAULT</role>
+    		<level>1</level>
+        </user_requirements>
+        -->
         <!-- Information for the Dispatcher on what groups to inform on updates -->
-    	<multicast_groups>
-    		<read>
-    			<security>true</security>
-    			<library>true</library>
-    			<read>true</read>
-    			<primary>true</primary>
-    			<default>true</default>
+        <multicast_groups>
+            <read>
+                <security>true</security>
+                <library>true</library>
+                <read>true</read>
+                <primary>true</primary>
+                <default>true</default>
             </read>
-    		<write>
-    			<security>true</security>
-    			<library>true</library>
-    			<write>true</write>
-    			<primary>true</primary>
-    			<default>true</default>
+            <write>
+                <security>true</security>
+                <library>true</library>
+                <write>true</write>
+                <primary>true</primary>
+                <default>true</default>
             </write>
-    		<security>
-    			<security>true</security>
-    			<library>true</library>
+            <security>
+                <security>true</security>
+                <library>true</library>
             </security>
-    		<config>
-    			<security>true</security>
-    			<library>true</library>
-    			<config>true</config>
+            <config>
+                <security>true</security>
+                <library>true</library>
+                <config>true</config>
             </config>
-    		<primary>
-    			<security>true</security>
-    			<library>true</library>
-    			<primary>true</primary>
+            <primary>
+                <security>true</security>
+                <library>true</library>
+                <primary>true</primary>
             </primary>
-    		<default>
-    			<security>true</security>
-    			<library>true</library>
-    			<default>true</default>
+            <default>
+                <security>true</security>
+                <library>true</library>
+                <default>true</default>
             </default>
-    	</multicast_groups>
+        </multicast_groups>
         <!-- URL to the framework's update server -->
     	<update_server>http://yanaframework.net/pages/update.php?version={$VERSION}&#38;amp;stable={$IS_STABLE}&#38;amp;lang={$LANG}&#38;amp;asnumber={$AS_NUMBER}</update_server>
     </default>
