@@ -1,0 +1,50 @@
+{
+    "name": "yanaframework/yanaframework",
+    "type": "project",
+    "description": "A powerful framework for PHP that allows you to create applications faster using low-code, in-memory database simulation during development, supports a wide range of DBMS, low-code and code generators and and modular, evolutionary prototypes that grow and adapt as your requirements change.",
+    "keywords": [
+        "framework",
+        "prototyping",
+        "low-code",
+        "product family engineering",
+        "DBAL"
+    ],
+    "homepage": "http://www.http://yanaframework.net",
+    "license": "GPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "Thomas Meyer"
+        }
+    ],
+    "support": {
+        "source": "https://github.com/yanaFramework/yanaFramework.git",
+        "issues": "http://yanaframework.net/pages/index.php?language=en&page=6",
+        "docs": "http://yanaframework.net/docs_en/index.html"
+    },
+    "repositories": [
+        {
+            "type": "pear",
+            "url": "https://pear.php.net"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=7.1",
+        "smarty/smarty": "~3.1"
+    },
+    "suggest": {
+        "pear-pear.php.net/SQL_Parser": "Allows you to test SQL statements 'offline' against Yana's in-memory database simulation. It still works without it, but you will have to use the query builder.",
+        "doctrine/dbal": "To connect to a number of common database systems",
+        "pear-pear.php.net/MDB2": "This is an alternative 'database abstraction layer' (DBAL) that provides support for more database systems than Doctrine-DBAL, including some 'exotic' options.",
+        "pear-pear.php.net/MDB2_Driver_mysqli": "To connect to MySQL and Maria-DB",
+        "pear-pear.php.net/MDB2_Driver_fbsql": "To connect to Frontbase databases",
+        "pear-pear.php.net/MDB2_Driver_ibase": "To connect to Interbase databases",
+        "pear-pear.php.net/MDB2_Driver_mssql": "To connect to Microsoft SQL-Server",
+        "pear-pear.php.net/MDB2_Driver_oci8": "To connect to Oracle databases",
+        "pear-pear.php.net/MDB2_Driver_odbc": "To connect to more DBMS like IBM DB2 aso via ODBC",
+        "pear-pear.php.net/MDB2_Driver_pgsql": "To connect to PostgreSQL databases",
+        "pear-pear.php.net/MDB2_Driver_querysim": "To connect ot QuerySim servers",
+        "pear-pear.php.net/MDB2_Driver_sqlite": "To connect to SQLite databases",
+        "pear-pear.php.net/MDB2_Driver_sqlsrv ": "To connect to SQL-Server databases"
+    }
+}
