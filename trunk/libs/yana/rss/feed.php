@@ -564,7 +564,7 @@ class Feed extends \Yana\Core\StdObject implements \Yana\RSS\IsFeed
         } // end foreach
         unset($item);
         if ($lastBuildDate > 0) {
-            $channel->addChild('lastBuildDate', $lastBuildDate);
+            $channel->addChild('lastBuildDate', (string) $lastBuildDate);
             $this->_lastBuildDate = date('r', $lastBuildDate);
         }
         unset($lastBuildDate);
@@ -592,9 +592,9 @@ class Feed extends \Yana\Core\StdObject implements \Yana\RSS\IsFeed
         assert(!isset($imageXML), 'Cannot redeclare var $imageXML');
         if ($this->getImage()) {
             $imageXML = $channel->addChild('image');
-            $imageXML->addChild('title', $this->getTitle());
-            $imageXML->addChild('link', $this->getLink());
-            $imageXML->addChild('url', $this->getImage());
+            $imageXML->addChild('title', (string) $this->getTitle());
+            $imageXML->addChild('link', (string) $this->getLink());
+            $imageXML->addChild('url', (string) $this->getImage());
         }
         unset($imageXML);
 
