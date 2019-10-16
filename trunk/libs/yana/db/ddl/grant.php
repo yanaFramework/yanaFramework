@@ -428,15 +428,9 @@ class Grant extends \Yana\Db\Ddl\DDL
      * @param   bool  $delete  must be deletable
      * @param   bool  $grant   must be grantable
      * @return  bool
-     * @ignore
      */
-    public function checkPermission($select = false, $insert = false, $update = false, $delete = false, $grant = false)
+    public function checkPermission(bool $select = false, bool $insert = false, bool $update = false, bool $delete = false, bool $grant = false): bool
     {
-        assert(is_bool($select), 'Wrong type for argument 1. Boolean expected');
-        assert(is_bool($insert), 'Wrong type for argument 2. Boolean expected');
-        assert(is_bool($update), 'Wrong type for argument 3. Boolean expected');
-        assert(is_bool($delete), 'Wrong type for argument 4. Boolean expected');
-        assert(is_bool($grant), 'Wrong type for argument 5. Boolean expected');
         switch (true)
         {
             case $select && !$this->isSelectable():
@@ -448,8 +442,8 @@ class Grant extends \Yana\Db\Ddl\DDL
             default:
                 $user = (string) $this->getUser();
                 $role = (string) $this->getRole();
-                $level = (int) $this->getLevel();
-                if (empty($user) && empty($role) && empty($level)) {
+                $level = is_int($this->getLevel()) ? $this->getLevel() : \Yana\Security\Rules\Requirements\Requirement::DEFAULT_LEVEL;
+                if (empty($user) && empty($role) && ($level === \Yana\Security\Rules\Requirements\Requirement::DEFAULT_LEVEL || $level === 0)) {
                     return true;
                 }
                 $required = new \Yana\Security\Rules\Requirements\Requirement($user, $role, $level);
