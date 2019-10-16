@@ -44,6 +44,24 @@
                     <target>Ihr Login ist korrekt, aber die gewünschte Aktion ist nicht verfügbar weil Ihre Zugriffsrechte nicht ausreichend sind. Bitte prüfen Sie gegebenenfalls, ob die gewählte URL korrekt ist. Falls Sie Ihre Zugriffsrechte aktualisieren lassen wollen, wenden Sie sich bitte an Ihren Administrator.</target>
                 </trans-unit>
             </group>
+            <group id="Yana\Core\Exceptions\Files\AlreadyExistsException">
+                <trans-unit id="Yana\Core\Exceptions\Files\AlreadyExistsException">
+                    <source>File or directoy {$FILE} could not be created because another file or directory of the same name already exists.</source>
+                    <target>Datei oder Verzeichnis {$FILE} konnte nicht erstellt werden, da eine andere Datei oder Verzeichnis bereits existiert.</target>
+                </trans-unit>
+            </group>
+            <group id="Yana\Core\Exceptions\Files\DeletedException">
+                <trans-unit id="Yana\Core\Exceptions\Files\DeletedException">
+                    <source>A requested file or directory was deleted.</source>
+                    <target>Eine angeforderte Datei oder ein Verzeichnis wurden gelöscht.</target>
+                </trans-unit>
+            </group>
+            <group id="Yana\Core\Exceptions\Files\NotWriteableException">
+                <trans-unit id="Yana\Core\Exceptions\Files\NotWriteableException">
+                    <source>Unable to write to file or directory .</source>
+                    <target>In Datei oder Verzeichnis {$FILE} konnte nicht geschrieben werden.</target>
+                </trans-unit>
+            </group>
             <group id="Yana\Core\Exceptions\Files\InvalidImageException">
                 <trans-unit id="Yana\Core\Exceptions\Files\InvalidImageException.h">
                     <source>The file {$FILE} is not a valid image.</source>

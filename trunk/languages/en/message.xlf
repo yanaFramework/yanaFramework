@@ -44,6 +44,24 @@
                     <source/>
                 </trans-unit>
             </group>
+            <group id="Yana\Core\Exceptions\Files\AlreadyExistsException">
+                <trans-unit id="Yana\Core\Exceptions\Files\AlreadyExistsException">
+                    <target>File or directoy {$FILE} could not be created because another file or directory of the same name already exists.</target>
+                    <source/>
+                </trans-unit>
+            </group>
+            <group id="Yana\Core\Exceptions\Files\DeletedException">
+                <trans-unit id="Yana\Core\Exceptions\Files\DeletedException">
+                    <target>A requested file or directory was deleted.</target>
+                    <source/>
+                </trans-unit>
+            </group>
+            <group id="Yana\Core\Exceptions\Files\NotWriteableException">
+                <trans-unit id="Yana\Core\Exceptions\Files\NotWriteableException">
+                    <target>Unable to write to file or directory {$FILE}.</target>
+                    <source/>
+                </trans-unit>
+            </group>
             <group id="Yana\Core\Exceptions\Files\InvalidImageException">
                 <trans-unit id="Yana\Core\Exceptions\Files\InvalidImageException.h">
                     <target>The file {$FILE} is not a valid image.</target>
