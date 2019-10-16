@@ -62,8 +62,9 @@ class AntiSpamPlugin extends \Yana\Plugins\AbstractPlugin
          * 0) prepare settings
          */
         $settings = $yana->getVar('PROFILE.SPAM');
-        $permission = $yana->getVar('PERMISSION');
         $yana->setVar('PROFILE.SPAM.AVAILABLE', true);
+        $request = $this->_getRequest()->all();
+        $session = $this->_getSession();
 
         /**
          * Register ouput filter if option has been activated
@@ -98,7 +99,7 @@ class AntiSpamPlugin extends \Yana\Plugins\AbstractPlugin
          *
          * }}
          */
-        if (empty($settings['PERMISSION']) && is_int($permission) && $permission > 0) {
+        if (empty($settings['PERMISSION']) && $this->_getSecurityFacade()->loadUser()->isLoggedIn()) {
             return true;
 
         }
@@ -112,23 +113,11 @@ class AntiSpamPlugin extends \Yana\Plugins\AbstractPlugin
          * Note: remote address is logged automatically - no need to add this here
          */
         $headerData = array(
-            'REFERER' => '-',
-            'REQUEST_METHOD' => '-',
-            'USER_AGENT' => '-',
-            'PORT' => '-');
-
-        if (isset($_SERVER['HTTP_REFERER'])) {
-            $headerData['REFERER'] = $_SERVER['HTTP_REFERER'];
-        }
-        if (isset($_SERVER['REQUEST_METHOD'])) {
-            $headerData['REQUEST_METHOD'] = $_SERVER['REQUEST_METHOD'];
-        }
-        if (isset($_SERVER['HTTP_USER_AGENT'])) {
-            $headerData['USER_AGENT'] = $_SERVER['HTTP_USER_AGENT'];
-        }
-        if (isset($_SERVER['REMOTE_PORT'])) {
-            $headerData['PORT'] = $_SERVER['REMOTE_PORT'];
-        }
+            'REFERER' => isset($_SERVER['HTTP_REFERER']) ? (string) $_SERVER['HTTP_REFERER'] : '-',
+            'REQUEST_METHOD' => isset($_SERVER['REQUEST_METHOD']) ? (string) $_SERVER['REQUEST_METHOD'] : '-',
+            'USER_AGENT' => isset($_SERVER['HTTP_USER_AGENT']) ? (string) $_SERVER['HTTP_USER_AGENT'] : '-',
+            'PORT' => isset($_SERVER['REMOTE_PORT']) ? (string) (int) $_SERVER['REMOTE_PORT'] : '-'
+        );
 
         /**
          * 3) Form-id setting
@@ -136,7 +125,7 @@ class AntiSpamPlugin extends \Yana\Plugins\AbstractPlugin
          * check the time the user required to fill out the form
          */
         if (!empty($settings['FORM_ID'])) {
-            $time =& $_SESSION['transaction_isolation_created'];
+            $time = (int) $session['transaction_isolation_created'];
             /**
              * 3.1) if the time is not set or = 0,
              * then we assume the form has never been displayed and we just encountered a direct request
@@ -190,7 +179,7 @@ class AntiSpamPlugin extends \Yana\Plugins\AbstractPlugin
              * 3.3) if an invisible field has been filled,
              * then we assume that the request was not send via a web browser
              */
-            if (!empty($ARGS['yana_url'])) {
+            if (!$request->value('yana_url')->isEmpty()) {
 
                 if (!empty($settings['LOG'])) {
                     assert(!isset($log), 'Cannot redeclare var $log');
@@ -210,15 +199,15 @@ class AntiSpamPlugin extends \Yana\Plugins\AbstractPlugin
             if ($yana->getVar('DISABLE_FORM_ID') !== true) {
                 switch (true)
                 {
-                    case empty($ARGS['yana_form_id']):
-                    case $_SESSION['yana_form_id'] === 'expired':
-                    case strcasecmp($ARGS['yana_form_id'], $_SESSION['yana_form_id']) !== 0:
+                    case $request->value('yana_form_id')->isEmpty():
+                    case $session['yana_form_id'] === 'expired':
+                    case strcasecmp($request->value('yana_form_id')->asSafeString(), $session['yana_form_id']) !== 0:
                         if (!empty($settings['LOG'])) {
                             $message = 'SPAM: blocked entry because no valid form Id has been found.';
                             $level = \Yana\Log\TypeEnumeration::INFO;
                             \Yana\Log\LogManager::getLogger()->addLog($message, $level);
                         }
-                        if ($_SESSION['yana_form_id'] === 'expired') {
+                        if ($session['yana_form_id'] === 'expired') {
                             $message = "The forms CSRF token has expired. Reload form and try again.";
                             $level = \Yana\Log\TypeEnumeration::WARNING;
                             throw new \Yana\Core\Exceptions\Forms\TokenExpiredException($message, $level);
@@ -227,11 +216,11 @@ class AntiSpamPlugin extends \Yana\Plugins\AbstractPlugin
                             $level = \Yana\Log\TypeEnumeration::WARNING;
                             throw new \Yana\Core\Exceptions\Forms\InvalidTokenException($message, $level);
                         }
-                        $_SESSION['yana_form_id'] = 'expired';
+                        $session['yana_form_id'] = 'expired';
                         return false;
                 }
             }
-            $_SESSION['yana_form_id'] = 'expired';
+            $session['yana_form_id'] = 'expired';
         } /* end if */
 
         /**
@@ -273,7 +262,7 @@ class AntiSpamPlugin extends \Yana\Plugins\AbstractPlugin
                 $words = join('|', $settings['WORDS']);
                 $words = html_entity_decode($words);
                 $words = str_replace('||', '|', $words);
-                if (@preg_match("/{$words}/Usi", print_r($ARGS, true), $m)) {
+                if (@preg_match("/{$words}/Usi", print_r($request, true), $m)) {
 
                     if (!empty($settings['LOG'])) {
                         $log = "SPAM: blocked entry because a blacklisted phrase '" . $m[0]  .
@@ -290,7 +279,7 @@ class AntiSpamPlugin extends \Yana\Plugins\AbstractPlugin
                 unset($words);
 
             } else {
-                $string = print_r($ARGS, true);
+                $string = print_r($request, true);
                 foreach ($settings['WORDS'] as $words)
                 {
                     $words = html_entity_decode($words);
@@ -312,6 +301,23 @@ class AntiSpamPlugin extends \Yana\Plugins\AbstractPlugin
                 unset($words);
             }
         }
+
+        if ($yana->getVar("PROFILE.SPAM.CAPTCHA")) {
+            $callbacks = \Yana\Forms\Worker::getDefaultCallbacks();
+            $function = function () use ($yana, $request) {
+                if ($yana->execute("security_check_image", $request->asUnsafeArray()) === false) {
+                    $message = 'CAPTCHA not solved, entry has not been created.';
+                    $level = \Yana\Log\TypeEnumeration::DEBUG;
+                    \Yana\Log\LogManager::getLogger()->addLog($message, $level);
+                    $level = \Yana\Log\TypeEnumeration::WARNING;
+                    throw new \Yana\Core\Exceptions\Forms\SpamException($message, $level);
+                }
+            };
+            \Yana\Forms\Worker::getDefaultCallbacks()
+                ->addBeforeCreate($function)
+                ->addBeforeDelete($function)
+                ->addBeforeUpdate($function);
+        }
         return true;
     }
 
@@ -332,7 +338,7 @@ class AntiSpamPlugin extends \Yana\Plugins\AbstractPlugin
                 /* insert form id */
                 $source   = str_replace("</form>", "<span class=\"yana_button\"><input type=\"text\"".
                         "name=\"yana_form_id\" value=\"$yanaFormId\" /></span>\n</form>", $source);
-                $_SESSION['yana_form_id'] = $yanaFormId;
+                $this->_getSession()->offsetSet('yana_form_id', $yanaFormId);
                 $YANA->setVar('DISABLE_FORM_ID', true);
             }
         }
