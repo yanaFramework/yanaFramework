@@ -55,10 +55,10 @@ interface IsDir extends \Yana\Files\IsReadable
      * Tries to create the directory.
      *
      * @param   int  $mode  access mode, an octal number of 1 through 0777.
-     * @return  \Yana\Files\IsDir
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when argument $mode is not an integer or out of range
-     * @throws  \Yana\Core\Exceptions\AlreadyExistsException    when the directory already exists
-     * @throws  \Yana\Core\Exceptions\NotWriteableException     when target location is not writeable
+     * @return  $this
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException      when argument $mode is not an integer or out of range
+     * @throws  \Yana\Core\Exceptions\Files\AlreadyExistsException  when the directory already exists
+     * @throws  \Yana\Core\Exceptions\Files\NotWriteableException   when target location is not writeable
      */
     public function create($mode = 0777);
 
@@ -66,8 +66,9 @@ interface IsDir extends \Yana\Files\IsReadable
      * Remove this directory.
      *
      * @param   bool  $isRecursive  triggers wether to remove directories even if they are not empty, default = false
-     * @return  \Yana\Files\IsDir
-     * @throws  \Yana\Core\Exceptions\NotWriteableException  when directory cannot be deleted
+     * @return  $this
+     * @throws  \Yana\Core\Exceptions\Files\NotWriteableException  when directory cannot be deleted
+     * @throws  \Yana\Core\Exceptions\Files\NotFoundException      when directory is not found
      */
     public function delete($isRecursive = false);
 
@@ -137,7 +138,7 @@ interface IsDir extends \Yana\Files\IsReadable
      * @param    string   $fileFilter   use this to limit the copied files to a specific extension
      * @param    string   $dirFilter    use this to limit the copied directories to those matching the filter
      * @param    bool     $useRegExp    set this to bool(true) if you want filters to be treated as a regular expression
-     * @return  \Yana\Files\IsDir
+     * @return  $this
      * @throws   \Yana\Core\Exceptions\InvalidArgumentException  when one input argument is invalid
      * @throws   \Yana\Core\Exceptions\AlreadyExistsException    if the target directory already exists
      * @throws   \Yana\Core\Exceptions\NotWriteableException     if the target location is not writeable

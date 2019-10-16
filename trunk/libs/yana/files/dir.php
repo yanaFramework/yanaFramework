@@ -162,9 +162,9 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
      * @param   int  $mode  access mode, an octal number of 1 through 0777.
      * @return  self
      * @name    Dir::create()
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when argument $mode is not an integer or out of range
-     * @throws  \Yana\Core\Exceptions\AlreadyExistsException    when the directory already exists
-     * @throws  \Yana\Core\Exceptions\NotWriteableException     when target location is not writeable
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException      when argument $mode is not an integer or out of range
+     * @throws  \Yana\Core\Exceptions\Files\AlreadyExistsException  when the directory already exists
+     * @throws  \Yana\Core\Exceptions\Files\NotWriteableException   when target location is not writeable
      */
     public function create($mode = 0777)
     {
@@ -177,19 +177,21 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
         }
 
         if ($this->exists()) {
-            $message = "Unable to create directory '{$this->getPath()}'. " .
+            $message = "Unable to create directory '" . $this->getPath() . "'. " .
                 "Another directory with the same name already exists.";
             $level = \Yana\Log\TypeEnumeration::INFO;
-            $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
-            $exception->setId($this->getPath());
+            $exception = new \Yana\Core\Exceptions\Files\AlreadyExistsException($message, $level);
+            $exception->setFilename($this->getPath());
             throw $exception;
         }
 
         $path = $this->getPath();
         if (empty($path) || !@mkdir($path)) {
-            $message = "Unable to create directory '$path'. Target not writeable.";
+            $message = "Unable to create directory '" . $path . "'. Target not writeable.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
-            throw new \Yana\Core\Exceptions\NotWriteableException($message, $level);
+            $exception = new \Yana\Core\Exceptions\Files\NotWriteableException($message, $level);
+            $exception->setFilename($path);
+            throw $exception;
         }
 
         chmod($path, $mode);
@@ -206,14 +208,21 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
      * Returns bool(true) on success and bool(false) on error.
      *
      * @param   bool  $isRecursive  triggers wether to remove directories even if they are not empty, default = false
-     * @return  self
-     * @throws  \Yana\Core\Exceptions\NotWriteableException  when directory cannot be deleted
-     * @throws  \Yana\Core\Exceptions\NotFoundException      when directory is not found
+     * @return  $this
+     * @throws  \Yana\Core\Exceptions\Files\NotWriteableException  when directory cannot be deleted
+     * @throws  \Yana\Core\Exceptions\Files\NotFoundException      when directory is not found
      */
     public function delete($isRecursive = false)
     {
         assert(is_bool($isRecursive), 'Wrong argument type argument 1. Boolean expected');
 
+        if (!$this->exists()) {
+            $message = "Unable to delete directory '" . $this->getPath() . "' because it does not exist.";
+            $level = \Yana\Log\TypeEnumeration::INFO;
+            $exception = new \Yana\Core\Exceptions\Files\NotFoundException($message, $level);
+            $exception->setFilename($this->getPath());
+            throw $exception;
+        }
         if ($isRecursive === true) {
             if ($this->getFilter()) {
                 $this->setFilter(); // removes any previously set file-filter
@@ -227,7 +236,8 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
                     if (unlink($this->getPath() . $element) === false) {
                         $message = "Unable to delete file '" . $this->getPath() . $element . "'.";
                         $level = \Yana\Log\TypeEnumeration::ERROR;
-                        throw new \Yana\Core\Exceptions\NotWriteableException($message, $level);
+                        $exception = new \Yana\Core\Exceptions\Files\NotWriteableException($message, $level);
+                        $exception->setFilename($this->getPath());
                     }
                 } elseif (is_dir($this->getPath() . $element)) {
                     $dir = new \Yana\Files\Dir($this->getPath() . $element);
@@ -241,7 +251,9 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
         if (@rmdir($this->getPath()) === false) {
             $message = "Unable to delete directory '" . $this->getPath() . "'.";
             $level = \Yana\Log\TypeEnumeration::ERROR;
-            throw new \Yana\Core\Exceptions\NotWriteableException($message, $level);
+            $exception = new \Yana\Core\Exceptions\Files\NotWriteableException($message, $level);
+            $exception->setFilename($this->getPath());
+            throw $exception;
         }
         return $this;
     }
@@ -256,9 +268,9 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
     public function __toString()
     {
         if (!$this->exists()) {
-            return "Directory ".$this->getPath()." does not exist\n";
+            return "Directory " . $this->getPath() . " does not exist\n";
         } elseif ($this->isEmpty()) {
-            return "Directory ".$this->getPath()." is not loaded\n";
+            return "Directory " . $this->getPath() . " is not loaded\n";
         } else {
             return implode("\n", $this->getContent());
         }
