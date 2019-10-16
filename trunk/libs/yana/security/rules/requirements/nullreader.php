@@ -93,7 +93,7 @@ class NullReader extends \Yana\Core\StdObject implements \Yana\Security\Rules\Re
     {
         assert(is_int($id), 'Invalid argument type: $id. Integer expected');
 
-        $requirement = new \Yana\Security\Rules\Requirements\Requirement('', '', 0);
+        $requirement = new \Yana\Security\Rules\Requirements\Requirement('', '', \Yana\Security\Rules\Requirements\Requirement::DEFAULT_LEVEL);
         if ($this->_getCollection()->offsetExists($id) > 0) {
             $requirement = $this->_getCollection()->offsetGet($id);
         }

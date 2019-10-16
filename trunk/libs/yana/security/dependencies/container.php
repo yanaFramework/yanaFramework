@@ -53,6 +53,11 @@ class Container extends \Yana\Core\StdObject implements \Yana\Security\Dependenc
     private $_defaultUser = array();
 
     /**
+     * @var  array
+     */
+    private $_defaultUserRequirements = array();
+
+    /**
      * @var  \Yana\Plugins\Configs\MethodCollection
      */
     private $_eventConfigurationsForPlugins = null;
@@ -179,12 +184,34 @@ class Container extends \Yana\Core\StdObject implements \Yana\Security\Dependenc
     }
 
     /**
-     * Set list of events for plugins.
+     * Get default user security requirements.
      *
-     * @param   \Yana\Plugins\Configs\MethodCollection  $eventConfigurationsForPlugins  provided by Plugins\Facade
+     * @return  array
+     */
+    public function getDefaultUserRequirements(): array
+    {
+        return $this->_defaultUserRequirements;
+    }
+
+    /**
+     * Set default user security requirements.
+     *
+     * @param   array  $defaultUserRequirements  settings
      * @return  $this
      */
-    public function setEventConfigurationsForPlugins(\Yana\Plugins\Configs\MethodCollection $eventConfigurationsForPlugins)
+    public function setDefaultUserRequirements(array $defaultUserRequirements)
+    {
+        $this->_defaultUserRequirements = $defaultUserRequirements;
+        return $this;
+    }
+
+    /**
+     * Set list of events for plugins.
+     *
+     * @param   \Yana\Plugins\Configs\IsMethodCollection  $eventConfigurationsForPlugins  provided by Plugins\Facade
+     * @return  $this
+     */
+    public function setEventConfigurationsForPlugins(\Yana\Plugins\Configs\IsMethodCollection $eventConfigurationsForPlugins)
     {
         $this->_eventConfigurationsForPlugins = $eventConfigurationsForPlugins;
         return $this;
@@ -195,9 +222,9 @@ class Container extends \Yana\Core\StdObject implements \Yana\Security\Dependenc
      *
      * If none was given, tries to autoload them.
      *
-     * @return  \Yana\Plugins\Configs\MethodCollection
+     * @return  \Yana\Plugins\Configs\IsMethodCollection
      */
-    public function getEventConfigurationsForPlugins(): \Yana\Plugins\Configs\MethodCollection
+    public function getEventConfigurationsForPlugins(): \Yana\Plugins\Configs\IsMethodCollection
     {
         if (!isset($this->_eventConfigurationsForPlugins)) {
             $this->_eventConfigurationsForPlugins = $this->getPlugins()->getEventConfigurations();

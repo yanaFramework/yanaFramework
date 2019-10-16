@@ -101,7 +101,7 @@ class Checker extends \Yana\Security\Rules\AbstractChecker
         {
             switch ($this->_checkByRequirement($requirement, $profileId, $action, $user))
             {
-                // requirement statements are connected via "OR", so we return TRUE if any of them is TRUE.
+                // requirement statements are connected via "OR", so we return TRUE if any of them are TRUE.
                 case 1:
                     return true;
                 // default: we stick with FALSE

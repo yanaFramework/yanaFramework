@@ -69,9 +69,9 @@ interface IsFacadeContainer extends \Yana\Security\Dependencies\IsContainer
      *
      * If none was given, tries to autoload them.
      *
-     * @return  \Yana\Plugins\Configs\MethodCollection
+     * @return  \Yana\Plugins\Configs\IsMethodCollection
      */
-    public function getEventConfigurationsForPlugins(): \Yana\Plugins\Configs\MethodCollection;
+    public function getEventConfigurationsForPlugins(): \Yana\Plugins\Configs\IsMethodCollection;
 
     /**
      * Get default user settings.
@@ -79,6 +79,13 @@ interface IsFacadeContainer extends \Yana\Security\Dependencies\IsContainer
      * @return  array
      */
     public function getDefaultUser(): array;
+
+    /**
+     * Get default user security requirements.
+     *
+     * @return  array
+     */
+    public function getDefaultUserRequirements(): array;
 
     /**
      * Get event logger.
@@ -114,23 +121,23 @@ interface IsFacadeContainer extends \Yana\Security\Dependencies\IsContainer
     /**
      * Create and return data reader.
      *
-     * @return \Yana\Security\Rules\Requirements\DataReader
+     * @return \Yana\Security\Rules\Requirements\IsDataReader
      */
-    public function getDataReader(): \Yana\Security\Rules\Requirements\DataReader;
+    public function getDataReader(): \Yana\Security\Rules\Requirements\IsDataReader;
 
     /**
      * Create and return data writer.
      *
-     * @return \Yana\Security\Rules\Requirements\DataWriter
+     * @return \Yana\Security\Rules\Requirements\IsDataWriter
      */
-    public function getDataWriter(): \Yana\Security\Rules\Requirements\DataWriter;
+    public function getDataWriter(): \Yana\Security\Rules\Requirements\IsDataWriter;
 
     /**
      * Create and return user adapter.
      *
-     * @return \Yana\Security\Data\Users\Adapter
+     * @return \Yana\Security\Data\Users\IsDataAdapter
      */
-    public function getUserAdapter(): \Yana\Security\Data\Users\Adapter;
+    public function getUserAdapter(): \Yana\Security\Data\Users\IsDataAdapter;
 
 }
 
