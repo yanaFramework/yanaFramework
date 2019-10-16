@@ -53,11 +53,11 @@ class UserRegistrationPlugin extends \Yana\Plugins\AbstractPlugin
      * @type        config
      * @template    MESSAGE
      *
-     * @access      public
      * @param       string  $username  user name
      * @param       string  $mail      user mail
+     * @return      bool
      */
-    public function set_user_mail($username, $mail)
+    public function set_user_mail(string $username, string $mail)
     {
         $database = $this->_connectToDatabase("user");
 
@@ -90,18 +90,18 @@ class UserRegistrationPlugin extends \Yana\Plugins\AbstractPlugin
          *
          * Find and delete all previous entries of users with the same mail address
          */
-        $duplicates = $database->select("newuser.*.newuser_id", array('newuser_key', '=', $key));
+        $duplicates = $database->select("newuser.*.newuser_id", array('newuser_mail', '=', $mail));
         if (is_array($duplicates)) {
-            foreach ($duplicates as $newuser_id)
+            foreach ($duplicates as $duplicate)
             {
                 try {
-                    $database->remove("newuser.$newuser_id");
+                    $database->remove("newuser.$duplicate");
                 } catch (\Exception $e) {
                     unset($e); // worst case 2 codes are active - so what? We can live with that.
                 }
             }
         }
-        unset($duplicates);
+        unset($duplicates, $duplicate);
 
         try {
             $database->commit(); // may throw exception
@@ -115,21 +115,18 @@ class UserRegistrationPlugin extends \Yana\Plugins\AbstractPlugin
          *
          * limit = 24h = 86400sek
          */
-        $old_entries = $database->select("newuser");
-        $limit = time() - 86400;
-        if (is_array($old_entries)) {
-            foreach ($old_entries as $row)
+        $oldEntries = $database->select("newuser", array('NEWUSER_UTC', \Yana\Db\Queries\OperatorEnumeration::LESS, time() - 86400));
+        if (is_array($oldEntries)) {
+            foreach ($oldEntries as $row)
             {
-                if ($row['NEWUSER_UTC'] < $limit) {
-                    try {
-                        $database->remove("newuser.".$row['NEWUSER_ID']);
-                    } catch (\Exception $e) {
-                        unset($e); // we can do without this step if necessary
-                    }
+                try {
+                    $database->remove("newuser.".$row['NEWUSER_ID']);
+                } catch (\Exception $e) {
+                    unset($e); // we can do without this step if necessary
                 }
             }
         }
-        unset($old_entries);
+        unset($oldEntries);
 
         try {
             $database->commit(); // may throw exception
@@ -159,7 +156,8 @@ class UserRegistrationPlugin extends \Yana\Plugins\AbstractPlugin
         $YANA->setVar('KEY', $key);
         $YANA->setVar('MAIL', $mail);
         $template = $YANA->getView()->createContentTemplate("id:USER_CONFIRM_MAIL");
-        $this->_sendMail($mail, $template);
+        $this->_sendMail($mail, $template, (string) $YANA->getVar('PROFILE.MAIL'));
+        return true;
     }
 
     /**
@@ -198,10 +196,9 @@ class UserRegistrationPlugin extends \Yana\Plugins\AbstractPlugin
      * @onsuccess   goto: login, text: Yana\Core\Exceptions\Messages\FirstLoginMessage
      * @language    user
      *
-     * @access      public
      * @param       string  $target  new user-key
      */
-    public function user_authentification($target)
+    public function user_authentification(string $target)
     {
         $database = $this->_connectToDatabase('user');
 
@@ -249,24 +246,19 @@ class UserRegistrationPlugin extends \Yana\Plugins\AbstractPlugin
      * @param   string                            $recipient  mail address
      * @param   \Yana\Views\Templates\IsTemplate  $template   template
      * @param   string                            $sender     mail address
-     * @ignore
      */
-    private function _sendMail($recipient, \Yana\Views\Templates\IsTemplate $template, $sender = "")
+    private function _sendMail(string $recipient, \Yana\Views\Templates\IsTemplate $template, string $sender)
     {
-        assert(is_string($recipient), 'Invalid argument $recipient: string expected');
-        assert(is_string($sender), 'Invalid argument $sender: string expected');
-        $YANA = $this->_getApplication();
-
         $templateMailer = new \Yana\Mails\TemplateMailer($template);
-        $subject = $YANA->getLanguage()->getVar("user.mail_subject");
+        $subject = $this->_getApplication()->getLanguage()->getVar("user.mail_subject");
         $vars = array('DATE' => date('d-m-Y'));
 
-        $headers = array();
+        $headers = new \Yana\Mails\Headers\MailHeaderCollection();
         if ($sender) {
-            $headers = array('from' => $sender);
+            $headers->setFromAddress($sender);
         }
 
-        $templateMailer->send($recipient, $subject, $vars, $headers);
+        $templateMailer->send($recipient, $subject, $vars, $headers->toArray());
     }
 
 }
