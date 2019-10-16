@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Mails\Headers;
 
@@ -59,7 +60,7 @@ class MailHeaderCollection extends \Yana\Core\AbstractCollection implements \Yan
     /**
      * Sets the priority of the message to "highest".
      *
-     * @return  \Yana\Mails\Headers\IsHeader
+     * @return  $this
      */
     public function setHighPriority()
     {
@@ -71,7 +72,7 @@ class MailHeaderCollection extends \Yana\Core\AbstractCollection implements \Yan
     /**
      * Sets the priority of the message to "normal".
      *
-     * @return  \Yana\Mails\Headers\IsHeader
+     * @return  $this
      */
     public function setNormalPriority()
     {
@@ -83,7 +84,7 @@ class MailHeaderCollection extends \Yana\Core\AbstractCollection implements \Yan
     /**
      * Sets the priority of the message to "lowest".
      *
-     * @return  \Yana\Mails\Headers\IsHeader
+     * @return  $this
      */
     public function setLowPriority()
     {
@@ -100,7 +101,7 @@ class MailHeaderCollection extends \Yana\Core\AbstractCollection implements \Yan
      *
      * @return  int
      */
-    protected function _getPriority()
+    protected function _getPriority(): int
     {
         $priority = 0;
         if (isset($this['importance'])) {
@@ -138,7 +139,7 @@ class MailHeaderCollection extends \Yana\Core\AbstractCollection implements \Yan
      *
      * @return  bool
      */
-    public function isHighPriority()
+    public function isHighPriority(): bool
     {
         return $this->_getPriority() > 0;
     }
@@ -150,7 +151,7 @@ class MailHeaderCollection extends \Yana\Core\AbstractCollection implements \Yan
      *
      * @return  bool
      */
-    public function isNormalPriority()
+    public function isNormalPriority(): bool
     {
         return $this->_getPriority() === 0;
     }
@@ -160,7 +161,7 @@ class MailHeaderCollection extends \Yana\Core\AbstractCollection implements \Yan
      *
      * @return  bool
      */
-    public function isLowPriority()
+    public function isLowPriority(): bool
     {
         return $this->_getPriority() < 0;
     }
@@ -169,7 +170,7 @@ class MailHeaderCollection extends \Yana\Core\AbstractCollection implements \Yan
      * Set the addresses to include, when the recipient replies to your mail.
      *
      * @param   array  $mails  some mail addresses
-     * @return  \Yana\Mails\Headers\IsHeader
+     * @return  $this
      */
     public function setReplyAddresses(array $mails)
     {
@@ -182,7 +183,7 @@ class MailHeaderCollection extends \Yana\Core\AbstractCollection implements \Yan
      *
      * @return  array
      */
-    public function getReplyAddresses()
+    public function getReplyAddresses(): array
     {
         return (array) $this['reply-to'];
     }
@@ -194,9 +195,9 @@ class MailHeaderCollection extends \Yana\Core\AbstractCollection implements \Yan
      * and will not deliver any e-mail in case it doesn't.
      *
      * @param   string  $mail  some mail address
-     * @return  \Yana\Mails\Headers\IsHeader
+     * @return  $this
      */
-    public function setFromAddress($mail)
+    public function setFromAddress(string $mail)
     {
         $this['from'] = $mail;
         return $this;
@@ -207,7 +208,7 @@ class MailHeaderCollection extends \Yana\Core\AbstractCollection implements \Yan
      *
      * @return  string
      */
-    public function getFromAddress()
+    public function getFromAddress(): string
     {
         return (string) $this['from'];
     }
@@ -216,7 +217,7 @@ class MailHeaderCollection extends \Yana\Core\AbstractCollection implements \Yan
      * Set additional recipients.
      *
      * @param   array  $mails  some mail addresses
-     * @return  \Yana\Mails\Headers\IsHeader
+     * @return  $this
      */
     public function setCcAddresses(array $mails)
     {
@@ -229,7 +230,7 @@ class MailHeaderCollection extends \Yana\Core\AbstractCollection implements \Yan
      *
      * @return  array
      */
-    public function getCcAddresses()
+    public function getCcAddresses(): array
     {
         return (array) $this['cc'];
     }
@@ -240,8 +241,8 @@ class MailHeaderCollection extends \Yana\Core\AbstractCollection implements \Yan
      * The "blind-carbon-copy" (BCC) recipients will not show up as recipients to
      * other recipients of that mail.
      *
-     * @param  array  $mails  some mail addresses
-     * @return  \Yana\Mails\Headers\IsHeader
+     * @param   array  $mails  some mail addresses
+     * @return  $this
      */
     public function setBccAddresses(array $mails)
     {
@@ -254,7 +255,7 @@ class MailHeaderCollection extends \Yana\Core\AbstractCollection implements \Yan
      *
      * @return  array
      */
-    public function getBccAddresses()
+    public function getBccAddresses(): array
     {
         return (array) $this['bcc'];
     }
@@ -262,7 +263,7 @@ class MailHeaderCollection extends \Yana\Core\AbstractCollection implements \Yan
     /**
      * Set content type to HTML.
      *
-     * @return  \Yana\Mails\Headers\MailHeader
+     * @return  $this
      */
     public function setAsHtml()
     {
@@ -275,7 +276,7 @@ class MailHeaderCollection extends \Yana\Core\AbstractCollection implements \Yan
      *
      * @return  bool
      */
-    public function isHtml()
+    public function isHtml(): bool
     {
         $isHtml = isset($this['content-type']) && preg_match('/^text\/html/i', $this['content-type']);
         return $isHtml;
@@ -284,7 +285,7 @@ class MailHeaderCollection extends \Yana\Core\AbstractCollection implements \Yan
     /**
      * Set content type to HTML.
      *
-     * @return  \Yana\Mails\Headers\MailHeader
+     * @return  $this
      */
     public function setAsPlainText()
     {
@@ -299,7 +300,7 @@ class MailHeaderCollection extends \Yana\Core\AbstractCollection implements \Yan
      *
      * @return  bool
      */
-    public function isPlainText()
+    public function isPlainText(): bool
     {
         $isText = !isset($this['content-type']) || preg_match('/^text\/plain/i', $this['content-type']);
         return $isText;

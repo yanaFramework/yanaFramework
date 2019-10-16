@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Mails\Headers;
 
@@ -41,21 +42,21 @@ interface IsHeader extends \Yana\Core\IsCollection
     /**
      * Sets the priority of the message to "highest".
      *
-     * @return  \Yana\Mails\Headers\IsHeader
+     * @return  $this
      */
     public function setHighPriority();
 
     /**
      * Sets the priority of the message to "normal".
      *
-     * @return  \Yana\Mails\Headers\IsHeader
+     * @return  $this
      */
     public function setNormalPriority();
 
     /**
      * Sets the priority of the message to "lowest".
      *
-     * @return  \Yana\Mails\Headers\IsHeader
+     * @return  $this
      */
     public function setLowPriority();
 
@@ -64,7 +65,7 @@ interface IsHeader extends \Yana\Core\IsCollection
      *
      * @return  bool
      */
-    public function isHighPriority();
+    public function isHighPriority(): bool;
 
     /**
      * Returns true if the message has normal priority.
@@ -73,20 +74,20 @@ interface IsHeader extends \Yana\Core\IsCollection
      *
      * @return  bool
      */
-    public function isNormalPriority();
+    public function isNormalPriority(): bool;
 
     /**
      * Returns true if the message has low priority.
      *
      * @return  bool
      */
-    public function isLowPriority();
+    public function isLowPriority(): bool;
 
     /**
      * Set the addresses to include, when the recipient replies to your mail.
      *
      * @param   array  $mails  some mail addresses
-     * @return  \Yana\Mails\Headers\IsHeader
+     * @return  $this
      */
     public function setReplyAddresses(array $mails);
 
@@ -95,7 +96,7 @@ interface IsHeader extends \Yana\Core\IsCollection
      *
      * @return  array
      */
-    public function getReplyAddresses();
+    public function getReplyAddresses(): array;
 
     /**
      * Set the address of the mail sender.
@@ -104,22 +105,22 @@ interface IsHeader extends \Yana\Core\IsCollection
      * and will not deliver any e-mail in case it doesn't.
      *
      * @param   string  $mails  some mail address
-     * @return  \Yana\Mails\Headers\IsHeader
+     * @return  $this
      */
-    public function setFromAddress($mails);
+    public function setFromAddress(string $mails);
 
     /**
      * Returns the address of the mail's sender.
      *
      * @return  string
      */
-    public function getFromAddress();
+    public function getFromAddress(): string;
 
     /**
      * Set additional recipients.
      *
      * @param   array  $mails  some mail addresses
-     * @return  \Yana\Mails\Headers\IsHeader
+     * @return  $this
      */
     public function setCcAddresses(array $mails);
 
@@ -128,7 +129,7 @@ interface IsHeader extends \Yana\Core\IsCollection
      *
      * @return  array
      */
-    public function getCcAddresses();
+    public function getCcAddresses(): array;
 
     /**
      * Set additional (hidden) recipients.
@@ -136,8 +137,8 @@ interface IsHeader extends \Yana\Core\IsCollection
      * The "blind-carbon-copy" (BCC) recipients will not show up as recipients to
      * other recipients of that mail.
      *
-     * @param  array  $mails  some mail addresses
-     * @return  \Yana\Mails\Headers\IsHeader
+     * @param   array  $mails  some mail addresses
+     * @return  $this
      */
     public function setBccAddresses(array $mails);
 
@@ -146,12 +147,12 @@ interface IsHeader extends \Yana\Core\IsCollection
      *
      * @return  array
      */
-    public function getBccAddresses();
+    public function getBccAddresses(): array;
 
     /**
      * Set content type to HTML.
      *
-     * @return  \Yana\Mails\Headers\IsHeader
+     * @return  $this
      */
     public function setAsHtml();
 
@@ -160,12 +161,12 @@ interface IsHeader extends \Yana\Core\IsCollection
      *
      * @return  bool
      */
-    public function isHtml();
+    public function isHtml(): bool;
 
     /**
      * Set content type to HTML.
      *
-     * @return  \Yana\Mails\Headers\IsHeader
+     * @return  $this
      */
     public function setAsPlainText();
 
@@ -176,7 +177,7 @@ interface IsHeader extends \Yana\Core\IsCollection
      *
      * @return  bool
      */
-    public function isPlainText();
+    public function isPlainText(): bool;
 
 }
 
