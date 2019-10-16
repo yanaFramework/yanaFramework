@@ -182,7 +182,8 @@ class ApplicationReportBuilder extends \Yana\Core\StdObject
         // @codeCoverageIgnoreStart
         if (!class_exists("MDB2", false)) {
             $message = "PHP PEAR-MDB2 module not found. " .
-                "Some database systems that work with YANA require PEAR-MDB2 and will not be able to connect unless you install it.";
+                "Some database systems that work with YANA require PEAR-MDB2 and will not be able to connect unless you install it. " .
+                "To install PEAR-MDB2, run pear install MDB2.";
             $subReport->addWarning($message);
         } else {
             $subReport->addText(
@@ -196,6 +197,17 @@ class ApplicationReportBuilder extends \Yana\Core\StdObject
         } else {
             $subReport->addText(
                 "Doctrine DBAL found. Supported drivers: " . \implode(", ", \Yana\Db\Doctrine\DriverEnumeration::getValidItems())
+            );
+        }
+        if (!@class_exists('\SQL_Parser')) {
+            $message = "PEAR SQL-Parser module not found. " .
+                "This class is required to parse SQL statements to query objects for in-memory database simulation. " .
+                "Without it, you will not be able to test SQL statements without an actual database. " .
+                "To install PEAR SQL-Parser, run pear install SQL_Parser.";
+            $subReport->addError($message);
+        } else {
+            $subReport->addText(
+                "PEAR SQL-Parser found. In-memory parsing and simulation of SQL statements available."
             );
         }
 
