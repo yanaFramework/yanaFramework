@@ -140,6 +140,14 @@ abstract class AbstractPlugin extends \stdClass implements \Yana\IsPlugin
     }
 
     /**
+     * @return  \Yana\Http\IsFacade
+     */
+    protected function _getRequest()
+    {
+        return $this->_getDependencyContainer()->getRequest();
+    }
+
+    /**
      * @return  \Yana\Security\IsFacade
      */
     protected function _getSecurityFacade()

@@ -38,6 +38,8 @@ namespace Yana\Plugins\Dependencies;
 class PluginContainer extends \Yana\Core\StdObject implements \Yana\Plugins\Dependencies\IsPluginContainer
 {
 
+    use \Yana\Core\Dependencies\HasRequest;
+
     /**
      * @var  \Yana\Application
      */

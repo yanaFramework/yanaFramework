@@ -35,7 +35,7 @@ namespace Yana\Plugins\Dependencies;
  * @package     yana
  * @subpackage  plugins
  */
-interface IsPluginContainer
+interface IsPluginContainer extends \Yana\Core\Dependencies\IsRequestContainer
 {
 
     /**
