@@ -42,7 +42,12 @@ class Worker extends \Yana\Forms\QueryBuilder
     /**
      * @var \Yana\Forms\IsCallbackSet
      */
-    private $_callbackCache = null;
+    private static $_defaultCallbacks = null;
+
+    /**
+     * @var \Yana\Forms\IsCallbackSet
+     */
+    private $_callbacks = null;
 
     /**
      * Initialize instance.
@@ -54,7 +59,32 @@ class Worker extends \Yana\Forms\QueryBuilder
     {
         $this->_setDatabase($db);
         $this->setForm($form);
-        $this->_callbackCache = new \Yana\Forms\CallbackSet();
+    }
+
+    /**
+     * Returns callback collection.
+     *
+     * @return  \Yana\Forms\IsCallbackSet
+     */
+    public static function getDefaultCallbacks(): \Yana\Forms\IsCallbackSet
+    {
+        if (!isset(self::$_defaultCallbacks)) {
+            self::$_defaultCallbacks = new \Yana\Forms\CallbackSet();
+        }
+        return self::$_defaultCallbacks;
+    }
+
+    /**
+     * Returns callback collection.
+     *
+     * @return  \Yana\Forms\IsCallbackSet
+     */
+    protected function _getCallbacks(): \Yana\Forms\IsCallbackSet
+    {
+        if (!isset($this->_callbacks)) {
+            $this->_callbacks = new \Yana\Forms\CallbackSet();
+        }
+        return $this->_callbacks;
     }
 
     /**
@@ -74,7 +104,7 @@ class Worker extends \Yana\Forms\QueryBuilder
      */
     public function beforeCreate($callback = null)
     {
-        return $this->_callbackCache->addBeforeCreate($callback)->getBeforeCreate()->toArray();
+        return $this->_getCallbacks()->addBeforeCreate($callback)->getBeforeCreate()->toArray();
     }
 
     /**
@@ -94,7 +124,7 @@ class Worker extends \Yana\Forms\QueryBuilder
      */
     public function afterCreate($callback = null)
     {
-        return $this->_callbackCache->addAfterCreate($callback)->getAfterCreate()->toArray();
+        return $this->_getCallbacks()->addAfterCreate($callback)->getAfterCreate()->toArray();
     }
 
     /**
@@ -114,7 +144,7 @@ class Worker extends \Yana\Forms\QueryBuilder
      */
     public function beforeUpdate($callback = null)
     {
-        return $this->_callbackCache->addBeforeUpdate($callback)->getBeforeUpdate()->toArray();
+        return $this->_getCallbacks()->addBeforeUpdate($callback)->getBeforeUpdate()->toArray();
     }
 
     /**
@@ -134,7 +164,7 @@ class Worker extends \Yana\Forms\QueryBuilder
      */
     public function afterUpdate($callback = null)
     {
-        return $this->_callbackCache->addBeforeCreate($callback)->getBeforeCreate()->toArray();
+        return $this->_getCallbacks()->addBeforeCreate($callback)->getBeforeCreate()->toArray();
     }
 
     /**
@@ -154,7 +184,7 @@ class Worker extends \Yana\Forms\QueryBuilder
      */
     public function beforeDelete($callback = null)
     {
-        return $this->_callbackCache->addBeforeDelete($callback)->getBeforeDelete()->toArray();
+        return $this->_getCallbacks()->addBeforeDelete($callback)->getBeforeDelete()->toArray();
     }
 
     /**
@@ -174,7 +204,7 @@ class Worker extends \Yana\Forms\QueryBuilder
      */
     public function afterDelete($callback = null)
     {
-        return $this->_callbackCache->addAfterDelete($callback)->getAfterDelete()->toArray();
+        return $this->_getCallbacks()->addAfterDelete($callback)->getAfterDelete()->toArray();
     }
 
     /**
@@ -243,7 +273,10 @@ class Worker extends \Yana\Forms\QueryBuilder
             }
 
             // execute hooks
-            foreach ($this->_callbackCache->getBeforeCreate() as $callback)
+            $beforeHooks = array_merge(
+                self::getDefaultCallbacks()->getBeforeCreate()->toArray(), $this->_getCallbacks()->getBeforeCreate()->toArray()
+            );
+            foreach ($beforeHooks as $callback)
             {
                 $callback($newEntry); // may throw exception
             }
@@ -256,7 +289,10 @@ class Worker extends \Yana\Forms\QueryBuilder
             }
 
             // execute hooks
-            foreach ($this->_callbackCache->getAfterCreate() as $callback)
+            $afterHooks = array_merge(
+                self::getDefaultCallbacks()->getAfterCreate()->toArray(), $this->_getCallbacks()->getAfterCreate()->toArray()
+            );
+            foreach ($afterHooks as $callback)
             {
                 $callback($newEntry); // may throw exception
             }
@@ -364,6 +400,12 @@ class Worker extends \Yana\Forms\QueryBuilder
             }
             assert(!isset($database), 'Cannot redeclare var $database');
             $database = $this->getDatabase();
+            $beforeHooks = array_merge(
+                self::getDefaultCallbacks()->getBeforeUpdate()->toArray(), $this->_getCallbacks()->getBeforeUpdate()->toArray()
+            );
+            $afterHooks = array_merge(
+                self::getDefaultCallbacks()->getAfterUpdate()->toArray(), $this->_getCallbacks()->getAfterUpdate()->toArray()
+            );
 
             foreach ($updatedEntries as $id => $entry)
             {
@@ -377,19 +419,20 @@ class Worker extends \Yana\Forms\QueryBuilder
                 }
 
                 // execute hooks
-                foreach ($this->_callbackCache->getBeforeUpdate() as $callback)
+                foreach ($beforeHooks as $callback)
                 {
                     $callback($id, $entry); // may throw exception
                 }
 
                 try {
-                    $database->update("{$tableName}.{$id}", $entry); // update the row
+                    $query = new \Yana\Db\Queries\Update($database);
+                    $query->setTable($tableName)->setRow($id)->setValues($entry)->sendQuery(); // update the row
                 } catch (\Yana\Core\Exceptions\NotWriteableException $e) {
                     return false; // error - unable to perform update - possibly readonly
                 }
 
                 // execute hooks
-                foreach ($this->_callbackCache->getAfterUpdate() as $callback)
+                foreach ($afterHooks as $callback)
                 {
                     $callback($id, $entry); // may throw exception
                 }
@@ -426,23 +469,31 @@ class Worker extends \Yana\Forms\QueryBuilder
             assert(!isset($database), 'Cannot redeclare var $database');
             $database = $this->getDatabase();
             $tableName = $form->getBaseForm()->getTable();
+
+            $beforeHooks = array_merge(
+                self::getDefaultCallbacks()->getBeforeDelete()->toArray(), $this->_getCallbacks()->getBeforeDelete()->toArray()
+            );
+            $afterHooks = array_merge(
+                self::getDefaultCallbacks()->getAfterDelete()->toArray(), $this->_getCallbacks()->getAfterDelete()->toArray()
+            );
             // remove entry from database
             foreach ($selectedEntries as $id)
             {
 
                 // execute hooks
-                foreach ($this->_callbackCache->getBeforeDelete() as $callback)
+                foreach ($beforeHooks as $callback)
                 {
                     $callback($id); // may throw exception
                 }
                 try {
-                    $database->remove("{$tableName}.{$id}");
+                    $query = new \Yana\Db\Queries\Delete($database);
+                    $query->setTable($tableName)->setRow($id)->sendQuery(); // update the row
                 } catch (\Yana\Core\Exceptions\NotWriteableException $e) {
                     return false;
                 }
 
                 // execute hooks
-                foreach ($this->_callbackCache->getAfterDelete() as $callback)
+                foreach ($afterHooks as $callback)
                 {
                     $callback($id); // may throw exception
                 }
