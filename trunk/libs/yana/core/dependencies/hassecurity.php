@@ -125,6 +125,13 @@ trait HasSecurity
     abstract public function getDefaultUser(): array;
 
     /**
+     * Get default user settings.
+     *
+     * @return  array
+     */
+    abstract public function getDefaultUserRequirements(): array;
+
+    /**
      * Returns a ready-to-use factory to create open database connections.
      *
      * @return  \Yana\Db\IsConnectionFactory
@@ -182,7 +189,7 @@ trait HasSecurity
     {
         if (!isset($this->_requirementsDataReader)) {
             $this->_requirementsDataReader = new \Yana\Security\Rules\Requirements\DefaultableDataReader(
-                $this->_getDataConnection(), $this->getDefaultUser());
+                $this->_getDataConnection(), $this->getDefaultUserRequirements());
         }
         return $this->_requirementsDataReader;
     }
@@ -411,19 +418,19 @@ trait HasSecurity
     /**
      * Create and return data reader.
      *
-     * @return \Yana\Security\Rules\Requirements\DataReader
+     * @return \Yana\Security\Rules\Requirements\IsDataReader
      */
-    public function getDataReader(): \Yana\Security\Rules\Requirements\DataReader
+    public function getDataReader(): \Yana\Security\Rules\Requirements\IsDataReader
     {
-        return new \Yana\Security\Rules\Requirements\DefaultableDataReader($this->_getDataConnection(), $this->getDefaultUser());
+        return new \Yana\Security\Rules\Requirements\DefaultableDataReader($this->_getDataConnection(), $this->getDefaultUserRequirements());
     }
 
     /**
      * Create and return data writer.
      *
-     * @return \Yana\Security\Rules\Requirements\DataWriter
+     * @return \Yana\Security\Rules\Requirements\IsDataWriter
      */
-    public function getDataWriter(): \Yana\Security\Rules\Requirements\DataWriter
+    public function getDataWriter(): \Yana\Security\Rules\Requirements\IsDataWriter
     {
         return new \Yana\Security\Rules\Requirements\DataWriter($this->_getDataConnection());
     }
@@ -433,7 +440,7 @@ trait HasSecurity
      *
      * @return \Yana\Security\Data\Users\Adapter
      */
-    public function getUserAdapter(): \Yana\Security\Data\Users\Adapter
+    public function getUserAdapter(): \Yana\Security\Data\Users\IsDataAdapter
     {
         return new \Yana\Security\Data\Users\Adapter($this->_getDataConnection(), $this->_getUserMapper());
     }

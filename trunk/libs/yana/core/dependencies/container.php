@@ -731,9 +731,9 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
      *
      * If none was given, tries to autoload them.
      *
-     * @return  \Yana\Plugins\Configs\MethodCollection
+     * @return  \Yana\Plugins\Configs\IsMethodCollection
      */
-    public function getEventConfigurationsForPlugins(): \Yana\Plugins\Configs\MethodCollection
+    public function getEventConfigurationsForPlugins(): \Yana\Plugins\Configs\IsMethodCollection
     {
         if (!isset($this->_eventConfigurationsForPlugins)) {
             $this->_eventConfigurationsForPlugins = $this->getPlugins()->getEventConfigurations();
@@ -760,7 +760,17 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
      */
     public function getDefaultUser(): array
     {
-        return $this->getDefault('user');
+        return (array) $this->getDefault('user');
+    }
+
+    /**
+     * Get default user security requirements.
+     *
+     * @return  array
+     */
+    public function getDefaultUserRequirements(): array
+    {
+        return (array) $this->getDefault('user_requirements');
     }
 
     /**
