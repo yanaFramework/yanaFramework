@@ -92,10 +92,8 @@ class Sequence extends \Yana\Core\StdObject
      * @param   string  $name  name of sequence
      * @throws  \Yana\Db\Queries\Exceptions\NotFoundException  if the sequence does not exist
      */
-    public function __construct($name)
+    public function __construct(string $name)
     {
-        assert(is_string($name), 'Invalid argument type argument 1. String expected.');
-
         $query = new \Yana\Db\Queries\Select(self::_getDb());
         $query->setTable("sequences")
             ->setRow($name);
@@ -140,7 +138,7 @@ class Sequence extends \Yana\Core\StdObject
     /**
      * @return  \Yana\Db\IsConnection
      */
-    protected static function _getDb()
+    protected static function _getDb(): \Yana\Db\IsConnection
     {
         if (!isset(self::$db)) {
             self::$db = self::_connect();
@@ -164,8 +162,10 @@ class Sequence extends \Yana\Core\StdObject
                 'max' => $this->max,
                 'cycle' => $this->cycle
             );
-            self::_getDb()->update("sequences.{$this->name}", $row)
-                ->commit(); // may throw exception
+            $db = self::_getDb();
+            $query = new \Yana\Db\Queries\Update($db);
+            $query->setTable("sequences")->setRow($this->name)->setValues($row)->sendQuery();
+            $db->commit(); // may throw exception
         } catch (\Exception $e) { // Destructor may not throw exceptions
             unset($e);
         }
@@ -176,7 +176,7 @@ class Sequence extends \Yana\Core\StdObject
      *
      * @return  int
      */
-    public function getIncrement()
+    public function getIncrement(): int
     {
         return $this->increment;
     }
@@ -184,11 +184,11 @@ class Sequence extends \Yana\Core\StdObject
     /**
      * Set increment value.
      *
-     * @param  int  $increment  new value of this property
+     * @param   int  $increment  new value of this property
+     * @return  $this
      */
-    public function setIncrement($increment)
+    public function setIncrement(int $increment)
     {
-        assert(is_int($increment), 'Invalid argument type argument 1. Integer expected.');
         $this->increment = (int) $increment;
     }
 
@@ -197,7 +197,7 @@ class Sequence extends \Yana\Core\StdObject
      *
      * @return  int
      */
-    public function getMax()
+    public function getMax(): int
     {
         return $this->max;
     }
@@ -206,6 +206,7 @@ class Sequence extends \Yana\Core\StdObject
      * Set maximum sequence value.
      *
      * @param   int  $max   maximal value
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when $max is smaller then minimum value
      */
     public function setMax($max)
@@ -213,6 +214,7 @@ class Sequence extends \Yana\Core\StdObject
         assert(is_int($max), 'Invalid argument type argument 1. Integer expected.');
         if ($max >= $this->min) {
             $this->max = (int) $max;
+            return $this;
         } else {
             $message = "Maximum value '{$max}' must be bigger then minimum value '{$this->min}' in sequence '".
                 "{$this->name}'.";
@@ -225,7 +227,7 @@ class Sequence extends \Yana\Core\StdObject
      *
      * @return  int
      */
-    public function getMin()
+    public function getMin(): int
     {
         return $this->min;
     }
@@ -234,13 +236,15 @@ class Sequence extends \Yana\Core\StdObject
      * Set minimum value.
      *
      * @param   int  $min   minimal value
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when $min is bigger then maximum value
      */
-    public function setMin($min)
+    public function setMin(int $min)
     {
         assert(is_int($min), 'Invalid argument type argument 1. Integer expected.');
         if ($min <= $this->max) {
             $this->min = (int) $min;
+            return  $this;
         } else {
             $message = "Minimum value '{$min}' must be smaller then maximum value '{$this->max}' in sequence '".
                 "{$this->name}'.";
@@ -253,7 +257,7 @@ class Sequence extends \Yana\Core\StdObject
      *
      * @return  bool
      */
-    public function isCycle()
+    public function isCycle(): bool
     {
         return (bool) $this->cycle;
     }
@@ -261,12 +265,13 @@ class Sequence extends \Yana\Core\StdObject
     /**
      * Set cyclic.
      *
-     * @param  bool  $cycle  new value of this property
+     * @param   bool  $cycle  new value of this property
+     * @return  $this
      */
-    public function setCycle($cycle)
+    public function setCycle(bool $cycle)
     {
-        assert(is_bool($cycle), 'Invalid argument type argument 1. Boolean expected.');
         $this->cycle = (bool) $cycle;
+        return $this;
     }
 
     /**
@@ -286,15 +291,9 @@ class Sequence extends \Yana\Core\StdObject
      * @param   bool    $cycle      true: wrap values around, false: report an error when max/min reached
      * @return  bool
      */
-    public static function create($name, $increment = 1, $start = null, $min = null, $max = null, $cycle = false)
+    public static function create(
+        string $name, int $increment = 1, ?int $start = null, ?int $min = null, ?int $max = null, bool $cycle = false, bool $useIP = true): bool
     {
-        assert(is_string($name), 'Invalid argument type argument 1. String expected.');
-        assert(is_int($increment), 'Invalid argument type argument 2. Integer expected.');
-        assert(is_null($start) || is_int($start), 'Invalid argument type argument 3. Integer expected.');
-        assert(is_null($min) || is_int($min), 'Invalid argument type argument 4. Integer expected.');
-        assert(is_null($max) || is_int($max), 'Invalid argument type argument 5. Integer expected.');
-        assert(is_bool($cycle), 'Invalid argument type argument 6. Boolean expected.');
-
         // ascending sequence
         if ($increment > 0) {
             if (is_null($min)) {
@@ -352,14 +351,16 @@ class Sequence extends \Yana\Core\StdObject
      * @param   string  $name   sequence name
      * @return  bool
      */
-    public static function drop($name)
+    public static function drop(string $name): bool
     {
-        assert(is_string($name), 'Invalid argument type argument 1. String expected.');
-
         // remove datbase entry
         try {
-            self::_getDb()->remove("sequences.$name")
-                ->commit(); // may throw exception
+            $db = self::_getDb();
+            $query = new \Yana\Db\Queries\Delete(self::_getDb());
+            $query->setTable("sequences");
+            $query->setRow($name);
+            $query->sendQuery();
+            $db->commit(); // may throw exception
             $success = true;
         } catch (\Exception $e) {
             unset($e);
@@ -374,7 +375,7 @@ class Sequence extends \Yana\Core\StdObject
      * @return  int
      * @throws  \Yana\Core\Exceptions\OutOfBoundsException  when new value is < minimum or > maximum
      */
-    public function getNextValue()
+    public function getNextValue(): int
     {
         $value = $this->value + $this->increment;
         // value is within range
@@ -406,7 +407,7 @@ class Sequence extends \Yana\Core\StdObject
      *
      * @return  int
      */
-    public function getCurrentValue()
+    public function getCurrentValue(): int
     {
         return $this->value;
     }
@@ -419,24 +420,24 @@ class Sequence extends \Yana\Core\StdObject
      * @param   string  $name  sequence name
      * @return  bool
      */
-    public static function exists($name)
+    public static function exists(string $name): bool
     {
-        assert(is_string($name), 'Invalid argument type argument 1. String expected.');
-
-        return (self::_getDb()->exists("sequence.$name") === true);
+        $query = new \Yana\Db\Queries\SelectExist(self::_getDb());
+        return $query->setTable("sequences")->setRow($name)->doesExist();
     }
 
     /**
      * Set current sequence value.
      *
      * @param   int  $value     current sequence value
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\OutOfBoundsException  when $value < minimum or $value > maximum
      */
-    public function setCurrentValue($value)
+    public function setCurrentValue(int $value)
     {
-        assert(is_int($value), 'Invalid argument type argument 1. Integer expected.');
         if ($value >= $this->min && $value <= $this->max) {
             $this->value = $value;
+            return $this;
         } else {
             $message = "Value '{$value}' must be within range [{$this->min},{$this->max}] in sequence '{$this->name}'.";
             throw new \Yana\Core\Exceptions\OutOfBoundsException($message, \Yana\Log\TypeEnumeration::WARNING);
@@ -455,7 +456,7 @@ class Sequence extends \Yana\Core\StdObject
      * the same IP settings.
      *
      * @param    \Yana\Core\IsObject  $anotherObject  any object or var you want to compare
-     * @return   string
+     * @return   bool
      */
     public function equals(\Yana\Core\IsObject $anotherObject)
     {

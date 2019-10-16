@@ -75,15 +75,15 @@ class Counter extends \Yana\Db\FileDb\Sequence
      * @param   string    $name  counter name
      * @throws  \Yana\Core\Exceptions\NotFoundException  if the counter does not exist
      */
-    public function __construct($name)
+    public function __construct(string $name)
     {
-        assert(is_string($name), 'Invalid argument type argument 1. String expected.');
-
         // establish datbase connection
         $db = self::_getDb();
 
         parent::__construct($name);
-        $row = $db->select("counter.$name");
+        $query = new \Yana\Db\Queries\Select($db);
+        $row = $query->setTable("counter")->setRow($name)->getResults();
+        $row2 = $db->select("counter.$name");
         if (empty($row)) {
             throw new \Yana\Core\Exceptions\NotFoundException("No such counter '$name'.", \Yana\Log\TypeEnumeration::WARNING);
         }
@@ -117,8 +117,10 @@ class Counter extends \Yana\Db\FileDb\Sequence
                 'ip' => $this->ip,
                 'info' => $this->info
             );
-            self::_getDb()->update("counter.{$this->name}", $row)
-                ->commit(); // may throw exception
+            $db = self::_getDb();
+            $query = new \Yana\Db\Queries\Update($db);
+            $query->setTable("counter")->setRow($this->name)->setValues($row)->sendQuery();
+            $db->commit(); // may throw exception
         } catch (\Exception $e) {
             unset($e); // Destructor may not throw exceptions
         }
@@ -146,12 +148,11 @@ class Counter extends \Yana\Db\FileDb\Sequence
      *                              false: increment always
      * @return  bool
      */
-    public static function create($name, $increment = 1, $start = null, $min = null, $max = null, $cycle = false, $useIP = true)
+    public static function create(
+        string $name, int $increment = 1, ?int $start = null, ?int $min = null, ?int $max = null, bool $cycle = false, bool $useIP = true): bool
     {
-        assert(is_string($name), 'Invalid argument type argument 1. String expected.');
-        assert(is_bool($useIP), 'Invalid argument type argument 2. Boolean expected.');
 
-        if (parent::create($name, $increment, $start, $min, $max, $cycle)) {
+        if (parent::exists($name) || parent::create($name, $increment, $start, $min, $max, $cycle)) {
 
             // create datbase entry
             $row = array(
@@ -162,17 +163,33 @@ class Counter extends \Yana\Db\FileDb\Sequence
             );
 
             try {
-                self::_getDb()->insert("counter.$name", $row)
-                    ->commit(); // may throw exception
+                $db = self::_getDb();
+                $query = new \Yana\Db\Queries\Insert($db);
+                self::_counterExists($name) ||
+                    ($query->setTable("counter")->setRow($name)->setValues($row)->sendQuery() && $db->commit());
+                return true;
+
             } catch (\Exception $e) {
                 unset($e);
-                return false;
             }
-            return true;
-        } else {
-            return false;
         }
+        return false;
 
+    }
+
+    /**
+     * Check if counter exists.
+     *
+     * Returns bool(true) if a counter with the given name exists and bool(false) otherwise.
+     * Does NOT check the parent.
+     *
+     * @param   string  $name  counter name
+     * @return  bool
+     */
+    private static function _counterExists(string $name): bool
+    {
+        $query = new \Yana\Db\Queries\SelectExist(self::_getDb());
+        return $query->setTable("counter")->setRow($name)->doesExist();
     }
 
     /**
@@ -183,11 +200,9 @@ class Counter extends \Yana\Db\FileDb\Sequence
      * @param   string  $name  counter name
      * @return  bool
      */
-    public static function exists($name)
+    public static function exists(string $name): bool
     {
-        assert(is_string($name), 'Invalid argument type argument 1. String expected.');
-
-        return (self::_getDb()->exists("counter.$name") === true);
+        return self::_counterExists($name) && parent::exists($name);
     }
 
     /**
@@ -198,20 +213,21 @@ class Counter extends \Yana\Db\FileDb\Sequence
      * @param   string  $name  counter name
      * @return  bool
      */
-    public static function drop($name)
+    public static function drop(string $name): bool
     {
-        assert(is_string($name), 'Invalid argument type argument 1. String expected.');
-
         // remove database entry
         try {
-            self::_getDb()->remove("counter.$name")
-                ->commit(); // may throw exception
-            $success = parent::drop($name);
+            $db = self::_getDb();
+            $query = new \Yana\Db\Queries\Delete(self::_getDb());
+            $query->setTable("counter");
+            $query->setRow($name);
+            $query->sendQuery();
+            $db->commit(); // may throw exception
+            return parent::drop($name);
         } catch (\Exception $e) {
             unset($e);
-            return false;
         }
-        return $success;
+        return false;
     }
 
     /**
@@ -219,7 +235,7 @@ class Counter extends \Yana\Db\FileDb\Sequence
      *
      * @return  bool
      */
-    public function hasIp()
+    public function hasIp(): bool
     {
         return (bool) $this->useIp;
     }
@@ -227,11 +243,11 @@ class Counter extends \Yana\Db\FileDb\Sequence
     /**
      * Set if counter should use IP.
      *
-     * @param   bool  $useIp  true: check for IP, false: ignore IP
+     * @param   bool   $useIp  true: check for IP, false: ignore IP
+     * @return  $this
      */
-    public function useIp($useIp = true)
+    public function useIp(bool $useIp = true)
     {
-        assert(is_bool($useIp), 'Invalid argument type argument 1. Boolean expected.');
         $this->useIp = (bool) $useIp;
         return $this;
     }
@@ -245,7 +261,7 @@ class Counter extends \Yana\Db\FileDb\Sequence
      *
      * @return  string
      */
-    public function getInfo()
+    public function getInfo(): string
     {
         return $this->info;
     }
@@ -258,11 +274,10 @@ class Counter extends \Yana\Db\FileDb\Sequence
      * This function returns the current description of counter.
      *
      * @param   string  $info  optional text value, that describes the counter
-     * @return  string
+     * @return  $this
      */
-    public function setInfo($info)
+    public function setInfo(string $info)
     {
-        assert(is_string($info), 'Invalid argument type argument 1. String expected.');
         $this->info = $info;
         return $this;
     }
@@ -276,7 +291,7 @@ class Counter extends \Yana\Db\FileDb\Sequence
      *
      * @return  array
      */
-    public function getIps()
+    public function getIps(): array
     {
         return array_keys($this->ip);
     }
@@ -293,7 +308,7 @@ class Counter extends \Yana\Db\FileDb\Sequence
      *
      * @return  int
      */
-    public function getNextValue()
+    public function getNextValue(): int
     {
         /**
          * reload detection
@@ -347,11 +362,10 @@ class Counter extends \Yana\Db\FileDb\Sequence
      * If the counter does not exist, it get's created automatically.
      *
      * @param   string    $name  counter name
-     * @return  \Yana\Db\FileDb\Counter
+     * @return  self
      */
-    public static function getInstance($name)
+    public static function getInstance(string $name)
     {
-        assert(is_string($name), 'Invalid argument type argument 1. String expected.');
         if (!isset(self::$instances[$name])) {
             if (!self::exists($name)) {
                 self::create($name);
