@@ -185,22 +185,6 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function blog_new_blogcmt (array $ARGS)
     {
-        /* global variables */
-        $YANA = $this->_getApplication();
-
-        /* avoid spamming */
-        $permission = $YANA->getVar("PERMISSION");
-        if (!is_int($permission) || $permission < 1) {
-            if ($this->_getPluginsFacade()->isActive('antispam') && $YANA->getVar("PROFILE.SPAM.CAPTCHA")) {
-                if ($YANA->execute("security_check_image", $ARGS) === false) {
-                    $message = 'CAPTCHA not solved, entry has not been created.';
-                    $level = \Yana\Log\TypeEnumeration::DEBUG;
-                    \Yana\Log\LogManager::getLogger()->addLog($message, $level);
-                    $level = \Yana\Log\TypeEnumeration::WARNING;
-                    throw new \Yana\Core\Exceptions\Forms\SpamException($message, $level);
-                }
-            }
-        }
         $form = $this->_getCommentForm();
         $worker = new \Yana\Forms\Worker($this->_getDatabase(), $form);
         return $worker->create();
