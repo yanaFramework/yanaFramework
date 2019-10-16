@@ -193,6 +193,14 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testGetDefaultUserRequirements()
+    {
+        $this->assertSame(array(), $this->object->getDefaultUserRequirements());
+    }
+
+    /**
+     * @test
+     */
     public function testGetDefaultEvent()
     {
         $this->assertSame($this->object->getDefault('event'), $this->object->getDefaultEvent());

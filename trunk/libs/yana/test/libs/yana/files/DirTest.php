@@ -123,6 +123,14 @@ class DirTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     */
+    public function testGetContentNotFoundException()
+    {
+        $this->assertSame(array(), $this->nonExistingDir->getContent());
+    }
+
+    /**
      * get filter
      *
      * @test
@@ -166,6 +174,25 @@ class DirTest extends \PHPUnit_Framework_TestCase
         $this->nonExistingDir->delete();
         $this->assertFalse(is_dir($this->nonExistingDir->getPath()), 'Directory was not deleted.');
     }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\Files\AlreadyExistsException
+     */
+    public function testCreateAlreadyExistsException()
+    {
+        $this->existingDir->create();
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\Files\NotWriteableException
+     */
+    public function testCreateNotWriteableException()
+    {
+        $dir = new \Yana\Files\Dir($_SERVER["DOCUMENT_ROOT"] . '/..');
+        $dir->create();
+    }
     
     /**
      * Create Invalid Argument
@@ -200,20 +227,51 @@ class DirTest extends \PHPUnit_Framework_TestCase
     {
         mkdir($this->nonExistingDir->getPath());
         $this->assertFalse($this->nonExistingDir->delete()->exists(), 'unable to delete directory');
-        $isDir = is_dir($this->nonExistingDir->getPath());
-        $this->assertFalse($isDir, 'function delete() returned true, but directory was not deleted');
+        $this->assertFalse(is_dir($this->nonExistingDir->getPath()));
     }
 
     /**
-     * Delete Invalid Argument
-     *
-     * @expectedException  PHPUnit_Framework_Error
+     * delete
+     * 
+     * @test
+     * @expectedException \Yana\Core\Exceptions\Files\NotFoundException
+     */
+    public function testDeleteNotFoundException()
+    {
+        $this->nonExistingDir->delete();
+    }
+
+    /**
+     * 
      * @test
      */
-    public function testDeleteInvalidArgument()
+    public function testDeleteNotWriteableException()
     {
-        $delete = $this->nonExistingDir->delete('false');
-        $this->assertFalse($delete, 'assert failed, first argument must be a bool');
+        mkdir($this->nonExistingDir->getPath());
+        touch($this->nonExistingDir->getPath() . '/test.txt');
+        try {
+            $this->nonExistingDir->delete();
+        } catch (\Yana\Core\Exceptions\Files\NotWriteableException $e) {
+            // intentionally left blank
+        }
+        unlink($this->nonExistingDir->getPath() . '/test.txt');
+        rmdir($this->nonExistingDir->getPath());
+        if (!isset($e)) {
+            $this->fail("Failed to assert that exception of type \Yana\Core\Exceptions\Files\NotWriteableException is thrown.");
+        }
+    }
+
+    /**
+     * delete
+     * 
+     * @test
+     */
+    public function testDeleteRecursive()
+    {
+        mkdir($this->nonExistingDir->getPath());
+        touch($this->nonExistingDir->getPath() . '/test.txt');
+        $this->assertSame($this->nonExistingDir, $this->nonExistingDir->delete(true));
+        $this->assertFalse(is_dir($this->nonExistingDir->getPath()));
     }
 
     /**
@@ -228,11 +286,26 @@ class DirTest extends \PHPUnit_Framework_TestCase
 
         $toString = (string) $this->existingDir;
         $this->assertInternalType('string', $toString, '"toString" is not of type string - assert failed');
-        
-        // try with non exist Dir
-        $newDir = new Dir('nonexistDir');
-        $toString = (string) $newDir;
-        unset($newDir);
+    }
+
+    /**
+     * to string
+     * 
+     * @test
+     */
+    public function testToStringNotExists()
+    {
+        $this->assertSame("Directory " . $this->nonExistingDir->getPath() . " does not exist\n", (string) $this->nonExistingDir);
+    }
+
+    /**
+     * to string
+     * 
+     * @test
+     */
+    public function testToStringNotLoaded()
+    {
+        $this->assertSame("Directory " . $this->existingDir->getPath() . " is not loaded\n", (string) $this->existingDir);
     }
 
     /**

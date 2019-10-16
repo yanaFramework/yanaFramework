@@ -135,6 +135,22 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testGetDefaultUserRequirements()
+    {
+        $this->assertSame(array(), $this->object->getDefaultUserRequirements());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetDefaultUserRequirements()
+    {
+        $this->assertSame(array('test'), $this->object->setDefaultUserRequirements(array('test'))->getDefaultUserRequirements());
+    }
+
+    /**
+     * @test
+     */
     public function testGetRulesChecker()
     {
         $this->assertTrue($this->object->getRulesChecker() instanceof \Yana\Security\Rules\IsChecker);

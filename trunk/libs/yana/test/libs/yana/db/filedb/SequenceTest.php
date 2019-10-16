@@ -81,8 +81,8 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
 
             \Yana\Db\FileDb\Sequence::create($this->ascendingId, +1, null, null, +3, false);
             \Yana\Db\FileDb\Sequence::create($this->descendingId, -1, null, -3, null, true);
-            $this->ascendingSequence = new Sequence($this->ascendingId);
-            $this->descendingSequence = new Sequence($this->descendingId);
+            $this->ascendingSequence = new \Yana\Db\FileDb\Sequence($this->ascendingId);
+            $this->descendingSequence = new \Yana\Db\FileDb\Sequence($this->descendingId);
 
         } catch (\Exception $e) {
             $this->markTestSkipped("Unable to connect to database: " . $e->getMessage());
@@ -285,6 +285,15 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
 
         $equals = $this->ascendingSequence->equals($this->ascendingSequence);
         $this->assertTrue($equals, "Two itentical sequences must be equal.");
+    }
+
+    /**
+     * @test
+     */
+    public function testExists()
+    {
+        $this->assertTrue(\Yana\Db\FileDb\Sequence::exists($this->ascendingId));
+        $this->assertFalse(\Yana\Db\FileDb\Sequence::exists("no such sequence"));
     }
 
 }

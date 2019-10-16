@@ -172,4 +172,13 @@ class LevelTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('', $this->object3->setProfile('')->getProfile());
     }
 
+    /**
+     * @test
+     * @todo implement this
+     */
+    public function testGrantTo()
+    {
+        $this->markTestIncomplete();
+    }
+
 }

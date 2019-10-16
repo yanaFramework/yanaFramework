@@ -67,6 +67,7 @@ class SecurityLevelRuleTest extends \PHPUnit_Framework_TestCase
      */
     public function test__invoke()
     {
+        $requiredDoesNotApply = new \Yana\Security\Rules\Requirements\Requirement("test", "test");
         $requiredPublic = new \Yana\Security\Rules\Requirements\Requirement("", "", 0);
         $required1 = new \Yana\Security\Rules\Requirements\Requirement("", "", 1);
         $required100 = new \Yana\Security\Rules\Requirements\Requirement("", "", 100);
@@ -81,6 +82,7 @@ class SecurityLevelRuleTest extends \PHPUnit_Framework_TestCase
         $user = new \Yana\Security\Data\Behaviors\Standard($container, $entity);
         $profileId = "default";
 
+        $this->assertNull($this->object->__invoke($requiredDoesNotApply, $profileId, "", $user));
         $this->assertTrue($this->object->__invoke($requiredPublic, $profileId, "", $user));
         $this->assertFalse($this->object->__invoke($required1, $profileId, "", $user));
         $user->login("");

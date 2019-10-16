@@ -184,4 +184,13 @@ class CounterTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($compareResult, 'assert failed, objects need too be equal - true expected');
     }
 
+    /**
+     * @test
+     */
+    public function testExists()
+    {
+        $this->assertTrue(\Yana\Db\FileDb\Counter::exists($this->_counterId));
+        $this->assertFalse(\Yana\Db\FileDb\Counter::exists("no such counter"));
+    }
+
 }

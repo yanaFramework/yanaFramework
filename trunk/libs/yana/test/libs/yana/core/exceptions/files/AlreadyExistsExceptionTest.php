@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case
+ * YANA library
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -25,23 +25,21 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Security\Rules;
+namespace Yana\Core\Exceptions\Files;
 
 /**
  * @ignore
  */
-require_once __DIR__ . '/../../../../include.php';
+require_once __DIR__ . '/../../../../../include.php';
 
 /**
- * Test-case
- *
- * @package  test
+ * @package test
  */
-class NullRuleTest extends \PHPUnit_Framework_TestCase
+class AlreadyExistsExceptionTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Security\Rules\NullRule
+     * @var AlreadyExistsException
      */
     protected $object;
 
@@ -51,7 +49,7 @@ class NullRuleTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Security\Rules\NullRule();
+        $this->object = new AlreadyExistsException;
     }
 
     /**
@@ -66,12 +64,11 @@ class NullRuleTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function test__invoke()
+    public function testSetFilename()
     {
-        $builder = new \Yana\Security\Data\Behaviors\Builder();
-        $user = $builder(new \Yana\Security\Data\Users\Entity("userName"));
-        $requirement = new \Yana\Security\Rules\Requirements\Requirement("", "", \Yana\Security\Rules\Requirements\Requirement::DEFAULT_LEVEL);
-        $this->assertTrue($this->object->__invoke($requirement, "profileId", "action", $user));
+        $this->assertEquals(array('FILE' => 'test'), $this->object->setFilename('test')->getData());
     }
 
 }
+
+?>

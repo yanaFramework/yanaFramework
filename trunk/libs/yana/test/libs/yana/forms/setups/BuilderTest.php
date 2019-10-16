@@ -62,6 +62,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         $configurationFactory = new \Yana\ConfigurationFactory();
         $configuration = $configurationFactory->loadConfiguration(CWD . 'resources/system.config.xml');
         $configuration->configdrive = YANA_INSTALL_DIR . 'config/system.drive.xml';
+        $configuration['default']['user_requirements'] = array('level' => '1');
         $this->container = new \Yana\Core\Dependencies\Container($configuration);
         $schemaFactory = new \Yana\Db\SchemaFactory();
         $schema = $schemaFactory->createSchema('check');

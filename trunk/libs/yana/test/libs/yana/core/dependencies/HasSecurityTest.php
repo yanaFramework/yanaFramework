@@ -42,12 +42,16 @@ class MyHasSecurity
 
     use \Yana\Core\Dependencies\HasSecurity;
 
-    public function getDefaultUser()
+    public function getDefaultUser(): array
+    {
+        return array();
+    }
+    public function getDefaultUserRequirements(): array
     {
         return array();
     }
 
-    public function getConnectionFactory()
+    public function getConnectionFactory(): \Yana\Db\IsConnectionFactory
     {
         return new \Yana\Db\ConnectionFactory(new \Yana\Db\SchemaFactory());
     }
