@@ -87,7 +87,7 @@ td.optionhead, div.optionhead, .optionhead
     font-size: 18px;
     font-family: 'Tahoma', 'Helvetica', 'Arial', sans-serif;
     font-weight: bold;
-    color: #334;
+    color: #333;
     margin: 0;
     padding-left: 20px;
     text-align: left;
@@ -141,7 +141,6 @@ td.optionhead, div.optionhead, .optionhead
 #index_display
 {
     min-width: 640px;
-    max-width: 1024px;
 }
 * html #index_display
 {

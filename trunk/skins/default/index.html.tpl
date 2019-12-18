@@ -29,28 +29,29 @@
               <div id="index_logo"><img alt="" src='{$PROFILE.LOGO|entities}'/></div>
               <!-- End: logo {/if} -->
               <div id="index_header_appbar">{applicationBar}</div>
-<!-- Begin: language block
- {$SIZE_OF_INSTALLED_LANGUAGES=$INSTALLED_LANGUAGES|count}
- {if $SIZE_OF_INSTALLED_LANGUAGES > 1} -->
-              <div id="index_language">{lang id="TITLE_LANG"}:
-<!-- Begin: language
-   {foreach from=$INSTALLED_LANGUAGES item="item" key="key"} -->
-              <a href={"action=$ACTION&language=$key"|href} title="{lang id="SELECT_LANG"}: {$key}">{$key}</a>
-<!-- {/foreach}
- End: language -->
-            </div>
-<!-- {/if}
- End: language block -->
-
-            <div id="index_rss">{rss}</div>
-            <div id="index_visitor" class="description">{visitorCount}</div>
+              <div id="index_rss">{rss}</div>
+              <div id="index_visitor" class="description">{visitorCount}</div>
 
           </div></div></div>
       </div>
 <!-- End: headline -->
 
 <!-- Begin: toolbar -->
-      <div id="index_toolbar">{toolbar}</div>
+      <div id="index_toolbar">
+          {toolbar}
+          <!-- Begin: language block
+           {$SIZE_OF_INSTALLED_LANGUAGES=$INSTALLED_LANGUAGES|count}
+           {if $SIZE_OF_INSTALLED_LANGUAGES > 1} -->
+                  <div id="index_language">{lang id="TITLE_LANG"}:
+          <!-- Begin: language
+             {foreach from=$INSTALLED_LANGUAGES item="item" key="key"} -->
+                  <a href={"action=$ACTION&language=$key"|href} title="{lang id="SELECT_LANG"}: {$key}">{$key}</a>
+          <!-- {/foreach}
+           End: language -->
+                </div>
+          <!-- {/if}
+           End: language block -->
+      </div>
 <!-- End: toolbar -->
 
   <div id="index_body">

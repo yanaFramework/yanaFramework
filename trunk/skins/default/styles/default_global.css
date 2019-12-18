@@ -88,15 +88,18 @@ img.arrow
 }
 fieldset
 {
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
+    border: 0px none transparent;
+    background: #ddd;
     border-radius: 4px;
-    border: 1px solid #aaa;
 }
 fieldset > legend
 {
     /* Safari and Chrome */
     margin-right: auto;
+    background: #555;
+    color: #fff;
+    font-size: 1.2em;
+    border-radius: 2px;
 }
 #index_body .header
 {
@@ -241,4 +244,8 @@ a.embtag_tag_hide:hover, .embtag_tag_hide a:hover, .embtag_tag_hide:hover
 {
     background: #A3C0D7 url("menu_bgd.gif") repeat-y top left;
     border: 1px solid #ace;
+}
+.applicationBarLabel
+{
+    display: none;
 }

@@ -1,7 +1,9 @@
 {if $form->isSelectable()}
     {if $form->getFields() && $form->getSearchAction()}
         <fieldset>
-            <legend onclick="$(this).find('~ div, ~ input').toggle('slow')">{$form->getTitle()}</legend>
+            {if {$form->getTitle()} > ""}
+                <legend onclick="$(this).find('~ div, ~ input').toggle('slow')">{$form->getTitle()}</legend>
+            {/if}
             {if $form->getLayout() < 3}
                 {import file="layout2.html.tpl" form=$form->getSearchForm()}
             {elseif $form->getLayout() === 3}

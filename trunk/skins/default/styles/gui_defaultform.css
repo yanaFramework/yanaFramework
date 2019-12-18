@@ -98,8 +98,7 @@
 {
     width: 100%;
 }
-.gui_generator_view_details td,
-.gui_generator_toolbar td
+.gui_generator_view_details td
 {
     padding: 2px;
     background-color: #f3f3f3;
@@ -201,13 +200,6 @@
     background: #e0e0e0;
     color: #000000;
     margin: auto;
-}
-.gui_generator_toolbar td
-{
-    border-bottom: 1px solid #888;
-    padding-bottom: 1px; 
-    padding-top: 1px;
-    text-align: left;
 }
 .gui_generator_edit img
 {
@@ -623,25 +615,23 @@ fieldset
 }
 fieldset > legend
 {
-    border: 1px solid #aaa;
-    border-radius: 4em;
-    -moz-border-radius: 4em;
-    -webkit-border-radius: 4em;
-    -ms-border-radius: 4em;
-    -o-border-radius: 4em;
-    box-shadow: 0 0 2px #888888;
-    -moz-box-shadow: 0 0 2px #888888;
-    -webkit-box-shadow: 0 0 2px #888888;
-    -o-box-shadow: 0 0 2px #888888;
-    -ms-box-shadow: 0 0 2px #888888;
     padding: 0.2em 1.5em 0.2em 1.5em;
-    background-color: inherit;
     font-weight: bold;
 }
-fieldset > legend > a.buttonize
+
+fieldset > .gui_generator_toolbar > .gui_generator_settings
 {
-    padding: 4px
+    margin-bottom: .5em;
+    background-color: rgba(255, 255, 255, 0.5);
+    color: #000;
+    border-top: .5em solid #ddd;
+    border-right: .5em solid rgba(255, 255, 255, 0.5);
+    border-top-left-radius: 1em;
+    border-top-left-radius: 1em;
+    border-bottom-left-radius: 1em;
+    border-bottom-right-radius: 1em;
 }
+
 /* IE 7 (fieldset border bug) */
 * + html fieldset > .gui_generator_toolbar
 {
@@ -652,35 +642,26 @@ fieldset > legend > a.buttonize
     text-align: right;
 }
 
+.gui_generator_toolbar
+{
+    margin-left: 40%;
+}
+
 .gui_generator_toolbar > div,
 .gui_generator_toolbar > form
 {
-    /* CSS 2.1 for IE8 */
-    background-color: #f0f0f0;
-    /* CSS 3 for Firefox, Chrome, Opera and others */
-    background-color: rgba(255, 255, 255, 0.5);
     padding: 5px;
-    margin-left: 40%;
-    border: 1px solid #aaa;
-    /* Firefox and Seamonkey */
-    -moz-border-radius-topleft: 4px;
-    -moz-border-radius-bottomleft: 4px;
-    /* Safari and Chrome */
-    -webkit-border-radius-topleft: 4px;
-    -webkit-border-radius-bottomleft: 4px;
-    /* IE9 and Opera */
-    border-radius-topleft: 4px;
-    border-radius-bottomleft: 4px;
 }
 
 /* preview images for layout selector */
 .gui_generator_toolbar .gui_select_layout img.gui_layout
 {
-    border: 1px solid #3C6DA5;
+    border: 1px solid #333;
     height: 18px;
     width: 25px;
     opacity: 0.5;
-    vertical-align: bottom;
+    vertical-align: middle;
+    margin: 0;
 }
 
 .gui_generator_toolbar .gui_select_layout img.gui_layout_preview
@@ -701,52 +682,33 @@ fieldset > legend > a.buttonize
 .gui_generator_toolbar > a
 {
     display: inline-block;
-    padding: 5px;
-    padding-top: 0px;
+    padding: 4px;
     opacity: 0.8;
-    background: #282828;
-    border: 1px solid #282828;
-    -moz-border-radius-bottomleft: 4px;
-    -moz-border-radius-bottomright: 4px;
-    -webkit-border-bottom-left-radius: 4px;
-    -webkit-border-bottom-right-radius: 4px;
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
+    vertical-align: middle;
+    line-height: 17px;
 }
 
 .gui_generator_toolbar > a:hover
 {
     opacity: 1;
-    background: url('highlight2.jpg') repeat-x;
-    border-color: #888;
 }
 
-fieldset > .gui_generator_toolbar > a
+fieldset > .gui_generator_toolbar > a,
+fieldset > .gui_generator_toolbar > .gui_generator_settings
 {
-    visibility: hidden;
-    outline: 0;
+    opacity: .3;
 }
 
-fieldset:hover > .gui_generator_toolbar > a
+fieldset:hover > .gui_generator_toolbar > a,
+fieldset:hover > .gui_generator_toolbar > .gui_generator_settings
 {
-    visibility: visible;
+    opacity: 1;
 }
 
 /* search and sub-forms */
 .gui_generator_new,
 .gui_generator_search
 {
-    /* CSS 2.1 for IE8 */
-    background-color: #fcfcfc;
-    /* CSS 3 for Firefox, Chrome, Opera and others */
-    background-color: rgba(255, 255, 255, 0.5);
-}
-
-.gui_generator_form fieldset
-{
-    /* CSS 2.1 for IE6-IE8 (solid color) */
-    background-color: #f5f5f5;
-    /* CSS 3 for IE9, Firefox, Chrome, Opera and others (transparent, skinable color) */
     background-color: rgba(255, 255, 255, 0.5);
 }
 

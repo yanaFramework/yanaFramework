@@ -21,11 +21,8 @@
                     <input type="hidden" name="action" value="{$form->getSearchAction()}"/>
                     <fieldset id="{$form->getName()}-search" class="gui_generator_search">
                         <legend>
-                            <a class="buttonize" href="javascript://"
-                               onclick="$('#{$form->getName()}-search').hide('slow')">
-                                <span class="icon_magnifier">&nbsp;</span>
-                                {lang id="advanced_search"}
-                            </a>
+                            <span class="icon_magnifier">&nbsp;</span>
+                            {lang id="advanced_search"}
                         </legend>
                         {import file="search.html.tpl" form=$form}
                     </fieldset>

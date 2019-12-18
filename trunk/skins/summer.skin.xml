@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE skin SYSTEM "../config/dtd/skin.dtd">
+<skin>
+  <head>
+    <title>Summer Skin</title>
+
+    <author>Thomas Meyer</author>
+
+    <url>http://www.yanaframework.net</url>
+
+    <description>This is a skin that uses light blue colors
+    creating a "summer" mood.</description>
+
+    <description lang="de">Dies ist ein hellblauer Skin der leichte
+    Farbtöne verwendet, um eine "Sommerstimmung" zu erzeugen.</description>
+  </head>
+
+  <body>
+    <template id="INDEX">
+      <style id="skin">summer/styles/default_local.css</style>
+      <style id="summer">summer/styles/default.css</style>
+    </template>
+  </body>
+</skin>

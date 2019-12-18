@@ -843,13 +843,8 @@ a.gui_generator_ext_link img
 .gui_generator_toolbar .gui_generator_settings,
 .gui_generator_toolbar .gui_generator_new
 {
-    background: #f0f0f0;
     padding: 5px;
     margin-left: 40%;
-    border-left: 1px solid #aaa;
-    border-bottom: 1px solid #aaa;
-    -moz-border-radius-topleft: 4px;
-    -moz-border-radius-bottomleft: 4px;
 }
 
 .gui_generator_new table,
@@ -862,7 +857,6 @@ a.gui_generator_ext_link img
 
 .gui_generator_toolbar .gui_select_layout img.gui_layout
 {
-    border: 1px solid #3C6DA5;
     height: 18px;
     width: 25px;
     opacity: 0.5;
@@ -871,7 +865,6 @@ a.gui_generator_ext_link img
 
 .gui_generator_toolbar .gui_select_layout img.gui_layout_preview
 {
-    border: 2px solid #eee;
     position: absolute;
     margin-top: 20px;
     margin-left: -80px;
@@ -890,15 +883,9 @@ a.gui_generator_ext_link img
     padding: 5px;
     padding-top: 0px;
     opacity: 0.8;
-    background: #282828;
-    -moz-border-radius-bottomleft: 4px;
-    -moz-border-radius-bottomright: 4px;
-    border: 1px solid #282828;
 }
 
 .gui_generator_toolbar > img:hover
 {
     opacity: 1;
-    background: url('highlight2.jpg') repeat-x;
-    border-color: #888;
 }

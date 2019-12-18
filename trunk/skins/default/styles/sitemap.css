@@ -13,6 +13,20 @@
 #sitemap li
 {
     margin: 15px;
+    filter: grayscale(50%);
+    opacity: .7;
+    transition: opacity .5s, filter .5s, transform .5s, color .5s;
+}
+#sitemap li:hover
+{
+    filter: grayscale(0);
+    opacity: 1;
+    transform: scale(1.01);
+}
+#sitemap li:hover a
+{
+    text-shadow: 0 0 4px #aaa;
+    color: #000;
 }
 #sitemap li a
 {
@@ -20,7 +34,8 @@
     font-family: Arial, Helvetica, sans-serif;
     font-size: 20px;
     line-height: 40px;
-    vertical-align: top;
+    position: relative;
+    top: -1em;
 }
 #sitemap_box
 {

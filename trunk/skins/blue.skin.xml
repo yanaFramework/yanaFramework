@@ -16,6 +16,7 @@
     </head>
     <body>
         <template id="INDEX">
+        	<style id="skin">blue/styles/default_local.css</style>
         	<style id="blue">blue/styles/default.css</style>
         </template>
     </body>

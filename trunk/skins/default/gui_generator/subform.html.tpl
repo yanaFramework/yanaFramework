@@ -73,10 +73,8 @@
                 <input type="hidden" name="action" value="{$form->getInsertAction()}"/>
                 <fieldset class="gui_generator_new">
                     <legend>
-                        <a class="buttonize" href="javascript://" onclick="$('#{$form->getName()}-new').slideToggle();">
-                            <span class="icon_new">&nbsp;</span>
-                            {lang id="new_entry"}
-                        </a>
+                        <span class="icon_new">&nbsp;</span>
+                        {lang id="new_entry"}
                     </legend>
                     {if $form->getLayout() === 0}
                         {import file="layout2.html.tpl" form=$form->getInsertForm()}
@@ -159,14 +157,14 @@
                 '<span class="icon_upload">&nbsp;</span></a>' +
             {/if}
             {if $form->isInsertable() && $form->getInsertAction()}
-                '<a class="gui_generator_icon_new" href="javascript://" ' +
+                '<a class="gui_generator_icon_new buttonize" href="javascript://" ' +
                 'onclick="$(\'#{$formName}-new\').slideToggle()">' +
-                '<span class="icon_new">&nbsp;</span></a>' +
+                '<span class="icon_new">&nbsp;</span>&nbsp;{lang id="new_entry"}</a>' +
             {/if}
                 '<a class="gui_generator_icon_settings buttonize" href="javascript://"' +
                 'onclick="return yanaGuiToggleVisibility(\'{$form->getName()}-settings\');">' +
-                '<span class="icon_edit">&nbsp;</span></a>';
-            $('#{$form->getName()}-toolbar').append(subFormText);
+                '<span class="icon_edit">&nbsp;</span>&nbsp;{lang id="view_settings"}</a>';
+            $('#{$form->getName()}-toolbar').prepend(subFormText);
             $('#{$form->getName()}-new').hide();
         //--></script>
     </fieldset>

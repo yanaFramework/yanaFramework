@@ -107,3 +107,13 @@ tr.title td, td.title, .config_head
 {
     background-image: url('highlight2.jpg') ! important;
 }
+#index_header_appbar .applicationBar:hover .applicationBarLabel
+{
+    color: #fff;
+    text-shadow: 0 0 .2em #888;
+}
+#index_toolbar {
+    background: #4686c2 linear-gradient(0deg, #c6d6f2, #062642);
+    border: 1px solid #456;
+    border-top-width: 0px;
+}

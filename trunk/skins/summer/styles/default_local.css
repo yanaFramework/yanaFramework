@@ -1,0 +1,336 @@
+#index_box
+{
+    max-width: 1280px;
+    margin: auto;
+}
+#index_content
+{
+    margin: 0px;
+    padding: 5px;
+}
+#index_header
+{
+    text-align: left;
+    margin: 2px;
+    padding: 0px;
+    margin: auto;
+    margin-bottom: 10px;
+}
+#index_header a
+{
+    color: #ffffff;
+}
+#index_header, #index_header div
+{
+    white-space: nowrap;
+}
+#index_header.header
+{
+    display: block;
+    color: #f8f8f8;
+    background: #358 url('index_title_bgd.gif') repeat-x;
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    padding: 0px;
+    margin: 0px;    
+    white-space: nowrap;
+    vertical-align: middle;
+    height: 75px;
+    overflow: hidden;
+}
+#index_header_left
+{
+    display: block;
+    background: url('index_title_left.gif') no-repeat;
+    background-position: top left;
+    padding-left: 12px;
+}
+#index_header_right
+{
+    display: block;
+    background: url('index_title_right.gif') no-repeat;
+    background-position: top right;
+    padding-right: 12px;
+}
+#index_header_center
+{
+    display: flex;
+    background-position: top left;
+    padding-top: 10px;
+    height: 75px;
+    justify-content: space-between;
+}
+#index_header_center.index_default_logo
+{
+    background: url('index_title_name.png') no-repeat;
+    padding-left: 75px;
+}
+#index_header_center.index_custom_logo #index_logo
+{
+    display: block;
+    float: left;
+    margin: 5px 5px 0 0;
+    background-color: #fff;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border: 1px solid #fff;
+    opacity: 0.7;
+    filter: alpha(opacity=70);
+    padding: 2px;
+}
+#index_header_center.index_custom_logo #index_logo img
+{
+    max-height: 45px;
+    max-width: 200px;
+}
+#index_title
+{
+    display: block;
+    float: left;
+    width: 180px;
+    line-height: 35px;
+    margin-right: 10px;
+    font-size: 16px;
+}
+a#index_title:hover
+{
+    border: 0px none;
+    text-decoration: none;
+    background: none;
+    color: inherit;
+}
+#index_language, #index_language a
+{
+    text-decoration: none;
+    display: inline;
+    font-size: 12px;
+    line-height: 30px;
+    margin-left: 10px;
+    font-weight: normal;
+}
+#index_language a
+{
+    font-weight: bold;
+}
+#index_visitor
+{
+    white-space: nowrap;
+    display: inline;
+    margin-left: 20px;
+    line-height: 30px;    
+    color: #eeeeee;
+    font-size: 12px;
+}
+#index_rss
+{
+    display: inline;
+}
+#index_rss img
+{
+    margin-left: 10px;
+    border: 1px solid #035;
+}
+#index_description
+{
+    white-space: nowrap;
+    display: inline;
+    font-weight: bold;
+    display: inline;
+}
+#index_content #index_description
+{
+    position: absolute;
+    display: none;
+    background-color: #fffff0;
+    padding: 2px;
+    font-size: 10px;
+    font-weight: normal;
+    border: 1px solid #000;
+    color: #000;
+}
+#index_content.index_content_hover #index_description
+{
+    display: block;
+}
+/* work-around for IE box-model bug */
+* html #index_content
+{
+    width: 100%;
+    overflow: auto;
+}
+#yana_stdout
+{
+
+}
+#index_foot
+{
+    text-align: center;
+    color: #888888;
+    font-size: 10pt;
+    font-family: 'Tahoma', 'Helvetica', 'Arial', sans-serif;
+    font-weight: normal;
+}
+/* Uncomment this if you prefer to few the footer inline instead of listing the contents
+#index_foot li
+{
+    display: inline;
+    padding: 2px;
+    margin: 5px;
+} */
+#index_toolbar
+{
+    background: #6e8499 url('index_toolbar.gif') repeat-x;
+    border-bottom: 1px solid #456;
+    padding: 0px 5px;
+    text-align: left;
+}
+#index_toolbar ul.hmenu
+{
+    margin-bottom: 0;
+    background-image: none;
+    background-color: transparent;
+    height: 25px;
+    border: 0px none;
+}
+#index_toolbar ul.hmenu ul.hmenu,
+#index_toolbar ul.hmenu li.hmenu
+{
+    background-color: #707a80;
+    background-image: url('index_toolbar_button.gif');
+    background-repeat: repeat-x;
+    color: #eee;
+    margin-top: 0px;
+    z-index: 5;
+}
+#index_toolbar ul.hmenu li.hmenu div
+{
+    cursor: default;
+}
+#index_toolbar ul.hmenu li.hmenu
+{
+    margin-top: 2px;
+}
+#index_toolbar ul.hmenu li.hmenu:hover,
+#index_toolbar ul.hmenu li.menu_hover,
+#index_toolbar ul.hmenu li.hmenu:hover ul.hmenu,
+#index_toolbar ul.hmenu li.menu_hover ul.hmenu
+{
+    background-color: #4C658A;
+    background-image: url('index_toolbar_menu_bgd_hover.gif');
+    background-repeat: repeat-y;
+    color: #eee;
+}
+#index_toolbar ul.hmenu li.menu_hover ul.hmenu,
+#index_toolbar ul.hmenu li.hmenu:hover ul.hmenu
+{
+    height: auto;
+    border-left: 1px solid #8899AA;
+    border-right: 1px solid #556677;
+    border-bottom: 1px solid #368;
+}
+#index_toolbar ul.hmenu li.hmenu
+{
+    margin-left: 0px;
+    margin-right: 0px;
+    border-left: 1px solid #8899AA;
+    border-right: 1px solid #556677;
+}
+#index_toolbar ul.hmenu li.entry
+{
+    margin-left: 0px;
+    border-left: 1px solid #8899AA;
+    border-right: 1px solid #556677;
+}
+#index_toolbar ul.hmenu li.hmenu li.entry
+{
+    border-top: 1px solid #8899AA;
+    border-left: 1px solid #8899AA;
+    border-right: 1px solid #556677;
+    border-bottom: 1px solid #556677;
+}
+#index_toolbar ul.hmenu li.entry a
+{
+    font-size: 8pt;
+    font-weight: bold;
+    background-color: #368;
+    background-image: url('index_toolbar_button.gif');
+    color: #eee;
+}
+#index_toolbar ul.hmenu li.menu_hover a:hover,
+#index_toolbar ul.hmenu li.hmenu:hover a:hover
+{
+    text-decoration: none;
+    background-color: #368;
+    background-image: url('index_toolbar_button_hover.gif');
+    color: #ccc;
+}
+/* #index_toolbar a
+{
+    background: #EEEEEE url(index_toolbar_button.gif) repeat scroll 0 0;
+    border-left: 1px solid #8899AA;
+    border-right: 1px solid #556677;
+    color: #EEEEEE;
+    display: block;
+    float: left;
+    padding: 5px;
+    text-decoration: none;
+    margin: 0px 1px;
+} */
+#index_toolbar li.hmenu,
+#index_toolbar li.hmenu div
+{
+    font-size: 8pt;
+    font-weight: bold;
+}
+#index_body
+{
+    display: block;
+    border: 0;
+    background-color: #efefef;
+    margin-bottom: 5px;
+}
+#index_body_top
+{
+    display: block;
+    background: url('index_box_top.gif') repeat-x;
+}
+#index_body_top_left
+{
+    display: block;
+    background: url('index_box_left_top.gif') no-repeat top left;
+}
+#index_body_top_right
+{
+    display: block;
+    background: url('index_box_right_top.gif') no-repeat top right;
+    height: 15px;
+    overflow: hidden;
+}
+#index_body_bottom
+{
+    display: block;
+    background: url('index_box_bottom.gif') repeat-x;
+}
+#index_body_bottom_left
+{
+    display: block;
+    background: url('index_box_left_bottom.gif') no-repeat top left;
+}
+#index_body_bottom_right
+{
+    display: block;
+    background: url('index_box_right_bottom.gif') no-repeat top right;
+    height: 15px;
+    overflow: hidden;
+}
+#index_body_left
+{
+    display: block;
+    background: url('index_box_left.gif') repeat-y left;
+    padding-left: 15px;
+}
+#index_body_right
+{
+    display: block;
+    background: url('index_box_right.gif') repeat-y right;
+    padding-right: 15px;
+}

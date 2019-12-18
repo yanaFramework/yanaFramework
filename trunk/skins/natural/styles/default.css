@@ -41,51 +41,51 @@ h2, .header
 }
 #index_body_top
 {
-    background-image: url('index_box_top.gif');
+    background: url('index_box_top.gif') repeat-x;
 }
 #index_body_top_left
 {
-    background-image: url('index_box_left_top.gif');
+    background: url('index_box_left_top.gif') no-repeat top left;
 }
 #index_body_top_right
 {
-    background-image: url('index_box_right_top.gif');
+    background: url('index_box_right_top.gif') no-repeat top right;
 }
 #index_body_bottom
 {
-    background-image: url('index_box_bottom.gif');
+    background: url('index_box_bottom.gif') repeat-x;
 }
 #index_body_bottom_left
 {
-    background-image: url('index_box_left_bottom.gif');
+    background: url('index_box_left_bottom.gif') no-repeat top left;
 }
 #index_body_bottom_right
 {
-    background-image: url('index_box_right_bottom.gif');
+    background: url('index_box_right_bottom.gif') no-repeat top right;
 }
 #index_body_left
 {
-    background-image: url('index_box_left.gif');
+    background: url('index_box_left.gif') repeat-y left;
 }
 #index_body_right
 {
-    background-image: url('index_box_right.gif');
+    background: url('index_box_right.gif') repeat-y right;
 }
 #index_header.header
 {
-    background-image: url('index_title_bgd.gif');
+    background: url('index_title_bgd.gif') repeat-x;
 }
 #index_header_left
 {
-    background-image: url('index_title_left.gif');
+    background: url('index_title_left.gif') no-repeat top left;
 }
 #index_header_right
 {
-    background-image: url('index_title_right.gif');
+    background: url('index_title_right.gif') no-repeat top right;
 }
 #index_header_center.index_default_logo
 {
-    background-image: url('index_title_name.jpg');
+    background: url('index_title_name.jpg') no-repeat;
 }
 #index_content
 {
@@ -116,6 +116,7 @@ h2, .header
 {
     background-color: #9ab474;
     background-image: url('index_toolbar_menu_bgd_hover.gif');
+    background-repeat: repeat-y;
     color: #000;
 }
 #index_toolbar ul.hmenu li.menu_hover ul.hmenu,
@@ -251,4 +252,10 @@ input[type="button"], input[type="submit"], input[type="reset"], .buttonize, .bu
     background-color: #EFE9E3;
     background-image: url("input_button.gif");
     border-color: #a89b5c;
+}
+
+#index_header_appbar .applicationBar:hover .applicationBarLabel
+{
+    color: #fff;
+    text-shadow: 0 0 .2em #888;
 }
