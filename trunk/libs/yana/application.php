@@ -52,7 +52,6 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
     use \Yana\Core\Dependencies\HasApplicationContainer;
 
     /**
-     *
      * @var  \Yana\Core\Output\IsBehavior
      */
     private $_outputBehavior = null;
@@ -63,7 +62,7 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
      * @return  \Yana\Core\Output\IsBehavior
      * @codeCoverageIgnore
      */
-    protected function _getOutputBehavior()
+    protected function _getOutputBehavior(): \Yana\Core\Output\IsBehavior
     {
         if (!isset($this->_outputBehavior)) {
             $this->_outputBehavior = new \Yana\Core\Output\DefaultBehavior($this->_getDependencyContainer());
@@ -78,7 +77,7 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
      *
      * @return  \Yana\Data\Adapters\IsDataAdapter
      */
-    public function getCache()
+    public function getCache(): \Yana\Data\Adapters\IsDataAdapter
     {
         return $this->_getDependencyContainer()->getCache();
     }
@@ -109,10 +108,8 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
      * @return  bool
      * @throws  \Yana\Core\Exceptions\InvalidActionException  when the event is undefined
      */
-    public function execute($action = "", array $args = null)
+    public function execute(string $action = "", array $args = null): bool
     {
-        assert(is_string($action), 'Invalid argument $action: string expected');
-
         /**
          * 1) check for default arguments
          */
@@ -179,18 +176,6 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
             unset($language, $languageId);
         }
         unset($languages);
-        assert(!isset($styles), 'Cannot redeclare var $styles');
-        $styles = $eventConfiguration->getStyles();
-        if ($styles) {
-            $this->getView()->addStyles($styles);
-        }
-        unset($styles);
-        assert(!isset($scripts), 'Cannot redeclare var $scripts');
-        $scripts = $eventConfiguration->getScripts();
-        if ($scripts) {
-            $this->getView()->addScripts($scripts);
-        }
-        unset($scripts);
 
         /**
          * 3) handle event
@@ -229,7 +214,7 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
      * 
      * @return \Yana\Security\IsFacade
      */
-    public function getSecurity()
+    public function getSecurity(): \Yana\Security\IsFacade
     {
         return $this->_getDependencyContainer()->getSecurity();
     }
@@ -244,7 +229,7 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
      * @throws  \Yana\Core\Exceptions\NotReadableException    when Registry file is not readable
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when Registry file could not be read or contains invalid syntax
      */
-    public function getRegistry()
+    public function getRegistry(): \Yana\VDrive\IsRegistry
     {
         return $this->_getDependencyContainer()->getRegistry();
     }
@@ -257,7 +242,7 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
      *
      * @return  \Yana\Plugins\Facade
      */
-    public function getPlugins()
+    public function getPlugins(): \Yana\Plugins\Facade
     {
         return $this->_getDependencyContainer()->getPlugins($this);
     }
@@ -268,9 +253,9 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
      * This returns the view component. If none exists, a new instance is created.
      * This is an auxiliary class that provides access to output-specific functions.
      *
-     * @return  \Yana\Views\Managers\IsSmartyManager
+     * @return  \Yana\Views\Managers\IsManager
      */
-    public function getView()
+    public function getView(): \Yana\Views\Managers\IsManager
     {
         return $this->_getDependencyContainer()->getView();
     }
@@ -282,7 +267,7 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
      *
      * @return  \Yana\Translations\IsFacade
      */
-    public function getLanguage()
+    public function getLanguage(): \Yana\Translations\IsFacade
     {
         return $this->_getDependencyContainer()->getLanguage();
     }
@@ -294,7 +279,7 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
      *
      * @return  \Yana\Views\Skins\IsSkin
      */
-    public function getSkin()
+    public function getSkin(): \Yana\Views\Skins\IsSkin
     {
         return $this->_getDependencyContainer()->getSkin();
     }
@@ -327,7 +312,7 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
      *
      * @return  string
      */
-    public function getProfileId()
+    public function getProfileId(): string
     {
         return $this->_getDependencyContainer()->getProfileId();
     }
@@ -339,7 +324,7 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
      *
      * @return  \Yana\Http\IsFacade
      */
-    public function getRequest()
+    public function getRequest(): \Yana\Http\IsFacade
     {
         return $this->_getDependencyContainer()->getRequest();
     }
@@ -411,7 +396,7 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
      *
      * @param   string  $key     adress of data in memory (case insensitive)
      * @param   mixed   &$value  new value (may be scalar value or array)
-     * @return  \Yana\Application
+     * @return  $this
      * @name    \Yana\Application::setVarByReference()
      * @see     \Yana\Application::setVar()
      * @see     \Yana\Application::getVar()
@@ -427,7 +412,7 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
      * Replace all vars in the global registry by reference.
      *
      * @param   array  &$values  new set of values
-     * @return  \Yana\Application
+     * @return  $this
      */
     public function setVarsByReference(array &$values)
     {
@@ -449,7 +434,7 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
      *
      * @param   string  $key    adress of data in memory (case insensitive)
      * @param   mixed   $value  new value (may be scalar value or array)
-     * @return  \Yana\Application
+     * @return  $this
      * @name    \Yana\Application::setVar()
      * @see     \Yana\Application::setVarByReference()
      * @see     \Yana\Application::getVar()
@@ -486,9 +471,8 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
      * @return  \Yana\Files\IsResource
      * @throws  \Yana\Core\Exceptions\NotFoundException  when the resource was not found
      */
-    public function getResource($path)
+    public function getResource(string $path): \Yana\Files\IsResource
     {
-        assert(is_string($path), 'Invalid argument $path: string expected');
         return $this->getRegistry()->getResource($path);
     }
 
@@ -536,9 +520,8 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
      * @param  array   $args   list of arguments to pass to the function
      * @codeCoverageIgnore
      */
-    public function exitTo($event = 'null', array $args = array())
+    public function exitTo(string $event = 'null', array $args = array())
     {
-        assert(is_string($event), 'Invalid argument $event: string expected');
         $this->_getOutputBehavior()->relocateTo($event, $args);
         exit(0);
     }
@@ -627,7 +610,7 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
      * @throws  \Yana\Core\Exceptions\NotFoundException  when no such database was found
      * @throws  \Yana\Db\ConnectionException             when connection to database failed
      */
-    public function connect($schema)
+    public function connect($schema): \Yana\Db\IsConnection
     {
         return $this->_getDependencyContainer()->getConnectionFactory()->createConnection($schema);
     }
@@ -680,7 +663,7 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
      *
      * @return  \Yana\Log\IsLogHandler
      */
-    public function getLogger()
+    public function getLogger(): \Yana\Log\IsLogHandler
     {
         return $this->_getDependencyContainer()->getLogger();
     }
@@ -713,7 +696,7 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
      *
      * @return  \Yana\Plugins\Menus\IsMenu
      */
-    public function buildApplicationMenu()
+    public function buildApplicationMenu(): \Yana\Plugins\Menus\IsMenu
     {
         return $this->_getDependencyContainer()->getMenuBuilder()->buildMenu();
     }
@@ -731,11 +714,16 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
      * It also enables you to store the provided changes to the database, or change settings like the number of rows shown per page.
      * In short: everything you can do with a form, you can do here.
      *
+     * @param   string  $fileName  name of schema file in which form is defined
+     * @param   string  $formName  name of form object, defaults to $fileName
      * @return  \Yana\Forms\IsBuilder
      */
-    public function buildForm($formName)
+    public function buildForm(string $fileName, string $formName = ""): \Yana\Forms\IsBuilder
     {
-        $builder = new \Yana\Forms\Builder($formName, $this->_getDependencyContainer());
+        if ($formName === "") {
+            $formName = $fileName;
+        }
+        $builder = new \Yana\Forms\Builder($fileName, $this->_getDependencyContainer());
         return $builder->setId($formName);
     }
 
