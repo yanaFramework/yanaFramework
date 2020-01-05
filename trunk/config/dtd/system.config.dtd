@@ -1,5 +1,5 @@
 <!-- auto-generated DTD -->
-<!ELEMENT system (configdir, configdrive, tempdir, plugindir, skindir, blobdir, php_self, templates, default, date+)>
+<!ELEMENT system (configdir, configdrive, tempdir, plugindir, skindir, blobdir, php_self, authentication+, templates, default, date+)>
 <!ELEMENT configdir (#PCDATA)>
 <!ELEMENT configdrive (#PCDATA)>
 <!ELEMENT tempdir (#PCDATA)>
@@ -7,6 +7,11 @@
 <!ELEMENT skindir (#PCDATA)>
 <!ELEMENT blobdir (#PCDATA)>
 <!ELEMENT php_self (#PCDATA)>
+<!ELEMENT authentication (#PCDATA)>
+<!ATTLIST authentication
+    name CDATA #REQUIRED
+    host CDATA #IMPLIED
+  >
 <!ELEMENT templates (leftdelimiter, rightdelimiter, templatedir+, cachedir, caching, cachelifetime, cachingtype, compilecheck, compiledir, configdir, debugging, defaultmodifier*, resourcetype*, modifier*, function*, blockfunction*, prefilter*, postfilter*, varfilter*, outputfilter*, defaultresourcetype, usesubdirs, security)*>
 <!ELEMENT leftdelimiter (#PCDATA)>
 <!ELEMENT rightdelimiter (#PCDATA)>

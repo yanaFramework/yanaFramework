@@ -15,6 +15,12 @@
     <skindir>skins/</skindir>
     <blobdir>config/db/.blob/</blobdir>
     <php_self>index.php</php_self>
+    <!--
+        A list of classes to be used to authenticate the user (check the username and password are correct).
+        They must implement \Yana\Security\Passwords\Providers\IsAuthenticationProvider.
+    -->
+    <authentication name="standard">\Yana\Security\Passwords\Providers\Standard</authentication>
+    <authentication name="LDAP" host="127.0.0.1">\Yana\Security\Passwords\Providers\Ldap</authentication>
     <templates>
         <leftdelimiter>{</leftdelimiter>
         <!-- Smarty template right delimiter. -->

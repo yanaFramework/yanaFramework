@@ -4,6 +4,9 @@
 <database>
     <table name="user">
         <primarykey>user_id</primarykey>
+        <foreign table="authenticationprovider" ondelete="set-null">
+            <key name="auth_id"/>
+        </foreign>
         <declaration>
             <string
                 name="user_id"
@@ -87,6 +90,16 @@
                 name="user_recover_utc"
                 notnull="no">
             </timestamp>
+            <reference
+                name="auth_id"
+                notnull="no"
+                table="authenticationprovider"
+                column="auth_id"
+                label="auth_name"
+                title='{lang id="USER.AUTHENTICATION.TITLE"}'>
+                <grant update="no"/>
+                <grant update="yes" user="admin" level="100"/>
+            </reference>
         </declaration>
     </table>
     <table name="userprofile">
@@ -412,6 +425,38 @@
                 name="actionrule_predefined">
                 <default>false</default>
             </bool>
+        </declaration>
+    </table>
+    <table name="authenticationprovider" title='{lang id="USER.AUTHENTICATION.TITLE"}'>
+        <grant insert="no" update="no" delete="no"/>
+        <grant insert="yes" update="yes" delete="yes" user="admin" level="100"/>
+        <primarykey>auth_id</primarykey>
+        <declaration>
+            <integer
+                name="auth_id"
+                notnull="yes"
+                autoincrement="yes"
+                title="ID">
+            </integer>
+            <string
+                name="auth_name"
+                length="20"
+                notnull="yes"
+                title='{lang id="USER.AUTHENTICATION.NAME"}'>
+            </string>
+            <enum
+                name="auth_method"
+                notnull="yes"
+                title='{lang id="USER.AUTHENTICATION.METHOD"}'>
+                <option value="standard">{lang id="USER.AUTHENTICATION.METHOD_STANDARD"}</option>
+                <option value="ldap">{lang id="USER.AUTHENTICATION.METHOD_LDAP"}</option>
+            </enum>
+            <string
+                name="auth_host"
+                length="64"
+                notnull="no"
+                title='{lang id="USER.AUTHENTICATION.HOST"}'>
+            </string>
         </declaration>
     </table>
 </database>
