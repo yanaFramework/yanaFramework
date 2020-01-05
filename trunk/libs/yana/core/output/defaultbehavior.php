@@ -58,7 +58,6 @@ class DefaultBehavior extends \Yana\Core\StdObject implements \Yana\Core\Output\
         }
         // @codeCoverageIgnoreStart
         $template = $eventConfiguration->getTemplate();
-        unset($eventConfiguration);
 
         switch (strtolower($template))
         {
@@ -87,7 +86,7 @@ class DefaultBehavior extends \Yana\Core\StdObject implements \Yana\Core\Output\
                 if ($result === false && $this->_getDependencyContainer()->getExceptionLogger()->getMessages()->count() === 0) {
                     return $this->outputAsMessage();
                 }
-                return $this->outputAsTemplate($template);
+                return $this->outputAsTemplate($template, $eventConfiguration);
         }
         // @codeCoverageIgnoreEnd
 
@@ -181,9 +180,10 @@ class DefaultBehavior extends \Yana\Core\StdObject implements \Yana\Core\Output\
     /**
      * Select the given template as output target and print the result page.
      *
-     * @param  string  $templateId  a valid template identifier
+     * @param  string                                       $templateId          a valid template identifier
+     * @param  \Yana\Plugins\Configs\IsMethodConfiguration  $eventConfiguration  event meta data containing information about scripts and stylesheets
      */
-    public function outputAsTemplate(string $templateId)
+    public function outputAsTemplate(string $templateId, \Yana\Plugins\Configs\IsMethodConfiguration $eventConfiguration)
     {
         $view = $this->_getDependencyContainer()->getView();
 
@@ -208,6 +208,9 @@ class DefaultBehavior extends \Yana\Core\StdObject implements \Yana\Core\Output\
         } else {
             $template->setVar('STDOUT', $this->_getDependencyContainer()->getExceptionLogger()->getMessages());
         }
+
+        $view->addStyles($eventConfiguration->getStyles());
+        $view->addScripts($eventConfiguration->getScripts());
 
         /* print the page to the client */
         $this->_printTemplate($template);
