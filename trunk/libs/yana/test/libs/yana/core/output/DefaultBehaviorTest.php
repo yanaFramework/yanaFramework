@@ -133,7 +133,8 @@ class DefaultBehaviorTest extends \PHPUnit_Framework_TestCase
     public function testOutputAsTemplate()
     {
         $this->container->getLanguage()->getTranslations()->setLoaded('message');
-        $this->assertNull($this->object->outputAsTemplate('sitemap'));
+        $eventConfiguration = $this->container->getPlugins()->getEventConfiguration('sitemap');
+        $this->assertNull($this->object->outputAsTemplate('sitemap', $eventConfiguration));
         $this->assertNotEmpty($this->object->template);
         $this->assertTrue($this->object->template->getVar('STDOUT') instanceof \Yana\Log\ViewHelpers\MessageCollection);
     }
@@ -145,7 +146,8 @@ class DefaultBehaviorTest extends \PHPUnit_Framework_TestCase
 
         $_SESSION['STDOUT'] = __FUNCTION__;
         $this->container->getLanguage()->getTranslations()->setLoaded('message');
-        $this->assertNull($this->object->outputAsTemplate('sitemap'));
+        $eventConfiguration = $this->container->getPlugins()->getEventConfiguration('sitemap');
+        $this->assertNull($this->object->outputAsTemplate('sitemap', $eventConfiguration));
         $this->assertNotEmpty($this->object->template);
         $this->assertSame(__FUNCTION__, $this->object->template->getVar('STDOUT'));
     }
