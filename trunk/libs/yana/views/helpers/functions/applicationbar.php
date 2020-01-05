@@ -55,7 +55,7 @@ class ApplicationBar extends \Yana\Views\Helpers\AbstractViewHelper implements \
 
         $formatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
         $template = '<a class="applicationBar" href="' . $formatter("action=", false, false) . '%s">' .
-            '<img src="%s" title="%s" alt="%s"/></a>';
+            '<img src="%s" alt="%s"/><span class="applicationBarLabel">%s</span></a>';
 
         /* @var $entry PluginMenuEntry */
         foreach ($pluginMenu->getMenuEntries('start') as $action => $entry)
