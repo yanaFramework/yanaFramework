@@ -127,13 +127,33 @@ class SdkPlugin extends \Yana\Plugins\AbstractPlugin
 
         // Schema file
         if (!empty($_FILES['sourcefile']['tmp_name'])) {
-            assert(!isset($node), 'Cannot redeclare var $node');
-            $node = simplexml_load_file($_FILES['sourcefile']['tmp_name']);
-            if (!isset($node['name'])) {
-                $node->addAttribute('name', $plugin->getId());
+            try {
+                assert(!isset($node), 'Cannot redeclare var $node');
+                $node = simplexml_load_file($_FILES['sourcefile']['tmp_name']);
+                if (!isset($node['name'])) {
+                    $node->addAttribute('name', $plugin->getId());
+                }
+
+                $databaseDirectory = $this->_getApplication()->getVar('DBDIR');
+                $pluginBuilder->setSchemaXml($node, $databaseDirectory);
+
+            } catch (\Yana\Db\Ddl\XddlException $e) {
+                $message = "Syntax error in XML database definition language file.";
+                $level = \Yana\Log\TypeEnumeration::WARNING;
+                $warning = new \Yana\Core\Exceptions\Forms\InvalidValueException($message, $level, $e);
+                $fieldName = 'SDK.SOURCE';
+                $fieldName .= " = " . $e->getMessage();
+                $warning->setField($fieldName);
+                throw $warning;
+
+            } catch (\Exception $e) {
+                $message = "Syntax error in XML database definition language file.";
+                $level = \Yana\Log\TypeEnumeration::WARNING;
+                $warning = new \Yana\Core\Exceptions\Forms\InvalidValueException($message, $level, $e);
+                $fieldName = 'SDK.SOURCE';
+                $warning->setField($fieldName);
+                throw $warning;
             }
-            $databaseDirectory = $this->_getApplication()->getVar('DBDIR');
-            $pluginBuilder->setSchemaXml($node, $databaseDirectory);
             unset($node);
         }
 

@@ -256,6 +256,7 @@ class ConfigurationBuilder extends \Yana\Plugins\Configs\AbstractBuilder
      * @param   \SimpleXMLElement  $node  database root node
      * @param   string             $path  where the resulting file should be stored
      * @return  self
+     * @throws  \Yana\Db\Ddl\XddlException  if given XML node is not a valid XDDL file
      */
     public function setSchemaXml(\SimpleXMLElement $node, $path)
     {
