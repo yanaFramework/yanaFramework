@@ -209,6 +209,32 @@
                     <target>You get this mail because someone has registered on our web site {$SETTINGS.WEBSITE_URL} using your mail address {$MAIL}.<it id="br1" pos="open">&lt;br /&gt;</it> <it id="br2" pos="open">&lt;br /&gt;</it>To confirm this registration, click on this link or copy'n'paste it to your browser's address field and hit (enter)<it id="br3" pos="open">&lt;br /&gt;</it>{$SETTINGS.WEBSITE_URL}?action=USER_AUTHENTIFICATION&amp;target={$KEY}<it id="br4" pos="open">&lt;br /&gt;</it> <it id="br5" pos="open">&lt;br /&gt;</it>If you didn't register for this service, you may ignore and delete this mail.<it id="br6" pos="open">&lt;br /&gt;</it>Please note that the above link is only active for 24 hours. If you don't confirm this registration in time, the account will be deleted automatically.<it id="br7" pos="open">&lt;br /&gt;</it></target>
                 </trans-unit>
             </group>
+            <group id="user.authentication">
+                <trans-unit id="user.authentication.title">
+                    <source/>
+                    <target>authentication</target>
+                </trans-unit>
+                <trans-unit id="user.authentication.name">
+                    <source/>
+                    <target>name</target>
+                </trans-unit>
+                <trans-unit id="user.authentication.method">
+                    <source/>
+                    <target>authentication method</target>
+                </trans-unit>
+                <trans-unit id="user.authentication.host">
+                    <source/>
+                    <target>host</target>
+                </trans-unit>
+                <trans-unit id="user.authentication.method_ldap">
+                    <source/>
+                    <target>LDAP</target>
+                </trans-unit>
+                <trans-unit id="user.authentication.method_standard">
+                    <source/>
+                    <target>standard</target>
+                </trans-unit>
+            </group>
             <group id="user.gender">
                 <trans-unit id="user.gender.m">
                     <source/>

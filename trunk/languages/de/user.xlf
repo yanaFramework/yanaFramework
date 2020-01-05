@@ -216,6 +216,32 @@
                     <target>Sie erhalten diese Mail, weil sich jemand mit dieser Mailadresse {$MAIL} auf unserer Webseite {$SETTINGS.WEBSITE_URL} angemeldet hat.<it id="br9" pos="open">&lt;br /&gt;</it> <it id="br10" pos="open">&lt;br /&gt;</it>Um diese Anmeldung zu bestätigen, klicken Sie bitte auf diesen Link oder kopieren Sie die Adresse in das Adressfeld Ihres Webbrowser und drücken Sie (enter)<it id="br11" pos="open">&lt;br /&gt;</it>{$SETTINGS.WEBSITE_URL}?action=USER_AUTHENTIFICATION&amp;target={$KEY}<it id="br12" pos="open">&lt;br /&gt;</it> <it id="br13" pos="open">&lt;br /&gt;</it>Falls Sie sich nicht angemeldet haben, können Sie diese Mail ignorieren und löschen.<it id="br14" pos="open">&lt;br /&gt;</it>Beachten Sie bitte, dass der obige Link nur 24 Stunden aktiv bleibt. Falls die Anmeldung bis dahin nicht bestätigt wurde, wird der Account automatisch gelöscht.<it id="br15" pos="open">&lt;br /&gt;</it></target>
                 </trans-unit>
             </group>
+            <group id="user.authentication">
+                <trans-unit id="user.authentication.title">
+                    <source>authentication</source>
+                    <target>Authentifizierung</target>
+                </trans-unit>
+                <trans-unit id="user.authentication.name">
+                    <source>name</source>
+                    <target>Name</target>
+                </trans-unit>
+                <trans-unit id="user.authentication.method">
+                    <source>authentication method</source>
+                    <target>Authentifizierungsmethode</target>
+                </trans-unit>
+                <trans-unit id="user.authentication.host">
+                    <source>host</source>
+                    <target>Host</target>
+                </trans-unit>
+                <trans-unit id="user.authentication.method_ldap">
+                    <source>LDAP</source>
+                    <target>LDAP</target>
+                </trans-unit>
+                <trans-unit id="user.authentication.method_standard">
+                    <source>standard</source>
+                    <target>Standard</target>
+                </trans-unit>
+            </group>
             <group id="user.gender">
                 <trans-unit id="user.gender.m">
                     <source>male</source>

@@ -523,16 +523,20 @@
                 <target>bitte auswählen</target>
             </trans-unit>
             <trans-unit id="standard_search">
-                <source>Standard search</source>
+                <source>standard search</source>
                 <target>Einfache Suche</target>
             </trans-unit>
             <trans-unit id="advanced_search">
-                <source>Advanced search</source>
+                <source>advanced search</source>
                 <target>Erweiterte Suche</target>
             </trans-unit>
             <trans-unit id="new_entry">
-                <source>New Entry</source>
+                <source>new entry</source>
                 <target>Neuer Eintrag</target>
+            </trans-unit>
+            <trans-unit id="view_settings">
+                <source>view settings</source>
+                <target>Darstellung</target>
             </trans-unit>
             <trans-unit id="descr_show">
                 <source>Show {$FIRST_PAGE} - {$OFFSET_PAGE} of {$LAST_PAGE} Entries</source>

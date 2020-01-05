@@ -529,7 +529,11 @@
             </trans-unit>
             <trans-unit id="new_entry">
                 <source/>
-                <target>new Entry</target>
+                <target>new entry</target>
+            </trans-unit>
+            <trans-unit id="view_settings">
+                <source/>
+                <target>view settings</target>
             </trans-unit>
             <trans-unit id="descr_show">
                 <source/>
