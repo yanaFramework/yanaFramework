@@ -1,4 +1,5 @@
 {$plugin}
+declare(strict_types=1);
 
 namespace {$plugin->getNamespace()};
 
@@ -24,7 +25,7 @@ class {$plugin->getClassName()} extends \Yana\Plugins\AbstractPlugin
      *
      * @return  \Yana\Db\IsConnection
      */
-    protected function _getDatabase()
+    protected function _getDatabase(): \Yana\Db\IsConnection
     {
         if (!isset($this->_database)) {
             $this->_database = $this->_connectToDatabase('{$schema->getName()}');
@@ -39,9 +40,9 @@ class {$plugin->getClassName()} extends \Yana\Plugins\AbstractPlugin
      *
      * @return  \Yana\Forms\Facade
      */
-    protected function _get{$form->getName()|capitalize}Form()
+    protected function _get{$form->getName()|capitalize}Form(): \Yana\Forms\Facade
     {
-        $builder = $this->_getApplication()->buildForm('{$schema->getName()}');
+        $builder = $this->_getApplication()->buildForm('{$schema->getName()}', '{$form->getName()}');
         return $builder->__invoke();
     }
 {/if}
