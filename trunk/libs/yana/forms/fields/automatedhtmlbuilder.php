@@ -290,7 +290,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                 );
             case \Yana\Db\Ddl\ColumnTypeEnumeration::URL:
             default:
-                return $this->buildTextfield(is_string($value) ? $value : "");
+                return $this->buildTextfield(is_scalar($value) ? (string) $value : "");
         }
     }
 
