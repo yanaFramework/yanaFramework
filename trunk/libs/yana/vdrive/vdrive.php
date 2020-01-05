@@ -557,9 +557,8 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
      * @throws  \Yana\Core\Exceptions\NotReadableException    when source file is not readable
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when the file could not be read or contains invalid syntax
      */
-    public function getResource($path)
+    public function getResource(string $path)
     {
-        assert(is_string($path), 'Wrong argument type for argument 1. String expected.');
         // read file if not already read
         $this->read();
         if (!isset($this->_drive[$path])) {
@@ -578,10 +577,8 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
      * @throws  \Yana\Core\Exceptions\NotReadableException    when the vDrive is not readable
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when the vDrive could not be read or contains invalid syntax
      */
-    public function getResourcePath($virtualPath)
+    public function getResourcePath(string $virtualPath)
     {
-        assert(is_string($virtualPath), 'Invalid argument $virtualPath: string expected');
-
         return $this->getResource($virtualPath)->getPath();
     }
 

@@ -118,7 +118,7 @@ interface IsVDrive extends \Yana\Files\IsResource, \Yana\Report\IsReportable
      * @throws  \Yana\Core\Exceptions\NotReadableException    when source file is not readable
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when the file could not be read or contains invalid syntax
      */
-    public function getResource($path);
+    public function getResource(string $path);
 
     /**
      * Resolves the virtual path and returns the real path of the resource.
@@ -129,7 +129,7 @@ interface IsVDrive extends \Yana\Files\IsResource, \Yana\Report\IsReportable
      * @throws  \Yana\Core\Exceptions\NotReadableException    when the vDrive is not readable
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when the vDrive could not be read or contains invalid syntax
      */
-    public function getResourcePath($virtualPath);
+    public function getResourcePath(string $virtualPath);
 
     /**
      * Get list of mountpoints.
