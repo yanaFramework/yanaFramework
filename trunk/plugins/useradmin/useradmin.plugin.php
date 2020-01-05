@@ -66,14 +66,14 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
      */
     protected function _getUserForm()
     {
-        $builder = $this->_getApplication()->buildForm('user_admin');
-        return $builder->setId('user')->__invoke();
+        $builder = $this->_getApplication()->buildForm('user_admin', 'user');
+        return $builder->__invoke();
     }
 
     /**
      * @var  array
      */
-    private $visibleColumns = array('user_id', 'user_mail', 'user_active', 'user_inserted', 'user_login_last');
+    private $visibleColumns = array('user_id', 'user_mail', 'user_active', 'user_inserted', 'user_login_last', 'auth_id');
 
     /**
      * event handler
@@ -186,7 +186,7 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
                 foreach (array_keys($entry) as $i)
                 {
                     if (!in_array($i, $visibleColumns)) {
-                        throw \Yana\Db\Queries\Exceptions\NotUpdatedException();
+                        throw new \Yana\Db\Queries\Exceptions\NotUpdatedException();
                     }
                 }
 

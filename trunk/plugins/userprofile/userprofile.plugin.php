@@ -42,10 +42,8 @@ class UserProfilePlugin extends \Yana\Plugins\AbstractPlugin
      */
     protected function _getProfileForm()
     {
-        $builder = $this->_getApplication()->buildForm('user_admin'); // use database definition file "user_admin"
-        return $builder
-            ->setId('userprofile') // use form "userprofile"
-            ->__invoke(); // build the form
+        $builder = $this->_getApplication()->buildForm('user_admin', 'userprofile');
+        return $builder->__invoke();
     }
 
     /**
@@ -55,10 +53,8 @@ class UserProfilePlugin extends \Yana\Plugins\AbstractPlugin
      */
     protected function _getDetailForm()
     {
-        $builder = $this->_getApplication()->buildForm('user_admin'); // use database definition file "user_admin"
-        return $builder
-            ->setId('userdetails') // use form "userdetails"
-            ->__invoke(); // build the form
+        $builder = $this->_getApplication()->buildForm('user_admin', 'userdetails');
+        return $builder->__invoke();
     }
 
     /**
@@ -77,8 +73,8 @@ class UserProfilePlugin extends \Yana\Plugins\AbstractPlugin
         $YANA = $this->_getApplication();
         $YANA->setVar("DESCRIPTION", $YANA->getLanguage()->getVar("DESCR_USER_EDIT"));
         $YANA->setVar("USERNAME", $this->_getSession()->getCurrentUserName());
-        $builder = $this->_getApplication()->buildForm('user_admin');
-        $builder->setId('userdetails')
+        $builder = $this->_getApplication()->buildForm('user_admin', 'userdetails');
+        $builder
             ->setEntries(1)
             ->setLayout(4)
             ->setWhere(array('USER_ID', '=', $this->_getSession()->getCurrentUserName()));

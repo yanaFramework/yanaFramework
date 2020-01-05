@@ -51,13 +51,13 @@ class MediaDbPlugin extends \Yana\Plugins\AbstractPlugin
      */
     private function _getMediafolderForm()
     {
-        $builder = $this->_getApplication()->buildForm('mediadb');
+        $builder = $this->_getApplication()->buildForm('mediadb', 'mediafolder');
         $where = array(
             array('user_created', '=', $this->_getSession()->getCurrentUserName()),
             'or',
             array('public', '=', true)
         );
-        return $builder->setId('mediafolder')->setWhere($where);
+        return $builder->setWhere($where);
     }
 
     /**

@@ -40,8 +40,8 @@ class UserGroupAdminPlugin extends \Yana\Plugins\AbstractPlugin
      */
     protected function _getActionForm()
     {
-        $builder = $this->_getApplication()->buildForm('user_admin');
-        return $builder->setId('securityactionrules')->__invoke();
+        $builder = $this->_getApplication()->buildForm('user_admin', 'securityactionrules');
+        return $builder->__invoke();
     }
 
     /**
@@ -51,8 +51,8 @@ class UserGroupAdminPlugin extends \Yana\Plugins\AbstractPlugin
      */
     protected function _getGroupForm()
     {
-        $builder = $this->_getApplication()->buildForm('user_admin');
-        return $builder->setId('securitygroup')->__invoke();
+        $builder = $this->_getApplication()->buildForm('user_admin', 'securitygroup');
+        return $builder->__invoke();
     }
 
     /**
@@ -62,8 +62,8 @@ class UserGroupAdminPlugin extends \Yana\Plugins\AbstractPlugin
      */
     protected function _getRoleForm()
     {
-        $builder = $this->_getApplication()->buildForm('user_admin');
-        return $builder->setId('securityrole')->__invoke();
+        $builder = $this->_getApplication()->buildForm('user_admin', 'securityrole');
+        return $builder->__invoke();
     }
 
     /**
