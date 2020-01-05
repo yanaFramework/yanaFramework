@@ -1447,6 +1447,7 @@ class Database extends \Yana\Db\Ddl\AbstractUnnamedObject
      * @param   mixed              $parent  parent node (if any)
      * @param   string             $path    file path
      * @return  \Yana\Db\Ddl\Database
+     * @throws  \Yana\Db\Ddl\XddlException  on syntax error
      */
     public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null, $path = "")
     {
