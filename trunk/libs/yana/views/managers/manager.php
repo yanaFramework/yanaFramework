@@ -136,7 +136,8 @@ class Manager extends \Yana\Views\Managers\AbstractManager implements \Yana\View
     /**
      * This creates and returns a new template to be used for standard requests.
      *
-     * @param   string  $filename  path to template file or template id (which will be resolved)
+     * @param   string  $filename                 path to template file or template id (which will be resolved)
+     * @param   string  $mainContentTemplateName  path to included template file or tempalte id
      * @return  \Smarty_Internal_Template
      * @ignore
      */
