@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<?xml-stylesheet type="text/xsl" href=".xsl/documentation.xsl"?>
+<!DOCTYPE database SYSTEM "../dtd/database.dtd">
+<database>
+    <include>user</include>
+    <form name="authenticationprovider" table="authenticationprovider" allinput="yes">
+        <grant insert="no" update="no" delete="no"/>
+        <grant insert="yes" update="yes" delete="yes" user="admin" level="100"/>
+        <input name="auth_id" hidden="yes"/>
+        <event name="insert">set_auth_new</event>
+        <event name="update">set_auth_edit</event>
+        <event name="delete">set_auth_delete</event>
+    </form>
+</database>
