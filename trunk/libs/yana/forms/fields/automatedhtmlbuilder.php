@@ -367,8 +367,8 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
             case \Yana\Db\Ddl\ColumnTypeEnumeration::REFERENCE:
                 $label = mb_strtoupper($field->getColumn()->getReferenceSettings()->getLabel());
                 if ($label !== "") {
-                    $row = $field->getContext()->getRow();
-                    $value = isset($row[$label]) ? $row[$label] : (string) $value;
+                    $items = $field->getForm()->getSetup()->getReferenceValues($field->getColumn()->getName());
+                    $value = isset($items[$value]) ? $items[$value] : (string) $value;
                 }
                 if (!is_string($value)) {
                     $value = "";
