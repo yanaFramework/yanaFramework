@@ -754,7 +754,7 @@ abstract class AbstractConnection extends \Yana\Core\StdObject implements \Seria
         $key = (string) $key;
 
         // check table
-        if (mb_strpos($key, '.') === false) {
+        if (mb_strpos($key, '.') === false && empty($where)) {
             return $this->getSchema()->isTable($key);
         }
         // build query to check key
