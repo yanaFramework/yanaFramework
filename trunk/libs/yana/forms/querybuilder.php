@@ -305,7 +305,9 @@ class QueryBuilder extends \Yana\Forms\AbstractQueryBuilder
                 $targetColumnName = strtoupper($targetColumnName);
                 $results = $parentResults->toArray();
                 if (count($results) === 1) {
+                    $primaryKey = key($results);
                     $results = current($results);
+                    $results[\mb_strtoupper($parentForm->getTable()->getPrimaryKey())] = $primaryKey;
                     if (isset($results[$targetColumnName])) {
                         $select->addWhere(array($sourceColumnName, '=', $results[$targetColumnName]));
                     }
