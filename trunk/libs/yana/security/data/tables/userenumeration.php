@@ -58,7 +58,7 @@ class UserEnumeration extends \Yana\Core\AbstractEnumeration
     const PASSWORD_TIME = 'USER_PWD_TIME';
     const PASSWORD_RECOVERY_ID = 'USER_RECOVER_ID';
     const PASSWORD_RECOVERY_TIME = 'USER_RECOVER_UTC';
-    
+    const AUTHENTICATION_ID = 'AUTH_ID';
 
 }
 
