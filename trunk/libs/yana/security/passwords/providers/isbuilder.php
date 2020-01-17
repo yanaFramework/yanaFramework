@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Security\Passwords\Providers;
 
@@ -43,20 +44,20 @@ interface IsBuilder
     /**
      * Build an user object based on a given user name.
      *
-     * @param   string $userId  the name/id of the provider
+     * @param   string  $userId  the name/id of the provider
      * @return  \Yana\Security\Passwords\Providers\IsAuthenticationProvider
      * @throws  \Yana\Core\Exceptions\NotFoundException  if no such provider is found
      */
     public function buildFromUserName(string $userId): \Yana\Security\Passwords\Providers\IsAuthenticationProvider;
 
     /**
-     * Build an user object based on a given authentication name.
+     * Build a provider based on a given authentication method.
      *
-     * @param   string $authenticationId  the name/id of the provider
+     * @param   \Yana\Security\Passwords\Providers\IsEntity  $settings  containing request method and host information
      * @return  \Yana\Security\Passwords\Providers\IsAuthenticationProvider
      * @throws  \Yana\Core\Exceptions\NotFoundException  if no such provider is found
      */
-    public function buildFromAuthenticationName(string $authenticationId): \Yana\Security\Passwords\Providers\IsAuthenticationProvider;
+    public function buildFromAuthenticationSettings(\Yana\Security\Passwords\Providers\IsEntity $settings): \Yana\Security\Passwords\Providers\IsAuthenticationProvider;
 
     /**
      * Build the default authentication provider.

@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Security\Passwords\Providers;
 
@@ -41,9 +42,9 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Security\Passwords\P
 {
 
     /**
-     * @var  \Yana\Security\Data\Users\IsDataAdapter
+     * @var  \Yana\Security\Passwords\Providers\IsDataAdapter
      */
-    private $_userAdapter = null;
+    private $_adapter = null;
 
     /**
      * @var  \Yana\Security\Passwords\IsAlgorithm
@@ -58,20 +59,29 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Security\Passwords\P
     /**
      * <<constructor>> Set up and initialize adapters.
      *
-     * @param  array                                    $providers    list of class names with the keys as alpha-numeric identifiers
-     * @param  \Yana\Security\Passwords\IsAlgorithm     $algorithm    inject a NULL-algorithm for Unit-tests
-     * @param  \Yana\Security\Data\Users\IsDataAdapter  $userAdapter  inject a NULL-adapter for Unit-tests
+     * @param  array                                             $providers  list of class names with the keys as alpha-numeric identifiers
+     * @param  \Yana\Security\Passwords\IsAlgorithm              $algorithm  inject a NULL-algorithm for Unit-tests
+     * @param  \Yana\Security\Passwords\Providers\IsDataAdapter  $adapter    inject a NULL-adapter for Unit-tests
      */
-    public function __construct(array $providers, \Yana\Security\Passwords\IsAlgorithm $algorithm, \Yana\Security\Data\Users\IsDataAdapter $userAdapter = null)
+    public function __construct(array $providers, \Yana\Security\Passwords\IsAlgorithm $algorithm, \Yana\Security\Passwords\Providers\IsDataAdapter $adapter = null)
     {
         $this->_providers = $providers;
         $this->_passwordAlgorithm = $algorithm;
-        $this->_userAdapter = $userAdapter;
+        $this->_adapter = $adapter;
     }
 
+    /**
+     * Checks whether a name is in the list of known providers.
+     *
+     * Returns bool(true) if the name refers to a provider and the provider is valid.
+     * Returns bool(false) otherwise.
+     *
+     * @param   string  $name  case-sensitive provider name
+     * @return  bool
+     */
     protected function _isProvider(string $name): bool
     {
-        return array_key_exists($name, $this->_providers);
+        return array_key_exists($name, $this->_providers) && is_string($this->_providers[$name]) && \class_exists($this->_providers[$name]);
     }
 
     /**
@@ -85,9 +95,7 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Security\Passwords\P
      */
     protected function _getClassName(string $authenticationProviderId)
     {
-        $isProvider = isset($this->_providers[$authenticationProviderId]) && is_string($this->_providers[$authenticationProviderId])
-            && \class_exists($this->_providers[$authenticationProviderId]);
-        if ($isProvider) {
+        if ($this->_isProvider($authenticationProviderId)) {
             return $this->_providers[$authenticationProviderId];
         }
         throw new \Yana\Core\Exceptions\NotFoundException("No such authentication provider: " . $authenticationProviderId, \Yana\Log\TypeEnumeration::WARNING);
@@ -104,21 +112,21 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Security\Passwords\P
     }
 
     /**
-     * Returns a user adapter.
+     * Returns an adapter.
      *
      * If there is none, it will create a fitting adapter automatically.
      *
-     * @return  \Yana\Security\Data\Users\IsDataAdapter
+     * @return  \Yana\Security\Passwords\Providers\IsDataAdapter
      */
-    protected function _getUserAdapter(): \Yana\Security\Data\Users\IsDataAdapter
+    protected function _getAdapter(): \Yana\Security\Passwords\Providers\IsDataAdapter
     {
-        if (!isset($this->_userAdapter)) {
+        if (!isset($this->_adapter)) {
             assert(!isset($factory), 'Cannot redeclare var $factory.');
             $factory = new \Yana\Db\ConnectionFactory(new \Yana\Db\SchemaFactory());
-            $this->_userAdapter = new \Yana\Security\Data\Users\Adapter($factory->createConnection('user'));
+            $this->_adapter = new \Yana\Security\Passwords\Providers\Adapter($factory->createConnection('user'));
             unset($factory);
         }
-        return $this->_userAdapter;
+        return $this->_adapter;
     }
 
     /**
@@ -126,23 +134,30 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Security\Passwords\P
      *
      * @param   string $userId  the name/id of the provider
      * @return  \Yana\Security\Passwords\Providers\IsAuthenticationProvider
-     * @throws  \Yana\Core\Exceptions\NotFoundException  if no such provider is found
+     * @throws  \Yana\Core\Exceptions\NotFoundException       if no such provider is found
+     * @throws  \Yana\Core\Exceptions\User\NotFoundException  if no such user is found
      */
     public function buildFromUserName(string $userId): \Yana\Security\Passwords\Providers\IsAuthenticationProvider
     {
-        
+        $entity = $this->_getAdapter()->getFromUserName($userId);
+        $authenticationMethod = $entity->getMethod();
+        return $this->buildFromAuthenticationSettings($authenticationMethod);
     }
 
     /**
      * Build an user object based on a given authentication name.
      *
-     * @param   string  $authenticationId  the name/id of the provider
+     * @param   \Yana\Security\Passwords\Providers\IsEntity  $e  containing request method and host information
      * @return  \Yana\Security\Passwords\Providers\IsAuthenticationProvider
      * @throws  \Yana\Core\Exceptions\NotFoundException  if no such provider is found
      */
-    public function buildFromAuthenticationName(string $authenticationId): \Yana\Security\Passwords\Providers\IsAuthenticationProvider
+    public function buildFromAuthenticationSettings(\Yana\Security\Passwords\Providers\IsEntity $e): \Yana\Security\Passwords\Providers\IsAuthenticationProvider
     {
-        $className = $this->_getClassName($authenticationId);
+        if (!$e->getMethod()) {
+            return $this->buildDefaultAuthenticationProvider();
+        }
+
+        $className = $this->_getClassName($e->getMethod()); // may throw exception
     }
 
     /**
