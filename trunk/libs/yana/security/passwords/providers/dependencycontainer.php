@@ -54,9 +54,10 @@ class DependencyContainer extends \Yana\Core\StdObject implements \Yana\Security
      * <<constructor>> Set up and initialize dependencies.
      *
      * @param  \Yana\Security\Passwords\Providers\IsEntity  $entity     authentication provider settings
-     * @param  \Yana\Security\Passwords\IsAlgorithm         $algorithm  inject a NULL-algorithm for Unit-tests
+     * @param  \Yana\Security\Passwords\IsAlgorithm         $algorithm  inject a NULL-algorithm for Unit-tests,
+     *                                                                  otherwise the most obvious choice is the "BasicAlgorithm" class
      */
-    public function __construct(\Yana\Security\Passwords\Providers\IsEntity $entity, \Yana\Security\Passwords\IsAlgorithm $algorithm, \Yana\Security\Passwords\Providers\IsDataAdapter $adapter = null)
+    public function __construct(\Yana\Security\Passwords\Providers\IsEntity $entity, \Yana\Security\Passwords\IsAlgorithm $algorithm)
     {
         $this->_authenticationSettings = $entity;
         $this->_passwordAlgorithm = $algorithm;

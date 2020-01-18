@@ -72,7 +72,11 @@ class LdapTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->user = new \Yana\Security\Data\Users\Entity($this->userName);
-        $this->object = new \Yana\Security\Passwords\Providers\Ldap($this->server);
+        $entity = new \Yana\Security\Passwords\Providers\Entity();
+        $entity->setHost($this->server);
+        $algorithm = new \Yana\Security\Passwords\NullAlgorithm();
+        $dependencyContainer = new \Yana\Security\Passwords\Providers\DependencyContainer($entity, $algorithm);
+        $this->object = \Yana\Security\Passwords\Providers\Ldap::factory($dependencyContainer);
     }
 
     /**

@@ -37,18 +37,23 @@ require_once __DIR__ . '/../../../../../include.php';
  *
  * @package  test
  */
-class StandardTest extends \PHPUnit_Framework_TestCase
+class DependencyContainerTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Security\Data\Users\IsEntity
-     */
-    protected $user;
-
-    /**
-     * @var \Yana\Security\Passwords\Providers\Standard
+     * @var \Yana\Security\Passwords\Providers\DependencyContainer
      */
     protected $object;
+
+    /**
+     * @var \Yana\Security\Passwords\Providers\Entity
+     */
+    protected $entity;
+
+    /**
+     * @var \Yana\Security\Passwords\NullAlgorithm
+     */
+    protected $algorithm;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -56,13 +61,9 @@ class StandardTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->user = new \Yana\Security\Data\Users\Entity('test');
-        $this->user->setPassword("test")->setActive(true);
-
-        $entity = new \Yana\Security\Passwords\Providers\Entity();
-        $algorithm = new \Yana\Security\Passwords\NullAlgorithm();
-        $dependencyContainer = new \Yana\Security\Passwords\Providers\DependencyContainer($entity, $algorithm);
-        $this->object = \Yana\Security\Passwords\Providers\Standard::factory($dependencyContainer);
+        $this->entity = new \Yana\Security\Passwords\Providers\Entity();
+        $this->algorithm = new \Yana\Security\Passwords\NullAlgorithm();
+        $this->object = new \Yana\Security\Passwords\Providers\DependencyContainer($this->entity, $this->algorithm);
     }
 
     /**
@@ -77,27 +78,17 @@ class StandardTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testIsAbleToChangePassword()
+    public function testGetAuthenticationSettings()
     {
-        $this->assertTrue($this->object->isAbleToChangePassword());
+        $this->assertSame($this->entity, $this->object->getAuthenticationSettings());
     }
 
     /**
      * @test
      */
-    public function testChangePassword()
+    public function testGetPasswordAlgorithm()
     {
-        $this->assertNull($this->object->changePassword($this->user, "test2"));
-        $this->assertSame("test2", $this->user->getPassword());
-    }
-
-    /**
-     * @test
-     */
-    public function testCheckPassword()
-    {
-        $this->assertTrue($this->object->checkPassword($this->user, "test"));
-        $this->assertFalse($this->object->checkPassword($this->user, "test2"));
+        $this->assertSame($this->algorithm, $this->object->getPasswordAlgorithm());
     }
 
 }

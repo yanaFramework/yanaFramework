@@ -98,7 +98,7 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Security\Passwords\P
         if ($this->_isProvider($authenticationProviderId)) {
             return $this->_providers[$authenticationProviderId];
         }
-        throw new \Yana\Core\Exceptions\NotFoundException("No such authentication provider: " . $authenticationProviderId, \Yana\Log\TypeEnumeration::WARNING);
+        throw new \Yana\Core\Exceptions\NotFoundException("Not a valid authentication provider: " . $authenticationProviderId, \Yana\Log\TypeEnumeration::WARNING);
     }
 
     /**
@@ -140,24 +140,27 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Security\Passwords\P
     public function buildFromUserName(string $userId): \Yana\Security\Passwords\Providers\IsAuthenticationProvider
     {
         $entity = $this->_getAdapter()->getFromUserName($userId);
-        $authenticationMethod = $entity->getMethod();
-        return $this->buildFromAuthenticationSettings($authenticationMethod);
+        return $this->buildFromAuthenticationSettings($entity);
     }
 
     /**
      * Build an user object based on a given authentication name.
      *
-     * @param   \Yana\Security\Passwords\Providers\IsEntity  $e  containing request method and host information
+     * @param   \Yana\Security\Passwords\Providers\IsEntity  $entity  containing request method and host information
      * @return  \Yana\Security\Passwords\Providers\IsAuthenticationProvider
      * @throws  \Yana\Core\Exceptions\NotFoundException  if no such provider is found
      */
-    public function buildFromAuthenticationSettings(\Yana\Security\Passwords\Providers\IsEntity $e): \Yana\Security\Passwords\Providers\IsAuthenticationProvider
+    public function buildFromAuthenticationSettings(\Yana\Security\Passwords\Providers\IsEntity $entity): \Yana\Security\Passwords\Providers\IsAuthenticationProvider
     {
-        if (!$e->getMethod()) {
+        if (!$entity->getMethod()) {
             return $this->buildDefaultAuthenticationProvider();
         }
 
-        $className = $this->_getClassName($e->getMethod()); // may throw exception
+        $className = $this->_getClassName($entity->getMethod()); // may throw exception
+        $dependencyContainer = new \Yana\Security\Passwords\Providers\DependencyContainer($entity, $this->_getPasswordAlgorithm());
+        $provider = $className::factory($dependencyContainer);
+        assert($provider instanceof \Yana\Security\Passwords\Providers\IsAuthenticationProvider);
+        return $provider;
     }
 
     /**

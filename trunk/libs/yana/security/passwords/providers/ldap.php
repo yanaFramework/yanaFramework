@@ -128,6 +128,19 @@ class Ldap extends \Yana\Security\Passwords\Providers\AbstractProvider implement
         return true;
     }
 
+    /**
+     * <<factory>> Create an instance of this class.
+     *
+     * @param   \Yana\Security\Passwords\Providers\IsDependencyContainer  $container  every provider may have different dependencies,
+     *                                                                                so to have a common interface regardless,
+     *                                                                                we inject them via a dependency container
+     * @return  self
+     */
+    public static function factory(IsDependencyContainer $container): \Yana\Security\Passwords\Providers\IsAuthenticationProvider
+    {
+        return new \Yana\Security\Passwords\Providers\Ldap($container->getAuthenticationSettings()->getHost());
+    }
+
 }
 
 ?>

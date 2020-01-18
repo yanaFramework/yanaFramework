@@ -65,6 +65,15 @@ interface IsAuthenticationProvider
      */
     public function checkPassword(\Yana\Security\Data\Users\IsEntity $user, string $password): bool;
 
+    /**
+     * <<factory>> Create an instance of this class.
+     *
+     * @param   \Yana\Security\Passwords\Providers\IsDependencyContainer  $container  every provider may have different dependencies,
+     *                                                                                so to have a common interface regardless,
+     *                                                                                we inject them via a dependency container
+     * @return  self
+     */
+    public static function factory(\Yana\Security\Passwords\Providers\IsDependencyContainer $container): self;
 }
 
 ?>
