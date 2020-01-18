@@ -83,6 +83,16 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
+     */
+    public function testToEntityInvalidArgumentException()
+    {
+        $databaseRow = array();
+        $this->object->toEntity($databaseRow);
+    }
+
+    /**
+     * @test
      */
     public function testToDatabaseRow()
     {

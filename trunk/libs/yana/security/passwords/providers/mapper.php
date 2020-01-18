@@ -44,21 +44,24 @@ class Mapper extends \Yana\Core\StdObject implements \Yana\Data\Adapters\IsEntit
      *
      * @param   array  $databaseRow  row containing provider info
      * @return  \Yana\Security\Passwords\Providers\IsEntity
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the given data is invalid
      */
     public function toEntity(array $databaseRow)
     {
+        $databaseRowLower = \Yana\Util\Hashtable::changeCase($databaseRow, \CASE_LOWER);
         $entity = new \Yana\Security\Passwords\Providers\Entity();
-        if (isset($databaseRow[\Yana\Security\Data\Tables\AuthenticationProviderEnumeration::ID])) {
-            $entity->setId((string) $databaseRow[\Yana\Security\Data\Tables\AuthenticationProviderEnumeration::ID]);
+        if (!isset($databaseRowLower[\Yana\Security\Data\Tables\AuthenticationProviderEnumeration::ID])) {
+            throw new \Yana\Core\Exceptions\InvalidArgumentException("Not a valid database entry");
         }
-        if (isset($databaseRow[\Yana\Security\Data\Tables\AuthenticationProviderEnumeration::METHOD])) {
-            $entity->setMethod((string) $databaseRow[\Yana\Security\Data\Tables\AuthenticationProviderEnumeration::METHOD]);
+        $entity->setId((string) $databaseRowLower[\Yana\Security\Data\Tables\AuthenticationProviderEnumeration::ID]);
+        if (isset($databaseRowLower[\Yana\Security\Data\Tables\AuthenticationProviderEnumeration::METHOD])) {
+            $entity->setMethod((string) $databaseRowLower[\Yana\Security\Data\Tables\AuthenticationProviderEnumeration::METHOD]);
         }
-        if (isset($databaseRow[\Yana\Security\Data\Tables\AuthenticationProviderEnumeration::NAME])) {
-            $entity->setName((string) $databaseRow[\Yana\Security\Data\Tables\AuthenticationProviderEnumeration::NAME]);
+        if (isset($databaseRowLower[\Yana\Security\Data\Tables\AuthenticationProviderEnumeration::NAME])) {
+            $entity->setName((string) $databaseRowLower[\Yana\Security\Data\Tables\AuthenticationProviderEnumeration::NAME]);
         }
-        if (isset($databaseRow[\Yana\Security\Data\Tables\AuthenticationProviderEnumeration::HOST])) {
-            $entity->setHost((string) $databaseRow[\Yana\Security\Data\Tables\AuthenticationProviderEnumeration::HOST]);
+        if (isset($databaseRowLower[\Yana\Security\Data\Tables\AuthenticationProviderEnumeration::HOST])) {
+            $entity->setHost((string) $databaseRowLower[\Yana\Security\Data\Tables\AuthenticationProviderEnumeration::HOST]);
         }
         return $entity;
     }
