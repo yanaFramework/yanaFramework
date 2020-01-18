@@ -49,6 +49,11 @@ class Insert extends \Yana\Db\Queries\AbstractQuery implements \Yana\Db\Queries\
     protected $type = \Yana\Db\Queries\TypeEnumeration::INSERT;
 
     /**
+     * @var int
+     */
+    protected $expectedResult = \Yana\Db\ResultEnumeration::ROW;
+
+    /**
      * @var array
      * @ignore
      */

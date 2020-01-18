@@ -51,6 +51,11 @@ class Update extends \Yana\Db\Queries\Insert implements \Yana\Db\Queries\IsUpdat
     protected $type = \Yana\Db\Queries\TypeEnumeration::UPDATE;
 
     /**
+     * @var int
+     */
+    protected $expectedResult = \Yana\Db\ResultEnumeration::UNKNOWN;
+
+    /**
      * set source column
      *
      * Returns bool(true) on success and bool(false) on error.

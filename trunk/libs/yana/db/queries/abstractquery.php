@@ -79,7 +79,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
     /**
      * @var int
      */
-    protected $expectedResult = \Yana\Db\Queries\TypeEnumeration::UNKNOWN;
+    protected $expectedResult = \Yana\Db\ResultEnumeration::UNKNOWN;
 
     /**
      * @var \Yana\Db\Queries\IsJoinCondition[]
