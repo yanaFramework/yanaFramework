@@ -567,6 +567,7 @@ class AutomatedHtmlBuilderTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @todo check me
      */
     public function testBuildByTypeNonUpdatableReference()
     {
@@ -577,6 +578,11 @@ class AutomatedHtmlBuilderTest extends \PHPUnit_Framework_TestCase
         $this->_field->getColumn()->setReferenceSettings('table', 'column', 'label');
         $this->_field->getContext()->setRows(array(array('COLUMN' => '1', 'LABEL' => '2')));
 
+//--- Expected
+//+++ Actual
+//@@ @@
+//-<span id="" title="" class="form-update-column">2</span>
+//+<span id="" title="" class="form-update-column">1</span>
         $expected = '<span id="" title="" class="form-update-column">2</span>';
         $this->assertSame($expected, $this->object->__invoke($this->_field));
     }

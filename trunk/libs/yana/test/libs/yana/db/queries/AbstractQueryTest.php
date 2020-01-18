@@ -117,7 +117,7 @@ class AbstractQueryTest extends \PHPUnit_Framework_TestCase
      */
     public function test__isset()
     {
-        $this->assertFalse($this->query->__isset('test'));
+        $this->assertFalse($this->query->__isset('no-such-table'));
         $this->assertTrue($this->query->__isset('t'));
     }
 

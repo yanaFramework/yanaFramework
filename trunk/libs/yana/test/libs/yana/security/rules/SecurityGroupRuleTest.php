@@ -50,6 +50,7 @@ class SecurityGroupRuleTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->object = new \Yana\Security\Rules\SecurityGroupRule("default");
+        \Yana\Security\Passwords\Providers\Builder::addAuthenticationProvider('standard', '\Yana\Security\Passwords\Providers\Standard');
     }
 
     /**

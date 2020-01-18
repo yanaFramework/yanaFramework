@@ -116,7 +116,7 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetFromUserName()
     {
-        $this->assertSame("ldap", $this->object->getFromUserName("testuser")->getMethod());
+        $this->assertSame("ldap", $this->object->getFromUserName("testauth")->getMethod());
     }
 
     /**

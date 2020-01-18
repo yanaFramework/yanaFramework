@@ -62,6 +62,7 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->schema = \Yana\Files\XDDL::getDatabase('user');
+        \Yana\Security\Passwords\Providers\Builder::addAuthenticationProvider('standard', '\Yana\Security\Passwords\Providers\Standard');
         restore_error_handler();
         $this->container = new \Yana\Security\Dependencies\Container();
         $this->container->setDataConnection(new \Yana\Db\FileDb\NullConnection($this->schema))

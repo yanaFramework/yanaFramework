@@ -97,6 +97,8 @@ class XmlFactoryTest extends \PHPUnit_Framework_TestCase
             "\t</table>\n" .
             "\t<table id=\"i\">\n" .
             "\t</table>\n" .
+            "\t<table id=\"test\">\n" .
+            "\t</table>\n" .
             "\t<table id=\"u\">\n" .
             "\t</table>\n" .
             "</database>";
@@ -162,6 +164,8 @@ class XmlFactoryTest extends \PHPUnit_Framework_TestCase
             "\t\t\t<ftid>1</ftid>\n" .
             "\t\t\t<tid>FOO</tid>\n" .
             "\t\t</row>\n" .
+            "\t</table>\n" .
+            "\t<table id=\"test\">\n" .
             "\t</table>\n" .
             "\t<table id=\"u\">\n" .
             "\t</table>\n" .

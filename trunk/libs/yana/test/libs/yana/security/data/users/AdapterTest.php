@@ -214,7 +214,7 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
      */
     public function testCount()
     {
-        $this->assertSame(5, $this->object->count());
+        $this->assertSame(6, $this->object->count());
     }
 
     /**
@@ -227,7 +227,8 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
             'TESTUSER' => 'TESTUSER',
             'MANAGER' => 'MANAGER',
             'USER' => 'USER',
-            'OTHERUSERS' => 'OTHERUSERS'
+            'OTHERUSERS' => 'OTHERUSERS',
+            'TESTAUTH' => 'TESTAUTH'
         ), $this->object->getIds());
     }
 

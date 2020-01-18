@@ -85,6 +85,7 @@ class SecurityLevelRuleTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->object->__invoke($requiredDoesNotApply, $profileId, "", $user));
         $this->assertTrue($this->object->__invoke($requiredPublic, $profileId, "", $user));
         $this->assertFalse($this->object->__invoke($required1, $profileId, "", $user));
+        \Yana\Security\Passwords\Providers\Builder::addAuthenticationProvider('standard', '\Yana\Security\Passwords\Providers\Standard');
         $user->login("");
         $this->assertTrue($this->object->__invoke($required1, $profileId, "", $user));
         $this->assertFalse($this->object->__invoke($required100, $profileId, "", $user));
