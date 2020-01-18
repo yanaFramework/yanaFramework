@@ -127,7 +127,7 @@ class Adapter extends \Yana\Security\Passwords\Providers\AbstractAdapter
      */
     public function offsetSet($providerId, $entity)
     {
-        assert(is_scalar($providerId), 'Wrong type argument $userId. Integer expected.');
+        assert(is_null($providerId) || is_scalar($providerId), 'Wrong type argument $userId. Integer expected.');
 
         if (!($entity instanceof \Yana\Security\Passwords\Providers\IsEntity)) {
             assert(!isset($className), 'Cannot redeclare var $className');
@@ -137,7 +137,7 @@ class Adapter extends \Yana\Security\Passwords\Providers\AbstractAdapter
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
         }
 
-        return parent::offsetSet((int) $providerId, $entity);
+        return parent::offsetSet($providerId, $entity);
     }
 
     /**
@@ -153,19 +153,24 @@ class Adapter extends \Yana\Security\Passwords\Providers\AbstractAdapter
         assert(!isset($db), 'Cannot redeclare var $db');
         $db = $this->_getDatabaseConnection();
         try {
-            $db->remove(\Yana\Security\Data\Tables\ProfileEnumeration::TABLE . "." . (int) $providerId)
-                ->commit(); // may throw exception
+            $delete = new \Yana\Db\Queries\Delete($db);
+            $delete
+                ->setTable($this->_getTableName())
+                ->setRow((int) $providerId)
+                ->sendQuery(); // may throw exception
 
         } catch (\Yana\Core\Exceptions\NotFoundException $e) {
 
-            $db->rollback(); // The entry we are trying to delete doesn't exist. (Mission accomplished?)
+            unset($e); // The entry we are trying to delete doesn't exist. (Mission accomplished?)
 
+            // @codeCoverageIgnoreStart
         } catch (\Exception $e) {
 
             $message = "Unable to commit changes to the database server while trying to remove authentication provider setup: " . (int) $providerId;
             $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Db\Queries\Exceptions\NotDeletedException($message, $level, $e);
         }
+        // @codeCoverageIgnoreEnd
     }
 
     /**
