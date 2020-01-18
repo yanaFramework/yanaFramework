@@ -322,6 +322,14 @@ class ApplicationBuilder extends \Yana\Core\StdObject
         \Yana\Log\LogManager::attachLogger($this->_getErrorLogger()); // add default logger
         \Yana\Core\Exceptions\AbstractException::setDependencyContainer($dependencyContainer);
         \Yana\Views\Helpers\Formatters\UrlFormatter::setDependencyContainer($dependencyContainer);
+        if (isset($configuration->authentication)) {
+            foreach ($configuration->authentication as $node)
+            {
+                if (isset($node['@name']) && isset($node['#pcdata'])) {
+                    $dependencyContainer->addAuthenticationProvider((string) $node['@name'], (string) $node['#pcdata']);
+                }
+            }
+        }
         return $dependencyContainer;
     }
 

@@ -118,6 +118,11 @@ trait HasSecurity
     private $_passwordBehaviorBuilder = null;
 
     /**
+     * @var  array
+     */
+    private $_istOfAuthenticationProviders = array();
+
+    /**
      * Get default user settings.
      *
      * @return  array
@@ -290,8 +295,9 @@ trait HasSecurity
     public function getAuthenticationProvider(): \Yana\Security\Passwords\Providers\IsAuthenticationProvider
     {
         if (!isset($this->_authenticationProvider)) {
-            $this->_authenticationProvider =
-                new \Yana\Security\Passwords\Providers\Standard($this->getPasswordAlgorithm());
+            $builder = $this->getAuthenticationProviderBuilder();
+            $this->_authenticationProvider = $builder->buildFromUserName($this->getSession()->getCurrentUserName());
+            unset($builder);
         }
         return $this->_authenticationProvider;
     }
@@ -446,6 +452,56 @@ trait HasSecurity
     }
 
     /**
+     * Get list of authentication providers.
+     *
+     * This list is stored in the "config" directory, in file "system.config.xml".
+     * It is a list of ids as keys and class names as values.
+     *
+     * @return array
+     */
+    protected function _getListOfAuthenticationProviders(): array
+    {
+        return $this->_istOfAuthenticationProviders;
+    }
+
+    /**
+     * Add a new authentication provider.
+     *
+     * This function won't overwrite existing entries.
+     *
+     * @param   string  $id         alpha-numeric id, case-sensitive
+     * @param   string  $className  must implement \Yana\Security\Passwords\Providers\IsAuthenticationProvider
+     * @return  $this
+     */
+    public function addAuthenticationProvider(string $id, string $className)
+    {
+        if (!isset($this->_istOfAuthenticationProviders[$id])) {
+            $this->_istOfAuthenticationProviders[$id] = $className;
+        }
+        return $this;
+    }
+
+    /**
+     * Create and return authentication provider builder.
+     *
+     * @return \Yana\Security\Passwords\Providers\IsBuilder
+     */
+    public function getAuthenticationProviderBuilder(): \Yana\Security\Passwords\Providers\IsBuilder
+    {
+        return new \Yana\Security\Passwords\Providers\Builder($this->_getListOfAuthenticationProviders(), $this->getPasswordAlgorithm(), $this->_getAuthenticationProviderAdapter());
+    }
+
+    /**
+     * Create and return authentication provider adapter.
+     *
+     * @return \Yana\Security\Passwords\Providers\IsDataAdapter
+     */
+    protected function _getAuthenticationProviderAdapter(): \Yana\Security\Passwords\Providers\IsDataAdapter
+    {
+        return new \Yana\Security\Passwords\Providers\Adapter($this->_getDataConnection(), $this->_getAuthenticationProviderMapper());
+    }
+
+    /**
      * Create and return user database mapper.
      *
      * @return  \Yana\Data\Adapters\IsEntityMapper
@@ -453,6 +509,16 @@ trait HasSecurity
     protected function _getUserMapper(): \Yana\Data\Adapters\IsEntityMapper
     {
         return new \Yana\Security\Data\Users\Mapper();
+    }
+
+    /**
+     * Create and return authentication provider database mapper.
+     *
+     * @return  \Yana\Data\Adapters\IsEntityMapper
+     */
+    protected function _getAuthenticationProviderMapper(): \Yana\Data\Adapters\IsEntityMapper
+    {
+        return new \Yana\Security\Passwords\Providers\Mapper();
     }
 }
 

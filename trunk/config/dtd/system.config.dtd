@@ -10,7 +10,6 @@
 <!ELEMENT authentication (#PCDATA)>
 <!ATTLIST authentication
     name CDATA #REQUIRED
-    host CDATA #IMPLIED
   >
 <!ELEMENT templates (leftdelimiter, rightdelimiter, templatedir+, cachedir, caching, cachelifetime, cachingtype, compilecheck, compiledir, configdir, debugging, defaultmodifier*, resourcetype*, modifier*, function*, blockfunction*, prefilter*, postfilter*, varfilter*, outputfilter*, defaultresourcetype, usesubdirs, security)*>
 <!ELEMENT leftdelimiter (#PCDATA)>
