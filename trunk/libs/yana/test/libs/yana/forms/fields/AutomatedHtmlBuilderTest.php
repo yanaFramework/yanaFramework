@@ -574,15 +574,10 @@ class AutomatedHtmlBuilderTest extends \PHPUnit_Framework_TestCase
         $this->_contextName = \Yana\Forms\Setups\ContextNameEnumeration::UPDATE;
         $this->setUp();
         $this->_column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::REFERENCE)->setReadonly(true);
-        $this->_context->setValue('column', 'test');
         $this->_field->getColumn()->setReferenceSettings('table', 'column', 'label');
         $this->_field->getContext()->setRows(array(array('COLUMN' => '1', 'LABEL' => '2')));
+        $this->_field->getForm()->getSetup()->setReferenceValues(array('column' => array('1' => '2')));
 
-//--- Expected
-//+++ Actual
-//@@ @@
-//-<span id="" title="" class="form-update-column">2</span>
-//+<span id="" title="" class="form-update-column">1</span>
         $expected = '<span id="" title="" class="form-update-column">2</span>';
         $this->assertSame($expected, $this->object->__invoke($this->_field));
     }
