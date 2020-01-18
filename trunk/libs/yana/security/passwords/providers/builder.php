@@ -54,20 +54,33 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Security\Passwords\P
     /**
      * @var  array
      */
-    private $_providers = array();
+    private static $_authenticationProviders = array();
 
     /**
      * <<constructor>> Set up and initialize adapters.
      *
-     * @param  array                                             $providers  list of class names with the keys as alpha-numeric identifiers
      * @param  \Yana\Security\Passwords\IsAlgorithm              $algorithm  inject a NULL-algorithm for Unit-tests
      * @param  \Yana\Security\Passwords\Providers\IsDataAdapter  $adapter    inject a NULL-adapter for Unit-tests
      */
-    public function __construct(array $providers, \Yana\Security\Passwords\IsAlgorithm $algorithm, \Yana\Security\Passwords\Providers\IsDataAdapter $adapter = null)
+    public function __construct(\Yana\Security\Passwords\IsAlgorithm $algorithm, \Yana\Security\Passwords\Providers\IsDataAdapter $adapter = null)
     {
-        $this->_providers = $providers;
         $this->_passwordAlgorithm = $algorithm;
         $this->_adapter = $adapter;
+    }
+
+    /**
+     * Add a new authentication provider.
+     *
+     * This function won't overwrite existing entries.
+     *
+     * @param   string  $id         alpha-numeric id, case-sensitive
+     * @param   string  $className  must implement \Yana\Security\Passwords\Providers\IsAuthenticationProvider
+     */
+    public static function addAuthenticationProvider(string $id, string $className)
+    {
+        if (!isset(self::$_authenticationProviders[$id])) {
+            self::$_authenticationProviders[$id] = $className;
+        }
     }
 
     /**
@@ -81,7 +94,8 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Security\Passwords\P
      */
     protected function _isProvider(string $name): bool
     {
-        return array_key_exists($name, $this->_providers) && is_string($this->_providers[$name]) && \class_exists($this->_providers[$name]);
+        $providers = self::$_authenticationProviders;
+        return array_key_exists($name, $providers) && is_string($providers[$name]) && \class_exists($providers[$name]);
     }
 
     /**
@@ -96,7 +110,7 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Security\Passwords\P
     protected function _getClassName(string $authenticationProviderId)
     {
         if ($this->_isProvider($authenticationProviderId)) {
-            return $this->_providers[$authenticationProviderId];
+            return self::$_authenticationProviders[$authenticationProviderId];
         }
         throw new \Yana\Core\Exceptions\NotFoundException("Not a valid authentication provider: " . $authenticationProviderId, \Yana\Log\TypeEnumeration::WARNING);
     }

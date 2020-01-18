@@ -46,11 +46,6 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
     protected $object;
 
     /**
-     * @var array
-     */
-    protected $providers = array('test' => '\Yana\Security\Passwords\Providers\Standard');
-
-    /**
      * @var \Yana\Security\Passwords\IsAlgorithm
      */
     protected $algorithm;
@@ -62,7 +57,8 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->algorithm = new \Yana\Security\Passwords\NullAlgorithm();
-        $this->object = new \Yana\Security\Passwords\Providers\Builder($this->providers, $this->algorithm);
+        \Yana\Security\Passwords\Providers\Builder::addAuthenticationProvider("test", '\Yana\Security\Passwords\Providers\Standard');
+        $this->object = new \Yana\Security\Passwords\Providers\Builder($this->algorithm);
     }
 
     /**

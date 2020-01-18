@@ -326,7 +326,7 @@ class ApplicationBuilder extends \Yana\Core\StdObject
             foreach ($configuration->authentication as $node)
             {
                 if (isset($node['@name']) && isset($node['#pcdata'])) {
-                    $dependencyContainer->addAuthenticationProvider((string) $node['@name'], (string) $node['#pcdata']);
+                    \Yana\Security\Passwords\Providers\Builder::addAuthenticationProvider((string) $node['@name'], (string) $node['#pcdata']);
                 }
             }
         }
