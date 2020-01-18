@@ -78,6 +78,13 @@
             />
         </declaration>
     </table>
+    <table name="test">
+        <primarykey>id</primarykey>
+        <declaration>
+            <integer name="id" autoincrement="yes"/>
+            <string name="value"/>
+        </declaration>
+    </table>
     <table name="u">
         <primarykey>uid</primarykey>
         <declaration>

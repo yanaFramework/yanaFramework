@@ -172,4 +172,16 @@ class InsertTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(in_array('ft', $result));
     }
 
+    /**
+     * @test
+     */
+    public function testToInsertWithoutPrimaryKey()
+    {
+        $this->query->setTable('test')->setValues(array('value' => "abc"));
+        $sql = (string) $this->query;
+        $valid = "INSERT INTO test (value) "
+            . "VALUES ('abc')";
+        $this->assertEquals($valid, $sql);
+    }
+
 }
