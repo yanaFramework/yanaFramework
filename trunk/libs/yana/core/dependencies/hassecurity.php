@@ -459,9 +459,9 @@ trait HasSecurity
     /**
      * Create and return authentication provider adapter.
      *
-     * @return \Yana\Security\Passwords\Providers\IsDataAdapter
+     * @return \Yana\Security\Passwords\Providers\IsAdapter
      */
-    protected function _getAuthenticationProviderAdapter(): \Yana\Security\Passwords\Providers\IsDataAdapter
+    protected function _getAuthenticationProviderAdapter(): \Yana\Security\Passwords\Providers\IsAdapter
     {
         return new \Yana\Security\Passwords\Providers\Adapter($this->_getDataConnection(), $this->_getAuthenticationProviderMapper());
     }

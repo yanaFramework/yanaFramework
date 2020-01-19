@@ -39,13 +39,24 @@ interface IsConnectionFactory
     /**
      * <<factory>> Returns a ready-to-use database connection.
      *
-     * @param   string|\Yana\Db\Ddl\Database  $schema  name of the database schema file (see config/db/*.xml),
-     *                                                 or instance of \Yana\Db\Ddl\Database
-     * @return  \Yana\Db\IsConnection
+     * Note: Since Yana 4 it is possible to configure more than 1 database servers as data source.
+     * To do so, open the administration panel and add the settings under "other data sources".
+     *
+     * If you did that and wish to use the database server you set up, add the name that you
+     * gave it as the second parameter. The connection will then be opened to that server and
+     * using the same schema information.
+     *
+     * This is particularly useful during migration, to switch environments on the fly in your code,
+     * or when you wish to distribute your databases across several servers for special purposes
+     * like reporting or logging.
+     *
+     * @param   string|\Yana\Db\Ddl\Database  $schema                  name of the database schema file (see config/db/*.xml),
+     *                                                                 or instance of \Yana\Db\Ddl\Database
+     * @param   \Yana\Db\Sources\IsEntity     $optionalDatasourceName  if you wish another than the default data source, add the name here
      * @throws  \Yana\Core\Exceptions\NotFoundException  when no such database was found
      * @throws  \Yana\Db\ConnectionException             when connection to database failed
      */
-    public function createConnection($schema);
+    public function createConnection($schema, ?\Yana\Db\Sources\IsEntity  $optionalDatasourceName = null): \Yana\Db\IsConnection;
 
 }
 

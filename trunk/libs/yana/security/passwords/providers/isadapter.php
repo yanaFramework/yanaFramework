@@ -40,7 +40,7 @@ namespace Yana\Security\Passwords\Providers;
  *
  * @ignore
  */
-interface IsDataAdapter extends \Yana\Data\Adapters\IsDataBaseAdapter
+interface IsAdapter extends \Yana\Data\Adapters\IsDataBaseAdapter
 {
     /**
      * Build a provider entity based on a given user name.

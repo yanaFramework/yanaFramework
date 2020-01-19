@@ -72,14 +72,6 @@
                 <source/>
                 <target>Password</target>
             </trans-unit>
-            <trans-unit id="datasource_prefix">
-                <source/>
-                <target>Prefix to set before table names</target>
-            </trans-unit>
-            <trans-unit id="datasource_active">
-                <source/>
-                <target>Connection active?</target>
-            </trans-unit>
             <trans-unit id="program_title">
                 <source/>
                 <target>Setup additional datasources</target>

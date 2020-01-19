@@ -207,26 +207,26 @@ class ConnectionFactory extends \Yana\Core\StdObject implements \Yana\Db\Doctrin
         assert(is_array($this->_dsn), 'is_array($this->_dsn)');
         $dsn = array();
 
-        if (isset($this->_dsn['DBMS'])) {
-            $dsn['driver'] = (string) $this->_dsn['DBMS'];
+        if (isset($this->_dsn[\Yana\Db\Sources\DsnEnumeration::DBMS])) {
+            $dsn['driver'] = (string) $this->_dsn[\Yana\Db\Sources\DsnEnumeration::DBMS];
         }
-        if (isset($this->_dsn['HOST'])) {
-            $dsn['host'] = (string) $this->_dsn['HOST'];
+        if (isset($this->_dsn[\Yana\Db\Sources\DsnEnumeration::HOST])) {
+            $dsn['host'] = (string) $this->_dsn[\Yana\Db\Sources\DsnEnumeration::HOST];
         }
-        if (isset($this->_dsn['PORT']) && is_numeric($this->_dsn['PORT']) && $this->_dsn['PORT'] > 0) {
-            $dsn['port'] = (int) $this->_dsn['PORT'];
+        if (isset($this->_dsn[\Yana\Db\Sources\DsnEnumeration::PORT]) && is_numeric($this->_dsn[\Yana\Db\Sources\DsnEnumeration::PORT]) && $this->_dsn[\Yana\Db\Sources\DsnEnumeration::PORT] > 0) {
+            $dsn['port'] = (int) $this->_dsn[\Yana\Db\Sources\DsnEnumeration::PORT];
         }
-        if (!empty($this->_dsn['USERNAME'])) {
-            $dsn['user'] = $this->_dsn['USERNAME'];
+        if (!empty($this->_dsn[\Yana\Db\Sources\DsnEnumeration::USER])) {
+            $dsn['user'] = $this->_dsn[\Yana\Db\Sources\DsnEnumeration::USER];
         }
-        if (isset($this->_dsn['PASSWORD'])) {
-            $dsn['password'] = $this->_dsn['PASSWORD'];
+        if (isset($this->_dsn[\Yana\Db\Sources\DsnEnumeration::PASSWORD])) {
+            $dsn['password'] = $this->_dsn[\Yana\Db\Sources\DsnEnumeration::PASSWORD];
         }
-        if (isset($this->_dsn['DATABASE'])) {
-            $dsn['dbname'] = $this->_dsn['DATABASE'];
+        if (isset($this->_dsn[\Yana\Db\Sources\DsnEnumeration::DATABASE])) {
+            $dsn['dbname'] = $this->_dsn[\Yana\Db\Sources\DsnEnumeration::DATABASE];
         }
-        if (isset($this->_dsn['CHARSET'])) {
-            $dsn['charset'] = $this->_dsn['CHARSET'];
+        if (isset($this->_dsn[\Yana\Db\Sources\DsnEnumeration::CHARSET])) {
+            $dsn['charset'] = $this->_dsn[\Yana\Db\Sources\DsnEnumeration::CHARSET];
         }
         assert(is_array($dsn), 'is_array($dsn)');
         return $dsn;

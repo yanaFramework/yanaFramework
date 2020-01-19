@@ -28,7 +28,7 @@
  */
 declare(strict_types=1);
 
-namespace Yana\Security\Passwords\Providers;
+namespace Yana\Db\Sources;
 
 /**
  * <<abstract>> User data-adapter.
@@ -39,8 +39,9 @@ namespace Yana\Security\Passwords\Providers;
  * @subpackage  security
  *
  * @ignore
+ * @codeCoverageIgnore
  */
-abstract class AbstractAdapter extends \Yana\Data\Adapters\AbstractDatabaseAdapter implements \Yana\Security\Passwords\Providers\IsAdapter
+abstract class AbstractAdapter extends \Yana\Data\Adapters\AbstractDatabaseAdapter implements \Yana\Db\Sources\IsAdapter
 {
 
     /**
@@ -51,11 +52,9 @@ abstract class AbstractAdapter extends \Yana\Data\Adapters\AbstractDatabaseAdapt
     private $_entityMapper = null;
 
     /**
-     * <<construct>> Creates a new authentication provider manager.
+     * <<construct>> Creates a new instance.
      *
-     * If no mapper is given, this function creates and uses an instance of \Yana\Security\Passwords\Providers\Mapper.
-     *
-     * @param  \Yana\Db\IsConnection               $connection  database connection to schema user
+     * @param  \Yana\Db\IsConnection               $connection  database connection to table "datasources"
      * @param  \Yana\Data\Adapters\IsEntityMapper  $mapper      simple OR-mapper to convert database entries to objects
      */
     public function __construct(\Yana\Db\IsConnection $connection, \Yana\Data\Adapters\IsEntityMapper $mapper = null)
@@ -75,7 +74,7 @@ abstract class AbstractAdapter extends \Yana\Data\Adapters\AbstractDatabaseAdapt
     {
         if (!isset($this->_entityMapper)) {
             // @codeCoverageIgnoreStart
-            $this->_entityMapper = new \Yana\Security\Passwords\Providers\Mapper();
+            $this->_entityMapper = new \Yana\Db\Sources\Mapper();
             // @codeCoverageIgnoreEnd
         }
         return $this->_entityMapper;

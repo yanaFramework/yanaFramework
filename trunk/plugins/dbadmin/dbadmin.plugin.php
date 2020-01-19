@@ -44,7 +44,7 @@ class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
     {
         $schemaFactory = new \Yana\Db\SchemaFactory();
         $connectionFactory = new \Yana\Db\ConnectionFactory($schemaFactory);
-        return $connectionFactory->createConnection($schema, true);
+        return $connectionFactory->createConnection($schema, null, true);
     }
 
     /**

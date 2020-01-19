@@ -44,22 +44,6 @@ class Adapter extends \Yana\Security\Passwords\Providers\AbstractAdapter
 {
 
     /**
-     * <<construct>> Creates a new authentication provider manager.
-     *
-     * If no mapper is given, this function creates and uses an instance of \Yana\Security\Passwords\Providers\Mapper.
-     *
-     * @param  \Yana\Db\IsConnection               $connection  database connection to schema user
-     * @param  \Yana\Data\Adapters\IsEntityMapper  $mapper      simple OR-mapper to convert database entries to objects
-     */
-    public function __construct(\Yana\Db\IsConnection $connection, \Yana\Data\Adapters\IsEntityMapper $mapper = null)
-    {
-        if (\is_null($mapper)) {
-            $mapper = new \Yana\Security\Passwords\Providers\Mapper();
-        }
-        parent::__construct($connection, $mapper);
-    }
-
-    /**
      * Returns the name of the target table.
      *
      * @return  string
@@ -127,7 +111,7 @@ class Adapter extends \Yana\Security\Passwords\Providers\AbstractAdapter
      */
     public function offsetSet($providerId, $entity)
     {
-        assert(is_null($providerId) || is_scalar($providerId), 'Wrong type argument $userId. Integer expected.');
+        assert(is_null($providerId) || is_scalar($providerId), 'Wrong type argument $providerId. Integer expected.');
 
         if (!($entity instanceof \Yana\Security\Passwords\Providers\IsEntity)) {
             assert(!isset($className), 'Cannot redeclare var $className');
@@ -148,16 +132,10 @@ class Adapter extends \Yana\Security\Passwords\Providers\AbstractAdapter
      */
     public function offsetUnset($providerId)
     {
-        assert(is_scalar($providerId), 'Wrong type argument $userId. Integer expected.');
+        assert(is_scalar($providerId), 'Wrong type argument $providerId. Integer expected.');
 
-        assert(!isset($db), 'Cannot redeclare var $db');
-        $db = $this->_getDatabaseConnection();
         try {
-            $delete = new \Yana\Db\Queries\Delete($db);
-            $delete
-                ->setTable($this->_getTableName())
-                ->setRow((int) $providerId)
-                ->sendQuery(); // may throw exception
+            parent::offsetUnset((int) $providerId);
 
         } catch (\Yana\Core\Exceptions\NotFoundException $e) {
 

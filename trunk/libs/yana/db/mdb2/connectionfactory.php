@@ -268,31 +268,31 @@ class ConnectionFactory extends \Yana\Core\StdObject implements \Yana\Db\Mdb2\Is
         $requireOdbc = $this->_getOdbcSettings();
 
         /* 1 determine if odbc is required to connect to this dbms */
-        if (!empty($dsn['DBMS'])) {
-            if (!empty($dsn['USE_ODBC']) || in_array(strtolower($dsn['DBMS']), $requireOdbc)) {
+        if (!empty($dsn[\Yana\Db\Sources\DsnEnumeration::DBMS])) {
+            if (!empty($dsn[\Yana\Db\Sources\DsnEnumeration::ODBC]) || in_array(strtolower($dsn[\Yana\Db\Sources\DsnEnumeration::DBMS]), $requireOdbc)) {
                 $dsnForMdb2['phptype']  = 'ODBC';
-                $dsnForMdb2['dbsyntax'] = (string) $dsn['DBMS'];
+                $dsnForMdb2['dbsyntax'] = (string) $dsn[\Yana\Db\Sources\DsnEnumeration::DBMS];
             } else {
-                $dsnForMdb2['phptype']  = (string) $dsn['DBMS'];
+                $dsnForMdb2['phptype']  = (string) $dsn[\Yana\Db\Sources\DsnEnumeration::DBMS];
             }
         }
         /* 2 now for the database host */
-        if (!empty($dsn['HOST'])) {
-            $dsnForMdb2['hostspec'] = (string) $dsn['HOST'];
-            if (is_numeric($dsn['PORT']) && $dsn['PORT'] > 0) {
-                $dsnForMdb2['hostspec'] .= ':' . (string) $dsn['PORT'];
+        if (!empty($dsn[\Yana\Db\Sources\DsnEnumeration::HOST])) {
+            $dsnForMdb2['hostspec'] = (string) $dsn[\Yana\Db\Sources\DsnEnumeration::HOST];
+            if (is_numeric($dsn[\Yana\Db\Sources\DsnEnumeration::PORT]) && $dsn[\Yana\Db\Sources\DsnEnumeration::PORT] > 0) {
+                $dsnForMdb2['hostspec'] .= ':' . (string) $dsn[\Yana\Db\Sources\DsnEnumeration::PORT];
             }
         }
         /* 3 database name */
-        if (!empty($dsn['DATABASE'])) {
-            $dsnForMdb2['database'] = (string) $dsn['DATABASE'];
+        if (!empty($dsn[\Yana\Db\Sources\DsnEnumeration::DATABASE])) {
+            $dsnForMdb2['database'] = (string) $dsn[\Yana\Db\Sources\DsnEnumeration::DATABASE];
         }
         /* 4 collect login information */
-        if (!empty($dsn['USERNAME'])) {
-            $dsnForMdb2['username'] = (string) $dsn['USERNAME'];
+        if (!empty($dsn[\Yana\Db\Sources\DsnEnumeration::USER])) {
+            $dsnForMdb2['username'] = (string) $dsn[\Yana\Db\Sources\DsnEnumeration::USER];
         }
-        if (!empty($dsn['PASSWORD'])) {
-            $dsnForMdb2['password'] = (string) $dsn['PASSWORD'];
+        if (!empty($dsn[\Yana\Db\Sources\DsnEnumeration::PASSWORD])) {
+            $dsnForMdb2['password'] = (string) $dsn[\Yana\Db\Sources\DsnEnumeration::PASSWORD];
         }
         assert(is_array($dsnForMdb2), 'is_array($dsnForMdb2)');
         return $dsnForMdb2;

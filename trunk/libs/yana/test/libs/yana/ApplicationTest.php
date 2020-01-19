@@ -73,18 +73,6 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Yana\Application::exitTo
-     * @todo   Implement testExitTo().
-     */
-    public function testExitTo()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
-    }
-
-    /**
      * @test
      */
     public function testBuildForm()

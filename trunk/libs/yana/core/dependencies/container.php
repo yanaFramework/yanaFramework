@@ -697,6 +697,20 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
     }
 
     /**
+     * Returns a data adapter that handles loading of data source settings.
+     *
+     * @return  \Yana\Db\Sources\IsAdapter
+     */
+    public function getDataSourcesAdapter(): \Yana\Db\Sources\IsAdapter
+    {
+        if (!isset($this->_dataSourceAdapter)) {
+            $connection = $this->getConnectionFactory()->createConnection('datasources');
+            $this->_dataSourceAdapter = new \Yana\Db\Sources\Adapter($connection);
+        }
+        return $this->_dataSourceAdapter;
+    }
+
+    /**
      * Returns a ready-to-use factory to create open database connections.
      *
      * @return  \Yana\Db\IsConnectionFactory

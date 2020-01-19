@@ -132,6 +132,13 @@ interface IsApplicationContainer
      */
     public function getDefaultConfiguration(): \Yana\Util\Xml\IsObject;
 
+    /**
+     * Returns a data adapter that handles loading of data source settings.
+     *
+     * @return  \Yana\Db\Sources\IsAdapter
+     */
+    public function getDataSourcesAdapter(): \Yana\Db\Sources\IsAdapter;
+
 }
 
 ?>

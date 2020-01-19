@@ -42,7 +42,7 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Security\Passwords\P
 {
 
     /**
-     * @var  \Yana\Security\Passwords\Providers\IsDataAdapter
+     * @var  \Yana\Security\Passwords\Providers\IsAdapter
      */
     private $_adapter = null;
 
@@ -60,9 +60,9 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Security\Passwords\P
      * <<constructor>> Set up and initialize adapters.
      *
      * @param  \Yana\Security\Passwords\IsAlgorithm              $algorithm  inject a NULL-algorithm for Unit-tests
-     * @param  \Yana\Security\Passwords\Providers\IsDataAdapter  $adapter    inject a NULL-adapter for Unit-tests
+     * @param  \Yana\Security\Passwords\Providers\IsAdapter  $adapter    inject a NULL-adapter for Unit-tests
      */
-    public function __construct(\Yana\Security\Passwords\IsAlgorithm $algorithm, \Yana\Security\Passwords\Providers\IsDataAdapter $adapter = null)
+    public function __construct(\Yana\Security\Passwords\IsAlgorithm $algorithm, \Yana\Security\Passwords\Providers\IsAdapter $adapter = null)
     {
         $this->_passwordAlgorithm = $algorithm;
         $this->_adapter = $adapter;
@@ -130,9 +130,9 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Security\Passwords\P
      *
      * If there is none, it will create a fitting adapter automatically.
      *
-     * @return  \Yana\Security\Passwords\Providers\IsDataAdapter
+     * @return  \Yana\Security\Passwords\Providers\IsAdapter
      */
-    protected function _getAdapter(): \Yana\Security\Passwords\Providers\IsDataAdapter
+    protected function _getAdapter(): \Yana\Security\Passwords\Providers\IsAdapter
     {
         if (!isset($this->_adapter)) {
             assert(!isset($factory), 'Cannot redeclare var $factory.');

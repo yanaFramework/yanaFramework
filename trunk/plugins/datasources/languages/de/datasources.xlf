@@ -72,14 +72,6 @@
                 <source>Passcode</source>
                 <target>Passwort</target>
             </trans-unit>
-            <trans-unit id="datasource_prefix">
-                <source>Prefix</source>
-                <target>Präfix vor Tabellennamen</target>
-            </trans-unit>
-            <trans-unit id="datasource_active">
-                <source>Active?</source>
-                <target>Verbindung Aktiv?</target>
-            </trans-unit>
             <trans-unit id="program_title">
                 <source>Datasources</source>
                 <target>Weitere Datenquellen einrichten</target>

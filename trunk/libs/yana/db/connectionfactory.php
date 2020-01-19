@@ -94,21 +94,24 @@ class ConnectionFactory extends \Yana\Core\StdObject implements \Yana\Db\IsConne
      * $db->createConnection('user');
      * </code>
      *
-     * @param   string|\Yana\Db\Ddl\Database  $schema        name of the database schema file (see config/db/*.xml),
-     *                                                       or instance of \Yana\Db\Ddl\Database
-     * @param   bool                          $ignoreFileDb  set to bool(true) if you DON'T want to use the fallback File-DB driver
-     * @return  \Yana\Db\IsConnection
-     * @throws  \Yana\Core\Exceptions\NotFoundException  when no such database was found
-     * @throws  \Yana\Db\ConnectionException             when connection to database failed
+     * Note: If you don't want to connect to the default data source, you can
+     * optionally provide individual connection parameters as the second parameter.
+     *
+     * @param   string|\Yana\Db\Ddl\Database  $schema              name of the database schema file (see config/db/*.xml),
+     *                                                             or instance of \Yana\Db\Ddl\Database
+     * @param   \Yana\Db\Sources\IsEntity     $connectionSettings  if you wish another than the default data source
+     * @param   bool                          $ignoreFileDb        set to bool(true) if you DON'T want to use the fallback File-DB driver
+     * @throws  \Yana\Core\Exceptions\NotFoundException            when no such database was found
+     * @throws  \Yana\Db\ConnectionException                       when connection to database failed
      */
-    public function createConnection($schema, $ignoreFileDb = YANA_DATABASE_ACTIVE)
+    public function createConnection($schema, ?\Yana\Db\Sources\IsEntity $connectionSettings = null, bool $ignoreFileDb = YANA_DATABASE_ACTIVE): \Yana\Db\IsConnection
     {
         if (is_string($schema)) {
             $schema = $this->_getSchemaFactory()->createSchema($schema);
         }
         assert($schema instanceof \Yana\Db\Ddl\Database);
 
-        return $this->_createConnection($schema, $ignoreFileDb);
+        return $this->_createConnection($schema, $connectionSettings, $ignoreFileDb || !empty($connectionSettings));
     }
 
     /**
@@ -138,22 +141,29 @@ class ConnectionFactory extends \Yana\Core\StdObject implements \Yana\Db\IsConne
     }
 
     /**
-     * @param   \Yana\Db\Ddl\Database  $schema        passed on to connection
-     * @param   bool                   $ignoreFileDb  set to bool(true) if you DON'T want to use the fallback File-DB driver
+     * Create database connection.
+     *
+     * Note: If you don't want to connect to the default data source, you can
+     * optionally provide individual connection parameters as the second parameter.
+     *
+     * @param   \Yana\Db\Ddl\Database      $schema              database schema representation
+     * @param   \Yana\Db\Sources\IsEntity  $connectionSettings  if you wish another than the default data source
+     * @param   bool                       $ignoreFileDb        set to bool(true) if you DON'T want to use the fallback File-DB driver
+     * @throws  \Yana\Db\ConnectionException                    when connection to database failed
      * @return  \Yana\Db\IsConnection
      */
-    protected function _createConnection(\Yana\Db\Ddl\Database $schema, $ignoreFileDb)
+    protected function _createConnection(\Yana\Db\Ddl\Database $schema, \Yana\Db\Sources\IsEntity $connectionSettings = null, $ignoreFileDb)
     {
         $connections = $this->_getConnections();
         $schemaName = $schema->getName();
         if (!isset($connections[$schemaName])) {
             $connection = null;
             if ($ignoreFileDb && \Yana\Db\Doctrine\ConnectionFactory::isDoctrineAvailable()) {
-                $connection = $this->_buildDoctrineConnection($schema); // may return NULL
+                $connection = $this->_buildDoctrineConnection($schema, $connectionSettings); // may return NULL
 
             }
             if (is_null($connection) && $ignoreFileDb && \Yana\Db\Mdb2\ConnectionFactory::isMdb2Available()) {
-                $connection = $this->_buildMdb2Connection($schema); // may return NULL
+                $connection = $this->_buildMdb2Connection($schema, $connectionSettings); // may return NULL
 
             }
             if (is_null($connection)) {
@@ -169,14 +179,16 @@ class ConnectionFactory extends \Yana\Core\StdObject implements \Yana\Db\IsConne
      *
      * Returns NULL on failure.
      *
-     * @param   \Yana\Db\Ddl\Database  $schema  passed on to connection
-     * @return  \Yana\Db\Doctrine\Connection?
+     * @param   \Yana\Db\Ddl\Database      $schema              passed on to connection
+     * @param   \Yana\Db\Sources\IsEntity  $connectionSettings  if you wish another than the default data source
+     * @return  \Yana\Db\Doctrine\Connection|null
      * @codeCoverageIgnore
      */
-    protected function _buildDoctrineConnection(\Yana\Db\Ddl\Database $schema)
+    protected function _buildDoctrineConnection(\Yana\Db\Ddl\Database $schema, \Yana\Db\Sources\IsEntity $connectionSettings): ?\Yana\Db\Doctrine\Connection
     {
         try {
-            return new \Yana\Db\Doctrine\Connection($schema);
+            $factory = new \Yana\Db\Doctrine\ConnectionFactory($connectionSettings->toDsn());
+            return new \Yana\Db\Doctrine\Connection($schema, $factory);
 
         } catch (\Exception $e) {
             return null;
@@ -188,14 +200,16 @@ class ConnectionFactory extends \Yana\Core\StdObject implements \Yana\Db\IsConne
      *
      * Returns NULL on failure.
      *
-     * @param   \Yana\Db\Ddl\Database  $schema  passed on to connection
-     * @return  \Yana\Db\Mdb2\Connection?
+     * @param   \Yana\Db\Ddl\Database      $schema              passed on to connection
+     * @param   \Yana\Db\Sources\IsEntity  $connectionSettings  if you wish another than the default data source
+     * @return  \Yana\Db\Mdb2\Connection|null
      * @codeCoverageIgnore
      */
-    protected function _buildMdb2Connection(\Yana\Db\Ddl\Database $schema)
+    protected function _buildMdb2Connection(\Yana\Db\Ddl\Database $schema, \Yana\Db\Sources\IsEntity $connectionSettings): ?\Yana\Db\Mdb2\Connection
     {
         try {
-            return new \Yana\Db\Mdb2\Connection($schema);
+            $factory = new \Yana\Db\Mdb2\ConnectionFactory($connectionSettings->toDsn());
+            return new \Yana\Db\Mdb2\Connection($schema, $factory);
 
         } catch (\Exception $e) {
             return null;

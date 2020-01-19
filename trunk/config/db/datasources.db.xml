@@ -22,12 +22,10 @@
       <string name="datasource_database" title="{lang id=&quot;datasource_database&quot;}" notnull="yes" length="32"/>
       <string name="datasource_user" title="{lang id=&quot;datasource_user&quot;}" notnull="yes" length="32"/>
       <string name="datasource_pass" title="{lang id=&quot;datasource_pass&quot;}" notnull="yes"/>
-      <string name="datasource_prefix" title="{lang id=&quot;datasource_prefix&quot;}" notnull="no" length="10"/>
-      <bool name="datasource_active" title="{lang id=&quot;datasource_active&quot;}" notnull="yes"/>
     </declaration>
   </table>
   <form name="datasources" table="datasources" allinput="yes">
-    <input name="datasource_id" readonly="yes"/>
+    <input name="datasource_id" hidden="yes"/>
     <event name="search">datasources_search</event>
     <event name="insert">datasources_insert</event>
     <event name="update">datasources_update</event>
