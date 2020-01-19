@@ -344,16 +344,16 @@ if (!defined('YANA_TPL_CACHE_DIR')) {
 
 /* [database settings] */
 
-require_once 'config/dbconfig.php';
+require_once __DIR__ . '/config/dbconfig.php';
 
 /* [main class] */
 
-require_once 'libs/yana/core/autoloadbuilder.php';
+require_once __DIR__ . '/libs/yana/core/autoloadbuilder.php';
 
 /* [fallbacks] */
 
 if (!\interface_exists('Throwable')) {
-    require_once 'libs/yana/core/exceptions/throwable.php';
+    require_once __DIR__ . '/libs/yana/core/exceptions/throwable.php';
 }
 
 /**#@-*/
