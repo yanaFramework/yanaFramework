@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE database SYSTEM "../dtd/database.dtd">
+<database name="datasources">
+  <table name="datasources">
+    <primarykey>datasource_id</primarykey>
+    <declaration>
+      <integer name="datasource_id" title="{lang id=&quot;datasource_id&quot;}" notnull="yes" autoincrement="yes"/>
+      <string name="datasource_name" title="{lang id=&quot;datasource_name&quot;}" notnull="yes" length="32" unique="yes"/>
+      <enum name="datasource_dbms" title="{lang id=&quot;datasource_dbms&quot;}" notnull="yes">
+        <option value="mysql">{lang id="datasource_dbms.mysql"}</option>
+        <option value="db2">{lang id="datasource_dbms.db2"}</option>
+        <option value="frontbase">{lang id="datasource_dbms.frontbase"}</option>
+        <option value="interbase">{lang id="datasource_dbms.interbase"}</option>
+        <option value="mssql">{lang id="datasource_dbms.mssql"}</option>
+        <option value="oracle">{lang id="datasource_dbms.oracle"}</option>
+        <option value="postgresql">{lang id="datasource_dbms.postgresql"}</option>
+        <option value="sybase">{lang id="datasource_dbms.sybase"}</option>
+        <option value="sqlite">{lang id="datasource_dbms.sqlite"}</option>
+      </enum>
+      <string name="datasource_host" title="{lang id=&quot;datasource_host&quot;}" notnull="yes"/>
+      <integer name="datasource_port" title="{lang id=&quot;datasource_port&quot;}" notnull="no" length="6"/>
+      <string name="datasource_database" title="{lang id=&quot;datasource_database&quot;}" notnull="yes" length="32"/>
+      <string name="datasource_user" title="{lang id=&quot;datasource_user&quot;}" notnull="yes" length="32"/>
+      <string name="datasource_pass" title="{lang id=&quot;datasource_pass&quot;}" notnull="yes"/>
+    </declaration>
+  </table>
+  <form name="datasources" table="datasources" allinput="yes">
+    <input name="datasource_id" hidden="yes"/>
+    <event name="search">datasources_search</event>
+    <event name="insert">datasources_insert</event>
+    <event name="update">datasources_update</event>
+    <event name="delete">datasources_delete</event>
+    <event name="export">datasources_export</event>
+  </form>
+  <changelog/>
+</database>
