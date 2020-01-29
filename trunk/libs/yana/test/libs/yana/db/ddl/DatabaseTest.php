@@ -57,11 +57,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     protected $foreignkey;
 
     /**
-     * @var \Yana\Db\Ddl\Form
-     */
-    protected $form;
-
-    /**
      * @var \Yana\Db\Ddl\Functions\Definition
      */
     protected $function;
@@ -173,7 +168,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $this->table = new \Yana\Db\Ddl\Table('table');
         $this->field = new \Yana\Db\Ddl\Field('field');
         $this->foreignkey = new \Yana\Db\Ddl\ForeignKey('foreignkey');
-        $this->form = new \Yana\Db\Ddl\Form('form');
         $this->function = new \Yana\Db\Ddl\Functions\Definition('function');
         $this->functionimplementation = new \Yana\Db\Ddl\Functions\Implementation;
         $this->functionparameter = new \Yana\Db\Ddl\Functions\Parameter('param');
@@ -204,7 +198,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         unset($this->database);
         unset($this->field);
         unset($this->foreignkey);
-        unset($this->form);
         unset($this->function);
         unset($this->functionimplementation);
         unset($this->functionparameter);
@@ -233,7 +226,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array('database'),
-            array('form'),
             array('function'),
             array('table'),
             array('view'),
@@ -387,7 +379,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         return array(
             array('field'),
             array('database'),
-            array('form'),
             array('function'),
             array('view'),
             array('table'),
@@ -774,15 +765,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetTable()
     {
-        // DDL Form
-        $this->form->setTable('abcd');
-        $result = $this->form->getTable();
-        $this->assertEquals('abcd', $result, 'assert failed, \Yana\Db\Ddl\Form : expected "abcd" as value');
-
-        $this->form->setTable('');
-        $result = $this->form->getTable();
-        $this->assertNull($result, 'assert failed, \Yana\Db\Ddl\Form : expected null, non table is set');
-
         // \Yana\Db\Ddl\Views\Field
         $this->viewfield->setTable('abcd');
         $result = $this->viewfield->getTable();
@@ -822,7 +804,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($get, 'assert failed, expected null - table was dropt before');
     }
 
-
     /**
      * Magic Getter
      *
@@ -844,11 +825,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $this->database->addForm('magicForm');
         $result = $this->database->magicForm;
         $this->assertTrue($result instanceof \Yana\Db\Ddl\Form, 'assert failed, expected null - form was dropt before');
-
-        // magic Field
-        $this->form->addField('magicField');
-        $result = $this->form->magicField;
-        $this->assertTrue($result instanceof \Yana\Db\Ddl\Field, 'assert failed, expected null - field was dropt before');
 
         // magic View
         $this->view->addField('magicViewfield');
@@ -1225,41 +1201,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * add field to form
-     *
-     * @test
-     */
-    public function testAddFormField()
-    {
-        $get = $this->form->getFields();
-        $this->assertEquals(0, count($get), 'assert failed, the values should be equal "0" expected');
-
-        $this->form->addField('name');
-        $this->form->addField('abcd');
-        $this->form->addField('qwerty');
-
-        $get = $this->form->getFields();
-        $this->assertInternalType('array', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : the value is not from type array');
-
-        $this->assertArrayHasKey('name', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : expected true - the value should be match a key in array');
-        $this->assertArrayHasKey('abcd', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : expected true - the value should be match a key in array');
-        $this->assertArrayHasKey('qwerty', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : expected true - the value should be match a key in array');
-
-        $get = $this->form->getField('abcd');
-        $this->assertInternalType('object', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : the value is not from type object');
-        $this->assertTrue($get instanceof \Yana\Db\Ddl\Field, 'assert failed, "\Yana\Db\Ddl\Views\View" : the value should be an instance of \Yana\Db\Ddl\Field');
-
-        $this->form->dropField('abcd');
-        try {
-            $this->form->dropField('abcd');
-            $this->fail('Field was not deleted');
-        } catch (\Yana\Core\Exceptions\NotFoundException $e) {
-            // success
-        }
-
-    }
-
-    /**
      * addFieldInvalidArgumentException
      *
      * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
@@ -1283,45 +1224,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     {
         //\Yana\Db\Ddl\Views\View
         $this->view->getField('nonexist');
-    }
-
-    /**
-     * FieldAlreadyExistsException
-     *
-     * @expectedException \Yana\Core\Exceptions\AlreadyExistsException
-     *
-     * @test
-     */
-    public function testAddFieldAlreadyExistsException()
-    {
-        try {
-            // supposed to succeed
-            $this->form->addField('field');
-        } catch (\Exception $e) {
-            $this->fail($e->getMessage());
-        }
-        // supposed to fail
-        $this->form->addField('field');
-    }
-
-    /**
-     * @test
-     */
-    public function testIsForm()
-    {
-        $this->assertFalse($this->form->isForm('non-existing-form'));
-    }
-
-    /**
-     * getFormInvalidArgumentException
-     *
-     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
-     *
-     * @test
-     */
-    public function testGetFormInvalidArgumentException()
-    {
-        $this->form->getForm('non-existing-form');
     }
 
     /**
@@ -1501,7 +1403,7 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     public function testGetListOfFilesFullFilenames()
     {
         $get = \Yana\Db\Ddl\DDL::getListOfFiles(true);
-        $this->assertCount(7, $get);
+        $this->assertCount(8, $get);
         foreach ($get as $file)
         {
             $this->assertFileExists($file);
@@ -1945,23 +1847,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Template
-     *
-     * @test
-     */
-    public function testTemplate()
-    {
-        // DDL Form
-        $this->form->setTemplate('template');
-        $result = $this->form->getTemplate();
-        $this->assertEquals('template', $result, 'assert failed, \Yana\Db\Ddl\Form : expected value is "template"');
-
-        $this->form->setTemplate('');
-        $result = $this->form->getTemplate();
-        $this->assertNull($result, 'assert failed, \Yana\Db\Ddl\Form : expected null, non template is set');
-    }
-
-    /**
      * Language
      *
      * @test
@@ -2287,44 +2172,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * event
-     *
-     * @test
-     */
-    public function testSetEvent()
-    {
-        $event = $this->form->addEvent('test');
-        $event->setAction('bla');
-        $getAll = $this->form->getEvents();
-        $this->assertInternalType('array', $getAll, 'assert failed, the value is not from type array');
-        $this->assertArrayHasKey('test', $getAll, 'assert failed, the value "test" should be match a key in array');
-
-        $get = $this->form->getEvent('test');
-        $this->assertEquals('bla', $get->getAction(), 'assert failed, expected value "bla"');
-
-        $get = $this->form->dropEvent('test');
-        $this->assertTrue($get, 'assert failed, event is not droped');
-
-        $get = $this->form->dropEvent('test_foo_bar');
-        $this->assertFalse($get, 'assert failed, event does not exist and can\'t be droped');
-
-         $get = $this->form->getEvent('non-existing-event');
-         $this->assertNull($get, 'assert failed, expected null for non-exist event');
-    }
-
-    /**
-     * EventInvalidArgumentException
-     *
-     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
-     *
-     * @test
-     */
-    public function testAddEventInvalidArgumentException()
-    {
-        $this->form->addEvent('');
-    }
-
-    /**
      * EventInvalidArgumentException
      *
      * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
@@ -2342,7 +2189,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     public function dataSetGrants()
     {
         return array(
-            array('form'),
             array('field'),
             array('view'),
             array('table')
@@ -3354,43 +3200,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     {
         // \Yana\Db\Ddl\Table
         $this->table->getTableByForeignKey('nonexist');
-    }
-
-    /**
-     * hasAllInput
-     *
-     * @test
-     */
-    public function testHasAllInput()
-    {
-        $this->assertFalse($this->form->hasAllInput(), 'Setting "allinput" must default to false.');
-        $this->form->setAllInput(true);
-        $this->assertTrue($this->form->hasAllInput(), 'Setting "allinput" should allow value true.');
-        $this->form->setAllInput(false);
-        $this->assertFalse($this->form->hasAllInput(), 'Setting "allinput" should be reversible.');
-    }
-
-    /**
-     * Old property value
-     *
-     * @test
-     */
-    public function testdropField()
-    {
-        $this->form->addField('foo');
-        $get = $this->form->getField('foo');
-        $get = $this->form->dropField('foo');
-        $this->assertNull($get, 'assert failed, field is not droped"');
-    }
-
-    /**
-     * @expectedException \Yana\Core\Exceptions\NotFoundException
-     *
-     * @test
-     */
-    public function testdropFieldInvalidArgumentException()
-    {
-        $this->form->dropField('non-existing-field');
     }
 
     /**
