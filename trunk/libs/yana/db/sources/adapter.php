@@ -39,7 +39,6 @@ namespace Yana\Db\Sources;
  * @subpackage  db
  *
  * @ignore
- * @codeCoverageIgnore
  */
 class Adapter extends \Yana\Db\Sources\AbstractAdapter
 {
@@ -80,6 +79,47 @@ class Adapter extends \Yana\Db\Sources\AbstractAdapter
     }
 
     /**
+     * Loads and returns a data source.
+     *
+     * @param   numeric  $id  database ID
+     * @return  \Yana\Security\Passwords\Providers\IsEntity
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when no such database entry exists
+     */
+    public function offsetGet($id)
+    {
+        assert(is_scalar($id) && is_numeric($id), 'Wrong type argument $providerId. Integer expected.');
+
+        try {
+            return parent::offsetGet((int) $id);
+
+        } catch (\Yana\Core\Exceptions\InvalidArgumentException $e) {
+
+            $message = "No data source found with id: " . (int) $id;
+            $level = \Yana\Log\TypeEnumeration::ERROR;
+            throw new \Yana\Core\Exceptions\NotFoundException($message, $level, $e);
+        }
+    }
+
+    /**
+     * Insert or replace item.
+     *
+     * The method returns the used entity to allow chained assignments (like this: $a = $b[1] = $c).
+     *
+     * @param   int|null                   $offset  index of item to replace, leave empty for insert
+     * @param   \Yana\Db\Sources\IsEntity  $entity  save this entity
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if the value is not a valid entity
+     * @throws  \Yana\Db\DatabaseException                      if the commit statement failed
+     * @return  \Yana\Data\Adapters\IsEntity
+     */
+    public function offsetSet($offset, $entity)
+    {
+        if (!$entity instanceof \Yana\Db\Sources\IsEntity) {
+            throw new \Yana\Core\Exceptions\InvalidArgumentException('Instance of "IsEntity" expected.');
+        }
+        return parent::offsetSet($offset, $entity);
+    }
+
+    /**
      * Load a data source by its name.
      *
      * @param   string  $name  unique name of the data set
@@ -97,8 +137,7 @@ class Adapter extends \Yana\Db\Sources\AbstractAdapter
         $select = new \Yana\Db\Queries\Select($this->_getDatabaseConnection());
         $select
                 ->setTable($this->_getTableName())
-                ->setWhere(
-                );
+                ->setWhere($where);
         $rows = $select->getResults();
         if (!is_array($rows) || count($rows) != 1) {
             throw new \Yana\Core\Exceptions\NotFoundException("No such data source.", \Yana\Log\TypeEnumeration::WARNING);
