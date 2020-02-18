@@ -1,6 +1,6 @@
 <?php
 /**
- * YANA library
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -21,39 +21,52 @@
  *
  * This notice MAY NOT be removed.
  *
- * @package  yana
+ * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
-declare(strict_types=1);
 
-namespace Yana\Db\Ddl;
+namespace Yana\Db\Sql\Quoting;
 
 /**
- * database structure
- *
- * This is a base class for most DDL objects.
- *
- * @package     yana
- * @subpackage  db
+ * @ignore
  */
-abstract class AbstractNamedObject extends \Yana\Db\Ddl\AbstractCaseSensitiveNamedObject
+require_once __DIR__ . '/../../../../../include.php';
+
+/**
+ * @package  test
+ */
+class NullAlgorithmTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * Set object name.
-     *
-     * The name is mandatory.
-     *
-     * @param   string  $name  object name
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when name is invalid
-     * @return  $this
+     * @var NullAlgorithm
      */
-    public function setName($name)
+    protected $object;
+
+    /**
+     * Sets up the fixture, for example, opens a network connection.
+     * This method is called before a test is executed.
+     */
+    protected function setUp()
     {
-        assert(is_string($name), 'Invalid argument $name: string expected');
-        return parent::setName(mb_strtolower((string) $name));
+        $this->object = new \Yana\Db\Sql\Quoting\NullAlgorithm();
+    }
+
+    /**
+     * Tears down the fixture, for example, closes a network connection.
+     * This method is called after a test is executed.
+     */
+    protected function tearDown()
+    {
+        
+    }
+
+    /**
+     * @test
+     */
+    public function testQuote()
+    {
+        $this->assertSame('Test', $this->object->quote('Test'));
     }
 
 }
-
-?>

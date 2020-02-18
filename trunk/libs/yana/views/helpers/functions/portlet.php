@@ -60,7 +60,7 @@ class Portlet extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vi
     public function __invoke(array $params, \Smarty_Internal_Template $smarty)
     {
         if (isset($params['action'])) {
-            $formatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
+            $formatter = $this->_getDependencyContainer()->getUrlFormatter();
             $url = $formatter("action={$params['action']}");
         } else {
             $message = "Missing argument 'action' in function " . __FUNCTION__ . "()";

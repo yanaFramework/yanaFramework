@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Files;
 
@@ -364,7 +365,7 @@ abstract class AbstractVarContainer extends \Yana\Files\File implements \Yana\Co
      *
      * @name    SML::length()
      */
-    public function length($key = "*")
+    public function length($key = "*"): int
     {
         assert(is_scalar($key), 'Wrong argument type for argument 1. String expected.');
         $key = $this->_convertKey($key);
@@ -412,7 +413,7 @@ abstract class AbstractVarContainer extends \Yana\Files\File implements \Yana\Co
      *
      * @name    SML::remove()
      */
-    public function remove($key = null)
+    public function remove(?string $key = null): bool
     {
         if (is_null($key)) {
             $this->content = array();
@@ -458,9 +459,8 @@ abstract class AbstractVarContainer extends \Yana\Files\File implements \Yana\Co
      *
      * @name    SML::exists()
      */
-    public function exists($key = '*')
+    public function exists(string $key = '*'): bool
     {
-        assert(is_string($key), 'Wrong argument type for argument 1. String expected.');
         $key = $this->_convertKey($key);
 
         /* return result */
@@ -477,7 +477,7 @@ abstract class AbstractVarContainer extends \Yana\Files\File implements \Yana\Co
      *
      * @return  \Yana\Files\Decoders\IsDecoder
      */
-    protected static function _getDecoder()
+    protected static function _getDecoder(): \Yana\Files\Decoders\IsDecoder
     {
         return new \Yana\Files\Decoders\NullDecoder();
     }

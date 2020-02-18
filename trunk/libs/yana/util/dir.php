@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Util;
 
@@ -49,11 +50,8 @@ class Dir extends \Yana\Core\AbstractUtility
      * @return  int
      * @throws  \Yana\Core\Exceptions\Files\NotFoundException  when directory doesn't exist
      */
-    public static function getSize($directory, $countSubDirs = true)
+    public static function getSize(string $directory, bool $countSubDirs = true): int
     {
-        assert(is_string($directory), 'Wrong argument type for argument 1. String expected.');
-        assert(is_bool($countSubDirs), 'Wrong argument type for argument 2. Boolean expected.');
-
         /* directory does not exist */
         if (!is_string($directory) || !is_dir($directory)) {
             $message = "Argument 1 '" . print_r($directory, true) . "' is not a directory.";
@@ -95,10 +93,8 @@ class Dir extends \Yana\Core\AbstractUtility
      * @return  array
      * @throws  \Yana\Core\Exceptions\Files\NotFoundException  when directory doesn't exist
      */
-    public static function listFiles($directory, $nameFilter = "")
+    public static function listFiles(string $directory, string $nameFilter = ""): array
     {
-        assert(is_string($directory), 'Wrong argument type for argument 1. String expected.');
-        assert(is_string($nameFilter), 'Wrong argument type for argument 2. String expected.');
         return self::_dirlist($directory, $nameFilter, true, false);
     }
 
@@ -109,9 +105,8 @@ class Dir extends \Yana\Core\AbstractUtility
      * @return  array
      * @throws  \Yana\Core\Exceptions\Files\NotFoundException  when directory doesn't exist
      */
-    public static function listDirectories($directory)
+    public static function listDirectories(string $directory): array
     {
-        assert(is_string($directory), 'Wrong argument type for argument 1. String expected.');
         return self::_dirlist($directory, "", false, true);
     }
 
@@ -127,7 +122,7 @@ class Dir extends \Yana\Core\AbstractUtility
      * @return  array
      * @throws  \Yana\Core\Exceptions\Files\NotFoundException  when directory doesn't exist
      */
-    public static function listFilesAndDirectories($directory, $nameFilter = "")
+    public static function listFilesAndDirectories(string $directory, string $nameFilter = ""): array
     {
         return self::_dirlist($directory, $nameFilter, true, true);
     }
@@ -146,7 +141,7 @@ class Dir extends \Yana\Core\AbstractUtility
      * @return  array
      * @throws  \Yana\Core\Exceptions\Files\NotFoundException  when directory doesn't exist
      */
-    private static function _dirlist($directory, $nameFilter, $includeFiles, $includeDirectories)
+    private static function _dirlist(string $directory, string $nameFilter, bool $includeFiles, bool $includeDirectories): array
     {
         if (!is_dir($directory)) {
             $message = "The directory '{$directory}' does not exist.";

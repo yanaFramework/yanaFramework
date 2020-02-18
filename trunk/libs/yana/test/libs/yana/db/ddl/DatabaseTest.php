@@ -164,7 +164,7 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     {
         chdir(CWD . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
 
-        $this->database = new \Yana\Db\Ddl\Database();
+        $this->database = new \Yana\Db\Ddl\Database('Database', CWD . '/resources/check.db.xml');
         $this->table = new \Yana\Db\Ddl\Table('table');
         $this->field = new \Yana\Db\Ddl\Field('field');
         $this->foreignkey = new \Yana\Db\Ddl\ForeignKey('foreignkey');
@@ -195,7 +195,8 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        unset($this->database);
+        $this->database->setModified(true); // setting the file to modified forces the instance cache to be cleared
+        unset($this->database); // this doesn't kill all references, UNLESS the files was previously set to modified
         unset($this->field);
         unset($this->foreignkey);
         unset($this->function);
@@ -3240,6 +3241,79 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         // \Yana\Db\Ddl\Table
         $result = $table->getColumnByForeignKey('foo_department_id');
         $this->assertTrue($result instanceof \Yana\Db\Ddl\Column, 'assert failed, the expected value should be an instance of \Yana\Db\Ddl\Column');
+    }
+
+    /**
+     * @test
+     */
+    public function testIsModified()
+    {
+        $this->assertFalse($this->database->isModified());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetModified()
+    {
+        $this->assertTrue($this->database->setModified(true)->isModified());
+        $this->assertFalse($this->database->setModified(false)->isModified());
+    }
+
+    /**
+     * @test
+     */
+    public function testLoadIncludes()
+    {
+        $this->assertFalse($this->database->isTable('Test'));
+        $this->database->addInclude("test");
+        $this->assertNull($this->database->loadIncludes());
+        $this->assertTrue($this->database->isTable('Test'));
+        $this->assertTrue($this->database->isView('Test_view'));
+        $this->assertTrue($this->database->isForm('Test_default'));
+        $this->assertTrue($this->database->isFunction('Test_function'));
+        $this->assertTrue($this->database->isSequence('Test_sequence'));
+    }
+
+    /**
+     * @test
+     */
+    public function testLoadIncludesEmpty()
+    {
+        $database = new \Yana\Db\Ddl\Database();
+        $database->addInclude("no-such-file");
+        $this->assertNull($database->loadIncludes());
+    }
+
+    /**
+     * @test
+     */
+    public function testLoadIncludesSame()
+    {
+        $this->database->addInclude("check");
+        $this->assertNull($this->database->loadIncludes());
+    }
+
+    /**
+     * @test
+     */
+    public function testLoadIncludesTwice()
+    {
+        $this->assertFalse($this->database->isTable('Test'));
+        $this->database->addInclude("test");
+        $this->assertNull($this->database->loadIncludes());
+        $this->assertNull($this->database->loadIncludes());
+        $this->assertTrue($this->database->isTable('Test'));
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\NotFoundException
+     */
+    public function testLoadIncludesNotFoundException()
+    {
+        $this->database->addInclude("no-such-file");
+        $this->database->loadIncludes();
     }
 
 }

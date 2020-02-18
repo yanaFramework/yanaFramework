@@ -344,7 +344,7 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Forms\Setups\IsBuild
         $pluginManager = $this->_getDependencyContainer()->getPlugins();
         $action = $pluginManager->getFirstEvent();
         $lang = $this->_getDependencyContainer()->getLanguage();
-        $formatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
+        $formatter = $this->_getDependencyContainer()->getUrlFormatter();
         $linkTemplate = '<a class="gui_generator_%s" href="' .
             $formatter("action=$action&" . $this->getForm()->getName() . "[page]=%s", false, false) .
             '" title="%s">%s</a>';

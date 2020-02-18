@@ -230,4 +230,12 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->object->getMenuBuilder() instanceof \Yana\Plugins\Menus\IsCacheableBuilder);
     }
 
+    /**
+     * @test
+     */
+    public function testGetUrlFormatter()
+    {
+        $this->assertTrue($this->object->getUrlFormatter() instanceof \Yana\Views\Helpers\Formatters\UrlFormatter);
+    }
+
 }

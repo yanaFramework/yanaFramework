@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Files;
 
@@ -47,7 +48,7 @@ class File extends \Yana\Files\Readonly implements \Yana\Files\IsWritable
      *
      * @throws  \Yana\Core\Exceptions\NotReadableException  if the file is not readable
      * @throws  \Yana\Core\Exceptions\NotFoundException     if the file does not exist
-     * @return  self
+     * @return  $this
      */
     public function read()
     {

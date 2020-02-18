@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Files;
 
@@ -104,9 +105,8 @@ abstract class AbstractResource extends \Yana\Core\StdObject implements \Yana\Fi
      *
      * @return  string
      */
-    public function getPath()
+    public function getPath(): string
     {
-        assert(is_string($this->_path), 'Unexpected result: $this->_path is not a string');
         return $this->_path;
     }
 
@@ -117,9 +117,8 @@ abstract class AbstractResource extends \Yana\Core\StdObject implements \Yana\Fi
      * @return  self
      * @ignore
      */
-    protected function _setPath($path)
+    protected function _setPath(string $path)
     {
-        assert(is_string($path), 'Wrong argument type for argument 1. String expected.');
         assert($path > "", 'Argument 1 must not be empty.');
         $this->_path = (string) $path;
         return $this;
@@ -132,7 +131,7 @@ abstract class AbstractResource extends \Yana\Core\StdObject implements \Yana\Fi
      *
      * @return  bool
      */
-    public function exists()
+    public function exists(): bool
     {
         return file_exists($this->getPath());
     }
@@ -165,7 +164,7 @@ abstract class AbstractResource extends \Yana\Core\StdObject implements \Yana\Fi
      *
      * @return  bool
      */
-    public function isWriteable()
+    public function isWriteable(): bool
     {
         return is_writeable($this->getPath());
     }
@@ -184,7 +183,7 @@ abstract class AbstractResource extends \Yana\Core\StdObject implements \Yana\Fi
      *
      * @return  bool
      */
-    public function isReadable()
+    public function isReadable(): bool
     {
         return $this->exists() && is_readable($this->getPath());
     }
@@ -211,7 +210,7 @@ abstract class AbstractResource extends \Yana\Core\StdObject implements \Yana\Fi
      *
      * @return  bool
      */
-    public function isExecutable()
+    public function isExecutable(): bool
     {
         return $this->exists() && is_executable($this->getPath());
     }
@@ -234,17 +233,17 @@ abstract class AbstractResource extends \Yana\Core\StdObject implements \Yana\Fi
      * Get time when file was last modified.
      *
      * Returns the file MTIME value (from cached value).
-     * The result is an UNIX timestamp (UTC), or bool(false) if an error occurs.
+     * The result is an UNIX timestamp (UTC). If the file does not exist, this returns 0.
      *
      * @return  int
      */
-    public function getLastModified()
+    public function getLastModified(): int
     {
         if (!isset($this->_lastModified)) {
             if ($this->exists()) {
                 $this->_lastModified = filemtime($this->getPath());
             } else {
-                $this->_lastModified = false;
+                $this->_lastModified = 0;
             }
         }
         return $this->_lastModified;
@@ -262,7 +261,7 @@ abstract class AbstractResource extends \Yana\Core\StdObject implements \Yana\Fi
      * @return  int
      * @ignore
      */
-    protected function _getFilesize()
+    protected function _getFilesize(): int
     {
         if (!isset($this->_fileSize)) {
             $this->_fileSize = 0;

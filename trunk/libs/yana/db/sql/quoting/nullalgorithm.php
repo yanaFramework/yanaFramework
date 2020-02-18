@@ -26,32 +26,27 @@
  */
 declare(strict_types=1);
 
-namespace Yana\Db\Ddl;
+namespace Yana\Db\Sql\Quoting;
 
 /**
- * database structure
- *
- * This is a base class for most DDL objects.
+ * <<algorithm>> Strictly for unit tests.
  *
  * @package     yana
  * @subpackage  db
+ * @ignore
  */
-abstract class AbstractNamedObject extends \Yana\Db\Ddl\AbstractCaseSensitiveNamedObject
+class NullAlgorithm extends \Yana\Core\StdObject implements \Yana\Db\Sql\Quoting\IsAlgorithm
 {
 
     /**
-     * Set object name.
+     * Returns the quoted database identifier as a string.
      *
-     * The name is mandatory.
-     *
-     * @param   string  $name  object name
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when name is invalid
-     * @return  $this
+     * @param   string  $value  any string that needs to be quoted
+     * @return  string
      */
-    public function setName($name)
+    public function quote(string $value): string
     {
-        assert(is_string($name), 'Invalid argument $name: string expected');
-        return parent::setName(mb_strtolower((string) $name));
+        return $value;
     }
 
 }

@@ -127,6 +127,12 @@ interface IsViewContainer
      */
     public function getView(): \Yana\Views\Managers\IsManager;
 
+    /**
+     * Returns
+     *
+     * @return \Yana\Views\Helpers\Formatters\UrlFormatter
+     */
+    public function getUrlFormatter(): \Yana\Views\Helpers\Formatters\UrlFormatter;
 }
 
 ?>

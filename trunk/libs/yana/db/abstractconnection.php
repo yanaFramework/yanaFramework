@@ -108,7 +108,7 @@ abstract class AbstractConnection extends \Yana\Core\StdObject implements \Seria
      *
      * @return  \Yana\Db\Queries\IsQueryBuilder
      */
-    protected function _getQueryBuilder()
+    protected function _getQueryBuilder(): \Yana\Db\Queries\IsQueryBuilder
     {
         if (!isset($this->_queryBuilder)) {
             $this->_queryBuilder = new \Yana\Db\Queries\QueryBuilder($this);
@@ -122,7 +122,7 @@ abstract class AbstractConnection extends \Yana\Core\StdObject implements \Seria
      * Use this for Unit-tests.
      *
      * @param   \Yana\Db\Queries\IsQueryBuilder  $queryBuilder  your custom query builder
-     * @return  \Yana\Db\AbstractConnection
+     * @return  $this
      * @ignore
      */
     public function setQueryBuilder(\Yana\Db\Queries\IsQueryBuilder $queryBuilder)
@@ -216,7 +216,7 @@ abstract class AbstractConnection extends \Yana\Core\StdObject implements \Seria
     /**
      * Commit current transaction and write all changes to the database.
      *
-     * @return  self
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\NotWriteableException  when the database or table is locked
      * @throws  \Yana\Db\CommitFailedException               when the commit failed
      */
@@ -365,7 +365,7 @@ abstract class AbstractConnection extends \Yana\Core\StdObject implements \Seria
      *
      * @param   string|\Yana\Db\Queries\Update  $key    the address of the row that should be updated
      * @param   mixed                           $value  value
-     * @return  \Yana\Db\IsConnection
+     * @return  $this
      * @name    AbstractConnection::update()
      * @see     AbstractConnection::insertOrUpdate()
      * @see     AbstractConnection::insert()
@@ -393,7 +393,7 @@ abstract class AbstractConnection extends \Yana\Core\StdObject implements \Seria
             if ($key == '') {
                 throw new \Yana\Core\Exceptions\InvalidArgumentException("An empty key was given. Need at least a table-name.");
             } else {
-                $key = mb_strtolower("$key");
+                $key = mb_strtolower((string) $key);
             }
 
             $queryBuilder = $this->_getQueryBuilder();
@@ -430,7 +430,7 @@ abstract class AbstractConnection extends \Yana\Core\StdObject implements \Seria
             if (!empty($arrayAddress)) {
                 assert(!isset($_value), 'Cannot redeclare var $_value');
                 assert(!isset($_col), 'Cannot redeclare var $_col');
-                $_col = mb_strtoupper($column);
+                $_col = mb_strtoupper((string) $column);
                 $cache = $this->_cache;
                 if (isset($this->_cache[$tableName][$row][$_col])) {
                     $_value = $this->_cache[$tableName][$row][$_col];
@@ -455,7 +455,7 @@ abstract class AbstractConnection extends \Yana\Core\StdObject implements \Seria
         if ($column === '*') {
             $this->_cache[$tableName][$row] = $value;
         } else {
-            $this->_cache[$tableName][$row][mb_strtoupper($column)] = $value;
+            $this->_cache[$tableName][$row][mb_strtoupper((string) $column)] = $value;
         }
 
         $transaction->update($updateQuery);
@@ -492,7 +492,7 @@ abstract class AbstractConnection extends \Yana\Core\StdObject implements \Seria
      *
      * @param   string|\Yana\Db\Queries\Insert  $key    the address of the row that should be inserted|updated
      * @param   mixed            $value  value
-     * @return  \Yana\Db\IsConnection
+     * @return  $this
      * @name    AbstractConnection::insertOrUpdate()
      * @see     AbstractConnection::insert()
      * @see     AbstractConnection::update()
@@ -525,7 +525,7 @@ abstract class AbstractConnection extends \Yana\Core\StdObject implements \Seria
                 return false;
 
             } else {
-                $key = mb_strtolower("$key");
+                $key = mb_strtolower((string) $key);
             }
 
             // extract primary key portion of $key
@@ -571,7 +571,7 @@ abstract class AbstractConnection extends \Yana\Core\StdObject implements \Seria
      *
      * @param   string|\Yana\Db\Queries\Insert  $key  the address of the row that should be inserted
      * @param   array                           $row  associative array of values
-     * @return  \Yana\Db\IsConnection
+     * @return  $this
      * @name    AbstractConnection::insert()
      * @see     AbstractConnection::insertOrUpdate()
      * @see     AbstractConnection::update()
@@ -645,7 +645,7 @@ abstract class AbstractConnection extends \Yana\Core\StdObject implements \Seria
      * @param   string|\Yana\Db\Queries\Delete  $key    the address of the row that should be removed
      * @param   array            $where  where clause
      * @param   int              $limit  maximum number of rows to remove
-     * @return  \Yana\Db\IsConnection
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\NotWriteableException  when the table or database is locked
      */
     public function remove($key, array $where = array(), $limit = 1)
@@ -754,7 +754,7 @@ abstract class AbstractConnection extends \Yana\Core\StdObject implements \Seria
         $key = (string) $key;
 
         // check table
-        if (mb_strpos($key, '.') === false && empty($where)) {
+        if (mb_strpos((string) $key, '.') === false && empty($where)) {
             return $this->getSchema()->isTable($key);
         }
         // build query to check key
@@ -801,10 +801,10 @@ abstract class AbstractConnection extends \Yana\Core\StdObject implements \Seria
      * @return  string
      * @ignore
      */
-    protected function _getName()
+    protected function _getName(): string
     {
         if ($this->_name === "") {
-            $this->_name = $this->getSchema()->getName();
+            $this->_name = (string) $this->getSchema()->getName();
         }
         return $this->_name;
     }
@@ -852,14 +852,8 @@ abstract class AbstractConnection extends \Yana\Core\StdObject implements \Seria
      * @param   string  $row    row
      * @return  int
      */
-    private function _getLastModified($table, $row)
+    private function _getLastModified(string $table, string $row): int
     {
-        assert(is_string($table), 'Wrong type for argument 1. String expected.');
-        assert(is_string($row), 'Wrong type for argument 2. String expected.');
-
-        /* settype to STRING */
-        $table = (string) $table;
-        $row = (string) $row;
         $path = self::getTempDir() . $this->_lastModifiedPath;
 
         /*
@@ -930,7 +924,7 @@ abstract class AbstractConnection extends \Yana\Core\StdObject implements \Seria
      * resets the database cache.
      *
      * @name  AbstractConnection::reset()
-     * @return \Yana\Db\AbstractConnection
+     * @return $this
      *
      * @internal  Note that this also removes any injected transaction handler.
      */
@@ -945,7 +939,7 @@ abstract class AbstractConnection extends \Yana\Core\StdObject implements \Seria
      * Alias of AbstractConnection::reset()
      *
      * @see  AbstractConnection::reset()
-     * @return \Yana\Db\AbstractConnection
+     * @return $this
      */
     public function rollback()
     {

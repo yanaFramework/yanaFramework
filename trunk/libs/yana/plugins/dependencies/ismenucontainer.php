@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Plugins\Dependencies;
 
@@ -43,35 +44,35 @@ interface IsMenuContainer
      *
      * @return  \Yana\Translations\IsFacade
      */
-    public function getTranslationFacade();
+    public function getTranslationFacade(): \Yana\Translations\IsFacade;
 
     /**
      * Returns security facade.
      *
      * @return  \Yana\Security\IsFacade
      */
-    public function getSecurityFacade();
+    public function getSecurityFacade(): \Yana\Security\IsFacade;
 
     /**
      * Returns bool(true) if the currently active profile is the default profile.
      *
      * @return  bool
      */
-    public function isDefaultProfile();
+    public function isDefaultProfile(): bool;
 
     /**
      * Returns a plugin facade.
      *
      * @return  \Yana\Plugins\Facade
      */
-    public function getPluginFacade();
+    public function getPluginFacade(): \Yana\Plugins\Facade;
 
     /**
      * Returns a formatting helper for menu URLs.
      *
      * @return  \Yana\Views\Helpers\Formatters\UrlFormatter
      */
-    public function getUrlFormatter();
+    public function getUrlFormatter(): \Yana\Views\Helpers\Formatters\UrlFormatter;
 }
 
 ?>

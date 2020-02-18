@@ -72,7 +72,7 @@ class File extends \Yana\Files\Readonly
      *
      * @return  string
      */
-    public function getPath()
+    public function getPath(): string
     {
         $path = (string) $this->_path;
         if ($path === "") {

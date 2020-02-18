@@ -23,36 +23,43 @@
  *
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
+ *
+ * @ignore
  */
 declare(strict_types=1);
 
-namespace Yana\Db\Ddl;
+namespace Yana\Files;
 
 /**
- * database structure
- *
- * This is a base class for most DDL objects.
+ * <<interface>> For IP blocking
  *
  * @package     yana
- * @subpackage  db
+ * @subpackage  files
+ * @ignore
  */
-abstract class AbstractNamedObject extends \Yana\Db\Ddl\AbstractCaseSensitiveNamedObject
+interface IsBlockFile extends \Yana\Files\IsWritable
 {
 
     /**
-     * Set object name.
+     * Replace file contents by $input.
      *
-     * The name is mandatory.
+     * Note that changes are buffered and will
+     * not be written to the file unless you explicitely call write().
      *
-     * @param   string  $name  object name
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when name is invalid
+     * @param   string|array  $input new file contents
      * @return  $this
      */
-    public function setName($name)
-    {
-        assert(is_string($name), 'Invalid argument $name: string expected');
-        return parent::setName(mb_strtolower((string) $name));
-    }
+    public function setContent($input);
+
+    /**
+     * Check if the current user has been listed.
+     *
+     * Returns bool(true) if the user's IP has been listed and bool(false) otherwise.
+     *
+     * @param   string  $remoteAddress  the user's IP address (IPv4 and IPv6 supported)  
+     * @return  bool
+     */
+    public function isBlocked(string $remoteAddress): bool;
 
 }
 

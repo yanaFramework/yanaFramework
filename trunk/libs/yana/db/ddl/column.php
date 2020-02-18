@@ -1284,12 +1284,10 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * @param   string  $name  constraint-name
      * @param   string  $dbms  target DBMS, defaults to "generic"
-     * @return  \Yana\Db\Ddl\Constraint
+     * @return  ?\Yana\Db\Ddl\Constraint
      */
-    public function getConstraint($name, $dbms = \Yana\Db\DriverEnumeration::GENERIC)
+    public function getConstraint(string $name, string $dbms = \Yana\Db\DriverEnumeration::GENERIC): ?\Yana\Db\Ddl\Constraint
     {
-        assert(is_string($name), 'Invalid argument $name: string expected');
-        assert(is_string($dbms), 'Invalid argument $dbms: string expected');
         $lcDbms = strtolower($dbms);
         $lcName = mb_strtolower($name);
 
@@ -1329,12 +1327,8 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * @param   string  $dbms        target DBMS, defaults to "generic"
      * @return  \Yana\Db\Ddl\Constraint
      */
-    public function addConstraint($constraint, $name = "", $dbms = \Yana\Db\DriverEnumeration::GENERIC)
+    public function addConstraint(string $constraint, string $name = "", string $dbms = \Yana\Db\DriverEnumeration::GENERIC): \Yana\Db\Ddl\Constraint
     {
-        assert(is_string($constraint), 'Wrong type for argument 1. String expected');
-        assert(is_string($name), 'Wrong type for argument 2. String expected');
-        assert(is_string($dbms), 'Wrong type for argument 3. String expected');
-
         $object = new \Yana\Db\Ddl\Constraint($name);
         $object->setDBMS(strtolower($dbms));
         $object->setConstraint($constraint);
@@ -1376,10 +1370,8 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * @param   string  $value  value
      * @return  $this
      */
-    public function setEnumerationItem($name, $value = null)
+    public function setEnumerationItem(string $name, ?string $value = null)
     {
-        assert(is_scalar($name), 'Wrong type for argument 1. Scalar value expected');
-        assert(is_null($value) || is_string($value), 'Wrong type for argument 2. String value expected');
         $this->enumerationItems[$name] = $value;
         $this->_enumValues = null; // reset cache
         return $this;
@@ -1504,7 +1496,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * @return  array
      */
-    public function getEnumerationItemNames()
+    public function getEnumerationItemNames(): array
     {
         if (!isset($this->_enumValues)) {
             $this->_enumValues = array();
@@ -1530,7 +1522,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * @return  float
      */
-    public function getRangeMax()
+    public function getRangeMax(): ?float
     {
         if (is_float($this->max)) {
             return $this->max;
@@ -1549,7 +1541,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * @return  float
      */
-    public function getRangeMin()
+    public function getRangeMin(): ?float
     {
         if (is_float($this->min)) {
             return $this->min;
@@ -1568,7 +1560,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * @return  float
      */
-    public function getRangeStep()
+    public function getRangeStep(): ?float
     {
         if (is_float($this->step)) {
             return $this->step;
@@ -1606,17 +1598,17 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
     }
 
     /**
-     * check if column has an index
+     * Check if column has an index.
      *
      * Returns bool(true) if there is an index in the parent table, that has an index on this
      * column.
      *
      * FOR INTERNAL USE BY {@see \Yana\Db\FileDb\Driver} ONLY.
      *
-     * @return  float
+     * @return  bool
      * @ignore
      */
-    public function hasIndex()
+    public function hasIndex(): bool
     {
         if (!isset($this->hasIndex)) {
             $this->hasIndex = false;
@@ -1650,7 +1642,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * @param   string  $dbms   target DBMS, defaults to "generic"
      * @return  mixed
      */
-    public function getAutoValue($dbms = \Yana\Db\DriverEnumeration::GENERIC)
+    public function getAutoValue(string $dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         $default = $this->getDefault($dbms);
         switch ($this->type)
@@ -1712,7 +1704,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * @return  \Yana\Db\Ddl\Column
      * @throws  \Yana\Core\Exceptions\NotFoundException  when the database definition is not found
      */
-    public function getReferenceColumn()
+    public function getReferenceColumn(): \Yana\Db\Ddl\Column
     {
         /*
          * if (is foreign-key) then { get target column }
@@ -1752,10 +1744,10 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * @param   mixed   $value  value of the row
      * @param   string  $key    array address (applies to columns of type array only)
      * @param   string  $dbms   target DBMS (e.g. mysql, mssql, ..., generic)
-     * @return  bool
+     * @return  scalar
      * @ignore
      */
-    public function interpretValue($value, $key = "", $dbms = \Yana\Db\DriverEnumeration::GENERIC)
+    public function interpretValue($value, string $key = "", string $dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         $title = $this->getTitle();
         if (empty($title)) {
@@ -2019,7 +2011,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * @param   \SimpleXMLElement  $node   column node
      * @return  array
      */
-    private static function _unserializeOptions(\SimpleXMLElement $node)
+    private static function _unserializeOptions(\SimpleXMLElement $node): array
     {
         $items = array();
         foreach ($node->children() as $child)

@@ -140,10 +140,9 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
      * @param  string  $path     absolute path to configuration file
      * @param  string  $baseDir  base directory
      */
-    public function __construct($path, $baseDir = "")
+    public function __construct($path, string $baseDir = "")
     {
         assert(is_string($path), 'Wrong type for argument 1. String expected');
-        assert(is_string($baseDir), 'Wrong type for argument 2. String expected');
         parent::__construct($path);
         $this->_baseDirectory = (string) $baseDir;
     }
@@ -294,10 +293,8 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
      * @param   string  $name  name of the drive to mount
      * @return  bool
      */
-    public function mount($name)
+    public function mount(string $name): bool
     {
-        assert(is_string($name), 'Wrong argument type for argument 1. String expected.');
-
         /* try to mounting the file */
         if (!isset($this->_drive["$name"]) || !$this->_drive["$name"]->mount()) {
             return false;
@@ -347,10 +344,8 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
      * @param   \Yana\VDrive\IsConfiguration  $content  current xml node
      * @param   string                        $path     current virtual path
      */
-    private function _readXML(\Yana\VDrive\IsConfiguration $content, $path = "")
+    private function _readXML(\Yana\VDrive\IsConfiguration $content, string $path = "")
     {
-        assert(is_string($path), 'Wrong type for argument 2. String expected');
-
         if ($content->isDrive()) {
 
             if ($path == "" && $content->getNodeName()) {
@@ -472,7 +467,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
      * @param   \Yana\VDrive\IsConfiguration  $content  Virtual Drive configuration settings
      * @return  string
      */
-    private function _getSource(\Yana\VDrive\IsConfiguration $content)
+    private function _getSource(\Yana\VDrive\IsConfiguration $content): string
     {
         $sources = $content->getNodeSources();
 
@@ -526,7 +521,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
      * @throws  \Yana\Core\Exceptions\NotReadableException    when configuration file is not readable
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when the file could not be read or contains invalid syntax
      */
-    public function getDriveName()
+    public function getDriveName(): string
     {
         return (string) $this->_getConfiguration()->getNodeName();
     }
@@ -539,7 +534,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
      * @throws  \Yana\Core\Exceptions\NotReadableException    when configuration file is not readable
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when the file could not be read or contains invalid syntax
      */
-    public function getContent()
+    public function getContent(): string
     {
         return $this->_getConfiguration()->asXML();
     }
@@ -557,7 +552,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
      * @throws  \Yana\Core\Exceptions\NotReadableException    when source file is not readable
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when the file could not be read or contains invalid syntax
      */
-    public function getResource(string $path)
+    public function getResource(string $path): \Yana\Files\IsReadable
     {
         // read file if not already read
         $this->read();
@@ -577,7 +572,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
      * @throws  \Yana\Core\Exceptions\NotReadableException    when the vDrive is not readable
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when the vDrive could not be read or contains invalid syntax
      */
-    public function getResourcePath(string $virtualPath)
+    public function getResourcePath(string $virtualPath): string
     {
         return $this->getResource($virtualPath)->getPath();
     }
@@ -604,7 +599,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
      *
      * @return  bool
      */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         assert(!isset($path), 'cannot redeclare variable $path');
         $path = $this->getPath();

@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Files;
 
@@ -41,15 +42,15 @@ interface IsDir extends \Yana\Files\IsReadable
      *
      * @return  string
      */
-    public function getFilter();
+    public function getFilter(): string;
 
     /**
      * This sets up a file filter.
      *
      * @param   string  $filter   current file filter
-     * @return  \Yana\Files\Dir
+     * @return  $this
      */
-    public function setFilter($filter = "");
+    public function setFilter(string $filter = "");
 
     /**
      * Tries to create the directory.
@@ -60,7 +61,7 @@ interface IsDir extends \Yana\Files\IsReadable
      * @throws  \Yana\Core\Exceptions\Files\AlreadyExistsException  when the directory already exists
      * @throws  \Yana\Core\Exceptions\Files\NotWriteableException   when target location is not writeable
      */
-    public function create($mode = 0777);
+    public function create(int $mode = 0777);
 
     /**
      * Remove this directory.
@@ -70,7 +71,7 @@ interface IsDir extends \Yana\Files\IsReadable
      * @throws  \Yana\Core\Exceptions\Files\NotWriteableException  when directory cannot be deleted
      * @throws  \Yana\Core\Exceptions\Files\NotFoundException      when directory is not found
      */
-    public function delete($isRecursive = false);
+    public function delete(bool $isRecursive = false);
 
     /**
      * Get the number of files inside the directory.
@@ -83,7 +84,7 @@ interface IsDir extends \Yana\Files\IsReadable
      *
      * @return  int
      */
-    public function length();
+    public function length(): int;
 
     /**
      * List all sub-directories of a directory.
@@ -91,7 +92,7 @@ interface IsDir extends \Yana\Files\IsReadable
      * @return  array
      * @throws  \Yana\Core\Exceptions\Files\NotFoundException  when directory doesn't exist
      */
-    public function listDirectories();
+    public function listDirectories(): array;
 
     /**
      * List all files of a directory.
@@ -104,7 +105,7 @@ interface IsDir extends \Yana\Files\IsReadable
      * @return  array
      * @throws  \Yana\Core\Exceptions\Files\NotFoundException  when directory doesn't exist
      */
-    public function listFiles($filter = "");
+    public function listFiles(string $filter = ""): array;
 
     /**
      * List all contents of a directory.
@@ -117,7 +118,7 @@ interface IsDir extends \Yana\Files\IsReadable
      * @return  array
      * @throws  \Yana\Core\Exceptions\Files\NotFoundException  when directory doesn't exist
      */
-    public function listFilesAndDirectories($filter = "");
+    public function listFilesAndDirectories(string $filter = ""): array;
 
     /**
      * Returns the size of $directory in bytes.
@@ -126,7 +127,7 @@ interface IsDir extends \Yana\Files\IsReadable
      * @return  int
      * @throws  \Yana\Core\Exceptions\Files\NotFoundException  when directory doesn't exist
      */
-    public function getSize($countSubDirs = true);
+    public function getSize(bool $countSubDirs = true): int;
 
     /**
      * Copy the directory to some destination.
@@ -138,14 +139,14 @@ interface IsDir extends \Yana\Files\IsReadable
      * @param    string   $fileFilter   use this to limit the copied files to a specific extension
      * @param    string   $dirFilter    use this to limit the copied directories to those matching the filter
      * @param    bool     $useRegExp    set this to bool(true) if you want filters to be treated as a regular expression
-     * @return  $this
+     * @return   $this
      * @throws   \Yana\Core\Exceptions\InvalidArgumentException  when one input argument is invalid
      * @throws   \Yana\Core\Exceptions\AlreadyExistsException    if the target directory already exists
      * @throws   \Yana\Core\Exceptions\NotWriteableException     if the target location is not writeable
      * @throws   \Yana\Core\Exceptions\Files\NotCreatedException  when a file or directory could not be created at the target
      */
-    public function copy($destDir, $overwrite = true, $mode = 0766, $copySubDirs = false, $fileFilter = null, $dirFilter = null,
-        $useRegExp = false);
+    public function copy(string $destDir, bool $overwrite = true, int $mode = 0766, bool $copySubDirs = false, ?string $fileFilter = null,
+        ?string $dirFilter = null, bool $useRegExp = false);
 
 }
 

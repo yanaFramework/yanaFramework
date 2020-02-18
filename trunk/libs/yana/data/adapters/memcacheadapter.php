@@ -65,8 +65,8 @@ class MemCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yana
      * Constructor.
      *
      * @param  \Yana\Data\Adapters\MemCache\IsWrapper  $memCache  connection to MemCache server
-     * @param  string                                $prefix    id to prevent adapters from overwriting one another
-     * @param  int                                   $lifetime  0 = forever, or seconds (max 30 days), or timestamp
+     * @param  string                                  $prefix    id to prevent adapters from overwriting one another
+     * @param  int                                     $lifetime  0 = forever, or seconds (max 30 days), or timestamp
      */
     public function __construct(\Yana\Data\Adapters\MemCache\IsWrapper $memCache, $prefix = __CLASS__, $lifetime = 0)
     {

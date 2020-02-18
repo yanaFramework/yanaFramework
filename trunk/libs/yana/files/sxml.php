@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Files;
 
@@ -75,9 +76,11 @@ class SXML extends \Yana\Files\AbstractVarContainer
 {
 
     /**
+     * Returns an SXML decoder.
+     *
      * @return  \Yana\Files\Decoders\IsDecoder
      */
-    protected static function _getDecoder()
+    protected static function _getDecoder(): \Yana\Files\Decoders\IsDecoder
     {
         return new \Yana\Files\Decoders\SXML();
     }

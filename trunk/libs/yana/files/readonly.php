@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Files;
 
@@ -122,7 +123,7 @@ class Readonly extends \Yana\Files\AbstractResource implements \Yana\Files\IsRea
      * @return  int
      * @since   2.8.5
      */
-    public function _getFilesize()
+    public function _getFilesize(): int
     {
         return parent::_getFilesize();
     }
@@ -163,13 +164,9 @@ class Readonly extends \Yana\Files\AbstractResource implements \Yana\Files\IsRea
      *
      * @return  bool
      */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
-        if (empty($this->content)) {
-            return true;
-        } else {
-            return false;
-        }
+        return empty($this->content);
     }
 
     /**

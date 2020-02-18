@@ -26,33 +26,38 @@
  */
 declare(strict_types=1);
 
-namespace Yana\Db\Ddl;
+namespace Yana\Db\Binaries;
 
 /**
- * database structure
- *
- * This is a base class for most DDL objects.
+ * <<interface>> Map Ids to filenames and vice versa.
  *
  * @package     yana
  * @subpackage  db
+ * @since       2.9.2
  */
-abstract class AbstractNamedObject extends \Yana\Db\Ddl\AbstractCaseSensitiveNamedObject
+interface IsFileMapper
 {
 
     /**
-     * Set object name.
+     * Extract unique file-id from a database value.
      *
-     * The name is mandatory.
+     * For any given path like "path/file.extension" this returns "file".
+     * 
+     * @internal Note: for "path/file.ext1.ext2" this returns "ext1". (Remember this for "file.tar.gz")
      *
-     * @param   string  $name  object name
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when name is invalid
-     * @return  $this
+     * @param   string  $filename  expected to be path/file.extension
+     * @return  string
      */
-    public function setName($name)
-    {
-        assert(is_string($name), 'Invalid argument $name: string expected');
-        return parent::setName(mb_strtolower((string) $name));
-    }
+    public function toFileId(string $filename): string;
+
+    /**
+     * Get matching filename for a given id.
+     *
+     * @param   string  $fileId  file id
+     * @param   string  $type    an element of \Yana\Db\Binaries\FileTypeEnumeration (e.g. 'image', 'thumbnail', 'file')
+     * @return  string
+     */
+    public function toFileName(string $fileId, string $type): string;
 
 }
 
