@@ -1528,13 +1528,12 @@ class Calendar extends \Yana\Files\AbstractResource
      * @param   string  $content  XML content
      * @return  bool
      */
-    public function writeXml($content = null)
+    public function writeXml(?string $content = null): bool
     {
         $path = $this->getPath();
         if (is_null($content)) {
             return $this->getContent()->asXML($path) !== false;
         }
-        assert(is_string($content), 'Wrong argument type argument 1. String expected');
 
         $file = new \Yana\Files\Text($path);
         if (!$file->exists()) {
@@ -1556,7 +1555,7 @@ class Calendar extends \Yana\Files\AbstractResource
      *
      * @return  bool
      */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         try {
             $events = $this->getEvents();
