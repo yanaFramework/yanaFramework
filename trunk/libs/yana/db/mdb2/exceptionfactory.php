@@ -49,6 +49,7 @@ class ExceptionFactory extends \Yana\Core\StdObject implements \Yana\Db\Mdb2\IsE
         switch ($error->getCode())
         {
             case \MDB2_ERROR_ACCESS_VIOLATION:
+            case \MDB2_ERROR_NO_PERMISSION:
                 return new \Yana\Db\Queries\Exceptions\SecurityException($error->getMessage());
 
             case \MDB2_ERROR_ALREADY_EXISTS:
@@ -59,26 +60,22 @@ class ExceptionFactory extends \Yana\Core\StdObject implements \Yana\Db\Mdb2\IsE
             case \MDB2_ERROR_CANNOT_DELETE:
             case \MDB2_ERROR_CANNOT_DROP:
             case \MDB2_ERROR_CANNOT_REPLACE:
+            case \MDB2_ERROR_DIVZERO:
                 return new \Yana\Db\Queries\Exceptions\QueryException($error->getMessage());
 
             case \MDB2_ERROR_CONNECT_FAILED:
+            case \MDB2_ERROR_DISCONNECT_FAILED:
+            case \MDB2_ERROR_NODBSELECTED:
                 return new \Yana\Db\ConnectionException($error->getMessage());
 
             case \MDB2_ERROR_CONSTRAINT:
             case \MDB2_ERROR_CONSTRAINT_NOT_NULL:
                 return new \Yana\Db\Queries\Exceptions\ConstraintException($error->getMessage());
 
-            case \MDB2_ERROR_DISCONNECT_FAILED:
-                return new \Yana\Db\ConnectionException($error->getMessage());
-
-            case \MDB2_ERROR_DIVZERO:
-                return new \Yana\Db\Queries\Exceptions\QueryException($error->getMessage());
-
             case \MDB2_ERROR_INVALID_NUMBER:
+            case \MDB2_ERROR_INVALID:
+            case \MDB2_ERROR_SYNTAX:
                 return new \Yana\Db\Queries\Exceptions\InvalidSyntaxException($error->getMessage());
-
-            case \MDB2_ERROR_NODBSELECTED:
-                return new \Yana\Db\ConnectionException($error->getMessage());
 
             case \MDB2_ERROR_NOSUCHDB:
                 return new \Yana\Db\Queries\Exceptions\DatabaseNotFoundException($error->getMessage());
@@ -92,13 +89,6 @@ class ExceptionFactory extends \Yana\Core\StdObject implements \Yana\Db\Mdb2\IsE
             case \MDB2_ERROR_UNSUPPORTED:
             case \MDB2_ERROR_NOT_CAPABLE:
                 return new \Yana\Db\Queries\Exceptions\NotSupportedException($error->getMessage());
-
-            case \MDB2_ERROR_NO_PERMISSION:
-                return new \Yana\Db\Queries\Exceptions\SecurityException($error->getMessage());
-
-            case \MDB2_ERROR_INVALID:
-            case \MDB2_ERROR_SYNTAX:
-                return new \Yana\Db\Queries\Exceptions\InvalidSyntaxException($error->getMessage());
 
             case \MDB2_ERROR_TRUNCATED:
                 return new \Yana\Db\Queries\Exceptions\NotFoundException($error->getMessage());

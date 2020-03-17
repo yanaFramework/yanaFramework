@@ -589,7 +589,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
          * Inheritance occurs, when the primary key also is a foreign key and
          * the parent table is does not have itself as one of its descendants.
          */
-        $primaryKey = mb_strtoupper($table->getPrimaryKey());
+        $primaryKey = mb_strtoupper((string) $table->getPrimaryKey());
         $primaryKeyColumn = $table->getColumn($primaryKey);
         assert($primaryKeyColumn instanceof \Yana\Db\Ddl\Column, 'Misspelled primary key column: ' . $primaryKey);
         while ($primaryKeyColumn->isForeignKey())
@@ -1231,8 +1231,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      */
     public function setKey(string $key)
     {
-        assert(is_scalar($key), 'Wrong argument type for argument 1. String expected.');
-        assert((bool) preg_match("/^[\w\d\-_]+(\.(\w[^\.]*|\*|\?)){0,}(\.\*)?$/i", $key), " // Syntax error. The key '{$key}' is not valid.");
+        assert((bool) preg_match("/^[\w\d\-_]+(\.(\w[^\.]*|\*|\?)){0,}(\.\*)?$/i", $key), "Syntax error. The key '{$key}' is not valid.");
 
         $key = preg_replace("/\.(\*)?$/", '', $key);
         $array = explode(".", $key);
@@ -1318,9 +1317,9 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
         } else {
             $this->setRow($array[1]);
             if ($array[1] === '?') {
-                // order by primary key
-                $this->setOrderBy(array($table->getPrimaryKey($array[0])), array(true));
-                $this->setLimit(1);
+                // We call setOrderBy() and not addOrderBy() because we order by primary key - ergo any other column to order by would have no effect
+                $this->setOrderBy(array($table->getPrimaryKey($array[0])), array(true)); // order by primary key in descending direction
+                $this->setLimit(1); // return only the top row
             }
         }
 
@@ -1345,14 +1344,9 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      * @return  $this
      * @ignore
      */
-    protected function addOrderBy($column, $desc = false)
+    protected function addOrderBy(string $column, bool $desc = false)
     {
-        assert(is_string($column), 'Wrong argument type for argument 1. String expected.');
-        assert(is_bool($desc), 'Wrong argument type for argument 2. Boolean expected.');
-
-        /*
-         * 2.2.1) get base table
-         */
+        /* get base table */
         if (strpos($column, '.')) {
             list($tableName, $column) = explode('.', $column);
         } else {
@@ -1365,9 +1359,7 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
             throw new \Yana\Db\Queries\Exceptions\TableNotFoundException($message, $level);
         }
 
-        /*
-         * 2.2.2) check if column exists
-         */
+        /* check if column exists */
         if (!$table->isColumn($column)) {
             $message = "Column '$column' not found in table '" . $tableName . "'.";
             $level = \Yana\Log\TypeEnumeration::WARNING;

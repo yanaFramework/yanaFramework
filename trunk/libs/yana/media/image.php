@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Media;
 
@@ -53,7 +54,7 @@ namespace Yana\Media;
  * </ul>
  *
  * @package     yana
- * @subpackage  utilities
+ * @subpackage  media
  * @since       2.8.7
  */
 class Image extends \Yana\Core\StdObject
@@ -156,7 +157,11 @@ class Image extends \Yana\Core\StdObject
         'jpg'  => array('image/jpeg',         'imagejpeg', 'imagecreatefromjpeg'),
         'jpeg' => array('image/jpeg',         'imagejpeg', 'imagecreatefromjpeg'),
         'gif'  => array('image/gif',          'imagegif',  'imagecreatefromgif' ),
-        'bmp'  => array('image/vnd.wap.wbmp', 'imagewbmp', 'imagecreatefromwbmp')
+        'wbmp' => array('image/vnd.wap.wbmp', 'imagewbmp', 'imagecreatefromwbmp'),
+        'bmp'  => array('image/bmp',          'imagebmp',  'imagecreatefrombmp'),
+        'webp' => array('image/webp',         'imagewebp', 'imagecreatefromwebp'),
+        'xbm'  => array('image/x-xbitmap',    'imagexbm',  'imagecreatefromxbm'),
+        'xpm'  => array('image/x-xpixmap',    'imagexpm',  'imagecreatefromxpm')
     );
 
     /**#@+
@@ -241,145 +246,55 @@ class Image extends \Yana\Core\StdObject
      *
      * @param   string  $filename    name of the source file
      * @param   string  $imageType   type of the image
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the image is not valid
+     * @throws  \Yana\Core\Exceptions\Files\NotFoundException   when the image file is not found
+     * @throws  \Yana\Media\GdlException                        when the GD-library is not found
      */
-    public function __construct($filename = null, $imageType = null)
+    public function __construct(?string $filename = null, ?string $imageType = null)
     {
-        assert(is_null($filename) || is_string($filename), 'Wrong type for argument 1. String expected');
-        assert(is_null($imageType) || is_string($imageType), 'Wrong type for argument 2. String expected');
-
         if (!function_exists('imagecreate')) {
             // @codeCoverageIgnoreStart
-            $message = "The GD library does not seem to be installed.\nWithout this library this framework will be ".
-                "unable to create images.\nPlease update your configuration!";
-            \Yana\Log\LogManager::getLogger()->addLog($message);
+            $message = "The GD library does not seem to be installed. Without this library this framework will be unable to create images. " .
+                    "Please update your configuration!";
+            throw new \Yana\Media\GdlException($message, \Yana\Log\TypeEnumeration::ERROR);
             // @codeCoverageIgnoreEnd
+        }
 
         /* if no filename is provided, create an empty truecolor image */
-        } elseif (is_null($filename)) {
+        if (is_null($filename)) {
 
             $this->_createImage();
-
             /* end of process*/
 
         /* otherwise try to load the file */
         } else {
 
             /* 1 check input */
-            if (is_string($filename)) {
-                if (!file_exists($filename)) {
-                    \Yana\Log\LogManager::getLogger()->addLog("The image '{$filename}' does not exist.");
-                } else {
-                    $this->_path = $filename;
-                    $this->_exists   = true;
-                }
-            } else {
-                /* wrong argument type */
+            if (file_exists($filename)) {
+                $this->_path = $filename;
+                $this->_exists = true;
             }
-            if (!is_string($imageType)) {
-                if (!is_null($imageType)) {
-                    /* wrong argument type */
-                    $imageType = null;
-                }
-            } else {
+            if (is_string($imageType)) {
                 $imageType = mb_strtolower($imageType);
             }
 
             /* 2 create image resource */
-            if (!$this->_exists) {
-                $this->_createErrorImage();
-            } else {
-
-                /* determine image type by filename */
-                if (is_null($imageType)) {
-                    assert(!isset($pathInfo), 'cannot redeclare variable $pathInfo     ');
-                    assert(!isset($fileExtension), 'cannot redeclare variable $fileExtension');
-                    $pathInfo      = pathinfo($this->getPath());
-                    $fileExtension = $pathInfo['extension'];
-                    $fileExtension = mb_strtolower($fileExtension);
-                    if (isset($this->_mapping[$fileExtension])) {
-                        $imageType = $fileExtension;
-                    }
-                    unset($pathInfo, $fileExtension);
-                }
-
-                /* determine image type by header */
-                if (is_null($imageType)) {
-
-                    /**
-                     * {@internal
-                     *
-                     * The function imagecreatefromstring() can only handle
-                     * truecolor images. If the source is a GIF image, this
-                     * won't work.
-                     *
-                     * So before passing the string to this function let's
-                     * first try the original gif function, which works
-                     * well. Only if it fails, then we assume the file is
-                     * not a GIF and will try imagecreatefromstring()
-                     * instead.
-                     *
-                     * }}
-                     */
-                    if (function_exists('imagecreatefromgif')) {
-                        $this->_image = @imagecreatefromgif($this->getPath());
-                    }
-
-                    if (!is_resource($this->_image)) {
-                        $fileContent = file_get_contents($this->getPath());
-                        if ($fileContent !== false) {
-                            $this->_image = @imagecreatefromstring($fileContent);
-                        } else {
-                            $this->_image = false;
-                        }
-                    }
-
-                /* create image from file */
-                } elseif (isset($this->_mapping[$imageType])) {
-
-                    $functionName = $this->_mapping[$imageType][2];
-                    $this->_image  = @$functionName($this->getPath());
-
-                /* error: image type unsupported */
-                } else {
-
-                    \Yana\Log\LogManager::getLogger()->addLog(
-                        "The image type '{$imageType}' is not unsupported.", \Yana\Log\TypeEnumeration::WARNING
-                    );
-                    $this->_createErrorImage();
-
-                } /* end if */
-
-                /* check if result is valid */
-                if ($this->_image === false) {
-                    $message = "The file '{$filename}' was not recognized as a valid ".
-                        ((!empty($imageType))?$imageType." ":"")."image.";
-                    \Yana\Log\LogManager::getLogger()->addLog($message);
-                    $this->_createErrorImage();
-
+            try {
+                /* load image resource */
+                $this->_image = $this->_loadImage($filename, $imageType);
                 /* make image truecolor */
-                } elseif (!$this->isTruecolor()) {
+                $this->_initializeColorPalette();
 
-                    $width    = $this->getWidth();
-                    $height   = $this->getHeight();
+            } catch (\Exception $e) {
 
-                    if (!\is_int($height) || !\is_int($width)) {
-                        $this->_createErrorImage();
-                        return;
-                    }
-                    $oldImage = $this->_image;
-                    $this->_createImage($width, $height);
-                    imagecopy($this->_image, $oldImage, 0, 0, 0, 0, $width, $height);
-                    imagedestroy($oldImage);
-
-                } else {
-                    $this->_initColors();
-                }
-            } /* end of section "create image resource" */
+                \Yana\Log\LogManager::getLogger()->addLog($e->getMessage(), $e->getCode());
+                $this->_createErrorImage();
+            }
         } /* end if */
+        assert(is_resource($this->_image));
 
         /* 3 get initial transparency */
-        if (is_resource($this->_image) && is_null($this->_transparency)) {
+        if (is_null($this->_transparency)) {
             $this->_transparency = imagecolortransparent($this->_image);
             if ($this->_transparency === -1) {
                 $this->_transparency = null;
@@ -391,16 +306,165 @@ class Image extends \Yana\Core\StdObject
     }
 
     /**
+     * Attempts to detect the image type based on the file name.
+     *
+     * If the path is invalid, it will return an empty string.
+     *
+     * @param   string  $path  to image file
+     * @return  string
+     */
+    protected function _detectImageTypeByFilePath(string $path): string
+    {
+        assert(!isset($pathInfo), 'cannot redeclare variable $imageType');
+        $imageType = "";
+        assert(!isset($pathInfo), 'cannot redeclare variable $pathInfo');
+        $pathInfo = pathinfo($path);
+        assert(!isset($fileExtension), 'cannot redeclare variable $fileExtension');
+        $fileExtension = isset($pathInfo['extension']) ? mb_strtolower((string) $pathInfo['extension']) : '';
+        if (isset($this->_mapping[$fileExtension])) {
+            $imageType = $fileExtension;
+        }
+        return $imageType;
+    }
+
+    /**
+     * Try to load the image by guessing the image type.
+     *
+     * This function will get the file contents and pass them to a function that will try to determine
+     * the file type by looking at the file header.
+     *
+     * @param   string  $path  to image file
+     * @return  resource|NULL
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the image is not valid
+     * @throws  \Yana\Core\Exceptions\Files\NotFoundException   when the image file is not found
+     */
+    protected function _loadImageByFileHeader(string $path)
+    {
+        if (!file_exists($path)) {
+            // @codeCoverageIgnoreStart
+            // should not be reachable because the callee already checked that, but just in case ...
+            throw new \Yana\Core\Exceptions\Files\NotFoundException("Image file not found: " . $path);
+            // @codeCoverageIgnoreEnd
+        }
+
+        /**
+         * {@internal
+         *
+         * The function imagecreatefromstring() can only handle
+         * truecolor images. If the source is a GIF image, this
+         * won't work.
+         *
+         * So before passing the string to this function let's
+         * first try the original gif function, which works
+         * well. Only if it fails, then we assume the file is
+         * not a GIF and will try imagecreatefromstring()
+         * instead.
+         *
+         * }}
+         */
+        $image = @imagecreatefromgif($path);
+        if (!is_resource($image)) {
+            $fileContent = file_get_contents($path);
+            if ($fileContent !== false) {
+                $image = @imagecreatefromstring($fileContent);
+            }
+        }
+
+        if (!is_resource($image)) {
+            throw new \Yana\Core\Exceptions\InvalidArgumentException("Not a valid image: " . $path);
+        }
+        return $image;
+    }
+
+    /**
+     * Load image from file path.
+     *
+     * @param   string       $path       to image file
+     * @param   string|null  $imageType  file type as by file extension like "png" or "gif", also second half of mime-type "image/png"
+     * @return  resource
+     * @throws  \Yana\Core\Exceptions\Files\InvalidTypeException   when the image type given is not recognized
+     * @throws  \Yana\Core\Exceptions\Files\InvalidImageException  when image file is found but could not be loaded
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException     when the image is not valid
+     * @throws  \Yana\Core\Exceptions\Files\NotFoundException      when the image file is not found
+     */
+    protected function _loadImage(string $path, ?string $imageType)
+    {
+        /* determine image type by filename */
+        if (is_null($imageType)) {
+            $imageType = $this->_detectImageTypeByFilePath($path);
+        }
+
+        assert(!isset($image), 'cannot redeclare variable $image');
+        $image = null;
+
+        /* determine image type by header */
+        if (!$imageType) {
+
+            $image = $this->_loadImageByFileHeader($path); // may throw exception
+
+        /* create image from file */
+        } elseif (isset($this->_mapping[$imageType])) {
+
+            $functionName = $this->_mapping[$imageType][2];
+            $image  = @$functionName($this->getPath());
+
+        /* error: image type unsupported */
+        } else {
+
+            throw new \Yana\Core\Exceptions\Files\InvalidTypeException("Image type '{$imageType}' is unsupported.", \Yana\Log\TypeEnumeration::WARNING);
+        }
+
+        /* check if result is valid */
+        if (!\is_resource($image)) {
+
+            throw new \Yana\Core\Exceptions\Files\InvalidImageException("The file '{$path}' was not recognized as a valid " .
+                    ((!empty($imageType)) ? $imageType . " " : "") . "image.", \Yana\Log\TypeEnumeration::WARNING);
+        }
+
+        return $image;
+    }
+
+    /**
+     * Initialize color palette.
+     *
+     * This converts the image to true color and initializes the class color properties.
+     *
+     * @throws  \Yana\Core\Exceptions\Files\InvalidImageException  when the palette could not be set because the image wasn't recognized
+     */
+    protected function _initializeColorPalette()
+    {
+        if (!$this->isTruecolor()) {
+
+            $width  = $this->getWidth();
+            $height = $this->getHeight();
+
+            if (!\is_int($height) || !\is_int($width) || $height < 1 || $width < 1) {
+                // @codeCoverageIgnoreStart
+                // should not be reachable because the callee already ensured this function would not be called with an invalid width, but just in case ...
+                throw new \Yana\Core\Exceptions\Files\InvalidImageException("Not a valid image.", \Yana\Log\TypeEnumeration::WARNING);
+                // @codeCoverageIgnoreEnd
+            }
+            $oldImage = $this->_image;
+            $this->_createImage($width, $height); // This will also call $this->_initColors() - no reason to do it again.
+            imagecopy($this->_image, $oldImage, 0, 0, 0, 0, $width, $height);
+            imagedestroy($oldImage);
+
+        } else {
+            $this->_initColors();
+        }
+    }
+
+    /**
      * Get filename.
      *
      * @return string
      */
-    public function getPath()
+    public function getPath(): string
     {
         if ($this->_exists) {
             return $this->_path;
         } else {
-            return false;
+            return '';
         }
     }
 
@@ -409,7 +473,7 @@ class Image extends \Yana\Core\StdObject
      *
      * @return bool
      */
-    public function exists()
+    public function exists(): bool
     {
         return (bool) $this->_exists;
     }
@@ -419,15 +483,10 @@ class Image extends \Yana\Core\StdObject
      *
      * @return bool
      */
-    public function isBroken()
+    public function isBroken(): bool
     {
         assert(is_bool($this->_isBroken), 'is_bool($this->_isBroken)');
-        if (!is_resource($this->_image)) {
-            return true;
-
-        } else {
-            return $this->_isBroken;
-        }
+        return $this->_isBroken || !is_resource($this->_image);
     }
 
     /**
@@ -442,16 +501,9 @@ class Image extends \Yana\Core\StdObject
      *
      * @return  bool
      */
-    public function isTruecolor()
+    public function isTruecolor(): bool
     {
-        /**
-         * error - broken image
-         */
-        if ($this->isBroken()) {
-            return false;
-        }
-
-        return imageistruecolor($this->_image);
+        return !$this->isBroken() && imageistruecolor($this->_image);
     }
 
     /**
@@ -467,8 +519,8 @@ class Image extends \Yana\Core\StdObject
         parent::__clone();
 
         if (!$this->isBroken()) {
-            $width = $this->getWidth();
-            $height = $this->getHeight();
+            $width = (int) $this->getWidth();
+            $height = (int) $this->getHeight();
 
             /* create new image */
             $copiedImage = imagecreatetruecolor($width, $height);
@@ -504,7 +556,7 @@ class Image extends \Yana\Core\StdObject
      * @return  bool
      * @since   3.1.0
      */
-    public function equalsResoure($resource)
+    public function equalsResoure($resource): bool
     {
         assert(is_resource($resource), 'Wrong type for argument 1. Resource expected');
         return (is_resource($resource) && $this->_image === $resource);
@@ -514,9 +566,9 @@ class Image extends \Yana\Core\StdObject
      * Get the image resource.
      *
      * This returns the image resource of the object,
-     * or bool(false) on error.
+     * or NULL on error.
      *
-     * @return  resource|bool(false)
+     * @return  resource|NULL
      */
     public function getResource()
     {
@@ -524,7 +576,7 @@ class Image extends \Yana\Core\StdObject
          * error - broken image
          */
         if (!is_resource($this->_image) || $this->isBroken()) {
-            return false;
+            return NULL;
         }
 
         return $this->_image;
@@ -537,10 +589,8 @@ class Image extends \Yana\Core\StdObject
      * @param   int  $height     vertical dimension in pixel
      * @ignore
      */
-    private function _createImage($width = 300, $height = 200)
+    private function _createImage(int $width = 300, int $height = 200)
     {
-        assert(is_int($width), 'Wrong type for argument 1. Integer expected');
-        assert(is_int($height), 'Wrong type for argument 2. Integer expected');
         assert($width > 0, 'Width must be greater 0.');
         assert($height > 0, 'Height must be greater 0.');
 
@@ -586,7 +636,7 @@ class Image extends \Yana\Core\StdObject
         }
 
         /* copy brush */
-        if (is_resource($this->_brush)) {
+        if ($this->_brush instanceof \Yana\Media\Brush) {
             $this->setBrush($this->_brush);
         }
 
@@ -594,17 +644,15 @@ class Image extends \Yana\Core\StdObject
         $this->_initColors();
 
         /* copy background color */
-        if (!is_null($backgroundColor)) {
-            $red   = (int) $backgroundColor['red'];
-            $green = (int) $backgroundColor['green'];
-            $blue  = (int) $backgroundColor['blue'];
-            $alpha = (float) ($backgroundColor['alpha'] / 127);
-            $this->_backgroundColor = $this->getColor($red, $green, $blue, $alpha);
+        if (!empty($backgroundColor)) {
+            $this->_backgroundColor = (int) $this->getColor(
+                (int) $backgroundColor['red'], (int) $backgroundColor['green'], (int) $backgroundColor['blue'], (float) ($backgroundColor['alpha'] / 127)
+            );
         } else {
             $this->setBackgroundColor();
         }
 
-        imagefill($this->_image, 0, 0, $this->_backgroundColor);
+        imagefill($this->_image, 0, 0, (int) $this->_backgroundColor);
     }
 
     /**
@@ -613,23 +661,23 @@ class Image extends \Yana\Core\StdObject
     private function _initColors()
     {
         /* define some popular colors */
-        $this->aqua    = $this->getColor(0,   255, 255);
-        $this->black   = $this->getColor(0,   0,   0);
-        $this->blue    = $this->getColor(0,   0,   255);
-        $this->fuchsia = $this->getColor(255, 0,   255);
-        $this->gray    = $this->getColor(128, 128, 128);
-        $this->grey    = $this->getColor(128, 128, 128);
-        $this->green   = $this->getColor(0,   128, 0);
-        $this->lime    = $this->getColor(0,   255, 0);
-        $this->maroon  = $this->getColor(128, 0,   0);
-        $this->navy    = $this->getColor(0,   0,   128);
-        $this->olive   = $this->getColor(128, 128, 0);
-        $this->purple  = $this->getColor(128, 0,   128);
-        $this->red     = $this->getColor(255, 0,   0);
-        $this->silver  = $this->getColor(192, 192, 192);
-        $this->teal    = $this->getColor(0,   128, 128);
-        $this->white   = $this->getColor(255, 255, 255);
-        $this->yellow  = $this->getColor(255, 255, 0);
+        $this->aqua    = (int) $this->getColor(0,   255, 255);
+        $this->black   = (int) $this->getColor(0,   0,   0);
+        $this->blue    = (int) $this->getColor(0,   0,   255);
+        $this->fuchsia = (int) $this->getColor(255, 0,   255);
+        $this->gray    = (int) $this->getColor(128, 128, 128);
+        $this->grey    = $this->gray;
+        $this->green   = (int) $this->getColor(0,   128, 0);
+        $this->lime    = (int) $this->getColor(0,   255, 0);
+        $this->maroon  = (int) $this->getColor(128, 0,   0);
+        $this->navy    = (int) $this->getColor(0,   0,   128);
+        $this->olive   = (int) $this->getColor(128, 128, 0);
+        $this->purple  = (int) $this->getColor(128, 0,   128);
+        $this->red     = (int) $this->getColor(255, 0,   0);
+        $this->silver  = (int) $this->getColor(192, 192, 192);
+        $this->teal    = (int) $this->getColor(0,   128, 128);
+        $this->white   = (int) $this->getColor(255, 255, 255);
+        $this->yellow  = (int) $this->getColor(255, 255, 0);
 
         /* initialize background color */
         if (is_null($this->_backgroundColor)) {
@@ -645,13 +693,9 @@ class Image extends \Yana\Core\StdObject
      */
     public function clearCanvas()
     {
-        if (is_null($this->_image)) {
-            $this->_createImage();
-        } else {
+        if (is_resource($this->_image)) {
             $oldImage = $this->_image;
-            $width = $this->getWidth();
-            $height = $this->getHeight();
-            $this->_createImage($width, $height);
+            $this->_createImage((int) imagesx($oldImage), (int) imagesy($oldImage));
             imagedestroy($oldImage);
         }
     }
@@ -671,17 +715,17 @@ class Image extends \Yana\Core\StdObject
     /**
      * Get image width.
      *
-     * Returns the image's horizontal dimension in pixel or bool(false) on error.
+     * Returns the image's horizontal dimension in pixel or NULL on error.
      *
-     * @return  int|bool(false)
+     * @return  int|NULL
      */
-    public function getWidth()
+    public function getWidth(): ?int
     {
         /**
          * error - broken image
          */
         if ($this->isBroken()) {
-            return false;
+            return NULL;
         }
 
         return imagesx($this->_image);
@@ -690,17 +734,17 @@ class Image extends \Yana\Core\StdObject
     /**
      * Get image height.
      *
-     * Returns the image's vertical dimension in pixel or bool(false) on error.
+     * Returns the image's vertical dimension in pixel or NULL on error.
      *
-     * @return  int|bool(false)
+     * @return  int|NULL
      */
-    public function getHeight()
+    public function getHeight(): ?int
     {
         /**
          * error - broken image
          */
         if ($this->isBroken()) {
-            return false;
+            return NULL;
         }
 
         return imagesy($this->_image);
@@ -717,12 +761,10 @@ class Image extends \Yana\Core\StdObject
      * @param   int  $color  the point color
      * @return  bool
      */
-    public function drawPoint($x, $y, $color = null)
+    public function drawPoint(int $x, int $y, ?int $color = null): bool
     {
-        assert(is_int($x), 'Invalid argument $x: Integer expected');
         assert($x >= 0, '$x must not be negative.');
         assert($y >= 0, '$y must not be negative.');
-        assert(is_null($color) || is_int($color), 'Wrong type for argument 3. Integer expected');
 
         /**
          * error - broken image
@@ -754,17 +796,12 @@ class Image extends \Yana\Core\StdObject
      * @param   int  $color  the line color
      * @return  bool
      */
-    public function drawLine($x1, $y1, $x2, $y2, $color = null)
+    public function drawLine(int $x1, int $y1, int $x2, int $y2, ?int $color = null): bool
     {
-        assert(is_int($x1), 'Wrong type for argument 1. Integer expected');
-        assert(is_int($y1), 'Wrong type for argument 2. Integer expected');
-        assert(is_int($x2), 'Wrong type for argument 3. Integer expected');
-        assert(is_int($y2), 'Wrong type for argument 4. Integer expected');
         assert($x1 >= 0, '$x1 must not be negative.');
         assert($y1 >= 0, '$y1 must not be negative.');
         assert($x2 >= 0, '$x2 must not be negative.');
         assert($y2 >= 0, '$y2 must not be negative.');
-        assert(is_null($color) || is_int($color), 'Wrong type for argument 5. Integer expected');
 
         /**
          * error - broken image
@@ -823,15 +860,8 @@ class Image extends \Yana\Core\StdObject
      * @param   bool      $asVerticalString  switch between horizontal and vertical print
      * @return  bool
      */
-    public function drawString($text, $x = null, $y = null, $color = null, $font = null, $asVerticalString = false)
+    public function drawString(string $text, int $x = 0, int $y = 0, ?int $color = null, int $font = 2, bool $asVerticalString = false): bool
     {
-        assert(is_string($text), 'Wrong type for argument 1. String expected');
-        assert(is_int($x) || is_null($x), 'Wrong type for argument 2. Integer expected');
-        assert(is_int($y) || is_null($y), 'Wrong type for argument 3. Integer expected');
-        assert(is_int($color) || is_null($color), 'Wrong type for argument 4. Integer expected');
-        assert(is_int($font) || is_null($font), 'Wrong type for argument 5. Integer expected');
-        assert(is_bool($asVerticalString), 'Wrong type for argument 6. Boolean expected');
-
         /**
          * error - broken image
          */
@@ -839,36 +869,15 @@ class Image extends \Yana\Core\StdObject
             return false;
         }
 
-        /* argument 2 */
-        if (is_null($x)) {
-            $x = 0;
-        }
-
-        /* argument 3 */
-        if (is_null($y)) {
-            $y = 0;
-        }
-
-        /* argument 4 */
         if (is_null($color)) {
             $color = $this->black;
         }
 
-        /* argument 5 */
-        if (is_null($font)) {
-            $font = 2;
-        }
-
-        /* argument 6 */
-        if (is_null($asVerticalString)) {
-            $asVerticalString = false;
-        } elseif ($asVerticalString) {
-            $functionName = 'imagestringup';
+        if ($asVerticalString) {
+            return (bool) imagestringup($this->_image, $font, $x, $y, $text, $color);
         } else {
-            $functionName = 'imagestring';
+            return (bool) imagestring($this->_image, $font, $x, $y, $text, $color);
         }
-
-        return (bool) $functionName($this->_image, $font, $x, $y, $text, $color);
     }
 
     /**
@@ -902,26 +911,13 @@ class Image extends \Yana\Core\StdObject
      * @param   int       $angle      rotation 0 through 360 degrees
      * @return  bool
      */
-    public function drawFormattedString($text, $x = null, $y = null, $color = null, $fontfile = null, $fontsize = 10, $angle = 0)
+    public function drawFormattedString(string $text, int $x = 0, ?int $y = null, ?int $color = null, ?string $fontfile = null, int $fontsize = 10, int $angle = 0): bool
     {
-        assert(is_string($text), 'Wrong type for argument 1. String expected');
-        assert(is_int($x) || is_null($x), 'Wrong type for argument 2. Integer expected');
-        assert(is_int($y) || is_null($y), 'Wrong type for argument 3. Integer expected');
-        assert(is_int($color) || is_null($color), 'Wrong type for argument 4. Integer expected');
-        assert(is_string($fontfile) || is_null($fontfile), 'Wrong type for argument 5. String expected');
-        assert(is_int($fontsize), 'Wrong type for argument 6. Integer expected');
-        assert(is_int($angle), 'Wrong type for argument 7. Integer expected');
-
         /*
          * error - broken image
          */
         if ($this->isBroken()) {
             return false;
-        }
-
-        /* argument 2 */
-        if (is_null($x)) {
-            $x = 0;
         }
 
         /* argument 3 */
@@ -945,7 +941,7 @@ class Image extends \Yana\Core\StdObject
                 '.ttf';
         }
 
-        return (imagettftext($this->_image, $fontsize, $angle, $x, $y, $color, $fontfile, $text) !== false);
+        return (bool) imagettftext($this->_image, $fontsize, $angle, $x, $y, $color, $fontfile, $text);
     }
 
     /**
@@ -988,17 +984,8 @@ class Image extends \Yana\Core\StdObject
      * @param   int  $end        angle in degrees (end)
      * @return  bool
      */
-    public function drawEllipse($x, $y, $width, $height = null, $color = null, $fillColor = null, $start = null, $end = null)
+    public function drawEllipse(int $x, int $y, int $width, ?int $height = null, ?int $color = null, ?int $fillColor = null, ?int $start = null, ?int $end = null): bool
     {
-        assert(is_int($x), 'Wrong type for argument 1. Integer expected');
-        assert(is_int($y), 'Wrong type for argument 2. Integer expected');
-        assert(is_int($width), 'Wrong type for argument 3. Integer expected');
-        assert(is_null($height) || is_int($height), 'Wrong type for argument 4. Integer expected');
-        assert(is_null($color) || is_int($color), 'Wrong type for argument 5. Integer expected');
-        assert(is_null($fillColor) || is_int($fillColor), 'Wrong type for argument 6. Integer expected');
-        assert(is_null($start) || is_int($start), 'Wrong type for argument 7. Integer expected');
-        assert(is_null($end) || is_int($end), 'Wrong type for argument 8. Integer expected');
-
         /**
          * error - broken image
          */
@@ -1080,15 +1067,8 @@ class Image extends \Yana\Core\StdObject
      * @param   int  $fillColor  inner color
      * @return  bool
      */
-    public function drawRectangle($x, $y, $width, $height = null, $color = null, $fillColor = null)
+    public function drawRectangle(int $x, int $y, int $width, ?int $height = null, ?int $color = null, ?int $fillColor = null): bool
     {
-        assert(is_int($x), 'Wrong type for argument 1. Integer expected');
-        assert(is_int($y), 'Wrong type for argument 2. Integer expected');
-        assert(is_int($width), 'Wrong type for argument 3. Integer expected');
-        assert(is_null($height) || is_int($height), 'Wrong type for argument 4. Integer expected');
-        assert(is_null($color) || is_int($color), 'Wrong type for argument 5. Integer expected');
-        assert(is_null($fillColor) || is_int($fillColor), 'Wrong type for argument 6. Integer expected');
-
         /**
          * error - broken image
          */
@@ -1164,13 +1144,8 @@ class Image extends \Yana\Core\StdObject
      * @param   int    $fillColor  inner color
      * @return  bool
      */
-    public function drawPolygon(array $points, $x = 0, $y = 0, $color = null, $fillColor = null)
+    public function drawPolygon(array $points, int $x = 0, int $y = 0, ?int $color = null, ?int $fillColor = null): bool
     {
-        assert(is_int($x), 'Wrong type for argument 2. Integer expected');
-        assert(is_int($y), 'Wrong type for argument 3. Integer expected');
-        assert(is_null($color) || is_int($color), 'Wrong type for argument 4. Integer expected');
-        assert(is_null($fillColor) || is_int($fillColor), 'Wrong type for argument 5. Integer expected');
-
         /**
          * error - broken image
          */
@@ -1243,13 +1218,8 @@ class Image extends \Yana\Core\StdObject
      * @param   int  $borderColor  flood fill will stop at this color
      * @return  bool
      */
-    public function fill($fillColor, $x = 0, $y = 0, $borderColor = null)
+    public function fill(int $fillColor, int $x = 0, int $y = 0, ?int $borderColor = null): bool
     {
-        assert(is_int($fillColor), 'Wrong type for argument 1. Integer expected');
-        assert(is_int($x), 'Wrong type for argument 2. Integer expected');
-        assert(is_int($y), 'Wrong type for argument 3. Integer expected');
-        assert(is_null($borderColor) || is_int($borderColor), 'Wrong type for argument 4. Integer expected');
-
         /**
          * error - broken image
          */
@@ -1287,11 +1257,8 @@ class Image extends \Yana\Core\StdObject
      * @param   bool  $saveAlpha  on / off
      * @return  bool
      */
-    public function enableAlpha($isEnabled = true, $saveAlpha = null)
+    public function enableAlpha(bool $isEnabled = true, ?bool $saveAlpha = null): bool
     {
-        assert(is_bool($isEnabled), 'Wrong type for argument 1. Boolean expected');
-        assert(is_null($saveAlpha) || is_bool($saveAlpha), 'Wrong type for argument 2. Boolean expected');
-
         if (is_null($saveAlpha)) {
             $saveAlpha = ( $isEnabled === true );
         }
@@ -1304,15 +1271,14 @@ class Image extends \Yana\Core\StdObject
         }
 
         /* Enable/Disable Alpha-blending */
-        if (imagealphablending($this->_image, (bool) $isEnabled)) {
-
-            imagesavealpha($this->_image, $saveAlpha);
+        $isSuccess = imagealphablending($this->_image, (bool) $isEnabled);
+        if ($isSuccess) {
             $this->_alpha = (bool) $isEnabled;
-            return true;
-
-        } else {
-            return false;
+            if (is_bool($saveAlpha)) {
+                imagesavealpha($this->_image, $saveAlpha);
+            }
         }
+        return $isSuccess;
     }
 
     /**
@@ -1328,10 +1294,8 @@ class Image extends \Yana\Core\StdObject
      * @param   bool  $isEnabled  on / off
      * @return  bool
      */
-    public function enableAntialias($isEnabled = true)
+    public function enableAntialias(bool $isEnabled = true): bool
     {
-        assert(is_bool($isEnabled), 'Wrong type for argument 1. Boolean expected');
-
         /**
          * error - broken image
          */
@@ -1359,12 +1323,10 @@ class Image extends \Yana\Core\StdObject
      * is going to take on the picture when using this font.
      *
      * @param   int  $font   a font resource
-     * @return  int|bool(false)
+     * @return  int
      */
-    public static function getFontWidth($font)
+    public static function getFontWidth(int $font): int
     {
-        assert(is_int($font), 'Wrong type for argument 1. Integer expected');
-
         return imagefontwidth($font);
     }
 
@@ -1385,12 +1347,10 @@ class Image extends \Yana\Core\StdObject
      * is going to take on the picture when using this font.
      *
      * @param   int  $font   a font resource
-     * @return  int|bool(false)
+     * @return  int
      */
-    public static function getFontHeight($font)
+    public static function getFontHeight(int $font): int
     {
-        assert(is_int($font), 'Wrong type for argument 1. Integer expected');
-
         return imagefontheight($font);
     }
 
@@ -1417,17 +1377,15 @@ class Image extends \Yana\Core\StdObject
      * </code>
      *
      * @param   int  $color   a color resource
-     * @return  array|bool(false)
+     * @return  array|NULL
      */
-    public function getColorValues($color)
+    public function getColorValues(int $color): ?array
     {
-        assert(is_int($color), 'Wrong type for argument 1. Integer expected');
-
         /**
          * error - broken image
          */
         if ($this->isBroken()) {
-            return false;
+            return NULL;
         }
 
         return imagecolorsforindex($this->_image, $color);
@@ -1439,44 +1397,36 @@ class Image extends \Yana\Core\StdObject
      * This is an OO-style alias of PHP's imagecolorat() function.
      * See the PHP manual for a full description.
      *
-     * This function returns bool(false) on error.
+     * This function returns NULL on error.
      *
      * @param   int  $x  horicontal position
      * @param   int  $y  vertical position
-     * @return  int|bool(false)
+     * @return  int|NULL
      */
-    public function getColorAt($x, $y)
+    public function getColorAt(int $x, int $y): ?int
     {
-        assert(is_int($x), 'Wrong type for argument 1. Integer expected');
-        assert(is_int($y), 'Wrong type for argument 2. Integer expected');
-
         /**
          * error - broken image
          */
         if ($this->isBroken()) {
-            return false;
+            return NULL;
 
         } elseif ($x < 0 || $y < 0) {
-            return false;
+            return NULL;
 
         } elseif ($x > $this->getWidth() || $y > $this->getHeight()) {
-            return false;
+            return NULL;
 
-        } elseif (!$this->isTruecolor()) {
-            return imagecolorat($this->_image, $x, $y);
-
-        } else {
-            $rgb = imagecolorat($this->_image, $x, $y);
-            if (!is_int($rgb) || $rgb < 0) {
-                return false;
-            } else {
-                $r = ($rgb >> 16) & 0xFF;
-                $g = ($rgb >> 8) & 0xFF;
-                $b = $rgb & 0xFF;
-                assert(is_int($r) && is_int($g) && is_int($b), 'is_int($r) && is_int($g) && is_int($b)');
-                return $this->getColor($r, $g, $b);
-            }
         }
+        $color = imagecolorat($this->_image, $x, $y);
+        if (is_int($color) && $this->isTruecolor()) {
+            $r = ($color >> 16) & 0xFF;
+            $g = ($color >> 8) & 0xFF;
+            $b = $color & 0xFF;
+            assert(is_int($r) && is_int($g) && is_int($b), 'is_int($r) && is_int($g) && is_int($b)');
+            $color = $this->getColor($r, $g, $b);
+        }
+        return $color;
     }
 
     /**
@@ -1496,11 +1446,9 @@ class Image extends \Yana\Core\StdObject
      * @param   string  $filename  relative file path
      * @return  array
      */
-    public static function getSize($filename)
+    public static function getSize(string $filename): array
     {
-        assert(is_string($filename), 'Wrong type for argument 1. String expected');
-
-        return getimagesize("$filename");
+        return is_file($filename) ? getimagesize($filename) : array();
     }
 
     /**
@@ -1521,74 +1469,73 @@ class Image extends \Yana\Core\StdObject
      * the existing color will be returned.
      * Otherwise the new color will get appended to the palette.
      *
-     * Returns bool(false) on error.
+     * Returns NULL on error.
      *
      * @param   int    $r        red value
      * @param   int    $g        green value
      * @param   int    $b        blue value
      * @param   float  $opacity  alpha value
-     * @return  int|bool(false)
+     * @return  int|NULL
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException
      */
-    public function getColor($r, $g, $b, $opacity = null)
+    public function getColor(int $r, int $g, int $b, ?float $opacity = null): ?int
     {
-        assert(is_int($r), 'Wrong type for argument 1. Integer expected');
-        assert(is_int($g), 'Wrong type for argument 2. Integer expected');
-        assert(is_int($b), 'Wrong type for argument 3. Integer expected');
         assert($r >= 0 && $r <= 255, 'Invalid argument $r: must be in range [0,255].');
         assert($g >= 0 && $g <= 255, 'Invalid argument $g: must be in range [0,255].');
         assert($b >= 0 && $b <= 255, 'Invalid argument $b: must be in range [0,255].');
-        assert(is_null($opacity) || is_numeric($opacity), 'Wrong type for argument 4. Float expected');
         assert(!$opacity || ($opacity >= 0.0 && $opacity <= 1.0), 'Invalid argument $opacity: must be in range [0.0,1.0].');
 
         if ($this->isBroken()) {
-            return false;
+            return NULL;
         }
 
-        if (!is_null($opacity) && is_numeric($opacity) && $opacity > 0 && $opacity <= 1) {
+        if (!is_null($opacity) && $opacity > 0.0 && $opacity <= 1.0) {
             $opacity = (int) floor($opacity * 127);
 
             /* check if color already exists */
             $color = imagecolorexactalpha($this->_image, $r, $g, $b, $opacity);
 
-            /* if color is found, return it */
-            if ($color > -1) {
-                return $color;
-            /* otherwise allocate a new color */
-            } else {
-                return imagecolorallocatealpha($this->_image, $r, $g, $b, $opacity);
+            /* if color is not found, allocate a new color */
+            if ($color <= -1) {
+                $color = imagecolorallocatealpha($this->_image, $r, $g, $b, $opacity);
             }
+            /* and if that didn't work, return NULL */
+            if ($color <= -1) {
+                $color = NULL;
+            }
+            return $color;
 
         } else {
 
             /* check if color already exists */
             $color = imagecolorexact($this->_image, $r, $g, $b);
 
-            /* if color is found, return it */
-            if ($color > -1) {
-                return $color;
-            /* otherwise allocate a new color */
-            } else {
-                return imagecolorallocate($this->_image, $r, $g, $b);
+            /* if color is not found, allocate a new color */
+            if ($color <= -1) {
+                $color = imagecolorallocate($this->_image, $r, $g, $b);
             }
-
+            /* and if that didn't work, return NULL */
+            if ($color <= -1) {
+                $color = NULL;
+            }
+            return $color;
         }
     }
 
     /**
      * Get current line width in pixel as an integer value.
      *
-     * Returns bool(false) on error.
+     * Returns NULL on error.
      *
-     * @return  int|bool(false)
+     * @return  int|NULL
      */
-    public function getLineWidth()
+    public function getLineWidth(): ?int
     {
         /**
          * error - broken image
          */
         if ($this->isBroken() || !is_int($this->_lineWidth)) {
-            return false;
+            return NULL;
         }
 
         return $this->_lineWidth;
@@ -1606,10 +1553,8 @@ class Image extends \Yana\Core\StdObject
      * @param   int  $width  size in pixel
      * @return  bool
      */
-    public function setLineWidth($width)
+    public function setLineWidth(int $width): bool
     {
-        assert(is_int($width), 'Wrong type for argument 1. Integer expected');
-
         /**
          * error - broken image
          */
@@ -1622,12 +1567,12 @@ class Image extends \Yana\Core\StdObject
             return false;
         }
 
-        if (imagesetthickness($this->_image, $width)) {
+        assert(!isset($success), 'cannot redeclare variable $success');
+        $success = (bool) imagesetthickness($this->_image, $width);
+        if ($success) {
             $this->_lineWidth = $width;
-            return true;
-        } else {
-            return false;
         }
+        return $success;
     }
 
     /**
@@ -1650,7 +1595,7 @@ class Image extends \Yana\Core\StdObject
      *
      * @return  bool
      */
-    public function setLineStyle()
+    public function setLineStyle(): bool
     {
         /**
          * error - broken image
@@ -1676,12 +1621,12 @@ class Image extends \Yana\Core\StdObject
         }
 
         /* set line style */
-        if (imagesetstyle($this->_image, $style)) {
+        assert(!isset($success), 'cannot redeclare variable $success');
+        $success = (bool) imagesetstyle($this->_image, $style);
+        if ($success) {
             $this->_lineStyle = $style;
-            return true;
-        } else {
-            return false;
         }
+        return $success;
     }
 
     /**
@@ -1712,9 +1657,8 @@ class Image extends \Yana\Core\StdObject
      * @return  bool
      * @throws  \Yana\Core\Exceptions\OutOfBoundsException  when replaced color is not in image palette
      */
-    public function replaceIndexColor($replacedColor, $newColor)
+    public function replaceIndexColor(int $replacedColor, $newColor): bool
     {
-        assert(is_int($replacedColor), 'Wrong type for argument 1. Integer expected');
         assert(is_int($newColor) || is_array($newColor), 'Wrong type for argument 2. Array or Integer expected');
 
         /*
@@ -1753,12 +1697,12 @@ class Image extends \Yana\Core\StdObject
             $color = imagecolorsforindex($this->_image, $newColor);
         }
 
-        if (!is_array($color)) {
-            return false;
-        } else {
+        assert(!isset($success), 'cannot redeclare variable $success');
+        $success = is_array($color);
+        if ($success) {
             imagecolorset($this->_image, $replacedColor, $color['red'], $color['green'], $color['blue']);
-            return true;
         }
+        return $success;
     }
 
     /**
@@ -1780,10 +1724,10 @@ class Image extends \Yana\Core\StdObject
      * @return  bool
      * @see     Image::replaceIndexColor()
      */
-    public function replaceColor($replacedColor, $newColor)
+    public function replaceColor(int $replacedColor, int $newColor): bool
     {
-        assert(is_int($replacedColor) && $replacedColor > 0, 'Wrong type for argument 1. Positive integer expected');
-        assert(is_int($newColor) && $newColor > 0, 'Wrong type for argument 2. Positive integer expected');
+        assert($replacedColor > 0, 'Wrong type for argument 1. Positive integer expected');
+        assert($newColor > 0, 'Wrong type for argument 2. Positive integer expected');
 
         /**
          * error - broken image
@@ -1797,8 +1741,8 @@ class Image extends \Yana\Core\StdObject
          */
         $oldBackgroundColor = $this->_backgroundColor;
         $oldImage = $this->_image;
-        $width = $this->getWidth();
-        $height = $this->getHeight();
+        $width = (int) $this->getWidth();
+        $height = (int) $this->getHeight();
 
         /**
          * replace colors
@@ -1823,16 +1767,18 @@ class Image extends \Yana\Core\StdObject
      * Sets the brush used by imageline(), imagepolygon() et cetera
      * to the image $brush.
      *
-     * The argument $brush can be a filename of the image that
-     * you want to use as the brush to use, or another image object.
-     * In addition $brush may also be an image resource.
+     * Note! This only SETS the brush. To actually USE the brush, you need
+     * to draw using the special color constants IMG_COLOR_BRUSHED or IMG_COLOR_STYLEDBRUSHED.
+     *
+     * Note further that whenever you change the brush (resize it or change its color) you have to
+     * reapply the brush prior to use.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @param   string|Image|Brush|resource  $brush  a brush resource
+     * @param   \Yana\Media\Brush  $brush  a brush resource
      * @return  bool
      */
-    public function setBrush($brush)
+    public function setBrush(\Yana\Media\Brush $brush): bool
     {
         /**
          * error - broken image
@@ -1841,32 +1787,11 @@ class Image extends \Yana\Core\StdObject
             return false;
         }
 
-        if (is_string($brush) && is_file($brush)) {
-            $brush = new self($brush);
-        }
-        if (is_object($brush)) {
-            if ($brush instanceof \Yana\Media\Brush) {
-                $resource = $brush->getResource();
-            } elseif ($brush instanceof $this) {
-                if ($brush->isBroken()) {
-                    return false;
-                } else {
-                    $resource = $brush->getResource();
-                }
-            } else {
-                return false;
-            }
-        } else {
-            $resource = $brush;
-        }
-
-        if (!is_resource($resource)) {
-            return false;
-        }
+        $resource = $brush->getResource();
         $test = imagesetbrush($this->_image, $resource);
 
         if ($test) {
-            $this->_brush = $resource;
+            $this->_brush = $brush;
         }
         return (bool) $test;
     }
@@ -1891,11 +1816,8 @@ class Image extends \Yana\Core\StdObject
      * @param   bool  $replaceOldColor  set true for replace old color , false otherweise
      * @return  bool
      */
-    public function setBackgroundColor($backgroundColor = null, $replaceOldColor = true)
+    public function setBackgroundColor(?int $backgroundColor = null, bool $replaceOldColor = true): bool
     {
-        assert(is_null($backgroundColor) || is_int($backgroundColor), 'Wrong type for argument 1. Integer expected');
-        assert(is_bool($replaceOldColor), 'Wrong type for argument 2. Boolean expected');
-
         /**
          * error - broken image
          */
@@ -1940,17 +1862,17 @@ class Image extends \Yana\Core\StdObject
     /**
      * Get current background color.
      *
-     * Returns the current background color as an integer or bool(false) on error.
+     * Returns the current background color as an integer or NULL on error.
      *
-     * @return  int|bool(false)
+     * @return  int|NULL
      */
-    public function getBackgroundColor()
+    public function getBackgroundColor(): ?int
     {
         /**
          * error - broken image
          */
         if ($this->isBroken() || !is_int($this->_backgroundColor)) {
-            return false;
+            return NULL;
         }
 
         return $this->_backgroundColor;
@@ -1964,7 +1886,7 @@ class Image extends \Yana\Core\StdObject
      *
      * @return  bool
      */
-    public function isInterlaced()
+    public function isInterlaced(): bool
     {
         /**
          * error - broken image
@@ -1990,10 +1912,8 @@ class Image extends \Yana\Core\StdObject
      * @param   bool  $isInterlaced   on / off
      * @return  bool
      */
-    public function enableInterlace($isInterlaced = true)
+    public function enableInterlace(bool $isInterlaced = true): bool
     {
-        assert(is_bool($isInterlaced), 'Wrong type for argument 1. Boolean expected');
-
         /**
          * error - broken image
          */
@@ -2018,7 +1938,7 @@ class Image extends \Yana\Core\StdObject
      *
      * @return  bool
      */
-    public function hasAlpha()
+    public function hasAlpha(): bool
     {
         /**
          * error - broken image
@@ -2046,10 +1966,8 @@ class Image extends \Yana\Core\StdObject
      * @param   float  $gamma  effect strength
      * @return  bool
      */
-    public function setGamma($gamma)
+    public function setGamma(float $gamma): bool
     {
-        assert(is_float($gamma), 'Wrong type for argument 1. Float expected');
-
         /**
          * error - broken image
          */
@@ -2078,10 +1996,8 @@ class Image extends \Yana\Core\StdObject
      * @param   float  $angle   angle of rotation in degree
      * @return  bool
      */
-    public function rotate($angle)
+    public function rotate(float $angle): bool
     {
-        assert(is_numeric($angle), 'Wrong type for argument 1. Float expected');
-
         /**
          * error - broken image
          */
@@ -2089,16 +2005,21 @@ class Image extends \Yana\Core\StdObject
             return false;
         }
 
-        $bgColor = $this->getBackgroundColor();
+        $bgColor = (int) $this->getBackgroundColor();
         $newImage = imagerotate($this->_image, (float) $angle, $bgColor);
-        $width = $this->getWidth();
-        $height = $this->getHeight();
+        $width = (int) $this->getWidth();
+        $height = (int) $this->getHeight();
 
-        if ($this->getColorAt(0, 0) !== $this->white) {
-            $this->drawRectangle(0, 0, $width, $height, null, $this->white);
-        } else {
-            $this->drawRectangle(0, 0, $width, $height, null, $this->black);
-        }
+        /**
+         * The background color could be fully transparent, in which case drawing a transparent rectangle would not actually erase the old image.
+         * So we first create a background with a color which we know to be 100% opaque: either black, or white.
+         *
+         * We guess whether the background color that would provide the better contrast is black or white, based on the top-left corner pixel.
+         * Because, if the picture to rotate is a white rectangle, rotating a white rectangle on a white background would do nothing.
+         */
+        $fgColor = $this->getColorAt(0, 0) !== $this->white ? $this->white : $this->black;
+        $this->drawRectangle(0, 0, $width, $height, null, $fgColor);
+        /* Now we replace it with the actual background color. If that color is transparent, this will do nothing */
         $this->drawRectangle(0, 0, $width, $height, null, $bgColor);
 
         imagecopyresized($this->_image, $newImage, 0, 0, 0, 0, $width, $height, $width, $height);
@@ -2165,12 +2086,8 @@ class Image extends \Yana\Core\StdObject
      * @return  bool
      * @since   2.8.8
      */
-    public function resizeCanvas($width = null, $height = null, $paddingLeft = null, $paddingTop = null, $canvasColor = null)
+    public function resizeCanvas(?int $width = null, ?int $height = null, ?int $paddingLeft = null, ?int $paddingTop = null, $canvasColor = null): bool
     {
-        assert(is_null($width) || is_int($width), 'Wrong type for argument 1. Integer expected');
-        assert(is_null($height) || is_int($height), 'Wrong type for argument 2. Integer expected');
-        assert(is_null($paddingLeft) || is_int($paddingLeft), 'Wrong type for argument 3. Integer expected');
-        assert(is_null($paddingTop) || is_int($paddingTop), 'Wrong type for argument 4. Integer expected');
         assert(is_null($canvasColor) || is_array($canvasColor) || (is_int($canvasColor) && $canvasColor > 0),
             'Wrong type for argument 5. Integer or array expected');
 
@@ -2181,23 +2098,23 @@ class Image extends \Yana\Core\StdObject
             return false;
         }
 
-        $currentHeight = $this->getHeight();
-        $currentWidth  = $this->getWidth();
+        $currentHeight = (int) $this->getHeight();
+        $currentWidth  = (int) $this->getWidth();
 
         if (is_null($width) && is_null($height)) {
             $width  = $currentWidth;
             $height = $currentHeight;
         }
 
-        /* argument 1 */
-        if (is_null($width)) {
+        /* proportional image scaling */
+        if (is_null($width) && is_int($height) && $currentHeight > 0) {
 
-            /* proportional image scaling */
             $width = (int) floor(($height * $currentWidth) / $currentHeight);
             assert(is_int($width), 'is_int($width)');
 
         }
-        if ($width < 1) {
+
+        if ((int) $width < 1) {
             \Yana\Log\LogManager::getLogger()->addLog(
                 "Invalid value for argument 1. Width cannot be 0 or negative.", \Yana\Log\TypeEnumeration::WARNING
             );
@@ -2205,14 +2122,14 @@ class Image extends \Yana\Core\StdObject
         }
 
         /* argument 2 */
-        if (is_null($height)) {
+        if (is_null($height) && is_int($width) && $currentWidth > 0) {
 
             /* proportional image scaling */
             $height = (int) floor(($width * $currentHeight) / $currentWidth);
             assert(is_int($height), 'is_int($height)');
 
         }
-        if ($height < 1) {
+        if ((int) $height < 1) {
             \Yana\Log\LogManager::getLogger()->addLog(
                 "Invalid value for argument 2. Height cannot be 0 or negative.", \Yana\Log\TypeEnumeration::WARNING
             );
@@ -2279,49 +2196,47 @@ class Image extends \Yana\Core\StdObject
 
         /* argument 5 */
         if (is_array($canvasColor)) {
-            if (count($canvasColor) !== 3) {
-                $message = "Invalid value for argument 5. Color needs to have red, green and yellow values.";
+            if (count($canvasColor) !== 3 && count($canvasColor) !== 4) {
+                $message = "Invalid value for argument 5. Color needs to have red, green and blue values.";
                 \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
                 return false;
             } else {
                 $color = $canvasColor;
-                $canvasColor = $this->getColor(array_shift($color), array_shift($color), array_shift($color));
+                $canvasColor = $this->getColor((int) array_shift($color), (int) array_shift($color), (int) array_shift($color), (float) array_shift($color));
                 unset ($color);
             }
             if (!is_int($canvasColor)) {
+                // @codeCoverageIgnoreStart
+                /**
+                 * This line should be unreachable, because getColor() always allocates a new color as necessary and this should never fail for as long as
+                 * the image is a valid resource - and we already checked that it is. BUT just in case the code above changed or something entirely
+                 * unexpected happened it is always better to be safe than sorry.
+                 */
                 $message = "Invalid value for argument 5. The argument is not a color.";
                 \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
                 return false;
+                // @codeCoverageIgnoreEnd
             }
         }
 
-        if ($currentWidth === $width && $currentHeight === $height && $paddingTop === 0 && $paddingLeft === 0) {
-
-            /* if image already has the expected size, then there is nothing to do here */
-            return true;
-
-        } else {
+        if ($currentWidth !== $width || $currentHeight !== $height || $paddingTop != 0 || $paddingLeft != 0) {
 
             $oldImage = $this->_image;
             $this->_createImage($width, $height);
 
             if (is_int($canvasColor)) {
-                if (!$this->fill($canvasColor, 0, 0)) {
-                    return false;
-                } else {
-                    /* background color set successfully  */
-                }
+                /* This always works, even if the image is a palette image and the color index is not part of the palette.
+                 * The GD library in that case silently converts the image to a truecolor image ... and then the color index is valid.
+                 *
+                 * I don't say that's a good idea (in fact, I think that's a terrible design choice). But that's the way it is.
+                 */
+                $this->fill($canvasColor, 0, 0);
             }
 
-            if (function_exists('imagecopy')) {
-                imagecopy($this->_image, $oldImage, $dstLeft, $dstTop, $srcLeft, $srcTop, $srcWidth, $srcHeight);
-            } else {
-                return false;
-            }
+            imagecopy($this->_image, $oldImage, $dstLeft, $dstTop, $srcLeft, $srcTop, $srcWidth, $srcHeight);
             imagedestroy($oldImage);
-            return true;
-
         }
+        return true;
     }
 
     /**
@@ -2334,10 +2249,8 @@ class Image extends \Yana\Core\StdObject
      * @return  bool
      * @since   2.8.8
      */
-    public function resizeImage($width = null, $height = null)
+    public function resizeImage(?int $width = null, ?int $height = null): bool
     {
-        assert(is_null($width) || is_int($width), 'Wrong type for argument 1. Integer expected');
-        assert(is_null($height) || is_int($height), 'Wrong type for argument 2. Integer expected');
         return $this->resize($width, $height);
     }
 
@@ -2357,17 +2270,14 @@ class Image extends \Yana\Core\StdObject
      * @param   int  $height     vertical dimension in pixel
      * @return  bool
      */
-    public function resize($width = null, $height = null)
+    public function resize(?int $width = null, ?int $height = null): bool
     {
-        assert(is_null($width) || is_int($width), 'Wrong type for argument 1. Integer expected');
-        assert(is_null($height) || is_int($height), 'Wrong type for argument 2. Integer expected');
-
         if ($this->isBroken() || (is_null($width) && is_null($height))) {
             return false;
         }
 
-        $currentHeight = $this->getHeight();
-        $currentWidth  = $this->getWidth();
+        $currentHeight = (int) $this->getHeight();
+        $currentWidth  = (int) $this->getWidth();
 
         /* argument 1 */
         if (is_null($width)) {
@@ -2397,12 +2307,7 @@ class Image extends \Yana\Core\StdObject
             return false;
         }
 
-        if ($currentWidth === $width && $currentHeight === $height) {
-
-            /* if image already has the expected size, then there is nothing to do here */
-            return true;
-
-        } else {
+        if ($currentWidth !== $width || $currentHeight !== $height) {
 
             $oldImage = $this->_image;
             $this->_createImage($width, $height);
@@ -2414,30 +2319,29 @@ class Image extends \Yana\Core\StdObject
                 imagecopyresized($this->_image, $oldImage, 0, 0, 0, 0, $w, $h, $currentWidth, $currentHeight);
             }
             imagedestroy($oldImage);
-            return true;
-
         }
+        return true;
     }
 
     /**
      * Get current transparency color.
      *
-     * Returns bool(false) on error.
+     * Returns NULL on error.
      *
-     * @return  int|bool(false)
+     * @return  int|NULL
      */
-    public function getTransparency()
+    public function getTransparency(): ?int
     {
         /*
          * error - broken image
          */
         if ($this->isBroken()) {
-            return false;
+            return NULL;
         }
 
         $transparency = imagecolortransparent($this->_image);
         if ($transparency === -1) {
-            return false;
+            return NULL;
         } else {
             return $transparency;
         }
@@ -2467,7 +2371,7 @@ class Image extends \Yana\Core\StdObject
      * @param   int|array    $transparency  new transparent color
      * @return  bool
      */
-    public function setTransparency($transparency = null)
+    public function setTransparency($transparency = null): bool
     {
         assert(is_array($transparency) || is_null($transparency) || is_int($transparency), 'Wrong type for argument 1. Integer or array expected');
 
@@ -2482,19 +2386,19 @@ class Image extends \Yana\Core\StdObject
         if (is_null($transparency)) {
             $transparency = $this->_backgroundColor;
         }
-        $red = $transparency['red'];
-        $green = $transparency['green'];
-        $blue =  $transparency['blue'];
 
-        if (is_int($transparency)) {
+        if (is_int($transparency)) { // Check if color exists.
             $color = $transparency;
             $array = imagecolorsforindex($this->_image, $transparency);
             if (!is_array($array)) {
                 return false;
             }
 
-        } elseif (is_array($transparency) && isset($red) && isset($green) && isset($blue)) {
+        } elseif (is_array($transparency) && isset($transparency['red']) && isset($transparency['green']) && isset($transparency['blue'])) {
 
+            $red = $transparency['red'];
+            $green = $transparency['green'];
+            $blue =  $transparency['blue'];
             $color = imagecolorexactalpha($this->_image, $red, (int) $green, (int) $blue, 127);
             if ($color == -1) {
                 $color = imagecolorexact($this->_image, $red, (int) $green, (int) $blue);
@@ -2507,12 +2411,11 @@ class Image extends \Yana\Core\StdObject
             return false;
         }
 
-        if (imagecolortransparent($this->_image) === $color || imagecolortransparent($this->_image, $color) != -1) {
+        $success = (imagecolortransparent($this->_image) === $color || imagecolortransparent($this->_image, (int) $color) != -1);
+        if ($success) {
             $this->_transparency = $array;
-            return true;
-        } else {
-            return false;
         }
+        return $success;
     }
 
     /**
@@ -2527,15 +2430,15 @@ class Image extends \Yana\Core\StdObject
      * This function may NOT return $number, but instead the number of colors that are actually used
      * in the image, which may be less then $number.
      *
-     * @return  int|bool(false)
+     * @return  int|NULL
      */
-    public function getPaletteSize()
+    public function getPaletteSize(): ?int
     {
         /**
          * error - broken image
          */
         if ($this->isBroken()) {
-            return false;
+            return NULL;
         }
 
         $count = imagecolorstotal($this->_image);
@@ -2559,15 +2462,17 @@ class Image extends \Yana\Core\StdObject
      * The argument $dither triggers whether or not dithering is used
      * while reducing the colors for the current image.
      *
+     * Kindly note that due to the fact that we are always allocating
+     * at least 16 basic colors plus the background and (if one was provided)
+     * a transparent color index, the color depth of the image will be reduced,
+     * but the image palette will never have less than 16 colors.
+     *
      * @param   int     $ammount    effect strength
      * @param   bool    $dither     on / off
      * @return  bool
      */
-    public function reduceColorDepth($ammount, $dither = true)
+    public function reduceColorDepth(int $ammount, bool $dither = true): bool
     {
-        assert(is_int($ammount), 'Wrong type for argument 1. Integer expected');
-        assert(is_bool($dither), 'Wrong type for argument 2. Boolean expected');
-
         /**
          * error - broken image
          */
@@ -2603,18 +2508,16 @@ class Image extends \Yana\Core\StdObject
                 unset ($red, $green, $blue);
             }
             /* copy background color */
-            if (!is_null($backgroundColor)) {
+            if (!empty($backgroundColor)) {
                 $red   = (int) $backgroundColor['red'];
                 $green = (int) $backgroundColor['green'];
                 $blue  = (int) $backgroundColor['blue'];
                 $alpha = (int) $backgroundColor['alpha'];
                 $this->_backgroundColor = imagecolorresolvealpha($this->_image, $red, $green, $blue, $alpha);
             }
-            $this->_initColors();
-            return true;
-        } else {
-            return false;
+            $this->_initColors(); // This will allocate 16 basic colors to be used as short-hands
         }
+        return (bool) $test;
     }
 
     /**
@@ -2652,60 +2555,26 @@ class Image extends \Yana\Core\StdObject
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @param   Image|string|resource    $sourceImage  filename or image resource
-     * @param   int                      $sourceX      horizontal position in pixel
-     * @param   int                      $sourceY      vertical position in pixel
-     * @param   int                      $width        horizontal dimension in pixel
-     * @param   int                      $height       vertical dimension in pixel
-     * @param   int                      $destX        horizontal position in pixel
-     * @param   int                      $destY        vertical position in pixel
-     * @param   float                    $opacity      alpha value in percent
+     * @param   \Yana\Media\Image  $sourceImage  filename or image resource
+     * @param   int                $sourceX      horizontal position in pixel
+     * @param   int                $sourceY      vertical position in pixel
+     * @param   int                $width        horizontal dimension in pixel
+     * @param   int                $height       vertical dimension in pixel
+     * @param   int                $destX        horizontal position in pixel
+     * @param   int                $destY        vertical position in pixel
+     * @param   float              $opacity      alpha value in percent
      * @return  bool
      */
-    public function copyRegion($sourceImage, $sourceX = null, $sourceY = null, $width = null, $height = null, $destX = null, $destY = null, $opacity = null)
+    public function copyRegion(\Yana\Media\Image $sourceImage, int $sourceX = 0, int $sourceY = 0, ?int $width = null, ?int $height = null, ?int $destX = null, ?int $destY = null, ?float $opacity = null): bool
     {
-        assert(is_null($sourceX) || is_int($sourceX), 'Wrong type for argument 2. Integer expected');
-        assert(is_null($sourceY) || is_int($sourceY), 'Wrong type for argument 3. Integer expected');
-        assert(is_null($width) || is_int($width), 'Wrong type for argument 4. Integer expected');
-        assert(is_null($height) || is_int($height), 'Wrong type for argument 5. Integer expected');
-        assert(is_null($destX) || is_int($destX), 'Wrong type for argument 6. Integer expected');
-        assert(is_null($destY) || is_int($destY), 'Wrong type for argument 7. Integer expected');
-        assert(is_null($opacity) || is_numeric($opacity), 'Wrong type for argument 8. Integer expected');
-
+        assert(!$opacity || ($opacity >= 0.0 && $opacity <= 1.0), 'Invalid argument $opacity: must be in range [0.0,1.0].');
         /**
          * error - broken image
          */
-        if ($this->isBroken()) {
+        if ($this->isBroken() || $sourceImage->isBroken()) {
             return false;
         }
-
-        /* argument 1 */
-        assert(!isset($resource), 'cannot redeclare variable $resource');
-        if (is_string($sourceImage) && is_file($sourceImage)) {
-            $sourceImage = new self($sourceImage);
-            $resource = $sourceImage->_image;
-        } elseif (is_object($sourceImage) && isset($sourceImage->_image) && is_resource($sourceImage->_image)) {
-            $resource = $sourceImage->_image;
-        } else {
-            $resource = $sourceImage;
-        }
-
-        /* argument 1 */
-        if (!is_resource($resource)) {
-            $message = "Argument 1 is invalid. The source is not a valid image resource.";
-            \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
-            return false;
-        }
-
-        /* argument 2 */
-        if (is_null($sourceX)) {
-            $sourceX = 0;
-        }
-
-        /* argument 3 */
-        if (is_null($sourceY)) {
-            $sourceY = 0;
-        }
+        $resource = $sourceImage->getResource();
 
         /* argument 4 */
         if (is_null($width)) {
@@ -2729,24 +2598,14 @@ class Image extends \Yana\Core\StdObject
 
         /* argument 8 */
         if (!is_null($opacity)) {
-            if ($opacity >= 0.0 && $opacity <= 1.0) {
-                $opacity = (int) round($opacity * 100);
-            } else {
-                $message = "Argument 8 is invalid. Opacity needs to be a value between 0 and 1.";
-                \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
-                return false;
-            }
+            $opacity = (int) round($opacity * 100);
         }
 
-        if (!is_null($opacity) && $this->isTruecolor() && function_exists('imagecopymerge')) {
-            return imagecopymerge($this->_image, $resource, $destX, $destY,
-                                  $sourceX, $sourceY, $width, $height, $opacity);
-
-        } elseif (function_exists('imagecopy')) {
-            return imagecopy($this->_image, $resource, $destX, $destY, $sourceX, $sourceY, $width, $height);
+        if (is_int($opacity) && $opacity >= 0 && $opacity <= 100 && $this->isTruecolor()) {
+            return imagecopymerge($this->_image, $resource, $destX, $destY, $sourceX, $sourceY, $width, $height, $opacity);
 
         } else {
-            return false;
+            return imagecopy($this->_image, $resource, $destX, $destY, $sourceX, $sourceY, $width, $height);
         }
     }
 
@@ -2758,7 +2617,7 @@ class Image extends \Yana\Core\StdObject
      * @see     Image::toGrayscale()
      * @return  bool
      */
-    public function toGrayscale()
+    public function toGrayscale(): bool
     {
         /**
          * error - broken image
@@ -2773,7 +2632,7 @@ class Image extends \Yana\Core\StdObject
     /**
      * Alias of Image::toGrayscale().
      */
-    public function toGreyscale()
+    public function toGreyscale(): bool
     {
         return $this->toGrayscale();
     }
@@ -2793,11 +2652,8 @@ class Image extends \Yana\Core\StdObject
      * @param   int    $b        blue value
      * @return  bool
      */
-    public function monochromatic($r, $g, $b)
+    public function monochromatic(int $r, int $g, int $b): bool
     {
-        assert(is_int($r), 'Wrong type for argument 1. Integer expected');
-        assert(is_int($g), 'Wrong type for argument 2. Integer expected');
-        assert(is_int($b), 'Wrong type for argument 3. Integer expected');
         assert($r >= 0 && $r <= 255, 'Invalid argument $r: must be in range [0,255].');
         assert($g >= 0 && $g <= 255, 'Invalid argument $g: must be in range [0,255].');
         assert($b >= 0 && $b <= 255, 'Invalid argument $b: must be in range [0,255].');
@@ -2843,42 +2699,42 @@ class Image extends \Yana\Core\StdObject
          * FROM input to black:
          * how many colors between black and input
          */
-        $steps_to_black = $lum_inp;
+        $stepsToBlack = $lum_inp;
 
         /* The step size for each component */
-        if ($steps_to_black) {
-            $step_size_red   = $r / $steps_to_black;
-            $step_size_green = $g / $steps_to_black;
-            $step_size_blue  = $b / $steps_to_black;
+        if ($stepsToBlack) {
+            $stepSizeRed   = $r / $stepsToBlack;
+            $stepSizeGreen = $g / $stepsToBlack;
+            $stepSizeBlue  = $b / $stepsToBlack;
         }
 
-        for ($i = $steps_to_black; $i >= 0; $i--)
+        for ($i = $stepsToBlack; $i >= 0; $i--)
         {
-            $pal[$steps_to_black-$i]['r'] = $r - round($step_size_red   * $i);
-            $pal[$steps_to_black-$i]['g'] = $g - round($step_size_green * $i);
-            $pal[$steps_to_black-$i]['b'] = $b - round($step_size_blue  * $i);
+            $pal[$stepsToBlack-$i]['r'] = (int) ($r - round($stepSizeRed   * $i));
+            $pal[$stepsToBlack-$i]['g'] = (int) ($g - round($stepSizeGreen * $i));
+            $pal[$stepsToBlack-$i]['b'] = (int) ($b - round($stepSizeBlue  * $i));
         }
 
         /**
          * FROM input to white:
          * how many colors between input and white
          */
-        $steps_to_white = 255 - $lum_inp;
+        $stepsToWhite = 255 - $lum_inp;
 
-        if ($steps_to_white) {
-            $step_size_red   = (255 - $r) / $steps_to_white;
-            $step_size_green = (255 - $g) / $steps_to_white;
-            $step_size_blue  = (255 - $b) / $steps_to_white;
+        if ($stepsToWhite) {
+            $stepSizeRed   = (255 - $r) / $stepsToWhite;
+            $stepSizeGreen = (255 - $g) / $stepsToWhite;
+            $stepSizeBlue  = (255 - $b) / $stepsToWhite;
         } else {
-            $step_size_red = $step_size_green = $step_size_blue = 0;
+            $stepSizeRed = $stepSizeGreen = $stepSizeBlue = 0;
         }
 
         /* The step size for each component */
         for ($i = ( $lum_inp + 1 ); $i <= 255; $i++)
         {
-            $pal[$i]['r'] = $r + round($step_size_red   * ($i-$lum_inp));
-            $pal[$i]['g'] = $g + round($step_size_green * ($i-$lum_inp));
-            $pal[$i]['b'] = $b + round($step_size_blue  * ($i-$lum_inp));
+            $pal[$i]['r'] = (int) ($r + round($stepSizeRed   * ($i-$lum_inp)));
+            $pal[$i]['g'] = (int) ($g + round($stepSizeGreen * ($i-$lum_inp)));
+            $pal[$i]['b'] = (int) ($b + round($stepSizeBlue  * ($i-$lum_inp)));
         }
         /* End of palette creation */
 
@@ -2901,7 +2757,7 @@ class Image extends \Yana\Core\StdObject
      *
      * Adds or removes white from the image.
      *
-     * The argument $ammount is a float between -1.0 and 1.0.
+     * The argument $amount is a float between -1.0 and 1.0.
      * Which you might translate to -100% through 100%.
      *
      * This has the same effect as calling Image::colorize($r, $g, $b),
@@ -2909,15 +2765,13 @@ class Image extends \Yana\Core\StdObject
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @param   float    $ammount    effect strength
+     * @param   float    $amount    effect strength
      * @return  bool
      */
-    public function brightness($ammount)
+    public function brightness(float $amount): bool
     {
-        assert(is_numeric($ammount), 'Wrong type for argument 1. Float expected');
-
         /* argument 1 */
-        if ($ammount < 0.0 || $ammount > 1.0) {
+        if ($amount < 0.0 || $amount > 1.0) {
             $message = "Invalid argument 1. Must be between 0 and 1.";
             \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
             return false;
@@ -2930,11 +2784,11 @@ class Image extends \Yana\Core\StdObject
             return false;
         }
 
-        if ($ammount == 0.0) {
+        if ($amount == 0.0) {
             return true;
         } else {
-            $ammount = (int) round($ammount * 255);
-            return $this->colorize($ammount, $ammount, $ammount);
+            $amount = (int) round($amount * 255);
+            return $this->colorize($amount, $amount, $amount);
         }
     }
 
@@ -2948,13 +2802,11 @@ class Image extends \Yana\Core\StdObject
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @param   float    $ammount    effect strength
+     * @param   float  $amount  effect strength
      * @return  bool
      */
-    public function contrast($ammount)
+    public function contrast(float $amount): bool
     {
-        assert(is_numeric($ammount), 'Wrong type for argument 1. Float expected');
-
         /**
          * error - broken image
          */
@@ -2963,39 +2815,21 @@ class Image extends \Yana\Core\StdObject
         }
 
         /* argument 1 */
-        if ($ammount < -1.0 || $ammount > 1.0) {
+        if ($amount < -1.0 || $amount > 1.0) {
             \Yana\Log\LogManager::getLogger()->addLog(
                 "Invalid argument 1. Must be between -1 and 1.", \Yana\Log\TypeEnumeration::WARNING
             );
             return false;
         }
 
-        $ammount = - $ammount;
+        $amount = - $amount;
 
-        if ($ammount == 0.0) {
+        if ($amount == 0.0) {
             return true;
         }
 
-        if (function_exists('imagefilter')) {
-            $ammount = (int) ( round(255 * $ammount) - 127 );
-            return imagefilter($this->_image, IMG_FILTER_CONTRAST, $ammount);
-        } elseif (!function_exists('imagecolorset')) {
-            return false;
-        } elseif ($this->isTruecolor()) {
-            $this->reduceColorDepth(256, false);
-        }
-
-        for ($i = 0; $i < $this->getPaletteSize(); $i++)
-        {
-            $color = imagecolorsforindex($this->_image, $i);
-            $color['red']    = $color['red']   + floor(( 127 - $color['red']   ) * $ammount);
-            $color['green']  = $color['green'] + floor(( 127 - $color['green'] ) * $ammount);
-            $color['blue']   = $color['blue']  + floor(( 127 - $color['blue']  ) * $ammount);
-            $color['red']    = (($color['red']   > 255) ? 255 : (($color['red']   < 0) ? 0 : $color['red']));
-            $color['green']  = (($color['green'] > 255) ? 255 : (($color['green'] < 0) ? 0 : $color['green']));
-            $color['blue']   = (($color['blue']  > 255) ? 255 : (($color['blue']  < 0) ? 0 : $color['blue']));
-            imagecolorset($this->_image, $i, $color['red'], $color['green'], $color['blue']);
-        }
+        $amount = (int) ( round(255 * $amount) - 127 );
+        return imagefilter($this->_image, IMG_FILTER_CONTRAST, $amount);
     }
 
     /**
@@ -3007,7 +2841,7 @@ class Image extends \Yana\Core\StdObject
      *
      * @return  bool
      */
-    public function negate()
+    public function negate(): bool
     {
         /**
          * error - broken image
@@ -3039,12 +2873,14 @@ class Image extends \Yana\Core\StdObject
      * <li> IMG_FILTER_NEGATE         (see also: {@link Image::negate()})                         </li>
      * <li> IMG_FILTER_SMOOTH         (see also: {@link Image::blur()}, {@link Image::sharpen()}) </li>
      * <li> IMG_FILTER_PIXELATE                                                                   </li>
+     * <li> IMG_FILTER_SCATTER                                                                    </li>
      * </ul>
      *
      *
-     * param   int    $arg1     depends on filter
-     * param   int    $arg2     depends on filter
-     * param   int    $arg3     depends on filter
+     * param   mixed  $arg1  depends on filter
+     * param   mixed  $arg2  depends on filter
+     * param   mixed  $arg3  depends on filter
+     * param   mixed  $arg4  depends on filter
      *
      * Returns bool(true) on success and bool(false) on error.
      *
@@ -3059,10 +2895,8 @@ class Image extends \Yana\Core\StdObject
      * @see     Image::sharpen()
      * @see     Image::toGrayscale()
      */
-    public function applyFilter($filter)
+    public function applyFilter(int $filter): bool
     {
-        assert(is_int($filter), 'Wrong type for argument 1. Integer expected');
-
         if ($this->isBroken() || !function_exists('imagefilter')) {
             return false;
         }
@@ -3108,11 +2942,8 @@ class Image extends \Yana\Core\StdObject
      * @param   int  $b  blue value
      * @return  bool
      */
-    public function colorize($r, $g, $b)
+    public function colorize(int $r, int $g, int $b): bool
     {
-        assert(is_int($r), 'Wrong type for argument 1. Integer expected');
-        assert(is_int($g), 'Wrong type for argument 2. Integer expected');
-        assert(is_int($b), 'Wrong type for argument 3. Integer expected');
         assert($r >= 0 && $r <= 255, 'Invalid argument $r: must be in range [0,255].');
         assert($g >= 0 && $g <= 255, 'Invalid argument $g: must be in range [0,255].');
         assert($b >= 0 && $b <= 255, 'Invalid argument $b: must be in range [0,255].');
@@ -3162,11 +2993,8 @@ class Image extends \Yana\Core\StdObject
      * @param   int    $b        blue value
      * @return  bool
      */
-    public function multiply($r, $g, $b)
+    public function multiply(int $r, int $g, int $b): bool
     {
-        assert(is_int($r), 'Wrong type for argument 1. Integer expected');
-        assert(is_int($g), 'Wrong type for argument 2. Integer expected');
-        assert(is_int($b), 'Wrong type for argument 3. Integer expected');
         assert($r >= 0 && $r <= 255, 'Invalid argument $r: must be in range [0,255].');
         assert($g >= 0 && $g <= 255, 'Invalid argument $g: must be in range [0,255].');
         assert($b >= 0 && $b <= 255, 'Invalid argument $b: must be in range [0,255].');
@@ -3207,10 +3035,8 @@ class Image extends \Yana\Core\StdObject
      * @param   float  $ammount  effect strength
      * @return  bool
      */
-    public function blur($ammount)
+    public function blur(float $ammount): bool
     {
-        assert(is_numeric($ammount), 'Wrong type for argument 1. Float expected');
-
         /* argument 1 */
         if ($ammount < 0.0 || $ammount > 1.0) {
             \Yana\Log\LogManager::getLogger()->addLog(
@@ -3244,10 +3070,8 @@ class Image extends \Yana\Core\StdObject
      * @param   float  $ammount  effect strength
      * @return  bool
      */
-    public function sharpen($ammount)
+    public function sharpen(float $ammount): bool
     {
-        assert(is_numeric($ammount), 'Wrong type for argument 1. Float expected');
-
         /* argument 1 */
         if ($ammount < 0.0 || $ammount > 1.0) {
             \Yana\Log\LogManager::getLogger()->addLog(
@@ -3266,8 +3090,8 @@ class Image extends \Yana\Core\StdObject
             return false;
         }
 
-        $width  = $this->getWidth();
-        $height = $this->getHeight();
+        $width  = (int) $this->getWidth();
+        $height = (int) $this->getHeight();
 
         /**
          * This is an implementation for PHP 5
@@ -3302,7 +3126,7 @@ class Image extends \Yana\Core\StdObject
      *
      * @return  bool
      */
-    public function flipX()
+    public function flipX(): bool
     {
         /**
          * error - broken image
@@ -3311,8 +3135,8 @@ class Image extends \Yana\Core\StdObject
             return false;
         }
 
-        $width  = $this->getWidth();
-        $height = $this->getHeight();
+        $width  = (int) $this->getWidth();
+        $height = (int) $this->getHeight();
 
         /* iterate through stripes
          * and copy left to right
@@ -3358,21 +3182,16 @@ class Image extends \Yana\Core\StdObject
      *
      * @return  bool
      */
-    public function flipY()
+    public function flipY(): bool
     {
-        $width  = $this->getWidth();
-        $height = $this->getHeight();
-
-        /* iterate through lines
-         * and copy top to bottom
-         */
-
         /**
          * error - broken image
          */
         if ($this->isBroken()) {
             return false;
         }
+        $width  = (int) $this->getWidth();
+        $height = (int) $this->getHeight();
 
         $tempImage = imagecreatetruecolor($width, 1);
 
@@ -3422,31 +3241,19 @@ class Image extends \Yana\Core\StdObject
      * This copies the palette from the source image
      * to this image.
      *
-     * The argument $sourceImage can be another Image object,
-     * a filename, or an image resource.
-     *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @param   Image|string|resource    $sourceImage    the image to copy the palette from
+     * @param   \Yana\Media\Image  $sourceImage  the image to copy the palette from
      * @return  bool
      */
-    public function copyPalette($sourceImage)
+    public function copyPalette(\Yana\Media\Image $sourceImage): bool
     {
-        /* argument 1 */
-        if (is_string($sourceImage) && is_file($sourceImage)) {
-            $sourceImage = new self($sourceImage);
-            $sourceImage = $sourceImage->_image;
-        } elseif (is_object($sourceImage) && isset($sourceImage->_image) && is_resource($sourceImage->_image)) {
-            $sourceImage = $sourceImage->_image;
+        $success = false;
+        if (is_resource($sourceImage->_image)) {
+            imagepalettecopy($this->_image, $sourceImage->_image);
+            $success = true;
         }
-
-        /* argument 1 */
-        if (!is_resource($sourceImage)) {
-            return false;
-        }
-
-        imagepalettecopy($this->_image, $sourceImage);
-        return true;
+        return $success;
     }
 
     /**
@@ -3465,10 +3272,10 @@ class Image extends \Yana\Core\StdObject
      * @param   string  $imageType  can be on of "png", "jpg", "gif", "bmp"
      * @return  bool
      * @codeCoverageIgnore
+     * @throws  \Yana\Core\Exceptions\Files\InvalidTypeException  when the image type given is not recognized
      */
-    public function outputToScreen($imageType = null)
+    public function outputToScreen(?string $imageType = null): bool
     {
-        assert(is_null($imageType) || is_string($imageType), 'Wrong type for argument 1. String expected');
         /**
          * If headers are already sent, first try to erase the output buffer.
          * Only if this does not work, throw an error.
@@ -3492,23 +3299,16 @@ class Image extends \Yana\Core\StdObject
                 return false;
             }
         }
-        if (!is_resource($this->_image)) {
-            $this->_createErrorImage();
-        }
-        if (!is_null($imageType)) {
+        if (is_string($imageType)) {
             $imageType = mb_strtolower($imageType);
         }
 
         /* prefered image type */
         if (!empty($imageType)) {
             if (!isset($this->_mapping[$imageType])) {
-                \Yana\Log\LogManager::getLogger()->addLog(
-                    "The image type '{$imageType}' is not unsupported.", \Yana\Log\TypeEnumeration::WARNING
-                );
-                return false;
-            } else {
-                array_unshift($this->_mapping, $this->_mapping[$imageType]);
+                throw new \Yana\Core\Exceptions\Files\InvalidTypeException("Image type '{$imageType}' is unsupported.", \Yana\Log\TypeEnumeration::WARNING);
             }
+            array_unshift($this->_mapping, $this->_mapping[$imageType]);
         }
 
         /* fall back */
@@ -3520,15 +3320,11 @@ class Image extends \Yana\Core\StdObject
                 header("Content-type: {$mimeType}");
                 $functionName($this->_image);
                 return true;
-                break;
             }
         }
 
-        /* none of the above worked - so put an error message and return false */
-        \Yana\Log\LogManager::getLogger()->addLog(
-            "Unable to create image. No supported image type found.", \Yana\Log\TypeEnumeration::ERROR
-        );
-        return false;
+        /* none of the above worked */
+        throw new \Yana\Core\Exceptions\Files\InvalidTypeException("Image type '{$imageType}' is unsupported.", \Yana\Log\TypeEnumeration::WARNING);
     }
 
     /**
@@ -3548,61 +3344,33 @@ class Image extends \Yana\Core\StdObject
      * then this function will automatically try to create a PNG image.
      * If PNG is not available it will automatically try fall back to another type.
      * PNG will fall back to JPEG, JPEG to GIF, GIF to BMP.
-     * Only if nothing of the above worked, it will give up and returns bool(false).
-     * Otherwise bool(true) is returned.
+     * Only if nothing of the above worked, it will give up and NULL.
+     * Otherwise the filename is returned.
      *
      * @param   string  $filename   name of the output file
-     * @param   string  $imageType  can be on of "png", "jpg", "gif", "bmp"
-     * @return  string|bool(false)
+     * @param   string  $imageType  can be one of "png", "jpg", "gif", "bmp"
+     * @return  string|NULL
+     * @throws  \Yana\Core\Exceptions\Files\InvalidTypeException  when the image type given is not recognized
      */
-    public function outputToFile($filename, $imageType = null)
+    public function outputToFile(string $filename, string $imageType): string
     {
-        assert(is_string($filename), 'Wrong type for argument 1. String expected');
-        assert(is_null($imageType) || is_string($imageType), 'Wrong type for argument 2. String expected');
-
-        if (!is_resource($this->_image)) {
-            return false;
-        }
-        if (!is_null($imageType)) {
+        if (is_string($imageType)) {
             $imageType = mb_strtolower($imageType);
         }
 
         /* prefered image type */
-        if (!empty($imageType)) {
-            if (!isset($this->_mapping[$imageType])) {
-                \Yana\Log\LogManager::getLogger()->addLog(
-                    "The image type '{$imageType}' is not unsupported.", \Yana\Log\TypeEnumeration::WARNING
-                );
-                return false;
-            } else {
-                array_unshift($this->_mapping, $this->_mapping[$imageType]);
-            }
-        }
-        $listOfExtensions = implode('|', array_keys($this->_mapping));
-
-        /* fall back */
-        foreach ($this->_mapping as $index => $map)
-        {
-            $functionName = $map[1];
-            if (function_exists($functionName)) {
-                if (!preg_match('/\.(?:'.$listOfExtensions.')$/i', $filename)) {
-                    if (is_numeric($index)) {
-                        $filename .= '.'.$imageType;
-                    } else {
-                        $filename .= '.'.$index;
-                    }
-                }
-                $functionName($this->_image, $filename);
-                return $filename;
-                break;
-            }
+        if (!isset($this->_mapping[$imageType])) {
+            throw new \Yana\Core\Exceptions\Files\InvalidTypeException("Image type '{$imageType}' is unsupported.", \Yana\Log\TypeEnumeration::WARNING);
         }
 
-        /* none of the above worked - so put an error message and return false */
-        \Yana\Log\LogManager::getLogger()->addLog(
-            "Unable to create image. No supported image type found.", \Yana\Log\TypeEnumeration::ERROR
-        );
-        return false;
+        $functionName = $this->_mapping[$imageType][1];
+        assert(\function_exists($functionName));
+
+        if (!\Yana\Util\Strings::endsWith($filename, $imageType)) {
+            $filename .= '.' . $imageType;
+        }
+        $functionName($this->_image, $filename);
+        return $filename;
     }
 
     /**
@@ -3621,7 +3389,7 @@ class Image extends \Yana\Core\StdObject
      *
      * When using the setting true (which is the default), you may provide a
      * background color for the canvas using the argument $backgroundColor.
-     * To do so, provide an array with the red, green and yellow values.
+     * To do so, provide an array with the red, green and blue values.
      * Example: array(255, 255, 255) is "white".
      *
      * Returns bool(true) on success and bool(false) on error.
@@ -3648,12 +3416,8 @@ class Image extends \Yana\Core\StdObject
      * @return  bool
      * @since   3.1.0
      */
-    public function createThumbnail($width = 100, $height = 100, $keepAspectRatio = true, array $backgroundColor = null)
+    public function createThumbnail(?int $width = 100, ?int $height = 100, bool $keepAspectRatio = true, array $backgroundColor = null): bool
     {
-        assert(is_null($width) || is_int($width), 'Wrong type for argument 1. Integer expected');
-        assert(is_null($height) || is_int($height), 'Wrong type for argument 2. Integer expected');
-        assert(is_bool($keepAspectRatio), 'Wrong type for argument 3. Boolean expected');
-
         /**
          * Check if the "broken" flag has been set.
          * If it is set, the file is invalid.
@@ -3723,8 +3487,8 @@ class Image extends \Yana\Core\StdObject
      * large images. It's use is suggested for testing and debugging issues
      * only.
      *
-     * @param   Image|string  $comparedImage  filename or image object
-     * @return  float
+     * @param   \Yana\Media\Image|string  $comparedImage  filename or image object
+     * @return  float|NULL
      * @since   2.9.9
      */
     public function compareImage($comparedImage)
@@ -3741,15 +3505,13 @@ class Image extends \Yana\Core\StdObject
             \Yana\Log\LogManager::getLogger()->addLog(
                 "Argument 1 is invalid. The source is not a valid image.", \Yana\Log\TypeEnumeration::WARNING
             );
-            return false;
+            return NULL;
         }
 
-        if (!is_resource($this->_image)) {
-            /* invalid image */
-            \Yana\Log\LogManager::getLogger()->addLog(
-                "Not a valid image.", \Yana\Log\TypeEnumeration::WARNING
-            );
-            return false;
+        if (!is_resource($this->_image)) { // This should not be reachable, but just in case we are wrong
+            // @codeCoverageIgnoreStart
+            return NULL;
+            // @codeCoverageIgnoreEnd
         } else {
             /* all fine - proceed */
             $thisImage = clone $this;
@@ -3762,19 +3524,19 @@ class Image extends \Yana\Core\StdObject
         $colors = array();
 
         /* resize */
-        $h = $this->getHeight();
-        $w = $this->getWidth();
-        if ($w == 0 || $h == 0) {
-            /* invalid image */
-            \Yana\Log\LogManager::getLogger()->addLog("Not a valid image.", \Yana\Log\TypeEnumeration::WARNING);
-            return false;
+        $h = (int) $this->getHeight();
+        $w = (int) $this->getWidth();
+        if ($w <= 0 || $h <= 0) { // It should be impossible to create an image with height or width <= 0, but just in case.
+            // @codeCoverageIgnoreStart
+            return NULL;
+            // @codeCoverageIgnoreEnd
         } elseif ($h !== $otherImage->getHeight() || $w !== $otherImage->getWidth()) {
             $otherImage->resize($w, $h);
         }
 
         /* merge images */
         $thisImage->negate();
-        $otherImage->copyRegion($thisImage->_image, null, null, null, null, null, null, 0.5);
+        $otherImage->copyRegion($thisImage, 0, 0, null, null, null, null, 0.5);
 
         /* loop through pixel */
         for ($x = 0; $x < $w; $x++)
@@ -3812,7 +3574,7 @@ class Image extends \Yana\Core\StdObject
     public function __toString()
     {
         $filename = $this->getPath();
-        if (is_string($filename)) {
+        if (is_string($filename) && $filename > "") {
             return $filename;
 
         /*
@@ -3822,8 +3584,8 @@ class Image extends \Yana\Core\StdObject
             return "broken image";
 
         } else {
-            return ( ($this->isTruecolor) ? 'truecolor' : 'palette' ) . "-image(" . $this->getWidth() . "px," .
-                $this->getHeight() . "px)";
+            return ( ($this->isTruecolor()) ? 'truecolor' : 'palette' ) . "-image(" . (int) $this->getWidth() . "px," .
+                (int) $this->getHeight() . "px)";
         }
     }
 

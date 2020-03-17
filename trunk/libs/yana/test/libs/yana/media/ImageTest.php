@@ -24,6 +24,7 @@
  * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Media;
 
@@ -94,13 +95,11 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-//        $this->markTestSkipped('Binaries are broken. Test needs refactoring');
-//        return;
-        $this->_image = new Image(CWD . $this->_imageSource);
-        $this->_emptyImage = new Image();
-        $this->_dummyImage = new Image(CWD . $this->_dummySource);
-        $this->_brokenImage = new Image('nonexist.png');
-        $this->_invalidImage = new Image(CWD . $this->_invalidSource);
+        $this->_image = new \Yana\Media\Image(CWD . $this->_imageSource);
+        $this->_emptyImage = new \Yana\Media\Image();
+        $this->_dummyImage = new \Yana\Media\Image(CWD . $this->_dummySource);
+        $this->_brokenImage = new \Yana\Media\Image('nonexist.png');
+        $this->_invalidImage = new \Yana\Media\Image(CWD . $this->_invalidSource);
     }
 
     /**
@@ -130,6 +129,15 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function test_loadImageByFileHeaderInvalidArgumentException()
+    {
+        $brokenImage = new \Yana\Media\Image(__FILE__);
+        $this->assertTrue($brokenImage->isBroken());
+    }
+
+    /**
+     * @test
+     */
     public function testSetBrushDirectory()
     {
         $default = Brush::getDirectory();
@@ -153,7 +161,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(is_file($path), 'assert failed,path doesnt exist');
 
         $noExist = $this->_emptyImage->getPath();
-        $this->assertFalse($noExist, 'assert failed , path doesnt exist');
+        $this->assertSame('', $noExist, 'assert failed , path doesnt exist');
     }
 
     /**
@@ -269,7 +277,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('resource', $resource, 'assert failed, value is not from type resource');
 
         $resource = $this->_brokenImage->getResource();
-        $this->assertFalse($resource, 'assert failed, invalid resource');
+        $this->assertNull($resource);
     }
 
     /**
@@ -279,8 +287,19 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testClearCanvas()
     {
-        // intentionally left blank
-        // destroy old image and make a new one
+        $this->assertNull($this->_brokenImage->clearCanvas());
+        $brush = new \Yana\Media\Brush('cross');
+        $brush->setColor(255, 0, 0);
+        $this->assertTrue($this->_image->setBrush($brush));
+        $this->_image->drawPoint(10, 10, \IMG_COLOR_BRUSHED);
+        $this->assertSame($this->_image->getBackgroundColor(), $this->_image->getColorAt(0, 0));
+        $this->assertSame($this->_image->red, $this->_image->getColorAt(10, 10));
+        $this->assertNull($this->_image->clearCanvas());
+        $this->assertSame($this->_image->getBackgroundColor(), $this->_image->getColorAt(10, 10));
+        $this->_image->drawPoint(10, 10, \IMG_COLOR_BRUSHED);
+        $this->assertSame($this->_image->red, $this->_image->getColorAt(10, 10));
+        $this->assertSame($this->_image->red, $this->_image->getColorAt(9, 10));
+        $this->assertSame($this->_image->red, $this->_image->getColorAt(11, 10));
     }
 
     /**
@@ -296,7 +315,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('integer', $width, 'assert "getWidth()" failed, value is not from type integer');
 
         $width = $this->_brokenImage->getWidth();
-        $this->assertFalse($width, 'assert failed , image is broken');
+        $this->assertNull($width, 'assert failed , image is broken');
     }
 
     /**
@@ -312,7 +331,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('integer', $height, 'assert "getHeight()" failed, value is not from type integer');
 
         $height = $this->_brokenImage->getHeight();
-        $this->assertFalse($height, 'assert failed , image is broken');
+        $this->assertNull($height, 'assert failed , image is broken');
     }
 
     /**
@@ -371,7 +390,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $drawString = $this->_image->drawString('Yana description', 50, 20, $this->_image->getColor(0, 0, 255), 3, true);
         $this->assertTrue($drawString, 'assert "drawString()" failed, string is not set');
 
-        $drawString = $this->_image->drawString('Yana description', null, null, $this->_image->getColor(0, 0, 255), 3, false);
+        $drawString = $this->_image->drawString('Yana description', 0, 0, $this->_image->getColor(0, 0, 255), 3, false);
         $this->assertTrue($drawString, 'assert "drawString()" failed, string is not set');
     }
 
@@ -497,16 +516,19 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testEnableAlpha()
     {
-        $enableAlpha = $this->_brokenImage->enableAlpha(true, null);
+        $enableAlpha = $this->_brokenImage->enableAlpha(true);
         $this->assertFalse($enableAlpha, 'assert "enableAlpha()" failed, image is broken');
 
         // enabled
-        $enableAlpha = $this->_image->enableAlpha(true, null);
+        $enableAlpha = $this->_image->enableAlpha(true);
         $this->assertTrue($enableAlpha, 'assert "enableAlpha()" failed, enableAlpha is not set');
 
         // disabled
-        $disableAlpha = $this->_image->enableAlpha(false, null);
+        $disableAlpha = $this->_image->enableAlpha(false, false);
         $this->assertTrue($disableAlpha, 'assert "enableAlpha()" failed, enableAlpha is set');
+
+        // invalid
+        $this->assertFalse($this->_invalidImage->enableAlpha(true), 'invalid image should not allow alpha channel');
     }
 
     /**
@@ -518,14 +540,9 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testEnableAntialias()
     {
-        $enableAntialias = $this->_brokenImage->enableAntialias();
-        $this->assertFalse($enableAntialias, 'assert "enableAntialias()" failed, image is broken');
-
-        $enableAntialias = $this->_image->enableAntialias();
-        $this->assertTrue($enableAntialias, 'assert "enableAntialias()" failed, enableAntialias is not set');
-
-        $disableAntialias = $this->_image->enableAntialias(false);
-        $this->assertTrue($disableAntialias, 'assert "enableAntialias()" failed, enableAntialias with param "false" is not set');
+        $this->assertFalse($this->_brokenImage->enableAntialias(), 'assert "enableAntialias()" failed, image is broken');
+        $this->assertTrue($this->_image->enableAntialias(), 'assert "enableAntialias()" failed, enableAntialias is not set');
+        $this->assertTrue($this->_image->enableAntialias(false), 'assert "enableAntialias()" failed, enableAntialias with param "false" is not set');
     }
 
     /**
@@ -565,7 +582,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     {
         // broken
         $isBroken = $this->_invalidImage->getColorValues($this->_image->black);
-        $this->assertFalse($isBroken, 'assert "getColorValues()" failed, image is broken');
+        $this->assertNull($isBroken, 'assert "getColorValues()" failed, image is broken');
 
         $color = $this->_image->getColor(153, 50, 204);
         $this->assertInternalType('integer', $color, 'assert "getColor()" failed, value is not from type integer');
@@ -595,23 +612,29 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     {
         // broken
         $isBroken = $this->_invalidImage->getColorAt(80, 80);
-        $this->assertFalse($isBroken, 'assert "getColorAt()" failed, image is broken');
+        $this->assertNull($isBroken, 'assert "getColorAt()" failed, image is broken');
 
         $colorAt = $this->_image->getColorAt(80, 80);
         $this->assertInternalType('integer', $colorAt, 'assert "getColorAt()" failed, value is not from type integer');
 
-        $colorAt = $this->_image->getColorAt(-80, 80);
-        $this->assertFalse($colorAt, 'assert failed - the first argument must be > than 0 ');
+        $colorAt = $this->_image->getColorAt(-1, 80);
+        $this->assertNull($colorAt, 'assert failed - the first argument must be > than 0 ');
 
-        $colorAt = $this->_image->getColorAt(80, -80);
-        $this->assertFalse($colorAt, 'assert failed - the second argument must be > than 0 ');
+        $colorAt = $this->_image->getColorAt(80, -1);
+        $this->assertNull($colorAt, 'assert failed - the second argument must be > than 0 ');
 
-        $colorAt = $this->_image->getColorAt(-80, -80);
-        $this->assertFalse($colorAt, 'assert failed - both arguments must be > than 0 ');
+        $colorAt = $this->_image->getColorAt(-1, -1);
+        $this->assertNull($colorAt, 'assert failed - both arguments must be > than 0 ');
 
         $colorAt = $this->_image->getColorAt(950, 650);
-        $this->assertFalse($colorAt, 'assert failed - one or both values are bigger than the image');
+        $this->assertNull($colorAt, 'assert failed - one or both values are bigger than the image');
+
+        $this->assertTrue($this->_dummyImage->isTruecolor());
+
+        $colorAt = $this->_dummyImage->getColorAt(0, 0);
+        $this->assertInternalType('integer', $colorAt);
     }
+
     /**
      * get size
      *
@@ -621,20 +644,18 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetSize()
     {
-        $size = $this->_image->getSize(CWD . $this->_imageSource);
+        $size = \Yana\Media\Image::getSize($this->_image->getPath());
         $this->assertInternalType('array', $size , 'assert "getSize()" failed, value is not from type array');
+        $expected =  array(470, 254, 3, 'width="470" height="254"', 'bits' => 8, 'mime' => 'image/png');
+        $this->assertSame($expected, $size);
     }
 
     /**
-     * Get Size Invalid Argument
-     *
-     * @expectedException \PHPUnit_Framework_Error
      * @test
      */
     public function testGetSizeInvalidArgument()
     {
-        $size = $this->_image->getSize($this->_image->black);
-        $this->assertFalse($size, 'assert failed, first argument must be a string');
+        $this->assertSame(array(), \Yana\Media\Image::getSize('no-such-image'), 'assert failed, first argument must be a string');
     }
 
     /**
@@ -661,7 +682,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     {
         // broken
         $isBroken = $this->_invalidImage->getLineWidth();
-        $this->assertFalse($isBroken, 'assert "getLineWidth()" failed, image is broken');
+        $this->assertNull($isBroken, 'assert "getLineWidth()" failed, image is broken');
 
         $setLine = $this->_image->setLineWidth(100);
         $this->assertTrue($setLine, 'assert "setLineWidth()" failed');
@@ -726,7 +747,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $replaceIndexColor = $this->_image->replaceIndexColor(2, array('red'=>0,'green'=>255,'blue'=>100));
         $this->assertFalse($replaceIndexColor, 'Should not be able to replace palette color on true-color images.');
 
-        $this->_image->reduceColorDepth(255);
+        $this->assertTrue($this->_image->reduceColorDepth(255));
 
         $replaceIndexColor = $this->_image->replaceIndexColor(2, array('red'=>0,'green'=>255,'blue'=>100));
         $this->assertTrue($replaceIndexColor, 'assert "replaceIndexColor()" failed');
@@ -804,16 +825,11 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testSetBrush()
     {
         // broken
-        $isBroken = $this->_invalidImage->setBrush('small star');
+        $isBroken = $this->_invalidImage->setBrush(new \Yana\Media\Brush('small star'));
         $this->assertFalse($isBroken, 'assert "setBrush()" failed , image is broken');
 
-        $setBrush = $this->_image->setBrush('small star');
-        // expected false
-        $this->assertFalse($setBrush, 'assert "setBrush()" failed');
-
-        // new brush created
-        $setBrush = $this->_image->setBrush(CWD . 'resources/brush/small-star.png');
-        $this->assertTrue($setBrush, 'assert "setBrush()" failed, brush is not set');
+        $setBrush = $this->_image->setBrush(new \Yana\Media\Brush('small star'));
+        $this->assertTrue($setBrush, 'assert "setBrush()" failed');
     }
 
     /**
@@ -859,7 +875,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     {
         // broken
         $isBroken = $this->_invalidImage->getBackgroundColor();
-        $this->assertFalse($isBroken, 'assert "getBackgroundColor()" failed, image is broken');
+        $this->assertNull($isBroken, 'assert "getBackgroundColor()" failed, image is broken');
 
         // set color
         $color = $this->_image->getColor(153, 50, 204);
@@ -977,6 +993,16 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     */
+    public function testResizeCanvasOnInvalidImage()
+    {
+        // broken
+        $isBroken = $this->_invalidImage->resizeCanvas(100, 100, 20, 20);
+        $this->assertFalse($isBroken, 'assert "resizeCanvas()" failed , image is broken');
+    }
+
+    /**
      * resize canvas
      *
      * Expected test result : true
@@ -985,16 +1011,20 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testResizeCanvas()
     {
-        // broken
-        $isBroken = $this->_invalidImage->resizeCanvas(100, 100, 20, 20);
-        $this->assertFalse($isBroken, 'assert "resizeCanvas()" failed , image is broken');
-
         $resizeCanvas = $this->_image->resizeCanvas();
         $this->assertTrue($resizeCanvas, 'assert "resizeCanvas()" failed, assert is false');
 
-        $resizeCanvas = $this->_image->resizeCanvas(100, 100, 20, 20);
+        $resizeCanvas = $this->_image->resizeCanvas(100, 120, 20, 20);
         $this->assertTrue($resizeCanvas, 'assert "resizeCanvas()" failed, assert is false');
+        $this->assertSame(100, $this->_image->getWidth());
+        $this->assertSame(120, $this->_image->getHeight());
+    }
 
+    /**
+     * @test
+     */
+    public function testResizeCanvasNegativeOffset()
+    {
         // expected true negativ values will be converted to positive
         $firstResizeCanvas = $this->_image->resizeCanvas(100, 100, -5, -10, array('red' =>230, 'green' => 120, 'blue' => 98));
         $this->assertTrue($firstResizeCanvas, 'assert "resizeCanvas()" failed, assert is false');
@@ -1002,6 +1032,76 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         // expected true - set the last param as an integer
         $secondResizeCanvas = $this->_image->resizeCanvas(100, 100, -5, -10, $this->_image->blue);
         $this->assertTrue($secondResizeCanvas, 'assert "resizeCanvas()" failed, assert is false');
+    }
+
+    /**
+     * @test
+     */
+    public function testResizeCanvasJustOffset()
+    {
+        $oldHeight = $this->_image->getHeight();
+        $oldWidth = $this->_image->getWidth();
+        $this->assertTrue($this->_image->resizeCanvas(null, null, 20, 20));
+        $this->assertSame($oldHeight, $this->_image->getHeight());
+        $this->assertSame($oldWidth, $this->_image->getWidth());
+    }
+
+    /**
+     * @test
+     */
+    public function testResizeCanvasJustHeight()
+    {
+        $image = new \Yana\Media\Image();
+        $image->resizeImage(400, 200);
+        $this->assertTrue($image->resizeCanvas(null, 300));
+        $this->assertSame(300, $image->getHeight());
+        $this->assertSame(600, $image->getWidth());
+    }
+
+    /**
+     * @test
+     */
+    public function testResizeCanvasJustWidth()
+    {
+        $image = new \Yana\Media\Image();
+        $image->resizeImage(400, 200);
+        $this->assertTrue($image->resizeCanvas(300));
+        $this->assertSame(300, $image->getWidth());
+        $this->assertSame(150, $image->getHeight());
+    }
+
+    /**
+     * @test
+     */
+    public function testResizeCanvasWithOpacity()
+    {
+        $image = new \Yana\Media\Image();
+        $image->resizeImage(400, 200);
+        $image->reduceColorDepth(16);
+        $this->assertTrue($image->resizeCanvas(null, null, null, null, array(1, 2, 3, .5)));
+        $this->assertSame(400, $image->getWidth());
+        $this->assertSame(200, $image->getHeight());
+    }
+
+    /**
+     * @test
+     */
+    public function testResizeCanvasWithInvalidCanvasColor()
+    {
+        $image = new \Yana\Media\Image();
+        $image->resizeImage(400, 200);
+        $image->reduceColorDepth(16);
+        $this->assertFalse($image->isTruecolor());
+        // We just reduced the palette size - PHP_INT_MAX will most definitely not be a valid color index.
+
+        // However, since we don't actually change the image size, the image is never resampled and the invalid color is never used.
+        $this->assertTrue($image->resizeCanvas(null, null, null, null, PHP_INT_MAX));
+        $this->assertFalse($image->isTruecolor());
+        // This changes now. We make the canvas bigger, so the background color is, in fact, used.
+        $this->assertTrue($image->resizeCanvas(500, null, null, null, PHP_INT_MAX));
+        $this->assertTrue($image->isTruecolor()); // is auto-converted to true-color image
+        // The color will always be allocated as 100% white.
+        $this->assertSame(array('red' => 255, 'green' => 255, 'blue' => 255, 'alpha' => 127), $image->getColorValues(PHP_INT_MAX));
     }
 
     /**
@@ -1073,32 +1173,74 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * resize
-     *
-     * Expected test result : true
-     *
      * @test
      */
-    public function testResize()
+    public function testResizeInvalidImage()
     {
         // broken
         $isBroken = $this->_invalidImage->resize(100, 50);
         $this->assertFalse($isBroken, 'assert "resize()" failed, image is broken');
+    }
 
+    /**
+     * @test
+     */
+    public function testResize()
+    {
         $resize = $this->_image->resize(150, 50);
         $this->assertTrue($resize, 'assert "resize()" failed, assert is false');
+        $this->assertSame(150, $this->_image->getWidth());
+        $this->assertSame(50, $this->_image->getHeight());
+    }
 
-        //expected false
+    /**
+     * @test
+     */
+    public function testResizeNoValues()
+    {
         $resize = $this->_image->resize();
         $this->assertFalse($resize, 'assert "resize()" failed, both values cant be NULL');
+    }
 
+    /**
+     * @test
+     */
+    public function testResizeOnlyWidth()
+    {
         //try with the first argument
         $resize = $this->_image->resize(150);
         $this->assertTrue($resize, 'assert "resize()" failed, assert is false');
+        $this->assertSame(150, $this->_image->getWidth());
+        $this->assertSame(81, $this->_image->getHeight());
 
+    }
+
+    /**
+     * @test
+     */
+    public function testResizeOnlyHeight()
+    {
         //try with the second argument
         $resize = $this->_image->resize(null, 50);
         $this->assertTrue($resize, 'assert "resize()" failed, assert is false');
+        $this->assertSame(92, $this->_image->getWidth());
+        $this->assertSame(50, $this->_image->getHeight());
+    }
+
+    /**
+     * @test
+     */
+    public function testResizeInvalidWidth()
+    {
+        $this->assertFalse($this->_image->resize(0, 50));
+    }
+
+    /**
+     * @test
+     */
+    public function testResizeInvalidHeight()
+    {
+        $this->assertFalse($this->_image->resize(50, 0));
     }
 
     /**
@@ -1110,12 +1252,8 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetTransparency()
     {
-        // broken
-        $isBroken = $this->_invalidImage->getTransparency();
-        $this->assertFalse($isBroken, 'assert "getTransparency()" failed, image is broken');
-
-        $transparency = $this->_image->getTransparency();
-        $this->assertInternalType('integer', $transparency, 'assert "getTransparency()" failed, value is from type integer');
+        $this->assertNull($this->_invalidImage->getTransparency());
+        $this->assertInternalType('integer', $this->_image->getTransparency());
     }
 
     /**
@@ -1135,27 +1273,56 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('integer', $color, 'assert "getColor()" failed, value is not from type integer');
         $setTransparency = $this->_image->setTransparency($color);
         $this->assertTrue($setTransparency, 'assert "setTransparency()" failed, assert is false');
-
-        // set beackgroundcolor when no param given
-        $setTransparency = $this->_image->setTransparency();
-        $this->assertTrue($setTransparency, 'assert "setTransparency()" failed, assert is false');
     }
 
     /**
-     * get palette size
+     * set beackgroundcolor when no param given
      *
-     * Expected test result : integer
-     *
+     * @test
+     */
+    public function testSetTransparencyResolveToBackgroundColor()
+    {
+        // set beackgroundcolor when no param given
+        $this->assertTrue($this->_image->setTransparency());
+        $this->assertTrue($this->_image->isTruecolor());
+        $this->assertSame($this->_image->getBackgroundColor(), $this->_image->getTransparency());
+
+        $this->assertTrue($this->_image->reduceColorDepth(16));
+        $this->assertTrue($this->_image->setTransparency());
+        $this->assertFalse($this->_image->isTruecolor());
+        $this->assertSame($this->_image->getBackgroundColor(), $this->_image->getTransparency());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetPaletteSizeInvalidImage()
+    {
+        // broken
+        $isBroken = $this->_invalidImage->getPaletteSize();
+        $this->assertNull($isBroken, 'assert "getPaletteSize()" failed, image is broken');
+    }
+
+    /**
+     * @test
+     */
+    public function testGetPaletteSizeTruecolor()
+    {
+        $paletteSize = $this->_image->getPaletteSize();
+        $this->assertTrue($this->_image->isTruecolor());
+        $this->assertInternalType('integer', $paletteSize, 'assert "getPaletteSize()" failed, value is not from type integer');
+        $this->assertSame(16000000, $paletteSize);
+    }
+
+    /**
      * @test
      */
     public function testGetPaletteSize()
     {
-        // broken
-        $isBroken = $this->_invalidImage->getPaletteSize();
-        $this->assertFalse($isBroken, 'assert "getPaletteSize()" failed, image is broken');
-
-        $paletteSize = $this->_image->getPaletteSize();
-        $this->assertInternalType('integer', $paletteSize, 'assert "getPaletteSize()" failed, value is not from type integer');
+        $this->assertTrue($this->_image->reduceColorDepth(16));
+        $this->assertFalse($this->_image->isTruecolor());
+        $this->assertLessThan(50, $this->_image->getPaletteSize()); // Cannot be 16 as an additional 16 short-hand colors + background are allocated on top
+        $this->assertGreaterThanOrEqual(16, $this->_image->getPaletteSize()); // But it certainly shouldn't be less than 16 either
     }
 
     /**
@@ -1192,6 +1359,9 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     {
         // broken
         $isBroken = $this->_invalidImage->copyRegion($this->_dummyImage, 30, 30, 120, 120, 30, 30);
+        $this->assertFalse($isBroken, 'assert "copyRegion()" failed, image is broken');
+
+        $isBroken = $this->_dummyImage->copyRegion($this->_invalidImage, 30, 30, 120, 120, 30, 30);
         $this->assertFalse($isBroken, 'assert "copyRegion()" failed, image is broken');
 
        $copyRegion = $this->_image->copyRegion($this->_dummyImage, 30, 30, 120, 120, 30, 30);
@@ -1385,6 +1555,10 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $filter = $this->_image->applyFilter(IMG_FILTER_SMOOTH, 0.5);
         $this->assertTrue($filter, 'assert "applyFilter()" failed, filter is not set');
 
+        // set filter with 2 arg
+        $filter = $this->_image->applyFilter(IMG_FILTER_PIXELATE, 1, false);
+        $this->assertTrue($filter, 'assert "applyFilter()" failed, filter is not set');
+
         // set filter with 3 args
         $filter = $this->_image->applyFilter(IMG_FILTER_COLORIZE, 100, 100, 100);
         $this->assertTrue($filter, 'assert "applyFilter()" failed, filter is not set');
@@ -1392,6 +1566,16 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         // set filter with 4 args
         $filter = $this->_image->applyFilter(IMG_FILTER_COLORIZE, 100, 100, 100, 100);
         $this->assertTrue($filter, 'assert "applyFilter()" failed, filter is not set');
+    }
+
+    /**
+     * apply filter
+     *
+     * @test
+     */
+    public function testApplyFilterInvalidValue()
+    {
+        $this->assertFalse($this->_image->applyFilter(1, 2, 3, 4, 5, 6)); // No filter requires 6 arguments
     }
 
     /**
@@ -1621,6 +1805,16 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\Files\InvalidTypeException
+     */
+    public function testOutputToFileInvalidTypeException()
+    {
+        $filename = dirname(CWD . $this->_imageSource) . DIRECTORY_SEPARATOR . 'testimage';
+        $this->_image->outputToFile($filename, 'no-such-type');
+    }
+
+    /**
      * compare image
      *
      * Expected test result : float
@@ -1631,6 +1825,66 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     {
         $compareImage = $this->_image->compareImage($this->_dummyImage);
         $this->assertInternalType('float', $compareImage, 'assert "compareImage()" failed, value is not from type float');
+    }
+
+    /**
+     * Create Thumbnail
+     *
+     * @test
+     */
+    public function testCreateThumbnail()
+    {
+        $this->assertTrue($this->_image->createThumbnail(110, 120, false));
+        $this->assertSame(110, $this->_image->getWidth());
+        $this->assertSame(120, $this->_image->getHeight());
+    }
+
+    /**
+     * Create Thumbnail
+     *
+     * @test
+     */
+    public function testCreateThumbnailWithBiggerSize()
+    {
+        $this->assertTrue($this->_image->createThumbnail(1100, 1200, true));
+        $this->assertSame(1100, $this->_image->getWidth());
+        $this->assertSame(1200, $this->_image->getHeight());
+    }
+
+    /**
+     * Create Thumbnail
+     *
+     * @test
+     */
+    public function testCreateThumbnailChangeByWidth()
+    {
+        $this->_image->resize(400, 200);
+        $this->assertTrue($this->_image->createThumbnail(110, 120, true));
+        $this->assertSame(110, $this->_image->getWidth());
+        $this->assertSame(120, $this->_image->getHeight());
+    }
+
+    /**
+     * Create Thumbnail
+     *
+     * @test
+     */
+    public function testCreateThumbnailChangeByHeight()
+    {
+        $this->_image->resize(200, 400);
+        $this->assertTrue($this->_image->createThumbnail(110, 120, true));
+        $this->assertSame(110, $this->_image->getWidth());
+        $this->assertSame(120, $this->_image->getHeight());
+    }
+
+    /**
+     * Create Thumbnail
+     *
+     * @test
+     */
+    public function testCreateThumbnailWithBrokenImage()
+    {
+        $this->assertFalse($this->_brokenImage->createThumbnail());
     }
 
     /**
@@ -1893,22 +2147,38 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * test 4
-     *
      * Expected test result, see: resources/image/test4.png
      *
      * @test
      */
-    public function test4()
+    public function testCompareImageSame()
     {
-        // 1) identical
         $image = new Image(CWD . 'resources/image/test4.png');
         $imageSame = clone $image;
         $compareImage = $image->compareImage($imageSame);
         unset($image, $imageSame);
         $this->assertLessThan(0.0001, $compareImage, 'assert failed, images should be equal');
+    }
 
-        // 2) different
+    /**
+     * Expected test result, see: resources/image/test4.png
+     *
+     * @test
+     */
+    public function testCompareImageString()
+    {
+        $image = new Image(CWD . 'resources/image/test4.png');
+        $compareImage = $image->compareImage(CWD . 'resources/image/test4.png');
+        $this->assertLessThan(0.0001, $compareImage, 'assert failed, images should be equal');
+    }
+
+    /**
+     * Expected test result, see: resources/image/test4.png
+     *
+     * @test
+     */
+    public function testCompareImageDifferent()
+    {
         $imageBlack = new Image(CWD . 'resources/image/test4.png');
         $imageWhite = clone $imageBlack;
         $imageWhite->negate();
@@ -1917,4 +2187,25 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $this->assertGreaterThan(0.9999, $compareImage, 'assert failed, images should NOT be equal');
     }
 
+    /**
+     * Expected test result, see: resources/image/test4.png
+     *
+     * @test
+     */
+    public function testCompareImageBroken()
+    {
+        $image = new Image(CWD . 'resources/image/test4.png');
+        $compareImage = $image->compareImage($this->_brokenImage);
+        $this->assertGreaterThan(0.98, $compareImage, 'assert failed, images should NOT be equal');
+    }
+
+    /**
+     * @test
+     */
+    public function test__toString()
+    {
+        $this->assertSame($this->_image->getPath(), (string) $this->_image);
+        $this->assertSame("broken image", (string) $this->_brokenImage);
+        $this->assertSame("truecolor-image(300px,200px)", (string) $this->_emptyImage);
+    }
 }

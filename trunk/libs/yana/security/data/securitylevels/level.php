@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Security\Data\SecurityLevels;
 
@@ -78,11 +79,9 @@ class Level extends \Yana\Security\Data\SecurityLevels\AbstractLevel
      * @param  int   $level    integer between 0 and 100
      * @param  bool  $isProxy  is proxy for another user
      */
-    public function __construct($level, $isProxy)
+    public function __construct(int $level, bool $isProxy)
     {
-        assert(is_int($level), 'Wrong type for argument $level. Integer expected');
         assert($level >= 0 && $level <= 100, 'Invalid argument $level. Must be between 0 and 100');
-        assert(is_bool($isProxy), 'Wrong type for argument $isProxy. Boolean expected');
         $this->_securityLevel = (int) $level;
         $this->_userProxyActive = (bool) $isProxy;
     }
@@ -112,7 +111,7 @@ class Level extends \Yana\Security\Data\SecurityLevels\AbstractLevel
      * Set the identifying value for this entity.
      *
      * @param   int  $id  numeric id
-     * @return  self
+     * @return  $this
      */
     public function setId($id)
     {
@@ -126,7 +125,7 @@ class Level extends \Yana\Security\Data\SecurityLevels\AbstractLevel
      *
      * @return  int
      */
-    public function getSecurityLevel()
+    public function getSecurityLevel(): int
     {
         return $this->_securityLevel;
     }
@@ -141,7 +140,7 @@ class Level extends \Yana\Security\Data\SecurityLevels\AbstractLevel
      *
      * @return  bool
      */
-    public function isUserProxyActive()
+    public function isUserProxyActive(): bool
     {
         return $this->_userProxyActive;
     }
@@ -150,11 +149,10 @@ class Level extends \Yana\Security\Data\SecurityLevels\AbstractLevel
      * Set associated application profile.
      *
      * @param   string  $profileName  application profile id
-     * @return  self
+     * @return  $this
      */
-    public function setProfile($profileName)
+    public function setProfile(string $profileName)
     {
-        assert(is_string($profileName), 'Invalid argument $profileName: string expected');
         $this->_profile = (string) $profileName;
         return $this;
     }
@@ -164,7 +162,7 @@ class Level extends \Yana\Security\Data\SecurityLevels\AbstractLevel
      *
      * @return  string
      */
-    public function getProfile()
+    public function getProfile(): string
     {
         return $this->_profile;
     }
@@ -174,7 +172,7 @@ class Level extends \Yana\Security\Data\SecurityLevels\AbstractLevel
      *
      * @return  string
      */
-    public function getUserName()
+    public function getUserName(): string
     {
         return $this->_userName;
     }
@@ -184,7 +182,7 @@ class Level extends \Yana\Security\Data\SecurityLevels\AbstractLevel
      *
      * @return  string
      */
-    public function getGrantedByUser()
+    public function getGrantedByUser(): string
     {
         return $this->_grantedByUser;
     }
@@ -193,12 +191,10 @@ class Level extends \Yana\Security\Data\SecurityLevels\AbstractLevel
      * Set the id of the user this rule applies to.
      *
      * @param   string  $userName  id referencing user table
-     * @return  self
+     * @return  $this
      */
-    public function setUserName($userName)
+    public function setUserName(string $userName)
     {
-        assert(is_string($userName), 'Invalid argument $userName: string expected');
-
         $this->_userName = (string) $userName;
         return $this;
     }
@@ -207,12 +203,10 @@ class Level extends \Yana\Security\Data\SecurityLevels\AbstractLevel
      * Set the id of the user who created this rule.
      *
      * @param   string  $createdByUser  id referencing user table
-     * @return  self
+     * @return  $this
      */
-    public function setGrantedByUser($createdByUser)
+    public function setGrantedByUser(string $createdByUser)
     {
-        assert(is_string($createdByUser), 'Invalid argument $createdByUser: string expected');
-
         $this->_grantedByUser = (string) $createdByUser;
         return $this;
     }
@@ -221,14 +215,13 @@ class Level extends \Yana\Security\Data\SecurityLevels\AbstractLevel
      * Grant this permission to another user.
      *
      * @param   string  $userName  user id (will trigger database exception if not valid)
-     * @return  self
+     * @return  \Yana\Security\Data\SecurityLevels\IsLevelEntity
      * @throws  \Yana\Core\Exceptions\User\NotGrantableException        when the permission has no grant option
      * @throws  \Yana\Core\Exceptions\User\LevelNotSavedException       when the new permission can't be saved
      * @throws  \Yana\Core\Exceptions\User\LevelAlreadyExistsException  when a similar entry already exists
      */
-    public function grantTo($userName)
+    public function grantTo(string $userName): \Yana\Security\Data\SecurityLevels\IsLevelEntity
     {
-        assert(is_string($userName), 'Invalid argument $userName: string expected');
         if (!$this->isUserProxyActive()) {
             $message = "This permission cannot be granted to another user.";
             $code = \Yana\Log\TypeEnumeration::WARNING;
@@ -241,7 +234,7 @@ class Level extends \Yana\Security\Data\SecurityLevels\AbstractLevel
             ->setGrantedByUser($this->getUserName())
             ->setProfile($this->getProfile())
             ->saveEntity(); // may throw exception
-        return $this;
+        return $permission;
     }
 
 }

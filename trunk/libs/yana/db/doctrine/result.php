@@ -42,14 +42,14 @@ class Result extends \Yana\Db\Doctrine\AbstractResult
 {
 
     /**
-     * @var \Doctrine\DBAL\Statement
+     * @var \Doctrine\DBAL\Driver\Statement
      */
     private $_result = null;
 
     /**
      * Creates a new resultset.
      *
-     * @param  Doctrine\DBAL\Driver\Statement  $result  resultset
+     * @param  \Doctrine\DBAL\Driver\Statement  $result  resultset
      */
     public function __construct(\Doctrine\DBAL\Driver\Statement $result)
     {
@@ -59,7 +59,7 @@ class Result extends \Yana\Db\Doctrine\AbstractResult
     /**
      * Returns resultset.
      *
-     * @return  \Doctrine\DBAL\Statement
+     * @return  \Doctrine\DBAL\Driver\Statement
      */
     protected function _getResult()
     {

@@ -1,6 +1,6 @@
 <?php
 /**
- * YANA library
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -21,61 +21,52 @@
  *
  * This notice MAY NOT be removed.
  *
- * @package  yana
+ * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
- * @ignore
  */
+
+namespace Yana\Db\Sql\Quoting;
 
 /**
- * <<interface>> Fallback for PHP 5.6
- *
- * @package     yana
- * @subpackage  core
  * @ignore
  */
-interface Throwable
+require_once __DIR__ . '/../../../../../include.php';
+
+/**
+ * @package  test
+ */
+class NullAlgorithmTest extends \PHPUnit_Framework_TestCase
 {
 
-	/**
-	 * @return  string
-	 */
-    public function getMessage();
-
-	/**
-	 * @return  int
-	 */
-	public function getCode();
-
-	/**
-	 * @return  string
-	 */
-	public function getFile();
-
-	/**
-	 * @return  int
-	 */
-	public function getLine();
+    /**
+     * @var NullAlgorithm
+     */
+    protected $object;
 
     /**
-     * @return  array
+     * Sets up the fixture, for example, opens a network connection.
+     * This method is called before a test is executed.
      */
-	public function getTrace();
+    protected function setUp()
+    {
+        $this->object = new \Yana\Db\Sql\Quoting\NullAlgorithm();
+    }
 
-	/**
-	 * @return  self
-	 */
-	public function getPrevious();
+    /**
+     * Tears down the fixture, for example, closes a network connection.
+     * This method is called after a test is executed.
+     */
+    protected function tearDown()
+    {
+        
+    }
 
-	/**
-	 * @return  string
-	 */
-	public function getTraceAsString();
-
-	/**
-	 * @return  string
-	 */
-	public function __toString();
+    /**
+     * @test
+     */
+    public function testQuote()
+    {
+        $this->assertSame('Test', $this->object->quote('Test'));
+    }
 
 }
-
-?>

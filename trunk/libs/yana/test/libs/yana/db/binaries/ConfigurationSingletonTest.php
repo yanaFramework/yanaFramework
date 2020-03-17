@@ -75,7 +75,7 @@ class ConfigurationSingletonTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetDirectory()
     {
-        $this->assertSame(realpath(__DIR__) . '/', $this->object->setDirectory(__DIR__)->getDirectory());
+        $this->assertSame(realpath(__DIR__) . \DIRECTORY_SEPARATOR, $this->object->setDirectory(__DIR__)->getDirectory());
     }
 
     /**

@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Plugins\Menus;
 
@@ -48,7 +49,7 @@ class NullMenuBuilder extends \Yana\Core\StdObject implements \Yana\Plugins\Menu
      * @param   \Yana\Plugins\Menus\IsMenu  $menu  from which to take the entries
      * @return  array
      */
-    public function getTextMenu(\Yana\Plugins\Menus\IsMenu $menu)
+    public function getTextMenu(\Yana\Plugins\Menus\IsMenu $menu): array
     {
         return array();
     }
@@ -59,7 +60,7 @@ class NullMenuBuilder extends \Yana\Core\StdObject implements \Yana\Plugins\Menu
      * @param   string  $menuNameToken  menu name language token
      * @return  string
      */
-    public function translateMenuName($menuNameToken)
+    public function translateMenuName(string $menuNameToken): string
     {
         return $menuNameToken;
     }

@@ -69,23 +69,21 @@ class Result extends \Yana\Core\StdObject implements \Yana\Db\IsResult
      *
      * @return  int
      */
-    public function countRows()
+    public function countRows(): int
     {
-        return count($this->_result);
+        return is_array($this->_result) ? count($this->_result) : 0;
     }
 
     /**
      * Fetch a row from the resultset.
      *
-     * Returns an associative array of the row at index $i of the result set.
+     * Returns the entry at index $i of the result set.
      *
      * @param   int  $rowNumber  index of the row to retrieve
-     * @return  array
+     * @return  mixed
      */
-    public function fetchRow($rowNumber)
+    public function fetchRow(int $rowNumber)
     {
-        assert(is_int($rowNumber), 'Invalid argument $rowNumber: int expected');
-
         $row = array();
         if (isset($this->_result[$rowNumber])) {
             $row = $this->_result[$rowNumber];
@@ -96,27 +94,23 @@ class Result extends \Yana\Core\StdObject implements \Yana\Db\IsResult
     /**
      * Fetch and return all rows from the result set.
      *
-     * If the result is an error, null is returned instead.
-     *
-     * @return  array|null
+     * @return  array
      */
-    public function fetchAll()
+    public function fetchAll(): array
     {
-        return $this->_result;
+        return is_array($this->_result) ? $this->_result : array();
     }
 
     /**
      * Fetch and return a column from the current row pointer position
      *
-     * @param   int|string  $column  the column number (or name) to fetch
+     * @param   int  $column  the column number to fetch
      * @return  array
      */
-    public function fetchColumn($column = 0)
+    public function fetchColumn(int $column = 0): array
     {
-        assert(is_string($column) || is_int($column), 'Invalid argument $column: int expected');
-
         $result = array();
-        foreach ((array) $this->fetchAll() as $row)
+        foreach ($this->fetchAll() as $row)
         {
             $result[] = $this->_fetchCellFromRow($row, $column);
         }
@@ -126,15 +120,12 @@ class Result extends \Yana\Core\StdObject implements \Yana\Db\IsResult
     /**
      * Fetch single column from the next row from a result set.
      *
-     * @param   int|string  $column     the column number (or name) to fetch
-     * @param   int         $rowNumber  number of the row where the data can be found
+     * @param   int  $column     the column number to fetch
+     * @param   int  $rowNumber  number of the row where the data can be found
      * @return  mixed
      */
-    public function fetchOne($column = 0, $rowNumber = 0)
+    public function fetchOne(int $column = 0, int $rowNumber = 0)
     {
-        assert(is_string($column) || is_int($column), 'Invalid argument $column: int expected');
-        assert(is_int($rowNumber), 'Invalid argument $rowNumber: int expected');
-
         $row = $this->fetchRow($rowNumber);
         return $this->_fetchCellFromRow($row, $column);
     }
@@ -142,22 +133,17 @@ class Result extends \Yana\Core\StdObject implements \Yana\Db\IsResult
     /**
      * Fetch a cell from a row array.
      * 
-     * @param   array       $row     a single row
-     * @param   int|string  $column  the column number (or name) to fetch
+     * @param   array  $row     a single row
+     * @param   int    $column  the column number (or name) to fetch
      * @return  mixed
      */
-    private function _fetchCellFromRow(array $row, $column)
+    private function _fetchCellFromRow(array $row, int $column)
     {
-        assert(is_string($column) || is_int($column), 'Invalid argument $column: int expected');
-
         switch (true)
         {
-            case is_int($column) && count($row) >= $column:
+            case count($row) >= $column:
                 $row = \array_values($row);
                 break;
-
-            case is_string($column):
-                $column = \mb_strtolower($column);
         }
 
         return isset($row[$column]) ? $row[$column] : null;

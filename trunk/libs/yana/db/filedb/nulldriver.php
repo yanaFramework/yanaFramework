@@ -65,6 +65,19 @@ class NullDriver extends \Yana\Db\FileDb\Driver
         return parent::_write(false);
     }
 
+    /**
+     * Overwrite this with null-object in unit tests to avoid side-effects.
+     *
+     * @param   \Yana\Files\SML  $smlfile   data (SML object)
+     * @param   string           $filename  filename
+     * @return  \Yana\Db\FileDb\Index
+     * @ignore
+     */
+    protected function _createIndex(\Yana\Files\SML $smlfile, string $filename): \Yana\Db\FileDb\Index
+    {
+        return new \Yana\Db\FileDb\NullIndex($this->_getTable(), $smlfile, $filename);
+    }
+
 }
 
 ?>

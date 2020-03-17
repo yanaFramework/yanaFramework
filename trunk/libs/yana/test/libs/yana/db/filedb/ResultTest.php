@@ -95,7 +95,7 @@ class ResultTest extends \PHPUnit_Framework_TestCase
      */
     public function testFetchAll()
     {
-        $this->assertNull($this->error->fetchAll());
+        $this->assertSame(array(), $this->error->fetchAll());
         $this->assertEquals(\Yana\Util\Hashtable::changeCase($this->rows), $this->object->fetchAll());
     }
 
@@ -107,8 +107,6 @@ class ResultTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(array(), $this->error->fetchColumn(0));
         $this->assertEquals(array('Val1', 'Val3'), $this->object->fetchColumn(0));
         $this->assertEquals(array('Val2', 'Val4'), $this->object->fetchColumn(1));
-        $this->assertEquals(array('Val1', 'Val3'), $this->object->fetchColumn('A'));
-        $this->assertEquals(array('Val2', 'Val4'), $this->object->fetchColumn('B'));
         $this->assertEquals(array(null, null), $this->object->fetchColumn(2));
     }
 
@@ -122,10 +120,6 @@ class ResultTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('Val2', $this->object->fetchOne(1, 123));
         $this->assertSame('Val3', $this->object->fetchOne(0, 124));
         $this->assertSame('Val4', $this->object->fetchOne(1, 124));
-        $this->assertSame('Val1', $this->object->fetchOne('A', 123));
-        $this->assertSame('Val2', $this->object->fetchOne('B', 123));
-        $this->assertSame('Val3', $this->object->fetchOne('A', 124));
-        $this->assertSame('Val4', $this->object->fetchOne('B', 124));
         $this->assertSame(null, $this->object->fetchOne(2, 0));
     }
 

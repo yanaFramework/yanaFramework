@@ -51,6 +51,11 @@ class ValueConverter extends \Yana\Core\StdObject implements \Yana\Db\Helpers\Is
     private $_quotingAlgorithm = null;
 
     /**
+     * @var \Yana\Db\Binaries\IsFileMapper
+     */
+    private $_fileMapper = null;
+
+    /**
      * Sets the target DBMS.
      *
      * @param  string  $dbms  name of DBMS to sanitize values for
@@ -96,6 +101,35 @@ class ValueConverter extends \Yana\Core\StdObject implements \Yana\Db\Helpers\Is
     }
 
     /**
+     * Returns a file mapper.
+     *
+     * If none was set, the function will create a new one with default settings and return it.
+     *
+     * @return \Yana\Db\Binaries\IsFileMapper
+     */
+    public function getFileMapper(): \Yana\Db\Binaries\IsFileMapper
+    {
+        if (!isset($this->_fileMapper)) {
+            $this->_fileMapper = new \Yana\Db\Binaries\FileMapper();
+        }
+        return $this->_fileMapper;
+    }
+
+    /**
+     * Inject a file mapper.
+     *
+     * This object handles mapping of database Id to physical file names and vice versa.
+     *
+     * @param   \Yana\Db\Binaries\IsFileMapper  $fileMapper  instance to replace
+     * @return  $this
+     */
+    public function setFileMapper(\Yana\Db\Binaries\IsFileMapper $fileMapper)
+    {
+        $this->_fileMapper = $fileMapper;
+        return $this;
+    }
+
+    /**
      * Prepare a database entry for output.
      *
      * @param   mixed                $value   value of the row
@@ -105,11 +139,11 @@ class ValueConverter extends \Yana\Core\StdObject implements \Yana\Db\Helpers\Is
      */
     public function convertToInternalValue($value, \Yana\Db\Ddl\Column $column, string $key = "")
     {
-        $title = $this->getTitle();
+        $title = $column->getTitle();
         if (empty($title)) {
-            $title = $this->getName();
+            $title = $column->getName();
         }
-        $column = $this->getReferenceColumn();
+        $column = $column->getReferenceColumn();
         $type = $column->getType();
         $length = (int) $column->getLength();
 
@@ -118,32 +152,36 @@ class ValueConverter extends \Yana\Core\StdObject implements \Yana\Db\Helpers\Is
             case \Yana\Db\Ddl\ColumnTypeEnumeration::ARR:
             case \Yana\Db\Ddl\ColumnTypeEnumeration::LST:
             case \Yana\Db\Ddl\ColumnTypeEnumeration::SET:
-                if (!is_array($value)) {
-                    assert(is_string($value), 'is_string($value)');
+                if (is_string($value)) {
                     $value = json_decode($value, true);
+
+                } elseif (!is_array($value)) {
+                    return null; // Just in case the value is invalid
                 }
                 assert(is_array($value), 'Unexpected result: $value should be an array.');
                 if ($key !== "") {
                     $value = \Yana\Util\Hashtable::get($value, mb_strtolower($key));
-                    if (is_null($value)) {
-                        $value = null;
-                    }
                 }
                 return $value;
 
             case \Yana\Db\Ddl\ColumnTypeEnumeration::BOOL:
-                return (!empty($value) || $value === 'T'); // T = interbase DBMS
+                // Everything except 1, TRUE, "true", "yes", "1", and "T" is FALSE
+                return ($value === true || $value === 1 || filter_var((string) $value, FILTER_VALIDATE_BOOLEAN) || $value === 'T'); // T = interbase DBMS
 
             case \Yana\Db\Ddl\ColumnTypeEnumeration::DATE:
             case \Yana\Db\Ddl\ColumnTypeEnumeration::TIME:
                 if (!is_string($value)) {
                     return null;
                 }
-                return strtotime($value);
+                $timestamp = strtotime($value);
+                if (!is_int($timestamp)) {
+                    return null;
+                }
+                return $timestamp;
 
             case \Yana\Db\Ddl\ColumnTypeEnumeration::HTML:
                 if (!is_scalar($value)) {
-                    return "";
+                    return null;
                 }
                 return \Yana\Util\Strings::htmlSpecialChars((string) $value);
 
@@ -153,17 +191,15 @@ class ValueConverter extends \Yana\Core\StdObject implements \Yana\Db\Helpers\Is
                     return null;
                 }
                 // get filename
-                $mapper = new \Yana\Db\Binaries\FileMapper();
+                $mapper = $this->getFileMapper();
                 $fileType = ($type === 'image') ? \Yana\Db\Binaries\FileTypeEnumeration::IMAGE : \Yana\Db\Binaries\FileTypeEnumeration::FILE;
                 $filename = $mapper->toFileName($value, $fileType);
                 unset($fileType, $mapper);
                 // return NULL if file doesn't exist
                 if (!\is_file($filename)) {
-                    return null;
+                    $filename = null;
                 }
-                // @codeCoverageIgnoreStart
                 return $filename;
-                // @codeCoverageIgnoreEnd
 
             case \Yana\Db\Ddl\ColumnTypeEnumeration::RANGE:
             case \Yana\Db\Ddl\ColumnTypeEnumeration::FLOAT:
@@ -193,10 +229,13 @@ class ValueConverter extends \Yana\Core\StdObject implements \Yana\Db\Helpers\Is
                     $number = array();
                     preg_match('/^(\d+)\.(\d+)$/s', $value, $number);
                     $digits = $number[1] . $number[2];
+                    if ($precision <= 0) {
+                        $precision = strlen((string) $number[2]);
+                    }
                     if ($length > 0 && strlen($digits) < $length) {
                         $value = str_pad($number[1], $length - $precision, '0', STR_PAD_LEFT);
                         $value .= '.';
-                        $value .= str_pad($number[2], $precision, '0', STR_PAD_RIGHT);
+                        $value .= str_pad($number[2], is_int($precision) ? $precision : 0, '0', STR_PAD_RIGHT);
                     }
                 }
                 return $value;
@@ -233,7 +272,7 @@ class ValueConverter extends \Yana\Core\StdObject implements \Yana\Db\Helpers\Is
 
             default:
                 if (!is_scalar($value)) {
-                    return "";
+                    return null;
                 }
                 return "$value";
         }
@@ -304,13 +343,16 @@ class ValueConverter extends \Yana\Core\StdObject implements \Yana\Db\Helpers\Is
                     case \Yana\Db\DriverEnumeration::POSTGRESQL:
                         return $value === true ? "TRUE" : "FALSE";
 
+                    case \Yana\Db\DriverEnumeration::INTERBASE:
+                        return $value === true ? "T" : "F";
+
                     default:
                         return $value === true ? "1" : "0";
                 }
 
             case \Yana\Db\Ddl\ColumnTypeEnumeration::DATE:
-                return \YANA_DB_DELIMITER . date('c', (int) $value) . \YANA_DB_DELIMITER;
-            // fall through
+                return $this->getQuotingAlgorithm()->quote(date('c', (int) $value));
+
             case \Yana\Db\Ddl\ColumnTypeEnumeration::ARR:
             case \Yana\Db\Ddl\ColumnTypeEnumeration::LST:
             case \Yana\Db\Ddl\ColumnTypeEnumeration::SET:

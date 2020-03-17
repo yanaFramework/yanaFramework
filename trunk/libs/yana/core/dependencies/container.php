@@ -154,6 +154,11 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
     private $_eventConfigurationsForPlugins = null;
 
     /**
+     * @var \Yana\Views\Helpers\Formatters\UrlFormatter 
+     */
+    private $_urlFormatter = null;
+
+    /**
      * <<constructor>> Creates an instance.
      *
      * @param  \Yana\Util\IsXmlObject  $configuration  loaded from XML file in config-directory
@@ -246,7 +251,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
                     $action = (string) $this->_configuration->default->homepage;
                 // fall through
                 default:
-                    $action = mb_strtolower($action);
+                    $action = mb_strtolower((string) $action);
                 break;
             }
             $this->_action = $action;
@@ -635,7 +640,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
         assert(is_scalar($key), 'Invalid argument $key: scalar expected');
         $result = null;
         if (isset($this->_configuration->default)) {
-            $key = mb_strtolower("$key");
+            $key = mb_strtolower((string) $key);
             if (isset($this->_configuration->default->$key)) {
                 $result = $this->_configuration->default->$key;
             } else {
@@ -798,6 +803,20 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
             $this->_pluginAdapter = new \Yana\Plugins\Data\Adapter($this->getConnectionFactory()->createConnection("plugins"));
         }
         return $this->_pluginAdapter;
+    }
+
+    /**
+     * Lazy-loads url formatter helper.
+     *
+     * @return \Yana\Views\Helpers\Formatters\UrlFormatter
+     */
+    public function getUrlFormatter(): \Yana\Views\Helpers\Formatters\UrlFormatter
+    {
+        if (!isset($this->_urlFormatter)) {
+            $this->_urlFormatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
+            \Yana\Views\Helpers\Formatters\UrlFormatter::setDependencyContainer($this);
+        }
+        return $this->_urlFormatter;
     }
 
 }

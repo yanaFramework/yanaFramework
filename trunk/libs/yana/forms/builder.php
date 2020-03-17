@@ -179,11 +179,7 @@ class Builder extends \Yana\Forms\AbstractBuilder
             $form = $this->_getDatabaseSchema();
             foreach (explode('.', $ids) as $id)
             {
-                if (!$form->isForm($id)) {
-                    $message = "The form with name '" . $ids . "' was not found.";
-                    throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
-                }
-                $form = $form->getForm($id);
+                $form = $form->getForm($id); // may throw InvalidArgumentException
             }
         } elseif ($this->getTable()) {
                 $table = $this->_getDatabaseSchema()->getTable($this->getTable());
@@ -222,7 +218,7 @@ class Builder extends \Yana\Forms\AbstractBuilder
         assert(!isset($grant), 'Cannot redeclare var $grant');
         foreach ($table->getGrants() as $grant)
         {
-            $form->setGrant($grant);
+            $form->addGrantObject($grant);
         }
         unset($grant);
         assert(!isset($column), 'Cannot redeclare var $column');

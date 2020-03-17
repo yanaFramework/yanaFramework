@@ -73,7 +73,7 @@ interface IsVDrive extends \Yana\Files\IsResource, \Yana\Report\IsReportable
      * @param   string  $name  name of the drive to mount
      * @return  bool
      */
-    public function mount($name);
+    public function mount(string $name): bool;
 
     /**
      * Read the virtual drive.
@@ -96,14 +96,14 @@ interface IsVDrive extends \Yana\Files\IsResource, \Yana\Report\IsReportable
      * @throws  \Yana\Core\Exceptions\NotReadableException    when configuration file is not readable
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when the file could not be read or contains invalid syntax
      */
-    public function getDriveName();
+    public function getDriveName(): string;
 
     /**
      * Return file contents as string.
      *
      * @return  string
      */
-    public function getContent();
+    public function getContent(): string;
 
     /**
      * Get a resource.
@@ -113,12 +113,12 @@ interface IsVDrive extends \Yana\Files\IsResource, \Yana\Report\IsReportable
      *
      * @name    VDrive::getResource()
      * @param   string  $path  virtual file path
-     * @return  \Yana\Files\AbstractResource
+     * @return  \Yana\Files\IsReadable
      * @throws  \Yana\Core\Exceptions\NotFoundException       when virtual file or directory does not exist.
      * @throws  \Yana\Core\Exceptions\NotReadableException    when source file is not readable
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when the file could not be read or contains invalid syntax
      */
-    public function getResource(string $path);
+    public function getResource(string $path): \Yana\Files\IsReadable;
 
     /**
      * Resolves the virtual path and returns the real path of the resource.
@@ -129,7 +129,7 @@ interface IsVDrive extends \Yana\Files\IsResource, \Yana\Report\IsReportable
      * @throws  \Yana\Core\Exceptions\NotReadableException    when the vDrive is not readable
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when the vDrive could not be read or contains invalid syntax
      */
-    public function getResourcePath(string $virtualPath);
+    public function getResourcePath(string $virtualPath): string;
 
     /**
      * Get list of mountpoints.

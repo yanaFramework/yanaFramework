@@ -104,7 +104,6 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         $this->dbsobj->insert('ft.1', array('array' => array('1' => '1')));
         $this->dbsobj->update('ft.1.array.1.a', 2); // must not throw exception
         $this->dbsobj->commit();
-        $test = 1;
     }
 
     /**

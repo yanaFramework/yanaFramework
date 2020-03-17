@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Media;
 
@@ -37,7 +38,7 @@ namespace Yana\Media;
  * the transparent color and width == height.
  *
  * @package     yana
- * @subpackage  utilities
+ * @subpackage  media
  * @since       2.8.7
  * @see         Image
  */
@@ -78,41 +79,44 @@ class Brush extends \Yana\Core\StdObject
      * Here are some examples:
      * <ul>
      * <li> airbrush </li>
-     * <li> small circle </li>
+     * <li> small-circle </li>
      * <li> circle </li>
      * <li> dot </li>
-     * <li> small star </li>
+     * <li> small-star </li>
      * <li> star </li>
      * <li> square </li>
      * <li> point (default) </li>
      * </ul>
      *
      * @param   string  $brushname  see list
-     * @throws  \Yana\Core\Exceptions\NotImplementedException  if the GD-library is not available
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException when the requested brush is not found
+     * @throws  \Yana\Media\GdlException                        if the GD-library is not available
+     * @throws  \Yana\Core\Exceptions\Files\NotFoundException   when the requested brush is not found
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the image file is found but damaged or invalid
      */
-    public function __construct($brushname = 'point')
+    public function __construct(string $brushname = 'point')
     {
-        assert(is_string($brushname), 'Wrong type for argument 1. String expected');
-
-        // Check if GD-libary is available and able to handle PNG images.
-        if (!function_exists('imagecreate') || !function_exists('imagecreatefrompng')) {
-            throw new \Yana\Core\Exceptions\NotImplementedException("Cannot create brush. This server is unable to handle PNG images.");
+        if (!function_exists('imagecreatefrompng')) {
+            // @codeCoverageIgnoreStart
+            $message = "The GD library does not seem to be installed. Without this library this framework will be unable to create images. " .
+                    "Please update your configuration!";
+            throw new \Yana\Media\GdlException($message, \Yana\Log\TypeEnumeration::ERROR);
+            // @codeCoverageIgnoreEnd
         }
 
-        $brushFile = self::getDirectory() . str_replace(' ', '-', $brushname) . '.png';
+        $brushFile = self::getDirectory() . preg_replace('/[^a-z\-]/', '-', $brushname) . '.png';
 
         // check if file exists
         if (!file_exists($brushFile)) {
-            throw new \Yana\Core\Exceptions\InvalidArgumentException("Invalid brush file. File '$brushname' not found.");
+            throw new \Yana\Core\Exceptions\Files\NotFoundException("Invalid brush file. File '$brushname' not found.");
         }
         $this->_brushname = $brushname;
-        $this->_image = imagecreatefrompng($brushFile);
+        $this->_image = @imagecreatefrompng($brushFile);
 
         // check if file is a valid image
         if (!is_resource($this->_image)) {
-            throw new \Yana\Core\Exceptions\InvalidArgumentException("The brush '{$brushname}' is not a valid image-file.");
+            throw new \Yana\Core\Exceptions\InvalidArgumentException("The brush '$brushname' is not a valid image-file.");
         }
+
         /* Set background transparent.
          *
          * The source must be a black-white image, where palette index 1 is the background color.
@@ -125,7 +129,7 @@ class Brush extends \Yana\Core\StdObject
      *
      * @return  string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->_brushname;
     }
@@ -140,9 +144,8 @@ class Brush extends \Yana\Core\StdObject
      *
      * @param  string  $directory  new source directory
      */
-    public static function setDirectory($directory)
+    public static function setDirectory(string $directory)
     {
-        assert(is_string($directory), 'Invalid argument $directory: string expected');
         assert(is_dir($directory), 'Invalid argument $directory: must be a valid path');
         self::$_brushdir = (string) $directory;
     }
@@ -154,7 +157,7 @@ class Brush extends \Yana\Core\StdObject
      */
     public static function resetDirectory()
     {
-        self::$_brushdir = __DIR__ . '/brushes/';
+        self::$_brushdir = __DIR__ . DIRECTORY_SEPARATOR . 'brushes' . DIRECTORY_SEPARATOR;
     }
 
     /**
@@ -164,7 +167,7 @@ class Brush extends \Yana\Core\StdObject
      *
      * @return  string
      */
-    public static function getDirectory()
+    public static function getDirectory(): string
     {
         if (is_null(self::$_brushdir)) {
             self::resetDirectory();
@@ -176,9 +179,9 @@ class Brush extends \Yana\Core\StdObject
     /**
      * Returns brush's dimension in pixel or bool(false) on error.
      *
-     * @return  int|bool(false)
+     * @return  int
      */
-    public function getSize()
+    public function getSize(): int
     {
         return imagesx($this->_image);
     }
@@ -190,11 +193,10 @@ class Brush extends \Yana\Core\StdObject
      * Returns bool(false) on error.
      *
      * @param   int  $size  brush size in pixel
-     * @return  \Yana\Media\Brush
+     * @return  $this
      */
-    public function setSize($size)
+    public function setSize(int $size)
     {
-        assert(is_int($size), 'Invalid argument $size: int expected');
         assert($size > 0, 'Invalid argument $size: string expected');
 
         $currentSize = $this->getSize();
@@ -218,20 +220,21 @@ class Brush extends \Yana\Core\StdObject
      * the red, green and blue values of this color.
      * The palette index is detected automatically.
      *
-     * @param   int  $red    0 - 255 (255 = 100% red)
-     * @param   int  $green  0 - 255 (255 = 100% green)
-     * @param   int  $blue   0 - 255 (255 = 100% blue)
-     * @return  \Yana\Media\Brush
+     * @param   int    $red      0 - 255 (255 = 100% red)
+     * @param   int    $green    0 - 255 (255 = 100% green)
+     * @param   int    $blue     0 - 255 (255 = 100% blue)
+     * @param   float  $opacity  0.0 - 1.0 (1.0 = 100% opaque)
+     * @return  $this
      */
-    public function setColor($red, $green, $blue)
+    public function setColor(int $red, int $green, int $blue, float $opacity = 0.0)
     {
-        assert(is_int($red), 'Wrong type for argument 1. Integer expected');
-        assert(is_int($green), 'Wrong type for argument 2. Integer expected');
-        assert(is_int($blue), 'Wrong type for argument 3. Integer expected');
         assert($red >= 0 && $red <= 255, 'Invalid argument $red: must be in range [0,255].');
         assert($green >= 0 && $green <= 255, 'Invalid argument $green: must be in range [0,255].');
         assert($blue >= 0 && $blue <= 255, 'Invalid argument $blue: must be in range [0,255].');
-        imagecolorset($this->_image, 0, $red, $green, $blue);
+        assert(!$opacity || ($opacity >= 0.0 && $opacity <= 1.0), 'Invalid argument $opacity: must be in range [0.0,1.0].');
+
+        $opacityInt = (int) floor($opacity * 127);
+        imagecolorset($this->_image, 0, $red, $green, $blue, $opacityInt);
         return $this;
     }
 
@@ -244,7 +247,7 @@ class Brush extends \Yana\Core\StdObject
      *
      * @return   array
      */
-    public function getColor()
+    public function getColor(): array
     {
         return imagecolorsforindex($this->_image, 0);
     }
@@ -259,48 +262,13 @@ class Brush extends \Yana\Core\StdObject
      */
     public function __toString()
     {
-        $name = $this->getName();
-        if (is_string($name)) {
-            return $name;
-        } else {
-            return "untitled brush";
-        }
-    }
-
-    /**
-     * Clone this object.
-     *
-     * Creates a copy of this object.
-     * You are encouraged to reimplement this for each subclass.
-     *
-     * @return Brush
-     */
-    public function __clone()
-    {
-        parent::__clone();
-
-        if (!$this->isBroken()) {
-            $width = $this->getWidth();
-            $height = $this->getHeight();
-
-            /* create new image */
-            if (function_exists('imagecreatetruecolor')) {
-                $copiedImage = imagecreatetruecolor($width, $height);
-            } elseif (function_exists('imagecreate')) {
-                $copiedImage = imagecreate($width, $height);
-            } else {
-                return false;
-            }
-
-            imagecopy($copiedImage, $this->_image, 0, 0, 0, 0, $width, $height);
-            $this->_image = $copiedImage;
-        }
+        return $this->getName();
     }
 
     /**
      * Compare with another object.
      *
-     * Returns bool(true) if this object and $anotherObject have an image resource that is the same.
+     * Returns bool(true) if this object and $anotherObject have the same brush name.
      * Returns bool(false) otherwise.
      *
      * @param   \Yana\Core\IsObject  $anotherObject  any object or var you want to compare
@@ -308,7 +276,7 @@ class Brush extends \Yana\Core\StdObject
      */
     public function equals(\Yana\Core\IsObject $anotherObject)
     {
-        return $anotherObject instanceof $this && $this->_image === $anotherObject->getResource();
+        return $anotherObject instanceof $this && $this->getName() === $anotherObject->getName();
     }
 
     /**
@@ -323,7 +291,7 @@ class Brush extends \Yana\Core\StdObject
      * @return  bool
      * @since   3.1.0
      */
-    public function equalsResoure($resource)
+    public function equalsResoure($resource): bool
     {
         assert(is_resource($resource), 'Wrong type for argument 1. Resource expected');
         return is_resource($resource) && $this->_image === $resource;
@@ -332,22 +300,13 @@ class Brush extends \Yana\Core\StdObject
     /**
      * Get the image resource.
      *
-     * This returns the image resource of the object,
-     * or bool(false) on error.
+     * This returns the image resource of the object.
      *
-     * @return resource|bool(false)
+     * @return resource
      */
     public function getResource()
     {
-        /**
-         * error - broken image
-         */
-        if (!is_resource($this->_image)) {
-            return false;
-
-        } else {
-            return $this->_image;
-        }
+        return $this->_image;
     }
 
     /**

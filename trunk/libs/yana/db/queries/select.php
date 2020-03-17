@@ -314,7 +314,22 @@ class Select extends \Yana\Db\Queries\SelectCount implements \Yana\Db\Queries\Is
     }
 
     /**
-     * set column to sort the resultset by
+     * Add column to "order by"-clause.
+     *
+     * @param   string  $column  column name
+     * @param   bool    $desc    sort descending (true=yes, false=no)
+     * @throws  \Yana\Db\Queries\Exceptions\TableNotFoundException   when the base table does not exist
+     * @throws  \Yana\Db\Queries\Exceptions\ColumnNotFoundException  when the column does not exist
+     * @return  $this
+     */
+    public function addOrderBy(string $column, bool $desc = false)
+    {
+        parent::addOrderBy($column, $desc);
+        return $this;
+    }
+
+    /**
+     * Set column to sort the resultset by.
      *
      * @param   array  $orderBy  list of column names
      * @param   array  $desc     sort descending (true=yes, false=no)

@@ -56,6 +56,15 @@ interface IsFormContainer extends \Yana\Core\Dependencies\IsRequestContainer
     public function getLanguage(): \Yana\Translations\IsFacade;
 
     /**
+     * Create and return an url formatter helper.
+     *
+     * This returns a formatter. If none exists, a new instance is created.
+     *
+     * @return  \Yana\Translations\IsFacade
+     */
+    public function getUrlFormatter(): \Yana\Views\Helpers\Formatters\UrlFormatter;
+
+    /**
      * Get plugin-manager.
      *
      * This returns the plugin manager. If none exists, a new instance is created.

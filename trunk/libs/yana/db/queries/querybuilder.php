@@ -38,23 +38,8 @@ namespace Yana\Db\Queries;
  * @package     yana
  * @subpackage  db
  */
-class QueryBuilder extends \Yana\Core\StdObject implements \Yana\Db\Queries\IsQueryBuilder
+class QueryBuilder extends \Yana\Db\Queries\AbstractQueryBuilder implements \Yana\Db\Queries\IsQueryBuilder
 {
-
-    /**
-     * @var \Yana\Db\IsConnection 
-     */
-    private $_connection = null;
-
-    /**
-     * <<construct>> Create a new instance.
-     *
-     * @param  \Yana\Db\IsConnection $connection  open database connection
-     */
-    public function __construct(\Yana\Db\IsConnection $connection)
-    {
-        $this->_connection = $connection;
-    }
 
     /**
      * Create Select statement.
@@ -100,26 +85,43 @@ class QueryBuilder extends \Yana\Core\StdObject implements \Yana\Db\Queries\IsQu
      * )
      * </code>
      *
-     * @param   string  $key      the address of the value(s) to retrieve
-     * @param   array   $where    where clause
-     * @param   array   $orderBy  a list of columns to order the resultset by
-     * @param   int     $offset   the number of the first result to be returned
-     * @param   int     $limit    maximum number of results to return
-     * @param   bool    $desc     if true results will be ordered in descending, otherwise in ascending order
+     * @param   string      $key      the address of the value(s) to retrieve
+     * @param   array       $where    where clause
+     * @param   array       $orderBy  a list of columns to order the resultset by
+     * @param   int         $offset   the number of the first result to be returned
+     * @param   int         $limit    maximum number of results to return
+     * @param   bool|array  $desc     if true results will be ordered in descending, otherwise in ascending order -
+     *                                can be array if order by clause contains more than one column
+     * @throws  \Yana\Db\Queries\Exceptions\TableNotFoundException   if the given table is not found
+     * @throws  \Yana\Db\Queries\Exceptions\ColumnNotFoundException  if the given column is not found
+     * @throws  \Yana\Db\Queries\Exceptions\InconsistencyException   when a foreign key check detects invalid database values
+     * @throws  \Yana\Db\Queries\Exceptions\TargetNotFoundException  when no target can be found for the given key
      * @return  \Yana\Db\Queries\Select
      */
-    public function select($key, array $where = array(), $orderBy = array(), $offset = 0, $limit = 0, $desc = false)
+    public function select(string $key, array $where = array(), array $orderBy = array(), int $offset = 0, int $limit = 0, $desc = false): \Yana\Db\Queries\Select
     {
-        assert(is_string($key), 'Wrong argument type for argument 1. String expected.');
-        $selectQuery = new \Yana\Db\Queries\Select($this->_connection);
+        $selectQuery = new \Yana\Db\Queries\Select($this->_getConnection());
 
-        $selectQuery->setKey($key);
+        $selectQuery->setKey($key); // may throw exceptions, and/or set order by and limit clause, row, column, and array address
 
         if (!empty($where)) {
             $selectQuery->setWhere($where);
         }
-        if (!empty($orderBy) || $desc === true) {
-            $selectQuery->setOrderBy($orderBy, $desc);
+        if (!empty($orderBy) && (is_bool($desc) || is_array($desc))) {
+            /**
+             * We use addOrderBy(), not setOrderBy() because the previous call to setKey() may already have set the order by clause.
+             */
+            assert('!isset($columnName); // Cannot redeclare var $columnName');
+            foreach ($orderBy as $columnName)
+            {
+                /**
+                 * Note: array_shift() will return NULL for an empty array. NULL will be cast to bool(false).
+                 * So if $desc is empty or contains fewer elements than $orderBy, all remaining columns will be sorted in ascending order.
+                 * This is the intended behavior.
+                 */
+                $selectQuery->addOrderBy($columnName, is_bool($desc) ? $desc : (bool) \array_shift($desc));
+            }
+            unset($columnName);
         }
 
         /*
@@ -153,11 +155,9 @@ class QueryBuilder extends \Yana\Core\StdObject implements \Yana\Db\Queries\IsQu
      * @throws  \Yana\Core\Exceptions\Forms\FieldNotFoundException      when a value was provided but no corresponding column exists
      * @throws  \Yana\Core\Exceptions\Files\SizeException               when an uploaded file is too large
      */
-    public function update($key, $value = array())
+    public function update(string $key, $value = array()): \Yana\Db\Queries\Update
     {
-        assert(is_string($key), 'wrong argument type for argument 1, string expected');
-
-        $updateQuery = new \Yana\Db\Queries\Update($this->_connection);
+        $updateQuery = new \Yana\Db\Queries\Update($this->_getConnection());
         $updateQuery->setKey($key);
         $updateQuery->setValues($value);
         return $updateQuery;
@@ -174,11 +174,9 @@ class QueryBuilder extends \Yana\Core\StdObject implements \Yana\Db\Queries\IsQu
      * @throws  \Yana\Db\Queries\Exceptions\ConstraintException         when a constraint violation is detected
      * @throws  \Yana\Db\Queries\Exceptions\InvalidResultTypeException  when trying to insert anything but a row.
      */
-    public function insert($key, $value = array())
+    public function insert(string $key, $value = array()): \Yana\Db\Queries\Insert
     {
-        assert(is_string($key), 'wrong argument type for argument 1, string expected');
-
-        $insertQuery = new \Yana\Db\Queries\Insert($this->_connection);
+        $insertQuery = new \Yana\Db\Queries\Insert($this->_getConnection());
         $insertQuery->setKey($key);
         $insertQuery->setValues($value); // may throw exception
         return $insertQuery;
@@ -218,13 +216,11 @@ class QueryBuilder extends \Yana\Core\StdObject implements \Yana\Db\Queries\IsQu
      * @param   int     $limit  maximum number of rows to remove
      * @return  \Yana\Db\Queries\Delete
      */
-    public function remove($key, array $where = array(), $limit = 1)
+    public function remove(string $key, array $where = array(), int $limit = 1): \Yana\Db\Queries\Delete
     {
-        assert(is_int($limit), 'Wrong argument type $limit. Integer expected.');
         assert($limit >= 0, 'Invalid argument $limit. Value must be greater or equal 0.');
-        assert(is_string($key), 'Wrong argument type $key. String expected.');
         assert(!isset($deleteQuery), 'Cannot redeclare var $deleteQuery');
-        $deleteQuery = new \Yana\Db\Queries\Delete($this->_connection);
+        $deleteQuery = new \Yana\Db\Queries\Delete($this->_getConnection());
         $deleteQuery->setLimit((int) $limit);
         $deleteQuery->setKey($key);
         $deleteQuery->setWhere($where);
@@ -239,11 +235,9 @@ class QueryBuilder extends \Yana\Core\StdObject implements \Yana\Db\Queries\IsQu
      * @return  \Yana\Db\Queries\SelectCount
      * @throws  \Yana\Db\Exceptions\TableNotFoundException
      */
-    public function length($table, array $where = array())
+    public function length(string $table, array $where = array()): \Yana\Db\Queries\SelectCount
     {
-        assert(is_string($table), 'Wrong argument type $table. String expected.');
-
-        $countQuery = new \Yana\Db\Queries\SelectCount($this->_connection);
+        $countQuery = new \Yana\Db\Queries\SelectCount($this->_getConnection());
         $countQuery->setTable($table); // throws Exception
         $countQuery->setWhere($where);
 
@@ -257,13 +251,11 @@ class QueryBuilder extends \Yana\Core\StdObject implements \Yana\Db\Queries\IsQu
      * @param   array   $where  optional where clause
      * @return  \Yana\Db\Queries\SelectExist
      */
-    public function exists($key, array $where = array())
+    public function exists(string $key, array $where = array()): \Yana\Db\Queries\SelectExist
     {
-        assert(is_string($key), 'Wrong argument type for argument 1. String expected');
-
         // build query to check key
-        $existQuery = new \Yana\Db\Queries\SelectExist($this->_connection);
-        $existQuery->setKey(\mb_strtolower($key));
+        $existQuery = new \Yana\Db\Queries\SelectExist($this->_getConnection());
+        $existQuery->setKey($key);
         if (!empty($where)) {
             $existQuery->setWhere($where);
         }

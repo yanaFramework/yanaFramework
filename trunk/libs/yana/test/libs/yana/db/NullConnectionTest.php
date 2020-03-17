@@ -170,7 +170,7 @@ class NullConnectionTest extends \PHPUnit_Framework_TestCase
      */
     public function testRollback()
     {
-        $this->assertTrue($this->object->rollback());
+        $this->assertSame($this->object, $this->object->rollback());
     }
 
     /**

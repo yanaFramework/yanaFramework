@@ -24,13 +24,15 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Plugins\Menus;
 
 /**
- * Menu information
+ * This is a helper class that implements a part of the logic for {@see \Yana\Plugins\Menus\Menu}.
  *
- * @name        PluginMenu
+ * Building the actual menu is a lot more complicated 
+ *
  * @package     yana
  * @subpackage  plugins
  *
@@ -104,9 +106,8 @@ class TextMenuBuilder extends \Yana\Core\StdObject implements \Yana\Plugins\Menu
      * @param   string  $menuId  menu name
      * @return  string
      */
-    protected function _getPluginNameByGroupId($menuId)
+    protected function _getPluginNameByGroupId(string $menuId): string
     {
-        assert(is_string($menuId), 'Invalid argument $menuId: string expected');
         if (empty($this->_pluginsWithGroups)) {
             $plugins = $this->_getDependencies()->getPluginFacade()->getPluginConfigurations()->toArray();
 
@@ -140,9 +141,8 @@ class TextMenuBuilder extends \Yana\Core\StdObject implements \Yana\Plugins\Menu
      * @param   string  $menuNameToken  menu name language token
      * @return  string
      */
-    public function translateMenuName($menuNameToken)
+    public function translateMenuName(string $menuNameToken): string
     {
-        assert(is_string($menuNameToken), 'Invalid argument $menuNameToken: string expected');
         return $this->_getDependencies()->getTranslationFacade()->replaceToken($menuNameToken);
     }
 
@@ -156,7 +156,7 @@ class TextMenuBuilder extends \Yana\Core\StdObject implements \Yana\Plugins\Menu
      * @param   \Yana\Plugins\Menus\IsMenu  $menuConfiguration  from which to take the entries
      * @return  array
      */
-    public function getTextMenu(\Yana\Plugins\Menus\IsMenu $menuConfiguration)
+    public function getTextMenu(\Yana\Plugins\Menus\IsMenu $menuConfiguration): array
     {
         $plugins = $this->_getDependencies()->getPluginFacade();
         $useDefaultProfile = $this->_getDependencies()->isDefaultProfile();
@@ -168,7 +168,7 @@ class TextMenuBuilder extends \Yana\Core\StdObject implements \Yana\Plugins\Menu
             if ($pluginId && $this->_hasGroup($pluginId) && !$plugins->isLoaded($pluginId)) {
                 continue;
             }
-            $this->_getMenu($menuConfiguration, $textMenu, $menuId, $menuEntries, $useDefaultProfile);
+            $this->_addMenuEntries($menuConfiguration, $textMenu, $menuId, $menuEntries, $useDefaultProfile);
         }
         unset($menuId, $menuEntries);
 
@@ -176,7 +176,7 @@ class TextMenuBuilder extends \Yana\Core\StdObject implements \Yana\Plugins\Menu
     }
 
     /**
-     * get menu entries
+     * Add menu entries.
      *
      * @param   \Yana\Plugins\Menus\IsMenu  $menuConfiguration  from which to take the entries
      * @param   array                       &$textMenu          output
@@ -184,9 +184,8 @@ class TextMenuBuilder extends \Yana\Core\StdObject implements \Yana\Plugins\Menu
      * @param   array                       $menuEntries        list of instances of PluginMenuEntry or sub-menus
      * @param   bool                        $isSafemode         for safemode set true , false otherweise
      */
-    private function _getMenu(\Yana\Plugins\Menus\IsMenu $menuConfiguration, array &$textMenu, $menuId, array $menuEntries, $isSafemode)
+    private function _addMenuEntries(\Yana\Plugins\Menus\IsMenu $menuConfiguration, array &$textMenu, string $menuId, array $menuEntries, bool $isSafemode)
     {
-        assert(is_string($menuId), 'Invalid argument $menuId: string expected');
         $name = $menuConfiguration->getMenuName($menuId);
         $urlFormatter = $this->_getDependencies()->getUrlFormatter();
 
@@ -212,7 +211,7 @@ class TextMenuBuilder extends \Yana\Core\StdObject implements \Yana\Plugins\Menu
                 if (!isset($textMenu[$name])) {
                     $textMenu[$name] = array();
                 }
-                $this->_getMenu($menuConfiguration, $textMenu[$name], "$menuId.$action", $entry, $isSafemode);
+                $this->_addMenuEntries($menuConfiguration, $textMenu[$name], "$menuId.$action", $entry, $isSafemode);
             }
         }
     }

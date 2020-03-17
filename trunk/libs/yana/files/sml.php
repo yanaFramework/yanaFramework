@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Files;
 
@@ -44,9 +45,11 @@ class SML extends \Yana\Files\AbstractVarContainer
 {
 
     /**
+     * Returns an SML decoder.
+     *
      * @return \Yana\Files\Decoders\SML
      */
-    protected static function _getDecoder()
+    protected static function _getDecoder():  \Yana\Files\Decoders\IsDecoder
     {
         return new \Yana\Files\Decoders\SML();
     }

@@ -39,7 +39,6 @@ namespace Yana\Db\Sources;
  * @subpackage  security
  *
  * @ignore
- * @codeCoverageIgnore
  */
 abstract class AbstractAdapter extends \Yana\Data\Adapters\AbstractDatabaseAdapter implements \Yana\Db\Sources\IsAdapter
 {
@@ -73,9 +72,7 @@ abstract class AbstractAdapter extends \Yana\Data\Adapters\AbstractDatabaseAdapt
     protected function _getEntityMapper()
     {
         if (!isset($this->_entityMapper)) {
-            // @codeCoverageIgnoreStart
             $this->_entityMapper = new \Yana\Db\Sources\Mapper();
-            // @codeCoverageIgnoreEnd
         }
         return $this->_entityMapper;
     }

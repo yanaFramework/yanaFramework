@@ -66,7 +66,7 @@ class Connection extends \Yana\Db\AbstractConnection
      *
      * @return  string
      */
-    public function getDBMS()
+    public function getDBMS(): string
     {
         return \Yana\Db\DriverEnumeration::GENERIC;
     }
@@ -79,7 +79,7 @@ class Connection extends \Yana\Db\AbstractConnection
      * @param   string|array  $sqlFile filename which contain the SQL statments or an nummeric array of SQL statments.
      * @return  bool
      */
-    public function importSQL($sqlFile)
+    public function importSQL($sqlFile): bool
     {
         return true;
     }

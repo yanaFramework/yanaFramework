@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Files;
 
@@ -37,7 +38,7 @@ namespace Yana\Files;
  *
  * @ignore
  */
-class Block extends \Yana\Files\File
+class Block extends \Yana\Files\File implements \Yana\Files\IsBlockFile
 {
 
     /**
@@ -69,7 +70,7 @@ class Block extends \Yana\Files\File
     /**
      * Read the file contents to buffer.
      *
-     * @return  self
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\NotReadableException  if the file is not readable
      * @throws  \Yana\Core\Exceptions\NotFoundException     if the file does not exist
      */
@@ -100,9 +101,8 @@ class Block extends \Yana\Files\File
      * @param   string  $remoteAddress  the user's IP address (IPv4 and IPv6 supported)  
      * @return  bool
      */
-    public function isBlocked($remoteAddress)
+    public function isBlocked(string $remoteAddress): bool
     {
-        assert(is_string($remoteAddress), 'Invalid argument $remoteAddress: string expected');
         assert($remoteAddress === filter_var($remoteAddress, \FILTER_VALIDATE_IP), 'Not a valid IP-address');
 
         assert(is_array($this->content), 'is_array($this->content)');

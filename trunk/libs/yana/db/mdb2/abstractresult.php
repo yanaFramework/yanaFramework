@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Mdb2;
 
@@ -51,23 +52,25 @@ abstract class AbstractResult extends \Yana\Core\StdObject implements \Yana\Db\I
      *
      * @return  int
      */
-    public function countRows()
+    public function countRows(): int
     {
-        return $this->_getResult()->numRows();
+        $result = $this->_getResult()->numRows(); // Returns an integer on success and an \PEAR_Error object on failure
+        return is_int($result) ? $result : 0;
     }
 
     /**
      * Fetch a row from the resultset.
      *
-     * Returns an associative array of the row at index $i of the result set.
+     * Returns the entry at index $i of the result set.
      *
      * @param   int  $rowNumber  index of the row to retrieve
-     * @return  array
+     * @return  mixed
      */
-    public function fetchRow($rowNumber)
+    public function fetchRow(int $rowNumber)
     {
         $fetchMode = defined('MDB2_FETCHMODE_ASSOC') ? \MDB2_FETCHMODE_ASSOC : 2;
-        return $this->_getResult()->fetchRow($fetchMode, $rowNumber);
+        $result = $this->_getResult()->fetchRow($fetchMode, $rowNumber); // Returns an array on success and an \PEAR_Error object on failure
+        return !is_object($result) ? $result : array();
     }
 
     /**
@@ -75,33 +78,36 @@ abstract class AbstractResult extends \Yana\Core\StdObject implements \Yana\Db\I
      *
      * @return  array
      */
-    public function fetchAll()
+    public function fetchAll(): array
     {
         $fetchMode = defined('MDB2_FETCHMODE_ASSOC') ? \MDB2_FETCHMODE_ASSOC : 2;
-        return $this->_getResult()->fetchAll($fetchMode);
+        $result = $this->_getResult()->fetchAll($fetchMode); // Returns an array on success and an \PEAR_Error object on failure
+        return is_array($result) ? $result : array();
     }
 
     /**
-     * Fetch and return a column from the current row pointer position
+     * Fetch and return a column from the current row pointer position.
      *
-     * @param   int|string  $column  the column number (or name) to fetch
+     * @param   int  $column  the column number (or name) to fetch
      * @return  array
      */
-    public function fetchColumn($column = 0)
+    public function fetchColumn(int $column = 0): array
     {
-        return $this->_getResult()->fetchCol($column);
+        $result = $this->_getResult()->fetchCol($column); // Returns an array on success and an \PEAR_Error object on failure
+        return is_array($result) ? $result : array();
     }
 
     /**
-     * Fetch single column from the next row from a result set.
+     * Fetch single column from the given row of the result set.
      *
-     * @param   int|string  $column  the column number (or name) to fetch
-     * @param   int         $row     number of the row where the data can be found
+     * @param   int  $column     the column number to fetch
+     * @param   int  $rowNumber  number of the row where the data can be found
      * @return  mixed
      */
-    public function fetchOne($column = 0, $rowNumber = 0)
+    public function fetchOne(int $column = 0, int $rowNumber = 0)
     {
-        return $this->_getResult()->fetchOne($column, $rowNumber);
+        $result = $this->_getResult()->fetchOne($column, $rowNumber); // Returns a string on success and an \PEAR_Error object on failure
+        return is_scalar($result) ? $result : "";
     }
 
 }

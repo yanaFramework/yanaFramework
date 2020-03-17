@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Binaries;
 
@@ -48,7 +49,7 @@ namespace Yana\Db\Binaries;
  * @subpackage  db
  * @since       2.9.2
  */
-class FileMapper extends \Yana\Files\Readonly
+class FileMapper extends \Yana\Files\Readonly implements \Yana\Db\Binaries\IsFileMapper
 {
 
     /**
@@ -71,7 +72,7 @@ class FileMapper extends \Yana\Files\Readonly
      *
      * @return  \Yana\Db\Binaries\IsConfiguration
      */
-    protected function _getConfiguration()
+    protected function _getConfiguration(): \Yana\Db\Binaries\IsConfiguration
     {
         if (!isset($this->_configuration)) {
             $this->_configuration = \Yana\Db\Binaries\ConfigurationSingleton::getInstance();
@@ -89,9 +90,8 @@ class FileMapper extends \Yana\Files\Readonly
      * @param   string  $filename  expected to be path/file.extension
      * @return  string
      */
-    public function toFileId($filename)
+    public function toFileId(string $filename): string
     {
-        assert(is_string($filename), 'Wrong argument type for argument 1. String expected');
         return preg_replace('/^.*?([\w\-_]+)\.\w+$/', '$1', $filename);
     }
 
@@ -99,14 +99,11 @@ class FileMapper extends \Yana\Files\Readonly
      * Get matching filename for a given id.
      *
      * @param   string  $fileId  file id
-     * @param   bool    $type    file type
+     * @param   string  $type    an element of \Yana\Db\Binaries\FileTypeEnumeration (e.g. 'image', 'thumbnail', 'file')
      * @return  string
      */
-    public function toFileName($fileId, $type)
+    public function toFileName(string $fileId, string $type): string
     {
-        assert(is_string($fileId), 'Invalid argument $fileId: string expected');
-        assert(is_string($type), 'Invalid argument $type: string expected');
-
         $directory = $this->_getConfiguration()->getDirectory();
         $file = $directory; // and ...
         switch ($type)

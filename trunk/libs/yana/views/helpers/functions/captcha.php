@@ -60,7 +60,7 @@ class Captcha extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vi
         $index = rand(1, 9);
 
         $title = (string) $this->_getLanguage()->getVar('SECURITY_IMAGE.DESCRIPTION');
-        $formatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
+        $formatter = $this->_getDependencyContainer()->getUrlFormatter();
 
         return '<input type="hidden" name="security_image_index" value="' . $index . '"/>' .
             '<img alt="" hspace="5" src="' .

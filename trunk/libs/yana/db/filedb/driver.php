@@ -1856,8 +1856,22 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
     {
         $filename = $this->_getFilename($database, 'idx');
         $smlfile = $this->_getSmlFile();
-        $idxfile = new \Yana\Db\FileDb\Index($this->_getTable(), $smlfile, $filename);
+        $idxfile = $this->_createIndex($smlfile, $filename);
         $this->_idx[$this->_getDatabaseName()][$this->_getTableName()] = $idxfile;
+    }
+
+    /**
+     * Overwrite this with null-object in unit tests to avoid side-effects.
+     *
+     * @param   \Yana\Files\SML  $smlfile   data (SML object)
+     * @param   string           $filename  filename
+     * @return  \Yana\Db\FileDb\Index
+     * @ignore
+     * @codeCoverageIgnore
+     */
+    protected function _createIndex(\Yana\Files\SML $smlfile, string $filename): \Yana\Db\FileDb\Index
+    {
+        return new \Yana\Db\FileDb\Index($this->_getTable(), $smlfile, $filename);
     }
 
     /**

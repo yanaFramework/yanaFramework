@@ -512,7 +512,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
 
         // get last entry
         $test = $this->object->select('t.?.tValue');
-        $this->assertEquals($test, 3, '"get last entry" test failed');
+        $this->assertEquals(3, $test, '"get last entry" test failed');
     }
 
     /**

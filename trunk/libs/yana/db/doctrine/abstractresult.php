@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Doctrine;
 
@@ -52,12 +53,10 @@ abstract class AbstractResult extends \Yana\Core\StdObject implements \Yana\Db\I
      * Therefore we cannot rewind the iterator.
      *
      * @param   int  $rowNumber  position number of row within the result set, first row = 0
-     * @return  array
+     * @return  mixed
      */
-    protected function _getRow($rowNumber)
+    protected function _getRow(int $rowNumber)
     {
-        assert(is_int($rowNumber), 'Invalid argument $rowNumber: Integer expected');
-
         if (!isset($this->_cache[$rowNumber])) {
             $result = $this->_getResult();
             for ($i = count($this->_cache); $i < $result->rowCount() && $i <= $rowNumber; $i++)
@@ -72,7 +71,7 @@ abstract class AbstractResult extends \Yana\Core\StdObject implements \Yana\Db\I
     /**
      * Returns resultset.
      *
-     * @return  \Doctrine\DBAL\Statement
+     * @return  \Doctrine\DBAL\Driver\Statement
      */
     abstract protected function _getResult();
 
@@ -81,7 +80,7 @@ abstract class AbstractResult extends \Yana\Core\StdObject implements \Yana\Db\I
      *
      * @return  int
      */
-    public function countRows()
+    public function countRows(): int
     {
         return $this->_getResult()->rowCount();
     }
@@ -89,15 +88,14 @@ abstract class AbstractResult extends \Yana\Core\StdObject implements \Yana\Db\I
     /**
      * Fetch a row from the resultset.
      *
-     * Returns an associative array of the row at index $i of the result set.
+     * Returns the entry at index $i of the result set.
      *
      * @param   int  $rowNumber  index of the row to retrieve
-     * @return  array
+     * @return  mixed
      */
-    public function fetchRow($rowNumber)
+    public function fetchRow(int $rowNumber)
     {
-        assert(is_int($rowNumber), 'Invalid argument $rowNumber: Integer expected');
-        return $this->_getRow((int) $rowNumber);
+        return $this->_getRow($rowNumber);
     }
 
     /**
@@ -105,35 +103,37 @@ abstract class AbstractResult extends \Yana\Core\StdObject implements \Yana\Db\I
      *
      * @return  array
      */
-    public function fetchAll()
+    public function fetchAll(): array
     {
-        $this->_cache = $this->_getResult()->fetchAll(\Doctrine\DBAL\FetchMode::ASSOCIATIVE);
+        $result = $this->_getResult()->fetchAll(\Doctrine\DBAL\FetchMode::ASSOCIATIVE);
+        $this->_cache = is_array($result) ? $result : array();
         return $this->_cache;
     }
 
     /**
-     * Fetch and return a column from the current row pointer position
+     * Fetch and return a column from the current row pointer position.
+     *
+     * If there is none, an empty array will be returned.
      *
      * @param   int  $column  the column number to fetch
      * @return  array
      */
-    public function fetchColumn($column = 0)
+    public function fetchColumn(int $column = 0): array
     {
-        return $this->_getResult()->fetchColumn((int) $column);
+        $result = $this->_getResult()->fetchColumn($column); // Returns array on success and bool(false) on failure
+        return is_array($result) ? $result : array();
     }
 
     /**
      * Fetch single column from the next row from a result set.
      *
-     * @param   int|string  $column     the column number (or name) to fetch
-     * @param   int         $rowNumber  number of the row where the data can be found
+     * @param   int  $column     the column number to fetch
+     * @param   int  $rowNumber  number of the row where the data can be found
      * @return  mixed
      */
-    public function fetchOne($column = 0, $rowNumber = 0)
+    public function fetchOne(int $column = 0, int $rowNumber = 0)
     {
-        assert(is_int($column), 'Invalid argument $column: Integer expected');
-        assert(is_int($rowNumber), 'Invalid argument $rowNumber: Integer expected');
-        $row = $this->fetchRow((int) $rowNumber);
+        $row = $this->fetchRow($rowNumber);
         $numberedRow = \array_values($row);
         return isset($numberedRow[$column]) ? $numberedRow[$column] : null;
     }

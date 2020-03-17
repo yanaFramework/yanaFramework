@@ -200,6 +200,22 @@ class FileTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Delete
+     *
+     * @test
+     * @expectedException \Yana\Core\Exceptions\Files\NotWriteableException
+     */
+    public function testDeleteNotWriteableException()
+    {
+        $h = \fopen($this->object->getPath(), 'w');
+        try {
+            $this->object->delete();
+        } catch (\Exception $e) {
+            throw $e;
+        }
+    }
+
+    /**
      * Delete Invalid Argument
      *
      * @test
@@ -207,7 +223,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
     public function testDeleteInvalidArgument()
     {
         // try with non existing path
-        $newFile = new File('resources/nonExistfile.txt');
+        $newFile = new \Yana\Files\File('resources/nonExistfile.txt');
         $delete = $newFile->delete();
         $this->assertTrue($delete, 'assert failed, source doesnt exist');
     }
@@ -222,6 +238,21 @@ class FileTest extends \PHPUnit_Framework_TestCase
         if ($this->object->exists(CWD . $this->file)) {
             $this->object->delete();
         }
+        $this->object->create(CWD . $this->file);
+    }
+
+    /**
+     * Create
+     *
+     * @test
+     * @expectedException \Yana\Core\Exceptions\Files\AlreadyExistsException
+     */
+    public function testCreateAlreadyExistsException()
+    {
+        if ($this->object->exists(CWD . $this->file)) {
+            $this->object->delete();
+        }
+        $this->object->create(CWD . $this->file);
         $this->object->create(CWD . $this->file);
     }
 

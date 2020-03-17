@@ -959,4 +959,13 @@ class XDDLTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\NotFoundException
+     */
+    public function testGetDatabaseNotFoundException()
+    {
+        \Yana\Files\XDDL::getDatabase("no-such-database");
+    }
+
 }

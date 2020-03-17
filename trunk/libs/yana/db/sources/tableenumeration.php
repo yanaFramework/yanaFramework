@@ -39,7 +39,7 @@ class TableEnumeration extends \Yana\Core\AbstractEnumeration
     const TABLE = 'datasources';
     const ID = 'datasource_id';
     const NAME = 'datasource_name';
-    const DMBS = 'datasource_dbms';
+    const DBMS = 'datasource_dbms';
     const HOST = 'datasource_host';
     const PORT = 'datasource_port';
     const DATABASE = 'datasource_database';

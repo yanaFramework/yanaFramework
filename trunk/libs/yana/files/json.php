@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Files;
 
@@ -41,9 +42,11 @@ class Json extends \Yana\Files\AbstractVarContainer
 {
 
     /**
-     * @return \Yana\Files\Decoders\SML
+     * Returns a JSON decoder.
+     *
+     * @return \Yana\Files\Decoders\IsDecoder
      */
-    protected static function _getDecoder()
+    protected static function _getDecoder(): \Yana\Files\Decoders\IsDecoder
     {
         return new \Yana\Files\Decoders\Json();
     }

@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Files;
 
@@ -43,8 +44,8 @@ interface IsWritable extends \Yana\Files\IsReadable
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @throws  \Yana\Core\Exceptions\AlreadyExistsException  when target does already exist
-     * @throws  \Yana\Core\Exceptions\NotWriteableException   when unable to create file
+     * @throws  \Yana\Core\Exceptions\Files\AlreadyExistsException  when target does already exist
+     * @throws  \Yana\Core\Exceptions\Files\NotWriteableException   when unable to create file
      */
     public function create();
 

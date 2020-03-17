@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Security\Data\SecurityLevels;
 
@@ -50,7 +51,7 @@ interface IsLevel
      *
      * @return  int
      */
-    public function getSecurityLevel();
+    public function getSecurityLevel(): int;
 
     /**
      * Check proxy settings.
@@ -62,7 +63,7 @@ interface IsLevel
      *
      * @return  bool
      */
-    public function isUserProxyActive();
+    public function isUserProxyActive(): bool;
 
 }
 

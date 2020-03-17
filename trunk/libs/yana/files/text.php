@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Files;
 
@@ -45,9 +46,8 @@ class Text extends \Yana\Files\File implements \Yana\Files\IsTextFile
      *
      * @param   string  $content  content
      */
-    public function setContent($content)
+    public function setContent(string $content)
     {
-        assert(is_string($content), 'Invalid argument type argument 1. String expected.');
         assert(is_array($this->content), 'is_array($this->content)');
         $content = explode("\n", (string) $content);
         $this->content = $content;
@@ -63,9 +63,8 @@ class Text extends \Yana\Files\File implements \Yana\Files\IsTextFile
      * @return  string
      * @throws  \Yana\Core\Exceptions\OutOfBoundsException  when the line is not found
      */
-    public function getLine($lineNr)
+    public function getLine(int $lineNr)
     {
-        assert(is_int($lineNr), 'Invalid argument type argument 1. Integer expected.');
         if (!isset($this->content[$lineNr])) {
             $message = "There is no line '$lineNr' in file '" . $this->getPath() . "'.";
             throw new \Yana\Core\Exceptions\OutOfBoundsException($message, \Yana\Log\TypeEnumeration::INFO);
@@ -92,7 +91,7 @@ class Text extends \Yana\Files\File implements \Yana\Files\IsTextFile
      * @param   string  $content    content
      * @thros   \Yana\Core\Exceptions\OutOfBoundsException  if the line does not exist
      */
-    public function setLine($lineNr, $content)
+    public function setLine(int $lineNr, $content)
     {
         assert(is_int($lineNr), 'Invalid argument type argument 1. Integer expected.');
         assert(is_string($content), 'Invalid argument type argument 2. String expected.');
@@ -114,12 +113,10 @@ class Text extends \Yana\Files\File implements \Yana\Files\IsTextFile
      * line numbers may change.
      *
      * @param   int  $lineNr  line to remove
-     * @thros   \Yana\Core\Exceptions\OutOfBoundsException  if the line does not exist
+     * @throws   \Yana\Core\Exceptions\OutOfBoundsException  if the line does not exist
      */
-    public function removeLine($lineNr = null)
+    public function removeLine(?int $lineNr = null)
     {
-        assert(is_int($lineNr) || is_null($lineNr), 'Wrong type for argument 1. Integer expected');
-
         if (is_null($lineNr)) {
             $this->content = array();
         } elseif (isset($this->content[$lineNr])) {
@@ -139,7 +136,7 @@ class Text extends \Yana\Files\File implements \Yana\Files\IsTextFile
      *
      * @return  int
      */
-    public function length()
+    public function length(): int
     {
         $count = 0;
         if (isset($this->content)) {

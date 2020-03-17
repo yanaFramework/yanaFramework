@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Ddl;
 
@@ -58,7 +59,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     protected $xddlAttributes = array(
         'name'     => array('name',     'nmtoken'),
-        'table'    => array('table',    'nmtoken'),
+        'table'    => array('table',    'string'),
         'template' => array('template', 'nmtoken'),
         'key'      => array('key',      'nmtoken'),
         'title'    => array('title',    'string'),
@@ -225,12 +226,12 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * @return  \Yana\Db\Ddl\Database
      */
-    public function getDatabase()
+    public function getDatabase(): ?\Yana\Db\Ddl\Database
     {
         if ($this->parent instanceof \Yana\Db\Ddl\Form) {
             return $this->parent->getDatabase();
         } else {
-            return $this->parent;
+            return $this->getParent();
         }
     }
 
@@ -240,10 +241,10 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * Returns NULL if the schema name is unknown or an empty string if the schema name is
      * undefined.
      *
-     * @return  string
+     * @return  string|null
      * @ignore
      */
-    public function getSchemaName()
+    public function getSchemaName(): ?string
     {
         $database = $this->getDatabase();
         if ($database instanceof \Yana\Db\Ddl\Database) {
@@ -260,9 +261,9 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * Returns the name of the source table or view.
      * If none has been defined the function returns NULL instead.
      *
-     * @return  string
+     * @return  string|null
      */
-    public function getTable()
+    public function getTable(): ?string
     {
         if (is_string($this->table) && !empty($this->table)) {
             return $this->table;
@@ -281,11 +282,10 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * This setting is mandatory.
      *
      * @param   string  $table  table name
-     * @return  \Yana\Db\Ddl\Form
+     * @return  $this
      */
-    public function setTable($table)
+    public function setTable(string $table)
     {
-        assert(is_string($table), 'Wrong type for argument 1. String expected');
         $this->table = "$table";
         return $this;
     }
@@ -297,9 +297,9 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * It is optional. If it is not set, the function returns NULL instead.
      *
-     * @return  string
+     * @return  string|null
      */
-    public function getTitle()
+    public function getTitle(): ?string
     {
         if (is_string($this->title)) {
             return $this->title;
@@ -315,11 +315,10 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * To reset the property, leave the parameter empty.
      *
      * @param   string  $title  some text
-     * @return  \Yana\Db\Ddl\Form
+     * @return  $this
      */
-    public function setTitle($title = "")
+    public function setTitle(string $title = "")
     {
-        assert(is_string($title), 'Wrong type for argument 1. String expected');
         if (empty($title)) {
             $this->title = null;
         } else {
@@ -342,9 +341,9 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * NULL instead. Note that the description may also contain an identifier
      * for automatic translation.
      *
-     * @return  string
+     * @return  string|null
      */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         if (is_string($this->description)) {
             return $this->description;
@@ -365,11 +364,10 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * To reset the property, leave the parameter $description empty.
      *
      * @param   string  $description  new value of this property
-     * @return  \Yana\Db\Ddl\Form
+     * @return  $this
      */
-    public function setDescription($description)
+    public function setDescription(string $description)
     {
-        assert(is_string($description), 'Wrong type for argument 1. String expected');
         if (empty($description)) {
             $this->description = null;
         } else {
@@ -386,7 +384,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * @return  string
      */
-    public function getTemplate()
+    public function getTemplate(): ?string
     {
         if (is_string($this->template)) {
             return $this->template;
@@ -402,11 +400,10 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * It informs the generator how present the contents of the form.
      *
      * @param   string  $template  name or id of template to use
-     * @return  \Yana\Db\Ddl\Form
+     * @return  $this
      */
-    public function setTemplate($template)
+    public function setTemplate(string $template)
     {
-        assert(is_string($template), 'Wrong type for argument 1. String expected');
         if (empty($template)) {
             $this->template = null;
         } else {
@@ -423,7 +420,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * @return  string
      */
-    public function getKey()
+    public function getKey(): ?string
     {
         if (is_string($this->key)) {
             return $this->key;
@@ -433,18 +430,17 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
     }
 
     /**
-     * Set form template.
+     * Set name of foreign key.
      *
      * The form may be associated with the parent form via a foreign key, if the
      * form and the parent form inherit from different base tables.
      * If so, a foreign key must exist linking both tables.
      *
-     * @param   string  $key  name of foreign key column
+     * @param   string  $key  name of foreign key column (case-sensitive)
      * @return  \Yana\Db\Ddl\Form
      */
-    public function setKey($key)
+    public function setKey(string $key)
     {
-        assert(is_string($key), 'Wrong type for argument 1. String expected');
         if (empty($key)) {
             $this->key = null;
         } else {
@@ -464,11 +460,10 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * If at least one grant is set, any user that does not match the given
      * restrictions is not permitted to access the form.
      *
-     * @return  array
+     * @return  \Yana\Db\Ddl\Grant[]
      */
-    public function getGrants()
+    public function getGrants(): array
     {
-        assert(is_array($this->grants), 'Member "grants" is expected to be an array.');
         return $this->grants;
     }
 
@@ -485,26 +480,40 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
     public function dropGrants()
     {
         $this->grants = array();
+        $this->_resetGrantCache();
     }
 
     /**
-     * Set rights management setting.
+     * Add rights management object.
      *
      * {@link \Yana\Db\Ddl\Grant}s control the access permissions granted to the user.
      *
      * This function adds a new grant to the configuration.
      *
      * @param   \Yana\Db\Ddl\Grant  $grant  grant object expected (rights managment)
-     * @return  \Yana\Db\Ddl\Form
+     * @return  $this
      */
-    public function setGrant(\Yana\Db\Ddl\Grant $grant)
+    public function addGrantObject(\Yana\Db\Ddl\Grant $grant)
     {
         $this->grants[] = $grant;
+        $this->_resetGrantCache();
         return $this;
     }
 
     /**
-     * Add rights management setting.
+     * Reset all attributes for caching the permission status of the object.
+     */
+    private function _resetGrantCache()
+    {
+        $this->_deletable = null;
+        $this->_grantable = null;
+        $this->_insertable = null;
+        $this->_selectable = null;
+        $this->_updatable = null;
+    }
+
+    /**
+     * Create and add rights management setting.
      *
      * {@link \Yana\Db\Ddl\Grant}s control the access permissions granted to the user.
      *
@@ -517,11 +526,8 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * @return  \Yana\Db\Ddl\Grant
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when $level is out of range [0,100]
      */
-    public function addGrant($user = null, $role = null, $level = null)
+    public function addGrant(?string $user = null, ?string $role = null, ?int $level = null): \Yana\Db\Ddl\Grant
     {
-        assert(is_null($user) || is_string($user), 'Wrong type for argument 1. String expected');
-        assert(is_null($role) || is_string($role), 'Wrong type for argument 2. String expected');
-        assert(is_null($level) || is_int($level), 'Wrong type for argument 3. Integer expected');
         $grant = new \Yana\Db\Ddl\Grant();
         if (!empty($user)) {
             $grant->setUser($user);
@@ -533,7 +539,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
         if (!is_null($level)) {
             $grant->setLevel($level);
         }
-        $this->grants[] = $grant;
+        $this->addGrantObject($grant);
         return $grant;
     }
 
@@ -546,9 +552,8 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * @param   string  $name   new value of this property
      * @return  bool
      */
-    public function isForm($name)
+    public function isForm(string $name): bool
     {
-        assert(is_string($name), 'Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         return isset($this->forms[$name]);
     }
@@ -563,9 +568,8 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * @return  \Yana\Db\Ddl\Form
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when form does not exist
      */
-    public function getForm($name)
+    public function getForm(string $name): \Yana\Db\Ddl\Form
     {
-        assert(is_string($name), 'Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->forms[$name])) {
             return $this->forms[$name];
@@ -584,9 +588,8 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * @return  \Yana\Db\Ddl\Form
      * @throws  \Yana\Core\Exceptions\AlreadyExistsException  when a sub-form with the same name already exists
      */
-    public function addForm($name)
+    public function addForm(string $name): \Yana\Db\Ddl\Form
     {
-        assert(is_string($name), 'Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->forms[$name])) {
             $message = "Another form with the name '$name' already exists in form '{$this->getName()}'.";
@@ -604,7 +607,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * @return  array
      */
-    public function getForms()
+    public function getForms(): array
     {
         return $this->forms;
     }
@@ -614,7 +617,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * @return  array
      */
-    public function getFormNames()
+    public function getFormNames(): array
     {
         return array_keys($this->forms);
     }
@@ -624,9 +627,8 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * @param   string  $name  form name
      */
-    public function dropForm($name)
+    public function dropForm(string $name)
     {
-        assert(is_string($name), 'Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->forms[$name])) {
             unset($this->forms[$name]);
@@ -642,10 +644,9 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * @param   string  $name  name of a field
      * @return  bool
      */
-    public function isField($name)
+    public function isField(string $name): bool
     {
-        assert(is_string($name), 'Invalid argument $name: string expected');
-        return isset($this->fields[$name]);
+        return isset($this->fields[mb_strtolower($name)]);
     }
 
     /**
@@ -658,9 +659,9 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * @return  \Yana\Db\Ddl\Field
      * @throws  \Yana\Core\Exceptions\NotFoundException when field does not exist.
      */
-    public function getField($name)
+    public function getField(string $name): \Yana\Db\Ddl\Field
     {
-        assert(is_string($name), 'Invalid argument $name: string expected');
+        $name = mb_strtolower($name);
         if (isset($this->fields[$name])) {
             return $this->fields[$name];
         } else {
@@ -678,7 +679,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * @return  array
      */
-    public function getFields()
+    public function getFields(): array
     {
         return $this->fields;
     }
@@ -691,7 +692,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * @return  array
      */
-    public function getFieldNames()
+    public function getFieldNames(): array
     {
         return \array_keys($this->fields);
     }
@@ -706,9 +707,9 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * @return  \Yana\Db\Ddl\Field
      * @throws  \Yana\Core\Exceptions\AlreadyExistsException  when a field with the same name already exists
      */
-    public function addField($name)
+    public function addField(string $name): \Yana\Db\Ddl\Field
     {
-        assert(is_string($name), 'Invalid argument $name: string expected');
+        $name = mb_strtolower($name);
         if (isset($this->fields[$name])) {
             $message = "Another field with the name '$name' already exists in form '" . $this->getName() . "'.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
@@ -727,12 +728,10 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * Throws an exception if a field with the given name does not exist.
      *
      * @param   string  $name  name of a field which would be droped
-     * @return  \Yana\Db\Ddl\Field
      * @throws  \Yana\Core\Exceptions\NotFoundException  when field does not exist
      */
-    public function dropField($name)
+    public function dropField(string $name)
     {
-        assert(is_string($name), 'Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (!isset($this->fields[$name])) {
             $message = "No such field '$name' in form '" . $this->getName() . "'.";
@@ -752,7 +751,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * @return  array
      */
-    public function getEvents()
+    public function getEvents(): array
     {
         return $this->events;
     }
@@ -765,11 +764,11 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * See the manual for more details.
      *
      * @param   string  $name  event name
-     * @return  \Yana\Db\Ddl\Event
+     * @return  \Yana\Db\Ddl\Event|null
      */
-    public function getEvent($name)
+    public function getEvent(string $name): ?\Yana\Db\Ddl\Event
     {
-        assert(is_string($name), 'Invalid argument $name: string expected');
+        $name = mb_strtolower($name);
         if (isset( $this->events[$name])) {
             return $this->events[$name];
         } else {
@@ -790,9 +789,8 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * @throws  \Yana\Core\Exceptions\AlreadyExistsException    when an event with the same name already exists
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  on invalid name
      */
-    public function addEvent($name)
+    public function addEvent(string $name): \Yana\Db\Ddl\Event
     {
-        assert(is_string($name), 'Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->events[$name])) {
             $message = "Another action with the name '$name' is already defined.";
@@ -815,11 +813,11 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * @param   string  $name  event name
      * @return bool
      */
-    public function dropEvent($name)
+    public function dropEvent(string $name): bool
     {
-        assert(is_string($name), 'Invalid argument $name: string expected');
-        if (isset($this->events["$name"])) {
-            unset($this->events["$name"]);
+        $name = mb_strtolower($name);
+        if (isset($this->events[$name])) {
+            unset($this->events[$name]);
             return true;
         } else {
             return false;
@@ -833,7 +831,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * @return  bool
      */
-    public function isSelectable()
+    public function isSelectable(): bool
     {
         if (!isset($this->_selectable)) {
             if (\Yana\Db\Ddl\Grant::checkPermissions($this->getGrants(), true)) {
@@ -852,7 +850,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * @return  bool
      */
-    public function isInsertable()
+    public function isInsertable(): bool
     {
         if (!isset($this->_insertable)) {
             if (\Yana\Db\Ddl\Grant::checkPermissions($this->getGrants(), false, true)) {
@@ -871,7 +869,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * @return  bool
      */
-    public function isUpdatable()
+    public function isUpdatable(): bool
     {
         if (!isset($this->_updatable)) {
             if (\Yana\Db\Ddl\Grant::checkPermissions($this->getGrants(), false, false, true)) {
@@ -898,7 +896,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * @return  bool
      */
-    public function hasAllInput()
+    public function hasAllInput(): bool
     {
         return !empty($this->allinput);
     }
@@ -921,9 +919,9 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * are used and any unmentioned column is ignored (whitelist).
      *
      * @param   bool  $allinput  use all table columns (true = yes, false = no)
-     * @return  \Yana\Db\Ddl\Form
+     * @return  $this
      */
-    public function setAllInput($allinput)
+    public function setAllInput(bool $allinput)
     {
         assert(is_bool($allinput), 'Wrong argument type argument 1. Boolean expected');
         $this->allinput = !empty($allinput);
@@ -937,7 +935,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * @return  bool
      */
-    public function isDeletable()
+    public function isDeletable(): bool
     {
         if (!isset($this->_deletable)) {
             if (\Yana\Db\Ddl\Grant::checkPermissions($this->getGrants(), false, false, false, true)) {
@@ -956,7 +954,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * @return  bool
      */
-    public function isGrantable()
+    public function isGrantable(): bool
     {
         if (!isset($this->_grantable)) {
             if (\Yana\Db\Ddl\Grant::checkPermissions($this->getGrants(), false, false, false, false, true)) {
@@ -978,10 +976,10 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
     {
         switch (true)
         {
-            case isset($this->forms[$name]):
-                return $this->forms[$name];
-            case isset($this->fields[$name]):
-                return $this->fields[$name];
+            case $this->isForm($name):
+                return $this->getForm($name);
+            case $this->isField($name):
+                return $this->getField($name);
             default:
                 return parent::__get($name);
         }
@@ -994,10 +992,10 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed              $parent  parent node (if any)
-     * @return  \Yana\Db\Ddl\Form
+     * @return  self
      * @throws   \Yana\Core\Exceptions\InvalidArgumentException  when the name or table attribute is missing
      */
-    public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)
+    public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null): self
     {
         $attributes = $node->attributes();
         if (!isset($attributes['name'])) {
@@ -1011,11 +1009,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
         }
         $name = (string) $attributes['name'];
-        $table = (string) $attributes['table'];
-        $template = 0;
-        if (isset($attributes['template'])) {
-            $template = $attributes['template'];
-        }
         // create instance depending on chosen template
         $ddl = new self($name, $parent);
         $ddl->_unserializeFromXDDL($node);

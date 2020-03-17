@@ -60,7 +60,7 @@ class Mapper extends \Yana\Core\StdObject implements \Yana\Data\Adapters\IsEntit
         if (isset($databaseRowLower[\Yana\Db\Sources\TableEnumeration::DATABASE])) {
             $entity->setDatabase((string) $databaseRowLower[\Yana\Db\Sources\TableEnumeration::DATABASE]);
         }
-        if (isset($databaseRowLower[\Yana\Db\Sources\TableEnumeration::DMBS])) {
+        if (isset($databaseRowLower[\Yana\Db\Sources\TableEnumeration::DBMS])) {
             $entity->setDbms((string) $databaseRowLower[\Yana\Db\Sources\TableEnumeration::DBMS]);
         }
         if (isset($databaseRowLower[\Yana\Db\Sources\TableEnumeration::HOST])) {
@@ -70,7 +70,7 @@ class Mapper extends \Yana\Core\StdObject implements \Yana\Data\Adapters\IsEntit
             $entity->setPassword((string) $databaseRowLower[\Yana\Db\Sources\TableEnumeration::PASSWORD]);
         }
         if (!empty($databaseRowLower[\Yana\Db\Sources\TableEnumeration::PORT])) {
-            $entity->setPort((string) $databaseRowLower[\Yana\Db\Sources\TableEnumeration::PORT]);
+            $entity->setPort((int) $databaseRowLower[\Yana\Db\Sources\TableEnumeration::PORT]);
         }
         if (isset($databaseRowLower[\Yana\Db\Sources\TableEnumeration::USER])) {
             $entity->setUser((string) $databaseRowLower[\Yana\Db\Sources\TableEnumeration::USER]);

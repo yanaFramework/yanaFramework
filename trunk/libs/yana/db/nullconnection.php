@@ -79,7 +79,7 @@ class NullConnection extends \Yana\Core\StdObject implements \Yana\Db\IsConnecti
      *
      * @return  \Yana\Db\Ddl\Database
      */
-    public function getSchema()
+    public function getSchema(): \Yana\Db\Ddl\Database
     {
         return $this->_schema;
     }
@@ -101,7 +101,7 @@ class NullConnection extends \Yana\Core\StdObject implements \Yana\Db\IsConnecti
      *
      * @return  string
      */
-    public function getDBMS()
+    public function getDBMS(): string
     {
         return $this->_dbms;
     }
@@ -126,7 +126,7 @@ class NullConnection extends \Yana\Core\StdObject implements \Yana\Db\IsConnecti
     /**
      * Commits the current transaction.
      *
-     * @return  \Yana\Db\IsConnection
+     * @return  $this
      */
     public function commit()
     {
@@ -137,15 +137,15 @@ class NullConnection extends \Yana\Core\StdObject implements \Yana\Db\IsConnecti
      * Get values from the database.
      *
      * @param   string|\Yana\Db\Queries\Select  $key      the address of the value(s) to retrieve
-     * @param   array            $where    where clause
-     * @param   array            $orderBy  a list of columns to order the resultset by
-     * @param   int              $offset   the number of the first result to be returned
-     * @param   int              $limit    maximum number of results to return
-     * @param   bool             $desc     if true results will be ordered in descending,
-     *                                     otherwise in ascending order
+     * @param   array                           $where    where clause
+     * @param   array                           $orderBy  a list of columns to order the resultset by
+     * @param   int                             $offset   the number of the first result to be returned
+     * @param   int                             $limit    maximum number of results to return
+     * @param   bool|array                      $desc     if true results will be ordered in descending,
+     *                                                    otherwise in ascending order
      * @return  mixed
      */
-    public function select($key, array $where = array(), $orderBy = array(), $offset = 0, $limit = 0, $desc = array())
+    public function select($key, array $where = array(), $orderBy = array(), int $offset = 0, int $limit = 0, $desc = array())
     {
         return array();
     }
@@ -155,7 +155,7 @@ class NullConnection extends \Yana\Core\StdObject implements \Yana\Db\IsConnecti
      *
      * @param   string|\Yana\Db\Queries\Update  $key    the address of the row that should be updated
      * @param   mixed                           $value  value
-     * @return  \Yana\Db\IsConnection
+     * @return  $this
      */
     public function update($key, $value = array())
     {
@@ -165,11 +165,11 @@ class NullConnection extends \Yana\Core\StdObject implements \Yana\Db\IsConnecti
     /**
      * Update or insert row.
      *
-     * @param   string|\Yana\Db\Queries\Insert  $key    the address of the row that should be inserted|updated
-     * @param   mixed                           $value  value
-     * @return  \Yana\Db\IsConnection
+     * @param   string  $key    the address of the row that should be inserted|updated
+     * @param   mixed   $value  value
+     * @return  $this
      */
-    public function insertOrUpdate($key, $value = array())
+    public function insertOrUpdate(string $key, $value = array())
     {
         return $this;
     }
@@ -179,7 +179,7 @@ class NullConnection extends \Yana\Core\StdObject implements \Yana\Db\IsConnecti
      *
      * @param   string|\Yana\Db\Queries\Insert  $key  the address of the row that should be inserted
      * @param   array                           $row  associative array of values
-     * @return  \Yana\Db\IsConnection
+     * @return  $this
      */
     public function insert($key, array $row = array())
     {
@@ -192,9 +192,9 @@ class NullConnection extends \Yana\Core\StdObject implements \Yana\Db\IsConnecti
      * @param   string|\Yana\Db\Queries\Delete  $key    the address of the row that should be removed
      * @param   array            $where  where clause
      * @param   int              $limit  maximum number of rows to remove
-     * @return  \Yana\Db\IsConnection
+     * @return  $this
      */
-    public function remove($key, array $where = array(), $limit = 1)
+    public function remove($key, array $where = array(), int $limit = 1)
     {
         return $this;
     }
@@ -208,7 +208,7 @@ class NullConnection extends \Yana\Core\StdObject implements \Yana\Db\IsConnecti
      * @param   array                                $where  optional where clause
      * @return  int
      */
-    public function length($table, array $where = array())
+    public function length($table, array $where = array()): int
     {
         return 0;
     }
@@ -219,7 +219,7 @@ class NullConnection extends \Yana\Core\StdObject implements \Yana\Db\IsConnecti
      * @param   string  $table  name of a table
      * @return  bool
      */
-    public function isEmpty($table)
+    public function isEmpty(string $table): bool
     {
         return true;
     }
@@ -231,7 +231,7 @@ class NullConnection extends \Yana\Core\StdObject implements \Yana\Db\IsConnecti
      * @param   array                 $where  optional where clause
      * @return  bool
      */
-    public function exists($key, array $where = array())
+    public function exists($key, array $where = array()): bool
     {
         return false;
     }
@@ -241,7 +241,7 @@ class NullConnection extends \Yana\Core\StdObject implements \Yana\Db\IsConnecti
      *
      * @return  bool
      */
-    public function isWriteable()
+    public function isWriteable(): bool
     {
         return true;
     }
@@ -249,11 +249,11 @@ class NullConnection extends \Yana\Core\StdObject implements \Yana\Db\IsConnecti
     /**
      * Rollback the current transaction
      *
-     * @return  bool
+     * @return  $this
      */
     public function rollback()
     {
-        return true;
+        return $this;
     }
 
     /**
@@ -268,7 +268,7 @@ class NullConnection extends \Yana\Core\StdObject implements \Yana\Db\IsConnecti
      * @return  \Yana\Db\IsResult
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException if the SQL statement is not valid
      */
-    public function sendQueryString($sqlStmt, $offset = 0, $limit = 0)
+    public function sendQueryString($sqlStmt, int $offset = 0, int $limit = 0)
     {
         return new \Yana\Db\FileDb\Result();
     }
@@ -297,7 +297,7 @@ class NullConnection extends \Yana\Core\StdObject implements \Yana\Db\IsConnecti
      * @param   string|array  $sqlFile filename which contain the SQL statments or an nummeric array of SQL statments.
      * @return  bool
      */
-    public function importSQL($sqlFile)
+    public function importSQL($sqlFile): bool
     {
         return true;
     }

@@ -48,7 +48,7 @@ class UrlValidator extends AbstractValidator
      *
      * @return  int
      */
-    protected function getMaxLength()
+    protected function getMaxLength(): int
     {
         return $this->_length;
     }
@@ -57,11 +57,10 @@ class UrlValidator extends AbstractValidator
      * Set maximum length in characters.
      *
      * @param   int  $length  positive number, 0 = no restrictions
-     * @return  UrlValidator
+     * @return  $this
      */
-    public function setMaxLength($length)
+    public function setMaxLength(int $length)
     {
-        assert(is_int($length), 'Invalid argument $length: int expected');
         assert($length >= 0, '$length must not be negative');
         $this->_length = (int) $length;
         return $this;
@@ -77,7 +76,7 @@ class UrlValidator extends AbstractValidator
     public static function validate($url, $maxLength = 0)
     {
         assert(is_int($maxLength), 'Invalid argument $maxLength: int expected');
-        return filter_var($url, FILTER_VALIDATE_URL) && (!$maxLength || mb_strlen($url) <= $maxLength) && !self::_hasJavaScriptScheme($url)
+        return filter_var($url, FILTER_VALIDATE_URL) && (!$maxLength || mb_strlen((string) $url) <= $maxLength) && !self::_hasJavaScriptScheme($url)
             && !self::_hasFileScheme($url);
     }
 
@@ -101,7 +100,7 @@ class UrlValidator extends AbstractValidator
         }
         $maxLength = $this->getMaxLength();
         if ($maxLength > 0) {
-            $url = mb_substr($url, 0, $maxLength);
+            $url = mb_substr((string) $url, 0, $maxLength);
         }
         if (!self::validate($url)) {
             $url = null;
@@ -115,7 +114,7 @@ class UrlValidator extends AbstractValidator
      * @param   mixed  $url  value to validate
      * @return  bool
      */
-    private static function _hasFileScheme($url)
+    private static function _hasFileScheme($url): bool
     {
         return preg_match('/^\s*f\s*i\s*l\s*e\s*/i', parse_url($url, PHP_URL_SCHEME)) === 1;
     }
@@ -126,7 +125,7 @@ class UrlValidator extends AbstractValidator
      * @param   mixed  $url  value to validate
      * @return  bool
      */
-    private static function _hasJavaScriptScheme($url)
+    private static function _hasJavaScriptScheme($url): bool
     {
         return preg_match('/^\s*j\s*a\s*v\s*a\s*s\s*c\s*r\s*i\s*p\s*t\s*/i', parse_url($url, PHP_URL_SCHEME)) === 1;
     }

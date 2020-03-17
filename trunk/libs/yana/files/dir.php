@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Files;
 
@@ -40,12 +41,17 @@ namespace Yana\Files;
 class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \IteratorAggregate
 {
 
-    /**#@+
+    /**
+     * @var array
      * @ignore
      */
-    /** @var array  */ protected $content = array();
-    /** @var string */ protected $filter = "";
-    /**#@-*/
+    protected $content = array();
+
+    /**
+     * @var string
+     * @ignore
+     */
+    protected $filter = "";
 
     /**
      * constructor
@@ -66,7 +72,7 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
     /**
      * read contents and put results in cache (filter settings will be applied)
      *
-     * @return  self
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\NotFoundException  when directory is not found
      */
     public function read()
@@ -128,7 +134,7 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
      * @return  string
      * @since   3.1.0
      */
-    public function getFilter()
+    public function getFilter(): string
     {
         assert(is_string($this->filter), 'Wrong type for argument filter');
         return $this->filter;
@@ -141,13 +147,12 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
      * To reset the filter, leave the setting empty.
      *
      * @param   string  $filter   current file filter
-     * @return  self
+     * @return  $this
      * @since   3.1.0
      */
-    public function setFilter($filter = "")
+    public function setFilter(string $filter = "")
     {
-        assert(is_string($filter), 'Wrong type for argument 1. String expected');
-        $this->filter = (string) $filter;
+        $this->filter = $filter;
         return $this;
     }
 
@@ -160,16 +165,14 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
      * parameter.
      *
      * @param   int  $mode  access mode, an octal number of 1 through 0777.
-     * @return  self
+     * @return  $this
      * @name    Dir::create()
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException      when argument $mode is not an integer or out of range
      * @throws  \Yana\Core\Exceptions\Files\AlreadyExistsException  when the directory already exists
      * @throws  \Yana\Core\Exceptions\Files\NotWriteableException   when target location is not writeable
      */
-    public function create($mode = 0777)
+    public function create(int $mode = 0777)
     {
-        assert(is_int($mode), 'Wrong argument type argument 1. Integer expected');
-
         if ($mode > 0777 || $mode < 1) {
             $message = "Argument mode must be an octal number in range: [1,0777].";
             $level = \Yana\Log\TypeEnumeration::WARNING;
@@ -212,7 +215,7 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
      * @throws  \Yana\Core\Exceptions\Files\NotWriteableException  when directory cannot be deleted
      * @throws  \Yana\Core\Exceptions\Files\NotFoundException      when directory is not found
      */
-    public function delete($isRecursive = false)
+    public function delete(bool $isRecursive = false)
     {
         assert(is_bool($isRecursive), 'Wrong argument type argument 1. Boolean expected');
 
@@ -285,7 +288,7 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
      *
      * @return  bool
      */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         return empty($this->content);        
     }
@@ -301,7 +304,7 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
      *
      * @return  int
      */
-    public function length()
+    public function length(): int
     {
         return count($this->content);
     }
@@ -312,7 +315,7 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
      * @return  array
      * @throws  \Yana\Core\Exceptions\Files\NotFoundException  when directory doesn't exist
      */
-    public function listDirectories()
+    public function listDirectories(): array
     {
         $this->content = \Yana\Util\Dir::listDirectories($this->getPath(), "");
         return $this->content;
@@ -329,10 +332,8 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
      * @return  array
      * @throws  \Yana\Core\Exceptions\Files\NotFoundException  when directory doesn't exist
      */
-    public function listFiles($filter = "")
+    public function listFiles(string $filter = ""): array
     {
-        assert(is_string($filter), 'Wrong type for argument 1. String expected');
-
         $this->setFilter($filter);
         $this->content = \Yana\Util\Dir::listFiles($this->getPath(), $this->getFilter());
         return $this->content;
@@ -349,10 +350,8 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
      * @return  array
      * @throws  \Yana\Core\Exceptions\Files\NotFoundException  when directory doesn't exist
      */
-    public function listFilesAndDirectories($filter = "")
+    public function listFilesAndDirectories(string $filter = ""): array
     {
-        assert(is_string($filter), 'Wrong type for argument 1. String expected');
-
         $this->setFilter($filter);
         $this->content = \Yana\Util\Dir::listFilesAndDirectories($this->getPath(), $this->getFilter());
         return $this->content;
@@ -371,10 +370,8 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
      * @return  int
      * @throws  \Yana\Core\Exceptions\Files\NotFoundException  when directory doesn't exist
      */
-    public function getSize($countSubDirs = true)
+    public function getSize(bool $countSubDirs = true): int
     {
-        assert(is_bool($countSubDirs), 'Wrong argument type $countSubDirs: Boolean expected.');
-
         return \Yana\Util\Dir::getSize($this->getPath(), $countSubDirs);
     }
 
@@ -382,13 +379,10 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
      * Reset statistics.
      *
      * Reset directory stats, e.g. after creating a file that did not exist.
-     *
-     * @return  self
      */
     protected function _resetStats()
     {
         parent::_resetStats();
-        return $this;
     }
 
     /**
@@ -398,7 +392,7 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
      *
      * @return  bool
      */
-    public function exists()
+    public function exists(): bool
     {
         $name = $this->getPath();
         return is_dir($name) && file_exists($name) && is_readable($name);
@@ -465,13 +459,14 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \It
      * @param    string   $fileFilter   use this to limit the copied files to a specific extension
      * @param    string   $dirFilter    use this to limit the copied directories to those matching the filter
      * @param    bool     $useRegExp    set this to bool(true) if you want filters to be treated as a regular expression
-     * @return   \Yana\Files\Dir
+     * @return   $this
      * @throws   \Yana\Core\Exceptions\InvalidArgumentException   when one input argument is invalid
      * @throws   \Yana\Core\Exceptions\AlreadyExistsException     if the target directory already exists
      * @throws   \Yana\Core\Exceptions\NotWriteableException      if the target location is not writeable
      * @throws   \Yana\Core\Exceptions\Files\NotCreatedException  when a file or directory could not be created at the target
      */
-    public function copy($destDir, $overwrite = true, $mode = 0766, $copySubDirs = false, $fileFilter = null, $dirFilter = null, $useRegExp = false)
+    public function copy(string $destDir, bool $overwrite = true, int $mode = 0766, bool $copySubDirs = false, ?string $fileFilter = null,
+        ?string $dirFilter = null, bool $useRegExp = false)
     {
         assert(is_string($destDir), 'Wrong type for argument 1. String expected');
         assert(is_bool($overwrite), 'Wrong type for argument 2. Boolean expected');

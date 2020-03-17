@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Ddl;
 
@@ -105,9 +106,9 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      *
      * May return NULL if there is none.
      *
-     * @return  \Yana\Db\Ddl\Database
+     * @return  \Yana\Db\Ddl\Database|NULL
      */
-    public function getParent()
+    public function getParent(): ?\Yana\Db\Ddl\Database
     {
         return $this->parent;
     }
@@ -119,9 +120,9 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      *
      * It is optional. If it is not set, the function returns NULL instead.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getTitle()
+    public function getTitle(): ?string
     {
         if (is_string($this->title)) {
             return $this->title;
@@ -137,11 +138,10 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * To reset the property, leave the parameter empty.
      *
      * @param   string  $title  some text
-     * @return  \Yana\Db\Ddl\Table 
+     * @return  $this
      */
-    public function setTitle($title = "")
+    public function setTitle(string $title = "")
     {
-        assert(is_string($title), 'Wrong type for argument 1. String expected');
         if (empty($title)) {
             $this->title = null;
         } else {
@@ -164,9 +164,9 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * NULL instead. Note that the description may also contain an identifier
      * for automatic translation.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         if (is_string($this->description)) {
             return $this->description;
@@ -187,11 +187,10 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * To reset the property, leave the parameter $description empty.
      *
      * @param   string  $description  new value of this property
-     * @return  \Yana\Db\Ddl\Table 
+     * @return  $this
      */
-    public function setDescription($description = "")
+    public function setDescription(string $description = "")
     {
-        assert(is_string($description), 'Wrong type for argument 1. String expected');
         if (empty($description)) {
             $this->description = null;
         } else {
@@ -209,7 +208,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      *
      * @return  bool
      */
-    public function isReadonly()
+    public function isReadonly(): bool
     {
         return !empty($this->readonly);
     }
@@ -221,11 +220,10 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * bool(true).
      *
      * @param   bool  $isReadonly   new value of this property
-     * @return  \Yana\Db\Ddl\Table
+     * @return  $this
      */
-    public function setReadonly($isReadonly = false)
+    public function setReadonly(bool $isReadonly = false)
     {
-        assert(is_bool($isReadonly), 'Wrong type for argument 1. Boolean expected');
         $this->readonly = (bool) $isReadonly;
         return $this;
     }
@@ -238,11 +236,10 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * NULL instead.
      *
      * @param   string  $name   column name
-     * @return  \Yana\Db\Ddl\Column
+     * @return  \Yana\Db\Ddl\Column|NULL
      */
-    public function getColumn($name)
+    public function getColumn(string $name): ?\Yana\Db\Ddl\Column
     {
-        assert(is_string($name), 'Wrong type for argument 1. String expected');
         $name = mb_strtolower($name);
         if (isset($this->columns[$name])) {
             return $this->columns[$name];
@@ -257,9 +254,8 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * @param   string  $type   datatype ('string', 'text', 'int', ...)
      * @return  array
      */
-    public function getColumnsByType($type)
+    public function getColumnsByType(string $type): array
     {
-        assert(is_string($type), 'Wrong type for argument 1. String expected');
         assert(in_array($type, \Yana\Db\Ddl\ColumnTypeEnumeration::getSupportedTypes()), 'Undefined column type "' . $type . '". ');
         assert(is_array($this->columns), 'Member "columns" is expected to be an array.');
         $columns = array();
@@ -280,9 +276,8 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      *
      * @return  array
      */
-    public function getColumns()
+    public function getColumns(): array
     {
-        assert(is_array($this->columns), 'Member "columns" is expected to be an array.');
         return $this->columns;
     }
 
@@ -293,9 +288,8 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      *
      * @return  array
      */
-    public function getColumnNames()
+    public function getColumnNames(): array
     {
-        assert(is_array($this->columns), 'Member "columns" is expected to be an array.');
         return array_keys($this->columns);
     }
 
@@ -307,9 +301,8 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      *
      * @return  array
      */
-    public function getFileColumns()
+    public function getFileColumns(): array
     {
-        assert(is_array($this->columns), 'Member "columns" is expected to be an array.');
         $columns = array();
         foreach ($this->columns as $column)
         {
@@ -327,10 +320,10 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * exist. If there is no foreign key for the given column, NULL is returned.
      *
      * @param   string  $columnName  name of column containing the foreign key
-     * @return  string
+     * @return  string|NULL
      * @throws  \Yana\Core\Exceptions\NotFoundException  when column does not exist
      */
-    public function getTableByForeignKey($columnName)
+    public function getTableByForeignKey(string $columnName): ?string
     {
         if (!$this->isColumn($columnName)) {
             throw new \Yana\Core\Exceptions\NotFoundException("No such column '$columnName'.", \Yana\Log\TypeEnumeration::WARNING);
@@ -355,11 +348,11 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * If there is no foreign key for the given column, NULL is returned.
      *
      * @param   string  $columnName  name of column containing the foreign key
-     * @return  \Yana\Db\Ddl\Column
+     * @return  \Yana\Db\Ddl\Column|NULL
      * @throws  \Yana\Core\Exceptions\NotFoundException  when column does not exist
      * @ignore
      */
-    public function getColumnByForeignKey($columnName)
+    public function getColumnByForeignKey(string $columnName): ?\Yana\Db\Ddl\Column
     {
         if (!$this->isColumn($columnName)) {
             throw new \Yana\Core\Exceptions\NotFoundException("No such column '$columnName'.", \Yana\Log\TypeEnumeration::WARNING);
@@ -400,9 +393,8 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * @param   string  $columnName  name of column
      * @return  bool
      */
-    public function isColumn($columnName)
+    public function isColumn(string $columnName): bool
     {
-        assert(is_string($columnName), 'Wrong type for argument 1. String expected');
         return isset($this->columns[mb_strtolower($columnName)]);
     }
 
@@ -417,9 +409,8 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * @throws  \Yana\Core\Exceptions\AlreadyExistsException   when another column with the same name already exists
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException if the name is not valid
      */
-    public function addColumn($columnName, $type)
+    public function addColumn(string $columnName, string $type): \Yana\Db\Ddl\Column
     {
-        assert(is_string($columnName), 'Wrong type for argument 1. String expected');
         assert(in_array($type, \Yana\Db\Ddl\ColumnTypeEnumeration::getSupportedTypes()), 'Undefined column type "' . $type . '". ');
         $columnName = mb_strtolower($columnName);
         if (isset($this->columns[$columnName])) {
@@ -446,7 +437,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      *
      * @return  bool
      */
-    public function hasProfile()
+    public function hasProfile(): bool
     {
         return isset($this->columns['profile_id']);
     }
@@ -461,11 +452,10 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * column of this name, if it is missing.
      *
      * @param   bool  $hasProfileConstraint  profile constraint
-     * @return  \Yana\Db\Ddl\Table 
+     * @return  $this
      */
-    public function setProfile($hasProfileConstraint)
+    public function setProfile(bool $hasProfileConstraint)
     {
-        assert(is_bool($hasProfileConstraint), 'Wrong type for argument 1. Boolean expected');
         if ($this->hasProfile()) {
             // remove profile
             if (!$hasProfileConstraint) {
@@ -486,9 +476,8 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * @param   string  $columnName   column name
      * @throws  \Yana\Core\Exceptions\NotFoundException  when column does not exist
      */
-    public function dropColumn($columnName)
+    public function dropColumn(string $columnName)
     {
-        assert(is_string($columnName), 'Wrong type for argument 1. String expected');
         $columnName = mb_strtolower($columnName);
         if (isset($this->columns[$columnName])) {
             unset($this->columns[$columnName]);
@@ -522,21 +511,12 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * @param   bool  $lastModified  true: check for time_modified, false check for time_created
      * @return  bool
      */
-    public function hasVersionCheck($lastModified = true)
+    public function hasVersionCheck(bool $lastModified = true): bool
     {
-        assert(is_bool($lastModified), 'Wrong type for argument 1. Boolean expected');
         if ($lastModified) {
-            if (isset($this->columns['time_modified'])) {
-                return true;
-            } else {
-                return false;
-            }
+            return isset($this->columns['time_modified']);
         } else {
-            if (isset($this->columns['time_created'])) {
-                return true;
-            } else {
-                return false;
-            }
+            return isset($this->columns['time_created']);
         }
     }
 
@@ -551,12 +531,10 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      *
      * @param   bool  $hasVersionCheck  new value of this property
      * @param   bool  $lastModified     true: check for time_modified, false check for time_created
-     * @return  \Yana\Db\Ddl\Table 
+     * @return  $this
      */
-    public function setVersionCheck($hasVersionCheck, $lastModified = true)
+    public function setVersionCheck(bool $hasVersionCheck, bool $lastModified = true)
     {
-        assert(is_bool($hasVersionCheck), 'Wrong type for argument 1. Boolean expected');
-        assert(is_bool($lastModified), 'Wrong type for argument 2. Boolean expected');
         if ($this->hasVersionCheck($lastModified)) {
             // remove version check
             if (!$hasVersionCheck) {
@@ -587,9 +565,8 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * @param   bool  $lastModified  true: check for user_modified, false check for user_created
      * @return  bool
      */
-    public function hasAuthorLog($lastModified = true)
+    public function hasAuthorLog(bool $lastModified = true): bool
     {
-        assert(is_bool($lastModified), 'Wrong type for argument 1. Boolean expected');
         if ($lastModified) {
             return isset($this->columns['user_modified']);
         } else {
@@ -604,12 +581,10 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      *
      * @param   bool  $hasAuthorLog  new value of this property
      * @param   bool  $lastModified  true: check for user_modified, false check for user_created
-     * @return  \Yana\Db\Ddl\Table
+     * @return  $this
      */
-    public function setAuthorLog($hasAuthorLog, $lastModified = true)
+    public function setAuthorLog(bool $hasAuthorLog, bool $lastModified = true)
     {
-        assert(is_bool($hasAuthorLog), 'Wrong type for argument 1. Boolean expected');
-        assert(is_bool($lastModified), 'Wrong type for argument 2. Boolean expected');
         if ($this->hasAuthorLog($lastModified)) {
             // remove version check
             if (!$hasAuthorLog) {
@@ -635,9 +610,8 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      *
      * @return  array
      */
-    public function getForeignKeys()
+    public function getForeignKeys(): array
     {
-        assert(is_array($this->foreignKeys), 'Member "foreignKeys" is expected to be an array.');
         return $this->foreignKeys;
     }
 
@@ -648,11 +622,10 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * {@see \Yana\Db\Ddl\ForeignKey}. If no foreign key with the given name exists, the function returns NULL instead.
      *
      * @param   string  $name   name of a foreign key
-     * @return  \Yana\Db\Ddl\ForeignKey
+     * @return  \Yana\Db\Ddl\ForeignKey|NULL
      */
-    public function getForeignKey($name)
+    public function getForeignKey(string $name): ?\Yana\Db\Ddl\ForeignKey
     {
-        assert(is_string($name), 'Wrong type for argument 1. String expected');
         $name = mb_strtolower($name);
         if (isset($this->foreignKeys[$name])) {
             return $this->foreignKeys[$name];
@@ -673,11 +646,8 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * @throws  \Yana\Core\Exceptions\NotFoundException         if target table does not exist
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if constraint name is not valid or column
      */
-    public function addForeignKey($table, $constraintName = "")
+    public function addForeignKey(string $table, string $constraintName = ""): \Yana\Db\Ddl\ForeignKey
     {
-        assert(is_string($table), 'Wrong type for argument 1. String expected');
-        assert(is_string($constraintName), 'Wrong type for argument 2. String expected');
-
         if (isset($this->parent)) {
             if (!$this->parent->isTable($table)) {
                 throw new \Yana\Core\Exceptions\NotFoundException("No such table '$table'.");
@@ -702,9 +672,9 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * Returns the name of the primary key column of the table as a lower-cased string.
      * Returns NULL and issues a Warning if there is no primary key for $table.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getPrimaryKey()
+    public function getPrimaryKey(): ?string
     {
         if (isset($this->primaryKey)) {
             return $this->primaryKey;
@@ -723,11 +693,10 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      *
      * @param   string  $columnName  name of column
      * @throws  \Yana\Core\Exceptions\NotFoundException  if column does not exist
-     * @return  \Yana\Db\Ddl\Table 
+     * @return  $this
      */
-    public function setPrimaryKey($columnName)
+    public function setPrimaryKey(string $columnName)
     {
-        assert(is_string($columnName), 'Wrong type for argument 1. String expected');
         $name = mb_strtolower($columnName);
         if (isset($this->columns[$name])) {
             $this->primaryKey = $name;
@@ -743,9 +712,9 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      *
      * Returns the name of the parent table as a string, or NULL if there is none.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getInheritance()
+    public function getInheritance(): ?string
     {
         return $this->inheritance;
     }
@@ -762,9 +731,9 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * Set parameter $name to NULL to reset the setting.
      *
      * @param   string  $name  name of the parent table
-     * @return  \Yana\Db\Ddl\Table 
+     * @return  $this
      */
-    public function setInheritance($name)
+    public function setInheritance(string $name)
     {
         if (!empty($name)) {
             $this->inheritance = $name;
@@ -781,9 +750,8 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      *
      * @return  array
      */
-    public function getIndexes()
+    public function getIndexes(): array
     {
-        assert(is_array($this->indexes), 'Member "columns" is expected to be an array.');
         return $this->indexes;
     }
 
@@ -793,11 +761,10 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * Returns the index with the given name as an instance of {@see \Yana\Db\Ddl\Index}, or NULL if it does not exist.
      *
      * @param   string  $name  name of index
-     * @return  \Yana\Db\Ddl\Index
+     * @return  \Yana\Db\Ddl\Index|NULL
      */
-    public function getIndex($name)
+    public function getIndex(string $name): ?\Yana\Db\Ddl\Index
     {
-        assert(is_string($name), 'Wrong type for argument 1. String expected');
         $lowerCaseName = mb_strtolower($name);
         if (isset($this->indexes[$lowerCaseName])) {
             return $this->indexes[$lowerCaseName];
@@ -816,10 +783,8 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * @throws  \Yana\Core\Exceptions\AlreadyExistsException   if another index with the same name already exists
      * @throws  \Yana\Core\Exceptions\InvalidArgumenException  if index name is not valid
      */
-    public function addIndex($indexName = "")
+    public function addIndex(string $indexName = ""): \Yana\Db\Ddl\Index
     {
-        assert(is_string($indexName), 'Wrong type for argument 1. String expected');
-
         $newIndex = new \Yana\Db\Ddl\Index($indexName, $this); // may throw InvalidArgumenException
         if (empty($indexName)) {
             $this->indexes[] = $newIndex;
@@ -843,7 +808,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      *
      * @return  array
      */
-    public function getUniqueConstraints()
+    public function getUniqueConstraints(): array
     {
         $result = array();
         if (!empty($this->columns)) {
@@ -863,10 +828,10 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      *
      * Returns NULL if the schema name is unknown or an empty string if the schema name is undefined.
      *
-     * @return  string
+     * @return  string|NULL
      * @ignore
      */
-    public function getSchemaName()
+    public function getSchemaName(): ?string
     {
         if (isset($this->parent)) {
             return $this->parent->getName();
@@ -886,9 +851,8 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * @param   string  $dbms  target DBMS, defaults to "generic"
      * @return  array
      */
-    public function getConstraints($dbms = \Yana\Db\DriverEnumeration::GENERIC)
+    public function getConstraints(string $dbms = \Yana\Db\DriverEnumeration::GENERIC): array
     {
-        assert(is_string($dbms), 'Wrong type for argument 1. String expected');
         $lcDbms = strtolower($dbms);
 
         $constraints = array();
@@ -913,13 +877,10 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      *
      * @param   string  $name  constraint name
      * @param   string  $dbms  target DBMS, defaults to "generic"
-     * @return  \Yana\Db\Ddl\Constraint
+     * @return  \Yana\Db\Ddl\Constraint|NULL
      */
-    public function getConstraint($name, $dbms = \Yana\Db\DriverEnumeration::GENERIC)
+    public function getConstraint(string $name, string $dbms = \Yana\Db\DriverEnumeration::GENERIC): ?\Yana\Db\Ddl\Constraint
     {
-        assert(is_string($name), 'Wrong type for argument 1. String expected');
-        assert(is_string($dbms), 'Wrong type for argument 2. String expected');
-
         $lcDbms = strtolower($dbms);
 
         foreach ((array) $this->constraints as $constraint)
@@ -954,23 +915,21 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * @param   string  $constraint  Code
      * @param   string  $name        optional constraint-name
      * @param   string  $dbms        target DBMS, defaults to "generic"
+     * @return  \Yana\Db\Ddl\Constraint
      */
-    public function addConstraint($constraint, $name = "", $dbms = \Yana\Db\DriverEnumeration::GENERIC)
+    public function addConstraint(string $constraint, string $name = "", string $dbms = \Yana\Db\DriverEnumeration::GENERIC): \Yana\Db\Ddl\Constraint
     {
-        assert(is_string($constraint), 'Wrong type for argument 1. String expected');
-        assert(is_string($name), 'Wrong type for argument 2. String expected');
-        assert(is_string($dbms), 'Wrong type for argument 3. String expected');
-
         $object = new \Yana\Db\Ddl\Constraint($name);
         $object->setDBMS($dbms);
         $object->setConstraint($constraint);
         $this->constraints[] = $object;
+        return $object;
     }
 
     /**
      * Drops the list of all defined constraints.
      *
-     * @return \Yana\Db\Ddl\Table 
+     * @return  $this
      */
     public function dropConstraints()
     {
@@ -1000,7 +959,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      *
      * @param   string  $dbms  target DBMS, defaults to "generic"
      */
-    public function getTriggerBeforeInsert($dbms = \Yana\Db\DriverEnumeration::GENERIC)
+    public function getTriggerBeforeInsert(string $dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
         return $this->_getTrigger($dbms, 0, 0);
     }
@@ -1107,10 +1066,6 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * Instead referes to triggers that fire INSTEAD of the statement. The statement is not
      * executed. This option is not supported by all DBMS. However: if it is not, you may emulate
      * this (with some limitations) by using PHP code.
-     *
-     * @param   string  $trigger  code (possibly a function call)
-     * @param   string  $dbms     target DBMS
-     * @param   string  $name     optional trigger name
      */
 
     /**
@@ -1121,7 +1076,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * @param   string  $name     optional trigger name
      * @return  \Yana\Db\Ddl\Trigger
      */
-    public function setTriggerBeforeInsert($trigger, $dbms = \Yana\Db\DriverEnumeration::GENERIC, $name = "")
+    public function setTriggerBeforeInsert(string $trigger, string $dbms = \Yana\Db\DriverEnumeration::GENERIC, string $name = ""): \Yana\Db\Ddl\Trigger
     {
         return $this->_setTrigger($trigger, $dbms, $name, 0, 0);
     }
@@ -1134,7 +1089,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * @param   string  $name     optional trigger name
      * @return  \Yana\Db\Ddl\Trigger
      */
-    public function setTriggerBeforeUpdate($trigger, $dbms = \Yana\Db\DriverEnumeration::GENERIC, $name = "")
+    public function setTriggerBeforeUpdate(string $trigger, string $dbms = \Yana\Db\DriverEnumeration::GENERIC, string $name = ""): \Yana\Db\Ddl\Trigger
     {
         return $this->_setTrigger($trigger, $dbms, $name, 0, 1);
     }
@@ -1147,7 +1102,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * @param   string  $name     optional trigger name
      * @return  \Yana\Db\Ddl\Trigger
      */
-    public function setTriggerBeforeDelete($trigger, $dbms = \Yana\Db\DriverEnumeration::GENERIC, $name = "")
+    public function setTriggerBeforeDelete(string $trigger, string $dbms = \Yana\Db\DriverEnumeration::GENERIC, string $name = ""): \Yana\Db\Ddl\Trigger
     {
         return $this->_setTrigger($trigger, $dbms, $name, 0, 2);
     }
@@ -1160,20 +1115,20 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * @param   string  $name     optional trigger name
      * @return  \Yana\Db\Ddl\Trigger
      */
-    public function setTriggerAfterInsert($trigger, $dbms = \Yana\Db\DriverEnumeration::GENERIC, $name = "")
+    public function setTriggerAfterInsert(string $trigger, string $dbms = \Yana\Db\DriverEnumeration::GENERIC, string $name = ""): \Yana\Db\Ddl\Trigger
     {
         return $this->_setTrigger($trigger, $dbms, $name, 1, 0);
     }
 
     /**
-     * set trigger after update
+     * Set trigger after update.
      *
      * @param   string  $trigger  code (possibly a function call)
      * @param   string  $dbms     target DBMS
      * @param   string  $name     optional trigger name
      * @return  \Yana\Db\Ddl\Trigger
      */
-    public function setTriggerAfterUpdate($trigger, $dbms = \Yana\Db\DriverEnumeration::GENERIC, $name = "")
+    public function setTriggerAfterUpdate(string $trigger, string $dbms = \Yana\Db\DriverEnumeration::GENERIC, string $name = ""): \Yana\Db\Ddl\Trigger
     {
         return $this->_setTrigger($trigger, $dbms, $name, 1, 1);
     }
@@ -1186,7 +1141,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * @param   string  $name     optional trigger name
      * @return  \Yana\Db\Ddl\Trigger
      */
-    public function setTriggerAfterDelete($trigger, $dbms = \Yana\Db\DriverEnumeration::GENERIC, $name = "")
+    public function setTriggerAfterDelete(string $trigger, string $dbms = \Yana\Db\DriverEnumeration::GENERIC, string $name = ""): \Yana\Db\Ddl\Trigger
     {
         return $this->_setTrigger($trigger, $dbms, $name, 1, 2);
     }
@@ -1199,7 +1154,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * @param   string  $name     optional trigger name
      * @return  \Yana\Db\Ddl\Trigger
      */
-    public function setTriggerInsteadInsert($trigger, $dbms = \Yana\Db\DriverEnumeration::GENERIC, $name = "")
+    public function setTriggerInsteadInsert(string $trigger, string $dbms = \Yana\Db\DriverEnumeration::GENERIC, string $name = ""): \Yana\Db\Ddl\Trigger
     {
         return $this->_setTrigger($trigger, $dbms, $name, 2, 0);
     }
@@ -1212,7 +1167,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * @param   string  $name     optional trigger name
      * @return  \Yana\Db\Ddl\Trigger
      */
-    public function setTriggerInsteadUpdate($trigger, $dbms = \Yana\Db\DriverEnumeration::GENERIC, $name = "")
+    public function setTriggerInsteadUpdate(string $trigger, string $dbms = \Yana\Db\DriverEnumeration::GENERIC, string $name = ""): \Yana\Db\Ddl\Trigger
     {
         return $this->_setTrigger($trigger, $dbms, $name, 2, 1);
     }
@@ -1225,7 +1180,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * @param   string  $name     optional trigger name
      * @return  \Yana\Db\Ddl\Trigger
      */
-    public function setTriggerInsteadDelete($trigger, $dbms = \Yana\Db\DriverEnumeration::GENERIC, $name = "")
+    public function setTriggerInsteadDelete(string $trigger, string $dbms = \Yana\Db\DriverEnumeration::GENERIC, string $name = ""): \Yana\Db\Ddl\Trigger
     {
         return $this->_setTrigger($trigger, $dbms, $name, 2, 2);
     }
@@ -1237,11 +1192,10 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * @param   string  $dbms   target DBMS, defaults to "generic"
      * @param   int     $on     on
      * @param   int     $event  event
-     * @return  string
+     * @return  string|NULL
      */
-    private function _getTrigger($dbms, $on, $event)
+    private function _getTrigger(string $dbms, int $on, int $event): ?string
     {
-        assert(is_string($dbms), 'Wrong type for argument 1. String expected');
         $dbms = strtolower($dbms);
 
         foreach ((array) $this->triggers as $trigger)
@@ -1277,14 +1231,8 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * @param   int     $event    event
      * @return  \Yana\Db\Ddl\Trigger
      */
-    private function _setTrigger($trigger, $dbms, $name, $on, $event)
+    private function _setTrigger(string $trigger, string $dbms, string $name, int $on, int $event): \Yana\Db\Ddl\Trigger
     {
-        assert(is_string($trigger), 'Invalid argument $trigger: String expected');
-        assert(is_string($dbms), 'Invalid argument $dbms: String expected');
-        assert(is_string($name), 'Invalid argument $name: String expected');
-        assert(is_int($on), 'Invalid argument $on: Integer expected');
-        assert(is_int($event), 'Invalid argument $event: Integer expected');
-
         $dbms = strtolower($dbms);
         $object = new \Yana\Db\Ddl\Trigger($name);
         $object->setDBMS($dbms);
@@ -1330,9 +1278,8 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      *
      * @return  array
      */
-    public function getGrants()
+    public function getGrants(): array
     {
-        assert(is_array($this->grants), 'Member "grants" is expected to be an array.');
         return $this->grants;
     }
 
@@ -1365,11 +1312,8 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * @return  \Yana\Db\Ddl\Grant
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when $level is out of range [0,100]
      */
-    public function addGrant($user = null, $role = null, $level = null)
+    public function addGrant(?string $user = null, ?string $role = null, ?int $level = null): \Yana\Db\Ddl\Grant
     {
-        assert(is_null($user) || is_string($user), 'Invalid argument $user: String expected');
-        assert(is_null($role) || is_string($role), 'Invalid argument $role: String expected');
-        assert(is_null($level) || is_int($level), 'Invalid argument $level: Integer expected');
         $grant = new \Yana\Db\Ddl\Grant();
         if (!empty($user)) {
             $grant->setUser($user);
@@ -1393,7 +1337,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * This function adds a new grant to the configuration.
      *
      * @param   \Yana\Db\Ddl\Grant  $grant    expected an grand object ( rights management)
-     * @return  \Yana\Db\Ddl\Table 
+     * @return  $this
      */
     public function setGrant(\Yana\Db\Ddl\Grant $grant)
     {
@@ -1412,7 +1356,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * Do not call directly.
      *
      * @param   \Yana\Db\Ddl\Index $index primary/clustered index
-     * @return  \Yana\Db\Ddl\Table 
+     * @return  $this
      */
     public function setPrimaryIndex(\Yana\Db\Ddl\Index $index)
     {

@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Ddl;
 
@@ -82,9 +83,9 @@ class DatabaseInit extends \Yana\Db\Ddl\DDL
      * Usually this is used as a fall-back option for DBMS you haven't thought of when creating the
      * database structure or for those that simply doesn't have the feature in question.
      *
-     * @return  string
+     * @return  string|null
      */
-    public function getDBMS()
+    public function getDBMS(): ?string
     {
         if (is_string($this->dbms)) {
             return $this->dbms;
@@ -105,12 +106,10 @@ class DatabaseInit extends \Yana\Db\Ddl\DDL
      * database structure or for those that simply doesn't have the feature in question.
      *
      * @param   string  $dbms  target DBMS, defaults to "generic"
-     * @return  \Yana\Db\Ddl\DatabaseInit
+     * @return  $this
      */
-    public function setDBMS($dbms = \Yana\Db\DriverEnumeration::GENERIC)
+    public function setDBMS(string $dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
-        assert(is_string($dbms), 'Wrong type for argument 1. String expected');
-
         if (empty($dbms)) {
             $this->dbms = null;
         } else {
@@ -124,9 +123,9 @@ class DatabaseInit extends \Yana\Db\Ddl\DDL
      *
      * Returns the SQL statement for this operation.
      *
-     * @return  string
+     * @return  string|null
      */
-    public function getSQL()
+    public function getSQL(): ?string
     {
         if (is_string($this->sql)) {
             return $this->sql;
@@ -139,11 +138,10 @@ class DatabaseInit extends \Yana\Db\Ddl\DDL
      * Set the SQL statement for this operation.
      *
      * @param   string  $sql  SQL statement
-     * @return  \Yana\Db\Ddl\DatabaseInit
+     * @return  $this
      */
-    public function setSQL($sql)
+    public function setSQL(string $sql)
     {
-        assert(is_string($sql), 'Wrong type for argument 1. String expected');
         if (empty($sql)) {
             $this->sql = null;
         } else {

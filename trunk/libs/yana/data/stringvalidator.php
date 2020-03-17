@@ -192,8 +192,8 @@ class StringValidator extends AbstractValidator
     protected function _processMaxLength($value)
     {
         $length = $this->getMaxLength();
-        if ($length > 0 && mb_strlen("$value") > $length) {
-            $value = mb_substr($value, 0, $length);
+        if ($length > 0 && mb_strlen((string) $value) > $length) {
+            $value = mb_substr((string) $value, 0, $length);
         }
         return $value;
     }

@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Files;
 
@@ -68,9 +69,8 @@ class Dat extends \Yana\Files\Text
      * @return  array
      * @throws  \Yana\Core\Exceptions\OutOfBoundsException  when the line is not found
      */
-    public function getLine($lineNr)
+    public function getLine(int $lineNr)
     {
-        assert(is_int($lineNr), 'Invalid argument type argument 1. Integer expected.');
         if (!isset($this->content[$lineNr])) {
             $message = "There is no line '$lineNr' in file '" . $this->getPath() . "'.";
             throw new \Yana\Core\Exceptions\OutOfBoundsException($message, \Yana\Log\TypeEnumeration::INFO);
@@ -87,7 +87,7 @@ class Dat extends \Yana\Files\Text
      *
      * @return  array
      */
-    public function getLines()
+    public function getLines(): array
     {
         $array = array();
         if (!empty($this->content)) {
@@ -108,9 +108,8 @@ class Dat extends \Yana\Files\Text
      * @param   string  $line  line of text to parse
      * @return  array
      */
-    private static function _parseLine($line)
+    private static function _parseLine(string $line): array
     {
-        assert(is_string($line), 'Wrong type for argument 1. String expected');
         $array = array();
         $matches = array();
         preg_match_all("/<(.*)>(.*)<\/.*>/Ui", $line, $matches);
@@ -137,10 +136,9 @@ class Dat extends \Yana\Files\Text
      * @param   array  $content  associative array containing the new entry
      * @param   bool   $append   true = append entry on end of file, false = insert entry on top of file
      */
-    public function appendLine($content, $append = false)
+    public function appendLine($content, bool $append = false)
     {
         assert(is_array($content), 'Wrong type for argument 1. Array expected');
-        assert(is_bool($append), 'Wrong type for argument 2. Boolean expected');
 
         $txt = self::_encodeEntry($content);
         if (!$this->isEmpty()) {
@@ -166,7 +164,7 @@ class Dat extends \Yana\Files\Text
      * @param   array  $newEntry  associative array containing the new entry
      * @since   2.9.6
      */
-    public function setLine($lineNr, $newEntry)
+    public function setLine(int $lineNr, $newEntry)
     {
         assert(is_int($lineNr), 'Wrong type for argument 1. Integer expected');
         assert(is_array($newEntry), 'Wrong type for argument 1. Integer expected');
@@ -186,8 +184,8 @@ class Dat extends \Yana\Files\Text
         $txt = "";
         foreach ($entry as $key => $element)
         {
-            $key = mb_strtoupper($key);
-            $element = strip_tags($element);
+            $key = mb_strtoupper((string) $key);
+            $element = strip_tags((string) $element);
             $txt .= "<$key>$element</$key>";
         }
         $txt = nl2br($txt);

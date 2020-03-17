@@ -114,7 +114,7 @@
     <field column="test_title" table="test" alias="bar"/>
     <select dbms="mysql">Select Test_title as bar, Test_id as id from Test where Test_id > 5</select>
   </view>
-  <form name="test_new" table="test" template="new" allinput="yes">
+  <form name="test_new" table="Test" template="new" allinput="yes">
     <description>test</description>
     <grant role="2" user="1" level="5" select="no" insert="yes" update="no" delete="no" grant="no"/>
     <input name="test_id" hidden="yes" readonly="no" cssclass="testcss">
@@ -129,7 +129,7 @@
     </input>
     <event name="onnew">Test_add_new_Test</event>
   </form>
-  <form name="test_edit" table="test" template="edit">
+  <form name="test_edit" table="Test" template="edit">
     <description>test</description>
     <grant role="2" user="1" level="5" select="no" insert="yes" update="no" delete="no" grant="no"/>
     <form name="test_fieldsetid" table="test">
@@ -156,7 +156,7 @@
     <event name="ondelete">Test_write_delete_Test</event>
     <event name="onnew">Test_add_new_Test</event>
   </form>
-  <form name="test_default" table="test" allinput="yes">
+  <form name="test_default" table="Test" allinput="yes">
       <form name="default1" table="test">
           <input name="test_created" hidden="yes" readonly="yes" cssclass="testcss" tabindex="2"/>
       </form>

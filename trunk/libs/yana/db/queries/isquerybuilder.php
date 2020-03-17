@@ -43,15 +43,16 @@ interface IsQueryBuilder
     /**
      * Create Select statement.
      *
-     * @param   string  $key      the address of the value(s) to retrieve
-     * @param   array   $where    where clause
-     * @param   array   $orderBy  a list of columns to order the resultset by
-     * @param   int     $offset   the number of the first result to be returned
-     * @param   int     $limit    maximum number of results to return
-     * @param   bool    $desc     if true results will be ordered in descending, otherwise in ascending order
+     * @param   string      $key      the address of the value(s) to retrieve
+     * @param   array       $where    where clause
+     * @param   array       $orderBy  a list of columns to order the resultset by
+     * @param   int         $offset   the number of the first result to be returned
+     * @param   int         $limit    maximum number of results to return
+     * @param   bool|array  $desc     if true results will be ordered in descending, otherwise in ascending order -
+     *                                can be array if order by clause contains more than one column
      * @return  \Yana\Db\Queries\Select
      */
-    public function select($key, array $where = array(), $orderBy = array(), $offset = 0, $limit = 0, $desc = false);
+    public function select(string $key, array $where = array(), array $orderBy = array(), int $offset = 0, int $limit = 0, $desc = false): \Yana\Db\Queries\Select;
 
     /**
      * Create Update statement.
@@ -72,7 +73,7 @@ interface IsQueryBuilder
      * @throws  \Yana\Core\Exceptions\Forms\FieldNotFoundException      when a value was provided but no corresponding column exists
      * @throws  \Yana\Core\Exceptions\Files\SizeException               when an uploaded file is too large
      */
-    public function update($key, $value = array());
+    public function update(string $key, $value = array()): \Yana\Db\Queries\Update;
 
     /**
      * Create Insert statement.
@@ -85,7 +86,7 @@ interface IsQueryBuilder
      * @throws  \Yana\Db\Queries\Exceptions\ConstraintException         when a constraint violation is detected
      * @throws  \Yana\Db\Queries\Exceptions\InvalidResultTypeException  when trying to insert anything but a row.
      */
-    public function insert($key, $value = array());
+    public function insert(string $key, $value = array()): \Yana\Db\Queries\Insert;
 
     /**
      * Create Delete statement.
@@ -121,7 +122,7 @@ interface IsQueryBuilder
      * @param   int     $limit  maximum number of rows to remove
      * @return  \Yana\Db\Queries\Delete
      */
-    public function remove($key, array $where = array(), $limit = 1);
+    public function remove(string $key, array $where = array(), int $limit = 1): \Yana\Db\Queries\Delete;
 
     /**
      * Create Select statement to count the number of entries inside a table.
@@ -131,7 +132,7 @@ interface IsQueryBuilder
      * @return  \Yana\Db\Queries\SelectCount
      * @throws  \Yana\Db\Exceptions\TableNotFoundException
      */
-    public function length($table, array $where = array());
+    public function length(string $table, array $where = array()): \Yana\Db\Queries\SelectCount;
 
     /**
      * Create Select statement to check, wether a certain element exists.
@@ -140,7 +141,7 @@ interface IsQueryBuilder
      * @param   array   $where  optional where clause
      * @return  \Yana\Db\Queries\SelectExist
      */
-    public function exists($key, array $where = array());
+    public function exists(string $key, array $where = array()): \Yana\Db\Queries\SelectExist;
 
 }
 

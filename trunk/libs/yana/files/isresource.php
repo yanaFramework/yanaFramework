@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Files;
 
@@ -41,49 +42,49 @@ interface IsResource
      *
      * @return  string
      */
-    public function getPath();
+    public function getPath(): string;
 
     /**
      * Returns true, if the resource exists.
      *
      * @return  bool
      */
-    public function exists();
+    public function exists(): bool;
 
     /**
      * Returns true, if the resource is writeable.
      *
      * @return  bool
      */
-    public function isWriteable();
+    public function isWriteable(): bool;
 
     /**
      * Returns true, if the resource is readable.
      *
      * @return  bool
      */
-    public function isReadable();
+    public function isReadable(): bool;
 
     /**
      * Returns true, if the resource is executable.
      *
      * @return  bool
      */
-    public function isExecutable();
+    public function isExecutable(): bool;
 
     /**
      * Returns true, if the resource has no contents.
      *
      * @return  bool
      */
-    public function isEmpty();
+    public function isEmpty(): bool;
 
     /**
      * Get time when the resource was last modified.
      *
      * @return  int
      */
-    public function getLastModified();
+    public function getLastModified(): int;
 
 }
 

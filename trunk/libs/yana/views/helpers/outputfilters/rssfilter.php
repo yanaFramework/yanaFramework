@@ -59,7 +59,7 @@ class RssFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\
             $lDelim = $smarty->left_delimiter;
             $rDelim = $smarty->right_delimiter;
 
-            $urlFormatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
+            $urlFormatter = $this->_getDependencyContainer()->getUrlFormatter();
             $title = "{$lDelim}lang id='PROGRAM_TITLE'{$rDelim}";
             foreach (\Yana\RSS\Publisher::getFeeds() as $action)
             {

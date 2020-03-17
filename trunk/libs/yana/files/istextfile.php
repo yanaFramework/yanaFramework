@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Files;
 
@@ -45,7 +46,7 @@ interface IsTextFile extends \Yana\Files\IsWritable
      *
      * @param   string  $content  any file data
      */
-    public function setContent($content);
+    public function setContent(string $content);
 
     /**
      * Get line from file.
@@ -54,10 +55,10 @@ interface IsTextFile extends \Yana\Files\IsWritable
      * If the line does not exist, the function returns false.
      *
      * @param   int  $lineNr  starting with 0 for first line
-     * @return  string
+     * @return  string|array
      * @throws  \Yana\Core\Exceptions\OutOfBoundsException  when the line is not found
      */
-    public function getLine($lineNr);
+    public function getLine(int $lineNr);
 
     /**
      * Append new content.
@@ -65,7 +66,7 @@ interface IsTextFile extends \Yana\Files\IsWritable
      * This appends the scalar value $content as a new line to the end of the
      * file.
      *
-     * @param   scalar  $content  content
+     * @param   scalar|array  $content  content
      */
     public function appendLine($content);
 
@@ -75,10 +76,10 @@ interface IsTextFile extends \Yana\Files\IsWritable
      * This sets the text of the given line to the given content.
      * If the line does not exist, an OutOfBoundsException is thrown.
      *
-     * @param   int     $lineNr   starting with 0 for first line
-     * @param   string  $content  any file data, must not contain line-break
+     * @param   int           $lineNr   starting with 0 for first line
+     * @param   string|array  $content  any file data, must not contain line-break
      */
-    public function setLine($lineNr, $content);
+    public function setLine(int $lineNr, $content);
 
     /**
      * Remove an entry from the file.
@@ -92,7 +93,7 @@ interface IsTextFile extends \Yana\Files\IsWritable
      *
      * @param   int  $lineNr  line to remove
      */
-    public function removeLine($lineNr = null);
+    public function removeLine(?int $lineNr = null);
 
     /**
      * Get the number of lines in the file.
@@ -104,7 +105,7 @@ interface IsTextFile extends \Yana\Files\IsWritable
      *
      * @return  int
      */
-    public function length();
+    public function length(): int;
 
 }
 

@@ -104,4 +104,13 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(0, $this->object->getFilesize());
     }
 
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\Files\NotFoundException
+     */
+    public function testRemoveFileNotFoundException()
+    {
+        \Yana\Db\Binaries\File::removeFile("no-such-file");
+    }
+
 }

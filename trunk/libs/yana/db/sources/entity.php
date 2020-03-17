@@ -40,7 +40,7 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Db\Sour
 {
 
     /**
-     * @var int
+     * @var ?int
      */
     private $_id = null;
 
@@ -67,17 +67,17 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Db\Sour
     /**
      * @var string
      */
-    private $_database = null;
+    private $_database = "";
 
     /**
      * @var string
      */
-    private $_user = null;
+    private $_user = "";
 
     /**
      * @var string
      */
-    private $_password = null;
+    private $_password = "";
 
     /**
      * Build and initialize an instance based on DSN settings.
@@ -101,7 +101,7 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Db\Sour
             $entity->setPassword((string) $dsn[\Yana\Db\Sources\DsnEnumeration::PASSWORD]);
         }
         if (!empty($dsn[\Yana\Db\Sources\DsnEnumeration::PORT])) {
-            $entity->setHost((int) $dsn[\Yana\Db\Sources\DsnEnumeration::PORT]);
+            $entity->setPort((int) $dsn[\Yana\Db\Sources\DsnEnumeration::PORT]);
         }
         if (isset($dsn[\Yana\Db\Sources\DsnEnumeration::USER])) {
             $entity->setUser((string) $dsn[\Yana\Db\Sources\DsnEnumeration::USER]);
@@ -117,14 +117,17 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Db\Sour
      */
     public function toDsn(): array
     {
-        return array(
-            \Yana\Db\Sources\DsnEnumeration::DATABASE => $this->getDatabase(),
-            \Yana\Db\Sources\DsnEnumeration::DBMS => $this->getDbms(),
-            \Yana\Db\Sources\DsnEnumeration::HOST => $this->getHost(),
-            \Yana\Db\Sources\DsnEnumeration::PASSWORD => $this->getPassword(),
-            \Yana\Db\Sources\DsnEnumeration::PORT => $this->getPort(),
-            \Yana\Db\Sources\DsnEnumeration::USER => $this->getUser(),
+        $dsn = array(
+            \Yana\Db\Sources\DsnEnumeration::DATABASE => (string) $this->getDatabase(),
+            \Yana\Db\Sources\DsnEnumeration::DBMS => (string) $this->getDbms(),
+            \Yana\Db\Sources\DsnEnumeration::HOST => (string) $this->getHost(),
+            \Yana\Db\Sources\DsnEnumeration::PASSWORD => (string) $this->getPassword(),
+            \Yana\Db\Sources\DsnEnumeration::USER => (string) $this->getUser(),
         );
+        if ($this->getPort() > 0) {
+            $dsn[\Yana\Db\Sources\DsnEnumeration::PORT] = (int) $this->getPort();
+        }
+        return $dsn;
     }
 
     /**
@@ -132,7 +135,7 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Db\Sour
      *
      * This may return NULL if the database entry has not yet been saved.
      *
-     * @return  int
+     * @return  int|null
      */
     public function getId()
     {
@@ -147,7 +150,7 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Db\Sour
      */
     public function setId($id)
     {
-        assert(is_scalar($id), 'Wrong type for argument 1. Integer expected');
+        assert(is_scalar($id) && \is_numeric($id), 'Wrong type for argument 1. Integer expected');
         $this->_id = (int) $id;
         return $this;
     }

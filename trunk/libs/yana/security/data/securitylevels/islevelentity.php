@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Security\Data\SecurityLevels;
 
@@ -42,56 +43,56 @@ interface IsLevelEntity extends \Yana\Security\Data\SecurityLevels\IsLevel, \Yan
      * Set associated application profile.
      *
      * @param   string  $profileName  application profile id
-     * @return  self
+     * @return  $this
      */
-    public function setProfile($profileName);
+    public function setProfile(string $profileName);
 
     /**
      * Get associated application profile.
      *
      * @return  string
      */
-    public function getProfile();
+    public function getProfile(): string;
 
     /**
      * Get the id of the user this rule applies to.
      *
      * @return  string
      */
-    public function getUserName();
+    public function getUserName(): string;
 
     /**
      * Get the id of the user who created this rule.
      *
      * @return  string
      */
-    public function getGrantedByUser();
+    public function getGrantedByUser(): string;
 
     /**
      * Set the id of the user this rule applies to.
      *
      * @param   string  $userName  id referencing user table
-     * @return  self
+     * @return  $this
      */
-    public function setUserName($userName);
+    public function setUserName(string $userName);
 
     /**
      * Set the id of the user who created this rule.
      *
      * @param   string  $createdByUser  id referencing user table
-     * @return  self
+     * @return  $this
      */
-    public function setGrantedByUser($createdByUser);
+    public function setGrantedByUser(string $createdByUser);
 
     /**
      * Grant this permission to another user.
      *
      * @param   string  $userName  user id (will trigger database exception if not valid)
-     * @return  self
+     * @return  \Yana\Security\Data\SecurityLevels\IsLevelEntity
      * @throws  \Yana\Core\Exceptions\User\NotGrantableException  when the permission has no grant option
      * @throws  \Yana\Db\DatabaseException                        when the new permission can't be saved
      */
-    public function grantTo($userName);
+    public function grantTo(string $userName): \Yana\Security\Data\SecurityLevels\IsLevelEntity;
 
 }
 

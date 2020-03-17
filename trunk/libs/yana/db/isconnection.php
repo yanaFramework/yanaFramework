@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db;
 
@@ -43,19 +44,19 @@ interface IsConnection
      *
      * @return  \Yana\Db\Ddl\Database
      */
-    public function getSchema();
+    public function getSchema(): \Yana\Db\Ddl\Database;
 
     /**
      * Returns the name of the chosen DBMS as a lower-cased string.
      *
      * @return  string
      */
-    public function getDBMS();
+    public function getDBMS(): string;
 
     /**
      * Commits the current transaction.
      *
-     * @return  \Yana\Db\IsConnection
+     * @return  $this
      */
     public function commit();
 
@@ -67,18 +68,18 @@ interface IsConnection
      * @param   array            $orderBy  a list of columns to order the resultset by
      * @param   int              $offset   the number of the first result to be returned
      * @param   int              $limit    maximum number of results to return
-     * @param   array             $desc     if true results will be ordered in descending,
+     * @param   bool|array       $desc     if true results will be ordered in descending,
      *                                     otherwise in ascending order
      * @return  mixed
      */
-    public function select($key, array $where = array(), $orderBy = array(), $offset = 0, $limit = 0, $desc = array());
+    public function select($key, array $where = array(), $orderBy = array(), int $offset = 0, int $limit = 0, $desc = array());
 
     /**
      * Update a row or cell.
      *
      * @param   string|\Yana\Db\Queries\Update  $key    the address of the row that should be updated
      * @param   mixed                           $value  value
-     * @return  \Yana\Db\IsConnection
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when either the given $key or $value is invalid
      * @throws  \Yana\Core\Exceptions\NotWriteableException     when the table or database is locked
      */
@@ -87,20 +88,20 @@ interface IsConnection
     /**
      * Update or insert row.
      *
-     * @param   string|\Yana\Db\Queries\Insert  $key    the address of the row that should be inserted|updated
-     * @param   mixed                           $value  value
-     * @return  \Yana\Db\IsConnection
+     * @param   string  $key    the address of the row that should be inserted|updated
+     * @param   mixed   $value  value
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the query is neither an insert, nor an update statement
      * @throws  \Yana\Core\Exceptions\NotWriteableException     when the table or database is locked
      */
-    public function insertOrUpdate($key, $value = array());
+    public function insertOrUpdate(string $key, $value = array());
 
     /**
      * Insert $value at position $key.
      *
      * @param   string|\Yana\Db\Queries\Insert  $key  the address of the row that should be inserted
      * @param   array                           $row  associative array of values
-     * @return  \Yana\Db\IsConnection
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when either $key or $value is invalid
      * @throws  \Yana\Core\Exceptions\NotWriteableException     when the table or database is locked
      */
@@ -112,10 +113,10 @@ interface IsConnection
      * @param   string|\Yana\Db\Queries\Delete  $key    the address of the row that should be removed
      * @param   array            $where  where clause
      * @param   int              $limit  maximum number of rows to remove
-     * @return  \Yana\Db\IsConnection
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\NotWriteableException  when the table or database is locked
      */
-    public function remove($key, array $where = array(), $limit = 1);
+    public function remove($key, array $where = array(), int $limit = 1);
 
     /**
      * Get the number of entries inside a table
@@ -126,7 +127,7 @@ interface IsConnection
      * @param   array                                $where  optional where clause
      * @return  int
      */
-    public function length($table, array $where = array());
+    public function length($table, array $where = array()): int;
 
     /**
      * Check wether a certain table has no entries
@@ -134,7 +135,7 @@ interface IsConnection
      * @param   string  $table  name of a table
      * @return  bool
      */
-    public function isEmpty($table);
+    public function isEmpty(string $table): bool;
 
     /**
      * Check wether a certain key exists.
@@ -143,19 +144,20 @@ interface IsConnection
      * @param   array                 $where  optional where clause
      * @return  bool
      */
-    public function exists($key, array $where = array());
+    public function exists($key, array $where = array()): bool;
 
     /**
      * Check wether the current database is readonly.
      *
      * @return  bool
      */
-    public function isWriteable();
+    public function isWriteable(): bool;
 
     /**
      * Rollback the current transaction
      *
      * @see  AbstractConnection::reset()
+     * @return  $this
      */
     public function rollback();
 
@@ -194,7 +196,7 @@ interface IsConnection
      * @param   string|array  $sqlFile filename which contain the SQL statments or an nummeric array of SQL statments.
      * @return  bool
      */
-    public function importSQL($sqlFile);
+    public function importSQL($sqlFile): bool;
 
     /**
      * Returns the quoted database identifier as a string.

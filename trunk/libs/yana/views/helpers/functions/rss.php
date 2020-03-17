@@ -57,7 +57,7 @@ class Rss extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Views\
         $title = $this->_getLanguage()->getVar('RSS_TITLE');
         $name = $this->_getLanguage()->getVar('PROGRAM_TITLE');
         $result = "";
-        $formatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
+        $formatter = $this->_getDependencyContainer()->getUrlFormatter();
         foreach (\Yana\RSS\Publisher::getFeeds() as $action)
         {
             $result .= '<a title="' . $name . ': ' . $title . '" href="' . $formatter("action={$action}") . '">' .

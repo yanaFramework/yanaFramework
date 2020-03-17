@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db;
 
@@ -33,58 +34,8 @@ namespace Yana\Db;
  * @package     yana
  * @subpackage  db
  */
-class Transaction extends \Yana\Core\StdObject implements \Yana\Db\IsTransaction
+class Transaction extends \Yana\Db\AbstractTransaction implements \Yana\Db\IsTransaction
 {
-
-    /**
-     * Queue of statements belonging to this transaction
-     *
-     * @var  array
-     */
-    private $_queue = array();
-
-    /**
-     * database schema
-     *
-     * The database schema that is used in the current session.
-     *
-     * Please note that you should not change this schema unless
-     * you REALLY know what you are doing.
-     *
-     * @var  \Yana\Db\Ddl\Database
-     */
-    private $_schema  = null;
-
-    /**
-     * Create a new instance.
-     *
-     * Each database connection depends on a schema file describing the database.
-     * These files are to be found in config/db/*.db.xml
-     *
-     * @param   \Yana\Db\Ddl\Database  $schema  schema in database definition language
-     * @throws  \Yana\Core\Exceptions\NotWriteableException  when the database or table is locked
-     */
-    public function __construct(\Yana\Db\Ddl\Database $schema)
-    {
-        if ($schema->isReadonly()) {
-            $message = "Unable to commit changes. Database schema is set to read-only.";
-            throw new \Yana\Core\Exceptions\NotWriteableException($message);
-        }
-        $this->_schema = $schema;
-    }
-
-    /**
-     * The database schema that is used in the current session.
-     *
-     * Please note that you should not change this schema unless
-     * you REALLY know what you are doing.
-     *
-     * @return \Yana\Db\Ddl\Database
-     */
-    protected function _getSchema()
-    {
-        return $this->_schema;
-    }
 
     /**
      * Commit current transaction and write all changes to the database.
@@ -96,20 +47,21 @@ class Transaction extends \Yana\Core\StdObject implements \Yana\Db\IsTransaction
     {
         // start transaction
         $driver->beginTransaction();
+        $queue = $this->_getQueue();
 
         assert(!isset($i), 'Cannot redeclare $i');
-        for ($i = 0; $i < count($this->_queue); $i++)
+        for ($i = 0; $i < count($queue); $i++)
         {
             /*
              * 1) get query object
              */
             /* @var $dbQuery \Yana\Db\Queries\AbstractQuery */
-            assert(is_array($this->_queue[$i]), 'is_array($this->_queue[$i])');
-            assert(isset($this->_queue[$i][0]), 'isset($this->_queue[$i][0])');
-            assert(isset($this->_queue[$i][1]), 'isset($this->_queue[$i][1])');
-            $dbQuery = $this->_queue[$i][0];
+            assert(is_array($queue[$i]));
+            assert(isset($queue[$i][0]));
+            assert(isset($queue[$i][1]));
+            $dbQuery = $queue[$i][0];
             assert($dbQuery instanceof \Yana\Db\Queries\AbstractConnectionWrapper, '$dbQuery instanceof \Yana\Db\Queries\AbstractConnectionWrapper');
-            $triggerCollection = $this->_queue[$i][1];
+            $triggerCollection = $queue[$i][1];
             assert($triggerCollection instanceof \Yana\Db\Helpers\Triggers\TriggerCollection, '$triggerCollection instanceof \Yana\Db\Helpers\Triggers\TriggerCollection');
 
             // skip empty queries
@@ -173,7 +125,7 @@ class Transaction extends \Yana\Core\StdObject implements \Yana\Db\IsTransaction
             $message = "Unable to commit changes.";
             throw new \Yana\Db\CommitFailedException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
-        $this->_queue = array();
+        $this->_resetQueue();
         return $this;
     }
 
@@ -226,7 +178,7 @@ class Transaction extends \Yana\Core\StdObject implements \Yana\Db\IsTransaction
         $triggerCollection[] = new \Yana\Db\Helpers\Triggers\AfterUpdate($triggerContainer);
 
         // add SQL statement to queue
-        $this->_queue[] = array($updateQuery, $triggerCollection);
+        $this->_addToQueue($updateQuery, $triggerCollection);
 
         return $this;
     }
@@ -279,7 +231,7 @@ class Transaction extends \Yana\Core\StdObject implements \Yana\Db\IsTransaction
         }
 
         // add statement to queue
-        $this->_queue[] = array($insertQuery, $triggerCollection);
+        $this->_addToQueue($insertQuery, $triggerCollection);
 
         return $this;
     }
@@ -308,7 +260,7 @@ class Transaction extends \Yana\Core\StdObject implements \Yana\Db\IsTransaction
         $triggerCollection[] = new \Yana\Db\Helpers\Triggers\AfterDelete($triggerContainer);
 
         // add query to queue
-        $this->_queue[] = array($deleteQuery, $triggerCollection);
+        $this->_addToQueue($deleteQuery, $triggerCollection);
 
         return $this;
     }
@@ -323,7 +275,7 @@ class Transaction extends \Yana\Core\StdObject implements \Yana\Db\IsTransaction
      */
     public function sql(\Yana\Db\Queries\Sql $statement)
     {
-        $this->_queue[] = array($statement, new \Yana\Db\Helpers\Triggers\TriggerCollection());
+        $this->_addToQueue($statement, new \Yana\Db\Helpers\Triggers\TriggerCollection());
         return $this;
     }
 
@@ -334,7 +286,7 @@ class Transaction extends \Yana\Core\StdObject implements \Yana\Db\IsTransaction
      */
     public function isEmpty()
     {
-        return 0 === count($this->_queue);
+        return 0 === count($this->_getQueue());
     }
 
     /**
@@ -344,7 +296,7 @@ class Transaction extends \Yana\Core\StdObject implements \Yana\Db\IsTransaction
      */
     public function rollback()
     {
-        $this->_queue = array();
+        $this->_resetQueue();
         return $this;
     }
 

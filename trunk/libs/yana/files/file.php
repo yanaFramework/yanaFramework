@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Files;
 
@@ -47,7 +48,7 @@ class File extends \Yana\Files\Readonly implements \Yana\Files\IsWritable
      *
      * @throws  \Yana\Core\Exceptions\NotReadableException  if the file is not readable
      * @throws  \Yana\Core\Exceptions\NotFoundException     if the file does not exist
-     * @return  self
+     * @return  $this
      */
     public function read()
     {
@@ -107,14 +108,14 @@ class File extends \Yana\Files\Readonly implements \Yana\Files\IsWritable
         if (!$this->exists()) {
             return true; // By definition, a non-existing file is deleted.
         }
-        if (!$this->isWriteable()) {
-            $message = "Unable to delete file '" . $this->getPath() . "' becasue it is not writeable.";
+        if (!$this->isWriteable() || !@unlink($this->getPath())) {
+            $message = "Unable to delete file '" . $this->getPath() . "'.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             $e = new \Yana\Core\Exceptions\Files\NotWriteableException($message, $level);
             $e->setFilename($this->getPath());
             throw $e;
         }
-        return (bool) @unlink($this->getPath());
+        return true;
     }
 
     /**
@@ -134,6 +135,7 @@ class File extends \Yana\Files\Readonly implements \Yana\Files\IsWritable
             try {
                 $this->write();
                 return true;
+                // @codeCoverageIgnoreStart
 
             } catch (\Exception $e) {
                 sleep(0.7);
@@ -141,13 +143,14 @@ class File extends \Yana\Files\Readonly implements \Yana\Files\IsWritable
             }
         }
         return false;
+        // @codeCoverageIgnoreEnd
     }
 
     /**
      * Create the current file if it does not exist.
      *
-     * @throws  \Yana\Core\Exceptions\AlreadyExistsException  when target does already exist
-     * @throws  \Yana\Core\Exceptions\NotWriteableException   when unable to create file
+     * @throws  \Yana\Core\Exceptions\Files\AlreadyExistsException  when target does already exist
+     * @throws  \Yana\Core\Exceptions\Files\NotWriteableException   when unable to create file
      */
     public function create()
     {
@@ -156,13 +159,13 @@ class File extends \Yana\Files\Readonly implements \Yana\Files\IsWritable
         if ($this->exists()) {
             $message = "Unable to create file '{$path}'. " .
                 "Another file with the same name already exists.";
-            $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, \Yana\Log\TypeEnumeration::INFO);
-            $exception->setId($path);
+            $exception = new \Yana\Core\Exceptions\Files\AlreadyExistsException($message, \Yana\Log\TypeEnumeration::INFO);
+            $exception->setFilename($path);
             throw $exception;
         }
         if (!touch($path)) {
             $message = "Unable to create file '{$path}'. Target not writeable.";
-            throw new \Yana\Core\Exceptions\NotWriteableException($message, \Yana\Log\TypeEnumeration::WARNING);
+            throw new \Yana\Core\Exceptions\Files\NotWriteableException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
         chmod($path, 0777);
         $this->_resetStats();

@@ -24,6 +24,7 @@
  * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Security\Data\SecurityLevels;
 
@@ -174,11 +175,23 @@ class LevelTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @todo implement this
+     * @expectedException \Yana\Core\Exceptions\User\NotGrantableException
+     */
+    public function testGrantToNotGrantableException()
+    {
+        $this->object3->grantTo('user');
+    }
+
+    /**
+     * @test
      */
     public function testGrantTo()
     {
-        $this->markTestIncomplete();
+        $permission = $this->object1->grantTo('user');
+        $this->assertSame('user', $permission->getUserName());
+        $this->assertSame($this->object1->getUserName(), $permission->getGrantedByUser());
+        $this->assertSame($this->object1->getSecurityLevel(), $permission->getSecurityLevel());
+        $this->assertSame($this->object1->getProfile(), $permission->getProfile());
     }
 
 }

@@ -72,7 +72,7 @@ class File extends \Yana\Files\Readonly
      *
      * @return  string
      */
-    public function getPath()
+    public function getPath(): string
     {
         $path = (string) $this->_path;
         if ($path === "") {
@@ -89,7 +89,7 @@ class File extends \Yana\Files\Readonly
      *
      * @throws  \Yana\Core\Exceptions\NotReadableException  if the blob is not valid
      * @throws  \Yana\Core\Exceptions\NotFoundException     if the blob does not exist
-     * @return  self
+     * @return  $this
      */
     public function read()
     {
@@ -160,7 +160,7 @@ class File extends \Yana\Files\Readonly
      *
      * @return  string
      */
-    public function getMimeType()
+    public function getMimeType(): string
     {
         return (string) $this->_type;
     }
@@ -172,7 +172,7 @@ class File extends \Yana\Files\Readonly
      *
      * @return  int
      */
-    public function getFilesize()
+    public function getFilesize(): int
     {
         return (int) $this->_fileSize;
     }
@@ -192,12 +192,11 @@ class File extends \Yana\Files\Readonly
      * @throws  \Yana\Core\Exceptions\Files\NotFoundException  when the given file was not found
      * @since   3.1.0
      */
-    public static function removeFile($fileToDelete)
+    public static function removeFile(string $fileToDelete)
     {
-        assert(is_string($fileToDelete), 'Wrong type for argument 1. String expected.');
         assert($fileToDelete !== "", 'Invalid argument 1. Filename cannot be empty.');
 
-        $mapper = new \Yana\Db\Binaries\FileMapper();
+        $mapper = static::_createMapper();
         $id = $mapper->toFileId($fileToDelete);
         $thumbFile = $mapper->toFileName($id, \Yana\Db\Binaries\FileTypeEnumeration::THUMB);
 
@@ -220,6 +219,16 @@ class File extends \Yana\Files\Readonly
              * that an image file exists, but no thumbnail is found.
              */
         }
+    }
+
+    /**
+     * Creates and returns an instance of FileMapper.
+     *
+     * @return  \Yana\Db\Binaries\IsFileMapper
+     */
+    protected static function _createMapper(): \Yana\Db\Binaries\IsFileMapper
+    {
+        return new \Yana\Db\Binaries\FileMapper();
     }
 
 }

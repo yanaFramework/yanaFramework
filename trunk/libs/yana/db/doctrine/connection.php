@@ -106,7 +106,7 @@ class Connection extends \Yana\Db\AbstractConnection
      *
      * @return  string
      */
-    public function getDBMS()
+    public function getDBMS(): string
     {
         assert(!isset($dbms), 'Cannot redeclare var $dbms');
         $dbms = \Yana\Db\DriverEnumeration::GENERIC;
@@ -239,7 +239,7 @@ class Connection extends \Yana\Db\AbstractConnection
      * @throws  \Yana\Core\Exceptions\NotReadableException      when SQL file does not exist or is not readable
      * @throws  \Yana\Core\Exceptions\NotWriteableException     when database is not writeable
      */
-    public function importSQL($sqlFile)
+    public function importSQL($sqlFile): bool
     {
         assert(is_string($sqlFile) || is_array($sqlFile), 'Wrong argument type: $sqlFile. String or array expected');
         assert(!empty($sqlFile), 'Argument \$sqlFile must not be empty.');

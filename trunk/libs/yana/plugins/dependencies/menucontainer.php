@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Plugins\Dependencies;
 
@@ -64,9 +65,9 @@ class MenuContainer extends \Yana\Core\StdObject implements \Yana\Plugins\Depend
     /**
      * Return the wrapped application instance.
      *
-     * @return  \Yana\Application
+     * @return  \Yana\Core\Dependencies\IsApplicationContainer
      */
-    protected function _getApplicationContainer()
+    protected function _getApplicationContainer(): \Yana\Core\Dependencies\IsApplicationContainer
     {
         return $this->_applicationContainer;
     }
@@ -76,7 +77,7 @@ class MenuContainer extends \Yana\Core\StdObject implements \Yana\Plugins\Depend
      *
      * @return  \Yana\Translations\IsFacade
      */
-    public function getTranslationFacade()
+    public function getTranslationFacade(): \Yana\Translations\IsFacade
     {
         return $this->_getApplicationContainer()->getLanguage();
     }
@@ -86,7 +87,7 @@ class MenuContainer extends \Yana\Core\StdObject implements \Yana\Plugins\Depend
      *
      * @return  \Yana\Security\IsFacade
      */
-    public function getSecurityFacade()
+    public function getSecurityFacade(): \Yana\Security\IsFacade
     {
         return $this->_getApplicationContainer()->getSecurity();
     }
@@ -96,7 +97,7 @@ class MenuContainer extends \Yana\Core\StdObject implements \Yana\Plugins\Depend
      *
      * @return  bool
      */
-    public function isDefaultProfile()
+    public function isDefaultProfile(): bool
     {
         $application = $this->_getApplicationContainer();
         return 0 === \strcasecmp($application->getProfileId(), $application->getDefault('PROFILE'));
@@ -107,7 +108,7 @@ class MenuContainer extends \Yana\Core\StdObject implements \Yana\Plugins\Depend
      *
      * @return \Yana\Plugins\Facade
      */
-    public function getPluginFacade()
+    public function getPluginFacade(): \Yana\Plugins\Facade
     {
         return $this->_getApplicationContainer()->getPlugins();
     }
@@ -117,9 +118,9 @@ class MenuContainer extends \Yana\Core\StdObject implements \Yana\Plugins\Depend
      *
      * @return  \Yana\Views\Helpers\Formatters\UrlFormatter
      */
-    public function getUrlFormatter()
+    public function getUrlFormatter(): \Yana\Views\Helpers\Formatters\UrlFormatter
     {
-        return new \Yana\Views\Helpers\Formatters\UrlFormatter();
+        return $this->_getApplicationContainer()->getUrlFormatter();
     }
 
 }

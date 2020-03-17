@@ -260,7 +260,7 @@ class DefaultBehavior extends \Yana\Core\StdObject implements \Yana\Core\Output\
 
             $args = $this->_getDependencyContainer()->getRegistry()->getVars();
             $template = $this->_getDependencyContainer()->getView()->createLayoutTemplate($templateName, '', $args);
-            $template->setVar('ACTION', mb_strtolower("$actionLowerCase"));
+            $template->setVar('ACTION', mb_strtolower((string) $actionLowerCase));
 
             $this->_printTemplate($template);
 
@@ -277,7 +277,7 @@ class DefaultBehavior extends \Yana\Core\StdObject implements \Yana\Core\Output\
                 $_SESSION['STDOUT'] = $messageCollection;
             }
 
-            $urlFormatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
+            $urlFormatter = $this->_getDependencyContainer()->getUrlFormatter();
             $args["action"] = $actionLowerCase;
             header("Location: " . $urlFormatter(http_build_query($args), true));
             // @codeCoverageIgnoreEnd
