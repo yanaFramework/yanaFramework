@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Plugins\Search;
 
@@ -66,9 +67,8 @@ class BufferedReader extends \Yana\Files\Readonly
      * @param   int     $bufferSize   buffer size in byte
      * @throws  \Yana\Core\Exceptions\NotReadableException  when the file cannot be opened
      */
-    public function __construct($filename, $bufferSize = 8192)
+    public function __construct($filename, int $bufferSize = 8192)
     {
-        assert(is_int($bufferSize), 'Invalid argument $bufferSize: int expected');
         $this->_bufferSize = (int) $bufferSize;
         $this->_file = fopen($filename, "r");
         if ($this->_file === false) {
@@ -83,7 +83,7 @@ class BufferedReader extends \Yana\Files\Readonly
      *
      * @return  bool
      */
-    public function hasMoreContent()
+    public function hasMoreContent(): bool
     {
         return (bool) !feof($this->_file);
     }
@@ -92,7 +92,7 @@ class BufferedReader extends \Yana\Files\Readonly
      * Tries to read the file contents and throws an exception on error.
      *
      * @throws  \Yana\Core\Exceptions\NotFoundException  if the file does not exist
-     * @return  self
+     * @return  $this
      */
     public function read()
     {

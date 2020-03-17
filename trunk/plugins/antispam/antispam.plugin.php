@@ -425,15 +425,15 @@ class AntiSpamPlugin extends \Yana\Plugins\AbstractPlugin
         for ($i = 0; $i < 5; $i++)
         {
             $image->drawString(
-                $text[$i],             // Text
-                4+($i*9)+rand(0, 1),   // x
-                1+rand(-1, 1),         // y
-                $image->getColor(      // color (palette index number)
-                    40+rand(-30, 60),  // r
-                    40+rand(-30, 60),  // g
-                    40+rand(-30, 60)   // b
+                $text[$i],               // Text
+                4+($i*9)+rand(0, 1),     // x
+                1+rand(-1, 1),           // y
+                (int) $image->getColor(  // color (palette index number)
+                    40+rand(-30, 60),    // r
+                    40+rand(-30, 60),    // g
+                    40+rand(-30, 60)     // b
                 ),
-                5                      // font size
+                5                        // font size
             );
         }
         $image->outputToScreen();
