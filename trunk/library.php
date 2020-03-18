@@ -366,8 +366,7 @@ $builder->addClassMapper(\Yana\Core\AutoLoadBuilder::DIRECT_MAPPER)
     ->setFileExtension('.class.php')
     ->setBaseDirectory(__DIR__ . '/libs/smarty/');
 $builder->addClassMapper(\Yana\Core\AutoLoadBuilder::GENERIC_MAPPER)
-    ->setNameSpace('SQL_Parser')
-    ->setBaseDirectory('/ports/PortableApps/xampp/php/pear/');
+    ->setNameSpace('SQL_Parser');
 $builder->addClassMapper(\Yana\Core\AutoLoadBuilder::GENERIC_MAPPER)
     ->setNameSpace('Doctrine')
     ->setBaseDirectory(__DIR__ . '/libs/');
