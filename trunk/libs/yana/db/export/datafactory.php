@@ -115,6 +115,9 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
      * Set the arguments $extractStructure or $extractData
      * to bool(false) to exclude one or the other.
      *
+     * Note: This function might take a while to create a result.
+     * Consider increasing the PHP execution time limit by calling set_time_limit() with a value of 500 or higher.
+     *
      * @param   bool  $extractStructure  for extract Structure set true otherwise false
      * @param   bool  $extractData       for extract Data set true otherwise false
      * @return  array
@@ -129,8 +132,6 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
         }
 
         if ($extractData) {
-            @set_time_limit(500); // this may take a while: increase time limit so we don't run into a timeout
-
             $select = new \Yana\Db\Queries\Select($this->_db);
             $select->useInheritance(false);
             $insert = new \Yana\Db\Queries\Insert($this->_getNullConnection()->setDBMS(\Yana\Db\DriverEnumeration::MYSQL));
@@ -166,6 +167,9 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
      * Set the arguments $extractStructure or $extractData
      * to bool(false) to exclude one or the other.
      *
+     * Note: This function might take a while to create a result.
+     * Consider increasing the PHP execution time limit by calling set_time_limit() with a value of 500 or higher.
+     *
      * @param   bool  $extractStructure  for extract Structure set true otherwise false
      * @param   bool  $extractData       for extract Data set true otherwise false
      * @return  array
@@ -180,8 +184,6 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
         }
 
         if ($extractData) {
-            @set_time_limit(500);
-
             $select = new \Yana\Db\Queries\Select($this->_db);
             $select->useInheritance(false);
             $insert = new \Yana\Db\Queries\Insert($this->_getNullConnection()->setDBMS(\Yana\Db\DriverEnumeration::POSTGRESQL));
@@ -217,6 +219,9 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
      * Set the arguments $extractStructure or $extractData
      * to bool(false) to exclude one or the other.
      *
+     * Note: This function might take a while to create a result.
+     * Consider increasing the PHP execution time limit by calling set_time_limit() with a value of 500 or higher.
+     *
      * @param   bool  $extractStructure  for extract Structure set true otherwise false
      * @param   bool  $extractData       for extract Data set true otherwise false
      * @return  array
@@ -231,8 +236,6 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
         }
 
         if ($extractData) {
-            @set_time_limit(500);
-
             $select = new \Yana\Db\Queries\Select($this->_db);
             $select->useInheritance(false);
             $insert = new \Yana\Db\Queries\Insert($this->_getNullConnection()->setDBMS(\Yana\Db\DriverEnumeration::MSSQL));
@@ -285,6 +288,9 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
      * Set the arguments $extractStructure or $extractData
      * to bool(false) to exclude one or the other.
      *
+     * Note: This function might take a while to create a result.
+     * Consider increasing the PHP execution time limit by calling set_time_limit() with a value of 500 or higher.
+     *
      * @param   bool  $extractStructure  for extract Structure set true otherwise false
      * @param   bool  $extractData       for extract Data set true otherwise false
      * @return  array
@@ -299,8 +305,6 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
         }
 
         if ($extractData) {
-            @set_time_limit(500);
-
             $select = new \Yana\Db\Queries\Select($this->_db);
             $select->useInheritance(false);
             $insert = new \Yana\Db\Queries\Insert($this->_getNullConnection()->setDBMS(\Yana\Db\DriverEnumeration::DB2));
@@ -336,6 +340,9 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
      * Set the arguments $extractStructure or $extractData
      * to bool(false) to exclude one or the other.
      *
+     * Note: This function might take a while to create a result.
+     * Consider increasing the PHP execution time limit by calling set_time_limit() with a value of 500 or higher.
+     *
      * @param   bool  $extractStructure  for extract Structure set true otherwise false
      * @param   bool  $extractData       for extract Data set true otherwise false
      * @return  array
@@ -350,8 +357,6 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
         }
 
         if ($extractData) {
-            @set_time_limit(500);
-
             $select = new \Yana\Db\Queries\Select($this->_db);
             $select->useInheritance(false);
             $insert = new \Yana\Db\Queries\Insert($this->_getNullConnection()->setDBMS(\Yana\Db\DriverEnumeration::ORACLE));

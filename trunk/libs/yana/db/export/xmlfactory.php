@@ -120,13 +120,15 @@ class XmlFactory extends \Yana\Db\Export\AbstractXmlFactory
      * </bar>
      * </code>
      *
+     * Note: This function might take a while to create a result.
+     * Consider increasing the PHP execution time limit by calling set_time_limit() with a value of 500 or higher.
+     *
      * @param   \Yana\Db\IsConnectionFactory  $factory  contains database connection credentials needed to make a connection
      * @return  string
      */
     public function createXML(\Yana\Db\IsConnectionFactory $factory)
     {
         $data = array(); // declare output variable of type array
-        @set_time_limit(500); // This may take a while. Raise limit to avoid time-out.
 
         /*
          * loop through files

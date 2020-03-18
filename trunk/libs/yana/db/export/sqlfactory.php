@@ -107,6 +107,9 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
      * If you want to send the result to a SQL file
      * you should "implode()" the array to a string.
      *
+     * Note: This function might take a while to create a result.
+     * Consider increasing the PHP execution time limit by calling set_time_limit() with a value of 500 or higher.
+     *
      * @return  array
      */
     public function createMySQL()
@@ -123,6 +126,9 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
      * If you want to send the result to a SQL file
      * you should "implode()" the array to a string.
      *
+     * Note: This function might take a while to create a result.
+     * Consider increasing the PHP execution time limit by calling set_time_limit() with a value of 500 or higher.
+     *
      * @return  array
      */
     public function createPostgreSQL()
@@ -138,6 +144,9 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
      * Each element is a single statement.
      * If you want to send the result to a SQL file
      * you should "implode()" the array to a string.
+     *
+     * Note: This function might take a while to create a result.
+     * Consider increasing the PHP execution time limit by calling set_time_limit() with a value of 500 or higher.
      *
      * @return  array
      * @codeCoverageIgnore
@@ -391,6 +400,9 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
      * Each element is a single statement.
      * If you want to send the result to a SQL file
      * you should "implode()" the array to a string.
+     *
+     * Note: This function might take a while to create a result.
+     * Consider increasing the PHP execution time limit by calling set_time_limit() with a value of 500 or higher.
      *
      * @return  array
      * @codeCoverageIgnore
@@ -690,6 +702,9 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
      * Each element is a single statement.
      * If you want to send the result to a SQL file
      * you should "implode()" the array to a string.
+     *
+     * Note: This function might take a while to create a result.
+     * Consider increasing the PHP execution time limit by calling set_time_limit() with a value of 500 or higher.
      *
      * @return  array
      * @codeCoverageIgnore
