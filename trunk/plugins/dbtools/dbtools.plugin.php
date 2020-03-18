@@ -150,6 +150,7 @@ class DbToolsPlugin extends \Yana\Plugins\AbstractPlugin
                 ->setUsingForeignKeys(true)
                 ->setDatabaseNames(array_values($list));
 
+        @set_time_limit(500); // This may take a while. Raise limit to avoid time-out.
         $xml = $xmlFactory->createXML(new \Yana\Db\ConnectionFactory(new \Yana\Db\SchemaFactory()));
         $filename = 'database.xml';
         if (empty($xml)) {
