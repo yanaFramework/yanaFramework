@@ -110,11 +110,10 @@ class Connection extends \Yana\Db\AbstractConnection
      * @return  \Yana\Db\IsResult
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the SQL statement is not valid
      */
-    public function sendQueryString($sqlStmt, $offset = 0, $limit = 0)
+    public function sendQueryString(string $sqlStmt, int $offset = 0, int $limit = 0): \Yana\Db\IsResult
     {
-        assert(is_string($sqlStmt), 'Invalid argument $sqlStmt: string expected');
-        assert(is_int($offset) && $offset >= 0, 'Invalid argument $offset. Must be a positive integer.');
-        assert(is_int($limit) && $limit >= 0, 'Invalid argument $limit. Must be a positive integer.');
+        assert($offset >= 0, 'Invalid argument $offset. Must be a positive integer.');
+        assert($limit >= 0, 'Invalid argument $limit. Must be a positive integer.');
 
         // send query to database
         $connection = $this->_getDriver();

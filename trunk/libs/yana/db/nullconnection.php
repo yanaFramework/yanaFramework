@@ -166,10 +166,10 @@ class NullConnection extends \Yana\Core\StdObject implements \Yana\Db\IsConnecti
      * Update or insert row.
      *
      * @param   string  $key    the address of the row that should be inserted|updated
-     * @param   mixed   $value  value
+     * @param   array   $value  value
      * @return  $this
      */
-    public function insertOrUpdate(string $key, $value = array())
+    public function insertOrUpdate(string $key, array $value = array())
     {
         return $this;
     }
@@ -268,7 +268,7 @@ class NullConnection extends \Yana\Core\StdObject implements \Yana\Db\IsConnecti
      * @return  \Yana\Db\IsResult
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException if the SQL statement is not valid
      */
-    public function sendQueryString($sqlStmt, int $offset = 0, int $limit = 0)
+    public function sendQueryString(string $sqlStmt, int $offset = 0, int $limit = 0): \Yana\Db\IsResult
     {
         return new \Yana\Db\FileDb\Result();
     }

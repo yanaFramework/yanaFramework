@@ -94,7 +94,7 @@ interface IsConnection
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the query is neither an insert, nor an update statement
      * @throws  \Yana\Core\Exceptions\NotWriteableException     when the table or database is locked
      */
-    public function insertOrUpdate(string $key, $value = array());
+    public function insertOrUpdate(string $key, array $value = array());
 
     /**
      * Insert $value at position $key.
@@ -173,7 +173,7 @@ interface IsConnection
      * @return  \Yana\Db\IsResult
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException if the SQL statement is not valid
      */
-    public function sendQueryString($sqlStmt, $offset = 0, $limit = 0);
+    public function sendQueryString(string $sqlStmt, int $offset = 0, int $limit = 0): \Yana\Db\IsResult;
 
     /**
      * Send a sql-statement directly to the database driver API.

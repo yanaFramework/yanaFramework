@@ -406,8 +406,6 @@ abstract class AbstractConnection extends \Yana\Core\StdObject implements \Seria
         // get properties
         $tableName = $updateQuery->getTable();
         $row = $updateQuery->getRow();
-        $column = $updateQuery->getColumn();
-        $value = $updateQuery->getValues(); // get values by reference
 
         // check whether the row has been modified since last access
         if (YANA_DB_STRICT && isset($_SESSION['transaction_isolation_created']) &&
@@ -420,6 +418,9 @@ abstract class AbstractConnection extends \Yana\Core\StdObject implements \Seria
             throw new \Yana\Core\Exceptions\Forms\TimeoutException($message, $level);
         }
 
+        $column = $updateQuery->getColumn();
+        $value = $updateQuery->getValues();
+
         /**
          * Check if element is inside an array.
          *
@@ -428,23 +429,9 @@ abstract class AbstractConnection extends \Yana\Core\StdObject implements \Seria
         if ($updateQuery->getExpectedResult() === \Yana\Db\ResultEnumeration::CELL) {
             assert(!isset($arrayAddress), 'Cannot redeclare var $arrayAddress');
             $arrayAddress = $updateQuery->getArrayAddress();
-            if (!empty($arrayAddress)) {
-                assert(!isset($_value), 'Cannot redeclare var $_value');
-                assert(!isset($_col), 'Cannot redeclare var $_col');
-                $_col = mb_strtoupper((string) $column);
-                if (isset($this->_insertUpdateCache[$tableName][$row][$_col])) {
-                    $_value = $this->_insertUpdateCache[$tableName][$row][$_col];
-                } else {
-                    $_value = $this->select("$tableName.$row.$column");
-                }
-                unset($_col);
-                if (!is_array($_value)) {
-                    $_value = array();
-                }
-                \Yana\Util\Hashtable::set($_value, $arrayAddress, $value);
-                $value = $_value;
-                $updateQuery->setValues($value);
-                unset($_value);
+            $newValue = $this->_convertValueForArrayAddress($tableName, $row, $column, $updateQuery->getArrayAddress(), $value);
+            if ($newValue !== $value) {
+                $updateQuery->setValues($newValue);
             }
             unset($arrayAddress);
         }
@@ -463,28 +450,56 @@ abstract class AbstractConnection extends \Yana\Core\StdObject implements \Seria
     }
 
     /**
+     * Take a value designated for an array index an add the remaining content of the array.
+     *
+     * @param   string        $tableName     of target table
+     * @param   scalar        $row           value of primary key
+     * @param   string        $columnName    of target column
+     * @param   string        $arrayAddress  of index inside array in target column
+     * @param   array|scalar  $value         value to set this index to
+     * @return  array|scalar
+     */
+    protected function _convertValueForArrayAddress(string $tableName, $row, string $columnName, string $arrayAddress, $value)
+    {
+        assert(is_scalar($row), 'Invalid argument $row: scalar expected');
+        assert(is_scalar($value) || is_array($value), 'Invalid argument $value: scalar or array expected');
+
+        if ($arrayAddress > "") {
+            assert(!isset($_value), 'Cannot redeclare var $_value');
+            assert(!isset($_col), 'Cannot redeclare var $_col');
+            $_col = mb_strtoupper($columnName);
+            if (isset($this->_insertUpdateCache[$tableName][$row][$_col])) {
+                $_value = $this->_insertUpdateCache[$tableName][$row][$_col];
+            } else {
+                $_value = $this->select("$tableName.$row.$columnName");
+            }
+            unset($_col);
+            if (!is_array($_value)) {
+                $_value = array();
+            }
+            \Yana\Util\Hashtable::set($_value, $arrayAddress, $value);
+            $value = $_value;
+            unset($_value);
+            assert(is_array($value));
+        }
+        return $value;
+    }
+
+    /**
      * Update or insert row.
      *
-     * insert $value at position $key
+     * If $key already exists, the row value gets updated, else the value is created.
+     * If you do not like this behaviour, take a look at the functions {@link AbstractConnection::update() update()}
+     * and {@link AbstractConnection::insert() insert()} instead, which let you set the operation you want.
      *
-     * If $key already exists, the previous value
-     * gets updated, else the value is created.
-     * If you do not like this behaviour, take a look
-     * at the functions {@link AbstractConnection::update() update()}
-     * and {@link AbstractConnection::insert() insert()} instead,
-     * which let you set the operation you want.
-     *
-     * Note that, as this function has to determine which
-     * of both operations to take, it is somewhat slower
-     * (approx. 5%) then calling the appropriate function
-     * explicitly.
+     * Note that, as this function has to determine which of both operations to take, it is somewhat slower
+     * (approx. 5%) then calling the appropriate function explicitly.
      *
      * Note, that this function does not auto-commit.
-     * This means, changes to the database will NOT be saved
-     * unless you call commit().
+     * This means, changes to the database will NOT be saved unless you call commit().
      *
-     * @param   string  $key    the address of the row that should be inserted|updated
-     * @param   mixed   $value  value
+     * @param   string  $key    the address of the row that should be inserted or updated
+     * @param   array   $value  the row values to insert or update
      * @return  $this
      * @name    AbstractConnection::insertOrUpdate()
      * @see     AbstractConnection::insert()
@@ -493,7 +508,7 @@ abstract class AbstractConnection extends \Yana\Core\StdObject implements \Seria
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the query is neither an insert, nor an update statement, or the key is invalid
      * @throws  \Yana\Core\Exceptions\NotWriteableException     when the table or database is locked
      */
-    public function insertOrUpdate(string $key, $value = array())
+    public function insertOrUpdate(string $key, array $value = array())
     {
         if ($key == '') {
             throw new \Yana\Core\Exceptions\InvalidArgumentException("An empty key was given. Need at least a table-name.");

@@ -69,7 +69,7 @@ class MyAbstractConnection extends \Yana\Db\AbstractConnection
         return new \Yana\Db\FileDb\Result();
     }
 
-    public function sendQueryString($sqlStmt, $offset = 0, $limit = 0): \Yana\Db\IsResult
+    public function sendQueryString(string $sqlStmt, int $offset = 0, int $limit = 0): \Yana\Db\IsResult
     {
         return new \Yana\Db\FileDb\Result();
     }
@@ -348,15 +348,17 @@ class AbstractConnectionTest extends \PHPUnit_Framework_TestCase
     {
         $transaction = new \Yana\Db\MyTransaction($this->object->getSchema());
         $this->object->setTransactionHandler($transaction);
-        $this->assertSame($this->object, $this->object->insertOrUpdate('test.1.a.1', "a")->insertOrUpdate('test.1.a.2', "b"));
+        $this->assertSame($this->object, $this->object->insertOrUpdate('test.1', array("a" => array(1 => "a"))));
+        $this->assertSame($this->object, $this->object->insertOrUpdate('test.1.a.2', array("b")));
         $queue = $transaction->getQueue();
         $this->assertCount(2, $queue);
-        $this->assertTrue($queue[0] instanceof \Yana\Db\Queries\Insert);
-        $this->assertFalse($queue[0] instanceof \Yana\Db\Queries\Update);
-        $this->assertTrue($queue[1] instanceof \Yana\Db\Queries\Update);
+        $this->assertTrue($queue[0][0] instanceof \Yana\Db\Queries\Insert);
+        $this->assertFalse($queue[0][0] instanceof \Yana\Db\Queries\Update);
+        $this->assertTrue($queue[1][0] instanceof \Yana\Db\Queries\Update);
         $this->assertSame('test', $queue[0][0]->getTable());
         $this->assertSame('1', $queue[0][0]->getRow());
-        $this->assertSame(array(1 => "a", 2 => "b"), $queue[1][0]->getValues());
+        $this->assertSame(array("id" => 1, "a" => array(1 => "a")), $queue[0][0]->getValues());
+        $this->assertSame(array("1" => "a", "2" => array("b")), $queue[1][0]->getValues());
     }
 
     /**
