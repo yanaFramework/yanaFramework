@@ -364,7 +364,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException Yana\Db\Queries\Exceptions\ConstraintException
+     * @expectedException \Yana\Db\Queries\Exceptions\ConstraintException
      */
     public function testInsertAndUpdateConstraintException3()
     {
@@ -376,7 +376,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         $this->object->update('i.foo.ta.1.a', 2);
         $this->object->commit();
 
-        $this->object->insertOrUpdate('t.foo.ftid', 2);
+        $this->object->insertOrUpdate('t.foo', array('ftid' => 2));
         $this->object->commit();
     }
 
