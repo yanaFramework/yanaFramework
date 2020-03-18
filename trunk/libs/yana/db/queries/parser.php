@@ -91,12 +91,21 @@ class Parser extends \Yana\Core\StdObject implements \Yana\Db\Queries\IsParser
      *
      * @param   string  $sqlStatement  one single SQL statement
      * @return  \Yana\Db\Queries\AbstractQuery
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if the query is invalid or could not be parsed
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException     if the query is invalid or could not be parsed
+     * @throws  \Yana\Db\Queries\Exceptions\NotSupportedException  if PEAR SQL-Parser is not installed or not found
      */
     public function parseSQL($sqlStatement)
     {
         assert(is_string($sqlStatement), 'Wrong argument type argument 1. String expected');
         $trimmedStatement = trim($sqlStatement);
+        if (!\class_exists('\SQL_Parser')) {
+            // @codeCoverageIgnoreStart
+            throw new \Yana\Db\Queries\Exceptions\NotSupportedException(
+                'SQL could not be parsed because the PEAR SQL_Parser was not found. Run pear install SQL_Parser.',
+                \Yana\Log\TypeEnumeration::ERROR
+            );
+            // @codeCoverageIgnoreEnd
+        }
         $sqlParser = new \SQL_Parser();
         $syntaxTree = $sqlParser->parse($trimmedStatement); // get abstract syntax tree (AST)
         unset($sqlParser);

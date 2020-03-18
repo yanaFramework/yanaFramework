@@ -944,7 +944,8 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
      * @param   int     $limit    the maximum number of rows in the resultset
      * @param   int     $offset   the row to start from
      * @return  \Yana\Db\FileDb\Result
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if the query is invalid or could not be parsed
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException     if the query is invalid or could not be parsed
+     * @throws  \Yana\Db\Queries\Exceptions\NotSupportedException  if PEAR SQL-Parser is not installed or not found
      */
     public function sendQueryString($sqlStmt, $limit = 0, $offset = 0)
     {
