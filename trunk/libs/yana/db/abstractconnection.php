@@ -429,9 +429,10 @@ abstract class AbstractConnection extends \Yana\Core\StdObject implements \Seria
         if ($updateQuery->getExpectedResult() === \Yana\Db\ResultEnumeration::CELL) {
             assert(!isset($arrayAddress), 'Cannot redeclare var $arrayAddress');
             $arrayAddress = $updateQuery->getArrayAddress();
-            $newValue = $this->_convertValueForArrayAddress($tableName, $row, $column, $updateQuery->getArrayAddress(), $value);
-            if ($newValue !== $value) {
-                $updateQuery->setValues($newValue);
+            $oldValue = $value;
+            $value = $this->_convertValueForArrayAddress($tableName, $row, $column, $updateQuery->getArrayAddress(), $value);
+            if ($oldValue !== $value) {
+                $updateQuery->setValues($value);
             }
             unset($arrayAddress);
         }
