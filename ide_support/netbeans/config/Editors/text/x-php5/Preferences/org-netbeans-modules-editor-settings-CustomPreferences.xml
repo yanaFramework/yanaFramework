@@ -4,11 +4,53 @@
     <entry javaType="java.lang.String" name="classDeclBracePlacement" xml:space="preserve">
         <value><![CDATA[NEW_LINE]]></value>
     </entry>
+    <entry javaType="java.lang.Boolean" name="enable-indent" xml:space="preserve">
+        <value><![CDATA[true]]></value>
+    </entry>
     <entry javaType="java.lang.String" name="forBracePlacement" xml:space="preserve">
         <value><![CDATA[NEW_LINE]]></value>
     </entry>
     <entry javaType="java.lang.String" name="methodDeclBracePlacement" xml:space="preserve">
         <value><![CDATA[NEW_LINE]]></value>
+    </entry>
+    <entry javaType="java.lang.String" name="on-save-reformat" xml:space="preserve">
+        <value><![CDATA[never]]></value>
+    </entry>
+    <entry javaType="java.lang.String" name="on-save-remove-trailing-whitespace" xml:space="preserve">
+        <value><![CDATA[never]]></value>
+    </entry>
+    <entry javaType="java.lang.Boolean" name="phpAutoCompletionFull" xml:space="preserve">
+        <value><![CDATA[true]]></value>
+    </entry>
+    <entry javaType="java.lang.Boolean" name="phpAutoCompletionNamespaces" xml:space="preserve">
+        <value><![CDATA[true]]></value>
+    </entry>
+    <entry javaType="java.lang.Boolean" name="phpAutoCompletionTypes" xml:space="preserve">
+        <value><![CDATA[true]]></value>
+    </entry>
+    <entry javaType="java.lang.Boolean" name="phpAutoCompletionVariables" xml:space="preserve">
+        <value><![CDATA[true]]></value>
+    </entry>
+    <entry javaType="java.lang.Boolean" name="phpCodeCompletionNonStaticMethods" xml:space="preserve">
+        <value><![CDATA[false]]></value>
+    </entry>
+    <entry javaType="java.lang.Boolean" name="phpCodeCompletionSmartParametersPreFilling" xml:space="preserve">
+        <value><![CDATA[true]]></value>
+    </entry>
+    <entry javaType="java.lang.Boolean" name="phpCodeCompletionSmartQuotes" xml:space="preserve">
+        <value><![CDATA[true]]></value>
+    </entry>
+    <entry javaType="java.lang.Boolean" name="phpCodeCompletionStaticMethods" xml:space="preserve">
+        <value><![CDATA[true]]></value>
+    </entry>
+    <entry javaType="java.lang.Boolean" name="phpCodeCompletionStringAutoConcatination" xml:space="preserve">
+        <value><![CDATA[true]]></value>
+    </entry>
+    <entry javaType="java.lang.String" name="phpCodeCompletionType" xml:space="preserve">
+        <value><![CDATA[FULLY_QUALIFIED]]></value>
+    </entry>
+    <entry javaType="java.lang.String" name="phpCodeCompletionVariablesScope" xml:space="preserve">
+        <value><![CDATA[ALL]]></value>
     </entry>
     <entry javaType="java.lang.String" name="switchBracePlacement" xml:space="preserve">
         <value><![CDATA[NEW_LINE]]></value>
