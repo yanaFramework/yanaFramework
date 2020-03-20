@@ -1,24 +1,24 @@
 
 [SOL | start of life for variable]
-assert('!isset($|i); // Cannot redeclare var $i');
+assert(!isset($|i), 'Cannot redeclare var $i');
 
 [EOL | end of life for variable]
 unset($|i);
 
 [assert_string | check argument via assertion]
-assert('is_string($|); // Wrong argument type argument 1. String expected');
+assert(is_string($|), 'Wrong argument type argument 1. String expected');
 
 [assert_bool | check argument via assertion]
-assert('is_bool($|); // Wrong argument type argument 1. Boolean expected');
+assert(is_bool($|), 'Wrong argument type argument 1. Boolean expected');
 
 [assert_array | check argument via assertion]
-assert('is_array($|); // Wrong argument type argument 1. Array expected');
+assert(is_array($|), 'Wrong argument type argument 1. Array expected');
 
 [assert_int | check argument via assertion]
-assert('is_int($|); // Wrong argument type argument 1. Integer expected');
+assert(is_int($|), 'Wrong argument type argument 1. Integer expected');
 
 [assert_float | check argument via assertion]
-assert('is_float($|); // Wrong argument type argument 1. Float expected');
+assert(is_float($|), 'Wrong argument type argument 1. Float expected');
 
 [chkstring | check argument and trigger error]
         if (!is_string($|)) {
@@ -169,15 +169,15 @@ if (!isset(|$var)) {
             return false;
         } else {
             $args = $in_args;
-            assert('is_array($args);');
+            assert(is_array($args));
             /* do something */
             return true;
         }
     }
 
 [foreachassert | for-each loop with assert]
-    assert('!isset($key); // Cannot redeclare var $key');
-    assert('!isset($element); // Cannot redeclare var $element');
+    assert(!isset($key), 'Cannot redeclare var $key');
+    assert(!isset($element), 'Cannot redeclare var $element');
     foreach ($| as $key => $element)
     {
 
@@ -185,7 +185,7 @@ if (!isset(|$var)) {
     unset($key, $element); /* clean up garbage */
 
 [foreachloop | for-each loop]
-    assert('!isset($element); // Cannot redeclare var $element');
+    assert(!isset($element), 'Cannot redeclare var $element');
     foreach ($| as $element)
     {
 
@@ -193,7 +193,7 @@ if (!isset(|$var)) {
     unset($element); /* clean up garbage */
 
 [forloop | for loop]
-    assert('!isset($i); // Cannot redeclare var $i');
+    assert(!isset($i), 'Cannot redeclare var $i');
     for ($i = 0; $i < count($|); $i++)
     {
 
@@ -201,7 +201,7 @@ if (!isset(|$var)) {
     unset($i); /* clean up garbage */
 
 [forassert | for loop with assert]
-    assert('!isset($i); // Cannot redeclare var $i');
+    assert(!isset($i), 'Cannot redeclare var $i');
     for ($i = 0; $i < count($|array); $i++)
     {
         if (!isset($array[$i])) {
@@ -210,15 +210,15 @@ if (!isset(|$var)) {
         } else {
             /* do something */
         }
-        assert('is_int($i); // Unexpected result. $i is supposed to be an integer');
-        assert('isset($array[$i]); // Array index out of bounds.');
+        assert(is_int($i), 'Unexpected result. $i is supposed to be an integer');
+        assert(isset($array[$i]), 'Array index out of bounds.');
     } /* end for */
     unset($i); /* clean up garbage */
 
 [whilelist | while loop with list]
     reset($|);
-    assert('!isset($key); // Cannot redeclare var $key');
-    assert('!isset($value); // Cannot redeclare var $value');
+    assert(!isset($key), 'Cannot redeclare var $key');
+    assert(!isset($value), 'Cannot redeclare var $value');
     while (list($key, $value) = each($))
     {
 
@@ -240,7 +240,7 @@ if (!isset(|$var)) {
 
 [forcurrent | for loop with current]
     reset($|);
-    assert('!isset($i); // Overwriting variable $i');
+    assert(!isset($i), 'Overwriting variable $i');
     for ($i = 0; $i < count($); $i++)
     {
         /* do something */
