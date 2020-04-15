@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Plugins\Menus;
 
@@ -48,7 +49,7 @@ interface IsMenu
      * @param   \Yana\Plugins\Menus\IsEntry  $menuEntry  configuration object
      * @return  $this
      */
-    public function setMenuEntry($action, \Yana\Plugins\Menus\IsEntry $menuEntry);
+    public function setMenuEntry(string $action, \Yana\Plugins\Menus\IsEntry $menuEntry);
 
     /**
      * remove menu entry
@@ -59,7 +60,7 @@ interface IsMenu
      * @param   string  $menuName  set this entry is inside a menu
      * @return  bool
      */
-    public function unsetMenuEntry($action, $menuName = "");
+    public function unsetMenuEntry(string $action, string $menuName = ""): bool;
 
     /**
      * Set a name for a menu of your choice.
@@ -68,7 +69,7 @@ interface IsMenu
      * @param   string  $name  name of your choice
      * @return  $this
      */
-    public function setMenuName($menu, $name = "");
+    public function setMenuName(string $menu, string $name = "");
 
     /**
      * get menu entries
@@ -78,9 +79,9 @@ interface IsMenu
      * array.
      *
      * @param   string  $menuName  filter by menu name
-     * @return  array
+     * @return  \Yana\Plugins\Menus\IsEntry[]
      */
-    public function getMenuEntries($menuName = null);
+    public function getMenuEntries(?string $menuName = null): array;
 
     /**
      * get menu name
@@ -91,7 +92,7 @@ interface IsMenu
      * @param   string  $menuId  menu id to look up
      * @return  string
      */
-    public function getMenuName($menuId);
+    public function getMenuName(string $menuId): string;
 
     /**
      * return menu as associative array
@@ -102,7 +103,7 @@ interface IsMenu
      *
      * @return  array
      */
-    public function getTextMenu();
+    public function getTextMenu(): array;
 
 }
 

@@ -84,10 +84,8 @@ class Manager extends \Yana\Translations\AbstractManager
      * @return  \Yana\Core\MetaData\IsPackageMetaData
      * @throws  \Yana\Core\Exceptions\NotFoundException  if the requested language pack is not found
      */
-    public function getMetaData($locale)
+    public function getMetaData(string $locale): \Yana\Core\MetaData\IsPackageMetaData
     {
-        assert(is_string($locale), 'Invalid argument $locale: string expected');
-
         return parent::getMetaData($locale);
     }
 
@@ -105,10 +103,8 @@ class Manager extends \Yana\Translations\AbstractManager
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException                      when the give filename is invalid
      * @throws  \Yana\Core\Exceptions\Translations\LanguageFileNotFoundException  when the language file is not found
      */
-    public function loadTranslations($id)
+    public function loadTranslations(string $id)
     {
-        assert(is_string($id), 'Invalid argument $id: string expected');
-
         // check syntax of filename
         if (!preg_match("/^[\w_\-\d]+$/i", $id)) {
             $message = "The provided language-file id contains illegal characters.".

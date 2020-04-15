@@ -24,6 +24,7 @@
  * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Plugins\Menus;
 
@@ -38,7 +39,7 @@ require_once __DIR__ . '/../../../../include.php';
  */
 class MyMenu extends \Yana\Plugins\Menus\AbstractMenu
 {
-    public function getTextMenu()
+    public function getTextMenu(): array
     {
         return array();
     }

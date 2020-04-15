@@ -133,7 +133,7 @@ abstract class AbstractManager extends \Yana\Core\StdObject implements \Yana\Tra
      *
      * @return  \Yana\Translations\TextData\IsTextContainer
      */
-    public function getTranslations()
+    public function getTranslations(): \Yana\Translations\TextData\IsTextContainer
     {
         if (!isset($this->_translationContainer)) {
             $this->_translationContainer = new \Yana\Translations\TextData\TextContainer();
@@ -150,10 +150,8 @@ abstract class AbstractManager extends \Yana\Core\StdObject implements \Yana\Tra
      * @return  \Yana\Core\MetaData\IsPackageMetaData
      * @throws  \Yana\Core\Exceptions\NotFoundException  if the requested language pack is not found
      */
-    public function getMetaData($locale)
+    public function getMetaData(string $locale): \Yana\Core\MetaData\IsPackageMetaData
     {
-        assert(is_string($locale), 'Invalid argument $locale: string expected');
-
         assert(!isset($metaData), 'Cannot redeclare var $metaData');
         $metaData = null;
 
@@ -192,7 +190,7 @@ abstract class AbstractManager extends \Yana\Core\StdObject implements \Yana\Tra
      *
      * @return  array
      */
-    public function getLanguages()
+    public function getLanguages(): array
     {
         $languages = array();
         assert(!isset($provider), 'Cannot redeclare var $provider');
@@ -288,10 +286,8 @@ abstract class AbstractManager extends \Yana\Core\StdObject implements \Yana\Tra
      * @param   string  $string  text including language ids
      * @return  string
      */
-    public function replaceToken($string)
+    public function replaceToken(string $string): string
     {
-        assert(is_string($string), 'Wrong argument type for argument 1. String expected.');
-
         return $this->getTranslations()->replaceToken($string);
     }
 

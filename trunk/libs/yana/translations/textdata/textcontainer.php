@@ -68,10 +68,8 @@ class TextContainer extends \Yana\Core\VarContainer implements \Yana\Translation
      * @param   string  $string  text containing tokens like {lang id="FOO"}
      * @return  string
      */
-    public function replaceToken($string)
+    public function replaceToken(string $string): string
     {
-        assert(is_string($string), 'Wrong argument type for argument 1. String expected.');
-
         assert(!isset($pattern), 'Cannot redeclare var $pattern');
         $pattern = '/'. YANA_LEFT_DELIMITER_REGEXP . 'lang id=["\']([\w_\.]+)["\']' . YANA_RIGHT_DELIMITER_REGEXP .'/';
         assert(!isset($matches), 'Cannot redeclare var $matches');

@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Translations;
 
@@ -41,7 +42,7 @@ interface IsTranslation extends \Yana\Log\IsLogable
      *
      * @return  \Yana\Translations\TextData\IsTextContainer
      */
-    public function getTranslations();
+    public function getTranslations(): \Yana\Translations\TextData\IsTextContainer;
 
     /**
      * Returns the language pack's meta information.
@@ -52,7 +53,7 @@ interface IsTranslation extends \Yana\Log\IsLogable
      * @return  \Yana\Core\MetaData\IsPackageMetaData
      * @throws  \Yana\Core\Exceptions\NotFoundException  if the requested language pack is not found
      */
-    public function getMetaData($locale);
+    public function getMetaData(string $locale): \Yana\Core\MetaData\IsPackageMetaData;
 
     /**
      * Read language strings.
@@ -63,12 +64,12 @@ interface IsTranslation extends \Yana\Log\IsLogable
      * You may access the file contents via $language->getVar('some.value').
      *
      * @param   string  $id  name of translation package that should be loaded
-     * @return  self
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\Translations\InvalidFileNameException       when the given identifier is invalid
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException                      when the give filename is invalid
      * @throws  \Yana\Core\Exceptions\Translations\LanguageFileNotFoundException  when the language file is not found
      */
-    public function loadTranslations($id);
+    public function loadTranslations(string $id);
 
     /**
      * Returns a list of all languages.
@@ -78,7 +79,7 @@ interface IsTranslation extends \Yana\Log\IsLogable
      *
      * @return  array
      */
-    public function getLanguages();
+    public function getLanguages(): array;
 
     /**
      * Alias of getVar().
@@ -124,7 +125,7 @@ interface IsTranslation extends \Yana\Log\IsLogable
      * @param   string  $string  text including language ids
      * @return  string
      */
-    public function replaceToken($string);
+    public function replaceToken(string $string): string;
 
 }
 

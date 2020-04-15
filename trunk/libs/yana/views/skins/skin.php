@@ -79,10 +79,8 @@ class Skin extends \Yana\Core\StdObject implements \Yana\Views\Skins\IsSkin
      *
      * @param  string  $skinName  current skin directory
      */
-    public function __construct($skinName)
+    public function __construct(string $skinName)
     {
-        assert(is_string($skinName), 'Wrong type for argument 1. String expected');
-
         $this->_name = (string) $skinName;
     }
 
@@ -91,7 +89,7 @@ class Skin extends \Yana\Core\StdObject implements \Yana\Views\Skins\IsSkin
      *
      * @return  \Yana\Core\MetaData\IsDataProvider
      */
-    protected function _getDataProvider()
+    protected function _getDataProvider(): \Yana\Core\MetaData\IsDataProvider
     {
         if (!isset($this->_dataProvider)) {
             $this->_dataProvider = new \Yana\Views\MetaData\XmlDataProvider(self::$_baseDirectory);
@@ -103,7 +101,7 @@ class Skin extends \Yana\Core\StdObject implements \Yana\Views\Skins\IsSkin
      * Choose a provider to load meta-data.
      *
      * @param   \Yana\Views\MetaData\IsDataProvider  $provider  designated meta-data provider
-     * @return  \Yana\Views\Skins\Skin
+     * @return  $this
      * @see     \Yana\Views\MetaData\XmlDataProvider
      */
     public function setMetaDataProvider(\Yana\Views\MetaData\IsDataProvider $provider)
@@ -119,10 +117,9 @@ class Skin extends \Yana\Core\StdObject implements \Yana\Views\Skins\IsSkin
      *
      * @ignore
      */
-    public static function setBaseDirectory($baseDirectory)
+    public static function setBaseDirectory(string $baseDirectory)
     {
-        assert(is_string($baseDirectory), 'Wrong argument type argument 1. String expected');
-        assert(is_dir($baseDirectory), 'is_dir($baseDirectory)');
+        assert(is_dir($baseDirectory), 'Not a directory: $baseDirectory');
         self::$_baseDirectory = $baseDirectory;
     }
 
@@ -142,7 +139,7 @@ class Skin extends \Yana\Core\StdObject implements \Yana\Views\Skins\IsSkin
      * @throws  \Yana\Core\Exceptions\NotFoundException  when the skin definition file is not found
      * @return  \Yana\Views\MetaData\SkinMetaData[]
      */
-    protected function _getConfigurations()
+    protected function _getConfigurations(): array
     {
         if (empty($this->_configurations)) {
 
@@ -163,9 +160,10 @@ class Skin extends \Yana\Core\StdObject implements \Yana\Views\Skins\IsSkin
      * Read the skin definition file and return it.
      *
      * @throws  \Yana\Core\Exceptions\NotFoundException  when the skin definition file is not found
-     * @return  \Yana\Views\MetaData\SkinMetaData
+     * @param   string  $skinName  
+     * @return  \Yana\Views\MetaData\IsSkinMetaData
      */
-    private function _loadConfiguration($skinName)
+    private function _loadConfiguration(string $skinName): \Yana\Views\MetaData\IsSkinMetaData
     {
         $dataProvider = $this->_getDataProvider();
         return $dataProvider->loadOject($skinName);
@@ -176,9 +174,9 @@ class Skin extends \Yana\Core\StdObject implements \Yana\Views\Skins\IsSkin
      *
      * Use this to get more info on the skin pack's author, title or description.
      *
-     * @return  \Yana\Views\MetaData\SkinMetaData
+     * @return  \Yana\Views\MetaData\IsSkinMetaData
      */
-    public function getMetaData()
+    public function getMetaData(): \Yana\Views\MetaData\IsSkinMetaData
     {
         $configs = $this->_getConfigurations();
         $skinName = $this->getName();
@@ -190,13 +188,11 @@ class Skin extends \Yana\Core\StdObject implements \Yana\Views\Skins\IsSkin
      * Returns a template definition.
      *
      * @param   string  $templateId  any valid identifier
-     * @return  \Yana\Views\MetaData\TemplateMetaData
+     * @return  \Yana\Views\MetaData\IsTemplateMetaData
      * @throws  \Yana\Core\Exceptions\NotFoundException  when no matching template was found
      */
-    public function getTemplateData($templateId)
+    public function getTemplateData(string $templateId): \Yana\Views\MetaData\IsTemplateMetaData
     {
-        assert(is_string($templateId), 'Invalid argument $templateId: string expected');
-
         $templateId = mb_strtoupper("$templateId");
         $templatesFound = array();
         /* @var $templatesFound \Yana\Views\MetaData\TemplateMetaData[] */
@@ -245,9 +241,11 @@ class Skin extends \Yana\Core\StdObject implements \Yana\Views\Skins\IsSkin
      * @return  array
      * @since   3.1.0
      */
-    public function getSkins()
+    public function getSkins(): array
     {
+        assert(!isset($skins), 'Cannot redeclare var $skins');
         $skins = array();
+        assert(!isset($file), 'Cannot redeclare var $file');
         foreach (glob(self::$_baseDirectory . "*" . self::$_fileExtension) as $file)
         {
             $id = basename($file, self::$_fileExtension);
@@ -269,9 +267,8 @@ class Skin extends \Yana\Core\StdObject implements \Yana\Views\Skins\IsSkin
      *
      * @return  string
      */
-    public function getName()
+    public function getName(): string
     {
-        assert(is_string($this->_name), 'is_string($this->_name)');
         return $this->_name;
     }
 
@@ -280,7 +277,7 @@ class Skin extends \Yana\Core\StdObject implements \Yana\Views\Skins\IsSkin
      *
      * @return  string
      */
-    public function getDirectory()
+    public function getDirectory(): string
     {
         return self::getSkinDirectory($this->_name);
     }
@@ -293,9 +290,8 @@ class Skin extends \Yana\Core\StdObject implements \Yana\Views\Skins\IsSkin
      *
      * @ignore
      */
-    public static function getSkinDirectory($skinName)
+    public static function getSkinDirectory(string $skinName): string
     {
-        assert(is_string($skinName), 'Wrong type for argument 1. String expected');
         return self::$_baseDirectory . "$skinName/";
     }
 

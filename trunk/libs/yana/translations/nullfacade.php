@@ -117,8 +117,8 @@ class NullFacade extends \Yana\Core\StdObject implements \Yana\Translations\IsFa
      *
      * @return  array
      */
-    public function getLanguages()
-    {
+    public function getLanguages(): array 
+   {
         return array();
     }
 
@@ -149,9 +149,9 @@ class NullFacade extends \Yana\Core\StdObject implements \Yana\Translations\IsFa
      * Get meta-info on a language packs.
      *
      * @param   string  $languageName  name of language pack
-     * @return  \Yana\Core\MetaData\PackageMetaData
+     * @return  \Yana\Core\MetaData\IsPackageMetaData
      */
-    public function getMetaData($languageName)
+    public function getMetaData(string $languageName): \Yana\Core\MetaData\IsPackageMetaData
     {
         return new \Yana\Core\MetaData\PackageMetaData();
     }
@@ -162,7 +162,7 @@ class NullFacade extends \Yana\Core\StdObject implements \Yana\Translations\IsFa
      * @param   string  $string   sting text (look example)
      * @return  string
      */
-    public function replaceToken($string)
+    public function replaceToken(string $string): string
     {
         return $string;
     }
@@ -194,7 +194,7 @@ class NullFacade extends \Yana\Core\StdObject implements \Yana\Translations\IsFa
      *
      * @return  \Yana\Translations\TextData\IsTextContainer
      */
-    public function getTranslations()
+    public function getTranslations(): \Yana\Translations\TextData\IsTextContainer
     {
         return new \Yana\Translations\TextData\TextContainer();
     }
@@ -205,7 +205,7 @@ class NullFacade extends \Yana\Core\StdObject implements \Yana\Translations\IsFa
      * @param   string  $id  name of translation package that should be loaded
      * @return  $this
      */
-    public function loadTranslations($id)
+    public function loadTranslations(string $id)
     {
         return $this;
     }

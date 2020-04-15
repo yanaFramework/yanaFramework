@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Plugins\Menus;
 
@@ -44,7 +45,7 @@ abstract class AbstractMenu extends \Yana\Core\StdObject implements \Yana\Plugin
     private $_names = array();
 
     /**
-     * @var  array
+     * @var  \Yana\Plugins\Menus\IsEntry[]
      */
     private $_entries = array();
 
@@ -57,9 +58,8 @@ abstract class AbstractMenu extends \Yana\Core\StdObject implements \Yana\Plugin
      * @param   \Yana\Plugins\Menus\IsEntry  $menuEntry  configuration object
      * @return  $this
      */
-    public function setMenuEntry($action, \Yana\Plugins\Menus\IsEntry $menuEntry)
+    public function setMenuEntry(string $action, \Yana\Plugins\Menus\IsEntry $menuEntry)
     {
-        assert(is_string($action), 'Invalid argument $action: string expected');
         \Yana\Util\Hashtable::set($this->_entries, $menuEntry->getGroup() . ".$action", $menuEntry);
         return $this;
     }
@@ -73,10 +73,8 @@ abstract class AbstractMenu extends \Yana\Core\StdObject implements \Yana\Plugin
      * @param   string  $menuName  set this entry is inside a menu
      * @return  bool
      */
-    public function unsetMenuEntry($action, $menuName = "")
+    public function unsetMenuEntry(string $action, string $menuName = ""): bool
     {
-        assert(is_string($action), 'Invalid argument $action: string expected');
-        assert(is_string($menuName), 'Invalid argument $menuName: string expected');
         return \Yana\Util\Hashtable::remove($this->_entries, $menuName . "." . $action);
     }
 
@@ -87,10 +85,8 @@ abstract class AbstractMenu extends \Yana\Core\StdObject implements \Yana\Plugin
      * @param   string  $name  name of your choice
      * @return  $this
      */
-    public function setMenuName($menu, $name = "")
+    public function setMenuName(string $menu, string $name = "")
     {
-        assert(is_string($menu), 'Invalid argument $menu: string expected');
-        assert(is_string($name), 'Invalid argument $name: string expected');
         $this->_names[$menu] = $name;
         return $this;
     }
@@ -103,20 +99,18 @@ abstract class AbstractMenu extends \Yana\Core\StdObject implements \Yana\Plugin
      * array.
      *
      * @param   string  $menuName  filter by menu name
-     * @return  array
+     * @return  \Yana\Plugins\Menus\IsEntry[]
      */
-    public function getMenuEntries($menuName = null)
+    public function getMenuEntries(?string $menuName = ""): array
     {
-        assert(is_null($menuName) || is_string($menuName), 'Wrong type for argument 1. String expected');
         if (empty($menuName)) {
             return $this->_entries;
+        }
+        $result = \Yana\Util\Hashtable::get($this->_entries, $menuName);
+        if (is_array($result)) {
+            return $result;
         } else {
-            $result = \Yana\Util\Hashtable::get($this->_entries, $menuName);
-            if (is_array($result)) {
-                return $result;
-            } else {
-                return array();
-            }
+            return array();
         }
     }
 
@@ -128,9 +122,8 @@ abstract class AbstractMenu extends \Yana\Core\StdObject implements \Yana\Plugin
      * @param   string  $menuId  menu id to look up
      * @return  string
      */
-    public function getMenuName($menuId)
+    public function getMenuName(string $menuId): string
     {
-        assert(is_string($menuId), 'Wrong type for argument 1. String expected');
         if (isset($this->_names[$menuId])) {
             return $this->_names[$menuId];
         } else {

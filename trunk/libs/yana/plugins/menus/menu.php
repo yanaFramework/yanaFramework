@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Plugins\Menus;
 
@@ -57,7 +58,7 @@ class Menu extends \Yana\Plugins\Menus\AbstractMenu
      *
      * @return  \Yana\Plugins\Menus\IsTextMenuBuilder
      */
-    protected function _getTextMenuBuilder()
+    protected function _getTextMenuBuilder(): \Yana\Plugins\Menus\IsTextMenuBuilder
     {
         return $this->_textMenuBuilder;
     }
@@ -71,7 +72,7 @@ class Menu extends \Yana\Plugins\Menus\AbstractMenu
      * @param   string  $menuId  menu id to look up
      * @return  string
      */
-    public function getMenuName($menuId)
+    public function getMenuName(string $menuId): string
     {
         return $this->_getTextMenuBuilder()->translateMenuName(parent::getMenuName($menuId));
     }
@@ -85,7 +86,7 @@ class Menu extends \Yana\Plugins\Menus\AbstractMenu
      *
      * @return  array
      */
-    public function getTextMenu()
+    public function getTextMenu(): array
     {
         return $this->_getTextMenuBuilder()->getTextMenu($this);
     }

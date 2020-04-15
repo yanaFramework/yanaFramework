@@ -36,11 +36,11 @@ require_once dirname(__FILE__) . '/../../../../../include.php';
 /**
  * @package  test
  */
-class DateSelectorTest extends \PHPUnit_Framework_TestCase
+class ApplicationBarTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Views\Helpers\Functions\DateSelector
+     * @var \Yana\Views\Helpers\Functions\ApplicationBar
      */
     protected $object;
 
@@ -56,7 +56,7 @@ class DateSelectorTest extends \PHPUnit_Framework_TestCase
         $configurationFactory = new \Yana\ConfigurationFactory();
         $configuration = $configurationFactory->loadConfiguration(CWD . 'resources/system.config.xml');
         $configuration->configdrive = YANA_INSTALL_DIR . 'config/system.drive.xml';
-        $this->object = new \Yana\Views\Helpers\Functions\DateSelector(new \Yana\Core\Dependencies\Container($configuration));
+        $this->object = new \Yana\Views\Helpers\Functions\ApplicationBar(new \Yana\Core\Dependencies\Container($configuration));
     }
 
     /**
@@ -73,18 +73,9 @@ class DateSelectorTest extends \PHPUnit_Framework_TestCase
      */
     public function test__invoke()
     {
-        $params = array('name' => 'myName', 'id' => 'myId', 'class' => 'myClass','attr' => 'a="1" b="2"');
-        $result = $this->object->__invoke($params, new \Smarty_Internal_Template("name", new \Smarty()));
-        $this->assertStringStartsWith('<select class="myClass" id="myId_day" name="myName[day]" a="1" b="2">', $result);
-        $this->assertRegExp('/(<select [^>]+>(<option[^>]+>\d+<\/option>)+<\/select>){3}/', $result);
-    }
-
-    /**
-     * @test
-     */
-    public function test__invokeEmpty()
-    {
-        $this->assertSame("", $this->object->__invoke(array(), new \Smarty_Internal_Template("name", new \Smarty())));
+        $menu = '<a class="applicationBar" href="?id=default&amp;action=sitemap">' .
+            '<img src="plugins/sitemap/icon.png" alt="Sitemap"/><span class="applicationBarLabel">Sitemap</span></a>';
+        $this->assertSame($menu, $this->object->__invoke(array(), new \Smarty_Internal_Template("name", new \Smarty())));
     }
 
 }

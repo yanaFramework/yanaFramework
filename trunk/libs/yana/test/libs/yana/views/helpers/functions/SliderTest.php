@@ -24,6 +24,7 @@
  * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Views\Helpers\Functions;
 
@@ -67,6 +68,7 @@ class SliderTest extends \PHPUnit_Framework_TestCase
         }
         $configurationFactory = new \Yana\ConfigurationFactory();
         $configuration = $configurationFactory->loadConfiguration(CWD . 'resources/system.config.xml');
+        $configuration->configdrive = YANA_INSTALL_DIR . 'config/system.drive.xml';
         $this->container = new \Yana\Core\Dependencies\Container($configuration);
         $this->object = new \Yana\Views\Helpers\Functions\MySliderHelper($this->container);
     }

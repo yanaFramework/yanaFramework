@@ -131,7 +131,7 @@ interface IsTextContainer extends \Yana\Core\IsVarContainer
      * @param   string  $string  text containing tokens like {lang id="FOO"}
      * @return  string
      */
-    public function replaceToken($string);
+    public function replaceToken(string $string): string;
 
 }
 

@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Views\Skins;
 
@@ -42,7 +43,7 @@ interface IsSkin extends \Yana\Report\IsReportable
      * Choose a provider to load meta-data.
      *
      * @param   \Yana\Views\MetaData\IsDataProvider  $provider  designated meta-data provider
-     * @return  \Yana\Views\Skins\IsSkin
+     * @return  $this
      * @see     \Yana\Views\MetaData\XmlDataProvider
      */
     public function setMetaDataProvider(\Yana\Views\MetaData\IsDataProvider $provider);
@@ -52,18 +53,18 @@ interface IsSkin extends \Yana\Report\IsReportable
      *
      * Use this to get more info on the skin pack's author, title or description.
      *
-     * @return  \Yana\Views\MetaData\SkinMetaData
+     * @return  \Yana\Views\MetaData\IsSkinMetaData
      */
-    public function getMetaData();
+    public function getMetaData(): \Yana\Views\MetaData\IsSkinMetaData;
 
     /**
      * Returns a template definition.
      *
      * @param   string  $templateId  any valid identifier
-     * @return  \Yana\Views\MetaData\TemplateMetaData
+     * @return  \Yana\Views\MetaData\IsTemplateMetaData
      * @throws  \Yana\Core\Exceptions\NotFoundException  when no matching template was found
      */
-    public function getTemplateData($templateId);
+    public function getTemplateData(string $templateId): \Yana\Views\MetaData\IsTemplateMetaData;
 
     /**
      * Returns a list of all skins.
@@ -73,7 +74,7 @@ interface IsSkin extends \Yana\Report\IsReportable
      * @return  array
      * @since   3.1.0
      */
-    public function getSkins();
+    public function getSkins(): array;
 
     /**
      * Returns the name of the skin.
@@ -82,14 +83,14 @@ interface IsSkin extends \Yana\Report\IsReportable
      *
      * @return  string
      */
-    public function getName();
+    public function getName(): string;
 
     /**
      * get this skin's directory path
      *
      * @return  string
      */
-    public function getDirectory();
+    public function getDirectory(): string;
 
 }
 

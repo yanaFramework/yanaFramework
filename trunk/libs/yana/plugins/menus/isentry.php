@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Plugins\Menus;
 
@@ -44,9 +45,9 @@ interface IsEntry
      *
      * Groups may have sub-groups, devided by '.'.
      *
-     * @return  int
+     * @return  string
      */
-    public function getGroup();
+    public function getGroup(): string;
 
     /**
      * Set name of menu group.
@@ -57,56 +58,62 @@ interface IsEntry
      * Meaning, foo is the top-menu, with bar as the second-level entry.
      *
      * @param   string  $group  
-     * @return  \Yana\Plugins\Menus\IsEntry
+     * @return  $this
      */
-    public function setGroup($group);
+    public function setGroup(string $group);
 
     /**
      * Get title of the menu entry.
      *
      * @return  string
      */
-    public function getTitle();
+    public function getTitle(): string;
 
     /**
      * Set title of the menu entry.
      *
      * @param   string  $title  a text or a translation token
-     * @return  \Yana\Plugins\Menus\IsEntry
+     * @return  $this
      */
-    public function setTitle($title);
+    public function setTitle(string $title);
 
     /**
      * Get icon path.
      *
      * @return  string
      */
-    public function getIcon();
+    public function getIcon(): string;
 
     /**
      * Set icon path.
      *
      * @param   string  $icon  path to image file
-     * @return  \Yana\Plugins\Menus\IsEntry
+     * @return  $this
      */
-    public function setIcon($icon);
+    public function setIcon(string $icon);
 
     /**
-     * get value of safemode setting.
+     * Get value of safemode setting.
      *
-     * @return  bool
+     * Returned values may be:
+     *
+     * - bool(true) = requires safe-mode
+     * - bool(false) = disallows safe-mode
+     * - null = don't care
+     *
+     * @return  bool|NULL
      * @ignore
      */
-    public function getSafeMode();
+    public function getSafeMode(): ?bool;
 
     /**
      * Set safemode setting.
      *
-     * @param   bool  $safeMode  true = requires safe-mode, false = disallows safe-mode, null = don't care
-     * @return  \Yana\Plugins\Menus\IsEntry
+     * @param   bool|NULL  $safeMode  true = requires safe-mode, false = disallows safe-mode, null = don't care
+     * @return  $this
      * @ignore
      */
-    public function setSafeMode($safeMode = null);
+    public function setSafeMode(?bool $safeMode = null);
 
 }
 

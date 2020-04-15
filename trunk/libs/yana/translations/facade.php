@@ -251,7 +251,7 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
      * @return  array
      * @since   3.1.0
      */
-    public function getLanguages()
+    public function getLanguages(): array
     {
         return $this->_getManager()->getLanguages();
     }
@@ -300,15 +300,13 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
      * Get meta-info on a language packs.
      *
      * @param   string  $languageName  name of language pack
-     * @return  \Yana\Core\MetaData\PackageMetaData
+     * @return  \Yana\Core\MetaData\IsPackageMetaData
      * @throws  \Yana\Core\Exceptions\NotFoundException  when requested file is not found
      *
      * @ignore
      */
-    public function getMetaData($languageName)
+    public function getMetaData(string $languageName): \Yana\Core\MetaData\IsPackageMetaData
     {
-        assert(is_string($languageName), 'Wrong type for argument 1. String expected');
-
         return $this->_getManager()->getMetaData($languageName);
     }
 
@@ -355,10 +353,8 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
      * @param   string  $string   sting text (look example)
      * @return  string
      */
-    public function replaceToken($string)
+    public function replaceToken(string $string): string
     {
-        assert(is_string($string), 'Wrong argument type for argument 1. String expected.');
-
         return $this->_getManager()->replaceToken($string);
     }
 
@@ -367,7 +363,7 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
      *
      * @return  \Yana\Translations\TextData\IsTextContainer
      */
-    public function getTranslations()
+    public function getTranslations(): \Yana\Translations\TextData\IsTextContainer
     {
         return $this->_getManager()->getTranslations();
     }
@@ -381,12 +377,12 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
      * You may access the file contents via $language->getVar('some.value').
      *
      * @param   string  $id  name of translation package that should be loaded
-     * @return  self
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\Translations\InvalidFileNameException       when the given identifier is invalid
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException                      when the give filename is invalid
      * @throws  \Yana\Core\Exceptions\Translations\LanguageFileNotFoundException  when the language file is not found
      */
-    public function loadTranslations($id)
+    public function loadTranslations(string $id)
     {
         $this->_getManager()->loadTranslations($id);
         return $this;

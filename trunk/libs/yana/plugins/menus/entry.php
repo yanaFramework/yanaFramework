@@ -64,9 +64,9 @@ class Entry extends \Yana\Core\StdObject implements \Yana\Plugins\Menus\IsEntry
      *
      * Groups may have sub-groups, devided by '.'.
      *
-     * @return  int
+     * @return  string
      */
-    public function getGroup()
+    public function getGroup(): string
     {
         return $this->_group;
     }
@@ -80,12 +80,11 @@ class Entry extends \Yana\Core\StdObject implements \Yana\Plugins\Menus\IsEntry
      * Meaning, foo is the top-menu, with bar as the second-level entry.
      *
      * @param   string  $group  
-     * @return  \Yana\Plugins\Menus\Entry
+     * @return  $this
      */
-    public function setGroup($group)
+    public function setGroup(string $group)
     {
-        assert(is_string($group), 'Invalid argument $group: string expected');
-        $this->_group = (string) $group;
+        $this->_group = $group;
         return $this;
     }
 
@@ -94,7 +93,7 @@ class Entry extends \Yana\Core\StdObject implements \Yana\Plugins\Menus\IsEntry
      *
      * @return  string
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->_title;
     }
@@ -103,12 +102,11 @@ class Entry extends \Yana\Core\StdObject implements \Yana\Plugins\Menus\IsEntry
      * Set title of the menu entry.
      *
      * @param   string  $title  a text or a translation token
-     * @return  \Yana\Plugins\Menus\Entry
+     * @return  $this
      */
-    public function setTitle($title)
+    public function setTitle(string $title)
     {
-        assert(is_string($title), 'Invalid argument $title: string expected');
-        $this->_title = (string) $title;
+        $this->_title = $title;
         return $this;
     }
 
@@ -117,7 +115,7 @@ class Entry extends \Yana\Core\StdObject implements \Yana\Plugins\Menus\IsEntry
      *
      * @return  string
      */
-    public function getIcon()
+    public function getIcon(): string
     {
         return $this->_icon;
     }
@@ -126,22 +124,27 @@ class Entry extends \Yana\Core\StdObject implements \Yana\Plugins\Menus\IsEntry
      * Set icon path.
      *
      * @param   string  $icon  path to image file
-     * @return  \Yana\Plugins\Menus\Entry
+     * @return  $this
      */
-    public function setIcon($icon)
+    public function setIcon(string $icon)
     {
-        assert(is_string($icon), 'Invalid argument $icon: string expected');
-        $this->_icon = (string) $icon;
+        $this->_icon = $icon;
         return $this;
     }
 
     /**
-     * get value of safemode setting.
+     * Get value of safemode setting.
      *
-     * @return  bool
+     * Returned values may be:
+     *
+     * - bool(true) = requires safe-mode
+     * - bool(false) = disallows safe-mode
+     * - null = don't care
+     *
+     * @return  bool|NULL
      * @ignore
      */
-    public function getSafeMode()
+    public function getSafeMode(): ?bool
     {
         return $this->_safeMode;
     }
@@ -149,13 +152,12 @@ class Entry extends \Yana\Core\StdObject implements \Yana\Plugins\Menus\IsEntry
     /**
      * Set safemode setting.
      *
-     * @param   bool  $safeMode  true = requires safe-mode, false = disallows safe-mode, null = don't care
-     * @return  \Yana\Plugins\Menus\Entry
+     * @param   bool|NULL  $safeMode  true = requires safe-mode, false = disallows safe-mode, null = don't care
+     * @return  $this
      * @ignore
      */
-    public function setSafeMode($safeMode = null)
+    public function setSafeMode(?bool $safeMode = null)
     {
-        assert(is_null($safeMode) || is_bool($safeMode), 'Invalid argument $safeMode: bool expected');
         $this->_safeMode = $safeMode;
         return $this;
     }
