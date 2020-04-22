@@ -115,9 +115,9 @@ class UrlFormatter extends \Yana\Views\Helpers\Formatters\AbstractFormatter
     /**
      * Creates an URL to the script itself from a search-string fragment.
      *
-     * @param   string   $string           url parameter list
+     * @param   string   $string           URL parameter list
      * @param   bool     $asString         decide wether entities in string should be encoded or not
-     * @param   bool     $asAbsolutePath   decide wether function should return relative or absolut path
+     * @param   bool     $asAbsolutePath   decide wether function should return a relative or absolute path
      * @return  string
      */
     public function __invoke($string, bool $asString = false, bool $asAbsolutePath = true)

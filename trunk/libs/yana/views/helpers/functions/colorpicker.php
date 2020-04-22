@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Views\Helpers\Functions;
 
@@ -41,7 +42,42 @@ class ColorPicker extends \Yana\Views\Helpers\AbstractViewHelper implements \Yan
 {
 
     /**
-     * <<smarty function>> Creates Javascript colorpicker.
+     * Name of color picker template
+     *
+     * @var string
+     */
+    private $_templateName = "id:colorpicker";
+
+    /**
+     * Returns name of color picker template.
+     *
+     * Default is "id:colorpicker".
+     *
+     * @return  string
+     * @ignore
+     */
+    public function getTemplateName(): string
+    {
+        return $this->_templateName;
+    }
+
+    /**
+     * Sets name of color picker template.
+     *
+     * Default is "id:colorpicker".
+     *
+     * @param   string  $templateName  must be valid template name or file path
+     * @return  $this
+     * @ignore
+     */
+    public function setTemplateName(string $templateName)
+    {
+        $this->_templateName = $templateName;
+        return $this;
+    }
+
+    /**
+     * <<smarty function>> Creates Javascript color picker.
      *
      * @param   array                      $params  any list of arguments
      * @param   \Smarty_Internal_Template  $smarty  reference to currently rendered template
@@ -49,11 +85,11 @@ class ColorPicker extends \Yana\Views\Helpers\AbstractViewHelper implements \Yan
      */
     public function __invoke(array $params, \Smarty_Internal_Template $smarty)
     {
-        $document = new $smarty->smarty->createTemplate("id:colorpicker", null, null, $smarty);
-        if (isset($params['id'])) {
-            $document->setVar('target', $params['id']);
+        $template = $this->_getViewManager()->createContentTemplate($this->getTemplateName());
+        if (isset($params['id']) && \is_string($params['id'])) {
+            $template->setVar('target', $params['id']);
         }
-        return $document->fetch();
+        return $template->fetch();
     }
 
 }

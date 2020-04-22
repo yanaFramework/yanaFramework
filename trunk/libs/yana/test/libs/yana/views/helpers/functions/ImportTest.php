@@ -40,6 +40,11 @@ class ImportTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
+     * @var \Yana\Core\Dependencies\IsApplicationContainer
+     */
+    protected $container;
+
+    /**
      * @var \Yana\Views\Helpers\Functions\Import
      */
     protected $object;
@@ -56,7 +61,10 @@ class ImportTest extends \PHPUnit_Framework_TestCase
         $configurationFactory = new \Yana\ConfigurationFactory();
         $configuration = $configurationFactory->loadConfiguration(CWD . 'resources/system.config.xml');
         $configuration->configdrive = YANA_INSTALL_DIR . 'config/system.drive.xml';
-        $this->object = new \Yana\Views\Helpers\Functions\Import(new \Yana\Core\Dependencies\Container($configuration));
+        $this->container = new \Yana\Core\Dependencies\Container($configuration);
+        $this->object = new \Yana\Views\Helpers\Functions\Import($this->container);
+        $view = $this->container->getView();
+        $view->setModifier('replaceToken', function ($token) { return $token; });
     }
 
     /**
@@ -65,19 +73,60 @@ class ImportTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        
+        $view = $this->container->getView();
+        $view->unsetModifier('replaceToken');
     }
 
     /**
      * @covers Yana\Views\Helpers\Functions\Import::__invoke
-     * @todo   Implement test__invoke().
+     * @test
      */
     public function test__invoke()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->assertSame("", $this->object->__invoke(array(), new \Smarty_Internal_Template("name", new \Smarty())));
+    }
+
+    /**
+     * @covers Yana\Views\Helpers\Functions\Import::__invoke
+     * @test
+     */
+    public function test__invokeWithFile()
+    {
+        $fileName = \CWD . '/resources/importtest.txt';
+        $expected = \str_replace(array('{$FILE_IS_INCLUDE}', '{$a}'), array('1', ''), file_get_contents($fileName));
+        $this->assertEquals($expected, $this->object->__invoke(array("file" => $fileName), new \Smarty_Internal_Template("name", new \Smarty())));
+    }
+
+    /**
+     * @covers Yana\Views\Helpers\Functions\Import::__invoke
+     * @test
+     */
+    public function test__invokeWithTemplate()
+    {
+        $fileName = \CWD . '/resources/importtest.txt';
+        $expected = \str_replace(array('{$FILE_IS_INCLUDE}', '{$a}'), array('1', ''), file_get_contents($fileName));
+        $this->assertEquals($expected, $this->object->__invoke(array("template" => $fileName), new \Smarty_Internal_Template("name", new \Smarty())));
+    }
+
+    /**
+     * @covers Yana\Views\Helpers\Functions\Import::__invoke
+     * @test
+     */
+    public function test__invokeWithParams()
+    {
+        $fileName = \CWD . '/resources/importtest.txt';
+        $expected = \str_replace(array('{$FILE_IS_INCLUDE}', '{$a}'), array('1', 'Test!'), file_get_contents($fileName));
+        $this->assertEquals($expected, $this->object->__invoke(array("template" => $fileName, 'a' => 'Test!'), new \Smarty_Internal_Template("name", new \Smarty())));
+    }
+
+    /**
+     * @covers Yana\Views\Helpers\Functions\Import::__invoke
+     * @test
+     * @expectedException \SmartyException
+     */
+    public function test__invokeWithId()
+    {
+        $this->object->__invoke(array("id" => "test"), new \Smarty_Internal_Template("name", new \Smarty()));
     }
 
 }

@@ -69,15 +69,25 @@ class CaptchaTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Yana\Views\Helpers\Functions\Captcha::__invoke
-     * @todo   Implement test__invoke().
+     * @test
      */
     public function test__invoke()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $expected = '/^<input type="hidden" name="security_image_index" value="\\d"\/>' .
+            '<img alt="" hspace="5" src="\\?id=default&amp;action=security_get_image&amp;security_image_index=\\d"\/>' .
+            '<input maxlength="5" size="5" title="SECURITY_IMAGE.DESCRIPTION" type="text" name="security_image"\/>$/';
+        $this->assertRegExp($expected, $this->object->__invoke(array(), new \Smarty_Internal_Template("name", new \Smarty())));
+    }
+
+    /**
+     * @test
+     */
+    public function test__invokeWithId()
+    {
+        $expected = '/^<input type="hidden" name="security_image_index" value="\\d"\/>' .
+            '<img alt="" hspace="5" src="\\?id=default&amp;action=security_get_image&amp;security_image_index=\\d"\/>' .
+            '<input maxlength="5" size="5" id="Test!" title="SECURITY_IMAGE.DESCRIPTION" type="text" name="security_image"\/>$/';
+        $this->assertRegExp($expected, $this->object->__invoke(array('id' => 'Test!', 'foo' => 'Bar'), new \Smarty_Internal_Template("name", new \Smarty())));
     }
 
 }

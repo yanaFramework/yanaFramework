@@ -40,6 +40,11 @@ class PreviewTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
+     * @var \Yana\Core\Dependencies\IsApplicationContainer
+     */
+    protected $container;
+
+    /**
      * @var \Yana\Views\Helpers\Functions\Preview
      */
     protected $object;
@@ -56,7 +61,10 @@ class PreviewTest extends \PHPUnit_Framework_TestCase
         $configurationFactory = new \Yana\ConfigurationFactory();
         $configuration = $configurationFactory->loadConfiguration(CWD . 'resources/system.config.xml');
         $configuration->configdrive = YANA_INSTALL_DIR . 'config/system.drive.xml';
-        $this->object = new \Yana\Views\Helpers\Functions\Preview(new \Yana\Core\Dependencies\Container($configuration));
+        $this->container = new \Yana\Core\Dependencies\Container($configuration);
+        $this->object = new \Yana\Views\Helpers\Functions\Preview($this->container);
+        $view = $this->container->getView();
+        $view->setModifier('replaceToken', function ($token) { return $token; });
     }
 
     /**
@@ -65,19 +73,46 @@ class PreviewTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        
+        $view = $this->container->getView();
+        $view->unsetModifier('replaceToken');  
+    }
+
+    /**
+     * @test
+     */
+    public function testGetTemplateName()
+    {
+        $this->assertSame("id:gui_preview", $this->object->getTemplateName());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetTemplateName()
+    {
+        $this->assertSame("Test!", $this->object->setTemplateName("Test!")->getTemplateName());
     }
 
     /**
      * @covers Yana\Views\Helpers\Functions\Preview::__invoke
-     * @todo   Implement test__invoke().
+     * @test
+     */
+    public function test__invokeEmpty()
+    {
+        $template = "string:id={\$ID}";
+        $this->object->setTemplateName($template);
+        $this->assertRegExp("/^id=yana\w+$/", $this->object->__invoke(array('width' => '123px', 'height' => '456px'), new \Smarty_Internal_Template("name", new \Smarty())));
+    }
+
+    /**
+     * @covers Yana\Views\Helpers\Functions\Preview::__invoke
+     * @test
      */
     public function test__invoke()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $template = "string:width={\$WIDTH},height={\$HEIGHT}";
+        $this->object->setTemplateName($template);
+        $this->assertSame("width=123px,height=456px", $this->object->__invoke(array('width' => '123px', 'height' => '456px'), new \Smarty_Internal_Template("name", new \Smarty())));
     }
 
 }

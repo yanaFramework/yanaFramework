@@ -69,15 +69,49 @@ class RssTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     */
+    public function testGetRssFeeds()
+    {
+        $this->assertSame(array(), $this->object->getRssFeeds());
+    }
+    /**
+     * @test
+     */
+    public function testAddRssFeeds()
+    {
+        $this->assertSame(array("test"), $this->object->addRssFeed("test")->getRssFeeds());
+    }
+
+    /**
      * @covers Yana\Views\Helpers\Functions\Rss::__invoke
-     * @todo   Implement test__invoke().
+     * @test
+     */
+    public function test__invokeEmpty()
+    {
+        $this->assertSame("", $this->object->__invoke(array(), new \Smarty_Internal_Template("name", new \Smarty())));
+    }
+
+    /**
+     * @covers Yana\Views\Helpers\Functions\Rss::__invoke
+     * @test
      */
     public function test__invoke()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->object->addRssFeed("Test!");
+        $expected = '<a title="PROGRAM_TITLE: RSS_TITLE" href="?id=default&amp;action=Test%21"><img alt="RSS" src="common_files/rss.gif"/></a>';
+        $this->assertSame($expected, $this->object->__invoke(array(), new \Smarty_Internal_Template("name", new \Smarty())));
+    }
+
+    /**
+     * @covers Yana\Views\Helpers\Functions\Rss::__invoke
+     * @test
+     */
+    public function test__invokeWithImage()
+    {
+        $this->object->addRssFeed("Test!");
+        $expected = '<a title="PROGRAM_TITLE: RSS_TITLE" href="?id=default&amp;action=Test%21"><img alt="RSS" src="img.jpg"/></a>';
+        $this->assertSame($expected, $this->object->__invoke(array('image' => 'img.jpg'), new \Smarty_Internal_Template("name", new \Smarty())));
     }
 
 }

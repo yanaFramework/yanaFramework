@@ -1,0 +1,1 @@
+This is a test template for \Yana\Views\Helpers\Functions\ImportTest. {$FILE_IS_INCLUDE} | {$a}

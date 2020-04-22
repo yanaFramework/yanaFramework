@@ -42,7 +42,7 @@ class Collection extends \Yana\Core\AbstractCollection
      * Add a new rule to the collection.
      *
      * @param   scalar                    $offset  file id
-     * @param   \Yana\Views\Icons\IsFile  $value   entity that shoud be added
+     * @param   \Yana\Views\Icons\IsFile  $value   entity that should be added
      * @return  \Yana\Views\Icons\IsFile
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the value is not a valid entity
      */

@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Views\Helpers\Functions;
 
@@ -39,6 +40,49 @@ namespace Yana\Views\Helpers\Functions;
  */
 class Rss extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Views\Helpers\IsFunction
 {
+
+    /**
+     * List of RSS feeds.
+     *
+     * @var array
+     */
+    private $_rssFeeds = array();
+
+    /**
+     * Get list of all previously published RSS-feeds.
+     *
+     * A RSS feed (in this context) is the name of action that creates it,
+     * meaning: A string.
+     *
+     * @return  array
+     * @ignore
+     */
+    public function getRssFeeds()
+    {
+        if (empty($this->_rssFeeds)) {
+            $this->_rssFeeds = \Yana\RSS\Publisher::getFeeds();
+        }
+        return $this->_rssFeeds;
+    }
+
+    /**
+     * Publish a RSS-feed.
+     *
+     * Adds the action identified by $action to the list of rss-feeds to be offered to the user.
+     * You should define a function with the name of $action in your plugin,
+     * that must produce the RSS content.
+     *
+     * Note: This should be reserved for unit tests only.
+     *
+     * @param   string  $action  action
+     * @return  $this
+     * @ignore
+     */
+    public function addRssFeed(string $action)
+    {
+        $this->_rssFeeds[] = $action;
+        return $this;
+    }
 
     /**
      * <<smarty function>> Create HTML RSS link.
@@ -58,9 +102,9 @@ class Rss extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Views\
         $name = $this->_getLanguage()->getVar('PROGRAM_TITLE');
         $result = "";
         $formatter = $this->_getDependencyContainer()->getUrlFormatter();
-        foreach (\Yana\RSS\Publisher::getFeeds() as $action)
+        foreach ($this->getRssFeeds() as $action)
         {
-            $result .= '<a title="' . $name . ': ' . $title . '" href="' . $formatter("action={$action}") . '">' .
+            $result .= '<a title="' . $name . ': ' . $title . '" href="' . $formatter("action={$action}", false, false) . '">' .
             '<img alt="RSS" src="' . $image . '"/></a>';
         }
         return $result;

@@ -33,6 +33,34 @@ namespace Yana\Views\Helpers\Functions;
  */
 require_once dirname(__FILE__) . '/../../../../../include.php';
 
+
+/**
+ * @package  test
+ * @ignore
+ */
+class MySmilies extends \Yana\Views\Helpers\Functions\Smilies
+{
+
+    /**
+     * Returns a list of available icon files.
+     *
+     * The list is build from the profile configuration on demand.
+     *
+     * @return  \Yana\Views\Icons\Collection
+     * @codeCoverageIgnore
+     */
+    protected function _buildListOfIcons()
+    {
+        $icons = new \Yana\Views\Icons\Collection();
+        $icons["1"] = $icon1 = new \Yana\Views\Icons\File();
+        $icon1->setId("Id1")->setPath("Path1");
+        $icons["2"] = $icon2 = new \Yana\Views\Icons\File();
+        $icon2->setId("Id2")->setPath("Path2");
+        return $icons;
+    }
+
+}
+
 /**
  * @package  test
  */
@@ -56,7 +84,7 @@ class SmiliesTest extends \PHPUnit_Framework_TestCase
         $configurationFactory = new \Yana\ConfigurationFactory();
         $configuration = $configurationFactory->loadConfiguration(CWD . 'resources/system.config.xml');
         $configuration->configdrive = YANA_INSTALL_DIR . 'config/system.drive.xml';
-        $this->object = new \Yana\Views\Helpers\Functions\Smilies(new \Yana\Core\Dependencies\Container($configuration));
+        $this->object = new \Yana\Views\Helpers\Functions\MySmilies(new \Yana\Core\Dependencies\Container($configuration));
     }
 
     /**
@@ -69,15 +97,45 @@ class SmiliesTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Yana\Views\Helpers\Functions\Smilies::__invoke
-     * @todo   Implement test__invoke().
+     * @test
      */
     public function test__invoke()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $expected = '<table summary="smilies" class="gui_generator_smilies">' .
+            '<tr><td title="{lang id=\'TITLE_SMILIES\'}" style="cursor: pointer">' .
+            '<img alt="Id1" src="Path1" onmousedown="yanaAddIcon(\':Id1:\',event)"/></td>' . "\n" .
+            '</tr><tr><td title="{lang id=\'TITLE_SMILIES\'}" style="cursor: pointer">' .
+            '<img alt="Id2" src="Path2" onmousedown="yanaAddIcon(\':Id2:\',event)"/></td>' . "\n" .
+            '</tr></table>';
+        $this->assertSame($expected, $this->object->__invoke(array(), new \Smarty_Internal_Template("name", new \Smarty())));
+    }
+
+    /**
+     * @test
+     */
+    public function test__invokeWithInvalidWidth()
+    {
+        $expected = '<table summary="smilies" class="gui_generator_smilies">' .
+            '<tr><td title="{lang id=\'TITLE_SMILIES\'}" style="cursor: pointer">' .
+            '<img alt="Id1" src="Path1" onmousedown="yanaAddIcon(\':Id1:\',event)"/></td>' . "\n" .
+            '</tr><tr><td title="{lang id=\'TITLE_SMILIES\'}" style="cursor: pointer">' .
+            '<img alt="Id2" src="Path2" onmousedown="yanaAddIcon(\':Id2:\',event)"/></td>' . "\n" .
+            '</tr></table>';
+        $this->assertSame($expected, $this->object->__invoke(array('width' => 0), new \Smarty_Internal_Template("name", new \Smarty())));
+    }
+
+    /**
+     * @test
+     */
+    public function test__invokeWithWidth()
+    {
+        $expected = '<table summary="smilies" class="gui_generator_smilies">' .
+            '<tr><td title="{lang id=\'TITLE_SMILIES\'}" style="cursor: pointer">' .
+            '<img alt="Id1" src="Path1" onmousedown="yanaAddIcon(\':Id1:\',event)"/></td>' . "\n" .
+            '<td title="{lang id=\'TITLE_SMILIES\'}" style="cursor: pointer">' .
+            '<img alt="Id2" src="Path2" onmousedown="yanaAddIcon(\':Id2:\',event)"/></td>' . "\n" .
+            '</tr></table>';
+        $this->assertSame($expected, $this->object->__invoke(array('width' => 2), new \Smarty_Internal_Template("name", new \Smarty())));
     }
 
 }

@@ -70,14 +70,48 @@ class PrintArrayTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers Yana\Views\Helpers\Functions\PrintArray::__invoke
-     * @todo   Implement test__invoke().
+     * @test
      */
-    public function test__invoke()
+    public function test__invokeEmpty()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $expected = "";
+        $this->assertSame($expected, $this->object->__invoke(array(), new \Smarty_Internal_Template("name", new \Smarty())));
+    }
+
+    /**
+     * @covers Yana\Views\Helpers\Functions\PrintArray::__invoke
+     * @test
+     */
+    public function test__invokeWithInvalidDataType()
+    {
+        $expected = "1";
+        $this->assertSame($expected, $this->object->__invoke(array('value' => 1), new \Smarty_Internal_Template("name", new \Smarty())));
+    }
+
+    /**
+     * @covers Yana\Views\Helpers\Functions\PrintArray::__invoke
+     * @test
+     */
+    public function test__invokeWithArray()
+    {
+        $expected = '<pre>' .
+            '<span style="color: #35a;">&lt;0&gt;</span>1<span style="color: #35a;">&lt;/0&gt;</span>' . "\n" .
+            '<span style="color: #35a;">&lt;1&gt;</span>2<span style="color: #35a;">&lt;/1&gt;</span>' . "\n" .
+            '</pre>';
+        $this->assertSame($expected, $this->object->__invoke(array('value' => array(1, 2)), new \Smarty_Internal_Template("name", new \Smarty())));
+    }
+
+    /**
+     * @covers Yana\Views\Helpers\Functions\PrintArray::__invoke
+     * @test
+     */
+    public function test__invokeWithString()
+    {
+        $expected = '<pre>' .
+            '<span style="color: #35a;">&lt;0&gt;</span>1<span style="color: #35a;">&lt;/0&gt;</span>' . "\n" .
+            '<span style="color: #35a;">&lt;1&gt;</span>2<span style="color: #35a;">&lt;/1&gt;</span>' . "\n" .
+            '</pre>';
+        $this->assertSame($expected, $this->object->__invoke(array('value' => "<0>1</0>\n<1>2</1>"), new \Smarty_Internal_Template("name", new \Smarty())));
     }
 
 }

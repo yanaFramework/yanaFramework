@@ -41,6 +41,41 @@ class EmbeddedTags extends \Yana\Views\Helpers\AbstractViewHelper implements \Ya
 {
 
     /**
+     * Name of color picker template
+     *
+     * @var string
+     */
+    private $_templateName = "id:GUI_EMBEDDED_TAGS";
+
+    /**
+     * Returns name of color picker template.
+     *
+     * Default is "id:GUI_EMBEDDED_TAGS".
+     *
+     * @return  string
+     * @ignore
+     */
+    public function getTemplateName(): string
+    {
+        return $this->_templateName;
+    }
+
+    /**
+     * Sets name of color picker template.
+     *
+     * Default is "id:GUI_EMBEDDED_TAGS".
+     *
+     * @param   string  $templateName  must be valid template name or file path
+     * @return  $this
+     * @ignore
+     */
+    public function setTemplateName(string $templateName)
+    {
+        $this->_templateName = $templateName;
+        return $this;
+    }
+
+    /**
      * <<smarty function>> Output a HTML bar to select elements for emb-tags markup.
      *
      * @param   array                      $params  any list of arguments
@@ -57,8 +92,8 @@ class EmbeddedTags extends \Yana\Views\Helpers\AbstractViewHelper implements \Ya
         $hide = array();
 
         /* Argument 'show' */
-        if (isset($params['show']) && !preg_match('/^(\w+|\||-)(,(\w+|\||-))*$/is', $params['show'])) {
-            $message = "Argument 'show' contains illegal characters in function " . __FUNCTION__ . "().";
+        if (isset($params['show']) && (!is_string($params['show']) || !preg_match('/^(\w+|\||-)(,(\w+|\||-))*$/is', $params['show']))) {
+            $message = "Argument 'show' is not a valid comma-separated list in function " . __FUNCTION__ . "().";
             $this->_getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
             return "";
         } elseif (!isset($params['show'])) {
@@ -70,8 +105,8 @@ class EmbeddedTags extends \Yana\Views\Helpers\AbstractViewHelper implements \Ya
         }
 
         /* Argument 'hide' */
-        if (!empty($params['hide']) && !preg_match('/^[\w,]+$/is', $params['hide'])) {
-            $message = "Argument 'hide' contains illegal characters for function " . __FUNCTION__ . "().";
+        if (!empty($params['hide']) && (!is_string($params['hide']) || !preg_match('/^[\w,]+$/is', $params['hide']))) {
+            $message = "Argument 'hide' is not a valid comma-separated list in function " . __FUNCTION__ . "().";
             $this->_getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);
             return "";
         } elseif (empty($params['hide'])) {
@@ -88,10 +123,10 @@ class EmbeddedTags extends \Yana\Views\Helpers\AbstractViewHelper implements \Ya
         $tags = array_diff($show, $hide);
 
         /* create document */
-        $document = $smarty->smarty->createTemplate("id:GUI_EMBEDDED_TAGS", null, null, $smarty);
-        $document->assign('TAGS', $tags);
-        $document->assign('USER_DEFINED', $this->_getRegistry()->getVar('PROFILE.EMBTAG'));
-        $document->assign('LANGUAGE', $this->_getLanguage()->getVars());
+        $document = $this->_getViewManager()->createContentTemplate($this->getTemplateName());
+        $document->setVar('TAGS', $tags);
+        $document->setVar('USER_DEFINED', $this->_getRegistry()->getVar('PROFILE.EMBTAG'));
+        $document->setVar('LANGUAGE', $this->_getLanguage()->getVars());
 
         return $document->fetch();
     }

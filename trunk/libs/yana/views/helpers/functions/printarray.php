@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Views\Helpers\Functions;
 
@@ -56,8 +57,11 @@ class PrintArray extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana
         if (is_string($array)) {
             $array = \Yana\Files\SML::decode($array);
         }
-        $lDelim = $smarty->smarty->left_delimiter;
-        $rDelim = $smarty->smarty->right_delimiter;
+        $configuration = $this->_getDependencyContainer()->getTemplateConfiguration();
+        $lDelim = $configuration['leftdelimiter'];
+        assert(!empty($lDelim));
+        $rDelim = $configuration['rightdelimiter'];
+        assert(!empty($rDelim));
         if (is_array($array)) {
             $array = \Yana\Util\Strings::htmlSpecialChars((string) \Yana\Files\SML::encode($array));
             $replacement = '<span style="color: #35a;">$1</span>$2<span style="color: #35a;">$3</span>';
@@ -73,7 +77,7 @@ class PrintArray extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana
             $array = preg_replace('/&amp;\w+;/m', '<span style="color: #880;">$0</span>', $array);
             $array = "<pre>{$array}</pre>";
         }
-        return $array;
+        return (string) $array;
     }
 
 }

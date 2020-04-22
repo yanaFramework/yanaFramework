@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Views\Helpers\Functions;
 
@@ -41,24 +42,6 @@ class Smilies extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vi
 {
 
     /**
-     * @var \Yana\Views\Helpers\Formatters\IconFormatter
-     */
-    private $_formatter = null;
-
-    /**
-     * Lazy loading for formatter class.
-     *
-     * @return \Yana\Views\Helpers\Formatters\IconFormatter 
-     */
-    protected function _getFormatter()
-    {
-        if (!isset($this->_formatter)) {
-            $this->_formatter = new \Yana\Views\Helpers\Formatters\IconFormatter();
-        }
-        return $this->_formatter;
-    }
-
-    /**
      * <<smarty function>> guiSmilies.
      *
      * @param   array                      $params  any list of arguments
@@ -68,12 +51,15 @@ class Smilies extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vi
     public function __invoke(array $params, \Smarty_Internal_Template $smarty)
     {
         $table = '<table summary="smilies" class="gui_generator_smilies"><tr>';
-        $width = (int) $params['width'];
+        $width = isset($params['width']) ? (int) $params['width'] : 1;
         if ($width < 1) {
             $width = 1;
         }
-        $lDelim = $smarty->smarty->left_delimiter;
-        $rDelim = $smarty->smarty->right_delimiter;
+        $configuration = $this->_getDependencyContainer()->getTemplateConfiguration();
+        $lDelim = $configuration['leftdelimiter'];
+        assert(!empty($lDelim));
+        $rDelim = $configuration['rightdelimiter'];
+        assert(!empty($rDelim));
 
         $count = 0;
         foreach ($this->_buildListOfIcons() as $icon)

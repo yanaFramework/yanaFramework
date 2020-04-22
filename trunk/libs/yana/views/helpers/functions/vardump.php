@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Views\Helpers\Functions;
 
@@ -62,7 +63,7 @@ class VarDump extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vi
             }
         } else {
             return '<pre style="text-align: left">' .
-                htmlspecialchars(var_export($smarty->getTemplateVars(), true), ENT_COMPAT, 'UTF-8') . '</pre>';
+                \Yana\Util\Strings::htmlSpecialChars((string) var_export($smarty->getTemplateVars(), true)) . '</pre>';
         }
     }
 

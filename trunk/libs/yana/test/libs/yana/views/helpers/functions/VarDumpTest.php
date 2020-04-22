@@ -70,14 +70,32 @@ class VarDumpTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers Yana\Views\Helpers\Functions\VarDump::__invoke
-     * @todo   Implement test__invoke().
+     * @test
      */
     public function test__invoke()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $expected = '/^<pre style="text-align: left">array\\s*\\(.+\\)<\/pre>$/s';
+        $this->assertRegExp($expected, $this->object->__invoke(array(), new \Smarty_Internal_Template("name", new \Smarty())));
+    }
+
+    /**
+     * @covers Yana\Views\Helpers\Functions\VarDump::__invoke
+     * @test
+     */
+    public function test__invokeScalar()
+    {
+        $expected = '<pre style="text-align: left">string(\'Test!\')</pre>';
+        $this->assertSame($expected, $this->object->__invoke(array('var' => 'Test!'), new \Smarty_Internal_Template("name", new \Smarty())));
+    }
+
+    /**
+     * @covers Yana\Views\Helpers\Functions\VarDump::__invoke
+     * @test
+     */
+    public function test__invokeArray()
+    {
+        $expected = '<pre style="text-align: left">' . htmlspecialchars(var_export(array(1, 2), true)) . '</pre>';
+        $this->assertSame($expected, $this->object->__invoke(array('var' => array(1, 2)), new \Smarty_Internal_Template("name", new \Smarty())));
     }
 
 }
