@@ -53,17 +53,15 @@ class VarDump extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vi
      */
     public function __invoke(array $params, \Smarty_Internal_Template $smarty)
     {
-        if (isset($params['var'])) {
-            if (is_scalar($params['var'])) {
-                return '<pre style="text-align: left">' . gettype($params['var']) . '(' .
-                    \Yana\Util\Strings::htmlSpecialChars((string) var_export($params['var'], true)) . ')</pre>';
-            } else {
-                return '<pre style="text-align: left">' .
-                    \Yana\Util\Strings::htmlSpecialChars((string) var_export(@$params['var'], true)) . '</pre>';
-            }
+        if (!isset($params['var'])) {
+            return "";
+        }
+        if (is_scalar($params['var'])) {
+            return '<pre style="text-align: left">' . gettype($params['var']) . '(' .
+                \Yana\Util\Strings::htmlSpecialChars((string) var_export($params['var'], true)) . ')</pre>';
         } else {
             return '<pre style="text-align: left">' .
-                \Yana\Util\Strings::htmlSpecialChars((string) var_export($smarty->getTemplateVars(), true)) . '</pre>';
+                \Yana\Util\Strings::htmlSpecialChars((string) var_export(@$params['var'], true)) . '</pre>';
         }
     }
 

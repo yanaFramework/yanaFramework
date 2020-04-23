@@ -60,12 +60,11 @@ class TimeSelector extends \Yana\Views\Helpers\AbstractViewHelper implements \Ya
      */
     public function __invoke(array $params, \Smarty_Internal_Template $smarty)
     {
-        $item = new \Yana\Forms\Fields\HtmlBuilder();
         if (empty($params['name'])) {
             return "";
-        } else {
-            $item->setName((string) $params['name']);
         }
+        $item = new \Yana\Forms\Fields\HtmlBuilder();
+        $item->setName((string) $params['name']);
         if (!empty($params['id'])) {
             $item->setId((string) $params['id']);
         }

@@ -74,8 +74,7 @@ class VarDumpTest extends \PHPUnit_Framework_TestCase
      */
     public function test__invoke()
     {
-        $expected = '/^<pre style="text-align: left">array\\s*\\(.+\\)<\/pre>$/s';
-        $this->assertRegExp($expected, $this->object->__invoke(array(), new \Smarty_Internal_Template("name", new \Smarty())));
+        $this->assertSame("", $this->object->__invoke(array(), new \Smarty_Internal_Template("name", new \Smarty())));
     }
 
     /**

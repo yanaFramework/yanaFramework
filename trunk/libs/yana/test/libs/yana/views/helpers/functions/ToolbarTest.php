@@ -64,19 +64,16 @@ class ToolbarTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        
+
     }
 
     /**
-     * @covers Yana\Views\Helpers\Functions\Toolbar::__invoke
-     * @todo   Implement test__invoke().
+     * @test
      */
     public function test__invoke()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $expected = "";
+        $this->assertSame($expected, $this->object->__invoke(array(), new \Smarty_Internal_Template("name", new \Smarty())));
     }
 
 }
