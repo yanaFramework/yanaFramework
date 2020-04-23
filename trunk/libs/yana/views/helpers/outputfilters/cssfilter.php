@@ -41,14 +41,14 @@ class CssFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\
 {
 
     /**
-     * <<smarty outputfilter>> outputfilter.
+     * <<smarty outputfilter>> output filter.
      *
-     * Imports all currently used Stylesheets and adds a link as Meta-data to the HTML header.
+     * Imports all currently used style sheets and adds a link as Meta-data to the HTML header.
      *
      * @param   string  $source  HTML code with PHP tags
      * @return  string
      */
-    public function __invoke($source)
+    public function __invoke(string $source): string
     {
         assert(is_string($source), 'Wrong type for argument 1. String expected');
 
@@ -64,7 +64,7 @@ class CssFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\
             }
             unset($stylesheet);
 
-            $source = preg_replace('/^\s*<\/head>/m', $htmlHead . "\$0", $source, 1);
+            $source = preg_replace('/\s*<\/head>/', $htmlHead . "\$0", $source, 1);
         }
 
         return $source;
@@ -73,7 +73,7 @@ class CssFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\
     /**
      * Returns HTML link to CSS file.
      *
-     * @param   string  $url  path to stylesheet
+     * @param   string  $url  path to style sheet
      * @return  string
      */
     protected function _css($url)

@@ -52,7 +52,7 @@ interface IsOutputFilter
      * @param   string  $source  HTML code with PHP tags
      * @return  string
      */
-    public function __invoke($source);
+    public function __invoke(string $source): string;
 
 }
 

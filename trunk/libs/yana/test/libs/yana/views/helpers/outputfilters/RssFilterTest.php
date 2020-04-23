@@ -71,7 +71,31 @@ class RssFilterTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        
+
+    }
+
+    /**
+     * @test
+     */
+    public function testGetRssFeeds()
+    {
+        $this->assertNull(\Yana\RSS\Publisher::unpublishFeeds());
+        $this->assertSame(array(), $this->object->getRssFeeds());
+    }
+    /**
+     * @test
+     */
+    public function testAddRssFeeds()
+    {
+        $this->assertSame(array("test"), $this->object->addRssFeed("test")->getRssFeeds());
+    }
+
+    /**
+     * @test
+     */
+    public function test__invokeEmpty()
+    {
+        $this->assertSame("", $this->object->__invoke(""));
     }
 
     /**
@@ -79,7 +103,19 @@ class RssFilterTest extends \PHPUnit_Framework_TestCase
      */
     public function test__invoke()
     {
-        $this->assertSame("", $this->object->__invoke(""));
+        $this->object->addRssFeed("Test!");
+        $expected = '/^<head><title>Test<\/title>\s+<link rel="alternate" type="application\/rss\+xml" title="{lang id=\'PROGRAM_TITLE\'}" href="http:\/\/[^"]*\?id=default&amp;action=Test%21"\/>\s+<\/head>$/s';
+        $this->assertRegExp($expected, $this->object->__invoke("<head><title>Test</title></head>"));
+    }
+
+    /**
+     * @test
+     */
+    public function test__invokeWithLineBreak()
+    {
+        $this->object->addRssFeed("Test!");
+        $expected = '/^\s+<head>\s+<title>Test<\/title>\s+<link rel="alternate" type="application\/rss\+xml" title="{lang id=\'PROGRAM_TITLE\'}" href="http:\/\/[^"]*\?id=default&amp;action=Test%21"\/>\s+<\/head>\s+body$/s';
+        $this->assertRegExp($expected, $this->object->__invoke("\t<head>\n\t\t<title>Test</title>\n\t</head>\nbody"));
     }
 
 }

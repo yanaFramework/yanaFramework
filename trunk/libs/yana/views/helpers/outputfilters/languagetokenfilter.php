@@ -48,10 +48,8 @@ class LanguageTokenFilter extends \Yana\Views\Helpers\AbstractViewHelper impleme
      * @param   string  $source  HTML code with PHP tags
      * @return  string
      */
-    public function __invoke($source)
+    public function __invoke(string $source): string
     {
-        assert(is_string($source), 'Invalid argument $source: string expected');
-
         $source = preg_replace('/\s*<\!--\s*-->\s*/s', '', $source);
         $source = $this->_getLanguage()->replaceToken($source);
 

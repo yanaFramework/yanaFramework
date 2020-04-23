@@ -77,9 +77,19 @@ class CssFilterTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function test__invoke()
+    public function test__invokeEmpty()
     {
         $this->assertSame("", $this->object->__invoke(""));
+    }
+
+    /**
+     * @test
+     */
+    public function test__invoke()
+    {
+        $this->container->getView()->addStyle('Test.Css');
+        $expected = '/^<head><title>Test<\/title>\s+<link rel="stylesheet" type="text\/css" href="Test\.Css"\/>\s+<\/head>$/s';
+        $this->assertRegExp($expected, $this->object->__invoke("<head><title>Test</title></head>"));
     }
 
 }

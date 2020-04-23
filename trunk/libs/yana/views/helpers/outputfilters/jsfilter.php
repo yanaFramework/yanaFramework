@@ -48,10 +48,8 @@ class JsFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\V
      * @param   string  $source  HTML code with PHP tags
      * @return  string
      */
-    public function __invoke($source)
+    public function __invoke(string $source): string
     {
-        assert(is_string($source), 'Invalid argument $source: string expected');
-
         if (mb_strpos($source, '</head>') > -1) {
 
             $htmlHead = "";
@@ -60,7 +58,7 @@ class JsFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\V
                 $htmlHead .= "        " . $this->_script($script) . "\n";
             }
             unset($script);
-            $source = preg_replace('/^\s*<\/head>/m', $htmlHead . "\$0", $source, 1);
+            $source = preg_replace('/\s*<\/head>/', $htmlHead . "\$0", $source, 1);
         }
 
         return $source;

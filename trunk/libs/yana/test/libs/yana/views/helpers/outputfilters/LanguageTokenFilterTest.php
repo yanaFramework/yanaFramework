@@ -79,6 +79,8 @@ class LanguageTokenFilterTest extends \PHPUnit_Framework_TestCase
     public function test__invoke()
     {
         $this->assertSame("", $this->object->__invoke(""));
+        $this->assertSame("Test!", $this->object->__invoke("Test!"));
+        $this->assertSame("ab", $this->object->__invoke("a\n\t<!--\n-->  \nb"));
     }
 
 }

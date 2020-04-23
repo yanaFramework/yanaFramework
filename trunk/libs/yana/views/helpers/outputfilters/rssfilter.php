@@ -41,6 +41,49 @@ class RssFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\
 {
 
     /**
+     * List of RSS feeds.
+     *
+     * @var array
+     */
+    private $_rssFeeds = array();
+
+    /**
+     * Get list of all previously published RSS-feeds.
+     *
+     * A RSS feed (in this context) is the name of action that creates it,
+     * meaning: A string.
+     *
+     * @return  array
+     * @ignore
+     */
+    public function getRssFeeds()
+    {
+        if (empty($this->_rssFeeds)) {
+            $this->_rssFeeds = \Yana\RSS\Publisher::getFeeds();
+        }
+        return $this->_rssFeeds;
+    }
+
+    /**
+     * Publish a RSS-feed.
+     *
+     * Adds the action identified by $action to the list of rss-feeds to be offered to the user.
+     * You should define a function with the name of $action in your plugin,
+     * that must produce the RSS content.
+     *
+     * Note: This should be reserved for unit tests only.
+     *
+     * @param   string  $action  action
+     * @return  $this
+     * @ignore
+     */
+    public function addRssFeed(string $action)
+    {
+        $this->_rssFeeds[] = $action;
+        return $this;
+    }
+
+    /**
      * <<smarty outputfilter>> outputfilter
      *
      * Imports all currently used RSS-Feeds and adds a link as Meta-data to the HTML header.
@@ -48,10 +91,8 @@ class RssFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\
      * @param   string  $source  HTML code with PHP tags
      * @return  string
      */
-    public function __invoke($source)
+    public function __invoke(string $source): string
     {
-        assert(is_string($source), 'Wrong type for argument 1. String expected');
-
         if (mb_strpos($source, '</head>') > -1) {
 
             $htmlHead = "";
@@ -63,14 +104,14 @@ class RssFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\
 
             $urlFormatter = $this->_getDependencyContainer()->getUrlFormatter();
             $title = "{$lDelim}lang id='PROGRAM_TITLE'{$rDelim}";
-            foreach (\Yana\RSS\Publisher::getFeeds() as $action)
+            foreach ($this->getRssFeeds() as $action)
             {
                 $htmlHead .= '        <link rel="alternate" type="application/rss+xml"' .
                 ' title="' . $title . '" href="' . $urlFormatter("action=$action") . "\"/>\n";
             }
             unset($action);
 
-            $source = preg_replace('/^\s*<\/head>/m', $htmlHead . "\$0", $source, 1);
+            $source = preg_replace('/\s*<\/head>/', $htmlHead . "\$0", $source, 1);
         }
 
         return $source;

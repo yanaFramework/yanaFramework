@@ -77,9 +77,19 @@ class JsFilterTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function test__invoke()
+    public function test__invokeEmpty()
     {
         $this->assertSame("", $this->object->__invoke(""));
+    }
+
+    /**
+     * @test
+     */
+    public function test__invoke()
+    {
+        $this->container->getView()->addScript('Test.Js');
+        $expected = '/^<head><title>Test<\/title>\s+<script type="text\/javascript" language="javascript" src="Test\.Js"><\/script>\s+<\/head>$/s';
+        $this->assertRegExp($expected, $this->object->__invoke("<head><title>Test</title></head>"));
     }
 
 }
