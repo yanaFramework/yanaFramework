@@ -64,6 +64,7 @@ class PreviewTest extends \PHPUnit_Framework_TestCase
         $this->container = new \Yana\Core\Dependencies\Container($configuration);
         $this->object = new \Yana\Views\Helpers\Functions\Preview($this->container);
         $view = $this->container->getView();
+        $view->unsetModifier('replaceToken');
         $view->setModifier('replaceToken', function ($token) { return $token; });
     }
 
@@ -75,6 +76,7 @@ class PreviewTest extends \PHPUnit_Framework_TestCase
     {
         $view = $this->container->getView();
         $view->unsetModifier('replaceToken');  
+        $view->clearCache();
     }
 
     /**

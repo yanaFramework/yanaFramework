@@ -63,6 +63,9 @@ class ColorPickerTest extends \PHPUnit_Framework_TestCase
         $configuration->configdrive = YANA_INSTALL_DIR . 'config/system.drive.xml';
         $this->container = new \Yana\Core\Dependencies\Container($configuration);
         $this->object = new \Yana\Views\Helpers\Functions\ColorPicker($this->container);
+        $view = $this->container->getView();
+        $view->unsetModifier('replaceToken');
+        $view->setModifier('replaceToken', function ($token) { return $token; });
     }
 
     /**
@@ -71,7 +74,9 @@ class ColorPickerTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-
+        $view = $this->container->getView();
+        $view->unsetModifier('replaceToken');
+        $view->clearCache();
     }
 
     /**
@@ -95,8 +100,6 @@ class ColorPickerTest extends \PHPUnit_Framework_TestCase
      */
     public function test__invoke()
     {
-        $view = $this->container->getView();
-        $view->setModifier('replaceToken', function ($token) { return $token; });
         $this->object->setTemplateName("string:test{\$target}test");
         $this->assertSame("testTest!test", $this->object->__invoke(array("id" => "Test!"), new \Smarty_Internal_Template("name", new \Smarty())));
     }

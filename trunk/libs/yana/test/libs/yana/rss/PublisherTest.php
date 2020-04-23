@@ -24,6 +24,7 @@
  * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\RSS;
 
@@ -41,8 +42,25 @@ class PublisherTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testFeeds()
+    public function testGetFeeds()
     {
+        $this->assertEquals(array(), Publisher::getFeeds());
+    }
+
+    /**
+     * @test
+     */
+    public function testUnpublishFeeds()
+    {
+        $this->assertNull(\Yana\RSS\Publisher::unpublishFeeds());
+    }
+
+    /**
+     * @test
+     */
+    public function testPublishFeed()
+    {
+        $this->assertNull(\Yana\RSS\Publisher::unpublishFeeds());
         $this->assertEquals(array(), Publisher::getFeeds());
         $feeds = array(
             'Feed Action 1',
@@ -51,6 +69,8 @@ class PublisherTest extends \PHPUnit_Framework_TestCase
         Publisher::publishFeed($feeds[0]);
         Publisher::publishFeed($feeds[1]);
         $this->assertEquals($feeds, Publisher::getFeeds());
+        $this->assertNull(\Yana\RSS\Publisher::unpublishFeeds());
+        $this->assertEquals(array(), Publisher::getFeeds());
     }
 
 }

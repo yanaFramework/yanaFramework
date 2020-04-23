@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\RSS;
 
@@ -69,12 +70,18 @@ class Publisher extends \Yana\Core\AbstractUtility
      *
      * @param   string  $action  action
      */
-    public static function publishFeed($action)
+    public static function publishFeed(string $action)
     {
-        assert(is_string($action), 'Wrong argument type argument 1. String expected');
-
         self::$_feeds[] = "$action";
         array_unique(self::$_feeds);
+    }
+
+    /**
+     * Removes all previously published feeds.
+     */
+    public static function unpublishFeeds()
+    {
+        self::$_feeds = array();
     }
 
     /**
@@ -82,9 +89,8 @@ class Publisher extends \Yana\Core\AbstractUtility
      *
      * @return  array
      */
-    public static function getFeeds()
+    public static function getFeeds(): array
     {
-        assert(is_array(self::$_feeds), 'Member "feeds" should be an array.');
         return self::$_feeds;
     }
 

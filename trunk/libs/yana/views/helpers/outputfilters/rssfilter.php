@@ -55,9 +55,11 @@ class RssFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\
         if (mb_strpos($source, '</head>') > -1) {
 
             $htmlHead = "";
-            $smarty = $this->_getViewManager()->getSmarty();
-            $lDelim = $smarty->left_delimiter;
-            $rDelim = $smarty->right_delimiter;
+            $configuration = $this->_getDependencyContainer()->getTemplateConfiguration();
+            $lDelim = $configuration['leftdelimiter'];
+            assert(!empty($lDelim));
+            $rDelim = $configuration['rightdelimiter'];
+            assert(!empty($rDelim));
 
             $urlFormatter = $this->_getDependencyContainer()->getUrlFormatter();
             $title = "{$lDelim}lang id='PROGRAM_TITLE'{$rDelim}";

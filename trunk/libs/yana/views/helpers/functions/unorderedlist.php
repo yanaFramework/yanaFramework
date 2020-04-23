@@ -58,7 +58,7 @@ class UnorderedList extends \Yana\Views\Helpers\AbstractViewHelper implements \Y
      *     'Menu 1' => array(
      *         '2_1.html' => '1) Entry',
      *         '2_2.html' => '2) Entry',
-     *         'Menü 2' => array(
+     *         'Menu 2' => array(
      *             '2_3_1.html' => '1) Entry',
      *             '2_3_2.html' => '2) Entry'
      *         ),
@@ -84,13 +84,17 @@ class UnorderedList extends \Yana\Views\Helpers\AbstractViewHelper implements \Y
     {
         if (!isset($params['value']) || !is_array($params['value'])) {
             return ""; // Parameter is mandatory
-        } else {
-            $array = $params['value'];
         }
+        $array = $params['value'];
 
         $layout = 1;
-        if (!empty($params['layout'])) {
+        if (isset($params['layout']) && is_int($params['layout'])) {
             $layout = (int) $params['layout'];
+            /**
+             * We don't care whether or not $params['layout'] is a valid layout
+             * for as long as it is an integer.
+             * Any invalid layout will fall back on the default.
+             */
         }
         /* @var $menuHelper \Yana\Views\Helpers\Html\MenuHelper */
         $menuHelper = \Yana\Views\Helpers\Html\MenuHelper::factory($layout);

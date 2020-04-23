@@ -55,6 +55,7 @@ class ToolbarTest extends \PHPUnit_Framework_TestCase
         }
         $configurationFactory = new \Yana\ConfigurationFactory();
         $configuration = $configurationFactory->loadConfiguration(CWD . 'resources/system.config.xml');
+        $configuration->configdrive = YANA_INSTALL_DIR . 'config/system.drive.xml';
         $this->object = new \Yana\Views\Helpers\Functions\Toolbar(new \Yana\Core\Dependencies\Container($configuration));
     }
 
@@ -72,8 +73,29 @@ class ToolbarTest extends \PHPUnit_Framework_TestCase
      */
     public function test__invoke()
     {
-        $expected = "";
-        $this->assertSame($expected, $this->object->__invoke(array(), new \Smarty_Internal_Template("name", new \Smarty())));
+        $expected = '/<ul class="hmenu">' .
+            '<li onmouseover="yanaHMenu\\(this,true\\)" onmouseout="yanaHMenu\\(this,false\\)" class="hmenu">' .
+            '<div class="menu_head">[\\w ]+<\\/div>' .
+            '<ul class="hmenu"><li class="entry">' .
+            '<a href="[^"]+">[\\w ]+<\\/a>' .
+            '<\\/li><\\/ul><\\/li><\\/ul>/';
+        $template = new \Smarty_Internal_Template("name", new \Smarty());
+        $this->assertRegExp($expected, $this->object->__invoke(array(), $template));
+    }
+
+    /**
+     * @test
+     */
+    public function test__invokeWithVerticalMenu()
+    {
+        $expected = '/<ul class="menu root">' .
+            '<li class="menu">' .
+            '<div class="menu_head" onclick="yanaMenu\\(this\\)">[\\w ]+<\\/div>' .
+            '<ul class="menu"><li class="entry">' .
+            '<a href="[^"]+">[\\w ]+<\\/a>' .
+            '<\\/li><\\/ul><\\/li><\\/ul>/';
+        $template = new \Smarty_Internal_Template("name", new \Smarty());
+        $this->assertRegExp($expected, $this->object->__invoke(array('vertical' => '1'), $template));
     }
 
 }

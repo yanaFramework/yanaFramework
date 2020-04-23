@@ -65,6 +65,7 @@ class EmbeddedTagsTest extends \PHPUnit_Framework_TestCase
         $this->container = new \Yana\Core\Dependencies\Container($configuration);
         $this->object = new \Yana\Views\Helpers\Functions\EmbeddedTags($this->container);
         $view = $this->container->getView();
+        $view->unsetModifier('replaceToken');
         $view->setModifier('replaceToken', function ($token) { return $token; });
         $this->container->getRegistry()->setVar('PROFILE.EMBTAG', array('x', 'y', 'z'));
     }
@@ -76,7 +77,8 @@ class EmbeddedTagsTest extends \PHPUnit_Framework_TestCase
     protected function tearDown()
     {
         $view = $this->container->getView();
-        $view->unsetModifier('replaceToken');        
+        $view->unsetModifier('replaceToken');
+        $view->clearCache();
     }
 
     /**

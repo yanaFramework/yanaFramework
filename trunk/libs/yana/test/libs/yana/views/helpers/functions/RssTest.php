@@ -73,6 +73,7 @@ class RssTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetRssFeeds()
     {
+        $this->assertNull(\Yana\RSS\Publisher::unpublishFeeds());
         $this->assertSame(array(), $this->object->getRssFeeds());
     }
     /**
@@ -99,8 +100,9 @@ class RssTest extends \PHPUnit_Framework_TestCase
     public function test__invoke()
     {
         $this->object->addRssFeed("Test!");
-        $expected = '<a title="PROGRAM_TITLE: RSS_TITLE" href="?id=default&amp;action=Test%21"><img alt="RSS" src="common_files/rss.gif"/></a>';
-        $this->assertSame($expected, $this->object->__invoke(array(), new \Smarty_Internal_Template("name", new \Smarty())));
+        $expected = '/^<a title="[\w ]+: [\w ]+" href="\?id=default&amp;action=Test%21">' .
+            '<img alt="RSS" src="common_files\/rss.gif"\/><\/a>$/si';
+        $this->assertRegExp($expected, $this->object->__invoke(array(), new \Smarty_Internal_Template("name", new \Smarty())));
     }
 
     /**
@@ -110,8 +112,9 @@ class RssTest extends \PHPUnit_Framework_TestCase
     public function test__invokeWithImage()
     {
         $this->object->addRssFeed("Test!");
-        $expected = '<a title="PROGRAM_TITLE: RSS_TITLE" href="?id=default&amp;action=Test%21"><img alt="RSS" src="img.jpg"/></a>';
-        $this->assertSame($expected, $this->object->__invoke(array('image' => 'img.jpg'), new \Smarty_Internal_Template("name", new \Smarty())));
+        $expected = '/^<a title="[\w ]+: [\w ]+" href="\?id=default&amp;action=Test%21">' .
+            '<img alt="RSS" src="img.jpg"\/><\/a>$/si';
+        $this->assertRegExp($expected, $this->object->__invoke(array('image' => 'img.jpg'), new \Smarty_Internal_Template("name", new \Smarty())));
     }
 
 }

@@ -77,4 +77,22 @@ class TimeSelectorTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expected, $this->object->__invoke(array(), new \Smarty_Internal_Template("name", new \Smarty())));
     }
 
+    /**
+     * @test
+     */
+    public function test__invokeWithParams()
+    {
+        $params = array(
+            'name' => 'Name',
+            'id' => 'Id',
+            'attr' => 'Attr',
+            'ignored' => 'this must not make a difference'
+        );
+        $expected = '/<select class="" id="Id_hour" name="Name\\[hour\\]" Attr>' .
+            '(<option value="\\d{1,2}"( selected="selected")?>\\d\\d<\/option>){24}' .
+            '<\\/select>:<select class="" id="Id_minute" name="Name\\[minute\\]" Attr>' .
+            '(<option value="\\d{1,2}"( selected="selected")?>\\d\\d<\\/option>){60}<\\/select>/';
+        $this->assertRegExp($expected, $this->object->__invoke($params, new \Smarty_Internal_Template("name", new \Smarty())));
+    }
+
 }

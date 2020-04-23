@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Views\Helpers\PostFilters;
 
@@ -57,7 +58,7 @@ class SpamFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana
      *
      * @return  \Yana\Security\Sessions\IsWrapper
      */
-    public function getSession()
+    public function getSession(): \Yana\Security\Sessions\IsWrapper
     {
         if (!isset($this->_session)) {
             $this->_session = new \Yana\Security\Sessions\Wrapper();
@@ -69,7 +70,7 @@ class SpamFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana
      * Set active session wrapper.
      *
      * @param   \Yana\Security\Sessions\IsWrapper  $session  holds session data
-     * @return  \Yana\Views\Helpers\PostFilters\SpamFilter
+     * @return  $this
      */
     public function setSession(\Yana\Security\Sessions\IsWrapper $session)
     {
@@ -85,7 +86,7 @@ class SpamFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana
      *
      * @return  \Yana\Security\Data\Behaviors\IsBehavior
      */
-    public function getUser()
+    public function getUser(): \Yana\Security\Data\Behaviors\IsBehavior
     {
         if (!isset($this->_user)) {
             $userManager = new \Yana\Security\Data\Behaviors\Builder();
@@ -98,7 +99,7 @@ class SpamFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana
      * Provide user information.
      *
      * @param   \Yana\Security\Data\Behaviors\IsBehavior  $user  containing the current users active-state
-     * @return  \Yana\Views\Helpers\PostFilters\SpamFilter
+     * @return  $this
      */
     public function setUser(\Yana\Security\Data\Behaviors\IsBehavior $user)
     {
@@ -115,10 +116,8 @@ class SpamFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana
      * @param   string  $source  HTML with PHP source code
      * @return  string
      */
-    public function __invoke($source)
+    public function __invoke(string $source): string
     {
-        assert(is_string($source), 'Wrong type for argument 1. String expected');
-
         if (!$this->getUser()->isLoggedIn()) {
             $replace = "<span class=\"yana_button\"><input type=\"text\" name=\"yana_url\"/></span>\n</form>";
             $source = str_replace("</form>", $replace, $source);

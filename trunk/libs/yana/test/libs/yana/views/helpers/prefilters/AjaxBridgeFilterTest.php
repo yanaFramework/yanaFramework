@@ -24,9 +24,8 @@
  * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
-declare(strict_types=1);
 
-namespace Yana\Views\Helpers\Functions;
+namespace Yana\Views\Helpers\PreFilters;
 
 /**
  * @ignore
@@ -34,15 +33,21 @@ namespace Yana\Views\Helpers\Functions;
 require_once dirname(__FILE__) . '/../../../../../include.php';
 
 /**
- * @package  test
+ * @package test
+ * @ignore
  */
-class CaptchaTest extends \PHPUnit_Framework_TestCase
+class AjaxBridgeFilterTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Views\Helpers\Functions\Captcha
+     * @var \Yana\Views\Helpers\PreFilters\AjaxBridgeFilter
      */
     protected $object;
+
+    /**
+     * @var \Yana\Core\Dependencies\IsApplicationContainer
+     */
+    protected $container;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -56,7 +61,8 @@ class CaptchaTest extends \PHPUnit_Framework_TestCase
         $configurationFactory = new \Yana\ConfigurationFactory();
         $configuration = $configurationFactory->loadConfiguration(CWD . 'resources/system.config.xml');
         $configuration->configdrive = YANA_INSTALL_DIR . 'config/system.drive.xml';
-        $this->object = new \Yana\Views\Helpers\Functions\Captcha(new \Yana\Core\Dependencies\Container($configuration));
+        $this->container = new \Yana\Core\Dependencies\Container($configuration);
+        $this->object = new \Yana\Views\Helpers\PreFilters\AjaxBridgeFilter($this->container);
     }
 
     /**
@@ -65,7 +71,15 @@ class CaptchaTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
+        
+    }
 
+    /**
+     * @test
+     */
+    public function test__invokeEmpty()
+    {
+        $this->assertSame("", $this->object->__invoke("", new \Smarty_Internal_Template("name", new \Smarty())));
     }
 
     /**
@@ -73,21 +87,16 @@ class CaptchaTest extends \PHPUnit_Framework_TestCase
      */
     public function test__invoke()
     {
-        $expected = '/^<input type="hidden" name="security_image_index" value="\\d"\/>' .
-            '<img alt="" hspace="5" src="\\?id=default&amp;action=security_get_image&amp;security_image_index=\\d"\/>' .
-            '<input maxlength="5" size="5" title="[\\w\. ]+" type="text" name="security_image"\/>$/';
-        $this->assertRegExp($expected, $this->object->__invoke(array(), new \Smarty_Internal_Template("name", new \Smarty())));
-    }
-
-    /**
-     * @test
-     */
-    public function test__invokeWithId()
-    {
-        $expected = '/^<input type="hidden" name="security_image_index" value="\\d"\/>' .
-            '<img alt="" hspace="5" src="\\?id=default&amp;action=security_get_image&amp;security_image_index=\\d"\/>' .
-            '<input maxlength="5" size="5" id="Test!" title="[\\w\. ]+" type="text" name="security_image"\/>$/';
-        $this->assertRegExp($expected, $this->object->__invoke(array('id' => 'Test!', 'foo' => 'Bar'), new \Smarty_Internal_Template("name", new \Smarty())));
+        $expected = '/<head>\s+' .
+            '<script type="text\/javascript" language="javascript"><!--\s+' .
+            'window.yanaProfileId="default";\s+' .
+            'window.yanaSessionName="{\$SESSION_NAME}";\s+' .
+            'window.yanaSessionId="{\$SESSION_ID}";\s+' .
+            'window.yanaLanguage="en";\s+' .
+            'var src="";\s+' .
+            'var php_self="index.php";\s+' .
+            '\/\/--><\/script><title>Test<\/title><\/head>/s';
+        $this->assertRegExp($expected, $this->object->__invoke("<head><title>Test</title></head>", new \Smarty_Internal_Template("name", new \Smarty())));
     }
 
 }

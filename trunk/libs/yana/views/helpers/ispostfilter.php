@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Views\Helpers;
 
@@ -48,7 +49,7 @@ interface IsPostFilter
      * @param   string  $source  HTML code with PHP tags
      * @return  string
      */
-    public function __invoke($source);
+    public function __invoke(string $source): string;
 
 }
 
