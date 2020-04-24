@@ -89,7 +89,7 @@ class Skin extends \Yana\Core\StdObject implements \Yana\Views\Skins\IsSkin
      *
      * @return  \Yana\Core\MetaData\IsDataProvider
      */
-    protected function _getDataProvider(): \Yana\Core\MetaData\IsDataProvider
+    protected function _getMetaDataProvider(): \Yana\Core\MetaData\IsDataProvider
     {
         if (!isset($this->_dataProvider)) {
             $this->_dataProvider = new \Yana\Views\MetaData\XmlDataProvider(self::$_baseDirectory);
@@ -165,7 +165,7 @@ class Skin extends \Yana\Core\StdObject implements \Yana\Views\Skins\IsSkin
      */
     private function _loadConfiguration(string $skinName): \Yana\Views\MetaData\IsSkinMetaData
     {
-        $dataProvider = $this->_getDataProvider();
+        $dataProvider = $this->_getMetaDataProvider();
         return $dataProvider->loadOject($skinName);
     }
 
@@ -279,7 +279,7 @@ class Skin extends \Yana\Core\StdObject implements \Yana\Views\Skins\IsSkin
      */
     public function getDirectory(): string
     {
-        return self::getSkinDirectory($this->_name);
+        return self::getSkinDirectory($this->getName());
     }
 
     /**

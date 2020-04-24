@@ -33,13 +33,25 @@ namespace Yana\Views\Skins;
 require_once __DIR__ . '/../../../../include.php';
 
 /**
+ * @package test
+ * @ignore
+ */
+class MySkin extends \Yana\Views\Skins\Skin
+{
+    public function getMetaDataProvider(): \Yana\Core\MetaData\IsDataProvider
+    {
+        return parent::_getMetaDataProvider();
+    }
+}
+
+/**
  * @package  test
  */
 class SkinTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var  \Yana\Views\Skins\Skin
+     * @var  \Yana\Views\Skins\MySkin
      */
     protected $_object;
 
@@ -70,7 +82,7 @@ class SkinTest extends \PHPUnit_Framework_TestCase
         $this->_testDir->setFilter('*.skin.xml');
         $this->_baseDir = CWD . '/resources/skin';
         \Yana\Views\Skins\Skin::setBaseDirectory($this->_baseDir);
-        $this->_object = new \Yana\Views\Skins\Skin('test');
+        $this->_object = new \Yana\Views\Skins\MySkin('test');
     }
 
     /**
@@ -122,6 +134,90 @@ class SkinTest extends \PHPUnit_Framework_TestCase
         $fooData = $this->_object->getTemplateData('foo');
 
         $this->assertEquals(array('default'), $fooData->getLanguages(), "read language failed");
+    }
+
+    /**
+     * @test
+     */
+    public function testDirectory()
+    {
+        $this->assertStringEndsWith('/resources/skintest/', $this->_object->getDirectory());
+    }
+
+    /**
+     * @test
+     */
+    public function testSkinDirectory()
+    {
+        $this->assertStringEndsWith('/resources/skintest/', \Yana\Views\Skins\Skin::getSkinDirectory($this->_object->getName()));
+    }
+
+    /**
+     * @test
+     */
+    public function testGetName()
+    {
+        $this->assertSame('test', $this->_object->getName());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetSkins()
+    {
+        $this->assertSame(array(), $this->_object->getSkins());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetMetaDataProvider()
+    {
+        $this->assertTrue($this->_object->getMetaDataProvider() instanceof \Yana\Views\MetaData\XmlDataProvider);
+    }
+
+    /**
+     * @test
+     */
+    public function testSetMetaDataProvider()
+    {
+        $provider = new \Yana\Views\MetaData\XmlDataProvider(__DIR__);
+        $this->assertSame($provider, $this->_object->setMetaDataProvider($provider)->getMetaDataProvider());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetMetaData()
+    {
+        $metaData = $this->_object->getMetaData();
+        $this->assertTrue($metaData instanceof \Yana\Views\MetaData\SkinMetaData);
+        $this->assertSame("Test", $metaData->getTitle());
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\NotFoundException
+     */
+    public function testGetTemplateDataNotFoundException()
+    {
+        $this->_object->getTemplateData('no-such-template');
+    }
+
+    /**
+     * @test
+     */
+    public function testGetReport()
+    {
+        $report = $this->_object->getReport();
+        $this->assertTrue($report instanceof \Yana\Report\IsReport);
+        $expected = '/^<\?xml version="1\.0"\?>\s+' .
+            '<report><title>Yana\\\\Views\\\\Skins\\\\Skin<\/title>' .
+            '<text>Skin directory: test<\/text><report>' .
+            '<title>FOO<\/title><text>.*?\/resources\/skin\/test\/test\.txt<\/text>' .
+            '<text>No problems found\.<\/text><\/report><\/report>$/s';
+        $this->assertRegExp($expected, (string) $report);
+        $this->assertSame('<text>Skin directory: test</text>', (string) $report->getTexts()[0]);
     }
 
 }

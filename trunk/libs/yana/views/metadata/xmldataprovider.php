@@ -35,7 +35,7 @@ namespace Yana\Views\MetaData;
  * @package     yana
  * @subpackage  views
  */
-class XmlDataProvider extends \Yana\Core\MetaData\XmlDataProvider
+class XmlDataProvider extends \Yana\Core\MetaData\XmlDataProvider implements \Yana\Views\MetaData\IsDataProvider
 {
 
     /**
