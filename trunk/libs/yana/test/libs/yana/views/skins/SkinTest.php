@@ -165,7 +165,7 @@ class SkinTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetSkins()
     {
-        $this->assertSame(array(), $this->_object->getSkins());
+        $this->assertSame(array('default' => 'Default', 'test' => 'Test'), $this->_object->getSkins());
     }
 
     /**

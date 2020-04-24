@@ -246,7 +246,7 @@ class Skin extends \Yana\Core\StdObject implements \Yana\Views\Skins\IsSkin
         assert(!isset($skins), 'Cannot redeclare var $skins');
         $skins = array();
         assert(!isset($file), 'Cannot redeclare var $file');
-        foreach (glob(self::$_baseDirectory . "*" . self::$_fileExtension) as $file)
+        foreach (glob(self::$_baseDirectory . "/*" . self::$_fileExtension) as $file)
         {
             $id = basename($file, self::$_fileExtension);
             $configuration = $this->_loadConfiguration($id);
