@@ -93,7 +93,7 @@ class TemplateReportBuilder extends \Yana\Views\MetaData\Reporting\AbstractTempl
         assert(!isset($value), 'Cannot redeclare var $value');
         foreach ($template->getLanguages() as $value)
         {
-            if (!empty($value)) {
+            if (empty($value) || !is_string($value)) {
                 continue;
             }
             try {
@@ -101,9 +101,8 @@ class TemplateReportBuilder extends \Yana\Views\MetaData\Reporting\AbstractTempl
                 \Yana\Translations\Facade::getInstance()->readFile($value); // may throw exception
 
             } catch (\Yana\Core\Exceptions\Translations\TranslationException $e) {
-                $this->_getReport()->addWarning("A required language file '{$value}' is not available. " .
-                    "Please check if the chosen language file is correct and update your " .
-                    "language pack if needed. " . $e->getMessage());
+                $this->_getReport()->addWarning($e->getMessage() .
+                    " Please check if the chosen language file is correct and update your language pack if needed.");
                 $filesExist = false;
             }
         }
@@ -138,7 +137,7 @@ class TemplateReportBuilder extends \Yana\Views\MetaData\Reporting\AbstractTempl
         foreach ($template->getStyles() as $value)
         {
             if (!file_exists($value)) {
-                $this->_getReport()->addError("A required stylesheet is not available." .
+                $this->_getReport()->addError("A required stylesheet '{$value}' is not available. " .
                     "This template may not be displayed correctly.");
                 $filesExist = false;
             }
@@ -171,7 +170,7 @@ class TemplateReportBuilder extends \Yana\Views\MetaData\Reporting\AbstractTempl
         foreach ($template->getScripts() as $value)
         {
             if (!file_exists($value)) {
-                $this->_getReport()->addError("A required javascript file is not available." .
+                $this->_getReport()->addError("A required javascript file '{$value}' is not available. " .
                     "This template may not be displayed correctly.");
                 $filesExist = false;
             }

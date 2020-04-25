@@ -47,7 +47,7 @@ abstract class AbstractTemplateReportBuilder extends \Yana\Views\MetaData\Report
     /**
      * Get the template configuration.
      *
-     * @return \Yana\Views\MetaData\TemplateMetaData
+     * @return \Yana\Views\MetaData\IsTemplateMetaData|NULL
      */
     public function getTemplateConfiguration()
     {
@@ -57,10 +57,10 @@ abstract class AbstractTemplateReportBuilder extends \Yana\Views\MetaData\Report
     /**
      * Set the template configuration object.
      *
-     * @param \Yana\Views\MetaData\TemplateMetaData $templateConfiguration
-     * @return \Yana\Views\Skins\ReportBuilder
+     * @param   \Yana\Views\MetaData\IsTemplateMetaData $templateConfiguration
+     * @return  $this
      */
-    public function setTemplateConfiguration(\Yana\Views\MetaData\TemplateMetaData $templateConfiguration)
+    public function setTemplateConfiguration(\Yana\Views\MetaData\IsTemplateMetaData $templateConfiguration)
     {
         $this->_templateConfiguration = $templateConfiguration;
         return $this;

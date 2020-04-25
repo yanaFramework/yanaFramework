@@ -42,17 +42,17 @@ interface IsTemplateReportBuilder extends \Yana\Views\MetaData\Reporting\IsBuild
     /**
      * Get the template configuration.
      *
-     * @return \Yana\Views\MetaData\TemplateMetaData
+     * @return \Yana\Views\MetaData\IsTemplateMetaData|NULL
      */
     public function getTemplateConfiguration();
 
     /**
      * Set the template configuration object.
      *
-     * @param   \Yana\Views\MetaData\TemplateMetaData  $templateConfiguration  template configuration
-     * @return  \Yana\Views\MetaData\IsTemplateReportBuilder
+     * @param   \Yana\Views\MetaData\IsTemplateMetaData  $templateConfiguration  template configuration
+     * @return  $this
      */
-    public function setTemplateConfiguration(\Yana\Views\MetaData\TemplateMetaData $templateConfiguration);
+    public function setTemplateConfiguration(\Yana\Views\MetaData\IsTemplateMetaData $templateConfiguration);
 
 }
 

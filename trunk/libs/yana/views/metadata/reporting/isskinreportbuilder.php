@@ -42,15 +42,15 @@ interface IsSkinReportBuilder extends \Yana\Views\MetaData\Reporting\IsBuilder
     /**
      * Returns a list of SkinMetaData objects.
      *
-     * @return  \Yana\Views\MetaData\SkinMetaData
+     * @return  \Yana\Views\MetaData\SkinMetaData|NULL
      */
-    public function getSkinConfiguration();
+    public function getSkinConfiguration(): ?\Yana\Views\MetaData\SkinMetaData;
 
     /**
      * Adds a configuration object.
      *
-     * @param \Yana\Views\MetaData\SkinMetaData $skinConfiguration
-     * @return \Yana\Views\Skins\IsReportBuilder
+     * @param   \Yana\Views\MetaData\SkinMetaData $skinConfiguration
+     * @return  $this
      */
     public function setSkinConfiguration(\Yana\Views\MetaData\SkinMetaData $skinConfiguration);
 

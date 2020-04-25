@@ -47,9 +47,9 @@ class SkinReportBuilder extends \Yana\Views\MetaData\Reporting\AbstractBuilder i
     /**
      * Returns a list of SkinMetaData objects.
      *
-     * @return  \Yana\Views\MetaData\SkinMetaData
+     * @return  \Yana\Views\MetaData\SkinMetaData|NULL
      */
-    public function getSkinConfiguration()
+    public function getSkinConfiguration(): ?\Yana\Views\MetaData\SkinMetaData
     {
         return $this->_skinConfiguration;
     }
@@ -57,8 +57,8 @@ class SkinReportBuilder extends \Yana\Views\MetaData\Reporting\AbstractBuilder i
     /**
      * Adds a configuration object.
      *
-     * @param \Yana\Views\MetaData\SkinMetaData $skinConfiguration
-     * @return \Yana\Views\Skins\ReportBuilder
+     * @param   \Yana\Views\MetaData\SkinMetaData  $skinConfiguration
+     * @return  $this
      */
     public function setSkinConfiguration(\Yana\Views\MetaData\SkinMetaData $skinConfiguration)
     {
