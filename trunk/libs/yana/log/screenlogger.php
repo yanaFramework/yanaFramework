@@ -42,6 +42,7 @@ class ScreenLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
      * @param   string  $message  the message that should be reported
      * @param   int     $level    numeric level of severity
      * @param   mixed   $data     any kind of data that might help to understand context in which the message was created
+     * @codeCoverageIgnore
      */
     public function addLog($message, $level = \Yana\Log\TypeEnumeration::INFO, $data = array())
     {
