@@ -82,11 +82,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     protected $table;
 
     /**
-     * @var \Yana\Db\Ddl\Views\View
-     */
-    protected $view;
-
-    /**
      * @var \Yana\Db\Ddl\Grant
      */
     protected $grant;
@@ -95,11 +90,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
      * @var \Yana\Db\Ddl\IndexColumn
      */
     protected $indexcolumn;
-
-    /**
-     * @var \Yana\Db\Ddl\Views\Field
-     */
-    protected $viewfield;
 
     /**
      * @var \Yana\Db\Ddl\Event
@@ -137,10 +127,8 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $this->functionimplementation = new \Yana\Db\Ddl\Functions\Implementation;
         $this->functionparameter = new \Yana\Db\Ddl\Functions\Parameter('param');
         $this->sequence = new \Yana\Db\Ddl\Sequence('sequence');
-        $this->view = new \Yana\Db\Ddl\Views\View('view');
         $this->grant = new \Yana\Db\Ddl\Grant();
         $this->indexcolumn = new \Yana\Db\Ddl\IndexColumn('indexColumn');
-        $this->viewfield = new \Yana\Db\Ddl\Views\Field('viewfield');
         $this->event = new \Yana\Db\Ddl\Event('action');
         $this->init = new \Yana\Db\Ddl\DatabaseInit();
         $this->trigger = new \Yana\Db\Ddl\Trigger();
@@ -162,9 +150,7 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         unset($this->functionparameter);
         unset($this->sequence);
         unset($this->table);
-        unset($this->view);
         unset($this->indexcolumn);
-        unset($this->viewfield);
         unset($this->event);
         unset($this->init);
         unset($this->trigger);
@@ -181,7 +167,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
             array('database'),
             array('function'),
             array('table'),
-            array('view'),
             array('event')
         );
     }
@@ -257,7 +242,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
             array('field'),
             array('database'),
             array('function'),
-            array('view'),
             array('table'),
             array('sequence')
         );
@@ -280,54 +264,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $object->setDescription('');
         $result = $object->getDescription();
         $this->assertNull($result, 'the description is expected null');
-    }
-
-    /**
-     * Where
-     *
-     * @test
-     */
-    public function testWhere()
-    {
-        // DDL View
-        $this->view->setWhere('where');
-        $result = $this->view->getWhere();
-        $this->assertEquals('where', $result, 'assert failed, \Yana\Db\Ddl\Views\View : "setWhere" expected "where" as value - the values should be equal');
-
-        $this->view->setWhere('');
-        $result = $this->view->getWhere();
-        $this->assertNull($result, 'assert failed, \Yana\Db\Ddl\Views\View : "setWhere" is expected null');
-    }
-
-    /**
-     * check option
-     *
-     * @test
-     */
-    public function testCheckOption()
-    {
-        // DDL View
-        $hasChecked = $this->view->hasCheckOption();
-        $this->assertFalse($hasChecked, 'assert failed, "\Yana\Db\Ddl\Views\View" : false expected - no checkOption is set');
-
-        $this->view->setCheckOption(\Yana\Db\Ddl\Views\ConstraintEnumeration::CASCADED);
-        $result = $this->view->getCheckOption();
-        $this->assertEquals(\Yana\Db\Ddl\Views\ConstraintEnumeration::CASCADED, $result, 'expected "1" as value - the values should be equal');
-
-        $hasChecked = $this->view->hasCheckOption();
-        $this->assertTrue($hasChecked, 'assert failed, "\Yana\Db\Ddl\Views\View" : true expected - checkOption is set ');
-
-        $this->view->setCheckOption(\Yana\Db\Ddl\Views\ConstraintEnumeration::LOCAL);
-        $result = $this->view->getCheckOption();
-        $this->assertEquals(\Yana\Db\Ddl\Views\ConstraintEnumeration::LOCAL, $result, 'expected "2" as value - the values should be equal');
-
-        $this->view->setCheckOption(\Yana\Db\Ddl\Views\ConstraintEnumeration::NONE);
-        $result = $this->view->getCheckOption();
-        $this->assertEquals(\Yana\Db\Ddl\Views\ConstraintEnumeration::NONE, $result, 'assert failed, \Yana\Db\Ddl\Column : expected "0" as value - the values should be equal');
-
-        $this->view->setCheckOption(20);
-        $result = $this->view->getCheckOption();
-        $this->assertEquals(0, $result, 'assert failed, \Yana\Db\Ddl\Column : expected value is the default number 0 - only 0, 1, 2 numbers can be used in setCheckOption by setting an other number the default must be choosen');
     }
 
     /**
@@ -388,15 +324,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
        $this->field->setReadonly(false);
        $result = $this->field->isReadonly();
        $this->assertFalse($result, 'assert failed, \Yana\Db\Ddl\Field : expected false - setReadonly was set with false');
-
-       // DDL View
-       $this->view->setReadonly(true);
-       $result = $this->view->isReadonly();
-       $this->assertTrue($result, 'assert failed, \Yana\Db\Ddl\Views\View : expected true - setReadonly was set with true');
-
-       $this->view->setReadonly(false);
-       $result = $this->view->isReadonly();
-       $this->assertFalse($result, 'assert failed, \Yana\Db\Ddl\Views\View : expected false - setReadonly was set with false');
 
        // DDL Table
        $this->table->setReadonly(true);
@@ -617,15 +544,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetTable()
     {
-        // \Yana\Db\Ddl\Views\Field
-        $this->viewfield->setTable('abcd');
-        $result = $this->viewfield->getTable();
-        $this->assertEquals('abcd', $result, 'assert failed, \Yana\Db\Ddl\Views\Field : expected "abcd" as value');
-
-        $this->viewfield->setTable('');
-        $result = $this->viewfield->getTable();
-        $this->assertNull($result, 'assert failed, \Yana\Db\Ddl\Views\Field : expected null, non table is set');
-
         // \Yana\Db\Ddl\Database
         $valid = $this->database->isTable('newtable');
         $this->assertFalse($valid, 'assert failed, expected false, the value "newtable" is not a table');
@@ -679,11 +597,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($result instanceof \Yana\Db\Ddl\Form, 'assert failed, expected null - form was dropt before');
 
         // magic View
-        $this->view->addField('magicViewfield');
-        $result = $this->view->magicViewfield;
-        $this->assertTrue($result instanceof \Yana\Db\Ddl\Views\Field, 'assert failed, expected null - view field was dropt before');
-
-        // magic View
         $this->database->addView('magicView');
         $result = $this->database->magicView;
         $this->assertTrue($result instanceof \Yana\Db\Ddl\Views\View, 'assert failed, expected null - view was dropt before');
@@ -720,33 +633,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     {
         // \Yana\Db\Ddl\Database
         $this->database->dropTable('no_table');
-    }
-
-    /**
-     * Tables
-     *
-     * @test
-     */
-    public function testTables()
-    {
-        // DDL View
-        $array = array('one', 'two');
-        $this->view->setTables($array);
-        $get = $this->view->getTables($array);
-        $this->assertEquals($array, $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : expected the same table as which was set with setTable, values should be equal');
-    }
-
-    /**
-     * TablesInvalidArgumentException
-     *
-     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
-     *
-     * @test
-     */
-    public function testSetTablesInvalidArgumentException()
-    {
-        // DDL View
-        $this->view->setTables(array());
     }
 
     /**
@@ -893,121 +779,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     {
         // \Yana\Db\Ddl\Database
         $this->database->dropFunction('gert');
-    }
-
-    /**
-     * Query
-     *
-     * @test
-     */
-    public function testQuery()
-    {
-       // \Yana\Db\Ddl\Views\View
-       $set = $this->view->setQuery('');
-       $this->assertInternalType('array', $set, 'assert failed, the value is not from type array');
-       $this->assertEquals(0, count($set), 'assert failed, expected an array with 0 entries , no query is set');
-
-       $get = $this->view->getQueries();
-       $this->assertInternalType('array', $get, 'assert failed, the value is not from type array');
-       $this->assertEquals(0, count($get), 'assert failed, expected an array with 0 entries , no query is set');
-
-       $get = $this->view->getQuery('mysql');
-       $this->assertNull($get, 'assert failed, expected null , the key doesnt exist in array');
-
-       $set = $this->view->setQuery('query', 'mysql');
-       $this->assertArrayHasKey('mysql', $set, 'assert failed, "\Yana\Db\Ddl\Views\View" : the key "mysql" should be match the array key');
-       $set = $this->view->setQuery('query', 'generic');
-       $get = $this->view->getQuery('mysql');
-       $this->assertEquals('query', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : the values should be equal');
-
-       $get = $this->view->getQueries();
-       $this->assertArrayHasKey('mysql', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : the key "mysql" should be match the array key');
-       $this->assertArrayHasKey('generic', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : the key "generic" should be match the array key');
-    }
-
-    /**
-     * add field to view
-     *
-     * @test
-     */
-    public function testAddViewField()
-    {
-        // DDL View
-        $get = $this->view->getFields();
-        $this->assertEquals(0, count($get), 'assert failed, the values should be equal, no fields found - "0" expected');
-
-        $this->view->addField('name');
-        $this->view->addField('abcd');
-        $this->view->addField('qwerty');
-
-        $get = $this->view->getFields();
-        $this->assertInternalType('array', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : the value is not from type array');
-
-        $this->assertArrayHasKey('name', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : expected true - the value should be match a key in array');
-        $this->assertArrayHasKey('abcd', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : expected true - the value should be match a key in array');
-        $this->assertArrayHasKey('qwerty', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : expected true - the value should be match a key in array');
-
-        $get = $this->view->getField('abcd');
-        $this->assertInternalType('object', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : the value is not from type object');
-        $this->assertTrue($get instanceof \Yana\Db\Ddl\Views\Field, 'assert failed, "\Yana\Db\Ddl\Views\View" : the value should be an instance of \Yana\Db\Ddl\Views\Field');
-
-        $this->view->dropField('abcd');
-        try {
-            $get = $this->view->getField('abcd');
-            $this->fail("\Yana\Db\Ddl\Views\View::dropField didn't drop the Column");
-        } catch (\Exception $e) {
-            //success
-        }
-    }
-
-    /**
-     * addFieldInvalidArgumentException
-     *
-     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
-     *
-     * @test
-     */
-    public function testAddFieldInvalidArgumentException()
-    {
-        // DDL View
-        $this->view->addField('');
-    }
-
-    /**
-     * getFieldInvalidArgumentException4
-     *
-     * @expectedException \Yana\Core\Exceptions\NotFoundException
-     *
-     * @test
-     */
-    public function testGetFieldNotFoundException()
-    {
-        //\Yana\Db\Ddl\Views\View
-        $this->view->getField('nonexist');
-    }
-
-    /**
-     * get Query
-     *
-     * @test
-     */
-    public function testgetQuery()
-    {
-        $result = $this->view->getQueries();
-        $this->assertTrue(empty($result), '\Yana\Db\Ddl\Views\View::getQueries queries should be void in the beginning');
-
-        $this->view->setQuery("genericQuery");
-        $this->view->setQuery("mysqlQuery", "mysql");
-        $result = $this->view->getQueries();
-        $this->assertTrue(count($result) == 2, '\Yana\Db\Ddl\Views\View::getQueries should return two different Query-Types');
-        $result = $this->view->getQuery();
-        $this->assertTrue(count($result) == 1, '\Yana\Db\Ddl\Views\View::getQueries should return the generic Query');
-        $result = $this->view->getQuery('oracle');
-        $this->assertNull($result, '\Yana\Db\Ddl\Views\View::getQueries should return no query because for this dbms there had been no query set');
-
-        $this->view->dropQuery('mysql');
-        $result = $this->view->getQueries();
-        $this->assertTrue(count($result) == 1, '\Yana\Db\Ddl\Views\View::dropQueries should have dropped one of the Query-Types');
     }
 
     /**
@@ -1314,28 +1085,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     {
         // DDL Object exception
         $new = new \Yana\Db\Ddl\Index(' 123df');
-    }
-
-    /**
-     * Order by
-     *
-     * @test
-     */
-    public function testOrderBy()
-    {
-        $array = array();
-        // DDL View
-        $this->view->setOrderBy(array('qwerty'));
-        $get = $this->view->getOrderBy();
-        $this->assertEquals(array('qwerty'), $get, 'assert failed, the values should be equal, "\Yana\Db\Ddl\Views\View" :the arrays should be match each other');
-        $isDesc = $this->view->isDescendingOrder();
-        $this->assertFalse($isDesc, 'assert failed, "\Yana\Db\Ddl\Views\View" : expected false, no descendingOrder is set');
-
-        $this->view->setOrderBy($array, true);
-        $get = $this->view->getOrderBy();
-        $this->assertEquals(0, count($get), 'assert failed, the values should be equal, "\Yana\Db\Ddl\Views\View" :the array should be match each other');
-        $isDesc = $this->view->isDescendingOrder();
-        $this->assertTrue($isDesc, 'assert failed, "\Yana\Db\Ddl\Views\View" : expected true, descendingOrder is set');
     }
 
     /**
@@ -1873,7 +1622,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array('field'),
-            array('view'),
             array('table')
         );
     }
@@ -2578,23 +2326,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
 //        $this->trigger->setTriggerAfterDelete();
 //        $get = $this->trigger->getTriggerAfterDelete();
 //        $this->assertNull($get, '\Yana\Db\Ddl\Trigger::setTriggerAfterDelete, expected null - trigger is not set');
-    }
-
-    /**
-     * Alias
-     *
-     * @test
-     */
-    public function testSetAlias()
-    {
-        // \Yana\Db\Ddl\Views\Field
-        $this->viewfield->setAlias('abcd');
-        $result = $this->viewfield->getAlias();
-        $this->assertEquals('abcd', $result, 'assert failed, \Yana\Db\Ddl\Views\Field : alias is not set, values should be equal');
-
-        $this->viewfield->setAlias('');
-        $result = $this->viewfield->getAlias();
-        $this->assertNull($result, 'assert failed, \Yana\Db\Ddl\Views\Field : expected null - alis is not set');
     }
 
     /**

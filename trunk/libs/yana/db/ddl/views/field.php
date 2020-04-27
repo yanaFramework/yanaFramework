@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Ddl\Views;
 
@@ -55,8 +56,8 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      */
     protected $xddlAttributes = array(
         'column' => array('name',  'nmtoken'),
-        'table'  => array('table', 'nmtoken'),
-        'alias'  => array('alias', 'nmtoken')
+        'table'  => array('table', 'string'),
+        'alias'  => array('alias', 'string')
     );
 
     /**
@@ -72,9 +73,9 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
     /**
      * Get table name.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getTable()
+    public function getTable(): ?string
     {
         if (is_string($this->table)) {
             return $this->table;
@@ -87,15 +88,14 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      * Set table name.
      *
      * @param   string  $table  table name
-     * @return  \Yana\Db\Ddl\Views\Field
+     * @return  $this
      */
-    public function setTable($table)
+    public function setTable(string $table)
     {
-        assert(is_string($table), 'Wrong type for argument 1. String expected');
-        if (empty($table)) {
+        if ($table === "") {
             $this->table = null;
         } else {
-            $this->table = "$table";
+            $this->table = $table;
         }
         return $this;
     }
@@ -103,9 +103,9 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
     /**
      * Get column alias.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getAlias()
+    public function getAlias(): ?string
     {
         if (is_string($this->alias)) {
             return $this->alias;
@@ -118,15 +118,14 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      * Set column alias.
      *
      * @param   string  $alias  column alias
-     * @return  \Yana\Db\Ddl\Views\Field
+     * @return  $this
      */
-    public function setAlias($alias)
+    public function setAlias(string $alias)
     {
-        assert(is_string($alias), 'Wrong type for argument 1. String expected');
-        if (empty($alias)) {
+        if ($alias === "") {
             $this->alias = null;
         } else {
-            $this->alias = "$alias";
+            $this->alias = $alias;
         }
         return $this;
     }

@@ -251,7 +251,7 @@ class Grant extends \Yana\Db\Ddl\DDL
      * You may translate this to 0-100 percent, where 0 is the lowest level of access and 100 is the
      * highest.
      *
-     * @param   string  $level  new value of this property
+     * @param   int|NULL  $level  new value of this property
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the given security level is outside range [0,100]
      * @return  \Yana\Db\Ddl\Grant
      */

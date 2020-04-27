@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Ddl\Views;
 
@@ -177,7 +178,7 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
     /**
      * Initialize instance.
      *
-     * @param  string       $name    foreign key name
+     * @param  string                 $name    foreign key name
      * @param  \Yana\Db\Ddl\Database  $parent  parent database
      */
     public function __construct($name, \Yana\Db\Ddl\Database $parent = null)
@@ -203,9 +204,9 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * It is optional. If it is not set, the function returns NULL instead.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getTitle()
+    public function getTitle(): ?string
     {
         if (is_string($this->title)) {
             return $this->title;
@@ -221,12 +222,11 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * To reset the property, leave the parameter empty.
      *
      * @param   string  $title  some text
-     * @return  \Yana\Db\Ddl\Views\View
+     * @return  $this
      */
-    public function setTitle($title = "")
+    public function setTitle(string $title = "")
     {
-        assert(is_string($title), 'Wrong type for argument 1. String expected');
-        if (empty($title)) {
+        if ($title === "") {
             $this->title = null;
         } else {
             $this->title = "$title";
@@ -248,9 +248,9 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * NULL instead. Note that the description may also contain an identifier
      * for automatic translation.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         if (is_string($this->description)) {
             return $this->description;
@@ -271,12 +271,11 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * To reset the property, leave the parameter $description empty.
      *
      * @param   string  $description  new value of this property
-     * @return  \Yana\Db\Ddl\Views\View
+     * @return  $this
      */
-    public function setDescription($description)
+    public function setDescription(string $description)
     {
-        assert(is_string($description), 'Wrong type for argument 1. String expected');
-        if (empty($description)) {
+        if ($description === "") {
             $this->description = null;
         } else {
             $this->description = "$description";
@@ -293,7 +292,7 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * @return  bool
      */
-    public function isReadonly()
+    public function isReadonly(): bool
     {
         return !empty($this->readonly);
     }
@@ -306,11 +305,10 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * A view that is "read-only" is not updatable.
      *
      * @param   bool  $isReadonly   new value of this property
-     * @return  \Yana\Db\Ddl\Views\View
+     * @return  $this
      */
-    public function setReadonly($isReadonly)
+    public function setReadonly(bool $isReadonly)
     {
-        assert(is_bool($isReadonly), 'Wrong type for argument 1. Boolean expected');
         $this->readonly = (bool) $isReadonly;
         return $this;
     }
@@ -325,7 +323,7 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * @return  bool
      * @see     \Yana\Db\Ddl\Views\View::getCheckOption()
      */
-    public function hasCheckOption()
+    public function hasCheckOption(): bool
     {
         return !empty($this->checkOption);
     }
@@ -356,7 +354,7 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * @return  int
      * @name    \Yana\Db\Ddl\Views\View::getCheckOption()
      */
-    public function getCheckOption()
+    public function getCheckOption(): int
     {
         return (int) $this->checkOption;
     }
@@ -373,7 +371,7 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * @param   int  $checkOption   new value of this property
      * @see     \Yana\Db\Ddl\Views\View::getCheckOption()
-     * @return  \Yana\Db\Ddl\Views\View 
+     * @return  $this 
      */
     public function setCheckOption($checkOption)
     {
@@ -401,9 +399,8 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * @return  \Yana\Db\Ddl\Views\Field
      * @throws  \Yana\Core\Exceptions\NotFoundException  when the given field does not exist
      */
-    public function getField($name)
+    public function getField(string $name): \Yana\Db\Ddl\Views\Field
     {
-        assert(is_string($name), 'Wrong type for argument 1. String expected');
         if (isset($this->fields[$name])) {
             return $this->fields[$name];
         } else {
@@ -420,7 +417,7 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * @return  array
      */
-    public function getFields()
+    public function getFields(): array
     {
         assert(is_array($this->fields), 'Wrong type for argument 1. array expected');
         if (count($this->fields) != 0) {
@@ -440,9 +437,8 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * @return  \Yana\Db\Ddl\Views\Field
      * @throws  \Yana\Core\Exceptions\AlreadyExistsException  when another field with the same name already exists
      */
-    public function addField($name)
+    public function addField(string $name): \Yana\Db\Ddl\Views\Field
     {
-        assert(is_string($name), 'Wrong type for argument 1. String expected');
         if (!isset($this->fields[$name])) {
             $this->fields[$name] = new \Yana\Db\Ddl\Views\Field($name);
             return $this->fields[$name];
@@ -460,9 +456,8 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * @param   string  $name  name of the droped field
      */
-    public function dropField($name)
+    public function dropField(string $name)
     {
-        assert(is_string($name), 'Wrong type for argument 1. String expected');
         if (isset($this->fields[$name])) {
             unset($this->fields[$name]);
         }
@@ -474,11 +469,10 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * Returns the source code of the SQL query as a string or NULL if none has been defined.
      *
      * @param   string  $dbms  target DBMS, defaults to "generic"
-     * @return  string
+     * @return  string|NULL
      */
-    public function getQuery($dbms = \Yana\Db\DriverEnumeration::GENERIC)
+    public function getQuery(string $dbms = \Yana\Db\DriverEnumeration::GENERIC): ?string
     {
-        assert(is_string($dbms), 'Wrong type for argument 1. String expected');
         $lcDbms = strtolower($dbms);
 
         if (isset($this->queries[$lcDbms])) {
@@ -498,14 +492,9 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * @return  array
      */
-    public function getQueries()
+    public function getQueries(): array
     {
-        if (!empty($this->queries)) {
-            return $this->queries;
-        } else {
-            return array();
-        }
-
+        return $this->queries;
     }
 
     /**
@@ -515,19 +504,18 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * @param   string  $query  sql query
      * @param   string  $dbms   target DBMS, defaults to "generic"
+     * @return  $this
      */
-    public function setQuery($query, $dbms = \Yana\Db\DriverEnumeration::GENERIC)
+    public function setQuery(string $query, string $dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
-        assert(is_string($query), 'Wrong type for argument 1. String expected');
-        assert(is_string($dbms), 'Wrong type for argument 2. String expected');
         $lcDbms = strtolower($dbms);
 
-        if (empty($query)) {
+        if ($query === "") {
             unset($this->queries[$lcDbms]);
         } else {
-            $this->queries[$lcDbms] = "$query";
+            $this->queries[$lcDbms] = $query;
         }
-        return $this->queries;
+        return $this;
     }
 
     /**
@@ -535,9 +523,8 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * @param   string  $dbms  target DBMS, defaults to "generic"
      */
-    public function dropQuery($dbms = \Yana\Db\DriverEnumeration::GENERIC)
+    public function dropQuery(string $dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
-        assert(is_string($dbms), 'Wrong type for argument 1. String expected');
         $lcDbms = strtolower($dbms);
 
         if (isset($this->queries[$lcDbms])) {
@@ -558,9 +545,8 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * @return  array
      */
-    public function getTables()
+    public function getTables(): array
     {
-        assert(is_array($this->tables), 'Wrong type for argument 1. array expected');
         return $this->tables;
     }
 
@@ -581,11 +567,10 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * @param   array  $tables  list of tables
      * @throws  \Yana\Core\Exceptions\NotFoundException         when a table does not exist
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if the list of tables is empty
-     * @return  \Yana\Db\Ddl\Views\View 
+     * @return  $this 
      */
     public function setTables(array $tables)
     {
-        assert(is_array($tables), 'Wrong type for argument 1. array expected');
         if (isset($this->parent)) {
             foreach ($tables as $table)
             {
@@ -610,9 +595,9 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * Returns the where-clause of the view if there is one, or NULL if not
      * defined.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getWhere()
+    public function getWhere(): ?string
     {
         if (is_string($this->where)) {
             return $this->where;
@@ -640,15 +625,16 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * the generic interpreter.
      *
      * @param   string  $where  where clausel
+     * @return  $this
      */
-    public function setWhere($where)
+    public function setWhere(string $where)
     {
-        assert(is_string($where), 'Wrong type for argument 1. String expected');
         if (empty($where)) {
             $this->where = null;
         } else {
             $this->where = "$where";
         }
+        return $this;
     }
 
     /**
@@ -659,9 +645,8 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * @return  array
      */
-    public function getOrderBy()
+    public function getOrderBy(): array
     {
-        assert(is_array($this->orderBy), 'Wrong type for argument 1. Array expected');
         return (!empty($this->orderBy)) ? $this->orderBy : array();
     }
 
@@ -679,15 +664,12 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * @param   array  $orderBy  list of column names
      * @param   bool   $isDesc   sorting order (false = ascending, true = descending)
-     * @return  \Yana\Db\Ddl\Views\View
+     * @return  $this
      */
-    public function setOrderBy(array $orderBy, $isDesc = false)
+    public function setOrderBy(array $orderBy, bool $isDesc = false)
     {
-        assert(is_array($orderBy), 'Wrong type for argument 1. Array expected');
-        assert(is_bool($isDesc), 'Wrong type for argument 2. Boolean expected');
-
         $this->orderBy = $orderBy;
-        $this->descendingOrder = (bool) $isDesc;
+        $this->descendingOrder = $isDesc;
         return $this;
     }
 
@@ -699,7 +681,7 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * @return  bool
      */
-    public function isDescendingOrder()
+    public function isDescendingOrder(): bool
     {
         return !empty($this->descendingOrder);
     }
@@ -717,9 +699,8 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * @return  array
      */
-    public function getGrants()
+    public function getGrants(): array
     {
-        assert(is_array($this->grants), 'Member "grants" is expected to be an array.');
         return $this->grants;
     }
 
@@ -746,7 +727,7 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * This function adds a new grant to the configuration.
      *
      * @param   \Yana\Db\Ddl\Grant  $grant    new grant object (rights management)
-     * @return  \Yana\Db\Ddl\Views\View
+     * @return  $this
      */
     public function setGrant(\Yana\Db\Ddl\Grant $grant)
     {
@@ -762,17 +743,14 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * This function adds a new grant to the configuration by using the given
      * options and returns it as an \Yana\Db\Ddl\Grant object.
      *
-     * @param   string  $user   user group
-     * @param   string  $role   user role
-     * @param   int     $level  security level
+     * @param   string|NULL  $user   user group
+     * @param   string|NULL  $role   user role
+     * @param   int|NULL     $level  security level
      * @return  \Yana\Db\Ddl\Grant
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when $level is out of range [0,100]
      */
-    public function addGrant($user = null, $role = null, $level = null)
+    public function addGrant(?string $user = null, ?string $role = null, ?int $level = null): \Yana\Db\Ddl\Grant
     {
-        assert(is_null($user) || is_string($user), 'Wrong type for argument 1. String expected');
-        assert(is_null($role) || is_string($role), 'Wrong type for argument 2. String expected');
-        assert(is_null($level) || is_int($level), 'Wrong type for argument 3. Integer expected');
         $grant = new \Yana\Db\Ddl\Grant();
         if (!empty($user)) {
             $grant->setUser($user);
@@ -835,7 +813,7 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed              $parent  parent node (if any)
-     * @return  \Yana\Db\Ddl\Views\View
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the name attribute is missing
      */
     public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)
@@ -847,20 +825,20 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
         }
         $ddl = new self((string) $attributes['name'], $parent);
-        $ddl->descendingOrder = ($ddl->_sorting !== 'ascending');
+        $ddl->_unserializeFromXDDL($node);
         switch ($ddl->_checkOption)
         {
             case 'local':
-                $ddl->checkOption = \Yana\Db\Ddl\Views\ConstraintEnumeration::LOCAL;
+                $ddl->setCheckOption(\Yana\Db\Ddl\Views\ConstraintEnumeration::LOCAL);
             break;
             case 'cascaded':
-                $ddl->checkOption = \Yana\Db\Ddl\Views\ConstraintEnumeration::CASCADED;
+                $ddl->setCheckOption(\Yana\Db\Ddl\Views\ConstraintEnumeration::CASCADED);
             break;
             default:
-                $ddl->checkOption = \Yana\Db\Ddl\Views\ConstraintEnumeration::NONE;
+                $ddl->setCheckOption(\Yana\Db\Ddl\Views\ConstraintEnumeration::NONE);
             break;
         }
-        $ddl->_unserializeFromXDDL($node);
+        $ddl->descendingOrder = ($ddl->_sorting !== 'ascending');
         return $ddl;
     }
 
