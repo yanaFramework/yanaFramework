@@ -72,36 +72,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     protected $functionparameter;
 
     /**
-     * @var \Yana\Db\Ddl\Logs\Create
-     */
-    protected $logcreate;
-
-    /**
-     * @var \Yana\Db\Ddl\Logs\Drop
-     */
-    protected $logdrop;
-
-    /**
-     * @var \Yana\Db\Ddl\Logs\Rename
-     */
-    protected $logrename;
-
-    /**
-     * @var \Yana\Db\Ddl\Logs\Sql
-     */
-    protected $logsql;
-
-    /**
-     * @var \Yana\Db\Ddl\Logs\Update
-     */
-    protected $logupdate;
-
-    /**
-     * @var \Yana\Db\Ddl\Logs\Change
-     */
-    protected $logchange;
-
-    /**
      * @var \Yana\Db\Ddl\Sequence
      */
     protected $sequence;
@@ -137,11 +107,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     protected $event;
 
     /**
-     * @var \Yana\Db\Ddl\ChangeLog
-     */
-    protected $changelog;
-
-    /**
      * @var \Yana\Db\Ddl\DatabaseInit
      */
     protected $init;
@@ -171,16 +136,9 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $this->function = new \Yana\Db\Ddl\Functions\Definition('function');
         $this->functionimplementation = new \Yana\Db\Ddl\Functions\Implementation;
         $this->functionparameter = new \Yana\Db\Ddl\Functions\Parameter('param');
-        $this->logcreate = new \Yana\Db\Ddl\Logs\Create('logcreate');
-        $this->logdrop = new \Yana\Db\Ddl\Logs\Drop('logdrop');
-        $this->logrename = new \Yana\Db\Ddl\Logs\Rename('logrename');
-        $this->logsql = new \Yana\Db\Ddl\Logs\Sql();
-        $this->logupdate = new \Yana\Db\Ddl\Logs\Update('logupdate');
-        $this->logchange = new \Yana\Db\Ddl\Logs\Change();
         $this->sequence = new \Yana\Db\Ddl\Sequence('sequence');
         $this->view = new \Yana\Db\Ddl\Views\View('view');
         $this->grant = new \Yana\Db\Ddl\Grant();
-        $this->changelog = new \Yana\Db\Ddl\ChangeLog();
         $this->indexcolumn = new \Yana\Db\Ddl\IndexColumn('indexColumn');
         $this->viewfield = new \Yana\Db\Ddl\Views\Field('viewfield');
         $this->event = new \Yana\Db\Ddl\Event('action');
@@ -202,15 +160,9 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         unset($this->function);
         unset($this->functionimplementation);
         unset($this->functionparameter);
-        unset($this->logcreate);
-        unset($this->logdrop);
-        unset($this->logrename);
-        unset($this->logsql);
-        unset($this->logupdate);
         unset($this->sequence);
         unset($this->table);
         unset($this->view);
-        unset($this->changelog);
         unset($this->indexcolumn);
         unset($this->viewfield);
         unset($this->event);
@@ -252,82 +204,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $object->setTitle();
         $getTitle = $object->getTitle();
         $this->assertNull($getTitle, get_class($object) . ': unable to unset title.');
-    }
-
-    /**
-     * get type
-     *
-     * @test
-     */
-    public function testGetType()
-    {
-        // \Yana\Db\Ddl\Logs\Create
-        $get = $this->logcreate->getType();
-        $this->assertEquals('create', $get, 'assert failed, "\Yana\Db\Ddl\Logs\Create" : expected value "create" - the values should be equal.');
-
-        // \Yana\Db\Ddl\Logs\Rename
-        $get = $this->logrename->getType();
-        $this->assertEquals('rename', $get, 'assert failed, "\Yana\Db\Ddl\Logs\Rename" : expected value "rename" - the values should be equal.');
-
-        // \Yana\Db\Ddl\Logs\Sql
-        $get = $this->logsql->getType();
-        $this->assertEquals('sql', $get, 'assert failed, "\Yana\Db\Ddl\Logs\Sql" : expected value "sql" - the values should be equal.');
-
-         // \Yana\Db\Ddl\Logs\Update
-        $get = $this->logupdate->getType();
-        $this->assertEquals('update', $get, 'assert failed, "\Yana\Db\Ddl\Logs\Update" : expected value "update" - the values should be equal.');
-
-        // \Yana\Db\Ddl\Logs\Drop
-        $get = $this->logdrop->getType();
-        $this->assertEquals('drop', $get, 'assert failed, "\Yana\Db\Ddl\Logs\Drop" : expected value "drop" - the values should be equal.');
-    }
-
-    /**
-     * check types and params
-     *
-     * @test
-     */
-    public function testTypesAndParams()
-    {
-        $type = $this->logchange->getType();
-        $this->assertNull($type, "Undefined type should be null.");
-
-        $this->logchange->setType();
-        $type = $this->logchange->getType();
-        $message = "Attribute \Yana\Db\Ddl\ChangeLog::type should default to 'default'.";
-        $this->assertEquals('default', $type, $message);
-
-        $this->logchange->setType('Test');
-        $type = $this->logchange->getType();
-        $message = "\Yana\Db\Ddl\ChangeLog::getType should return same value as previously set by setType().";
-        $this->assertEquals('Test', $type, $message);
-
-        $expectedParams = array();
-        $parameters = $this->logchange->getParameters();
-        $message = "Empty parameter list should be returned as empty array.";
-        $this->assertEquals($expectedParams, $parameters, $message);
-
-        $expectedParams[] = 'test';
-        $this->logchange->addParameter('test');
-        $parameters = $this->logchange->getParameters();
-        $message = "Unnamed parameter 'test' must be added.";
-        $this->assertEquals($expectedParams, $parameters, $message);
-
-        $expectedParams['Foo'] = 'bar';
-        $this->logchange->addParameter('bar', 'Foo');
-        $parameters = $this->logchange->getParameters();
-        $message = "Named parameter 'Foo'='bar' must be added.";
-        $this->assertEquals($expectedParams, $parameters, $message);
-
-        $this->logchange->dropParameters();
-        $expectedParams = array();
-        $parameters = $this->logchange->getParameters();
-        $message = "After calling dropParameters, getParameters must return an empty array.";
-        $this->assertEquals($expectedParams, $parameters, $message);
-
-        $this->logchange->setType("");
-        $type = $this->logchange->getType();
-        $this->assertNull($type, "Unable to unset type.");
     }
 
     /**
@@ -383,10 +259,7 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
             array('function'),
             array('view'),
             array('table'),
-            array('sequence'),
-            array('logcreate'),
-            array('logchange'),
-            array('logsql')
+            array('sequence')
         );
     }
 
@@ -475,34 +348,12 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * subject
-     *
-     * @test
-     */
-    public function testSubject()
-    {
-        // DDL LogCreate
-        $this->logcreate->setSubject('column');
-        $result = $this->logcreate->getSubject();
-        $this->assertEquals('column', $result, 'assert failed, \Yana\Db\Ddl\Logs\Create : the expected result should be the value "column" - the values should be equal');
-    }
-
-    /**
      * SQL
      *
      * @test
      */
     public function testSQL()
     {
-        // DDL LogSql
-        $this->logsql->setSQL('sql');
-        $result = $this->logsql->getSQL();
-        $this->assertEquals('sql', $result, 'assert failed, \Yana\Db\Ddl\Logs\Sql : the expected result should be the value "sql" - the values should be equal');
-
-        $this->logsql->setSQL('');
-        $result = $this->logsql->getSQL();
-        $this->assertNull($result, 'assert failed, \Yana\Db\Ddl\Logs\Sql : the value is expected null');
-
         // DDL DatabaseInit
         $this->init->setSQL('sql');
         $result = $this->init->getSQL();
@@ -1075,98 +926,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * addEntry
-     *
-     * @test
-     */
-    public function testAddEntry()
-    {
-        for ($i = 1; $i <10; $i++)
-        {
-            $nr = sprintf("%04d",$i);
-            $log = new \Yana\Db\Ddl\Logs\Create('logcreate');
-            $log->setName("name_" . $nr);
-            $log->setVersion($nr);
-            $this->changelog->addEntry($log);
-        }
-
-        $countAll = count($this->changelog->getEntries());
-        $countV1 = count($this->changelog->getEntries("0004"));
-
-        $this->assertEquals($countAll , 9, '\Yana\Db\Ddl\ChangeLog, adding Logs or retrieving them failed');
-        $this->assertEquals($countV1, 5, 'assert failed, adding Logs with a Version number or retrieving them failed');
-    }
-
-    /**
-     * dropEntries
-     *
-     * @test
-     */
-    public function testDropEntries()
-    {
-        for ($i = 1; $i <10; $i++)
-        {
-            $nr = sprintf("%04d",$i);
-            $log = new \Yana\Db\Ddl\Logs\Create('logcreate');
-            $log->setName("name_" . $nr);
-            $log->setVersion($nr);
-            $this->changelog->addEntry($log);
-        }
-
-        // let's be bad guys, dan drop everything again
-        $this->changelog->dropEntries();
-        $countAll = count($this->changelog->getEntries());
-
-        $this->assertEquals($countAll , 0, '\Yana\Db\Ddl\ChangeLog, dropping the entries has failed');
-    }
-
-    /**
-     * getEntries
-     *
-     * @test
-     */
-    public function testGetEntries()
-    {
-        // First: create a lot of different entries
-        // Second: count them
-        for ($i = 1; $i <30; $i++)
-        {
-            $nr = sprintf("%04d",$i);
-            if ($i % 3 == 0) {
-                $log = new \Yana\Db\Ddl\Logs\Create('logcreate');
-                $log->setName("name_" . $nr);
-            } else {
-                $log = new \Yana\Db\Ddl\Logs\Sql();
-            }
-            $log->setVersion($nr);
-            switch ($i % 3)
-            {
-                case 1:
-                    $log->setDBMS('mysql');
-                break;
-                case 2:
-                    $log->setDBMS('oracle');
-                break;
-            }
-            $this->changelog->addEntry($log);
-        }
-
-        $countAll = count($this->changelog->getEntries(null));
-        $this->assertEquals($countAll , 9, '\Yana\Db\Ddl\ChangeLog, dropping the entries has failed');
-
-        $countAll = count($this->changelog->getEntries(null, 'mysql'));
-        $this->assertEquals($countAll , 19, '\Yana\Db\Ddl\ChangeLog, dropping the entries has failed');
-
-        $countAll = count($this->changelog->getEntries(null, 'oracle'));
-        $this->assertEquals($countAll , 19, '\Yana\Db\Ddl\ChangeLog, dropping the entries has failed');
-
-        // truncate list of changes
-        $this->changelog->dropEntries();
-        $countAll = count($this->changelog->getEntries());
-        $this->assertEquals($countAll , 0, '\Yana\Db\Ddl\ChangeLog, dropping the entries has failed');
-    }
-
-    /**
      * add field to view
      *
      * @test
@@ -1548,19 +1307,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     /**
      * Name
      *
-     * @test
-     */
-    public function testSetName()
-    {
-        // \Yana\Db\Ddl\Logs\Create
-        $this->logcreate->setName('name');
-        $get = $this->logcreate->getName();
-        $this->assertEquals('name', $get, 'assert failed, the values should be equal, "\Yana\Db\Ddl\Logs\Create" :expected "name" as value, the values should be equal');
-    }
-
-    /**
-     * Name
-     *
      * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      * @test
      */
@@ -1568,34 +1314,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     {
         // DDL Object exception
         $new = new \Yana\Db\Ddl\Index(' 123df');
-    }
-
-    /**
-     * Name
-     *
-     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
-     * @test
-     */
-    public function testSetNameInvalidArgument1()
-    {
-        $this->logcreate->setName('');
-    }
-
-    /**
-     * OldName
-     *
-     * @test
-     */
-    public function testOldName()
-    {
-        // \Yana\Db\Ddl\Logs\Rename
-        $this->logrename->setOldName('name');
-        $get = $this->logrename->getOldName();
-        $this->assertEquals('name', $get, 'assert failed, the values should be equal, "\Yana\Db\Ddl\Logs\Rename" :expected "name" as value, the values should be equal');
-
-        $this->logrename->setOldName('');
-        $get = $this->logrename->getOldName();
-        $this->assertNull($get, 'assert failed, "\Yana\Db\Ddl\Logs\Rename" : expected null, the OldName is not set');
     }
 
     /**
@@ -1618,40 +1336,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(0, count($get), 'assert failed, the values should be equal, "\Yana\Db\Ddl\Views\View" :the array should be match each other');
         $isDesc = $this->view->isDescendingOrder();
         $this->assertTrue($isDesc, 'assert failed, "\Yana\Db\Ddl\Views\View" : expected true, descendingOrder is set');
-    }
-
-    /**
-     * Property name
-     *
-     * @test
-     */
-    public function testPropertyName()
-    {
-        // \Yana\Db\Ddl\Logs\Update
-        $this->logupdate->setPropertyName('property');
-        $get = $this->logupdate->getPropertyName();
-        $this->assertEquals('property', $get, 'assert failed, the values should be equal, "\Yana\Db\Ddl\Logs\Update" :expected value "property" ');
-
-        $this->logupdate->setPropertyName('');
-        $get = $this->logupdate->getPropertyName();
-        $this->assertNull($get, 'assert failed, "\Yana\Db\Ddl\Logs\Update" : expected null, PropertyName is not set');
-    }
-
-    /**
-     * Property value
-     *
-     * @test
-     */
-    public function testSetPropertyValue()
-    {
-        // \Yana\Db\Ddl\Logs\Update
-        $this->logupdate->setPropertyValue('propertyValue');
-        $get = $this->logupdate->getPropertyValue();
-        $this->assertEquals('propertyValue', $get, 'assert failed, the values should be equal, "\Yana\Db\Ddl\Logs\Update" : expected "propertyValue" as value');
-
-        $this->logupdate->setPropertyValue('');
-        $get = $this->logupdate->getPropertyValue();
-        $this->assertNull($get, 'assert failed, "\Yana\Db\Ddl\Logs\Update" : expected null, the PropertyValue is not set');
     }
 
     /**
@@ -1970,8 +1654,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     public function dataDBMS()
     {
         return array(
-            array('logsql'),
-            array('logchange'),
             array('init'),
             array('trigger'),
             array('constraint')
@@ -2237,18 +1919,7 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
 
         $database = new \Yana\Db\Ddl\Database();
         $parentTable = new \Yana\Db\Ddl\Table('table');
-        $parentColumn = new \Yana\Db\Ddl\Column('Column_Parent');
         $parentForm = new \Yana\Db\Ddl\Form('someform');
-
-        // \Yana\Db\Ddl\ChangeLog
-        $childLog = new \Yana\Db\Ddl\ChangeLog($database);
-        $parentLog = $childLog->getParent();
-        $this->assertEquals($database, $parentLog, '\Yana\Db\Ddl\ChangeLog::getParent, the values should be equal');
-
-        // \Yana\Db\Ddl\Column
-        $childColumn = new \Yana\Db\Ddl\Column('column', $parentTable);
-        $parentColumn = $childColumn->getParent();
-        $this->assertEquals($parentTable, $parentColumn, '\Yana\Db\Ddl\Column::getParent, the values should be equal');
 
         // \Yana\Db\Ddl\ForeignKey
         $childForeignkey = new \Yana\Db\Ddl\ForeignKey('column', $parentTable);
@@ -2362,138 +2033,11 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Old property value
-     *
-     * @test
-     */
-    public function testOldPropertyValue()
-    {
-        // \Yana\Db\Ddl\Logs\Update
-        $this->logupdate->setOldPropertyValue('name');
-        $get = $this->logupdate->getOldPropertyValue();
-        $this->assertEquals('name', $get, 'assert failed, the values should be equal, "\Yana\Db\Ddl\Logs\Rename" :expected value is "name"');
-
-        $this->logupdate->setOldPropertyValue('');
-        $get = $this->logupdate->getOldPropertyValue();
-        $this->assertNull($get, 'assert failed, "\Yana\Db\Ddl\Logs\Rename" :expected null - OldPropertyValue is not set or empty');
-    }
-
-    /**
-     * Handler
-     *
-     * @test
-     */
-    public function testSetHandler()
-    {
-
-        $result = $this->logsql->commitUpdate();
-        $this->assertFalse($result, '\Yana\Db\Ddl\Logs\Sql::commitUpdate should return False, if no handler is defined');
-        $result = $this->logupdate->commitUpdate();
-        $this->assertFalse($result, '\Yana\Db\Ddl\Logs\Update::commitUpdate should return False, if no handler is defined');
-
-
-        $function = create_function('', '');
-
-        // DDL LogUpdate
-        \Yana\Db\Ddl\Logs\Update::setHandler($function);
-        $this->logupdate->commitUpdate();
-
-        // DDL LogSql
-         \Yana\Db\Ddl\Logs\Sql::setHandler($function);
-         $this->logsql->commitUpdate();
-
-        // DDL LogRename
-        \Yana\Db\Ddl\Logs\Rename::setHandler($function);
-        $this->logrename->commitUpdate();
-
-        // \Yana\Db\Ddl\Logs\Create
-        \Yana\Db\Ddl\Logs\Create::setHandler($function);
-        $this->logcreate->commitUpdate();
-
-        // \Yana\Db\Ddl\Logs\Drop
-        \Yana\Db\Ddl\Logs\Drop::setHandler($function);
-        $this->logdrop->commitUpdate();
-
-        // \Yana\Db\Ddl\Logs\Change
-        \Yana\Db\Ddl\Logs\Change::setHandler($function);
-        $this->logchange->commitUpdate();
-
-        \Yana\Db\Ddl\Logs\Change::setHandler($function, 'test');
-        $this->logchange->setType('test');
-        $this->logchange->commitUpdate();
-    }
-
-    /**
-     * HandlerInvalidArgumentException
-     *
-     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
-     *
-     * @test
-     */
-    public function testSetHandlerInvalidArgumentException()
-    {
-        // \Yana\Db\Ddl\Logs\Sql
-        \Yana\Db\Ddl\Logs\Sql::setHandler('dummy');
-    }
-
-    /**
-     * HandlerInvalidArgumentException1
-     *
-     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
-     *
-     * @test
-     */
-    public function testSetHandlerInvalidArgumentException1()
-    {
-        // \Yana\Db\Ddl\Logs\Update
-        \Yana\Db\Ddl\Logs\Update::setHandler('dummy');
-    }
-
-    /**
-     * HandlerInvalidArgumentException2
-     *
-     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
-     *
-     * @test
-     */
-    public function testSetHandlerInvalidArgumentException2()
-    {
-        // \Yana\Db\Ddl\Logs\Rename
-        \Yana\Db\Ddl\Logs\Rename::setHandler('dummy');
-    }
-
-    /**
-     * HandlerInvalidArgumentException3
-     *
-     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
-     *
-     * @test
-     */
-    public function testSetHandlerInvalidArgumentException3()
-    {
-        // \Yana\Db\Ddl\Logs\Create
-        \Yana\Db\Ddl\Logs\Create::setHandler('dummy');
-    }
-
-    /**
-     * HandlerInvalidArgumentException4
-     *
-     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
-     *
-     * @test
-     */
-    public function testSetHandlerInvalidArgumentException4()
-    {
-        // \Yana\Db\Ddl\Logs\Drop
-        \Yana\Db\Ddl\Logs\Drop::setHandler('dummy');
-    }
-
-    /**
      * addColumn
      *
      * @test
      */
-    public function testaddColumn()
+    public function testAddColumn()
     {
         // \Yana\Db\Ddl\Table
         $newColumns = array('description', 'number', 'image');

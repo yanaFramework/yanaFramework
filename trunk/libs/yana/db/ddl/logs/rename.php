@@ -81,9 +81,9 @@ class Rename extends \Yana\Db\Ddl\Logs\Create
      *
      * Note: For columns the returned name includes the table ("table.column").
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getOldName()
+    public function getOldName(): ?string
     {
         if (is_string($this->oldName)) {
             return $this->oldName;
@@ -96,15 +96,14 @@ class Rename extends \Yana\Db\Ddl\Logs\Create
      * Set the old name of the object that has changed.
      *
      * @param   string  $oldName  old name of changed object
-     * @return  \Yana\Db\Ddl\Logs\Rename
+     * @return  $this
      */
-    public function setOldName($oldName)
+    public function setOldName(string $oldName)
     {
-        assert(is_string($oldName), 'Wrong type for argument 1. String expected');
-        if (empty($oldName)) {
+        if ($oldName === "") {
             $this->oldName = null;
         } else {
-            $this->oldName = "$oldName";
+            $this->oldName = $oldName;
         }
         return $this;
     }
@@ -122,7 +121,7 @@ class Rename extends \Yana\Db\Ddl\Logs\Create
      *
      * @return  bool
      */
-    public function commitUpdate()
+    public function commitUpdate(): bool
     {
         $result = false;
         if (isset(self::$handler)) {
@@ -136,7 +135,7 @@ class Rename extends \Yana\Db\Ddl\Logs\Create
      *
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed              $parent  parent node (if any)
-     * @return  \Yana\Db\Ddl\Logs\Rename
+     * @return  $this
      * @throws   \Yana\Core\Exceptions\InvalidArgumentException  when the name attribute is missing
      */
     public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)

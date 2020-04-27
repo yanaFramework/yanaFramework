@@ -80,7 +80,7 @@ class Drop extends \Yana\Db\Ddl\Logs\Create
      *
      * @return  bool
      */
-    public function commitUpdate()
+    public function commitUpdate(): bool
     {
         if (isset(self::$handler)) {
             return call_user_func(self::$handler, $this->getSubject(), $this->getName());

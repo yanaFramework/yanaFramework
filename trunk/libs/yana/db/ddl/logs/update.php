@@ -96,9 +96,9 @@ class Update extends \Yana\Db\Ddl\Logs\Create
      * Specifies which property of the object has been updated.
      * Returns the name of the property.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getPropertyName()
+    public function getPropertyName(): ?string
     {
         if (is_string($this->propertyName)) {
             return $this->propertyName;
@@ -113,15 +113,14 @@ class Update extends \Yana\Db\Ddl\Logs\Create
      * Specifies which property of the object has been updated.
      *
      * @param   string  $name  name of updated property
-     * @return  \Yana\Db\Ddl\Logs\Update
+     * @return  $this
      */
-    public function setPropertyName($name)
+    public function setPropertyName(string $name)
     {
-        assert(is_string($name), 'Wrong type for argument 1. String expected');
-        if (empty($name)) {
+        if ($name === "") {
             $this->propertyName = null;
         } else {
-            $this->propertyName = "$name";
+            $this->propertyName = $name;
         }
         return $this;
     }
@@ -133,9 +132,9 @@ class Update extends \Yana\Db\Ddl\Logs\Create
      * Note that the value may be a serialized string, depending on the
      * implementation you use.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getPropertyValue()
+    public function getPropertyValue(): ?string
     {
         if (is_string($this->propertyValue)) {
             return $this->propertyValue;
@@ -150,15 +149,14 @@ class Update extends \Yana\Db\Ddl\Logs\Create
      * Note that the value may be a serialized string, depending on the implementation you use.
      *
      * @param   string  $value  value of updated property
-     * @return  \Yana\Db\Ddl\Logs\Update
+     * @return  $this
      */
-    public function setPropertyValue($value)
+    public function setPropertyValue(string $value)
     {
-        assert(is_string($value), 'Wrong type for argument 1. String expected');
-        if (empty($value)) {
+        if ($value === "") {
             $this->propertyValue = null;
         } else {
-            $this->propertyValue = "$value";
+            $this->propertyValue = $value;
         }
         return $this;
     }
@@ -168,9 +166,9 @@ class Update extends \Yana\Db\Ddl\Logs\Create
      *
      * Note that the value may be a serialized string, depending on the implementation you use.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getOldPropertyValue()
+    public function getOldPropertyValue(): ?string
     {
         if (is_string($this->oldPropertyValue)) {
             return $this->oldPropertyValue;
@@ -186,15 +184,14 @@ class Update extends \Yana\Db\Ddl\Logs\Create
      * implementation you use.
      *
      * @param   string  $oldValue   old value of updated property
-     * @return  \Yana\Db\Ddl\Logs\Update
+     * @return  $this
      */
-    public function setOldPropertyValue($oldValue)
+    public function setOldPropertyValue(string $oldValue)
     {
-        assert(is_string($oldValue), 'Wrong type for argument 1. String expected');
-        if (empty($oldValue)) {
+        if ($oldValue === "") {
             $this->oldPropertyValue = null;
         } else {
-            $this->oldPropertyValue = "$oldValue";
+            $this->oldPropertyValue = $oldValue;
         }
         return $this;
     }
@@ -206,7 +203,7 @@ class Update extends \Yana\Db\Ddl\Logs\Create
      *
      * @return  bool
      */
-    public function commitUpdate()
+    public function commitUpdate(): bool
     {
         if (isset(self::$handler)) {
             $propertyName = $this->getPropertyName();
@@ -221,8 +218,8 @@ class Update extends \Yana\Db\Ddl\Logs\Create
      * Unserializes a XDDL-node to an instance of this class and returns it.
      *
      * @param   \SimpleXMLElement  $node    XML node
-     * @param   mixed             $parent  parent node (if any)
-     * @return  \Yana\Db\Ddl\Logs\Update
+     * @param   mixed              $parent  parent node (if any)
+     * @return  $this
      * @throws   \Yana\Core\Exceptions\InvalidArgumentException  when the name attribute is missing
      */
     public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)

@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Ddl;
 
@@ -64,7 +65,7 @@ class Reference extends \Yana\Core\StdObject
      * @param   string  $column  name of key column in target table
      * @param   string  $label   name of label column in target table
      */
-    public function __construct($table, $column, $label)
+    public function __construct(string $table, string $column, string $label)
     {
         $this->setTable($table)
             ->setColumn($column)
@@ -76,7 +77,7 @@ class Reference extends \Yana\Core\StdObject
      *
      * @return  string
      */
-    public function getTable()
+    public function getTable(): string
     {
         return $this->_table;
     }
@@ -86,7 +87,7 @@ class Reference extends \Yana\Core\StdObject
      *
      * @return  string
      */
-    public function getColumn()
+    public function getColumn(): string
     {
         return $this->_column;
     }
@@ -96,34 +97,32 @@ class Reference extends \Yana\Core\StdObject
      *
      * @return  string
      */
-    public function getLabel()
+    public function getLabel(): string
     {
         return $this->_label;
     }
 
     /**
-     * Set table.
+     * Set table name.
      *
      * @param   string  $table  name of target table
-     * @return  \Yana\Db\Ddl\Reference
+     * @return  $this
      */
-    public function setTable($table)
+    public function setTable(string $table)
     {
-        assert(is_string($table), 'Invalid argument $table: string expected');
-        $this->_table = (string) $table;
+        $this->_table = $table;
         return $this;
     }
 
     /**
-     * Set column.
+     * Set column name.
      *
      * @param   string  $column  name of key column in target table
-     * @return  \Yana\Db\Ddl\Reference
+     * @return  $this
      */
-    public function setColumn($column)
+    public function setColumn(string $column)
     {
-        assert(is_string($column), 'Invalid argument $column: string expected');
-        $this->_column = (string) $column;
+        $this->_column = $column;
         return $this;
     }
 
@@ -131,12 +130,11 @@ class Reference extends \Yana\Core\StdObject
      * Set label.
      *
      * @param   string  $label  name of label column in target table
-     * @return  \Yana\Db\Ddl\Reference
+     * @return  $this
      */
-    public function setLabel($label)
+    public function setLabel(string $label)
     {
-        assert(is_string($label), 'Invalid argument $label: string expected');
-        $this->_label = (string) $label;
+        $this->_label = $label;
         return $this;
     }
 

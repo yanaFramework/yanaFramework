@@ -33,42 +33,33 @@ namespace Yana\Db\Ddl;
  */
 require_once __DIR__ . '/../../../../include.php';
 
-
 /**
  * @package  test
  */
-class NoTagNameExceptionTest extends \PHPUnit_Framework_TestCase
+class KeyMatchStrategyEnumerationTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Db\Ddl\NoTagNameException
+     * @test
      */
-    protected $object;
-
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    protected function setUp()
+    public function testGetValidItems()
     {
-        $this->object = new \Yana\Db\Ddl\NoTagNameException();
-    }
-
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown()
-    {
-        
+        $items = \Yana\Db\Ddl\KeyMatchStrategyEnumeration::getValidItems();
+        foreach ($items as $value)
+        {
+            $this->assertInternalType('integer', $value);
+            $this->assertGreaterThan(0, $value);
+        }
     }
 
     /**
      * @test
      */
-    public function testException()
+    public function testOverlap()
     {
-        $this->assertTrue($this->object instanceof \Yana\Db\Ddl\NoTagNameException);
+        $items1 = \Yana\Db\Ddl\KeyUpdateStrategyEnumeration::getValidItems();
+        $items2 = \Yana\Db\Ddl\KeyMatchStrategyEnumeration::getValidItems();
+        $this->assertEmpty(\array_intersect($items1, $items2));
     }
 
 }

@@ -79,12 +79,12 @@ class Create extends \Yana\Db\Ddl\Logs\AbstractLog
      * @var  string
      * @ignore
      */
-    protected $name = null;
+    protected $name = "";
 
     /**
      * Initialize instance.
      *
-     * @param  string                  $name    name of logcreate
+     * @param  string                  $name    name of log entry
      * @param  \Yana\Db\Ddl\ChangeLog  $parent  parent
      */
     public function __construct($name, \Yana\Db\Ddl\ChangeLog $parent = null)
@@ -101,9 +101,9 @@ class Create extends \Yana\Db\Ddl\Logs\AbstractLog
      *
      * Note: For columns the returned name includes the table ("table.column").
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getSubject()
+    public function getSubject(): ?string
     {
         if (is_string($this->subject)) {
             return $this->subject;
@@ -118,17 +118,16 @@ class Create extends \Yana\Db\Ddl\Logs\AbstractLog
      * Subject may be: "table", "column", "index", "sequence", "trigger", "constraint", "view".
      *
      * @param   string  $subject  new value of this property
-     * @return  \Yana\Db\Ddl\Logs\Create 
+     * @return  $this
      */
-    public function setSubject($subject = "")
+    public function setSubject(string $subject = "")
     {
-        assert(is_string($subject), 'Wrong type for argument 1. String expected');
-        assert((bool) preg_match("/^(table|column|index|view|sequence|trigger|constraint)\$/", $subject), 'Invalid subject');
+        assert((bool) preg_match("/^(table|column|index|view|sequence|trigger|constraint|)\$/", $subject), 'Invalid subject');
         
-        if (empty($subject)) {
+        if ($subject === "") {
             $this->subject = null;
         } else {
-            $this->subject = "$subject";
+            $this->subject = $subject;
         }
         return $this;
     }
@@ -140,13 +139,9 @@ class Create extends \Yana\Db\Ddl\Logs\AbstractLog
      *
      * @return  string
      */
-    public function getName()
+    public function getName(): string
     {
-        if (is_string($this->name)) {
-            return $this->name;
-        } else {
-            return null;
-        }
+        return $this->name;
     }
 
     /**
@@ -154,11 +149,10 @@ class Create extends \Yana\Db\Ddl\Logs\AbstractLog
      *
      * @param   string  $name   name of changed object
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when name is empty or invalid
-     * @return  \Yana\Db\Ddl\Logs\Create
+     * @return  $this
      */
-    public function setName($name)
+    public function setName(string $name)
     {
-        assert(is_string($name), 'Wrong type for argument 1. String expected');
         if (!preg_match('/^[a-z]\w+$/is', $name)) {
             $message = "Not a valid object name: '$name'. " .
                 "Must start with a letter and may only contain: a-z, 0-9, '-' and '_'.";
@@ -178,7 +172,7 @@ class Create extends \Yana\Db\Ddl\Logs\AbstractLog
      *
      * @return  bool
      */
-    public function commitUpdate()
+    public function commitUpdate(): bool
     {
         if (isset(self::$handler)) {
             return call_user_func(self::$handler, $this->getSubject(), $this->getName());

@@ -73,6 +73,16 @@ class ColumnTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testGetParentTable()
+    {
+        $parentTable = new \Yana\Db\Ddl\Table('table');
+        $childColumn = new \Yana\Db\Ddl\Column('column', $parentTable);
+        $this->assertSame($parentTable, $childColumn->getParent());
+    }
+
+    /**
+     * @test
+     */
     public function testGetType()
     {
         $this->assertNull($this->column->getType());

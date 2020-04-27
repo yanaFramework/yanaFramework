@@ -105,7 +105,7 @@ class Sql extends \Yana\Db\Ddl\Logs\AbstractLog
      *
      * @return  string
      */
-    public function getDBMS()
+    public function getDBMS(): ?string
     {
         if (is_string($this->dbms)) {
             return $this->dbms;
@@ -125,13 +125,11 @@ class Sql extends \Yana\Db\Ddl\Logs\AbstractLog
      * Any DBMS other than "generic" will limit the setting to that DBMS only.
      *
      * @param   string  $dbms   target DBMS, defaults to "generic"
-     * @return  \Yana\Db\Ddl\Logs\Sql
+     * @return  $this
      */
-    public function setDBMS($dbms = \Yana\Db\DriverEnumeration::GENERIC)
+    public function setDBMS(string $dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
-        assert(is_string($dbms), 'Invalid argument $dbms: String expected');
-
-        if (empty($dbms)) {
+        if ($dbms === "") {
             $this->dbms = null;
         } else {
             $this->dbms =  strtolower($dbms);
@@ -142,9 +140,9 @@ class Sql extends \Yana\Db\Ddl\Logs\AbstractLog
     /**
      * Returns the SQL statement for this operation.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getSQL()
+    public function getSQL(): ?string
     {
         if (is_string($this->sql)) {
             return $this->sql;
@@ -157,15 +155,14 @@ class Sql extends \Yana\Db\Ddl\Logs\AbstractLog
      * Set the SQL statement for this operation.
      *
      * @param   string  $sql  sql statement
-     * @return  \Yana\Db\Ddl\Logs\Sql
+     * @return  $this
      */
-    public function setSQL($sql)
+    public function setSQL(string $sql)
     {
-        assert(is_string($sql), 'Invalid argument $sql: String expected');
-        if (empty($sql)) {
+        if ($sql === "") {
             $this->sql = null;
         } else {
-            $this->sql = "$sql";
+            $this->sql = $sql;
         }
         return $this;
     }
@@ -181,7 +178,7 @@ class Sql extends \Yana\Db\Ddl\Logs\AbstractLog
      *
      * @return  bool
      */
-    public function commitUpdate()
+    public function commitUpdate(): bool
     {
         if (isset(self::$handler)) {
             return call_user_func(self::$handler, $this->getSQL());
@@ -195,7 +192,7 @@ class Sql extends \Yana\Db\Ddl\Logs\AbstractLog
      *
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed              $parent  parent node (if any)
-     * @return  \Yana\Db\Ddl\Logs\Sql
+     * @return  $this
      */
     public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)
     {

@@ -111,9 +111,9 @@ abstract class AbstractLog extends \Yana\Db\Ddl\DDL
      * The data-type returned by the function.
      * Will return NULL if no version is set.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getVersion()
+    public function getVersion(): ?string
     {
         return $this->version;
     }
@@ -126,15 +126,14 @@ abstract class AbstractLog extends \Yana\Db\Ddl\DDL
      * To reset this option, call the function with an empty parameter.
      *
      * @param   string  $version  new value of this property
-     * @return  \Yana\Db\Ddl\Logs\AbstractLog
+     * @return  $this
      */
-    public function setVersion($version = "")
+    public function setVersion(string $version = "")
     {
-        assert(is_string($version), 'Wrong type for argument 1. String expected');
         if (empty($version)) {
             $this->version = null;
         } else {
-            $this->version = "$version";
+            $this->version = $version;
         }
         return $this;
     }
@@ -144,9 +143,9 @@ abstract class AbstractLog extends \Yana\Db\Ddl\DDL
      *
      * Note that this is free-text that may contain any format.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         if (is_string($this->description)) {
             return $this->description;
@@ -159,15 +158,14 @@ abstract class AbstractLog extends \Yana\Db\Ddl\DDL
      * Set description.
      *
      * @param   string  $description  a log-message of your choice
-     * @return  \Yana\Db\Ddl\Logs\AbstractLog
+     * @return  $this
      */
-    public function setDescription($description)
+    public function setDescription(string $description)
     {
-        assert(is_string($description), 'Wrong type for argument 1. String expected');
         if (empty($description)) {
             $this->description = null;
         } else {
-            $this->description = "$description";
+            $this->description = $description;
         }
         return $this;
     }
@@ -177,7 +175,7 @@ abstract class AbstractLog extends \Yana\Db\Ddl\DDL
      *
      * @return  bool
      */
-    public function ignoreError()
+    public function ignoreError(): bool
     {
         return !empty($this->ignoreError);
     }
@@ -186,29 +184,30 @@ abstract class AbstractLog extends \Yana\Db\Ddl\DDL
      * Set wether to ignore errors.
      *
      * @param   bool  $ignoreError  ignore errors
-     * @return  \Yana\Db\Ddl\Logs\AbstractLog
+     * @return  $this
      */
-    public function setIgnoreError($ignoreError)
+    public function setIgnoreError(bool $ignoreError)
     {
-        assert(is_bool($ignoreError), 'Wrong argument type for argument 1. Boolean expected');
-        $this->ignoreError = (bool) $ignoreError;
+        $this->ignoreError = $ignoreError;
         return $this;
     }
 
     /**
      * Set function to handle updates.
      *
-     * @param   string|array  $functionName   name of the function which is called
-     * @throws   \Yana\Core\Exceptions\InvalidArgumentException  when the given function is not callable
+     * @param   callable  $functionName   name of the function which is called
      */
-    public static function setHandler($functionName)
+    public static function setHandler(callable $functionName)
     {
-        if (is_callable($functionName)) {
-            self::$handler = $functionName;
-        } else {
-            $message = "The function name '$functionName' is not callable.";
-            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
-        }
+        self::$handler = $functionName;
+    }
+
+    /**
+     * Reset handler function.
+     */
+    public static function dropHandler()
+    {
+        self::$handler = null;
     }
 
     /**
@@ -218,16 +217,16 @@ abstract class AbstractLog extends \Yana\Db\Ddl\DDL
      *
      * @return  bool
      */
-    abstract public function commitUpdate();
+    abstract public function commitUpdate(): bool;
 
     /**
      * Get type of update.
      *
      * Returns a string that is equivalent to the XDDL tag of this object.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getType()
+    public function getType(): ?string
     {
         return $this->xddlTag;
     }

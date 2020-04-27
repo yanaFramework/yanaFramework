@@ -115,9 +115,9 @@ class Change extends \Yana\Db\Ddl\Logs\AbstractLog
      * Returns the name of the target DBMS for this definition as a lower-cased string.
      * The default is "generic".
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getDBMS()
+    public function getDBMS(): ?string
     {
         if (is_string($this->dbms)) {
             return $this->dbms;
@@ -137,12 +137,11 @@ class Change extends \Yana\Db\Ddl\Logs\AbstractLog
      * Any DBMS other than "generic" will limit the setting to that DBMS only.
      *
      * @param   string  $dbms   target DBMS, defaults to "generic"
-     * @return  \Yana\Db\Ddl\Logs\Change
+     * @return  $this
      */
-    public function setDBMS($dbms = \Yana\Db\DriverEnumeration::GENERIC)
+    public function setDBMS(string $dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
-        assert(is_string($dbms), 'Wrong type for argument 1. String expected');
-        if (empty($dbms)) {
+        if ($dbms === "") {
             $this->dbms = null;
         } else {
             $this->dbms = strtolower($dbms);
@@ -156,9 +155,9 @@ class Change extends \Yana\Db\Ddl\Logs\AbstractLog
      * Returns the type of this operation.
      * This also sets which handler to use, as the handler is associated with a certain type.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getType()
+    public function getType(): ?string
     {
         if (is_string($this->type)) {
             return $this->type;
@@ -174,15 +173,14 @@ class Change extends \Yana\Db\Ddl\Logs\AbstractLog
      * This also sets which handler to use, as the handler is associated with a certain type.
      *
      * @param   string  $type   type of this operation
-     * @return  \Yana\Db\Ddl\Logs\Change
+     * @return  $this
      */
-    public function setType($type = "default")
+    public function setType(string $type = "default")
     {
-        assert(is_string($type), 'Wrong type for argument 1. String expected');
-        if (empty($type)) {
+        if ($type === "") {
             $this->type = null;
         } else {
-            $this->type = "$type";
+            $this->type = $type;
         }
         return $this;
     }
@@ -195,9 +193,8 @@ class Change extends \Yana\Db\Ddl\Logs\AbstractLog
      *
      * @return  array
      */
-    public function getParameters()
+    public function getParameters(): array
     {
-        assert(is_array($this->parameters), 'Member "parameters" is expected to be an array.');
         return $this->parameters;
     }
 
@@ -206,19 +203,19 @@ class Change extends \Yana\Db\Ddl\Logs\AbstractLog
      *
      * These parameters are passed to the handler function.
      *
-     * @param   string  $value  parameter value
-     * @param   string  $name   parameter name
+     * @param   string       $value  parameter value
+     * @param   string|NULL  $name   parameter name
+     * @return  $this
      */
-    public function addParameter($value, $name = null)
+    public function addParameter(string $value, ?string $name = null)
     {
-        assert(is_string($value), 'Wrong type for argument 1. String expected');
-        assert(is_null($name) || is_string($name), 'Wrong type for argument 2. String expected');
         assert(is_array($this->parameters), 'Member "parameters" is expected to be an array.');
-        if (is_null($name)) {
-            $this->parameters[] = "$value";
+        if (!is_string($name)) {
+            $this->parameters[] = $value;
         } else {
-            $this->parameters["$name"] = "$value";
+            $this->parameters[$name] = $value;
         }
+        return $this;
     }
 
     /**
@@ -234,19 +231,30 @@ class Change extends \Yana\Db\Ddl\Logs\AbstractLog
      *
      * Provided arguments for handler are the object's parameter list.
      *
-     * @param   string|array  $functionName     name of the function which is called
-     * @param   string        $functionType     function type
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the given function is not callable
+     * @param   callable  $functionName  name of the function which is called
+     * @param   string    $functionType  function type
      */
-    public static function setHandler($functionName, $functionType = "default")
+    public static function setHandler(callable $functionName, string $functionType = "default")
     {
-        assert(is_string($functionType), 'Wrong argument type for argument 2. String expected');
-        if (is_callable($functionName)) {
-            self::$handlers["$functionType"] = $functionName;
-        } else {
-            $message = "The function name '$functionName' is not callable.";
-            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
-        }
+        self::$handlers[$functionType] = $functionName;
+    }
+
+    /**
+     * Reset handler function.
+     *
+     * @param  string  $functionType  function type
+     */
+    public static function dropHandler(string $functionType = "default")
+    {
+        unset(self::$handlers[$functionType]);
+    }
+
+    /**
+     * Reset all handler functions.
+     */
+    public static function dropHandlers()
+    {
+        self::$handlers = array();
     }
 
     /**
@@ -257,7 +265,7 @@ class Change extends \Yana\Db\Ddl\Logs\AbstractLog
      *
      * @return  bool
      */
-    public function commitUpdate()
+    public function commitUpdate(): bool
     {
         $type = $this->getType();
         if (is_null($type)) {

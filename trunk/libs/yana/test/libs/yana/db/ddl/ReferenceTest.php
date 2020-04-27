@@ -37,11 +37,26 @@ require_once __DIR__ . '/../../../../include.php';
 /**
  * @package  test
  */
-class NoTagNameExceptionTest extends \PHPUnit_Framework_TestCase
+class ReferenceTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Db\Ddl\NoTagNameException
+     * @var \Yana\Db\Ddl\Reference
+     */
+    protected $table = "TableTest";
+
+    /**
+     * @var \Yana\Db\Ddl\Reference
+     */
+    protected $column = "ColumnTest";
+
+    /**
+     * @var \Yana\Db\Ddl\Reference
+     */
+    protected $label = "LabelTest";
+
+    /**
+     * @var \Yana\Db\Ddl\Reference
      */
     protected $object;
 
@@ -51,7 +66,7 @@ class NoTagNameExceptionTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Db\Ddl\NoTagNameException();
+        $this->object = new \Yana\Db\Ddl\Reference($this->table, $this->column, $this->label);
     }
 
     /**
@@ -66,9 +81,49 @@ class NoTagNameExceptionTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testException()
+    public function testGetTable()
     {
-        $this->assertTrue($this->object instanceof \Yana\Db\Ddl\NoTagNameException);
+        $this->assertSame($this->table, $this->object->getTable());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetColumn()
+    {
+        $this->assertSame($this->column, $this->object->getColumn());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetLabel()
+    {
+        $this->assertSame($this->label, $this->object->getLabel());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetTable()
+    {
+        $this->assertSame(__FUNCTION__, $this->object->setTable(__FUNCTION__)->getTable());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetColumn()
+    {
+        $this->assertSame(__FUNCTION__, $this->object->setColumn(__FUNCTION__)->getColumn());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetLabel()
+    {
+        $this->assertSame(__FUNCTION__, $this->object->setLabel(__FUNCTION__)->getLabel());
     }
 
 }
