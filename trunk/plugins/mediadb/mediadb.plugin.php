@@ -38,7 +38,7 @@ class MediaDbPlugin extends \Yana\Plugins\AbstractPlugin
      *
      * @return  \Yana\Forms\Facade
      */
-    private function _getMediaForm()
+    private function _getMediaForm(): \Yana\Forms\Facade
     {
         $form = $this->_getMediafolderForm()->__invoke();
         return $form->getForm('media');
@@ -49,7 +49,7 @@ class MediaDbPlugin extends \Yana\Plugins\AbstractPlugin
      *
      * @return  \Yana\Forms\IsBuilder
      */
-    private function _getMediafolderForm()
+    private function _getMediafolderForm(): \Yana\Forms\IsBuilder
     {
         $builder = $this->_getApplication()->buildForm('mediadb', 'mediafolder');
         $where = array(
@@ -65,7 +65,7 @@ class MediaDbPlugin extends \Yana\Plugins\AbstractPlugin
      *
      * @return  \Yana\Forms\Worker
      */
-    private function _getMediafolderFormWorker()
+    private function _getMediafolderFormWorker(): \Yana\Forms\Worker
     {
         $form = $this->_getMediafolderForm()->__invoke();
         $worker = new \Yana\Forms\Worker($this->_connectToDatabase('mediadb'), $form);
