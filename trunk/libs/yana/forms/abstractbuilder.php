@@ -210,9 +210,8 @@ abstract class AbstractBuilder extends \Yana\Core\StdObject implements \Yana\For
      * @param   string  $file  name of database file
      * @return  $this
      */
-    protected function _setFile($file)
+    protected function _setFile(string $file)
     {
-        assert(is_string($file), 'Invalid argument $file: String expected');
         $this->_file = (string) $file;
         return $this;
     }
@@ -255,7 +254,7 @@ abstract class AbstractBuilder extends \Yana\Core\StdObject implements \Yana\For
      *
      * @return  string
      */
-    public function getId()
+    public function getId(): string
     {
         return $this->_id;
     }
@@ -269,10 +268,9 @@ abstract class AbstractBuilder extends \Yana\Core\StdObject implements \Yana\For
      * @param   string  $id  valid form name
      * @return  $this
      */
-    public function setId($id)
+    public function setId(string $id)
     {
-        assert(is_string($id), 'Invalid argument $id: String expected');
-        $this->_id = (string) $id;
+        $this->_id = $id;
         return $this;
     }
 

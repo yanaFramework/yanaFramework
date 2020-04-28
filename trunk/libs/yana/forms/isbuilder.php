@@ -50,7 +50,7 @@ interface IsBuilder extends \Yana\Data\Adapters\IsCacheable
      *
      * @return  string
      */
-    public function getId();
+    public function getId(): string;
 
     /**
      * Set name of form to use.
@@ -61,7 +61,7 @@ interface IsBuilder extends \Yana\Data\Adapters\IsCacheable
      * @param   string  $id  valid form name
      * @return  $this
      */
-    public function setId($id);
+    public function setId(string $id);
 
     /**
      * Get name of table.
