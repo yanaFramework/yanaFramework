@@ -107,11 +107,11 @@
       <string name="profile_id" notnull="yes" length="128"/>
     </declaration>
   </table>
-  <view name="test_view" readonly="yes" tables="Test" where="Test_id > 5" orderby="test" sorting="descending" checkoption="none">
+  <view name="test_view" readonly="yes" tables="Test" where="Test_id > 5" orderby="test" sorting="ascending" checkoption="none">
     <description>test</description>
     <grant role="2" user="1" level="5" select="no" insert="yes" update="no" delete="no" grant="no"/>
-    <field column="test_id" table="test" alias="id"/>
-    <field column="test_title" table="test" alias="bar"/>
+    <field column="test_id" table="Test" alias="id"/>
+    <field column="test_title" table="Test" alias="bar"/>
     <select dbms="mysql">Select Test_title as bar, Test_id as id from Test where Test_id > 5</select>
   </view>
   <form name="test_new" table="Test" template="new" allinput="yes">

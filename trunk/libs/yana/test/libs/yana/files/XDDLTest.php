@@ -820,7 +820,7 @@ class XDDLTest extends \PHPUnit_Framework_TestCase
         $name = "test_view";
         $nameColumn = "test_title";
         $nameAlias = "bar";
-        $nameTable = "test";
+        $nameTable = "Test";
         $viewQueryMysqlGoal = "Select Test_title as bar, Test_id as id from Test where Test_id > 5";
         $view = $this->_object->getView($name);
         $this->assertTrue($view instanceof \Yana\Db\Ddl\Views\View, "Unable to deserialize view.");
