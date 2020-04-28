@@ -78,7 +78,7 @@ class NullBuilder extends \Yana\Forms\AbstractBuilder
      * @return  \Yana\Db\Ddl\Form
      * @codeCoverageIgnore
      */
-    protected function _buildForm()
+    protected function _buildForm(): \Yana\Db\Ddl\Form
     {
         return new \Yana\Db\Ddl\Form('form');
     }

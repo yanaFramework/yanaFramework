@@ -159,6 +159,24 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Included another database file must not overwrite defined forms and tables.
+     *
+     * @test
+     */
+    public function testLoadIncludesOverwriteCheck()
+    {
+        $xddl = new \Yana\Files\XDDL(CWD . '/resources/testinclude.db.xml');
+        $this->database = $xddl->toDatabase();
+        $this->assertSame(array('testinclude2'), $this->database->getIncludes());
+        $this->assertFalse($this->database->isForm('a'));
+        $this->assertTrue($this->database->isForm('b'));
+        $this->assertTrue($this->database->isForm('c'));
+        $this->assertTrue($this->database->isTable('a'));
+        $this->assertTrue($this->database->isTable('b'));
+        $this->assertTrue($this->database->isTable('c'));
+    }
+
+    /**
      * Data-provider for testTitle
      */
     public function dataTitle()
@@ -934,7 +952,7 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     public function testGetListOfFilesFullFilenames()
     {
         $get = \Yana\Db\Ddl\DDL::getListOfFiles(true);
-        $this->assertCount(8, $get);
+        $this->assertCount(10, $get);
         foreach ($get as $file)
         {
             $this->assertFileExists($file);

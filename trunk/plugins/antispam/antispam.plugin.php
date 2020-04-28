@@ -336,7 +336,7 @@ class AntiSpamPlugin extends \Yana\Plugins\AbstractPlugin
             $yanaFormId = uniqid();
             if (strpos($source, "</form>") !== false) {
                 /* insert form id */
-                $source   = str_replace("</form>", "<span class=\"yana_button\"><input type=\"text\"".
+                $source   = str_replace("</form>", "<span class=\"yana_button\"><input type=\"text\" ".
                         "name=\"yana_form_id\" value=\"$yanaFormId\" /></span>\n</form>", $source);
                 $this->_getSession()->offsetSet('yana_form_id', $yanaFormId);
                 $YANA->setVar('DISABLE_FORM_ID', true);

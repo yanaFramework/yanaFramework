@@ -686,13 +686,14 @@ abstract class AbstractBuilder extends \Yana\Core\StdObject implements \Yana\For
      * Build \Yana\Db\Ddl\Form object.
      *
      * @return  \Yana\Db\Ddl\Form
-     * @throws  \Yana\Core\Exceptions\BadMethodCallException    when a parameter is missing
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when a paraemter is not valid
+     * @throws  \Yana\Core\Exceptions\BadMethodCallException       when a parameter is missing
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException     when a paraemter is not valid
+     * @throws  \Yana\Core\Exceptions\Forms\FormNotFoundException  when the id parameter is present but no such form is found
      */
-    protected function _getForm()
+    protected function _getForm(): \Yana\Db\Ddl\Form
     {
         if (!isset($this->_form)) {
-            $this->_form = $this->_buildForm();
+            $this->_form = $this->_buildForm(); // May throw exception
             $this->_setForm($this->_form);
         }
         return $this->_form;
@@ -702,10 +703,11 @@ abstract class AbstractBuilder extends \Yana\Core\StdObject implements \Yana\For
      * Build \Yana\Db\Ddl\Form object.
      *
      * @return  \Yana\Db\Ddl\Form
-     * @throws  \Yana\Core\Exceptions\BadMethodCallException    when a parameter is missing
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when a paraemter is not valid
+     * @throws  \Yana\Core\Exceptions\BadMethodCallException       when a parameter is missing
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException     when a paraemter is not valid
+     * @throws  \Yana\Core\Exceptions\Forms\FormNotFoundException  when the id parameter is present but no such form is found
      */
-    abstract protected function _buildForm();
+    abstract protected function _buildForm(): \Yana\Db\Ddl\Form;
 
     /**
      * Return connection to database bound to this form.

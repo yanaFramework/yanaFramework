@@ -90,8 +90,6 @@ AjaxRequest.prototype.send = function($args, $method)
         if ($method == 'post') {
             this.http.open('post', this.url + '&is_ajax_request=1', this.isAsynchronous);
             this.http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            this.http.setRequestHeader("Content-length", $args.length);
-            this.http.setRequestHeader("Connection", "close");
             this.http.onreadystatechange = this.handle;
             this.http.send($args);
         } else {

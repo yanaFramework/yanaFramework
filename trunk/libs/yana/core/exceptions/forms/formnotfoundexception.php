@@ -29,25 +29,25 @@ declare(strict_types=1);
 namespace Yana\Core\Exceptions\Forms;
 
 /**
- * <<exception>> Invalid form field data.
+ * <<exception>> Form not found.
  *
- * Base class, used when any input for a given form field is invalid.
+ * Thrown when a form was requested that does not exist.
  *
  * @package     yana
  * @subpackage  core
  */
-class FieldException extends \Yana\Core\Exceptions\Forms\FormException
+class FormNotFoundException extends \Yana\Core\Exceptions\Forms\FormException
 {
 
     /**
-     * Set field name.
+     * Set form name.
      *
-     * @param   string  $fieldName  Field that contained the invalid value
+     * @param   string  $formName  of form object that was not found
      * @return  $this
      */
-    public function setField(string $fieldName)
+    public function setFormName(string $formName)
     {
-        $this->data['FIELD'] = $fieldName;
+        $this->data['FORM'] = $formName;
         return $this;
     }
 

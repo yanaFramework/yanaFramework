@@ -1,0 +1,22 @@
+<!DOCTYPE database SYSTEM "dtd/database.dtd">
+<database name="testinclude">
+    <table name="a">
+        <primarykey>a_id</primarykey>
+        <foreign table="b" match="simple" ondelete="no-action" onupdate="no-action">
+            <key column="" name="b_id"/>
+        </foreign>
+        <declaration>
+            <integer name="a_id" notnull="yes" autoincrement="yes"/>
+            <reference name="b_id" notnull="yes" table="b" column="b_id"/>
+        </declaration>
+    </table>
+    <table name="b">
+        <primarykey>b_id</primarykey>
+        <declaration>
+            <integer name="b_id" notnull="yes" autoincrement="yes"/>
+        </declaration>
+    </table>
+    <form name="b" table="b" allinput="yes">
+        <form name="a" table="a" allinput="yes" template="0"/>
+    </form>
+</database>

@@ -90,7 +90,6 @@ class ApplicationBar extends \Yana\Views\Helpers\AbstractViewHelper implements \
                 continue;
                 // @codeCoverageIgnoreEnd
             }
-            assert(!isset($iconUri), 'Cannot redeclare var $iconUri');
 
             /**
              * While the string $icon is usually a relative path, it could also be an absolute file path instead: including

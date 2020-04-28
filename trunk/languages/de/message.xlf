@@ -130,6 +130,16 @@
                     <target>Vielen Dank für Ihren Besuch!</target>
                 </trans-unit>
             </group>
+            <group id="Yana\Core\Exceptions\Forms\FormNotFoundException">
+                <trans-unit id="Yana\Core\Exceptions\Forms\FormNotFoundException.h">
+                    <source>We had a problem loading your form.</source>
+                    <target>Es gab ein Problem beim Laden des gewünschten Formulars.</target>
+                </trans-unit>
+                <trans-unit id="Yana\Core\Exceptions\Forms\FormNotFoundException.p">
+                    <source>The requested form named '{$FORM}' was not found.<it id="br1" pos="open">&lt;br /&gt;</it>Check the name for typos and your (XDDL) database configuration file to ensure the given name is a match.</source>
+                    <target>Das angeforderte Formular '{$FORM}' wurde nicht gefunden.<it id="br1" pos="open">&lt;br /&gt;</it>Prüfen Sie den Namen und vergleichen Sie diesen mit den Angaben in Ihrer (XDDL) Datenbankkonfigurationsdatei.</target>
+                </trans-unit>
+            </group>
             <group id="Yana\Core\Exceptions\Forms\AlreadySavedException">
                 <trans-unit id="Yana\Core\Exceptions\Forms\AlreadySavedException.h">
                     <source>Your entry has already been saved.</source>

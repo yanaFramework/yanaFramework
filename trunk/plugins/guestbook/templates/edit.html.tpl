@@ -1,6 +1,6 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -9,7 +9,7 @@
     </head>
 
 <body>
-    <form action="{$PHP_SELF}" method="post" class="guestbook_form" id="guestbook_form_edit{$TARGET}" onsubmit="if (yanaCheckEmbTags(event,document.getElementById('guestbook_form_edit{$TARGET}'))){ldelim}YanaGuestbook.prototype.guestbookRequest('{$ACTION_EDIT_WRITE}','guestbook_form_edit{$TARGET}','','guestbook_form_edit{$TARGET}');window.setTimeout('document.getElementById(\'guestbook_entry{$TARGET}\').style.display=\'block\';document.getElementById(\'guestbook_form{$TARGET}\').style.display=\'none\';YanaGuestbook.prototype.guestbookRequest(\'{$ACTION_ENTRY}\',\'guestbook_entry{$TARGET}\',\'target={$TARGET}\');',5000);{rdelim};return false">
+    <form action="{$PHP_SELF}" method="post" class="guestbook_form" id="guestbook_form_edit{$TARGET}" onsubmit="YanaGuestbook.prototype.guestbookRequest('{$ACTION_EDIT_WRITE}','guestbook_form_edit{$TARGET}','','guestbook_form_edit{$TARGET}');window.setTimeout('document.getElementById(\'guestbook_entry{$TARGET}\').style.display=\'block\';document.getElementById(\'guestbook_form{$TARGET}\').style.display=\'none\';YanaGuestbook.prototype.guestbookRequest(\'{$ACTION_ENTRY}\',\'guestbook_entry{$TARGET}\',\'target={$TARGET}\');',5000);{rdelim};return false">
       <input type="hidden" name="id" value="{$ID}"/>
       <input type="hidden" name="action" value="{$ACTION_EDIT_WRITE}"/>
       <input type="hidden" name="{$SESSION_NAME}" value="{$SESSION_ID}"/>

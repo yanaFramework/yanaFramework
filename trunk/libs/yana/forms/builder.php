@@ -59,13 +59,14 @@ class Builder extends \Yana\Forms\AbstractBuilder
      * <<magic>> Invoke the function.
      *
      * @return  \Yana\Forms\Facade
-     * @throws  \Yana\Core\Exceptions\BadMethodCallException    when a parameter is missing
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when a paraemter is not valid
+     * @throws  \Yana\Core\Exceptions\BadMethodCallException       when a parameter is missing
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException     when a paraemter is not valid
+     * @throws  \Yana\Core\Exceptions\Forms\FormNotFoundException  when the id parameter is present but no such form is found
      */
     public function __invoke()
     {
         assert(!isset($formName), 'Cannot redeclare var $formName');
-        $formName = $this->_getForm()->getName();
+        $formName = $this->_getForm()->getName(); // May throw exception
         assert(!isset($formSetup), 'Cannot redeclare var $formSetup');
         $formSetup = null;
 
@@ -166,10 +167,11 @@ class Builder extends \Yana\Forms\AbstractBuilder
      * Build \Yana\Db\Ddl\Form object.
      *
      * @return  \Yana\Db\Ddl\Form
-     * @throws  \Yana\Core\Exceptions\BadMethodCallException    when a parameter is missing
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when a paraemter is not valid
+     * @throws  \Yana\Core\Exceptions\BadMethodCallException       when a parameter is missing
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException     when a paraemter is not valid
+     * @throws  \Yana\Core\Exceptions\Forms\FormNotFoundException  when the id parameter is present but no such form is found
      */
-    protected function _buildForm()
+    protected function _buildForm(): \Yana\Db\Ddl\Form
     {
         // Either parameter 'id' or 'table' is required (not both). Parameter 'id' takes precedence.
         /* @var $form \Yana\Db\Ddl\Form */
@@ -181,6 +183,11 @@ class Builder extends \Yana\Forms\AbstractBuilder
             {
                 $form = $form->getForm($id); // may throw InvalidArgumentException
             }
+            if (!($form instanceof \Yana\Db\Ddl\Form)) {
+                $e = new \Yana\Core\Exceptions\Forms\FormNotFoundException("No such form: '$ids'");
+                $e->setFormName($ids);
+                throw $e;
+            }
         } elseif ($this->getTable()) {
                 $table = $this->_getDatabaseSchema()->getTable($this->getTable());
                 if (! $table instanceof \Yana\Db\Ddl\Table) {
@@ -188,6 +195,7 @@ class Builder extends \Yana\Forms\AbstractBuilder
                     throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
                 }
                 $form = $this->_buildFormFromTable($table);
+                assert($form instanceof \Yana\Db\Ddl\Form);
         } else {
             throw new \Yana\Core\Exceptions\BadMethodCallException("Missing either parameter 'id' or 'table'.");
         }
@@ -201,7 +209,7 @@ class Builder extends \Yana\Forms\AbstractBuilder
      *
      * @return  \Yana\Db\Ddl\Form
      */
-    private function _buildFormFromTable(\Yana\Db\Ddl\Table $table)
+    private function _buildFormFromTable(\Yana\Db\Ddl\Table $table): \Yana\Db\Ddl\Form
     {
         $genericName = $this->_getDatabase()->getName() . '-' . $table->getName();
 

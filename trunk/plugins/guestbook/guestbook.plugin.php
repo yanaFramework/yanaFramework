@@ -348,8 +348,6 @@ class GuestbookPlugin extends \Yana\Plugins\AbstractPlugin
      * @access      public
      * @param       string  $name        author name
      * @param       string  $message     text
-     * @param       string  $msgtyp      messenger type
-     * @param       string  $messenger   messenger id
      * @param       string  $mail        author mail
      * @param       string  $hometown    author location
      * @param       string  $homepage    URL
@@ -358,7 +356,7 @@ class GuestbookPlugin extends \Yana\Plugins\AbstractPlugin
      * @throws      \Yana\Core\Exceptions\Forms\AlreadySavedException  when user submits the same text twice
      * @throws      \Yana\Db\Queries\Exceptions\NotCreatedException    when the entry was not created
      */
-    public function guestbook_write_new($name, $message, $msgtyp, $messenger = "", $mail = "", $hometown = "", $homepage = "", $opinion = "")
+    public function guestbook_write_new($name, $message, $mail = "", $hometown = "", $homepage = "", $opinion = "")
     {
         /* @var $YANA \Yana\Application */
         $YANA = $this->_getApplication();
