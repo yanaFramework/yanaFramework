@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Plugins\Loaders;
 
@@ -67,7 +68,7 @@ abstract class AbstractRegistryLoader extends \Yana\Core\StdObject implements \S
      * 
      * @return  \Yana\VDrive\RegistryCollection
      */
-    protected function _getRegistries()
+    protected function _getRegistries(): \Yana\VDrive\RegistryCollection
     {
         if (!isset($this->_registries)) {
             $this->_registries = new \Yana\VDrive\RegistryCollection();
@@ -79,7 +80,7 @@ abstract class AbstractRegistryLoader extends \Yana\Core\StdObject implements \S
      * 
      * @return \Yana\Files\IsDir
      */
-    protected function _getPluginDirectory()
+    protected function _getPluginDirectory(): \Yana\Files\IsDir
     {
         return $this->_pluginDirectory;
     }
@@ -106,16 +107,14 @@ abstract class AbstractRegistryLoader extends \Yana\Core\StdObject implements \S
      * @throws  \Yana\Core\Exceptions\NotFoundException     when no such file is defined
      * @throws  \Yana\Core\Exceptions\NotReadableException  when an existing virtual drive definition is not readable
      */
-    public function getFileObjectFromRegistry($name)
+    public function getFileObjectFromRegistry(string $name): \Yana\Files\IsReadable
     {
-        assert(is_string($name), 'Wrong type for argument 1. String expected');
-
         $collection = $this->_getRegistries();
 
         $resource = $collection[$name];
         if (!$resource instanceof \Yana\Files\IsReadable) {
             // recursive search
-            $registryName = substr($name, 0, strpos($name, ':/'));
+            $registryName = strpos($name, ':/') !== false ? substr($name, 0, (int) strpos($name, ':/')) : $name;
             if (!isset($collection[$registryName])) {
                 $this->_cacheRegistryObject($this->loadRegistry($registryName)); // may throw Exception
             }
@@ -145,7 +144,7 @@ abstract class AbstractRegistryLoader extends \Yana\Core\StdObject implements \S
      * @throws  \Yana\Core\Exceptions\NotReadableException  when an existing VDrive definition is not readable
      * @return  \Yana\VDrive\RegistryCollection
      */
-    public function loadRegistries(array $registries)
+    public function loadRegistries(array $registries): \Yana\VDrive\RegistryCollection
     {
         $collection = $this->_getRegistries();
 

@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Plugins;
 
@@ -473,9 +474,8 @@ class Facade extends \Yana\Core\StdObject implements \Yana\Report\IsReportable, 
      * @return  \Yana\Files\IsReadable
      * @throws  \Yana\Core\Exceptions\NotFoundException  when no such file is defined
      */
-    public function getFileObjectFromVirtualDrive($virtualPath)
+    public function getFileObjectFromVirtualDrive(string $virtualPath)
     {
-        assert(is_string($virtualPath), 'Wrong type for argument 1. String expected');
         return $this->_getRegistryLoader()->getFileObjectFromRegistry($virtualPath);
     }
 
@@ -514,9 +514,9 @@ class Facade extends \Yana\Core\StdObject implements \Yana\Report\IsReportable, 
      *
      * @return  \Yana\Files\IsDir
      */
-    public function getPluginDirectory()
+    public function getPluginDirectory(): \Yana\Files\IsDir
     {
-        if (!isset(self::$_pluginDirectory)) {
+        if (!self::$_pluginDirectory instanceof \Yana\Files\IsDir) {
             // @codeCoverageIgnoreStart
             self::$_pluginDirectory = new \Yana\Files\Dir("plugins/");
             // @codeCoverageIgnoreEnd

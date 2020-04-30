@@ -38,7 +38,7 @@ require_once __DIR__ . '/../../../../include.php';
  */
 class MyRegistryLoader extends \Yana\Plugins\Loaders\AbstractRegistryLoader
 {
-    public function loadRegistry($name)
+    public function loadRegistry(string $name): \Yana\VDrive\IsRegistry
     {
         return new \Yana\VDrive\Registry($this->_getPluginDirectory()->getPath() . $name . '/' . $name . '.drive.xml');
     }

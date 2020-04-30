@@ -214,9 +214,9 @@ class SearchPlugin extends \Yana\Plugins\AbstractPlugin
          */
         $resultKeywords = array();
         $currentDocument = 0;
-        $fKeywords = $YANA->getPlugins()->{"search:/keywords.file"};
+        $fKeywords = $YANA->getPlugins()->getFileObjectFromVirtualDrive("search:/keywords.file");
         $fKeywords = $fKeywords->getPath();
-        $fDocuments = $YANA->getPlugins()->{"search:/documents.file"};
+        $fDocuments = $YANA->getPlugins()->getFileObjectFromVirtualDrive("search:/documents.file");
         $fDocuments = $fDocuments->getPath();
         $hDocuments = fopen($fDocuments, "w+");
         if ($hDocuments === false) {
@@ -708,7 +708,7 @@ class SearchPlugin extends \Yana\Plugins\AbstractPlugin
         if (empty($id)) {
             $id = "default";
         }
-        $cacheFile = $YANA->getVar('TEMPDIR') . __CLASS__ . "$id.tmp";
+        $cacheFile = $YANA->getVar('TEMPDIR') . "search_plugin_$id.tmp";
         if (sizeOf($this->cache)>30) {
             array_pop($this->cache);
         }
@@ -798,9 +798,8 @@ class SearchPlugin extends \Yana\Plugins\AbstractPlugin
      * @param   string  &$compare     output var
      * @return  string
      */
-    private function _applyStemming($inputString, &$compare)
+    private function _applyStemming(string $inputString, &$compare)
     {
-        assert(is_string($inputString), 'Wrong type for argument 1. String expected');
         $compare = "";
 
         $inputString = mb_strtolower($inputString);
@@ -813,8 +812,9 @@ class SearchPlugin extends \Yana\Plugins\AbstractPlugin
 
         /* @var $YANA \Yana\Application */
         $YANA = $this->_getApplication();
-        $grammar = $YANA->getPlugins()->search->getVar('GRAMMAR');
-        assert(is_array($grammar), 'is_array($grammar);');
+        $grammarSml = $YANA->getPlugins()->getFileObjectFromVirtualDrive("search:/grammar.sml");
+        assert($grammarSml instanceof \Yana\Files\SML);
+        $grammar = $grammarSml->getVar('GRAMMAR');
 
         if (in_array($inputString, $grammar['STOPWORDS'])) {
             $inputString = "";

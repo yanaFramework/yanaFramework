@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Plugins\Loaders;
 
@@ -45,7 +46,7 @@ interface IsRegistryLoader
      * @return  \Yana\Files\IsReadable
      * @throws  \Yana\Core\Exceptions\NotFoundException  when no such file is defined
      */
-    public function getFileObjectFromRegistry($name);
+    public function getFileObjectFromRegistry(string $name): \Yana\Files\IsReadable;
 
     /**
      * Loads registry definitions from a list of names.
@@ -54,7 +55,7 @@ interface IsRegistryLoader
      * @throws  \Yana\Core\Exceptions\NotReadableException  when an existing VDrive definition is not readable
      * @return  \Yana\VDrive\RegistryCollection
      */
-    public function loadRegistries(array $registries);
+    public function loadRegistries(array $registries): \Yana\VDrive\RegistryCollection;
 
     /**
      * Load a registry definition.
@@ -64,7 +65,7 @@ interface IsRegistryLoader
      * @throws  \Yana\Core\Exceptions\NotReadableException  when an existing VDrive definition is not readable
      * @return  \Yana\VDrive\IsRegistry
      */
-    public function loadRegistry($name);
+    public function loadRegistry(string $name): \Yana\VDrive\IsRegistry;
 
 }
 

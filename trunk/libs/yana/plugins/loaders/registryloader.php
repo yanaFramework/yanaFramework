@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Plugins\Loaders;
 
@@ -46,10 +47,8 @@ class RegistryLoader extends \Yana\Plugins\Loaders\AbstractRegistryLoader
      * @throws  \Yana\Core\Exceptions\NotReadableException  when an existing VDrive definition is not readable
      * @return  \Yana\VDrive\IsRegistry
      */
-    public function loadRegistry($name)
+    public function loadRegistry(string $name): \Yana\VDrive\IsRegistry
     {
-        assert(is_string($name), 'Invalid argument $name: string expected');
-
         // load virtual drive, if it exists
         assert(!isset($driveFile), 'Cannot redeclare var $driveFile');
         $driveFile = \Yana\Plugins\PluginNameMapper::toVDriveFilenameWithDirectory($name, $this->_getPluginDirectory());
