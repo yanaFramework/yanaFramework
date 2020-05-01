@@ -74,6 +74,15 @@ class RegistryLoaderTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     */
+    public function testLoadRegistryTwice()
+    {
+        $expected = $this->object->loadRegistry('test');
+        $this->assertSame($expected, $this->object->loadRegistry('test'), 'calling the function twice must return a cached object');
+    }
+
+    /**
+     * @test
      * @expectedException \Yana\Core\Exceptions\NotFoundException
      */
     public function testLoadRegistryNotFoundException()

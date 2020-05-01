@@ -26,27 +26,31 @@
  */
 declare(strict_types=1);
 
-namespace Yana;
+namespace Yana\Plugins\Loaders;
 
 /**
- * Plugin
- *
- * This is an interface that all plugins must implement.
- * Each subclass should implement at least the default event handler.
+ * <<exception>> Thrown when no registry of a given name awas found.
  *
  * @package     yana
- * @subpackage  core
+ * @subpackage  plugins
+ *
+ * @ignore
  */
-interface IsPlugin
+class RegistryNotFoundException extends \Yana\Plugins\Loaders\LoaderException
 {
 
     /**
-     * <<construct>> For whatever needs to run whenever the plugin is loaded.
+     * Set registry name.
      *
-     * This is only part of the interface so that derived classes get a warning when they overwrite this and introduce new mandatory parameters.
-     * Because doing so would cause trouble, since the plugin factory doesn't expect the constructor to take any arguments.
+     * @param   string  $registryName  of object that was not found, usually identical to associated plugin name
+     * @return  $this
      */
-    public function __construct();
+    public function setRegistryName(string $registryName)
+    {
+        $this->data['NAME'] = $registryName;
+        return $this;
+    }
+
 }
 
 ?>

@@ -44,6 +44,16 @@
                     <source/>
                 </trans-unit>
             </group>
+            <group id="Yana\Plugins\Loaders\RegistryNotFoundException">
+                <trans-unit id="Yana\Plugins\Loaders\RegistryNotFoundException.h">
+                    <target>There was a problem loading a plugin.</target>
+                    <source/>
+                </trans-unit>
+                <trans-unit id="Yana\Plugins\Loaders\RegistryNotFoundException.p">
+                    <target>A configuration file describing the virtual drive of plugin {$NAME} was request but not found.</target>
+                    <source/>
+                </trans-unit>
+            </group>
             <group id="Yana\Core\Exceptions\Files\AlreadyExistsException">
                 <trans-unit id="Yana\Core\Exceptions\Files\AlreadyExistsException">
                     <target>File or directoy {$FILE} could not be created because another file or directory of the same name already exists.</target>

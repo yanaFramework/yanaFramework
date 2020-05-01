@@ -49,6 +49,9 @@ class RegistryLoader extends \Yana\Plugins\Loaders\AbstractRegistryLoader
      */
     public function loadRegistry(string $name): \Yana\VDrive\IsRegistry
     {
+        if ($this->_isPluginRegistryCached($name)) {
+            return $this->_getCachedRegistryObject($name);
+        }
         // load virtual drive, if it exists
         assert(!isset($driveFile), 'Cannot redeclare var $driveFile');
         $driveFile = \Yana\Plugins\PluginNameMapper::toVDriveFilenameWithDirectory($name, $this->_getPluginDirectory());
@@ -56,9 +59,11 @@ class RegistryLoader extends \Yana\Plugins\Loaders\AbstractRegistryLoader
         if (!is_file($driveFile)) {
             throw new \Yana\Core\Exceptions\NotFoundException("Resource not found: " . $driveFile, \Yana\Log\TypeEnumeration::INFO);
         }
-        $vDrive = new \Yana\VDrive\Registry($driveFile, $this->_getPluginDirectory()->getPath() . $name . "/");
-        $vDrive->read(); // Throws \Yana\Core\Exceptions\NotReadableException
-        return $vDrive;
+        $registry = new \Yana\VDrive\Registry($driveFile, $this->_getPluginDirectory()->getPath() . $name . "/");
+        $registry->read(); // Throws \Yana\Core\Exceptions\NotReadableException
+        // Cache the resulting object for later
+        $this->_cacheRegistryObject($name, $registry);
+        return $registry;
     }
 
 }

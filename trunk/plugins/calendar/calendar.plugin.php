@@ -51,7 +51,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function __construct()
     {
-        $categories = $this->_getApplication()->getPlugins()->calendar->getVar('categories');
+        $categories = $this->_getPluginsFacade()->getPluginRegistry('calendar')->getVar('categories');
         $result = array();
         if (!empty($categories['category'])) {
             $category = $categories['category'];
@@ -113,7 +113,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
 
             $_SESSION[__CLASS__]['calendar_filename'] = $this->fileIdtoPath($dataset['CALENDAR_FILENAME']);
             $path = $_SESSION[__CLASS__]['calendar_filename'];
-            $calendar = new \Plugins\Calendar\Calendar($path, $this->_getApplication()->getPlugins()->calendar, $id);
+            $calendar = new \Plugins\Calendar\Calendar($path, $this->_getPluginsFacade()->getPluginRegistry('calendar'), $id);
             $owner = $dataset['USER_CREATED'];
             $calendar->setOwner($owner);
             $name = $dataset['CALENDAR_NAME'];
@@ -149,8 +149,9 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
     public function get_calendar_input()
     {
         $yana = $this->_getApplication();
+        $pluginRegistry = $this->_getPluginsFacade()->getPluginRegistry('calendar');
         // set default frequency
-        $frequency = $yana->getPlugins()->calendar->getVar('frequency');
+        $frequency = $pluginRegistry->getVar('frequency');
         if (!empty($frequency)) {
             $frequency = $frequency['freq'];
         } else {
@@ -159,7 +160,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
         $yana->setVar('frequencyOptions', $frequency);
 
         // set default days
-        $days = $yana->getPlugins()->calendar->getVar('days');
+        $days = $pluginRegistry->getVar('days');
         if (!empty($days)) {
             $days = $days['day'];
         } else {
@@ -168,7 +169,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
         $yana->setVar('dayOptions', $days);
 
         // set default months [diference betwen the other default : array start with 0]
-        $month = $yana->getPlugins()->calendar->getVar('months');
+        $month = $pluginRegistry->getVar('months');
         if (!empty($month)) {
             $month = $month['month'];
         } else {
@@ -177,7 +178,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
         $yana->setVar('monthOptions', $month);
 
         // set default categories
-        $categories = $yana->getPlugins()->calendar->getVar('categories');
+        $categories = $pluginRegistry->getVar('categories');
         if (!empty($categories)) {
             $categories = $categories['category'];
         } else {
@@ -187,7 +188,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
 
         // set default month repeat options
 
-        $monthRepeatOpt = $yana->getPlugins()->calendar->getVar('repeat_month_options');
+        $monthRepeatOpt = $pluginRegistry->getVar('repeat_month_options');
         $yana->setVar('monthRepeatOpt', $monthRepeatOpt['option']);
 
         $numbers = array();
@@ -321,9 +322,9 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
         if (empty($name)) {
             return false;
         }
-        $YANA = $this->_getApplication();
+
         /* @var $dir \Yana\Files\Dir */
-        $dir = $YANA->getPlugins()->{'calendar:/xcal'};
+        $dir = $this->_getPluginsFacade()->getFileObjectFromVirtualDrive('calendar:/xcal');
 
         // this is the model path of the calendar which contains the body of the calendar
         $path = $dir->getPath() . 'model.xml';
@@ -377,7 +378,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
             return null;
         }
 
-        $dir = $this->_getApplication()->getPlugins()->{'calendar:/xcal'};
+        $dir = $this->_getPluginsFacade()->getFileObjectFromVirtualDrive('calendar:/xcal');
         return $dir->getPath() . $id . '.xml';
     }
 
@@ -749,7 +750,6 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function refresh_calendar_subscribe($key)
     {
-        $YANA = $this->_getApplication();
         $db = $this->_getDatabase();
         $data = $db->select("calendar.$key", array('user_created', '=', $this->_getSession()->getCurrentUserName()));
         if (empty($data) || !isset($data['CALENDAR_URL']) || !isset($data['CALENDAR_FILENAME'])) {
@@ -783,7 +783,6 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function subscribe_calendar(array $ARGS)
     {
-        $YANA = $this->_getApplication();
         if (isset($ARGS['new_calendar_abo'])) {
             $path = $ARGS['new_calendar_abo'];
             $path = str_replace('\\', '/', $path);
@@ -829,15 +828,10 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
      * @param   string  $fileName  file name
      * @return  bool
      */
-    protected function writeXml($content, $fileName)
+    protected function writeXml(string $content, string $fileName)
     {
-        assert(is_string($content), 'Wrong argument type argument 1. String expected');
-        assert(is_string($filename), 'Wrong argument type argument 2. String expected');
-
-        /* @var $YANA \Yana\Application */
-        $YANA = $this->_getApplication();
         /* @var $dir Dir */
-        $dir = $YANA->getPlugins()->{'calendar:/xcal'};
+        $dir = $this->_getPluginsFacade()->getFileObjectFromVirtualDrive('calendar:/xcal');
         $path = $dir->getPath() . $fileName.'.xml';
         $file = new \Yana\Files\Text($path);
         if (!$file->exists()) {
@@ -1186,8 +1180,6 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
      */
     protected function setICal($datasetID = null, $xmlContent = '')
     {
-        /* @var $YANA \Yana\Application */
-        $YANA = $this->_getApplication();
         $db = $this->_getDatabase();
         if ($datasetID != null && is_int($datasetID)) {
             $where = array('user_created', '=', $this->_getSession()->getCurrentUserName());
@@ -1203,7 +1195,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
                 $calendarID = $row['CALENDAR_ID'];
                 $calendarName = $row['CALENDAR_NAME'];
                 /* @var $dir Dir */
-                $dir = $YANA->getPlugins()->{'calendar:/xcal'};
+                $dir = $this->_getPluginsFacade()->getFileObjectFromVirtualDrive('calendar:/xcal');
                 $path = $dir->getPath() . $fileName.'.xml';
             } else {
                 return false;
@@ -1400,10 +1392,8 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
      */
     protected function removeXCalFile($fileName)
     {
-        /* @var $YANA \Yana\Application */
-        $YANA = $this->_getApplication();
         /* @var $dir Dir */
-        $dir = $YANA->getPlugins()->{'calendar:/xcal'};
+        $dir = $this->_getPluginsFacade()->getFileObjectFromVirtualDrive('calendar:/xcal');
 
         $path = $dir->getPath() . $fileName.'.xml';
         $deleteUserFile = new \Yana\Files\Text($path);

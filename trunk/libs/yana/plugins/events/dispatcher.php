@@ -76,10 +76,10 @@ class Dispatcher extends \Yana\Core\StdObject implements \Serializable, \Yana\Pl
     {
         // If this is the original, first event in this call, we chalk this up for reference
         if (empty($this->_firstEvent)) {
-            $this->_firstEvent = $event->getMethodName();
+            $this->_firstEvent = (string) $event->getMethodName();
         }
         // Either way, we make sure that we keep track of any ongoing event.
-        $this->_lastEvent = $event->getMethodName();
+        $this->_lastEvent = (string) $event->getMethodName();
         // By default we consider all events to have been executed successfully unless told otherwise
         $this->_lastResult = true;
 
@@ -139,7 +139,7 @@ class Dispatcher extends \Yana\Core\StdObject implements \Serializable, \Yana\Pl
      *
      * @return  string
      */
-    public function getLastEvent()
+    public function getLastEvent(): string
     {
         return $this->_lastEvent;
     }
@@ -152,7 +152,7 @@ class Dispatcher extends \Yana\Core\StdObject implements \Serializable, \Yana\Pl
      *
      * @return  string
      */
-    public function getFirstEvent()
+    public function getFirstEvent(): string
     {
         return $this->_firstEvent;
     }

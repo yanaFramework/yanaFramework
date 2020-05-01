@@ -1,6 +1,6 @@
 <?php
 /**
- * YANA library
+ * PHPUnit test-case
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -21,7 +21,7 @@
  *
  * This notice MAY NOT be removed.
  *
- * @package  yana
+ * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 declare(strict_types=1);
@@ -29,28 +29,47 @@ declare(strict_types=1);
 namespace Yana\Plugins\Loaders;
 
 /**
- * Loads plugin instances.
- *
- * @package     yana
- * @subpackage  plugins
- *
  * @ignore
  */
-class PluginLoader extends \Yana\Plugins\Loaders\AbstractPluginLoader
+require_once __DIR__ . '/../../../../include.php';
+
+/**
+ * @package  test
+ * @ignore
+ */
+class RegistryNotFoundExceptionTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * Load a plugin.
-     *
-     * @param   string  $name  Must be valid identifier. Consists of chars, numbers and underscores.
-     * @throws  \Yana\Core\Exceptions\NotFoundException  when no plugin with that name exists
-     * @return  \Yana\IsPlugin
+     * @var \Yana\Plugins\Loaders\RegistryNotFoundException
      */
-    public function loadPlugin(string $name): \Yana\IsPlugin
+    protected $object;
+
+    /**
+     * Sets up the fixture, for example, opens a network connection.
+     * This method is called before a test is executed.
+     */
+    protected function setUp()
     {
-        return \Yana\Plugins\AbstractPlugin::loadPlugin($name, $this->_getPluginDirectory(), $this->_getContainer());
+        $this->object = new \Yana\Plugins\Loaders\RegistryNotFoundException();
+    }
+
+    /**
+     * Tears down the fixture, for example, closes a network connection.
+     * This method is called after a test is executed.
+     */
+    protected function tearDown()
+    {
+
+    }
+
+    /**
+     * @test
+     */
+    public function testSetRegistryName()
+    {
+        $this->object->setRegistryName(__FUNCTION__);
+        $this->assertEquals(array('NAME' => __FUNCTION__), $this->object->getData());
     }
 
 }
-
-?>

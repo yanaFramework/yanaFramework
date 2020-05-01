@@ -26,27 +26,19 @@
  */
 declare(strict_types=1);
 
-namespace Yana;
+namespace Yana\Plugins\Loaders;
 
 /**
- * Plugin
- *
- * This is an interface that all plugins must implement.
- * Each subclass should implement at least the default event handler.
+ * <<exception>> Thrown when there was a problem with a loader.
  *
  * @package     yana
- * @subpackage  core
+ * @subpackage  plugins
+ *
+ * @ignore
  */
-interface IsPlugin
+class LoaderException extends \Yana\Core\Exceptions\RuntimeException
 {
-
-    /**
-     * <<construct>> For whatever needs to run whenever the plugin is loaded.
-     *
-     * This is only part of the interface so that derived classes get a warning when they overwrite this and introduce new mandatory parameters.
-     * Because doing so would cause trouble, since the plugin factory doesn't expect the constructor to take any arguments.
-     */
-    public function __construct();
+    // intentionally left blank
 }
 
 ?>

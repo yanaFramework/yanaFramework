@@ -47,6 +47,13 @@ abstract class AbstractRegistryLoader extends \Yana\Core\StdObject implements \S
     private $_registries = null;
 
     /**
+     * Keys are plugin names, values are drive names.
+     *
+     * @var array
+     */
+    private $_pluginNameToDriveNameMap = array();
+
+    /**
      * Path to base directory of plugins.
      *
      * @var \Yana\Files\IsDir
@@ -116,7 +123,7 @@ abstract class AbstractRegistryLoader extends \Yana\Core\StdObject implements \S
             // recursive search
             $registryName = strpos($name, ':/') !== false ? substr($name, 0, (int) strpos($name, ':/')) : $name;
             if (!isset($collection[$registryName])) {
-                $this->_cacheRegistryObject($this->loadRegistry($registryName)); // may throw Exception
+                $this->_cacheRegistryObject("", $this->loadRegistry($registryName)); // may throw Exception
             }
             /* @var $registry \Yana\VDrive\IsRegistry */
             $registry = $collection->offsetGet($registryName);
@@ -126,13 +133,59 @@ abstract class AbstractRegistryLoader extends \Yana\Core\StdObject implements \S
     }
 
     /**
+     * Returns bool(true) if a plugin by this name is cached.
+     *
+     * @param   string  $pluginName  case sensitive
+     * @return  bool
+     */
+    protected function _isPluginRegistryCached(string $pluginName): bool
+    {
+        return isset($this->_pluginNameToDriveNameMap[$pluginName]);
+    }
+
+    /**
+     * Returns name of drive or NULL if it wasn't found.
+     *
+     * @param   string  $pluginName  to look up
+     * @return  string|null
+     */
+    private function _getCachedDriveName(string $pluginName): ?string
+    {
+        return $this->_isPluginRegistryCached($pluginName) ? $this->_pluginNameToDriveNameMap[$pluginName] : null;
+    }
+
+    /**
+     * Returns bool(true) if a plugin by this name is cached.
+     *
+     * @param   string  $pluginName  case sensitive
+     * @return  \Yana\VDrive\IsRegistry
+     * @throws  \Yana\Plugins\Loaders\RegistryNotFoundException  when no such registry was found
+     */
+    protected function _getCachedRegistryObject(string $pluginName): \Yana\VDrive\IsRegistry
+    {
+        $driveName = $this->_getCachedDriveName($pluginName);
+        $registries = $this->_getRegistries();
+        if (!$registries->offsetExists((string) $driveName)) {
+            throw new \Yana\Plugins\Loaders\RegistryNotFoundException(
+                "No such virtual drive: '$driveName' for plugin '$pluginName'", \Yana\Log\TypeEnumeration::WARNING);
+        }
+        return $registries->offsetGet($driveName);
+    }
+
+    /**
      * Store object in registry collection.
      *
-     * @param \Yana\VDrive\IsRegistry $registry
+     * @param   string                   $pluginName  case sensitive
+     * @param   \Yana\VDrive\IsRegistry  $registry    object to store
      */
-    private function _cacheRegistryObject(\Yana\VDrive\IsRegistry $registry)
+    protected function _cacheRegistryObject(string $pluginName, \Yana\VDrive\IsRegistry $registry)
     {
-        $this->_getRegistries()->offsetSet($registry->getDriveName(), $registry);
+        $driveName = $registry->getDriveName();
+        $registries = $this->_getRegistries();
+        if (!$registries->offsetExists($driveName)) {
+            $this->_pluginNameToDriveNameMap[$pluginName > "" ? $pluginName : $driveName] = $driveName;
+            $registries->offsetSet($driveName, $registry);
+        }
     }
 
     /**
@@ -151,13 +204,13 @@ abstract class AbstractRegistryLoader extends \Yana\Core\StdObject implements \S
         foreach ($registries as $name)
         {
             // skip if the drive is already loaded
-            if (isset($collection[$name])) {
+            if ($this->_isPluginRegistryCached($name)) {
                 continue;
             }
 
             try {
                 $registry = $this->loadRegistry($name);
-                $this->_cacheRegistryObject($registry);
+                $this->_cacheRegistryObject($name, $registry);
             } catch (\Yana\Core\Exceptions\NotFoundException $e) {
                 // skip file
             }

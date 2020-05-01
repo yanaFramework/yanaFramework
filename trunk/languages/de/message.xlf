@@ -44,6 +44,16 @@
                     <target>Ihr Login ist korrekt, aber die gewünschte Aktion ist nicht verfügbar weil Ihre Zugriffsrechte nicht ausreichend sind. Bitte prüfen Sie gegebenenfalls, ob die gewählte URL korrekt ist. Falls Sie Ihre Zugriffsrechte aktualisieren lassen wollen, wenden Sie sich bitte an Ihren Administrator.</target>
                 </trans-unit>
             </group>
+            <group id="Yana\Plugins\Loaders\RegistryNotFoundException">
+                <trans-unit id="Yana\Plugins\Loaders\RegistryNotFoundException.h">
+                    <source>There was a problem loading a plugin.</source>
+                    <target>Es gab ein Problem beim Laden eines Plugins.</target>
+                </trans-unit>
+                <trans-unit id="Yana\Plugins\Loaders\RegistryNotFoundException.p">
+                    <source>A configuration file describing the virtual drive of plugin {$NAME} was request but not found.</source>
+                    <target>Die Konfigurationsdatei für das virtuelle Laufwerk des Plugins {$NAME} wurde angefordert, aber nicht gefunden.</target>
+                </trans-unit>
+            </group>
             <group id="Yana\Core\Exceptions\Files\AlreadyExistsException">
                 <trans-unit id="Yana\Core\Exceptions\Files\AlreadyExistsException">
                     <source>File or directoy {$FILE} could not be created because another file or directory of the same name already exists.</source>

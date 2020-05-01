@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Plugins\Loaders;
 
@@ -42,7 +43,7 @@ interface IsPluginLoader
      * @param   string  $pluginName  identifier of the plugin to check
      * @return  bool
      */
-    public function isLoaded($pluginName);
+    public function isLoaded(string $pluginName): bool;
 
     /**
      * Check if a specific plugin is installed.
@@ -54,7 +55,7 @@ interface IsPluginLoader
      * @param   string  $pluginName  identifier for the plugin
      * @return  bool
      */
-    public function isInstalled($pluginName);
+    public function isInstalled(string $pluginName): bool;
 
     /**
      * Loads plugins from a list of names.
@@ -65,7 +66,7 @@ interface IsPluginLoader
      * @throws  \Yana\Core\Exceptions\NotReadableException  when an existing VDrive definition is not readable
      * @return  \Yana\Plugins\Collection
      */
-    public function loadPlugins(array $plugins);
+    public function loadPlugins(array $plugins): \Yana\Plugins\Collection;
 
     /**
      * Load a plugin.
@@ -76,7 +77,7 @@ interface IsPluginLoader
      * @throws  \Yana\Core\Exceptions\NotFoundException  when no plugin with that name exists
      * @return  \Yana\IsPlugin
      */
-    public function loadPlugin($name);
+    public function loadPlugin(string $name): \Yana\IsPlugin;
 
 }
 

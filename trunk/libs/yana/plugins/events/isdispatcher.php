@@ -70,7 +70,7 @@ interface IsDispatcher
      *
      * @return  string
      */
-    public function getLastEvent();
+    public function getLastEvent(): string;
 
     /**
      * Get the initially handled event.
@@ -80,7 +80,7 @@ interface IsDispatcher
      *
      * @return  string
      */
-    public function getFirstEvent();
+    public function getFirstEvent(): string;
 
 }
 

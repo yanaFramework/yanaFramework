@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Plugins\Loaders;
 
@@ -90,7 +91,7 @@ abstract class AbstractPluginLoader extends \Yana\Core\StdObject implements \Ser
      * 
      * @return  \Yana\Plugins\Collection
      */
-    protected function _getPlugins()
+    protected function _getPlugins(): \Yana\Plugins\Collection
     {
         if (!isset($this->_plugins)) {
             $this->_plugins = new \Yana\Plugins\Collection();
@@ -100,9 +101,9 @@ abstract class AbstractPluginLoader extends \Yana\Core\StdObject implements \Ser
 
     /**
      * 
-     * @return \Yana\Files\IsDir
+     * @return  \Yana\Files\IsDir
      */
-    protected function _getPluginDirectory()
+    protected function _getPluginDirectory(): \Yana\Files\IsDir
     {
         return $this->_pluginDirectory;
     }
@@ -110,7 +111,7 @@ abstract class AbstractPluginLoader extends \Yana\Core\StdObject implements \Ser
     /**
      * @return  \Yana\Plugins\Dependencies\IsPluginContainer
      */
-    protected function _getContainer()
+    protected function _getContainer(): \Yana\Plugins\Dependencies\IsPluginContainer
     {
         return $this->_container;
     }
@@ -121,10 +122,9 @@ abstract class AbstractPluginLoader extends \Yana\Core\StdObject implements \Ser
      * @param   string  $pluginName  identifier of the plugin to check
      * @return  bool
      */
-    public function isLoaded($pluginName)
+    public function isLoaded(string $pluginName): bool
     {
-        assert(is_string($pluginName), 'Invalid argument $pluginName: string expected');
-        return isset($this->_loadedPlugins[mb_strtolower("$pluginName")]);
+        return isset($this->_loadedPlugins[mb_strtolower($pluginName)]);
     }
 
     /**
@@ -137,10 +137,10 @@ abstract class AbstractPluginLoader extends \Yana\Core\StdObject implements \Ser
      * @param   string  $pluginName  identifier for the plugin
      * @return  bool
      */
-    public function isInstalled($pluginName)
+    public function isInstalled(string $pluginName): bool
     {
         assert(is_bool($this->_isLoaded), 'is_bool($this->_isLoaded)');
-        return (bool) ($this->_isLoaded && isset($this->_plugins[mb_strtolower("$pluginName")]));
+        return (bool) ($this->_isLoaded && isset($this->_plugins[mb_strtolower($pluginName)]));
     }
 
     /**
@@ -150,7 +150,7 @@ abstract class AbstractPluginLoader extends \Yana\Core\StdObject implements \Ser
      * @throws  \Yana\Core\Exceptions\NotReadableException  when an existing VDrive definition is not readable
      * @return  \Yana\Plugins\Collection
      */
-    public function loadPlugins(array $plugins)
+    public function loadPlugins(array $plugins): \Yana\Plugins\Collection
     {
         $this->_loadedPlugins = array();
         $collection = $this->_getPlugins();

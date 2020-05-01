@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Plugins;
 
@@ -67,7 +68,7 @@ abstract class AbstractPlugin extends \stdClass implements \Yana\IsPlugin
      *
      * @return  \Yana\Plugins\Dependencies\IsPluginContainer
      */
-    private function _getDependencyContainer()
+    private function _getDependencyContainer(): \Yana\Plugins\Dependencies\IsPluginContainer
     {
         if (!isset($this->_dependencyContainer)) {
             $this->_dependencyContainer = self::$_fallbackDependencyContainer;
@@ -87,7 +88,7 @@ abstract class AbstractPlugin extends \stdClass implements \Yana\IsPlugin
      * @return  \Yana\IsPlugin
      * @throws  \Yana\Core\Exceptions\NotFoundException  when the plugin or its base-class was not found
      */
-    public static function loadPlugin($name, \Yana\Files\IsDir $fromDirectory, \Yana\Plugins\Dependencies\IsPluginContainer $container)
+    public static function loadPlugin($name, \Yana\Files\IsDir $fromDirectory, \Yana\Plugins\Dependencies\IsPluginContainer $container): \Yana\IsPlugin
     {
         assert(is_string($name), 'Invalid argument $name: string expected');
 
@@ -126,7 +127,7 @@ abstract class AbstractPlugin extends \stdClass implements \Yana\IsPlugin
     /**
      * @return  \Yana\Application
      */
-    protected function _getApplication()
+    protected function _getApplication(): \Yana\Application
     {
         return $this->_getDependencyContainer()->getApplication();
     }
@@ -134,7 +135,7 @@ abstract class AbstractPlugin extends \stdClass implements \Yana\IsPlugin
     /**
      * @return  \Yana\Security\Sessions\IsWrapper
      */
-    protected function _getSession()
+    protected function _getSession(): \Yana\Security\Sessions\IsWrapper
     {
         return $this->_getDependencyContainer()->getSession();
     }
@@ -142,7 +143,7 @@ abstract class AbstractPlugin extends \stdClass implements \Yana\IsPlugin
     /**
      * @return  \Yana\Http\IsFacade
      */
-    protected function _getRequest()
+    protected function _getRequest(): \Yana\Http\IsFacade
     {
         return $this->_getDependencyContainer()->getRequest();
     }
@@ -150,7 +151,7 @@ abstract class AbstractPlugin extends \stdClass implements \Yana\IsPlugin
     /**
      * @return  \Yana\Security\IsFacade
      */
-    protected function _getSecurityFacade()
+    protected function _getSecurityFacade(): \Yana\Security\IsFacade
     {
         return $this->_getApplication()->getSecurity();
     }
@@ -158,7 +159,7 @@ abstract class AbstractPlugin extends \stdClass implements \Yana\IsPlugin
     /**
      * @return  \Yana\Plugins\Facade
      */
-    protected function _getPluginsFacade()
+    protected function _getPluginsFacade(): \Yana\Plugins\Facade
     {
         return $this->_getApplication()->getPlugins();
     }
@@ -176,10 +177,8 @@ abstract class AbstractPlugin extends \stdClass implements \Yana\IsPlugin
      *                           or instance of \Yana\Db\Ddl\Database
      * @return  \Yana\Db\IsConnection
      */
-    protected function _connectToDatabase($schema)
+    protected function _connectToDatabase(string $schema): \Yana\Db\IsConnection
     {
-        assert(is_string($schema), 'Invalid argument $schema: string expected');
-
         return $this->_getApplication()->connect($schema);
     }
 

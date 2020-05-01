@@ -125,11 +125,9 @@ class Facade extends \Yana\Core\StdObject implements \Yana\Report\IsReportable, 
     /**
      * Get dependency injection container.
      *
-     * Defaults to NULL.
-     *
      * @return  \Yana\Plugins\Dependencies\IsContainer
      */
-    protected function _getDependencies()
+    protected function _getDependencies(): \Yana\Plugins\Dependencies\IsContainer
     {
         return $this->_dependencies;
     }
@@ -138,9 +136,9 @@ class Facade extends \Yana\Core\StdObject implements \Yana\Report\IsReportable, 
      * Create instance of plugin loader.
      *
      * @param   \Yana\Application  $application  injected dependency
-     * @return  \Yana\Plugins\Loaders\IsLoader
+     * @return  \Yana\Plugins\Loaders\IsPluginLoader
      */
-    protected function _createPluginLoader(\Yana\Application $application)
+    protected function _createPluginLoader(\Yana\Application $application): \Yana\Plugins\Loaders\IsPluginLoader
     {
         $container = new \Yana\Plugins\Dependencies\PluginContainer($application, $this->_getDependencies()->getSession());
         return new \Yana\Plugins\Loaders\PluginLoader($this->getPluginDirectory(), $container);
@@ -151,7 +149,7 @@ class Facade extends \Yana\Core\StdObject implements \Yana\Report\IsReportable, 
      *
      * @return  \Yana\Plugins\Loaders\IsRegistryLoader
      */
-    protected function _getRegistryLoader()
+    protected function _getRegistryLoader(): \Yana\Plugins\Loaders\IsRegistryLoader
     {
         if (!isset($this->_registryLoader)) {
             $this->_registryLoader = new \Yana\Plugins\Loaders\RegistryLoader($this->getPluginDirectory());
@@ -162,9 +160,9 @@ class Facade extends \Yana\Core\StdObject implements \Yana\Report\IsReportable, 
     /**
      * Get instance of registry loader.
      *
-     * @return  \Yana\Plugins\Events\Dispatcher
+     * @return  \Yana\Plugins\Events\IsDispatcher
      */
-    protected static function _getDispatcher()
+    protected static function _getDispatcher(): \Yana\Plugins\Events\IsDispatcher
     {
         if (!isset(self::$_dispatcher)) {
             self::$_dispatcher = new \Yana\Plugins\Events\Dispatcher();
@@ -198,7 +196,7 @@ class Facade extends \Yana\Core\StdObject implements \Yana\Report\IsReportable, 
      *
      * @return  \Yana\Plugins\Repositories\IsRepository
      */
-    private function _getRepository()
+    private function _getRepository(): \Yana\Plugins\Repositories\IsRepository
     {
         if (empty($this->_repository)) {
             $this->_repository = $this->rebuildPluginRepository();
@@ -214,7 +212,7 @@ class Facade extends \Yana\Core\StdObject implements \Yana\Report\IsReportable, 
      *
      * @return  \Yana\Plugins\Configs\IsClassCollection
      */
-    public function getPluginConfigurations()
+    public function getPluginConfigurations(): \Yana\Plugins\Configs\IsClassCollection
     {
         return $this->_getRepository()->getPlugins();
     }
@@ -235,10 +233,8 @@ class Facade extends \Yana\Core\StdObject implements \Yana\Report\IsReportable, 
      * @throws  \Yana\Core\Exceptions\InvalidActionException  when the event is undefined
      * @throws  \Exception                                    plugins may throw arbitrary exceptions on failure
      */
-    public function sendEvent($action, array $args, \Yana\Application $application)
+    public function sendEvent(string $action, array $args, \Yana\Application $application)
     {
-        assert(is_string($action), 'Invalid argument $action: string expected');
-
         // event must be defined
         $config = $this->getEventConfiguration($action);
         if (!($config instanceof \Yana\Plugins\Configs\IsMethodConfiguration)) {
@@ -301,7 +297,7 @@ class Facade extends \Yana\Core\StdObject implements \Yana\Report\IsReportable, 
      *
      * @return  string
      */
-    public static function getLastEvent()
+    public static function getLastEvent(): string
     {
         return self::_getDispatcher()->getLastEvent();
     }
@@ -315,7 +311,7 @@ class Facade extends \Yana\Core\StdObject implements \Yana\Report\IsReportable, 
      *
      * @return  string
      */
-    public function getFirstEvent()
+    public function getFirstEvent(): string
     {
         return self::_getDispatcher()->getFirstEvent();
     }
@@ -328,9 +324,9 @@ class Facade extends \Yana\Core\StdObject implements \Yana\Report\IsReportable, 
      *
      * If there is no action, the function will return NULL.
      *
-     * @return  \Yana\Plugins\Configs\EventRoute
+     * @return  \Yana\Plugins\Configs\EventRoute|NULL
      */
-    public function getNextEvent()
+    public function getNextEvent(): ?\Yana\Plugins\Configs\EventRoute
     {
         if (!isset(self::$_nextEvent)) {
             $dispatcher = self::_getDispatcher();
@@ -353,7 +349,7 @@ class Facade extends \Yana\Core\StdObject implements \Yana\Report\IsReportable, 
      *
      * @return  \Yana\Plugins\Repositories\IsRepository
      */
-    public function rebuildPluginRepository()
+    public function rebuildPluginRepository(): \Yana\Plugins\Repositories\IsRepository
     {
         $builder = new \Yana\Plugins\Repositories\Builder();
         $builder->addDirectory($this->getPluginDirectory());
@@ -371,10 +367,8 @@ class Facade extends \Yana\Core\StdObject implements \Yana\Report\IsReportable, 
      * @param   string  $pluginName  identifier for the plugin
      * @return  bool
      */
-    public function isActive($pluginName)
+    public function isActive(string $pluginName): bool
     {
-        assert(is_string($pluginName), 'Invalid argument $pluginName: string expected');
-
         $isActive = $this->isActiveByDefault($pluginName);
         if (!$isActive && !is_null($this->_getDependencies())) {
             $adapter = $this->_getDependencies()->getPluginAdapter();
@@ -398,9 +392,8 @@ class Facade extends \Yana\Core\StdObject implements \Yana\Report\IsReportable, 
      * @param   string  $pluginName  identifier for the plugin
      * @return  bool
      */
-    public function isActiveByDefault($pluginName)
+    public function isActiveByDefault(string $pluginName): bool
     {
-        assert(is_string($pluginName), 'Invalid argument $pluginName: string expected');
         return $this->_getRepository()->getPlugins()->isActiveByDefault($pluginName);
     }
 
@@ -411,9 +404,8 @@ class Facade extends \Yana\Core\StdObject implements \Yana\Report\IsReportable, 
      * @throws  \Yana\Core\Exceptions\NotFoundException  when no plugin with the given name is found
      * @return  $this
      */
-    public function activate($pluginName)
+    public function activate(string $pluginName)
     {
-        assert(is_string($pluginName), 'Invalid argument $pluginName: string expected');
         $this->_setActiveStatus($pluginName, true);
         return $this;
     }
@@ -425,9 +417,8 @@ class Facade extends \Yana\Core\StdObject implements \Yana\Report\IsReportable, 
      * @throws  \Yana\Core\Exceptions\NotFoundException  when no plugin with the given name is found
      * @return  $this
      */
-    public function deactivate($pluginName)
+    public function deactivate(string $pluginName)
     {
-        assert(is_string($pluginName), 'Invalid argument $pluginName: string expected');
         $this->_setActiveStatus($pluginName, false);
         return $this;
     }
@@ -438,11 +429,8 @@ class Facade extends \Yana\Core\StdObject implements \Yana\Report\IsReportable, 
      * @param  string  $pluginName  identifier for the plugin to be de-/activated
      * @param  bool    $isActive    new status of plugin (true = active, false = inactive)
      */
-    private function _setActiveStatus($pluginName, $isActive)
+    private function _setActiveStatus(string $pluginName, bool $isActive)
     {
-        assert(is_string($pluginName), 'Invalid argument $pluginName: string expected');
-        assert(is_bool($isActive), 'Invalid argument $isActive: bool expected');
-
         $adapter = $this->_getDependencies()->getPluginAdapter();
         if ($adapter->offsetExists($pluginName)) {
             $entity = $adapter->offsetGet($pluginName);
@@ -474,7 +462,7 @@ class Facade extends \Yana\Core\StdObject implements \Yana\Report\IsReportable, 
      * @return  \Yana\Files\IsReadable
      * @throws  \Yana\Core\Exceptions\NotFoundException  when no such file is defined
      */
-    public function getFileObjectFromVirtualDrive(string $virtualPath)
+    public function getFileObjectFromVirtualDrive(string $virtualPath): \Yana\Files\IsReadable
     {
         return $this->_getRegistryLoader()->getFileObjectFromRegistry($virtualPath);
     }
@@ -535,10 +523,8 @@ class Facade extends \Yana\Core\StdObject implements \Yana\Report\IsReportable, 
      * @since   3.1.0
      * @throws  \Yana\Core\Exceptions\NotReadableException  when an existing VDrive definition is not readable
      */
-    public function getPluginConfiguration($pluginName)
+    public function getPluginConfiguration(string $pluginName): \Yana\Plugins\Configs\IsClassConfiguration
     {
-        assert(is_string($pluginName), 'Wrong type for argument 1. String expected');
-
         /**
          * @todo check if this is necessary
          * $this->_loadPlugin($pluginName);
@@ -558,9 +544,30 @@ class Facade extends \Yana\Core\StdObject implements \Yana\Report\IsReportable, 
      * @return  array
      * @since   3.1.0
      */
-    public function getPluginNames()
+    public function getPluginNames(): array
     {
         return array_keys($this->getPluginConfigurations()->toArray());
+    }
+
+    /**
+     * Finds, loads, and returns the requested registry.
+     *
+     * Each plugins may have a virtual drive associated to it.
+     * You will find the drive definition in the plugin's directory named "[plugin_name].drive.xml".
+     *
+     * This function converts the plugin name to a file path, checks if the file exists,
+     * loads it, creates the virtual drive, builds the plugin's registry based on that drive, and returns it.
+     *
+     * Since, obviously, the build process described above is complicated, this is a convenient short hand.
+     *
+     * @param   string  $pluginName  must resolve to a valid file path in plugins/$pluginName/$pluginName.drive.xml
+     * @return  \Yana\VDrive\IsRegistry
+     * @throws  \Yana\Core\Exceptions\NotFoundException     when a VDrive definition does not exist
+     * @throws  \Yana\Core\Exceptions\NotReadableException  when an existing VDrive definition is not readable
+     */
+    public function getPluginRegistry(string $pluginName): \Yana\VDrive\IsRegistry
+    {
+        return $this->_getRegistryLoader()->loadRegistry($pluginName);
     }
 
     /**
@@ -576,7 +583,7 @@ class Facade extends \Yana\Core\StdObject implements \Yana\Report\IsReportable, 
      * @param   string  $eventName  identifier of the wanted event
      * @return  string
      */
-    public function getEventType($eventName = null)
+    public function getEventType(?string $eventName = null): string
     {
         if (is_null($eventName)) {
             $eventName = self::getLastEvent();
@@ -607,11 +614,10 @@ class Facade extends \Yana\Core\StdObject implements \Yana\Report\IsReportable, 
      * If no such event exists, this function will return NULL instead.
      *
      * @param   string  $eventName  identifier of the wanted event
-     * @return  \Yana\Plugins\Configs\IsMethodConfiguration
+     * @return  \Yana\Plugins\Configs\IsMethodConfiguration|NULL
      */
-    public function getEventConfiguration($eventName)
+    public function getEventConfiguration(string $eventName): ?\Yana\Plugins\Configs\IsMethodConfiguration
     {
-        assert(is_string($eventName), 'Invalid argument $eventName: string expected');
         return $this->getEventConfigurations()->offsetGet($eventName);
     }
 
@@ -620,7 +626,7 @@ class Facade extends \Yana\Core\StdObject implements \Yana\Report\IsReportable, 
      *
      * @return  \Yana\Plugins\Configs\MethodCollection
      */
-    public function getEventConfigurations()
+    public function getEventConfigurations(): \Yana\Plugins\Configs\MethodCollection
     {
         return $this->_getRepository()->getEvents();
     }
@@ -634,9 +640,8 @@ class Facade extends \Yana\Core\StdObject implements \Yana\Report\IsReportable, 
      * @param   string  $eventName  identifier of the event
      * @return  bool
      */
-    public function isEvent($eventName)
+    public function isEvent(string $eventName): bool
     {
-        assert(is_string($eventName), 'Invalid argument $eventName: string expected');
         return $this->_getRepository()->isEvent($eventName);
     }
 
@@ -646,9 +651,8 @@ class Facade extends \Yana\Core\StdObject implements \Yana\Report\IsReportable, 
      * @param   string  $pluginName  identifier of the plugin to check
      * @return  bool
      */
-    public function isLoaded($pluginName)
+    public function isLoaded(string $pluginName): bool
     {
-        assert(is_string($pluginName), 'Invalid argument $pluginName: string expected');
         return $this->_pluginLoader instanceOf \Yana\Plugins\Loaders\IsLoader && $this->_pluginLoader->isLoaded($pluginName);
     }
 

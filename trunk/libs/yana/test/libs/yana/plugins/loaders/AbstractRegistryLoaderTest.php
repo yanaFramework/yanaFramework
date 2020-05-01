@@ -24,6 +24,7 @@
  * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Plugins\Loaders;
 
@@ -43,6 +44,10 @@ class MyRegistryLoader extends \Yana\Plugins\Loaders\AbstractRegistryLoader
         return new \Yana\VDrive\Registry($this->_getPluginDirectory()->getPath() . $name . '/' . $name . '.drive.xml');
     }
 
+    public function getCachedRegistryObject(string $pluginName): \Yana\VDrive\IsRegistry
+    {
+        return parent::_getCachedRegistryObject($pluginName);
+    }
 }
 
 /**
@@ -72,7 +77,7 @@ class AbstractRegistryLoaderTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        
+
     }
 
     /**
@@ -103,6 +108,49 @@ class AbstractRegistryLoaderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $this->object->loadRegistries(array('test', 'test')));
         $this->assertEquals($expected, $this->object->loadRegistries(array('')));
         $this->assertEquals($expected, $this->object->loadRegistries(array('no-such-file')));
+    }
+
+    /**
+     * @test
+     */
+    public function testGetFileObjectFromRegistry()
+    {
+        $file = $this->object->getFileObjectFromRegistry('test:/my.file');
+        $this->assertTrue($file instanceof \Yana\Files\IsReadable);
+        $this->assertTrue($file instanceof \Yana\Files\File);
+        $file2 = $this->object->getFileObjectFromRegistry('test:/my.file');
+        $this->assertSame($file, $file2);
+    }
+
+    /**
+     * @test
+     */
+    public function test_getCachedRegistryObjectRegistry()
+    {
+        $collection = $this->object->loadRegistries(array('test'));
+        $registry = $this->object->getCachedRegistryObject('test');
+        $this->assertSame($collection['test'], $registry);
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Plugins\Loaders\RegistryNotFoundException
+     */
+    public function test_getCachedRegistryObjectRegistryNotFoundException()
+    {
+        $this->object->getCachedRegistryObject('test');
+    }
+
+    /**
+     * @test
+     */
+    public function test__get()
+    {
+        $file = $this->object->{'test:/my.file'};
+        $this->assertTrue($file instanceof \Yana\Files\IsReadable);
+        $this->assertTrue($file instanceof \Yana\Files\File);
+        $file2 = $this->object->{'test:/my.file'};
+        $this->assertSame($file, $file2);
     }
 
     /**
