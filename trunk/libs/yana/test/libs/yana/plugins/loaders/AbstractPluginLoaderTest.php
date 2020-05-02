@@ -38,11 +38,8 @@ require_once __DIR__ . '/../../../../include.php';
  */
 class MyLoader extends \Yana\Plugins\Loaders\AbstractPluginLoader
 {
-    /**
-     * 
-     * @param type $name
-     */
-    public function loadPlugin($name)
+
+    public function loadPlugin(string $name): \Yana\IsPlugin
     {
         return new \Yana\Plugins\NullPlugin();
     }
@@ -59,7 +56,7 @@ class MyExceptionLoader extends \Yana\Plugins\Loaders\AbstractPluginLoader
      * 
      * @param type $name
      */
-    public function loadPlugin($name)
+    public function loadPlugin(string $name): \Yana\IsPlugin
     {
         throw new \Yana\Core\Exceptions\NotFoundException();
     }
