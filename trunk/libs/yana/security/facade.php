@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Security;
 
@@ -87,7 +88,7 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      * level. The check is added when the plugin is created.
      *
      * @param   \Yana\Security\Rules\IsRule  $rule  to be validated
-     * @return  self
+     * @return  $this
      */
     public function addSecurityRule(\Yana\Security\Rules\IsRule $rule)
     {
@@ -104,17 +105,13 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      * Returns bool(true) if the user's permission level is high enough to
      * execute the changes and bool(false) otherwise.
      *
-     * @param   string  $profileId  profile id
-     * @param   string  $action     action
-     * @param   string  $userName   user name
+     * @param   string|NULL  $profileId  profile id
+     * @param   string|NULL  $action     action
+     * @param   string       $userName   user name
      * @return  bool
      */
-    public function checkRules($profileId = null, $action = null, $userName = "")
+    public function checkRules(?string $profileId = null, ?string $action = null, string $userName = ""): bool
     {
-        assert(is_null($profileId) || is_string($profileId), 'Wrong type for argument $profileId. String expected');
-        assert(is_null($action) || is_string($action), 'Wrong type for argument $action. String expected');
-        assert(is_string($userName), 'Wrong type for argument $userName. String expected');
-
         /* Argument 1 */
         if (empty($profileId)) {
             $profileId = $this->_getContainer()->getProfileId();
@@ -155,9 +152,12 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
             $result = $this->_getContainer()->getRulesChecker()->checkRules($upperCaseProfileId, $lowerCaseAction, $user);
 
         } catch (\Yana\Security\Rules\Requirements\NotFoundException $e) {
+            // @codeCoverageIgnoreStart
+            // This is only thrown if the rules table is entirely empty.
             $this->_getContainer()->getLogger()->addLog($e->getMessage());
             $result = false;
             unset($e);
+            // @codeCoverageIgnoreEnd
         }
 
         assert(is_bool($result), 'is_bool($result)');
@@ -173,12 +173,8 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      * @param   string                                           $userName     user name
      * @return  bool
      */
-    public function checkByRequirement(\Yana\Security\Rules\Requirements\IsRequirement $requirement, $profileId, $action, $userName = "")
+    public function checkByRequirement(\Yana\Security\Rules\Requirements\IsRequirement $requirement, string $profileId, string $action, string $userName = ""): bool
     {
-        assert(is_string($profileId), 'Wrong type for argument $profileId. String expected');
-        assert(is_string($action), 'Wrong type for argument $action. String expected');
-        assert(is_string($userName), 'Wrong type for argument $userName. String expected');
-
         return (bool) $this->_getContainer()->getRulesChecker()->checkByRequirement($requirement, $profileId, $action, $this->_buildUserEntity($userName));
     }
 
@@ -191,7 +187,7 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      *
      * @return  array
      */
-    public function loadListOfGroups()
+    public function loadListOfGroups(): array
     {
         return $this->_getContainer()->getDataReader()->loadListOfGroups();
     }
@@ -205,7 +201,7 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      *
      * @return  array
      */
-    public function loadListOfRoles()
+    public function loadListOfRoles(): array
     {
         return $this->_getContainer()->getDataReader()->loadListOfRoles();
     }
@@ -217,7 +213,7 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      * @return  \Yana\Security\Data\Behaviors\IsBehavior
      * @throws  \Yana\Core\Exceptions\User\NotFoundException  if no such user is found in the database
      */
-    public function loadUser($userName = "")
+    public function loadUser(string $userName = ""): \Yana\Security\Data\Behaviors\IsBehavior
     {
         return $this->_buildUserEntity($userName);
     }
@@ -229,7 +225,7 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      *
      * @return  array
      */
-    public function loadListOfUsers()
+    public function loadListOfUsers(): array
     {
         return $this->_getContainer()->getUserAdapter()->getIds();
     }
@@ -243,10 +239,8 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      * @return  \Yana\Security\Data\Behaviors\IsBehavior
      * @throws  \Yana\Core\Exceptions\User\MailNotFoundException  when no such user exists
      */
-    public function findUserByMail($mail)
+    public function findUserByMail(string $mail): \Yana\Security\Data\Behaviors\IsBehavior
     {
-        assert(is_string($mail), 'Invalid argument $mail: string expected');
-
         return $this->_createUserBuilder()->buildFromUserMail($mail);
     }
 
@@ -259,10 +253,8 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      * @return  \Yana\Security\Data\Behaviors\IsBehavior
      * @throws  \Yana\Core\Exceptions\User\NotFoundException  when no such user exists
      */
-    public function findUserByRecoveryId($recoveryId)
+    public function findUserByRecoveryId(string $recoveryId): \Yana\Security\Data\Behaviors\IsBehavior
     {
-        assert(is_string($recoveryId), 'Invalid argument $recoveryId: string expected');
-
         return $this->_createUserBuilder()->buildFromRecoveryId($recoveryId);
     }
 
@@ -277,11 +269,8 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      * @throws  \Yana\Core\Exceptions\User\AlreadyExistsException  if another user with the same name already exists
      * @throws  \Yana\Db\CommitFailedException                     when the database entry could not be created
      */
-    public function createUser($userName, $mail)
+    public function createUser(string $userName, string $mail): \Yana\Security\Data\Behaviors\IsBehavior
     {
-        assert(is_string($userName), 'Wrong type for argument $userName. String expected');
-        assert(is_string($mail), 'Wrong type for argument $mail. String expected');
-
         if (empty($userName)) {
             throw new \Yana\Core\Exceptions\User\MissingNameException("No user name given.", \Yana\Log\TypeEnumeration::WARNING);
         }
@@ -326,16 +315,12 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
     public function createUserByFormData(array $formData)
     {
         assert(!isset($entity), '$entity already declared');
-        $entity = $this->_getContainer()->getUserAdapter()->toEntity($formData);
+        $entity = $this->_getContainer()->getUserAdapter()->toEntity($formData); // May throw MissingNameException
         $entity->setDataAdapter($this->_getContainer()->getUserAdapter());
         assert(!isset($builder), '$builder already declared');
         $builder = $this->_createUserBuilder();
         assert(!isset($user), '$user already declared');
         $user = $builder->__invoke($entity);
-
-        if ($user->getId() === "") {
-            throw new \Yana\Core\Exceptions\User\MissingNameException("No user name given.", \Yana\Log\TypeEnumeration::WARNING);
-        }
 
         if ($user->getMail() === "") {
             throw new \Yana\Core\Exceptions\User\MissingMailException("No mail address given.", \Yana\Log\TypeEnumeration::WARNING);
@@ -343,7 +328,7 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
 
         if ($builder->isExistingUserName($user->getId())) {
             throw new \Yana\Core\Exceptions\User\AlreadyExistsException(
-                "A user with the name '$userName' already exists.", \Yana\Log\TypeEnumeration::WARNING
+                "A user with the name '{$user->getId()}' already exists.", \Yana\Log\TypeEnumeration::WARNING
             );
         }
 
@@ -369,11 +354,8 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      * @throws  \Yana\Core\Exceptions\NotFoundException          when the given user does not exist
      * @throws  \Yana\Db\Queries\Exceptions\NotDeletedException  when the user may not be deleted for other reasons
      */
-    public function removeUser($userName, $allowUserToDeleteSelf = false)
+    public function removeUser(string $userName, bool $allowUserToDeleteSelf = false)
     {
-        assert(is_string($userName), 'Wrong type for argument $userName. String expected');
-        assert(is_bool($allowUserToDeleteSelf), 'Invalid argument $allowUserToDeleteSelf: bool expected');
-
         $upperCaseUserName = \Yana\Util\Strings::toUpperCase($userName);
         $user = $this->_buildUserEntity($upperCaseUserName); // throws NotFoundException
         // user should not delete himself
@@ -401,10 +383,8 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      * @param   string  $userName   user name
      * @return  bool
      */
-    public function isExistingUserName($userName)
+    public function isExistingUserName(string $userName): bool
     {
-        assert(is_string($userName), 'Wrong type for argument 1. String expected');
-
         return $this->_createUserBuilder()->isExistingUserName($userName);
     }
 

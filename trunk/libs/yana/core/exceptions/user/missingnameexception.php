@@ -36,7 +36,7 @@ namespace Yana\Core\Exceptions\User;
  * @package     yana
  * @subpackage  core
  */
-class MissingNameException extends \Yana\Core\Exceptions\User\UserException
+class MissingNameException extends \Yana\Core\Exceptions\InvalidArgumentException
 {
 
     /**

@@ -24,6 +24,7 @@
  * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Security\Data\Users;
 
@@ -74,7 +75,7 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        
+        $this->connection->getSchema()->setReadonly(false); // all schema instances are cached. So this needs to be reset
     }
 
     /**
@@ -197,6 +198,25 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(\mb_strtoupper($entity->getId()), $actual->getId());
         $this->assertEquals($entity->getMail(), $actual->getMail());
         $this->assertEquals("UNINITIALIZED", $actual->getPassword());
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\User\NotFoundException
+     */
+    public function testOffsetUnsetNotFoundException()
+    {
+        $this->object->offsetUnset('no-such-user');
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Db\Queries\Exceptions\NotDeletedException
+     */
+    public function testOffsetUnsetNotDeletedException()
+    {
+        $this->connection->getSchema()->setReadonly(true);
+        $this->object->offsetUnset('Testuser');
     }
 
     /**

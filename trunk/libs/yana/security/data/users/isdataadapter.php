@@ -60,6 +60,15 @@ interface IsDataAdapter extends \Yana\Data\Adapters\IsDataBaseAdapter
      */
     public function findUserByRecoveryId($recoveryId);
 
+    /**
+     * Unserializes the table-row to an entity object.
+     *
+     * @param   array  $formData  user data
+     * @return  \Yana\Data\Adapters\IsEntity
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the given data is invalid
+     */
+    public function toEntity(array $formData);
+
 }
 
 ?>

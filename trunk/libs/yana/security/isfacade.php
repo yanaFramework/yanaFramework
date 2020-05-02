@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Security;
 
@@ -51,7 +52,7 @@ interface IsFacade
      *
      * @throws  \Yana\Db\Queries\Exceptions\NotCreatedException  if new entries could not be inserted
      * @throws  \Yana\Db\Queries\Exceptions\NotDeletedException  if existing entries could not be deleted
-     * @return  self
+     * @return  $this
      */
     public function refreshPluginSecurityRules();
 
@@ -82,7 +83,7 @@ interface IsFacade
      * level. The check is added when the plugin is created.
      *
      * @param   \Yana\Security\Rules\IsRule  $rule  to be validated
-     * @return  self
+     * @return  $this
      */
     public function addSecurityRule(\Yana\Security\Rules\IsRule $rule);
 
@@ -95,12 +96,12 @@ interface IsFacade
      * Returns bool(true) if the user's permission level is high enough to
      * execute the changes and bool(false) otherwise.
      *
-     * @param   string  $profileId  profile id
-     * @param   string  $action     action
-     * @param   string  $userName   user name
+     * @param   string|NULL  $profileId  profile id
+     * @param   string|NULL  $action     action
+     * @param   string       $userName   user name
      * @return  bool
      */
-    public function checkRules($profileId = null, $action = null, $userName = "");
+    public function checkRules(?string $profileId = null, ?string $action = null, string $userName = ""): bool;
 
     /**
      * Check requirements against given rules.
@@ -111,7 +112,7 @@ interface IsFacade
      * @param   string                                           $userName     user name
      * @return  bool
      */
-    public function checkByRequirement(\Yana\Security\Rules\Requirements\IsRequirement $requirement, $profileId, $action, $userName = "");
+    public function checkByRequirement(\Yana\Security\Rules\Requirements\IsRequirement $requirement, string $profileId, string $action, string $userName = ""): bool;
 
     /**
      * Get user groups.
@@ -122,7 +123,7 @@ interface IsFacade
      *
      * @return  array
      */
-    public function loadListOfGroups();
+    public function loadListOfGroups(): array;
 
     /**
      * Get user roles.
@@ -133,7 +134,7 @@ interface IsFacade
      *
      * @return  array
      */
-    public function loadListOfRoles();
+    public function loadListOfRoles(): array;
 
     /**
      * Returns a list of all users.
@@ -142,7 +143,7 @@ interface IsFacade
      *
      * @return  array
      */
-    public function loadListOfUsers();
+    public function loadListOfUsers(): array;
 
     /**
      * Build a user object from database and return it.
@@ -151,7 +152,7 @@ interface IsFacade
      * @return  \Yana\Security\Data\Behaviors\IsBehavior
      * @throws  \Yana\Core\Exceptions\User\NotFoundException  if no such user is found in the database
      */
-    public function loadUser($userName = "");
+    public function loadUser(string $userName = ""): \Yana\Security\Data\Behaviors\IsBehavior;
 
     /**
      * Loads and returns an user account from the database.
@@ -160,7 +161,7 @@ interface IsFacade
      * @return  \Yana\Security\Data\Behaviors\IsBehavior
      * @throws  \Yana\Core\Exceptions\User\MailNotFoundException  when no such user exists
      */
-    public function findUserByMail($mail);
+    public function findUserByMail(string $mail): \Yana\Security\Data\Behaviors\IsBehavior;
 
     /**
      * Finds and returns an user account from the database.
@@ -171,7 +172,7 @@ interface IsFacade
      * @return  \Yana\Security\Data\Behaviors\IsBehavior
      * @throws  \Yana\Core\Exceptions\User\NotFoundException  when no such user exists
      */
-    public function findUserByRecoveryId($recoveryId);
+    public function findUserByRecoveryId(string $recoveryId): \Yana\Security\Data\Behaviors\IsBehavior;
 
     /**
      * Create a new user.
@@ -184,7 +185,7 @@ interface IsFacade
      * @throws  \Yana\Core\Exceptions\User\AlreadyExistsException  if another user with the same name already exists
      * @throws  \Yana\Db\CommitFailedException                     when the database entry could not be created
      */
-    public function createUser($userName, $mail);
+    public function createUser(string $userName, string $mail): \Yana\Security\Data\Behaviors\IsBehavior;
 
     /**
      * Create a new user using form data.
@@ -203,13 +204,13 @@ interface IsFacade
      *
      * @param   string  $userName               user name
      * @param   bool    $allowUserToDeleteSelf  overwrites self-check, use with caution!
-     * @return  \Yana\Security\Facade
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException   when no valid user name given
      * @throws  \Yana\Core\Exceptions\User\DeleteAdminException  when trying to delete the "ADMINISTRATOR" default account
      * @throws  \Yana\Core\Exceptions\NotFoundException          when the given user does not exist
      * @throws  \Yana\Db\Queries\Exceptions\NotDeletedException  when the user may not be deleted for other reasons
      */
-    public function removeUser($userName, $allowUserToDeleteSelf = false);
+    public function removeUser(string $userName, bool $allowUserToDeleteSelf = false);
 
     /**
      * Check if user exists.
@@ -220,7 +221,7 @@ interface IsFacade
      * @param   string  $userName   user name
      * @return  bool
      */
-    public function isExistingUserName($userName);
+    public function isExistingUserName(string $userName): bool;
 
 }
 

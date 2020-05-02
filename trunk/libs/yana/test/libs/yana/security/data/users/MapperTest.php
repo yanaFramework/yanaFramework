@@ -66,9 +66,9 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
+     * @expectedException \Yana\Core\Exceptions\User\MissingNameException
      */
-    public function testToEntityInvalidArgumentException()
+    public function testToEntityMissingNameException()
     {
         $this->object->toEntity(array());
     }

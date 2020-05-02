@@ -147,6 +147,24 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testLoadListOfUsers()
+    {
+        $list = $this->object->loadListOfUsers();
+        $this->assertContains('ADMINISTRATOR', $list);
+    }
+
+    /**
+     * @test
+     */
+    public function testFindUserByRecoveryId()
+    {
+        $user = $this->object->loadUser('testuser');
+        $this->assertSame($user->getId(), $this->object->findUserByRecoveryId('RecoveryID')->getId());
+    }
+
+    /**
+     * @test
+     */
     public function testFindUserByMail()
     {
         $this->assertTrue($this->object->findUserByMail('anymail@domain.tld') instanceof \Yana\Security\Data\Behaviors\IsBehavior);
@@ -201,6 +219,63 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('mail@domain.tld', $user->getMail());
         $this->assertEquals('TEST', $actualUser->getId());
         $this->assertEquals('mail@domain.tld', $actualUser->getMail());
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\User\MissingNameException
+     */
+    public function testCreateUserByFormDataMissingNameException()
+    {
+        $formData = array();
+        $this->object->createUserByFormData($formData);
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\User\MissingMailException
+     */
+    public function testCreateUserByFormDataMissingMailException()
+    {
+        $formData = array(\Yana\Security\Data\Tables\UserEnumeration::ID => '123');
+        $this->object->createUserByFormData($formData);
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\User\AlreadyExistsException
+     */
+    public function testCreateUserByFormDataAlreadyExistsException()
+    {
+        $this->schema->setReadonly(true);
+        $formData = array(
+            \Yana\Security\Data\Tables\UserEnumeration::ID => 'testuser',
+            \Yana\Security\Data\Tables\UserEnumeration::MAIL => 'test@mail.tld');
+        $this->object->createUserByFormData($formData);
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Db\CommitFailedException
+     */
+    public function testCreateUserByFormDataCommitFailedException()
+    {
+        $this->schema->setReadonly(true);
+        $formData = array(
+            \Yana\Security\Data\Tables\UserEnumeration::ID => '123',
+            \Yana\Security\Data\Tables\UserEnumeration::MAIL => 'test@mail.tld');
+        $this->object->createUserByFormData($formData);
+    }
+
+    /**
+     * @test
+     */
+    public function testCreateUserByFormData()
+    {
+        $formData = array(
+            \Yana\Security\Data\Tables\UserEnumeration::ID => '123',
+            \Yana\Security\Data\Tables\UserEnumeration::MAIL => 'test@mail.tld');
+        $this->object->createUserByFormData($formData);
     }
 
     /**
