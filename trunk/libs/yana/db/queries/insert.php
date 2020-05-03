@@ -473,17 +473,20 @@ class Insert extends \Yana\Db\Queries\AbstractQuery implements \Yana\Db\Queries\
     {
         foreach ($files as $file)
         {
+            if (!$file instanceof \Yana\Http\Uploads\IsFile) {
+                continue;
+            }
             /* @var $column \Yana\Db\Ddl\Column */
-            $column = $file['column'];
+            $column = $file->getTargetColumn();
             $columnName = $column->getName();
             $fileId = $this->values[$columnName];
             if (!empty($fileId)) {
                 assert(!isset($helper), 'Cannot redeclare var $helper');
-                if ($column->getType() === 'image') {
-                    $helper = new \Yana\Db\Binaries\Uploads\FileUploader();
+                if ($column->getType() === \Yana\Db\Ddl\ColumnTypeEnumeration::IMAGE) {
+                    $helper = new \Yana\Db\Binaries\Uploads\ImageUploader();
                     $helper->upload($file, $fileId, $column->getImageSettings());
                 } else {
-                    $helper = new \Yana\Db\Binaries\Uploads\ImageUploader();
+                    $helper = new \Yana\Db\Binaries\Uploads\FileUploader();
                     $helper->upload($file, $fileId);
                 }
                 unset($helper);

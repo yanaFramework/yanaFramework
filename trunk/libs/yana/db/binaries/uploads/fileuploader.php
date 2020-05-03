@@ -58,7 +58,7 @@ class FileUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
      * PHP-Code:
      * <code>
      * // get a random filename
-     * $column = $db->schema->{'my_table'}->{'my_file'};
+     * $column = $db->getSchema()->getTable('my_table')->getColumn('my_file');
      * $idGenerator = new \Yana\Db\Helpers\IdGenerator();
      * $fileId = $idGenerator($column);
      * // and assign it to your row to update/insert
@@ -66,24 +66,29 @@ class FileUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
      *
      * // upload the file
      * $helper = new \Yana\Db\Binaries\Uploads\FileUploader();
-     * $filename = $helper->upload($_FILES['my_file'], $fileId);
+     * $file = new \Yana\Http\Uploads\File(
+     *     $_FILES['my_file']['name'],
+     *     $_FILES['my_file']['type'],
+     *     $_FILES['my_file']['tmp_name'],
+     *     $_FILES['my_file']['size'],
+     *     $_FILES['my_file']['error']
+     * );
+     * $filename = $helper->upload($file, $fileId);
      * // and update/insert the row as usual
      * $db->insert("my_table", $row);
      * </code>
      *
-     * @param   array   $file    item taken from array $_FILES
-     * @param   string  $fileId  name of target file
+     * @param   \Yana\Http\Uploads\IsFile $file    representing one entry in global $_FILES array
+     * @param   string                    $fileId  name of target file
      * @return  string
      */
-    public function upload(array $file, $fileId)
+    public function upload(\Yana\Http\Uploads\IsFile $file, string $fileId)
     {
-        assert(is_string($fileId), 'Wrong argument type for argument 3. String expected');
-
         assert(!isset($dir), 'Cannot redeclare var $dir');
         $dir = $this->_getConfiguration()->getDirectory();
 
         $fileTempName = $this->_getTempName($file);
-        $filename = $this->_getOriginalName($file);
+        $filename = $file->getName();
 
         /* handle errors */
         if (!is_file($fileTempName) || !is_readable($fileTempName)) {
@@ -104,8 +109,8 @@ class FileUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
          */
         assert(!isset($mimetype), 'Cannot redeclare var $mimetype');
         $mimetype = "";
-        if (!empty($file['type'])) {
-            $mimetype = preg_replace('/\s/', ' ', (string) $file['type']);
+        if ($file->getMimeType() > "") {
+            $mimetype = preg_replace('/\s/', ' ', $file->getMimeType());
         }
 
         $this->_createCompressedFile($path, $filename, $fileTempName, $mimetype);
@@ -121,7 +126,7 @@ class FileUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
      * @param  string  $mimetype      MIME-type of source
      * @codeCoverageIgnore
      */
-    protected function _createCompressedFile($path, $filename, $fileTempName, $mimetype)
+    protected function _createCompressedFile(string $path, string $filename, string $fileTempName, string $mimetype)
     {
         assert(!isset($gz), 'Cannot redeclare var $gz');
         $gz = gzopen($path, 'w9');

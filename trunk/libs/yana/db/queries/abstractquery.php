@@ -1946,15 +1946,15 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
             return $this;
         }
         // iterate over list of file-columns
-        foreach ($files as $column)
+        foreach ($files as $file)
         {
-            if (is_array($column) && !empty($column['error'])) {
+            if ($file instanceof \Yana\Http\Uploads\File) {
                 continue;
             }
+            $column = $file->getTargetColumn();
             if (!$column instanceof \Yana\Db\Ddl\Column) {
-                $column = $column['column'];
+                continue;
             }
-            assert($column instanceof \Yana\Db\Ddl\Column, '$column instanceof \Yana\Db\Ddl\Column');
             $columnName = mb_strtoupper($column->getName());
             // delete old files
             if (isset($values[$columnName]) && $values[$columnName] > "") {

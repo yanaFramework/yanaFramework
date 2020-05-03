@@ -70,11 +70,25 @@ abstract class AbstractUploadWrapper extends \Yana\Core\StdObject implements \Ya
      * @param   mixed  $something  to check
      * @return  bool
      */
-    protected function _isFile($something)
+    protected function _isFileEntry($something)
     {
-        return is_array($something) && !empty($something['name']) && is_string($something['name'])
-            && isset($something['type']) && is_string($something['type']) && !empty($something['tmp_name']) && is_string($something['tmp_name'])
-            && isset($something['size']) && is_int($something['size']) && isset($something['error']) && is_int($something['error']);
+        return is_array($something)
+            && isset($something['name']) && is_string($something['name'])
+            && isset($something['type']) && is_string($something['type'])
+            && isset($something['tmp_name']) && is_string($something['tmp_name'])
+            && isset($something['size']) && is_int($something['size'])
+            && isset($something['error']) && is_int($something['error']);
+    }
+
+    /**
+     * Returns bool(true) if input looks like file settings.
+     *
+     * @param   mixed  $something  to check
+     * @return  bool
+     */
+    protected function _isValidFile($something)
+    {
+        return $this->_isFileEntry($something) && $something['name'] > "" && $something['tmp_name'] > "";
     }
 
     /**
@@ -91,7 +105,7 @@ abstract class AbstractUploadWrapper extends \Yana\Core\StdObject implements \Ya
             assert(!isset($couldBeFile), 'Cannot redeclare var $couldBeFile');
             foreach ($something as $couldBeFile)
             {
-                if (!$this->_isFile($couldBeFile)) {
+                if (!$this->_isFileEntry($couldBeFile)) {
                     $isList = false;
                     break;
                 }

@@ -26,6 +26,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Http\Uploads;
 
@@ -67,6 +68,11 @@ class File extends \Yana\Core\StdObject implements \Yana\Http\Uploads\IsFile
     private $_errorCode = 0;
 
     /**
+     * @var  \Yana\Db\Ddl\Column
+     */
+    private $_targetColumn = null;
+
+    /**
      * Initialize file.
      *
      * @param  string  $name           file name provided by client
@@ -75,13 +81,13 @@ class File extends \Yana\Core\StdObject implements \Yana\Http\Uploads\IsFile
      * @param  int     $sizeInBytes    size of file in Bytes
      * @param  int     $errorCode      error code (0 = no error)
      */
-    public function __construct($name, $mimeType, $temporaryPath, $sizeInBytes, $errorCode)
+    public function __construct(string $name, string $mimeType, string $temporaryPath, int $sizeInBytes, int $errorCode)
     {
-        $this->_name = (string) $name;
-        $this->_mimeType = (string) $mimeType;
-        $this->_temporaryPath = (string) $temporaryPath;
-        $this->_sizeInBytes = (int) $sizeInBytes;
-        $this->_errorCode = (int) $errorCode;
+        $this->_name = $name;
+        $this->_mimeType = $mimeType;
+        $this->_temporaryPath = $temporaryPath;
+        $this->_sizeInBytes = $sizeInBytes;
+        $this->_errorCode = $errorCode;
     }
 
     /**
@@ -89,7 +95,7 @@ class File extends \Yana\Core\StdObject implements \Yana\Http\Uploads\IsFile
      *
      * @return  string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->_name;
     }
@@ -99,7 +105,7 @@ class File extends \Yana\Core\StdObject implements \Yana\Http\Uploads\IsFile
      *
      * @return  string
      */
-    public function getMimeType()
+    public function getMimeType(): string
     {
         return $this->_mimeType;
     }
@@ -111,7 +117,7 @@ class File extends \Yana\Core\StdObject implements \Yana\Http\Uploads\IsFile
      *
      * @return  string
      */
-    public function getTemporaryPath()
+    public function getTemporaryPath(): string
     {
         return $this->_temporaryPath;
     }
@@ -123,9 +129,35 @@ class File extends \Yana\Core\StdObject implements \Yana\Http\Uploads\IsFile
      *
      * @return  int
      */
-    public function getSizeInBytes()
+    public function getSizeInBytes(): int
     {
         return $this->_sizeInBytes;
+    }
+
+    /**
+     * Returns the designated target column.
+     *
+     * This defaults to NULL.
+     *
+     * @return \Yana\Db\Ddl\Column|NULL
+     */
+    public function getTargetColumn(): ?\Yana\Db\Ddl\Column
+    {
+        return $this->_targetColumn;
+    }
+
+    /**
+     * Set designated target column.
+     *
+     * This is where the value is supposed to be stored in the database (if any).
+     *
+     * @param   \Yana\Db\Ddl\Column  $targetColumn  designated target column
+     * @return  $this
+     */
+    public function setTargetColumn(?\Yana\Db\Ddl\Column $targetColumn = null)
+    {
+        $this->_targetColumn = $targetColumn;
+        return $this;
     }
 
     /**
@@ -135,7 +167,7 @@ class File extends \Yana\Core\StdObject implements \Yana\Http\Uploads\IsFile
      *
      * @return  int
      */
-    public function getErrorCode()
+    public function getErrorCode(): int
     {
         return $this->_errorCode;
     }
@@ -147,7 +179,7 @@ class File extends \Yana\Core\StdObject implements \Yana\Http\Uploads\IsFile
      *
      * @return  bool
      */
-    public function isOkay()
+    public function isOkay(): bool
     {
         return $this->getErrorCode() === \Yana\Http\Uploads\ErrorEnumeration::OK;
     }
@@ -159,7 +191,7 @@ class File extends \Yana\Core\StdObject implements \Yana\Http\Uploads\IsFile
      *
      * @return  bool
      */
-    public function isFileTooBigByIni()
+    public function isFileTooBigByIni(): bool
     {
         return $this->getErrorCode() === \Yana\Http\Uploads\ErrorEnumeration::INI_SIZE;
     }
@@ -171,7 +203,7 @@ class File extends \Yana\Core\StdObject implements \Yana\Http\Uploads\IsFile
      *
      * @return  bool
      */
-    public function isFileTooBigByForm()
+    public function isFileTooBigByForm(): bool
     {
         return $this->getErrorCode() === \Yana\Http\Uploads\ErrorEnumeration::FORM_SIZE;
     }
@@ -183,7 +215,7 @@ class File extends \Yana\Core\StdObject implements \Yana\Http\Uploads\IsFile
      *
      * @return  bool
      */
-    public function isIncompleteUpload()
+    public function isIncompleteUpload(): bool
     {
         return $this->getErrorCode() === \Yana\Http\Uploads\ErrorEnumeration::PARTIAL;
     }
@@ -195,7 +227,7 @@ class File extends \Yana\Core\StdObject implements \Yana\Http\Uploads\IsFile
      *
      * @return  bool
      */
-    public function isNotUploaded()
+    public function isNotUploaded(): bool
     {
         return $this->getErrorCode() === \Yana\Http\Uploads\ErrorEnumeration::NO_FILE;
     }
@@ -208,7 +240,7 @@ class File extends \Yana\Core\StdObject implements \Yana\Http\Uploads\IsFile
      *
      * @return  bool
      */
-    public function isMissingTemporaryDirectory()
+    public function isMissingTemporaryDirectory(): bool
     {
         return $this->getErrorCode() === \Yana\Http\Uploads\ErrorEnumeration::NO_TMP_DIR;
     }
@@ -221,7 +253,7 @@ class File extends \Yana\Core\StdObject implements \Yana\Http\Uploads\IsFile
      *
      * @return  bool
      */
-    public function isUnableToWriteFile()
+    public function isUnableToWriteFile(): bool
     {
         return $this->getErrorCode() === \Yana\Http\Uploads\ErrorEnumeration::CANT_WRITE;
     }
@@ -233,7 +265,7 @@ class File extends \Yana\Core\StdObject implements \Yana\Http\Uploads\IsFile
      *
      * @return  bool
      */
-    public function isExtensionError()
+    public function isExtensionError(): bool
     {
         return $this->getErrorCode() === \Yana\Http\Uploads\ErrorEnumeration::EXTENSION;
     }

@@ -37,7 +37,7 @@ require_once __DIR__ . '/../../../../../include.php';
  */
 class MyFileUploader extends \Yana\Db\Binaries\Uploads\FileUploader
 {
-    protected function _createCompressedFile($path, $filename, $fileTempName, $mimetype)
+    protected function _createCompressedFile(string $path, string $filename, string $fileTempName, string $mimetype)
     {
     }
 
@@ -84,12 +84,7 @@ class FileUploaderTest extends \PHPUnit_Framework_TestCase
      */
     public function testUpload()
     {
-        $file = array(
-            'error' => \UPLOAD_ERR_OK,
-            'name' => 'original',
-            'tmp_name' => __FILE__,
-            'type' => 'text/plain'
-        );
+        $file = new \Yana\Http\Uploads\File('original', 'text/plain', __FILE__, 0, UPLOAD_ERR_OK);
         $this->assertSame($this->configuration->getDirectory() . '/Test.gz', $this->object->upload($file, 'Test'));
     }
 
@@ -99,11 +94,7 @@ class FileUploaderTest extends \PHPUnit_Framework_TestCase
      */
     public function testUploadUploadFailedException()
     {
-        $file = array(
-            'error' => \UPLOAD_ERR_OK,
-            'name' => 'original',
-            'tmp_name' => 'nonexistingfile'
-        );
+        $file = new \Yana\Http\Uploads\File('original', 'text/plain', 'nonexistingfile', 0, UPLOAD_ERR_OK);
         $this->object->upload($file, 'Test');
     }
 

@@ -234,14 +234,26 @@ class ValueSanitizer extends \Yana\Core\StdObject implements \Yana\Db\Helpers\Is
                     return null;
 
                 } catch (\Yana\Core\Exceptions\Files\DeletedException $e) {
-                    $files[] = array('column' => $column); // This is intended behavior, the Insert class will look for this
+                    $file = new \Yana\Http\Uploads\File('', '', '', 0, 0);
+                    $file->setTargetColumn($column);
+                    $files[] = $file; // This is intended behavior, the Insert class will look for this
                     return "";
                 }
 
                 if (is_string($fileId)) {
                     return $fileId;
+
+                } elseif (is_array($value)) {
+                    $value = new \Yana\Http\Uploads\File(
+                        (string) (isset($value['name']) ? $value['name'] : ''),
+                        (string) (isset($value['type']) ? $value['type'] : ''),
+                        (string) (isset($value['tmp_name']) ? $value['tmp_name'] : ''),
+                        (int) (isset($value['size']) ? $value['size'] : 0),
+                        (int) (isset($value['error']) ? $value['error'] : 0)
+                    );
                 }
-                $value['column'] = $column;
+                assert(is_object($value) && $value instanceof \Yana\Http\Uploads\File);
+                $value->setTargetColumn($column);
                 $files[] = $value;
                 $idGenerator = new \Yana\Db\Helpers\IdGenerator();
                 return $idGenerator($column);

@@ -47,7 +47,7 @@ class ImageUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
      * PHP-Code:
      * <code>
      * // get a random filename
-     * $column = $db->schema->{'my_table'}->{'my_file'};
+     * $column = $db->getSchema()->getTable('my_table')->getColumn('my_file');
      * $fileId = \Yana\Db\Blob::getNewFileId($column);
      * // and assign it to your row to update/insert
      * $row['my_file'] = $fileId;
@@ -57,30 +57,37 @@ class ImageUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
      *
      * // upload the image
      * $helper = new \Yana\Db\Binaries\Uploads\ImageUploader();
-     * $filename = $helper->upload($_FILES['my_file'], $fileId, $settings);
+     * $file = new \Yana\Http\Uploads\File(
+     *     $_FILES['my_file']['name'],
+     *     $_FILES['my_file']['type'],
+     *     $_FILES['my_file']['tmp_name'],
+     *     $_FILES['my_file']['size'],
+     *     $_FILES['my_file']['error']
+     * );
+     * $filename = $helper->upload($file, $fileId, $settings);
      * // and update/insert the row as usual
      * $db->insert("my_table", $row);
      * </code>}.
      *
-     * @param   array   $file      item taken from array $_FILES
-     * @param   string  $fileId    name of target file
-     * @param   array   $settings  int    width       image width in pixel,
-     *                             int    height      image height in pixel,
-     *                             bool   ratio       keep aspect ratio when resizing?,
-     *                             string background  RGB color as hex-value (e.g. #ffffff)
+     * @param   \Yana\Http\Uploads\IsFile   $file      representing one entry in global $_FILES array
+     * @param   string                      $fileId    name of target file
+     * @param   array                       $settings  int    width       image width in pixel,
+     *                                                 int    height      image height in pixel,
+     *                                                 bool   ratio       keep aspect ratio when resizing?,
+     *                                                 string background  RGB color as hex-value (e.g. #ffffff)
      * @return  string
      * @throws  \Yana\Core\Exceptions\Files\InvalidImageException  when the uploaded file was no valid image
      */
-    public function upload(array $file, $fileId, array $settings)
+    public function upload(\Yana\Http\Uploads\IsFile $file, $fileId, array $settings)
     {
         $dir = $this->_getConfiguration()->getDirectory();
         $fileTempName = $this->_getTempName($file);
-        $filename = $this->_getOriginalName($file);
+        $filename = $file->getName();
 
         // check mime-type of uploaded file
         $fileType = 'png';
-        if (!empty($file['type'])) {
-            if (!preg_match('/^image\/(\w+)$/s', $file['type'], $fileType)) {
+        if ($file->getMimeType()) {
+            if (!preg_match('/^image\/(\w+)$/s', $file->getMimeType(), $fileType)) {
                 $message = "The uploaded file has an invalid MIME-type.";
                 $level = UPLOAD_ERR_FILE_TYPE;
                 $error = new \Yana\Core\Exceptions\Files\InvalidImageException($message, $level);

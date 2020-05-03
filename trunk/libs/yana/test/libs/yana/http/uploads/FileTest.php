@@ -192,4 +192,22 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($file->isExtensionError());
     }
 
+    /**
+     * @test
+     */
+    public function testGetTargetColumn()
+    {
+        $this->assertNull($this->emptyFile->getTargetColumn());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetTargetColumn()
+    {
+        $column = new \Yana\Db\Ddl\Column("Test");
+        $this->assertSame($column, $this->emptyFile->setTargetColumn($column)->getTargetColumn());
+        $this->assertNull($this->emptyFile->setTargetColumn()->getTargetColumn());
+    }
+
 }

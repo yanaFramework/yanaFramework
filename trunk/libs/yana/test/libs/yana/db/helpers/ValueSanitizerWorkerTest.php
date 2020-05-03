@@ -232,6 +232,38 @@ class ValueSanitizerWorkerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testAsFileIdObject()
+    {
+        $value = new \Yana\Http\Uploads\File("name", "mimeType", "temporaryPath", 1, 0);
+        $this->object = new \Yana\Db\Helpers\ValueSanitizerWorker($value);
+        $this->object->asFileId();
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\Files\NotFoundException
+     */
+    public function testAsFileIdObjectNotFoundException()
+    {
+        $value = new \Yana\Http\Uploads\File("name", "mimeType", "temporaryPath", 1, \UPLOAD_ERR_NO_FILE);
+        $this->object = new \Yana\Db\Helpers\ValueSanitizerWorker($value);
+        $this->assertNull($this->object->asFileId());
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\Files\SizeException
+     */
+    public function testAsFileIdObjectSizeException()
+    {
+        $value = new \Yana\Http\Uploads\File("name", "mimeType", "temporaryPath", 2, 0);
+        $this->object = new \Yana\Db\Helpers\ValueSanitizerWorker($value);
+        $this->assertNull($this->object->asFileId(1));
+    }
+
+    /**
+     * @test
+     */
     public function testAsFileIdString()
     {
         $value = "File Name.txt";

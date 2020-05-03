@@ -254,7 +254,9 @@ class ValueSanitizerTest extends \PHPUnit_Framework_TestCase
         $value = "1";
         $files = array();
         $this->assertSame("", $this->object->sanitizeValueByColumn($this->table->getColumn('fileColumn'), $value, $files));
-        $this->assertSame($this->table->getColumn('fileColumn'), $files[0]['column']);
+        $file = $files[0];
+        /* @var $file \Yana\Http\Uploads\File */
+        $this->assertSame($this->table->getColumn('fileColumn'), $file->getTargetColumn());
     }
 
     /**

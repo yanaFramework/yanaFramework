@@ -59,7 +59,7 @@ class UploadWrapper extends \Yana\Http\Uploads\AbstractUploadWrapper
     public function isFile($key)
     {
         assert(is_string($key), 'Invalid argument type: $key. String expected');
-        return $this->_isFile($this->_getEntry((string) $key));
+        return $this->_isValidFile($this->_getEntry((string) $key));
     }
 
     /**
@@ -86,10 +86,12 @@ class UploadWrapper extends \Yana\Http\Uploads\AbstractUploadWrapper
         assert(is_string($key), 'Invalid argument type: $key. String expected');
         assert(!isset($file), 'Cannot redeclare var $file');
         $file = $this->_getEntry((string) $key);
-        if (!$this->_isFile($file)) {
+        if (!$this->_isValidFile($file)) {
             throw new \Yana\Http\Uploads\NotFoundException('No such file "' . (string) $key . '"');
         }
-        return new \Yana\Http\Uploads\File($file['name'], $file['type'], $file['tmp_name'], $file['size'], $file['error']);
+        return new \Yana\Http\Uploads\File(
+            (string) $file['name'], (string) $file['type'], (string) $file['tmp_name'], (int) $file['size'], (int) $file['error']
+        );
     }
 
     /**
@@ -122,7 +124,15 @@ class UploadWrapper extends \Yana\Http\Uploads\AbstractUploadWrapper
         assert(!isset($file), 'Cannot redeclare $file');
         foreach ($files as $id => $file)
         {
-            $collection[$id] = new \Yana\Http\Uploads\File($file['name'], $file['type'], $file['tmp_name'], $file['size'], $file['error']);
+            if ($this->_isValidFile($file)) {
+                $collection[$id] = new \Yana\Http\Uploads\File(
+                    (string) $file['name'],
+                    (string) $file['type'],
+                    (string) $file['tmp_name'],
+                    (int) $file['size'],
+                    (int) $file['error']
+                );
+            }
         }
         unset($id, $file);
 

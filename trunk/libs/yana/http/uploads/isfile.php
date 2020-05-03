@@ -26,6 +26,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Http\Uploads;
 
@@ -46,7 +47,7 @@ interface IsFile
      *
      * @return  string
      */
-    public function getName();
+    public function getName(): string;
 
     /**
      * File type provided by the user.
@@ -56,7 +57,7 @@ interface IsFile
      *
      * @return  string
      */
-    public function getMimeType();
+    public function getMimeType(): string;
 
     /**
      * Temporary path and filename on the server.
@@ -65,7 +66,7 @@ interface IsFile
      *
      * @return  string
      */
-    public function getTemporaryPath();
+    public function getTemporaryPath(): string;
 
     /**
      * File size in bytes.
@@ -74,7 +75,26 @@ interface IsFile
      *
      * @return  int
      */
-    public function getSizeInBytes();
+    public function getSizeInBytes(): int;
+
+    /**
+     * Returns the designated target column.
+     *
+     * This defaults to NULL.
+     *
+     * @return \Yana\Db\Ddl\Column|NULL
+     */
+    public function getTargetColumn(): ?\Yana\Db\Ddl\Column;
+
+    /**
+     * Set designated target column.
+     *
+     * This is where the value is supposed to be stored in the database (if any).
+     *
+     * @param   \Yana\Db\Ddl\Column  $targetColumn  designated target column
+     * @return  $this
+     */
+    public function setTargetColumn(?\Yana\Db\Ddl\Column $targetColumn = null);
 
     /**
      * File size in bytes.
@@ -83,7 +103,7 @@ interface IsFile
      *
      * @return  int
      */
-    public function getErrorCode();
+    public function getErrorCode(): int;
 
     /**
      * Returns bool(true) if upload was successful.
@@ -92,7 +112,7 @@ interface IsFile
      *
      * @return  bool
      */
-    public function isOkay();
+    public function isOkay(): bool;
 
     /**
      * Returns bool(true) if the file is too big.
@@ -101,7 +121,7 @@ interface IsFile
      *
      * @return  bool
      */
-    public function isFileTooBigByIni();
+    public function isFileTooBigByIni(): bool;
 
     /**
      * Returns bool(true) if the file is too big.
@@ -110,7 +130,7 @@ interface IsFile
      *
      * @return  bool
      */
-    public function isFileTooBigByForm();
+    public function isFileTooBigByForm(): bool;
 
     /**
      * Returns bool(true) if the uploaded was interrupted.
@@ -119,7 +139,7 @@ interface IsFile
      *
      * @return  bool
      */
-    public function isIncompleteUpload();
+    public function isIncompleteUpload(): bool;
 
     /**
      * Returns bool(true) if the file was not provided by the client.
@@ -128,7 +148,7 @@ interface IsFile
      *
      * @return  bool
      */
-    public function isNotUploaded();
+    public function isNotUploaded(): bool;
 
     /**
      * Returns bool(true) if no temp-directory is set.
@@ -138,7 +158,7 @@ interface IsFile
      *
      * @return  bool
      */
-    public function isMissingTemporaryDirectory();
+    public function isMissingTemporaryDirectory(): bool;
 
     /**
      * Returns bool(true) if the file can't be written to the temp-directory.
@@ -148,7 +168,7 @@ interface IsFile
      *
      * @return  bool
      */
-    public function isUnableToWriteFile();
+    public function isUnableToWriteFile(): bool;
 
     /**
      * Returns bool(true) if a PHP extension stopped the upload.
@@ -157,7 +177,7 @@ interface IsFile
      *
      * @return  bool
      */
-    public function isExtensionError();
+    public function isExtensionError(): bool;
 }
 
 ?>

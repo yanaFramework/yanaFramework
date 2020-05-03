@@ -43,14 +43,9 @@ class MyUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
         return $this->_getConfiguration();
     }
 
-    public function getTempName(array $file)
+    public function getTempName(\Yana\Http\Uploads\File $file)
     {
         return $this->_getTempName($file);
-    }
-
-    public function getOriginalName(array $file)
-    {
-        return $this->_getOriginalName($file);
     }
 
 }
@@ -89,7 +84,7 @@ class AbstractUploaderTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetConfiguration()
     {
-        $this->assertTrue($this->object->getConfiguration() instanceof \Yana\Db\Binaries\IsConfiguration);
+        $this->assertTrue($this->object->getConfiguration() instanceof \Yana\Db\Binaries\ConfigurationSingleton);
     }
 
     /**
@@ -97,27 +92,8 @@ class AbstractUploaderTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetTempName()
     {
-        $file = array('name' => 'ignored', 'tmp_name' => 'Test', 'error' => UPLOAD_ERR_OK);
-        $this->assertSame($file['tmp_name'], $this->object->getTempName($file));
-    }
-
-    /**
-     * @test
-     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
-     */
-    public function testGetTempNameNameMissing()
-    {
-        $this->object->getTempName(array());
-    }
-
-    /**
-     * @test
-     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
-     */
-    public function testGetTempNameTmpNameMissing()
-    {
-        $file = array('name' => 'ignored');
-        $this->object->getTempName($file);
+        $file = new \Yana\Http\Uploads\File('ignored', '', 'Test', 0, UPLOAD_ERR_OK);
+        $this->assertSame('Test', $this->object->getTempName($file));
     }
 
     /**
@@ -126,7 +102,7 @@ class AbstractUploaderTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetTempNameInvalidSizeException()
     {
-        $file = array('name' => 'ignored', 'error' => UPLOAD_ERR_INI_SIZE);
+        $file = new \Yana\Http\Uploads\File('ignored', '', 'Test', 0, UPLOAD_ERR_INI_SIZE);
         $this->object->getTempName($file);
     }
 
@@ -136,7 +112,7 @@ class AbstractUploaderTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetTempNameUploadFailedException()
     {
-        $file = array('name' => 'ignored', 'error' => UPLOAD_ERR_FILE_TYPE);
+        $file = new \Yana\Http\Uploads\File('ignored', '', 'Test', 0, UPLOAD_ERR_FILE_TYPE);
         $this->object->getTempName($file);
     }
 
@@ -146,26 +122,8 @@ class AbstractUploaderTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetTempNameNotWriteableException()
     {
-        $file = array('name' => 'ignored', 'error' => UPLOAD_ERR_OTHER);
+        $file = new \Yana\Http\Uploads\File('ignored', '', 'Test', 0, UPLOAD_ERR_OTHER);
         $this->object->getTempName($file);
-    }
-
-    /**
-     * @test
-     */
-    public function testGetOriginalName()
-    {
-        $file = array('name' => 'Test');
-        $this->assertSame('Test', $this->object->getOriginalName($file));
-    }
-
-    /**
-     * @test
-     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
-     */
-    public function testGetOriginalNameInvalidArgumentException()
-    {
-        $this->object->getOriginalName(array());
     }
 
 }

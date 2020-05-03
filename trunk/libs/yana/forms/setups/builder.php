@@ -197,6 +197,54 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Forms\Setups\IsBuild
     }
 
     /**
+     * Returns the names of all active contexts.
+     *
+     * @return  array
+     */
+    private function _getContextNames(): array
+    {
+        assert(!isset($contextNames), 'Cannot redeclare var $contextNames');
+        $contextNames = array();
+        if ($this->object->getInsertAction()) {
+            $contextNames[] = \Yana\Forms\Setups\ContextNameEnumeration::INSERT;
+        }
+        if ($this->object->getSearchAction()) {
+            $contextNames[] = \Yana\Forms\Setups\ContextNameEnumeration::SEARCH;
+        }
+        if ($this->object->getUpdateAction()) {
+            $contextNames[] = \Yana\Forms\Setups\ContextNameEnumeration::UPDATE;
+        }
+        return $contextNames;
+    }
+
+    /**
+     * Update file information based on request data.
+     *
+     * @param   \Yana\Http\Uploads\IsUploadWrapper  $uploadWrapper  data on uploaded files
+     * @return  $this
+     */
+    public function updateUploadedFiles(\Yana\Http\Uploads\IsUploadWrapper $uploadWrapper)
+    {
+        assert(!isset($formName), 'Cannot redeclare var $formName');
+        $formName = $this->getForm()->getName();
+
+        assert(!isset($fileList), 'Cannot redeclare var $fileList');
+        $fileList = array();
+
+        assert(!isset($contextName), 'Cannot redeclare var $name');
+        foreach ($this->_getContextNames() as $contextName)
+        {
+            $key = "$formName.$contextName";
+            if ($uploadWrapper->isListOfFiles($key)) {
+                $fileList[$contextName] = $uploadWrapper->all($key)->toArray();
+            }
+        }
+        unset($contextName);
+
+        return $this->updateValues($fileList);
+    }
+
+    /**
      * Update values with request array.
      *
      * @param   array  $request  initial values (e.g. Request array)
@@ -204,23 +252,8 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Forms\Setups\IsBuild
      */
     public function updateValues(array $request = array())
     {
-        assert(!isset($setup), 'Cannot redeclare var $setup');
-        $setup = $this->object;
-
-        assert(!isset($contextNames), 'Cannot redeclare var $contextNames');
-        $contextNames = array();
-        if ($setup->getInsertAction()) {
-            $contextNames[] = \Yana\Forms\Setups\ContextNameEnumeration::INSERT;
-        }
-        if ($setup->getSearchAction()) {
-            $contextNames[] = \Yana\Forms\Setups\ContextNameEnumeration::SEARCH;
-        }
-        if ($setup->getUpdateAction()) {
-            $contextNames[] = \Yana\Forms\Setups\ContextNameEnumeration::UPDATE;
-        }
-
         assert(!isset($name), 'Cannot redeclare var $name');
-        foreach ($contextNames as $name)
+        foreach ($this->_getContextNames() as $name)
         {
             if (!isset($request[$name]) || !is_array($request[$name])) {
                 continue;
@@ -229,7 +262,7 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Forms\Setups\IsBuild
             $requestValues = \Yana\Util\Hashtable::changeCase($request[$name], \CASE_UPPER);
             assert(!isset($context), 'Cannot redeclare var $context');
             assert(!isset($columnNames), 'Cannot redeclare var $columnNames');
-            $context = $setup->getContext($name);
+            $context = $this->object->getContext($name);
             if ($name === \Yana\Forms\Setups\ContextNameEnumeration::UPDATE) {
                 $this->setRows($requestValues);
 
@@ -238,7 +271,7 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Forms\Setups\IsBuild
                 assert(!isset($values), 'Cannot redeclare var $values');
                 // security check: allow only fields, that exist in the form
                 $values = array_intersect_key($requestValues, $columnNames);
-                $context->setValues($values);
+                $context->addValues($values);
                 unset($values);
             }
             unset($context, $columnNames, $requestValues);

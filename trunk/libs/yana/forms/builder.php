@@ -85,19 +85,13 @@ class Builder extends \Yana\Forms\AbstractBuilder
             $formSetup->setSearchTerm($this->_getFacade()->getParent()->getSetup()->getSearchTerm());
         }
 
+        // Find submitted form data
         assert(!isset($request), 'Cannot redeclare var $request');
         $request = (array) $this->_getDependencyContainer()->getRequest()->all()->value($formName)->all()->asArrayOfStrings();
-        assert(!isset($uploadWrapper), 'Cannot redeclare var $uploadWrapper');
-        $uploadWrapper = $this->_getDependencyContainer()->getRequest()->files();
-        assert(!isset($files), 'Cannot redeclare var $files');
-        $files = array();
-        if ($uploadWrapper->has($formName) && $uploadWrapper->isListOfFiles($formName)) {
-            $files = (array) $uploadWrapper->all($formName);
-        }
-        if (!empty($files)) {
-            $request = \Yana\Util\Hashtable::merge($request, $files);
-        }
-        unset($files);
+
+        // Find uploaded files
+        $this->_getSetupBuilder()->updateUploadedFiles($this->_getDependencyContainer()->getRequest()->files());
+
         if (!empty($request)) {
             $this->_getSetupBuilder()->updateSetup($request);
         }

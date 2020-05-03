@@ -56,7 +56,7 @@ abstract class AbstractUploader extends \Yana\Core\StdObject
      *
      * @return  \Yana\Db\Binaries\IsConfiguration
      */
-    protected function _getConfiguration()
+    protected function _getConfiguration(): \Yana\Db\Binaries\IsConfiguration
     {
         if (!isset($this->_configuration)) {
             $this->_configuration = \Yana\Db\Binaries\ConfigurationSingleton::getInstance();
@@ -107,76 +107,53 @@ abstract class AbstractUploader extends \Yana\Core\StdObject
      *
      * See the PHP manual for more details on these codes.
      *
-     * @param   array  $file  item taken from $_FILES array
+     * @param   \Yana\Http\Uploads\IsFile  $file  item taken from $_FILES array
      * @return  string
      * @throws  \Yana\Core\Exceptions\Files\NotWriteableException on UPLOAD_ERR_INVALID_TARGET and UPLOAD_ERR_OTHER
      * @throws  \Yana\Core\Exceptions\Files\UploadFailedException on UPLOAD_ERR_FILE_TYPE
      * @throws  \Yana\Core\Exceptions\Files\SizeException         on UPLOAD_ERR_FORM_SIZE, UPLOAD_ERR_SIZE, UPLOAD_ERR_FORM_SIZE
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException    when the given array contains no filename
      */
-    protected function _getTempName(array $file)
+    protected function _getTempName(\Yana\Http\Uploads\IsFile $file): string
     {
         // get original filename (for reporting purposes only)
-        $filename = $this->_getOriginalName($file);
-        // check error state
-        if (isset($file['error'])) {
-            // check type of error
-            switch ($file['error'])
-            {
-                case UPLOAD_ERR_OK:
-                    // all fine - proceed!
-                break;
+        $filename = $file->getName();
+        // check error state and type of error
+        switch ($file->getErrorCode())
+        {
+            case UPLOAD_ERR_OK:
+                // all fine - proceed!
+            break;
 
-                case UPLOAD_ERR_SIZE:
-                case UPLOAD_ERR_INI_SIZE:
-                    $maxSize = ini_get("upload_max_filesize");
-                case UPLOAD_ERR_FORM_SIZE:
-                    // @codeCoverageIgnoreStart
-                    if (!isset($maxSize)) {
-                        $maxSize = (int) $_POST['MAX_FILE_SIZE'];
-                    }
-                    // @codeCoverageIgnoreEnd
+            case UPLOAD_ERR_SIZE:
+            case UPLOAD_ERR_INI_SIZE:
+                $maxSize = ini_get("upload_max_filesize");
+            case UPLOAD_ERR_FORM_SIZE:
+                // @codeCoverageIgnoreStart
+                if (!isset($maxSize)) {
+                    $maxSize = (int) $_POST['MAX_FILE_SIZE'];
+                }
+                // @codeCoverageIgnoreEnd
 
-                    $message = "Uploaded file exceeds maximum size.";
-                    $alert = new \Yana\Core\Exceptions\Files\SizeException($message, $file['error']);
-                    throw $alert->setFilename($filename)->setMaxSize($maxSize);
+                $message = "Uploaded file exceeds maximum size.";
+                $alert = new \Yana\Core\Exceptions\Files\SizeException($message, $file->getErrorCode());
+                throw $alert->setFilename($filename)->setMaxSize($maxSize);
 
-                case UPLOAD_ERR_FILE_TYPE:
-                    $message = "Uploaded file has a file type that is either not recognized or not permitted.";
-                    $error = new \Yana\Core\Exceptions\Files\UploadFailedException($message, UPLOAD_ERR_FILE_TYPE);
-                    throw $error->setFilename($filename);
+            case UPLOAD_ERR_FILE_TYPE:
+                $message = "Uploaded file has a file type that is either not recognized or not permitted.";
+                $error = new \Yana\Core\Exceptions\Files\UploadFailedException($message, UPLOAD_ERR_FILE_TYPE);
+                throw $error->setFilename($filename);
 
-                case UPLOAD_ERR_INVALID_TARGET:
-                case UPLOAD_ERR_OTHER:
-                default:
-                    $message = "Unable to write uploaded file '{$filename}'.";
-                    $error = new \Yana\Core\Exceptions\Files\NotWriteableException($message, $file['error']);
-                    throw $error->setFilename($filename);
+            case UPLOAD_ERR_INVALID_TARGET:
+            case UPLOAD_ERR_OTHER:
+            default:
+                $message = "Unable to write uploaded file '{$filename}'.";
+                $error = new \Yana\Core\Exceptions\Files\NotWriteableException($message, $file->getErrorCode());
+                throw $error->setFilename($filename);
 
-            } // end switch (error code)
-        }
+        } // end switch (error code)
 
-        if (!isset($file['tmp_name'])) {
-            throw new \Yana\Core\Exceptions\InvalidArgumentException('Input array contains no file temp-name.', \Yana\Log\TypeEnumeration::ERROR);
-        }
-        return $file['tmp_name'];
-    }
-
-    /**
-     * Get original filename.
-     *
-     * Returns 'name' index of given array.
-     *
-     * @param   array  $file  item taken from $_FILES array
-     * @return  string
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the given array contains no filename
-     */
-    protected function _getOriginalName(array $file)
-    {
-        if (!isset($file['name'])) {
-            throw new \Yana\Core\Exceptions\InvalidArgumentException('Input array contains no filename.', \Yana\Log\TypeEnumeration::ERROR);
-        }
-        return (string) $file['name'];
+        return $file->getTemporaryPath();
     }
 
 }

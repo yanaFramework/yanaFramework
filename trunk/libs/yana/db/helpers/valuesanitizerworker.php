@@ -172,6 +172,19 @@ class ValueSanitizerWorker extends \Yana\Db\Helpers\AbstractValueSanitizerWorker
             }
             return null;
 
+        } elseif (is_object($value) && $value instanceof \Yana\Http\Uploads\File) {
+
+            if ($value->isNotUploaded()) {
+                throw new \Yana\Core\Exceptions\Files\NotFoundException();
+            }
+            if ($maxFileSize > 0 && $value->getSizeInBytes() > $maxFileSize) {
+                $message = "Uploaded file is too large.";
+                $alert = new \Yana\Core\Exceptions\Files\SizeException($message, UPLOAD_ERR_SIZE);
+                $alert->setFilename($value->getName());
+                throw $alert->setMaxSize((int) $maxFileSize);
+            }
+            return null;
+
         } elseif ($value === "1") {
             throw new \Yana\Core\Exceptions\Files\DeletedException();
 

@@ -88,12 +88,7 @@ class ImageUploaderTest extends \PHPUnit_Framework_TestCase
      */
     public function testUploadInvalidMimeType()
     {
-        $file = array(
-            'error' => \UPLOAD_ERR_OK,
-            'name' => 'original',
-            'tmp_name' => __FILE__,
-            'type' => 'text/plain'
-        );
+        $file = new \Yana\Http\Uploads\File('original', 'text/plain', __FILE__, 0, UPLOAD_ERR_OK);
         $settings = array();
         $this->object->upload($file, 'Test', $settings);
     }
@@ -104,12 +99,7 @@ class ImageUploaderTest extends \PHPUnit_Framework_TestCase
      */
     public function testUploadFileIsNotAnImage()
     {
-        $file = array(
-            'error' => \UPLOAD_ERR_OK,
-            'name' => 'original',
-            'tmp_name' => __FILE__,
-            'type' => 'image/png'
-        );
+        $file = new \Yana\Http\Uploads\File('original', 'image/png', __FILE__, 0, UPLOAD_ERR_OK);
         $settings = array();
         $this->object->upload($file, 'Test', $settings);
     }
@@ -119,12 +109,7 @@ class ImageUploaderTest extends \PHPUnit_Framework_TestCase
      */
     public function testUpload()
     {
-        $file = array(
-            'error' => \UPLOAD_ERR_OK,
-            'name' => 'original',
-            'tmp_name' => \CWD . 'resources/image/logo.png',
-            'type' => 'image/png'
-        );
+        $file = new \Yana\Http\Uploads\File('original', 'image/png', \CWD . 'resources/image/logo.png', 0, UPLOAD_ERR_OK);
         $settings = array(
             'width' => 200,
             'height' => 100,
