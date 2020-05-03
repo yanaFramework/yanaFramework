@@ -201,7 +201,7 @@ class FieldTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateColumnDefinition()
     {
-        $this->assertEquals(new \Yana\Db\Ddl\Column(), $this->object->createColumnDefinition());
+        $this->assertEquals(new \Yana\Db\Ddl\Column($this->object->getName()), $this->object->createColumnDefinition());
     }
 
     /**

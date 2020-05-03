@@ -711,7 +711,7 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
     public function createColumnDefinition(): \Yana\Db\Ddl\Column
     {
         if (!isset($this->column)) {
-            $this->column = new \Yana\Db\Ddl\Column();
+            $this->column = new \Yana\Db\Ddl\Column($this->getName());
         }
         return $this->column;
     }
