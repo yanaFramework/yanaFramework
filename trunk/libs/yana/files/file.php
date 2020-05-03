@@ -163,9 +163,11 @@ class File extends \Yana\Files\Readonly implements \Yana\Files\IsWritable
             $exception->setFilename($path);
             throw $exception;
         }
-        if (!touch($path)) {
+        if (!@touch($path)) { // touch() issues an E_WARNING that would prevent unit tests from reaching the following block
             $message = "Unable to create file '{$path}'. Target not writeable.";
-            throw new \Yana\Core\Exceptions\Files\NotWriteableException($message, \Yana\Log\TypeEnumeration::WARNING);
+            $exception = new \Yana\Core\Exceptions\Files\NotWriteableException($message, \Yana\Log\TypeEnumeration::WARNING);
+            $exception->setFilename($path);
+            throw $exception;
         }
         chmod($path, 0777);
         $this->_resetStats();
@@ -231,49 +233,43 @@ class File extends \Yana\Files\Readonly implements \Yana\Files\IsWritable
      * @param    bool     $isRecursive  setting this to true will automatically, recursively create directories
      *                                  in the $destFile string, if required
      * @param    int      $mode         the access restriction that applies to the copied file, defaults to 0766
-     * @throws   \Yana\Core\Exceptions\InvalidArgumentException  when one input argument is invalid
-     * @throws   \Yana\Core\Exceptions\AlreadyExistsException    if the target file already exists
-     * @throws   \Yana\Core\Exceptions\NotWriteableException     if the target location is not writeable
-     * @throws   \Yana\Core\Exceptions\NotFoundException         if the target directory does not exist
+     * @throws   \Yana\Core\Exceptions\InvalidArgumentException      when one input argument is invalid
+     * @throws   \Yana\Core\Exceptions\Files\AlreadyExistsException  if the target file already exists
+     * @throws   \Yana\Core\Exceptions\Files\NotWriteableException   if the target location is not writeable
+     * @throws   \Yana\Core\Exceptions\Files\NotFoundException       if the target directory does not exist
      */
-    public function copy($destFile, $overwrite = true, $isRecursive = false, $mode = 0766)
+    public function copy(string $destFile, bool $overwrite = true, bool $isRecursive = false, int $mode = 0766)
     {
-        assert(is_string($destFile), 'Wrong argument type argument 1. String expected');
-        assert(is_bool($overwrite), 'Wrong argument type argument 2. Boolean expected');
-        assert(is_bool($isRecursive), 'Wrong argument type argument 3. Boolean expected');
-        assert(is_int($mode), 'Wrong argument type argument 4. Integer expected');
-
         if ($mode > 0777 || $mode < 1) {
             $message = "Argument mode must be an octal number in range: [1,0777].";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
 
         /* validity checking */
-        if (empty($destFile) || mb_strlen($destFile) > 512) {
+        if (empty($destFile) || strlen($destFile) > 512) {
             $message = "Invalid filename '$destFile'.";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
         }
 
-        $destDir  = dirname($destFile) . '/';
-        $destFile = preg_replace('/^.*\//s', '', $destFile);
-        if (empty($destFile)) {
-            $destFile = $this->getPath();
-            $destFile = preg_replace('/^.*\//s', '', $destFile);
-        }
+        $destFileIsDirectory = preg_match('/[\/\\\\]$/s', $destFile);
+        $destDir  = $destFileIsDirectory ? $destFile : dirname($destFile) . '/';
+        $destFile = $destFileIsDirectory ? basename($this->getPath()) : basename($destFile);
 
         /* check if file already exists */
-        $fileExist = file_exists($destDir . $destFile);
-        if ($overwrite === false && $fileExist === true) {
-            $message = "Unable to copy file '{$destDir}{$destFile}'. " .
-                "Another file with the same name does already exist.";
-            $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, \Yana\Log\TypeEnumeration::INFO);
-            $exception->setId('{$destDir}{$destFile}');
-            throw $exception;
-        }
-        if ($overwrite === true && $fileExist === true && is_writeable($destDir . $destFile) === false) {
-            $message = "Unable to copy to file '{$destDir}{$destFile}'. ".
-                "The file does already exist and is not writeable.";
-            throw new \Yana\Core\Exceptions\NotWriteableException($message, \Yana\Log\TypeEnumeration::INFO);
+        if (file_exists($destDir . $destFile)) {
+            if ($overwrite === false) {
+                $message = "Unable to copy file '{$destDir}{$destFile}'. " .
+                    "Another file with the same name does already exist.";
+                $exception = new \Yana\Core\Exceptions\Files\AlreadyExistsException($message, \Yana\Log\TypeEnumeration::INFO);
+                $exception->setFilename($destDir . $destFile);
+                throw $exception;
+            } elseif ($overwrite === true && is_writeable($destDir . $destFile) === false) {
+                $message = "Unable to copy to file '{$destDir}{$destFile}'. ".
+                    "The file does already exist and is not writeable.";
+                $exception = new \Yana\Core\Exceptions\Files\NotWriteableException($message, \Yana\Log\TypeEnumeration::INFO);
+                $exception->setFilename($destDir . $destFile);
+                throw $exception;
+            }
         }
 
         assert(is_string($destDir), 'Unexpected result: $destDir. String expected.');
@@ -283,7 +279,9 @@ class File extends \Yana\Files\Readonly implements \Yana\Files\IsWritable
         if (!empty($destDir) && !is_dir($destDir)) {
             if (!$isRecursive) {
                 $message = "Unable to copy file '{$destFile}'. The directory '{$destDir}' does not exist.";
-                throw new \Yana\Core\Exceptions\NotFoundException($message, \Yana\Log\TypeEnumeration::INFO);
+                $exception = new \Yana\Core\Exceptions\Files\NotFoundException($message, \Yana\Log\TypeEnumeration::INFO);
+                $exception->setFilename($destDir . $destFile);
+                throw $exception;
             }
             assert(!isset($currentDir), 'cannot redeclare variable $currentDir');
             $currentDir = '';
@@ -301,11 +299,15 @@ class File extends \Yana\Files\Readonly implements \Yana\Files\IsWritable
         }
 
         if (!copy($this->getPath(), $destDir . $destFile)) {
-            $message = "Unable to copy file. The target '$destDir$destFile' is not writeable.";
-            throw new \Yana\Core\Exceptions\NotWriteableException($message, \Yana\Log\TypeEnumeration::WARNING);
+            $message = "Unable to copy file. The target '{$destDir}{$destFile}' is not writeable.";
+            $exception = new \Yana\Core\Exceptions\Files\NotWriteableException($message, \Yana\Log\TypeEnumeration::WARNING);
+            $exception->setFilename($destDir . $destFile);
+            throw $exception;
         }
         if (chmod($destDir . $destFile, $mode) === false) {
+            // @codeCoverageIgnoreStart
             \Yana\Log\LogManager::getLogger()->addLog("Unable to set mode (access level) for file '{$destDir}{$destFile}'.");
+            // @codeCoverageIgnoreEnd
         }
     }
 

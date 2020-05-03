@@ -89,9 +89,8 @@ interface IsWritable extends \Yana\Files\IsReadable
      * Returns bool(true) on success and bool(false) on error.
      *
      * @param    string   $destFile     destination to copy the file to
-     * @return   bool
      */
-    public function copy($destFile);
+    public function copy(string $destFile);
 
 }
 

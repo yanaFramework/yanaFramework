@@ -130,8 +130,6 @@ class FileTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Fail Safe Write
-     *
      * @test
      */
     public function testFailSafeWrite()
@@ -141,15 +139,90 @@ class FileTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Copy
-     *
      * @test
      */
     public function testCopy()
     {
-      $this->object->copy(CWD . $this->file, true, false, 0777);
-      $this->assertTrue(is_file(CWD . $this->file), 'copy failed');
-      unlink(CWD . $this->file);
+        $this->object->copy(CWD . $this->file, true, false, 0777);
+        $this->assertTrue(is_file(CWD . $this->file), 'copy failed');
+        unlink(CWD . $this->file);
+    }
+
+    /**
+     * @test
+     */
+    public function testCopyWithoutFileName()
+    {
+        $dir = CWD . 'cache/';
+        $fileName = $dir . 'file.txt';
+        $this->assertNull($this->object->copy($dir, false, false, 0777));
+        $this->assertTrue(is_file($fileName), 'copy failed');
+        unlink($fileName);
+    }
+
+    /**
+     * @test
+     */
+    public function testCopyRecursive()
+    {
+        $dir = CWD . 'cache/test/';
+        $fileName = $dir . 'file.txt';
+        $this->assertNull($this->object->copy($dir, false, true, 0777));
+        $this->assertTrue(is_file($fileName), 'copy failed');
+        unlink($fileName);
+        rmdir($dir);
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\Files\NotFoundException
+     */
+    public function testCopyNotFoundException()
+    {
+        $dir = CWD . 'cache/test/';
+        $fileName = $dir . 'file.txt';
+        $this->object->copy($dir, false, false, 0777);
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\Files\NotWriteableException
+     */
+    public function testCopyNotWriteableException()
+    {
+        clearstatcache(true, $this->object->getPath());
+        $this->object->copy($this->object->getPath(), true);
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\Files\NotWriteableException
+     */
+    public function testCopyNotWriteableException2()
+    {
+        $path = $this->object->getPath();
+        \chmod($path, 0444);
+        $handle = \fopen($path, 'r');
+        try {
+            $this->object->copy($this->object->getPath(), true);
+        } catch (Exception $e) {
+            throw $e;
+        } finally {
+            \chmod($path, 0777);
+            fclose($handle);
+        }
+    }
+
+    /**
+     * Copy
+     *
+     * @test
+     * @expectedException \Yana\Core\Exceptions\Files\AlreadyExistsException
+     */
+    public function testCopyAlreadyExistsException()
+    {
+        $dir = dirname($this->object->getPath()) . '/';
+        $this->object->copy($dir, false);
     }
 
     /**
@@ -235,10 +308,30 @@ class FileTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreate()
     {
-        if ($this->object->exists(CWD . $this->file)) {
+        if ($this->object->exists()) {
             $this->object->delete();
         }
-        $this->object->create(CWD . $this->file);
+        $this->object->create();
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\Files\NotWriteableException
+     */
+    public function testCreateNotWriteableException()
+    {
+        if ($this->object->exists()) {
+            $this->object->delete();
+        }
+        $u = umask(0777);
+        try {
+            $this->object->create();
+        } catch (\Exception $e) {
+            throw $e;
+        } finally {
+            umask($u);
+            chmod($this->object->getPath(), 0777);
+        }
     }
 
     /**

@@ -688,10 +688,31 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      * If such a column element exists, this function returns it.
      * If not, it returns NULL instead.
      *
+     * Note: there is no "setColumn()" function as this would allow to inject a column with a parent reference
+     * that is not this field.
+     *
      * @return  \Yana\Db\Ddl\Column|NULL
      */
     public function getColumn(): ?\Yana\Db\Ddl\Column
     {
+        return $this->column;
+    }
+
+    /**
+     * Create column definition.
+     *
+     * If the field has a column as child element, it does not refer to a column in a real table.
+     *
+     * If the field has no column definiton yet, it is created and returned.
+     * If a column definition already exists, it is returned unchanged.
+     *
+     * @return  \Yana\Db\Ddl\Column
+     */
+    public function createColumnDefinition(): \Yana\Db\Ddl\Column
+    {
+        if (!isset($this->column)) {
+            $this->column = new \Yana\Db\Ddl\Column();
+        }
         return $this->column;
     }
 

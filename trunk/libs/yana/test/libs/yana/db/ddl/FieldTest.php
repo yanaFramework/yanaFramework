@@ -199,6 +199,14 @@ class FieldTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testCreateColumnDefinition()
+    {
+        $this->assertEquals(new \Yana\Db\Ddl\Column(), $this->object->createColumnDefinition());
+    }
+
+    /**
+     * @test
+     */
     public function testGetEvent()
     {
         $this->assertNull($this->object->getEvent('no-such-event'));
@@ -345,7 +353,7 @@ class FieldTest extends \PHPUnit_Framework_TestCase
      */
     public function testUnserializeFromXDDLInvalidArgumentExceptionName()
     {
-        \Yana\Db\Ddl\Form::unserializeFromXDDL(new \SimpleXmlElement('<input/>'));
+        \Yana\Db\Ddl\Field::unserializeFromXDDL(new \SimpleXmlElement('<input/>'));
     }
 
     /**

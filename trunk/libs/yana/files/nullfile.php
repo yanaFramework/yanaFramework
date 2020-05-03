@@ -72,7 +72,7 @@ class NullFile extends \Yana\Files\Text
      *                                  in the $destFile string, if required
      * @param    int      $mode         the access restriction that applies to the copied file, defaults to 0766
      */
-    public function copy($destFile, $overwrite = true, $isRecursive = false, $mode = 0766)
+    public function copy(string $destFile, bool $overwrite = true, bool $isRecursive = false, int $mode = 0766)
     {
         // intentionally left blank
     }

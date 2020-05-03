@@ -1019,6 +1019,7 @@ class Strings extends \Yana\Core\AbstractUtility
      *
      * @assert  ("test", "st") == true
      * @assert  ("test", "T") == false
+     * @assert  ("test", "s") == false
      * @assert  ("test", "a") == false
      * @assert  ("test", "tester") == false
      */
@@ -1026,8 +1027,12 @@ class Strings extends \Yana\Core\AbstractUtility
     {
         assert(!isset($needleLength), 'Cannot redeclare var $needleLength');
         $needleLength = strlen($needle);
+        assert(!isset($stringLength), 'Cannot redeclare var $stringLength');
+        $stringLength = strlen($string);
+        assert(!isset($expectedPosition), 'Cannot redeclare var $expectedPosition');
+        $expectedPosition = $stringLength - $needleLength;
         // No need to check for Unicode here, binary comparison will be fine.
-        return strlen($string) >= $needleLength && strrpos($string, $needle, $needleLength) !== false;
+        return $stringLength >= $needleLength && strrpos($string, $needle, $needleLength) === $expectedPosition;
     }
 
     /**
