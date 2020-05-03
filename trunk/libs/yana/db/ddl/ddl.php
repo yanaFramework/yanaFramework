@@ -141,7 +141,7 @@ abstract class DDL extends \Yana\Core\StdObject
      * @return  \SimpleXMLElement
      * @throws  \Yana\Db\Ddl\NoTagNameException  when no tag name was given for this node
      */
-    public function serializeToXDDL(\SimpleXMLElement $parentNode = null)
+    public function serializeToXDDL(\SimpleXMLElement $parentNode = null): \SimpleXMLElement
     {
         if (empty($this->xddlTag)) {
             $message = "This node cannot be serialized to XDDL format because no tag name was given.";
@@ -491,7 +491,7 @@ abstract class DDL extends \Yana\Core\StdObject
      *
      * @return  string
      */
-    public static function getDirectory()
+    public static function getDirectory(): string
     {
         if (!isset(self::$databaseDirectory)) {
             $builder = new \Yana\ApplicationBuilder();
@@ -506,14 +506,13 @@ abstract class DDL extends \Yana\Core\StdObject
      *
      * Set the path to the directory where XDDL files are to be stored.
      *
-     * @param   string  $directory  path to XDDL base directory
+     * @param  string  $directory  path to XDDL base directory
      */
-    public static function setDirectory($directory)
+    public static function setDirectory(string $directory)
     {
-        assert(is_string($directory), 'Wrong argument type argument 1. String expected');
         assert(is_dir($directory), 'Wrong argument type argument 1. Directory expected');
 
-        self::$databaseDirectory = "$directory";
+        self::$databaseDirectory = $directory;
     }
 
     /**
@@ -524,13 +523,12 @@ abstract class DDL extends \Yana\Core\StdObject
      * @param   string  $databaseName   database name
      * @return  string
      */
-    public static function getPath($databaseName)
+    public static function getPath(string $databaseName)
     {
-        assert(is_string($databaseName), 'Wrong type for argument 1. String expected');
         if (!preg_match('/^([\w\d_]+)$/', $databaseName)) {
-            return "$databaseName";
+            return $databaseName;
         }
-        $file = self::getDirectory() . "$databaseName" . \Yana\Db\Ddl\DDL::$extension;
+        $file = self::getDirectory() . $databaseName . \Yana\Db\Ddl\DDL::$extension;
         assert((bool) is_file($file), 'File not found');
         return $file;
     }
@@ -544,10 +542,9 @@ abstract class DDL extends \Yana\Core\StdObject
      * @param   string  $path   database path
      * @return  string
      */
-    public static function getNameFromPath($path)
+    public static function getNameFromPath(string $path)
     {
-        assert(is_string($path), 'Wrong type for argument 1. String expected');
-        return basename("$path", \Yana\Db\Ddl\DDL::$extension);
+        return basename($path, \Yana\Db\Ddl\DDL::$extension);
     }
 
     /**
@@ -565,9 +562,8 @@ abstract class DDL extends \Yana\Core\StdObject
      * @param   bool  $useFullFilename  return items as full filenames (true = yes, false = no)
      * @return  array
      */
-    public static function getListOfFiles($useFullFilename = false)
+    public static function getListOfFiles(bool $useFullFilename = false): array
     {
-        assert(is_bool($useFullFilename), 'Wrong type for argument 1. Boolean expected');
         $dbDir = self::getDirectory();
         $list = array();
         $dirList = glob($dbDir . "/*" . \Yana\Db\Ddl\DDL::$extension);

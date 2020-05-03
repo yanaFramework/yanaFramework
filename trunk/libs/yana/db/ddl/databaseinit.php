@@ -87,11 +87,7 @@ class DatabaseInit extends \Yana\Db\Ddl\DDL
      */
     public function getDBMS(): ?string
     {
-        if (is_string($this->dbms)) {
-            return $this->dbms;
-        } else {
-            return null;
-        }
+        return $this->dbms;
     }
 
     /**
@@ -110,7 +106,7 @@ class DatabaseInit extends \Yana\Db\Ddl\DDL
      */
     public function setDBMS(string $dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
-        if (empty($dbms)) {
+        if ($dbms === "") {
             $this->dbms = null;
         } else {
             $this->dbms = strtolower($dbms);
@@ -142,10 +138,10 @@ class DatabaseInit extends \Yana\Db\Ddl\DDL
      */
     public function setSQL(string $sql)
     {
-        if (empty($sql)) {
+        if ($sql === "") {
             $this->sql = null;
         } else {
-            $this->sql = "$sql";
+            $this->sql = $sql;
         }
         return $this;
     }

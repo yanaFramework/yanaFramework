@@ -52,10 +52,9 @@ class Database extends \Yana\Db\Ddl\AbstractUnnamedObject
      */
 
     /**
-     * tag name for persistance mapping: object <-> XDDL
-     * @var  \Yana\Db\Ddl\Database[]
+     * @var  \Yana\Data\Adapters\IsDataAdapter
      */
-    protected static $instances = array();
+    private static $_cache = null;
 
     /**
      * tag name for persistance mapping: object <-> XDDL
@@ -193,10 +192,8 @@ class Database extends \Yana\Db\Ddl\AbstractUnnamedObject
      * @param   string  $path  file path
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when given name is invalid
      */
-    public function __construct($name = "", $path = "")
+    public function __construct(string $name = "", string $path = "")
     {
-        assert(is_string($name), 'Invalid argument $name: string expected');
-        assert(is_string($path), 'Invalid argument $path: string expected');
         assert(empty($path) || is_file($path), 'Invalid argument $path. File expected');
         parent::__construct($name);
         $this->changelog = new \Yana\Db\Ddl\ChangeLog($this);
@@ -210,9 +207,41 @@ class Database extends \Yana\Db\Ddl\AbstractUnnamedObject
         } elseif (empty($name) && !empty($path)) {
             $this->name = \Yana\Db\Ddl\DDL::getNameFromPath($path);
         }
-        if (!empty($path)) {
-            self::$instances[$path] = $this;
+        if ($path > "") {
+            $cache = self::_getCache();
+            $cache[$path] = $this;
         }
+    }
+
+    /**
+     * Replace the cache adapter.
+     *
+     * Overwrite only for unit-tests, or if you are absolutely sure you need to and know what you are doing.
+     * Replacing this by the wrong adapter might introduce a security risk,
+     * unless you are in a very specific usage scenario.
+     *
+     * Note that this may also replace the cache contents.
+     *
+     * @param   \Yana\Data\Adapters\IsDataAdapter  $cache  new cache adapter
+     */
+    public static function setCache(\Yana\Data\Adapters\IsDataAdapter $cache)
+    {
+        self::$_cache = $cache;
+    }
+
+    /**
+     * Returns the currently selected cache adapter.
+     *
+     * @return  \Yana\Data\Adapters\IsDataAdapter
+     */
+    protected static function _getCache()
+    {
+        if (!isset(self::$_cache)) {
+            // @codeCoverageIgnoreStart
+            self::$_cache = new \Yana\Data\Adapters\SessionAdapter(__CLASS__);
+            // @codeCoverageIgnoreEnd
+        }
+        return self::$_cache;
     }
 
     /**
@@ -257,14 +286,9 @@ class Database extends \Yana\Db\Ddl\AbstractUnnamedObject
      */
     public function setModified(bool $isModified = true)
     {
-        if ($isModified) {
+        if ($isModified && $this->path > "") {
             // clear the cache (so new instances won't copy the modified version)
-            if (isset($_SESSION[__CLASS__ . "/" . $this->name])) {
-                unset($_SESSION[__CLASS__ . "/" . $this->name]);
-            }
-            if (isset(self::$instances[$this->path])) {
-                unset(self::$instances[$this->path]);
-            }
+            self::_getCache()->offsetUnset($this->path);
         }
         $this->modified = (bool) $isModified;
         return $this;
@@ -378,19 +402,20 @@ class Database extends \Yana\Db\Ddl\AbstractUnnamedObject
             }
             $this->_loadedIncludes[$path] = true;
 
+            $cache = self::_getCache();
             // check if file is already cached
-            if (!isset(self::$instances[$path])) {
+            if (!isset($cache[$path])) {
                 if (!is_file($path)) {
                     $message = "Included XDDL file '{$databaseName}' not found. " .
                         "Defined in file '" . $this->getName() . "'.";
                     throw new \Yana\Core\Exceptions\NotFoundException($message, \Yana\Log\TypeEnumeration::ERROR);
                 }
                 $xddl = new \Yana\Files\XDDL($path);
-                self::$instances[$path] = $xddl->toDatabase();
+                $cache[$path] = $xddl->toDatabase();
                 unset($xddl);
             }
             // get file
-            $database = self::$instances[$path];
+            $database = $cache[$path];
 
             // include tables
             foreach ($database->getTables() as $object)
@@ -1418,50 +1443,46 @@ class Database extends \Yana\Db\Ddl\AbstractUnnamedObject
      * @return  \Yana\Db\Ddl\Database
      * @throws  \Yana\Db\Ddl\XddlException  on syntax error
      */
-    public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null, $path = "")
+    public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null, string $path = "")
     {
-        assert(is_string($path), 'Invalid argument $path: string expected');
         $attributes = $node->attributes();
-        $name = "";
-        if (isset($attributes['name'])) {
-            $name = mb_strtolower((string) $attributes['name']);
-        } else {
-            $name = \Yana\Db\Ddl\DDL::getNameFromPath($path);
-        }
+        $schemaName = \Yana\Db\Ddl\DDL::getNameFromPath($path);
+        $name = isset($attributes['name']) ? mb_strtolower((string) $attributes['name']) : $schemaName;
+        $cache = self::_getCache();
 
-        // if (instance not already exists) { create new object and cache it }
-        if (!isset(self::$instances[$path])) {
-            // if (object is already in session cache) { unserialize object }
-            if (isset($_SESSION[__CLASS__ . "/" . $name]) && $_SESSION[__CLASS__ . "/" . $name] instanceof self) {
-                self::$instances[$path] = $_SESSION[__CLASS__ . "/" . $name];
-                // check if file has changed
-                if (!is_file($path) || filemtime($path) > self::$instances[$path]->lastModified) {
-                    // invalidate cache
-                    self::$instances[$path] = null;
-                }
-            }
-            // otherwise { must build new object from scratch }
-            if (!isset(self::$instances[$path])) {
-                self::$instances[$path] = new self($name, $path);
-                if (isset($node->include)) {
-                    if (is_array($node->include)) {
-                        foreach ($node->include as $include)
-                        {
-                            self::$instances[$path]->_unserializeChild($include);
-                        }
-                    } else {
-                        self::$instances[$path]->_unserializeChild($node->include);
-                    }
-                    unset($node->include);
-                    self::$instances[$path]->loadIncludes();
-                }
-                self::$instances[$path]->_unserializeFromXDDL($node);
-                self::$instances[$path]->lastModified = time();
-                $_SESSION[__CLASS__ . "/" . $name] = self::$instances[$path];
+        // if (object is already in cache) { unserialize object }
+        if ($path > "" && isset($cache[$path])) {
+            $database = $cache[$path];
+            assert($database instanceof self);
+            // check if file has changed
+            if (!is_file($path) || filemtime($path) > $database->lastModified) {
+                // The cached file is outdated. Invalidate cache.
+                unset($cache[$path]);
+                unset($database);
             }
         }
-        // return cached object
-        return self::$instances[$path];
+        // otherwise { must build new object from scratch }
+        if (!isset($database)) {
+            $database = new self($name, $path);
+            if (isset($node->include)) {
+                if (is_array($node->include)) {
+                    foreach ($node->include as $include)
+                    {
+                        $database->_unserializeChild($include);
+                    }
+                } else {
+                    $database->_unserializeChild($node->include);
+                }
+                unset($node->include);
+                $database->loadIncludes();
+            }
+            $database->_unserializeFromXDDL($node);
+            $database->lastModified = time();
+            if ($path > "") {
+                $cache[$path] = $database;
+            }
+        }
+        return $database;
     }
 
 }

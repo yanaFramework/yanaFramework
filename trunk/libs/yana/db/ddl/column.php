@@ -1898,7 +1898,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * @return  \SimpleXMLElement
      * @throws  \Yana\Db\Ddl\NoTagNameException  when no type was given for this node
      */
-    public function serializeToXDDL(\SimpleXMLElement $parentNode = null)
+    public function serializeToXDDL(\SimpleXMLElement $parentNode = null): \SimpleXMLElement
     {
         if ($this->xddlTag === 'file' || $this->xddlTag === 'image') {
             $this->_maxsize = isset($this->size) ? $this->size : null;

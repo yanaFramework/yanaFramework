@@ -123,10 +123,8 @@ class Index extends \Yana\Db\Ddl\AbstractUnnamedObject
      * @param  string              $name    index name
      * @param  \Yana\Db\Ddl\Table  $parent  parent
      */
-    public function __construct($name = "", \Yana\Db\Ddl\Table $parent = null)
+    public function __construct(string $name = "", \Yana\Db\Ddl\Table $parent = null)
     {
-        assert(is_string($name), 'Invalid argument $name: String expected');
-
         $this->setName($name);
         $this->parent = $parent;
     }

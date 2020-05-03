@@ -92,11 +92,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     protected $event;
 
     /**
-     * @var \Yana\Db\Ddl\DatabaseInit
-     */
-    protected $init;
-
-    /**
      * @var \Yana\Db\Ddl\Trigger
      */
     protected $trigger;
@@ -114,6 +109,7 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     {
         chdir(CWD . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
 
+        \Yana\Db\Ddl\Database::setCache(new \Yana\Data\Adapters\ArrayAdapter());
         $this->database = new \Yana\Db\Ddl\Database('Database', CWD . '/resources/check.db.xml');
         $this->table = new \Yana\Db\Ddl\Table('table');
         $this->foreignkey = new \Yana\Db\Ddl\ForeignKey('foreignkey');
@@ -124,7 +120,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $this->grant = new \Yana\Db\Ddl\Grant();
         $this->indexcolumn = new \Yana\Db\Ddl\IndexColumn('indexColumn');
         $this->event = new \Yana\Db\Ddl\Event('action');
-        $this->init = new \Yana\Db\Ddl\DatabaseInit();
         $this->trigger = new \Yana\Db\Ddl\Trigger();
         $this->constraint = new \Yana\Db\Ddl\Constraint();
     }
@@ -145,7 +140,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         unset($this->table);
         unset($this->indexcolumn);
         unset($this->event);
-        unset($this->init);
         unset($this->trigger);
         unset($this->constraint);
         chdir(CWD);
@@ -158,6 +152,27 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoadIncludesOverwriteCheck()
     {
+        $xddl = new \Yana\Files\XDDL(CWD . '/resources/testinclude.db.xml');
+        $this->database = $xddl->toDatabase();
+        $this->assertSame(array('testinclude2'), $this->database->getIncludes());
+        $this->assertFalse($this->database->isForm('a'));
+        $this->assertTrue($this->database->isForm('b'));
+        $this->assertTrue($this->database->isForm('c'));
+        $this->assertTrue($this->database->isTable('a'));
+        $this->assertTrue($this->database->isTable('b'));
+        $this->assertTrue($this->database->isTable('c'));
+    }
+
+    /**
+     * When we load a database file, then include said file from another file,
+     * both files must still work.
+     *
+     * @test
+     */
+    public function testLoadIncludesOverwriteCheck2()
+    {
+        $xddl = new \Yana\Files\XDDL(CWD . '/resources/testinclude2.db.xml');
+        $database1 = $xddl->toDatabase();
         $xddl = new \Yana\Files\XDDL(CWD . '/resources/testinclude.db.xml');
         $this->database = $xddl->toDatabase();
         $this->assertSame(array('testinclude2'), $this->database->getIncludes());
@@ -291,23 +306,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         // DDL ForeignKey
         $sourceTable = $this->foreignkey->getSourceTable();
         $this->assertNull($sourceTable, 'assert failed, the value expected null');
-    }
-
-    /**
-     * SQL
-     *
-     * @test
-     */
-    public function testSQL()
-    {
-        // DDL DatabaseInit
-        $this->init->setSQL('sql');
-        $result = $this->init->getSQL();
-        $this->assertEquals('sql', $result, 'assert failed, \Yana\Db\Ddl\DatabaseInit : the expected result should be the value "sql" - the values should be equal');
-
-        $this->init->setSQL('');
-        $result = $this->init->getSQL();
-        $this->assertNull($result, 'assert failed, \Yana\Db\Ddl\DatabaseInit : the value is expected null');
     }
 
     /**
@@ -1370,7 +1368,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     public function dataDBMS()
     {
         return array(
-            array('init'),
             array('trigger'),
             array('constraint')
         );

@@ -784,7 +784,7 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * @param   \SimpleXMLElement $parentNode  parent node
      * @return  \SimpleXMLElement
      */
-    public function serializeToXDDL(\SimpleXMLElement $parentNode = null)
+    public function serializeToXDDL(\SimpleXMLElement $parentNode = null): \SimpleXMLElement
     {
         if ($this->descendingOrder) {
             $this->_sorting = 'descending';
