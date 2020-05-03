@@ -107,7 +107,7 @@ class DatabaseInitTest extends \PHPUnit_Framework_TestCase
     {
         $xddl = '<initialization dbms="mysql">Sql</initialization>';
         $node = \simplexml_load_string($xddl);
-        $this->object = \Yana\Db\Ddl\ChangeLog::unserializeFromXDDL($node, $this->parent);
+        $this->object = \Yana\Db\Ddl\DatabaseInit::unserializeFromXDDL($node);
         $this->assertSame('mysql', $this->object->getDbms());
         $this->assertSame('Sql', $this->object->getSQL());
     }
