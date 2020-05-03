@@ -186,9 +186,9 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      * NULL instead. Note that the description may also contain an identifier
      * for automatic translation.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         if (is_string($this->description)) {
             return $this->description;
@@ -211,9 +211,9 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      * To reset the property, leave the parameter $description empty.
      *
      * @param   string  $description  new value of this property
-     * @return  \Yana\Db\Ddl\Field
+     * @return  $this
      */
-    public function setDescription($description = "")
+    public function setDescription(string $description = "")
     {
         assert(is_string($description), 'Invalid argument $description: string expected');
         if ($this->column instanceof \Yana\Db\Ddl\Column) {
@@ -237,9 +237,9 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      * Returns the label as a string or NULL, if it is undefined. If no label is defined, it should
      * default to the name of the field.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getTitle()
+    public function getTitle(): ?string
     {
         if (is_string($this->title)) {
             return $this->title;
@@ -259,11 +259,10 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      * To reset this property, leave the parameter empty.
      *
      * @param   string  $title  title 
-     * @return  \Yana\Db\Ddl\Field
+     * @return  $this
      */
-    public function setTitle($title = "")
+    public function setTitle(string $title = "")
     {
-        assert(is_string($title), 'Invalid argument $title: string expected');
         if (empty($title)) {
             $this->title = null;
         } else {
@@ -282,7 +281,7 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * @return  array
      */
-    public function getEvents()
+    public function getEvents(): array
     {
         return $this->events;
     }
@@ -294,12 +293,12 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      * See the manual for more details.
      *
      * @param   string  $name    event name
-     * @return  \Yana\Db\Ddl\Event
+     * @return  \Yana\Db\Ddl\Event|NULL
      */
-    public function getEvent($name)
+    public function getEvent(string $name): ?\Yana\Db\Ddl\Event
     {
-        assert(is_string($name), 'Invalid argument $name: string expected');
-        if (isset( $this->events[$name])) {
+        $name = mb_strtolower($name);
+        if (isset($this->events[$name])) {
             return $this->events[$name];
         } else {
             return null;
@@ -314,14 +313,13 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      * If another event with the same name already exists, it throws an AlreadyExistsException.
      * The name must start with a letter and may only contain: a-z, 0-9, '-' and '_'.
      *
-     * @param   string  $name   event name
+     * @param   string  $name   case-insensitive event name
      * @return  \Yana\Db\Ddl\Event
      * @throws  \Yana\Core\Exceptions\AlreadyExistsException    when an event with the same name already exists
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  on invalid name
      */
-    public function addEvent($name)
+    public function addEvent(string $name): \Yana\Db\Ddl\Event
     {
-        assert(is_string($name), 'Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->events[$name])) {
             $message = "Another action with the name '$name' is already defined.";
@@ -344,11 +342,11 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      * @param   string  $name  event name
      * @return  bool
      */
-    public function dropEvent($name)
+    public function dropEvent(string $name): bool
     {
-        assert(is_string($name), 'Invalid argument $name: string expected');
-        if (isset($this->events["$name"])) {
-            unset($this->events["$name"]);
+        $name = mb_strtolower($name);
+        if (isset($this->events[$name])) {
+            unset($this->events[$name]);
             return true;
         } else {
             return false;
@@ -364,7 +362,7 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * @return  bool
      */
-    public function isVisible()
+    public function isVisible(): bool
     {
         return empty($this->hidden);
     }
@@ -376,12 +374,11 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      * Set this to bool(false) to hide the field or bool(true) to make it visible.
      *
      * @param   bool  $isVisible  new value of this property
-     * @return  \Yana\Db\Ddl\Field
+     * @return  $this
      */
-    public function setVisible($isVisible)
+    public function setVisible(bool $isVisible)
     {
-        assert(is_bool($isVisible), 'Wrong type for argument 1. Boolean expected');
-        $this->hidden = ! (bool) $isVisible;
+        $this->hidden = !$isVisible;
         return $this;
     }
 
@@ -392,7 +389,7 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * @return  bool
      */
-    public function isSelectable()
+    public function isSelectable(): bool
     {
         if (!isset($this->isSelectable)) {
             if (\Yana\Db\Ddl\Grant::checkPermissions($this->getGrants(), true)) {
@@ -411,7 +408,7 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * @return  bool
      */
-    public function isInsertable()
+    public function isInsertable(): bool
     {
         if (!isset($this->isInsertable)) {
             if (\Yana\Db\Ddl\Grant::checkPermissions($this->getGrants(), false, true)) {
@@ -430,7 +427,7 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      
      * @return  bool
      */
-    public function isUpdatable()
+    public function isUpdatable(): bool
     {
         if (!isset($this->isUpdatable)) {
             if (!$this->isReadonly() && \Yana\Db\Ddl\Grant::checkPermissions($this->getGrants(), false, false, true)) {
@@ -449,7 +446,7 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * @return  bool
      */
-    public function isDeletable()
+    public function isDeletable(): bool
     {
         if (!isset($this->isDeletable)) {
             if (!$this->isReadonly() && \Yana\Db\Ddl\Grant::checkPermissions($this->getGrants(), false, false, false, true)) {
@@ -468,7 +465,7 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * @return  bool
      */
-    public function isGrantable()
+    public function isGrantable(): bool
     {
         if (!isset($this->isGrantable)) {
             if (\Yana\Db\Ddl\Grant::checkPermissions($this->getGrants(), false, false, false, false, true)) {
@@ -490,7 +487,7 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * @return  bool
      */
-    public function isReadonly()
+    public function isReadonly(): bool
     {
         return !empty($this->readonly);
     }
@@ -502,11 +499,10 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      * bool(true).
      *
      * @param   bool  $isReadonly   new value of this property
-     * @return  \Yana\Db\Ddl\Field
+     * @return  $this
      */
-    public function setReadonly($isReadonly)
+    public function setReadonly(bool $isReadonly)
     {
-        assert(is_bool($isReadonly), 'Wrong type for argument 1. Boolean expected');
         $this->readonly = (bool) $isReadonly;
         return $this;
     }
@@ -516,9 +512,9 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * Returns the prefered CSS-class for this field as a string or NULL if there is none.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getCssClass()
+    public function getCssClass(): ?string
     {
         if (is_string($this->cssClass)) {
             return $this->cssClass;
@@ -536,11 +532,10 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      * To reset the property, leave the parameter empty.
      *
      * @param   string  $class  name of a css class
-     * @return  \Yana\Db\Ddl\Field
+     * @return  $this
      */
-    public function setCssClass($class = "")
+    public function setCssClass(string $class = "")
     {
-        assert(is_string($class), 'Wrong type for argument 1. String expected');
         if (empty($class)) {
             $this->cssClass = null;
         } else {
@@ -554,9 +549,9 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * Returns the prefered tab-index for this field as an integer or NULL if there is none.
      *
-     * @return  int
+     * @return  int|NULL
      */
-    public function getTabIndex()
+    public function getTabIndex(): ?int
     {
         if (is_int($this->tabIndex)) {
             return $this->tabIndex;
@@ -574,11 +569,10 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      * To reset the property, leave the parameter empty.
      *
      * @param   int  $index  tab-index
-     * @return  \Yana\Db\Ddl\Field
+     * @return  $this
      */
-    public function setTabIndex($index = null)
+    public function setTabIndex(?int $index = null)
     {
-        assert(is_null($index) || is_int($index), 'Wrong type for argument 1. Integer expected');
         if (is_null($index)) {
             $this->tabIndex = null;
         } else {
@@ -600,7 +594,7 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * @return  array
      */
-    public function getGrants()
+    public function getGrants(): array
     {
         assert(is_array($this->grants), 'Member "grants" is expected to be an array.');
         if ($this->column instanceof \Yana\Db\Ddl\Column) {
@@ -645,11 +639,8 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      * @return  \Yana\Db\Ddl\Grant
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when $level is out of range [0,100]
      */
-    public function addGrant($user = null, $role = null, $level = null)
+    public function addGrant(?string $user = null, ?string $role = null, ?int $level = null): \Yana\Db\Ddl\Grant
     {
-        assert(is_null($user) || is_string($user), 'Wrong type for argument 1. String expected');
-        assert(is_null($role) || is_string($role), 'Wrong type for argument 2. String expected');
-        assert(is_null($level) || is_int($level), 'Wrong type for argument 3. Integer expected');
         if ($this->column instanceof \Yana\Db\Ddl\Column) {
             // if a column is present, the field must not have any grants itself
             return $this->column->addGrant($user, $role, $level);
@@ -677,7 +668,7 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      * This function adds a new grant to the configuration.
      *
      * @param   \Yana\Db\Ddl\Grant  $grant  new grant object
-     * @return  \Yana\Db\Ddl\Field
+     * @return  $this
      */
     public function setGrant(\Yana\Db\Ddl\Grant $grant)
     {
@@ -697,9 +688,9 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      * If such a column element exists, this function returns it.
      * If not, it returns NULL instead.
      *
-     * @return  \Yana\Db\Ddl\Column
+     * @return  \Yana\Db\Ddl\Column|NULL
      */
-    public function getColumn()
+    public function getColumn(): ?\Yana\Db\Ddl\Column
     {
         return $this->column;
     }
@@ -710,7 +701,7 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      * Returns the unserialized object.
      *
      * @param   \SimpleXMLElement  $node  XML node
-     * @return  \Yana\Db\Ddl\Field
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the name attribute is missing
      */
     public static function unserializeFromXDDL(\SimpleXMLElement $node)

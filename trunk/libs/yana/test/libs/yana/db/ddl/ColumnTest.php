@@ -699,11 +699,20 @@ class ColumnTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testGetAutoValueStringUser()
+    {
+        // must be empty since no user is currently logged in
+        $this->assertSame('', (string) $this->column->setType('string')->setDefault('CURRENT_USER')->getAutoValue());
+    }
+
+    /**
+     * @test
+     */
     public function testGetAutoValueString()
     {
         // must be empty since no user is currently logged in
-        $this->assertSame('', (string) $this->column->setType('string')->setName('user_created')->getAutoValue());
-        $this->assertSame('', (string) $this->column->setType('string')->setName('user_modified')->getAutoValue());
+        $this->assertSame('', (string) $this->column->setType('string')->setDefault('must-not-return-this')->setName('user_created')->getAutoValue());
+        $this->assertSame('', (string) $this->column->setType('string')->setDefault('must-not-return-this')->setName('user_modified')->getAutoValue());
     }
 
     /**

@@ -47,11 +47,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     protected $database;
 
     /**
-     * @var \Yana\Db\Ddl\Field
-     */
-    protected $field;
-
-    /**
      * @var \Yana\Db\Ddl\ForeignKey
      */
     protected $foreignkey;
@@ -121,7 +116,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
 
         $this->database = new \Yana\Db\Ddl\Database('Database', CWD . '/resources/check.db.xml');
         $this->table = new \Yana\Db\Ddl\Table('table');
-        $this->field = new \Yana\Db\Ddl\Field('field');
         $this->foreignkey = new \Yana\Db\Ddl\ForeignKey('foreignkey');
         $this->function = new \Yana\Db\Ddl\Functions\Definition('function');
         $this->functionimplementation = new \Yana\Db\Ddl\Functions\Implementation;
@@ -143,7 +137,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     {
         $this->database->setModified(true); // setting the file to modified forces the instance cache to be cleared
         unset($this->database); // this doesn't kill all references, UNLESS the files was previously set to modified
-        unset($this->field);
         unset($this->foreignkey);
         unset($this->function);
         unset($this->functionimplementation);
@@ -257,7 +250,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     public function dataDescription()
     {
         return array(
-            array('field'),
             array('database'),
             array('function'),
             array('table'),
@@ -334,15 +326,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
        $result = $this->database->isReadonly();
        $this->assertFalse($result, 'assert failed, \Yana\Db\Ddl\Database : expected false - setReadonly was set with false');
 
-       // ddl field
-       $this->field->setReadonly(true);
-       $result = $this->field->isReadonly();
-       $this->assertTrue($result, 'assert failed, \Yana\Db\Ddl\Field : expected true - setReadonly was set with true');
-
-       $this->field->setReadonly(false);
-       $result = $this->field->isReadonly();
-       $this->assertFalse($result, 'assert failed, \Yana\Db\Ddl\Field : expected false - setReadonly was set with false');
-
        // DDL Table
        $this->table->setReadonly(true);
        $result = $this->table->isReadonly();
@@ -351,23 +334,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
        $this->table->setReadonly(false);
        $result = $this->table->isReadonly();
        $this->assertFalse($result, 'assert failed, \Yana\Db\Ddl\Table : expected false - setReadonly was set with false');
-    }
-
-    /**
-     *  Visible
-     *
-     * @test
-     */
-    public function testVisible()
-    {
-       // ddl field
-       $this->field->setVisible(true);
-       $result = $this->field->isVisible();
-       $this->assertTrue($result, 'assert failed, \Yana\Db\Ddl\Field : expected true - setVisible was set with true');
-
-       $this->field->setVisible(false);
-       $result = $this->field->isVisible();
-       $this->assertFalse($result, 'assert failed, \Yana\Db\Ddl\Field : expected false - setVisible was set with false');
     }
 
     /**
@@ -1077,23 +1043,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Title
-     *
-     * @test
-     */
-    public function testTitleField()
-    {
-        // ddl field
-        $this->field->setTitle('abcd');
-        $result = $this->field->getTitle();
-        $this->assertEquals('abcd', $result, 'assert failed, \Yana\Db\Ddl\Field : expected "abcd" as value, the values should be equal');
-
-        $this->field->setTitle('');
-        $result = $this->field->getTitle();
-        $this->assertNull($result, 'assert failed, \Yana\Db\Ddl\Field : expected null, no label is set');
-    }
-
-    /**
      * Name
      *
      * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
@@ -1622,54 +1571,26 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * EventInvalidArgumentException
-     *
-     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
-     *
      * @test
      */
-    public function testAddFieldEventInvalidArgumentException()
+    public function testGrants()
     {
-        $this->field->addEvent('');
-    }
-
-    /**
-     * Data-provider for testSetGrants
-     */
-    public function dataSetGrants()
-    {
-        return array(
-            array('field'),
-            array('table')
-        );
-    }
-
-    /**
-     * Grants
-     *
-     * @dataProvider dataSetGrants
-     * @param  string  $propertyName
-     * @test
-     */
-    public function testGrants($propertyName)
-    {
-        $object = $this->$propertyName;
         $grant = new \Yana\Db\Ddl\Grant();
         $grant2 = new \Yana\Db\Ddl\Grant();
 
         $grants = array($grant, $grant2);
 
-        $object->setGrant($grant);
-        $object->setGrant($grant2);
+        $this->table->setGrant($grant);
+        $this->table->setGrant($grant2);
 
-        $this->assertEquals($grants, $object->getGrants(), 'assert failed, the values should be equal, expected the same arrays');
+        $this->assertEquals($grants, $this->table->getGrants(), 'assert failed, the values should be equal, expected the same arrays');
 
-        $add = $object->addGrant('user', 'role', 10);
+        $add = $this->table->addGrant('user', 'role', 10);
         $this->assertTrue($add instanceof \Yana\Db\Ddl\Grant, 'Function addGrant() should return instance of \Yana\Db\Ddl\Grant.');
 
-        $object->dropGrants();
+        $this->table->dropGrants();
 
-        $get = $object->getGrants();
+        $get = $this->table->getGrants();
         $this->assertEquals(array(), $get, 'Function getGrants() should return an empty array after calling dropGrants().');
     }
 
@@ -2355,40 +2276,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     {
         $result = $this->database->getChangeLog();
         $this->assertTrue($result instanceof \Yana\Db\Ddl\ChangeLog, 'assert failed, \Yana\Db\Ddl\Database : the value should be an instance of \Yana\Db\Ddl\ChangeLog');
-    }
-
-    /**
-     * Css class
-     *
-     * @test
-     */
-    public function testCssClass()
-    {
-        // \Yana\Db\Ddl\Field
-        $this->field->setCssClass('cssclass');
-        $result = $this->field->getCssClass();
-        $this->assertEquals('cssclass', $result , 'assert failed, \Yana\Db\Ddl\Field : the value "cssclass" should be equal with the expecting value');
-
-        $this->field->setCssClass('');
-        $result = $this->field->getCssClass();
-        $this->assertNull($result, 'assert failed, \Yana\Db\Ddl\Field : expected null - cssclass is not set');
-    }
-
-    /**
-     * TabIndex
-     *
-     * @test
-     */
-    public function testTabIndex()
-    {
-        // \Yana\Db\Ddl\Field
-        $this->field->setTabIndex(4);
-        $result = $this->field->getTabIndex();
-        $this->assertEquals(4, $result , 'assert failed, \Yana\Db\Ddl\Field : the value "4" should be the same as the expected value');
-
-        $this->field->setTabIndex();
-        $result = $this->field->getTabIndex();
-        $this->assertNull($result, 'assert failed, \Yana\Db\Ddl\Field : expected null - tabIndex is not set');
     }
 
     /**

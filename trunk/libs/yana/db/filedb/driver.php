@@ -583,9 +583,6 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
         /*
          * 1.2.3) create result
          */
-        if (!is_int($length)) {
-            throw new \Yana\Db\Queries\Exceptions\InvalidSyntaxException('Syntax error.');
-        }
         $result = new \Yana\Db\FileDb\Result(array(array($length)));
         /*
          * 1.2.4) move to cache
@@ -1132,7 +1129,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
      * @param   array  $where   where clausel
      * @return  int
      */
-    private function _length(array $where)
+    private function _length(array $where): int
     {
         /* if table does not exist, then there is nothing to get */
         if (!isset($this->_src[$this->_getDatabaseName()][$this->_getTableName()])) {

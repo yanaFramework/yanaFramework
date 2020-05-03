@@ -127,4 +127,17 @@ class ArrayAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($entity2, $this->object['Other']);
     }
 
+    /**
+     * @test
+     */
+    public function testToEntity()
+    {
+        $databaseRow = array(
+            \Yana\Security\Data\Tables\UserEnumeration::ID => "Náme!"
+        );
+        /* @var $entity \Yana\Security\Data\Users\Entity */
+        $entity = $this->object->toEntity($databaseRow);
+        $this->assertSame("Náme!", $entity->getId());
+    }
+
 }

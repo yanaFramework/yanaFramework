@@ -265,4 +265,17 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($entity->isActive(), $entity2->isActive());
     }
 
+    /**
+     * @test
+     */
+    public function testToEntity()
+    {
+        $databaseRow = array(
+            \Yana\Security\Data\Tables\UserEnumeration::ID => "Náme!"
+        );
+        /* @var $entity \Yana\Security\Data\Users\Entity */
+        $entity = $this->object->toEntity($databaseRow);
+        $this->assertSame("Náme!", $entity->getId());
+    }
+
 }

@@ -43,6 +43,54 @@ class ArrayAdapter extends \Yana\Data\Adapters\ArrayAdapter implements \Yana\Sec
 {
 
     /**
+     * Basic ORM helper object.
+     *
+     * @var  \Yana\Data\Adapters\IsEntityMapper
+     */
+    private $_entityMapper = null;
+
+    /**
+     * <<construct>> Creates a new adapter.
+     *
+     * @param  \Yana\Data\Adapters\IsEntityMapper  $mapper  simple OR-mapper to convert database entries to objects
+     */
+    public function __construct(\Yana\Data\Adapters\IsEntityMapper $mapper = null)
+    {
+        $this->_entityMapper = $mapper;
+    }
+
+    /**
+     * Returns an instance of an OR-mappinging class.
+     *
+     * Use this to map database entries to objects and vice-versa.
+     *
+     * @return  \Yana\Data\Adapters\IsEntityMapper
+     */
+    protected function _getEntityMapper()
+    {
+        if (!isset($this->_entityMapper)) {
+            // @codeCoverageIgnoreStart
+            $this->_entityMapper = new \Yana\Security\Data\Users\Mapper();
+            // @codeCoverageIgnoreEnd
+        }
+        return $this->_entityMapper;
+    }
+
+    /**
+     * Unserializes the table-row to an entity object.
+     *
+     * @param   array  $formData  user data
+     * @return  \Yana\Data\Adapters\IsEntity
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the given data is invalid
+     */
+    public function toEntity(array $formData)
+    {
+        $entity = $this->_getEntityMapper()->toEntity($formData);
+        $entity->setDataAdapter($this);
+        return $entity;
+    }
+
+    /**
      * Loads and returns an user account from the database.
      *
      * @param   string  $mail  unique mail address
