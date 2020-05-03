@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <?xml-stylesheet type="text/xsl" href=".xsl/documentation.xsl"?>
 <!DOCTYPE database SYSTEM "../dtd/database.dtd">
-<database name="mediadb">
+<database>
     <table name="media">
         <primarykey>media_id</primarykey>
         <foreign table="mediafolder" match="simple" ondelete="no-action" onupdate="no-action">

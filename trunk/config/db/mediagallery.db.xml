@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <?xml-stylesheet type="text/xsl" href=".xsl/documentation.xsl"?>
 <!DOCTYPE database SYSTEM "../dtd/database.dtd">
-<database name="mediadb">
+<database>
     <include>mediadb</include>
     <form name="mediagallery" table="mediafolder" allinput="no" template="6" title="{lang id=&quot;mediafolder&quot;}">
         <input name="mediafolder_id" hidden="yes"/>
