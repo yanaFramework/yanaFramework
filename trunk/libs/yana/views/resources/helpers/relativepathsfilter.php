@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Views\Resources\Helpers;
 
@@ -45,11 +46,8 @@ class RelativePathsFilter extends \Yana\Views\Resources\Helpers\AbstractRelative
      * @param   string  $basedir  template base dir
      * @return  string
      */
-    public function __invoke($source, $basedir)
+    public function __invoke(string $source, string $basedir): string
     {
-        assert(is_string($source), 'Wrong type for argument 1. String expected');
-        assert(is_string($basedir), 'Invalid argument $basedir: string expected');
-
         $lDelim = preg_quote($this->getLeftDelimiter(), '/');
         $rDelim = preg_quote($this->getRightDelimiter(), '/');
 

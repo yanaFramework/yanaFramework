@@ -27,6 +27,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Views;
 
@@ -62,7 +63,7 @@ trait HasViewDependency
      *
      * @return  \Yana\Core\Dependencies\IsViewContainer
      */
-    protected function _getDependencyContainer()
+    protected function _getDependencyContainer(): \Yana\Core\Dependencies\IsViewContainer
     {
         return $this->_dependencyContainer;
     }
@@ -74,7 +75,7 @@ trait HasViewDependency
      *
      * @return  \Yana\Views\Managers\IsSmartyManager
      */
-    protected function _getViewManager()
+    protected function _getViewManager(): \Yana\Views\Managers\IsSmartyManager
     {
         return $this->_getDependencyContainer()->getView();
     }
@@ -84,7 +85,7 @@ trait HasViewDependency
      *
      * @return  \Yana\Views\Icons\IsLoader
      */
-    protected function _getIconLoader()
+    protected function _getIconLoader(): \Yana\Views\Icons\IsLoader
     {
         return $this->_getDependencyContainer()->getIconLoader();
     }
@@ -94,7 +95,7 @@ trait HasViewDependency
      *
      * @return  \Yana\Plugins\Menus\IsCacheableBuilder
      */
-    protected function _getMenuBuilder()
+    protected function _getMenuBuilder(): \Yana\Plugins\Menus\IsCacheableBuilder
     {
         return $this->_getDependencyContainer()->getMenuBuilder();
     }
@@ -106,7 +107,7 @@ trait HasViewDependency
      *
      * @return  \Yana\Translations\IsFacade
      */
-    protected function _getLanguage()
+    protected function _getLanguage(): \Yana\Translations\IsFacade
     {
         return $this->_getDependencyContainer()->getLanguage();
     }
@@ -116,7 +117,7 @@ trait HasViewDependency
      *
      * @return  \Yana\Log\IsLogHandler
      */
-    protected function _getLogger()
+    protected function _getLogger(): \Yana\Log\IsLogHandler
     {
         return $this->_getDependencyContainer()->getLogger();
     }
@@ -130,7 +131,7 @@ trait HasViewDependency
      * @throws  \Yana\Core\Exceptions\NotReadableException    when Registry file is not readable
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when Registry file could not be read or contains invalid syntax
      */
-    protected function _getRegistry()
+    protected function _getRegistry(): \Yana\VDrive\IsRegistry
     {
         return $this->_getDependencyContainer()->getRegistry();
     }
@@ -142,9 +143,21 @@ trait HasViewDependency
      *
      * @return  string
      */
-    protected function _getProfileId()
+    protected function _getProfileId(): string
     {
         return $this->_getDependencyContainer()->getProfileId();
+    }
+
+    /**
+     * Get skin.
+     *
+     * This returns the skin component. If none exists, a new instance is created.
+     *
+     * @return  \Yana\Views\Skins\IsSkin
+     */
+    protected function _getSkin(): \Yana\Views\Skins\IsSkin
+    {
+        return $this->_getDependencyContainer()->getSkin();
     }
 
 }

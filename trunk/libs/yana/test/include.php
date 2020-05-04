@@ -33,6 +33,11 @@ date_default_timezone_set('Europe/Paris');
  */
 require_once dirname(__FILE__) . '/../../../library.php';
 
+/**
+ * @ignore
+ */
+require_once dirname(__FILE__) . '/../../smarty/bootstrap.php';
+
 if (!defined('CWD')) {
     define('CWD', dirname(__FILE__) . DIRECTORY_SEPARATOR);
 }

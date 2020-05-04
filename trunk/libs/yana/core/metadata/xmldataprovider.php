@@ -72,10 +72,8 @@ class XmlDataProvider extends \Yana\Core\StdObject implements \Yana\Core\MetaDat
     /**
      * @param  string  $directory  base directory
      */
-    public function __construct($directory)
+    public function __construct(string $directory)
     {
-        assert(is_string($directory), 'Invalid argument $directory: string expected');
-
         $this->_directory = $directory;
     }
 
@@ -86,7 +84,7 @@ class XmlDataProvider extends \Yana\Core\StdObject implements \Yana\Core\MetaDat
      *
      * @return  string
      */
-    protected function _getFileExtension()
+    protected function _getFileExtension(): string
     {
         return '.xml';
     }
@@ -96,7 +94,7 @@ class XmlDataProvider extends \Yana\Core\StdObject implements \Yana\Core\MetaDat
      *
      * @return  string
      */
-    protected function _getDirectory()
+    protected function _getDirectory(): string
     {
         return $this->_directory;
     }
@@ -109,9 +107,8 @@ class XmlDataProvider extends \Yana\Core\StdObject implements \Yana\Core\MetaDat
      * @param   string  $id  identifier for the file to be loaded
      * @return  string
      */
-    protected function _convertIdToFilePath($id)
+    protected function _convertIdToFilePath(string $id): string
     {
-        assert(is_string($id), 'Invalid argument $id: string expected');
         $file = $this->_getDirectory() .'/' . $id . $this->_getFileExtension();
         return $file;
     }

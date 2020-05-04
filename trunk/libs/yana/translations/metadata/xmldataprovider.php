@@ -45,7 +45,7 @@ class XmlDataProvider extends \Yana\Core\MetaData\XmlDataProvider
      *
      * @return  string
      */
-    protected function _getFileExtension()
+    protected function _getFileExtension(): string
     {
         return '.language.xml';
     }

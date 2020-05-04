@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Views\Resources;
 
@@ -60,30 +61,6 @@ namespace Yana\Views\Resources;
  */
 class FileResource extends \Yana\Views\Resources\AbstractResource
 {
-
-    /**
-     * @var \Yana\Views\Skins\Skin
-     */
-    private $_skin = null;
-
-    /**
-     * Retrieves and returns the skin/themes repository.
-     *
-     * @return \Yana\Views\Skins\Skin
-     */
-    protected function _getSkin()
-    {
-        if (!isset($this->_skin)) {
-            assert(!isset($builder), 'Cannot redeclare var $builder');
-            assert(!isset($application), 'Cannot redeclare var $application');
-            $builder = new \Yana\ApplicationBuilder();
-            $application = $builder->buildApplication();
-            unset($builder);
-            $this->_skin = $application->getSkin();
-            unset($application);
-        }
-        return $this->_skin;
-    }
 
     /**
      * Fetch template and its modification time from data source.

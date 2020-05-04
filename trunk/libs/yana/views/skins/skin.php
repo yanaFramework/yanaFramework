@@ -81,7 +81,7 @@ class Skin extends \Yana\Core\StdObject implements \Yana\Views\Skins\IsSkin
      */
     public function __construct(string $skinName)
     {
-        $this->_name = (string) $skinName;
+        $this->_name = $skinName;
     }
 
     /**
@@ -193,7 +193,7 @@ class Skin extends \Yana\Core\StdObject implements \Yana\Views\Skins\IsSkin
      */
     public function getTemplateData(string $templateId): \Yana\Views\MetaData\IsTemplateMetaData
     {
-        $templateId = mb_strtoupper("$templateId");
+        $templateId = mb_strtoupper($templateId);
         $templatesFound = array();
         /* @var $templatesFound \Yana\Views\MetaData\TemplateMetaData[] */
 

@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Views\Resources;
 
@@ -45,10 +46,10 @@ abstract class AbstractResource extends \Smarty_Resource_Custom
     /**
      * Fetch template's modification timestamp from data source.
      *
-     * Returns the timestamp when the template was modified, or false if not found.
+     * Returns the timestamp when the template was modified, or NULL if not found.
      *
      * @param   string  $name  template name
-     * @return  int
+     * @return  int|NULL
      * @codeCoverageIgnore
      */
     protected function fetchTimestamp($name)

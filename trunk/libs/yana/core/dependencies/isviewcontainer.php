@@ -128,6 +128,15 @@ interface IsViewContainer
     public function getView(): \Yana\Views\Managers\IsManager;
 
     /**
+     * Get skin.
+     *
+     * This returns the skin component. If none exists, a new instance is created.
+     *
+     * @return  \Yana\Views\Skins\IsSkin
+     */
+    public function getSkin(): \Yana\Views\Skins\IsSkin;
+
+    /**
      * Returns
      *
      * @return \Yana\Views\Helpers\Formatters\UrlFormatter
