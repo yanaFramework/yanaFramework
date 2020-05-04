@@ -90,8 +90,8 @@ abstract class AbstractConnectionWrapper extends \Yana\Core\StdObject implements
         // returns a list of key => value pairs
         $properties = get_object_vars($this);
         // remove the table object (it is redundant)
-        unset($properties['table']);
-        $properties['db'] = $this->getDatabase()->getName();
+        unset($properties['_table']);
+        $properties['_db'] = $this->getDatabase()->getSchema()->getName();
         return serialize($properties);
     }
 

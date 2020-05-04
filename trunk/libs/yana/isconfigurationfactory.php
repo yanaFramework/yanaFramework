@@ -49,7 +49,7 @@ interface IsConfigurationFactory
      * @param   string  $filename  path to system.config
      * @return  \Yana\Util\Xml\IsObject
      */
-    public function loadConfiguration($filename);
+    public function loadConfiguration(string $filename): \Yana\Util\Xml\IsObject;
 
 }
 

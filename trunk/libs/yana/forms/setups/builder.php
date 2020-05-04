@@ -218,33 +218,6 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Forms\Setups\IsBuild
     }
 
     /**
-     * Update file information based on request data.
-     *
-     * @param   \Yana\Http\Uploads\IsUploadWrapper  $uploadWrapper  data on uploaded files
-     * @return  $this
-     */
-    public function updateUploadedFiles(\Yana\Http\Uploads\IsUploadWrapper $uploadWrapper)
-    {
-        assert(!isset($formName), 'Cannot redeclare var $formName');
-        $formName = $this->getForm()->getName();
-
-        assert(!isset($fileList), 'Cannot redeclare var $fileList');
-        $fileList = array();
-
-        assert(!isset($contextName), 'Cannot redeclare var $name');
-        foreach ($this->_getContextNames() as $contextName)
-        {
-            $key = "$formName.$contextName";
-            if ($uploadWrapper->isListOfFiles($key)) {
-                $fileList[$contextName] = $uploadWrapper->all($key)->toArray();
-            }
-        }
-        unset($contextName);
-
-        return $this->updateValues($fileList);
-    }
-
-    /**
      * Update values with request array.
      *
      * @param   array  $request  initial values (e.g. Request array)
@@ -271,7 +244,7 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Forms\Setups\IsBuild
                 assert(!isset($values), 'Cannot redeclare var $values');
                 // security check: allow only fields, that exist in the form
                 $values = array_intersect_key($requestValues, $columnNames);
-                $context->addValues($values);
+                $context->setValues($values);
                 unset($values);
             }
             unset($context, $columnNames, $requestValues);

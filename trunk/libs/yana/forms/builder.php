@@ -90,7 +90,8 @@ class Builder extends \Yana\Forms\AbstractBuilder
         $request = (array) $this->_getDependencyContainer()->getRequest()->all()->value($formName)->all()->asArrayOfStrings();
 
         // Find uploaded files
-        $this->_getSetupBuilder()->updateUploadedFiles($this->_getDependencyContainer()->getRequest()->files());
+        assert(!isset($files), 'Cannot redeclare var $files');
+        $files = $this->_buildListOfUploadedFiles();
 
         if (!empty($request)) {
             $this->_getSetupBuilder()->updateSetup($request);
@@ -147,8 +148,8 @@ class Builder extends \Yana\Forms\AbstractBuilder
         $formSetup->setReferenceValues($referenceValues);
 
         // This needs to be done after the rows have been set. Otherwise the user input would be overwritten.
-        if ($request) {
-            $this->_getSetupBuilder()->updateValues($request);
+        if ($request || $files) {
+            $this->_getSetupBuilder()->updateValues($files + $request);
         }
 
         $cache[$formName] = $this->_getSetupBuilder()->__invoke(); // add to cache
@@ -157,6 +158,34 @@ class Builder extends \Yana\Forms\AbstractBuilder
         return $this->_getFacade();
     }
 
+    /**
+     * Get file information based on request data.
+     *
+     * @return  array
+     */
+    protected function _buildListOfUploadedFiles(): array
+    {
+        assert(!isset($formName), 'Cannot redeclare var $formName');
+        $formName = $this->_getForm()->getName();
+
+        assert(!isset($uploadWrapper), 'Cannot redeclare var $uploadWrapper');
+        $uploadWrapper = $this->_getDependencyContainer()->getRequest()->files();
+
+        assert(!isset($fileList), 'Cannot redeclare var $fileList');
+        $fileList = array();
+
+        assert(!isset($contextName), 'Cannot redeclare var $name');
+        foreach (\Yana\Forms\Setups\ContextNameEnumeration::getValidItems() as $contextName)
+        {
+            $key = "$formName.$contextName";
+            if ($uploadWrapper->isListOfFiles($key)) {
+                $fileList[$contextName] = $uploadWrapper->all($key)->toArray();
+            }
+        }
+        unset($contextName);
+
+        return $fileList;
+    }
     /**
      * Build \Yana\Db\Ddl\Form object.
      *

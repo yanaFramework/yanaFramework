@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Forms;
 
@@ -47,7 +48,7 @@ class HtmlBuilder extends \Yana\Forms\AbstractHtmlBuilder
      *
      * @return  string
      */
-    public function __invoke()
+    public function __invoke(): string
     {
         $template = $this->_getTemplate();
         $template->setVar('form', $this->_getFacade());

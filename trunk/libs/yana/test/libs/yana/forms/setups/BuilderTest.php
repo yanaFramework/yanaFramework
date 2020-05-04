@@ -54,6 +54,11 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
     protected $form;
 
     /**
+     * @var \Yana\Db\Ddl\Database
+     */
+    protected $schema;
+
+    /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
@@ -65,8 +70,8 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         $configuration['default']['user_requirements'] = array('level' => '1');
         $this->container = new \Yana\Core\Dependencies\Container($configuration);
         $schemaFactory = new \Yana\Db\SchemaFactory();
-        $schema = $schemaFactory->createSchema('check');
-        $this->form = $this->_buildForm($schema);
+        $this->schema = $schemaFactory->createSchema('check');
+        $this->form = $this->_buildForm($this->schema);
         $this->object = new \Yana\Forms\Setups\Builder($this->form, $this->container);
     }
 
@@ -94,7 +99,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-
+        $this->schema->dropForm($this->form->getName());
     }
 
     /**
@@ -194,12 +199,12 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
     public function test__invokeEvents()
     {
         $setup = new \Yana\Forms\Setup();
-        $this->form->getEvent('delete')->setAction('deleteAction');
-        $this->form->getEvent('download')->setAction('downloadAction');
-        $this->form->getEvent('insert')->setAction('insertAction');
-        $this->form->getEvent('update')->setAction('updateAction');
-        $this->form->getEvent('search')->setAction('searchAction');
-        $this->form->getEvent('export')->setAction('exportAction');
+        $this->form->addEvent('delete')->setAction('deleteAction');
+        $this->form->addEvent('download')->setAction('downloadAction');
+        $this->form->addEvent('insert')->setAction('insertAction');
+        $this->form->addEvent('update')->setAction('updateAction');
+        $this->form->addEvent('search')->setAction('searchAction');
+        $this->form->addEvent('export')->setAction('exportAction');
         $this->container->getSecurity()->addSecurityRule(new \Yana\Security\Rules\NullRule());
         $this->object->setSetup($setup)->__invoke();
         // With the NULL security rule in place, all security checks should now come back positive

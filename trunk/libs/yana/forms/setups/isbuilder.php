@@ -78,14 +78,6 @@ interface IsBuilder
     public function updateSetup(array $request = array());
 
     /**
-     * Update file information based on request data.
-     *
-     * @param   \Yana\Http\Uploads\IsUploadWrapper  $uploadWrapper  data on uploaded files
-     * @return  $this
-     */
-    public function updateUploadedFiles(\Yana\Http\Uploads\IsUploadWrapper $uploadWrapper);
-
-    /**
      * Update values with request array.
      *
      * @param   array  $request  initial values (e.g. Request array)

@@ -46,19 +46,19 @@ class ConfigurationFactory extends \Yana\Core\StdObject implements \Yana\IsConfi
      * The system config file contains default- and startup-settings
      * to initialize this class.
      *
-     * @param   string  $filename  path to system.config
+     * @param   string  $filename          path to system.config
+     * @param   bool    $asRomApplication  set to bool(true) if the application is run from a readonly medium like CD or DVD
      * @return  \Yana\Util\Xml\IsObject
      */
-    public function loadConfiguration($filename)
+    public function loadConfiguration(string $filename, bool $asRomApplication = YANA_CDROM): \Yana\Util\Xml\IsObject
     {
-        assert(is_string($filename), 'Wrong type for argument 1. String expected');
         assert(is_file($filename), 'Invalid argument 1. Input is not a file.');
         assert(is_readable($filename), 'Invalid argument 1. Configuration file is not readable.');
         // get System Config file
         $xmlSource = simplexml_load_file($filename);
         $configuration = \Yana\Util\Xml\Converter::convertXmlToObject($xmlSource);
         // load CD-ROM application settings on demand
-        if (YANA_CDROM === true) {
+        if ($asRomApplication === true) {
             $this->_activateCDApplication($configuration);
         } else {
             $this->_setRealPaths($configuration, getcwd());
@@ -72,7 +72,7 @@ class ConfigurationFactory extends \Yana\Core\StdObject implements \Yana\IsConfi
      * @param  \Yana\Util\Xml\IsObject  $configuration  base configuration
      * @param  string                   $cwd            current working directory
      */
-    private function _setRealPaths(\Yana\Util\Xml\IsObject $configuration, $cwd)
+    private function _setRealPaths(\Yana\Util\Xml\IsObject $configuration, string $cwd)
     {
         $cwd .= '/';
         $configuration->tempdir = $cwd . (string) $configuration->tempdir;
