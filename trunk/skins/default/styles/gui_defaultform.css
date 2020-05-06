@@ -746,9 +746,9 @@ fieldset:hover > .gui_generator_toolbar > .gui_generator_settings
     -moz-box-shadow: 2px 2px 2px #aaa;
     -webkit-box-shadow: 2px 2px 2px #aaa;
     -o-box-shadow: 2px 2px 2px #aaa;
-    box-shadow: 2px 2px 2px #aaa;
+    box-shadow: 0px 0px 2px #aaa;
+    border-radius: 2px;
     margin: 5px;
-    border: 4px double #555;
     display: inline-block;
     overflow: auto;
 }

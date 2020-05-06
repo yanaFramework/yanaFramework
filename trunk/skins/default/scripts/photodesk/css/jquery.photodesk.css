@@ -70,25 +70,26 @@ a.pd_next_photo:hover
 {
 	position:absolute;
 	z-index:10;
-	border:7px solid #f9f9f9;
-	border-bottom:28px solid #f9f9f9;
+	border:7px solid #e8e8e8;
+	border-bottom:28px solid #e8e8e8;
 	top:0px;
 	left:0px;
 	display:none;
-	-moz-box-shadow:1px 1px 5px #555;
-	-webkit-box-shadow:1px 1px 5px #555;
-	box-shadow:1px 1px 5px #555;
+	-moz-box-shadow:1px 1px 5px #aaa;
+	-webkit-box-shadow:1px 1px 5px #aaa;
+	box-shadow:1px 1px 5px #aaa;
 	-moz-border-radius:4px;
 	-webkit-border-radius:4px;
 	border-radius:4px;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 12px;
-    background-color: #fff;
+    background-color: #e8e8e8;
     color: #000;
 }
 .pd_photo img
 {
     border: 0px none;
+    margin-bottom: 12px;
 }
 .pd_photo .delete
 {
