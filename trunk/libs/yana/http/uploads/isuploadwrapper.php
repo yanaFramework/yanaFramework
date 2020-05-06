@@ -26,6 +26,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Http\Uploads;
 
@@ -39,12 +40,33 @@ interface IsUploadWrapper
 {
 
     /**
+     * Returns a list of keys at the given address.
+     *
+     * Say you are uploading files and you do so by using an array like this:
+     * <code>
+     * &lt;input type="file" name="myfiles[]"/&gt;
+     * </code>
+     *
+     * Then to iterate over said files you would call:
+     * <code>
+     * foreach ($uploadWrapper->keys("myfiles") as $key)
+     * {
+     *     $file = $uploadWrapper->file("myfiles." . $key);
+     * }
+     * </code>
+     *
+     * @param   string  $key  address of file
+     * @return  array
+     */
+    public function keys(string $key = ''): array;
+
+    /**
      * Returns bool(true) if an entry with the given name exists.
      *
      * @param   string  $key  address of file
      * @return  bool
      */
-    public function has($key);
+    public function has(string $key): bool;
 
     /**
      * Returns bool(true) if an entry with the given name is a file.
@@ -52,7 +74,7 @@ interface IsUploadWrapper
      * @param   string  $key  address of file
      * @return  bool
      */
-    public function isFile($key);
+    public function isFile(string $key): bool;
 
     /**
      * Returns bool(true) if an entry with the given name is a list of files.
@@ -60,7 +82,7 @@ interface IsUploadWrapper
      * @param   string  $key  address of file
      * @return  bool
      */
-    public function isListOfFiles($key);
+    public function isListOfFiles(string $key): bool;
 
     /**
      * Retrieve file object.
@@ -69,7 +91,7 @@ interface IsUploadWrapper
      * @return  \Yana\Http\Uploads\IsFile
      * @throws  \Yana\Http\Uploads\NotFoundException  when the file was not found
      */
-    public function file($key);
+    public function file(string $key): \Yana\Http\Uploads\IsFile;
 
     /**
      * Retrieve file collection.
@@ -86,7 +108,7 @@ interface IsUploadWrapper
      * @return  \Yana\Http\Uploads\FileCollection
      * @throws  \Yana\Http\Uploads\NotFoundException  when the file-list was not found
      */
-    public function all($key);
+    public function all(string $key): \Yana\Http\Uploads\FileCollection;
 
 }
 

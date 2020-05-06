@@ -215,14 +215,29 @@ class Delete extends \Yana\Db\Queries\AbstractQuery implements \Yana\Db\Queries\
         // send query
         $result = parent::sendQuery();
 
-        // delete old files and upload new
-        $files = $this->currentTable()->getFileColumns();
-        if (!empty($files)) {
-            $this->deleteFiles($files);
-        }
+        // delete old files
+        $this->deleteFilesByColumns();
 
         // return result object
         return $result;
+    }
+
+    /**
+     * Delete old files.
+     *
+     * For each column of types file or image in the current table,
+     * find all file ids stored in the database row and delete the associated files.
+     *
+     * @return  $this
+     * @ignore
+     */
+    protected function deleteFilesByColumns()
+    {
+        foreach ($this->currentTable()->getFileColumns() as $column)
+        {
+            $this->deleteFilesByColumn($column);
+        }
+        return $this;
     }
 
     /**

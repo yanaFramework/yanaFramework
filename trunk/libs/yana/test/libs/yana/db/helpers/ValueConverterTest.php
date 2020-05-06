@@ -231,7 +231,7 @@ class ValueConverterTest extends \PHPUnit_Framework_TestCase
         $this->object->setFileMapper($fileMapper);
         $column = new \Yana\Db\Ddl\Column(__FUNCTION__);
         $column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::IMAGE);
-        $this->assertSame($directory . 'test1.png', $this->object->convertToInternalValue("test1", $column));
+        $this->assertSame($directory . 'test1.jpg', $this->object->convertToInternalValue("test1", $column));
     }
 
     /**

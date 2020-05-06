@@ -39,7 +39,7 @@ class MyImageUploader extends \Yana\Db\Binaries\Uploads\ImageUploader
 {
     public $params;
 
-    protected function _createImageAndThumbnail(\Yana\Media\Image $image, $path, $thumbnailPath, $width, $height, $keepAspectRatio, array $background, $fileEnding, $fileTempName)
+    protected function _createImageAndThumbnail(\Yana\Media\Image $image, string $path, string $thumbnailPath, ?int $width, ?int $height, bool $keepAspectRatio, ?array $background, string $fileTempName)
     {
         $this->params = \func_get_args();
     }
@@ -117,15 +117,14 @@ class ImageUploaderTest extends \PHPUnit_Framework_TestCase
             'background' => '#aabbcc'
         );
         $dir = $this->configuration->getDirectory();
-        $this->assertSame($dir . '/Test.png', $this->object->upload($file, 'Test', $settings));
+        $this->assertSame($dir . '/Test.jpg', $this->object->upload($file, 'Test', $settings));
         $this->assertSame($dir . '/Test', $this->object->params[1], 'Image target path');
         $this->assertSame($dir . '/thumb.Test', $this->object->params[2], 'Thumbnail target path');
         $this->assertSame(200, $this->object->params[3], 'Setting width');
         $this->assertSame(100, $this->object->params[4], 'Setting height');
         $this->assertSame(true, $this->object->params[5], 'Setting aspect-ratio');
         $this->assertSame(array(170, 187, 204), $this->object->params[6], 'Setting background');
-        $this->assertSame('png', $this->object->params[7], 'File type');
-        $this->assertSame(\CWD . 'resources/image/logo.png', $this->object->params[8], 'Temporary file path');
+        $this->assertSame(\CWD . 'resources/image/logo.png', $this->object->params[7], 'Temporary file path');
     }
 
 }

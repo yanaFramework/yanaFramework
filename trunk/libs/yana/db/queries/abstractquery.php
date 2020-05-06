@@ -1937,45 +1937,47 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
      */
     protected function deleteFiles(array $files = array())
     {
-        // abort if there is nothing to do
-        if (empty($files)) {
-            return $this;
-        }
-        $values = $this->getOldValues();
-        if (empty($values)) {
-            return $this;
-        }
         // iterate over list of file-columns
         foreach ($files as $file)
         {
-            if ($file instanceof \Yana\Http\Uploads\File) {
+            if (!$file instanceof \Yana\Http\Uploads\File) {
                 continue;
             }
             $column = $file->getTargetColumn();
             if (!$column instanceof \Yana\Db\Ddl\Column) {
                 continue;
             }
-            $columnName = mb_strtoupper($column->getName());
-            // delete old files
-            if (isset($values[$columnName]) && $values[$columnName] > "") {
-                assert(is_string($values[$columnName]), 'is_string($values[$columnName])');
+            $this->deleteFilesByColumn($column);
+        }
+        return $this;
+    }
+
+    /**
+     * Delete old files.
+     *
+     * @param   \Yana\Db\Ddl\Column  $column  containing the id of the file to be deleted
+     * @return  $this
+     * @ignore
+     */
+    protected function deleteFilesByColumn(\Yana\Db\Ddl\Column $column)
+    {
+        assert(!isset($columnName), 'Cannot redeclare var $columnName');
+        $columnName = mb_strtoupper($column->getName());
+        // delete old files
+        assert(!isset($row), 'Cannot redeclare var $row');
+        foreach ($this->getOldValues() as $row)
+        {
+            if (isset($row[$columnName]) && $row[$columnName] > "") {
+                assert(is_string($row[$columnName]), 'is_string($values[$columnName])');
 
                 try {
-                    \Yana\Db\Binaries\File::removeFile($values[$columnName]);
+                    \Yana\Db\Binaries\File::removeFile($row[$columnName]);
 
                 } catch (\Yana\Core\Exceptions\NotFoundException $e) {
                     // @codeCoverageIgnoreStart
 
                     // Create a database event log entry for each file that was not found.
-                    assert(!isset($message), 'Cannot redeclare var $message');
-                    $message = $e->getMessage();
-                    try {
-                        $message = "Error while trying to delete a row in table '" .
-                        $this->currentTable()->getName() . "': " . $message;
-                    } catch (Exception $ex) {
-                        $message = "Error while trying to delete a row: " . $message;
-                    }
-                    \Yana\Log\LogManager::getLogger()->addLog($message);
+                    \Yana\Log\LogManager::getLogger()->addLog("Error while trying to delete a row: " . $e->getMessage());
                     // @codeCoverageIgnoreEnd
                 }
             }

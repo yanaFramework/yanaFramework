@@ -66,7 +66,7 @@ class FileMapperTest extends \PHPUnit_Framework_TestCase
      * @test
      */
     public function testToFileId()
-    {
+    {   
         $this->assertSame('fileId', $this->object->toFileId('/path/fileId.ext'));
     }
 
@@ -77,7 +77,8 @@ class FileMapperTest extends \PHPUnit_Framework_TestCase
     {
         $directory = \Yana\Db\Binaries\ConfigurationSingleton::getInstance()->getDirectory();
         $this->assertSame($directory . 'fileId.gz', $this->object->toFileName('fileId', \Yana\Db\Binaries\FileTypeEnumeration::FILE));
-        $this->assertSame($directory . 'fileId.png', $this->object->toFileName('fileId', \Yana\Db\Binaries\FileTypeEnumeration::IMAGE));
+        $this->assertSame($directory . 'fileId.jpg.jpg', $this->object->toFileName('fileId.jpg', \Yana\Db\Binaries\FileTypeEnumeration::IMAGE));
+        $this->assertSame($directory . 'fileId.jpg', $this->object->toFileName('fileId', \Yana\Db\Binaries\FileTypeEnumeration::IMAGE));
         $this->assertSame($directory . 'thumb.fileId.png', $this->object->toFileName('fileId', \Yana\Db\Binaries\FileTypeEnumeration::THUMB));
     }
 

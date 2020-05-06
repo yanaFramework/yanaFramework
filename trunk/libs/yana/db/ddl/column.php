@@ -1798,7 +1798,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
                 }
                 // get filename
                 $mapper = new \Yana\Db\Binaries\FileMapper();
-                $fileType = ($type === 'image') ? \Yana\Db\Binaries\FileTypeEnumeration::IMAGE : \Yana\Db\Binaries\FileTypeEnumeration::FILE;
+                $fileType = ($type === \Yana\Db\Ddl\ColumnTypeEnumeration::IMAGE) ? \Yana\Db\Binaries\FileTypeEnumeration::IMAGE : \Yana\Db\Binaries\FileTypeEnumeration::FILE;
                 $filename = $mapper->toFileName($value, $fileType);
                 unset($fileType, $mapper);
                 // return NULL if file doesn't exist

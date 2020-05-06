@@ -26,6 +26,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Http\Uploads;
 
@@ -56,12 +57,11 @@ abstract class AbstractUploadWrapper extends \Yana\Core\StdObject implements \Ya
     /**
      * Returns list of file settings.
      *
-     * @return  array
+     * @return  mixed
      */
-    protected function _getEntry($key)
+    protected function _getEntry(string $key)
     {
-        assert(is_string($key), 'Invalid argument type: $key. String expected');
-        return \Yana\Util\Hashtable::get($this->_files, \Yana\Util\Strings::toLowerCase((string) $key));
+        return \Yana\Util\Hashtable::get($this->_files, \Yana\Util\Strings::toLowerCase($key));
     }
 
     /**
@@ -70,7 +70,7 @@ abstract class AbstractUploadWrapper extends \Yana\Core\StdObject implements \Ya
      * @param   mixed  $something  to check
      * @return  bool
      */
-    protected function _isFileEntry($something)
+    protected function _isFileEntry($something): bool
     {
         return is_array($something)
             && isset($something['name']) && is_string($something['name'])
@@ -86,7 +86,7 @@ abstract class AbstractUploadWrapper extends \Yana\Core\StdObject implements \Ya
      * @param   mixed  $something  to check
      * @return  bool
      */
-    protected function _isValidFile($something)
+    protected function _isValidFile($something): bool
     {
         return $this->_isFileEntry($something) && $something['name'] > "" && $something['tmp_name'] > "";
     }
@@ -97,7 +97,7 @@ abstract class AbstractUploadWrapper extends \Yana\Core\StdObject implements \Ya
      * @param   mixed  $something  to check
      * @return  bool
      */
-    protected function _isList($something)
+    protected function _isList($something): bool
     {
         assert(!isset($isList), 'Cannot redeclare var $isList');
         $isList = is_array($something) && (empty($something['name']) || is_array($something['name']));

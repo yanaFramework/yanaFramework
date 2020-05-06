@@ -26,6 +26,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Http\Uploads;
 
@@ -39,15 +40,39 @@ class UploadWrapper extends \Yana\Http\Uploads\AbstractUploadWrapper
 {
 
     /**
+     * Returns a list of keys at the given address.
+     *
+     * Say you are uploading files and you do so by using an array like this:
+     * <code>
+     * &lt;input type="file" name="myfiles[]"/&gt;
+     * </code>
+     *
+     * Then to iterate over said files you would call:
+     * <code>
+     * foreach ($uploadWrapper->keys("myfiles") as $key)
+     * {
+     *     $file = $uploadWrapper->file("myfiles." . $key);
+     * }
+     * </code>
+     *
+     * @param   string  $key  address of file
+     * @return  array
+     */
+    public function keys(string $key = '*'): array
+    {
+        $entries = $this->_getEntry($key);
+        return is_array($entries) ? array_keys($entries) : array();
+    }
+
+    /**
      * Returns bool(true) if an entry with the given name exists.
      *
      * @param   string  $key  address of file
      * @return  bool
      */
-    public function has($key)
+    public function has(string $key): bool
     {
-        assert(is_string($key), 'Invalid argument type: $key. String expected');
-        return !is_null($this->_getEntry((string) $key));
+        return !is_null($this->_getEntry($key));
     }
 
     /**
@@ -56,10 +81,9 @@ class UploadWrapper extends \Yana\Http\Uploads\AbstractUploadWrapper
      * @param   string  $key  address of file
      * @return  bool
      */
-    public function isFile($key)
+    public function isFile(string $key): bool
     {
-        assert(is_string($key), 'Invalid argument type: $key. String expected');
-        return $this->_isValidFile($this->_getEntry((string) $key));
+        return $this->_isValidFile($this->_getEntry($key));
     }
 
     /**
@@ -68,10 +92,9 @@ class UploadWrapper extends \Yana\Http\Uploads\AbstractUploadWrapper
      * @param   string  $key  address of file
      * @return  bool
      */
-    public function isListOfFiles($key)
+    public function isListOfFiles(string $key): bool
     {
-        assert(is_string($key), 'Invalid argument type: $key. String expected');
-        return $this->_isList($this->_getEntry((string) $key));
+        return $this->_isList($this->_getEntry($key));
     }
 
     /**
@@ -81,13 +104,12 @@ class UploadWrapper extends \Yana\Http\Uploads\AbstractUploadWrapper
      * @return  \Yana\Http\Uploads\IsFile
      * @throws  \Yana\Http\Uploads\NotFoundException  when the file was not found
      */
-    public function file($key)
+    public function file(string $key): \Yana\Http\Uploads\IsFile
     {
-        assert(is_string($key), 'Invalid argument type: $key. String expected');
         assert(!isset($file), 'Cannot redeclare var $file');
-        $file = $this->_getEntry((string) $key);
+        $file = $this->_getEntry($key);
         if (!$this->_isValidFile($file)) {
-            throw new \Yana\Http\Uploads\NotFoundException('No such file "' . (string) $key . '"');
+            throw new \Yana\Http\Uploads\NotFoundException('No such file "' . $key . '"');
         }
         return new \Yana\Http\Uploads\File(
             (string) $file['name'], (string) $file['type'], (string) $file['tmp_name'], (int) $file['size'], (int) $file['error']
@@ -109,13 +131,12 @@ class UploadWrapper extends \Yana\Http\Uploads\AbstractUploadWrapper
      * @return  \Yana\Http\Uploads\FileCollection
      * @throws  \Yana\Http\Uploads\NotFoundException  when the file-list was not found
      */
-    public function all($key)
+    public function all(string $key): \Yana\Http\Uploads\FileCollection
     {
-        assert(is_string($key), 'Invalid argument type: $key. String expected');
         assert(!isset($files), 'Cannot redeclare var $files');
-        $files = $this->_getEntry((string) $key);
+        $files = $this->_getEntry($key);
         if (!$this->_isList($files)) {
-            throw new \Yana\Http\Uploads\NotFoundException('No such files "' . (string) $key . '"');
+            throw new \Yana\Http\Uploads\NotFoundException('No such files "' . $key . '"');
         }
 
         assert(!isset($collection), 'Cannot redeclare $collection');

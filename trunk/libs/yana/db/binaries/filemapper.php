@@ -109,7 +109,7 @@ class FileMapper extends \Yana\Files\Readonly implements \Yana\Db\Binaries\IsFil
         switch ($type)
         {
             case \Yana\Db\Binaries\FileTypeEnumeration::IMAGE:
-                $file .= $fileId . '.png';
+                $file .= $fileId . '.jpg';
             break;
             case \Yana\Db\Binaries\FileTypeEnumeration::THUMB:
                 $file .= 'thumb.' . $fileId . '.png';

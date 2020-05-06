@@ -149,7 +149,7 @@ class Builder extends \Yana\Forms\AbstractBuilder
 
         // This needs to be done after the rows have been set. Otherwise the user input would be overwritten.
         if ($request || $files) {
-            $this->_getSetupBuilder()->updateValues($files + $request);
+            $this->_getSetupBuilder()->updateValues(\array_merge_recursive($files, $request));
         }
 
         $cache[$formName] = $this->_getSetupBuilder()->__invoke(); // add to cache
@@ -174,15 +174,26 @@ class Builder extends \Yana\Forms\AbstractBuilder
         assert(!isset($fileList), 'Cannot redeclare var $fileList');
         $fileList = array();
 
-        assert(!isset($contextName), 'Cannot redeclare var $name');
-        foreach (\Yana\Forms\Setups\ContextNameEnumeration::getValidItems() as $contextName)
+        assert(!isset($contextName), 'Cannot redeclare var $contextName');
+        $contextName = \Yana\Forms\Setups\ContextNameEnumeration::INSERT;
+        assert(!isset($insertKey), 'Cannot redeclare var $insertKey');
+        $insertKey = $formName . "." . $contextName;
+        if ($uploadWrapper->isListOfFiles($insertKey)) {
+            $fileList[$contextName] = $uploadWrapper->all($insertKey)->toArray();
+        }
+        unset($insertKey);
+
+        $contextName = \Yana\Forms\Setups\ContextNameEnumeration::UPDATE;
+        assert(!isset($updateKey), 'Cannot redeclare var $updateKey');
+        $updateKey = $formName . "." . $contextName;
+        assert(!isset($key), 'Cannot redeclare var $key');
+        foreach ($uploadWrapper->keys($updateKey) as $key)
         {
-            $key = "$formName.$contextName";
-            if ($uploadWrapper->isListOfFiles($key)) {
-                $fileList[$contextName] = $uploadWrapper->all($key)->toArray();
+            if ($uploadWrapper->isListOfFiles($updateKey . '.' . $key)) {
+                $fileList[$contextName][$key] = $uploadWrapper->all($updateKey . '.' . $key)->toArray();
             }
         }
-        unset($contextName);
+        unset($updateKey, $key);
 
         return $fileList;
     }

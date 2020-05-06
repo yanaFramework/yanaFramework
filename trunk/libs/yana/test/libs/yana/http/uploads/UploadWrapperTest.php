@@ -95,6 +95,18 @@ class UploadWrapperTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testKeys()
+    {
+        $this->assertSame(array('outer'), $this->object->keys());
+        $this->assertSame(array('inner'), $this->object->keys('outeR'));
+        $this->assertSame(array('column1', 'column2', 'column4'), $this->object->keys('Outer.Inner'));
+        $this->assertSame(array('name', 'type', 'tmp_name', 'error', 'size'), $this->object->keys('Outer.Inner.Column1'));
+        $this->assertSame(array(), $this->object->keys('Outer.Inner.Column1.name'));
+    }
+
+    /**
+     * @test
+     */
     public function testHas()
     {
         $this->assertFalse($this->object->has('non-existing'));

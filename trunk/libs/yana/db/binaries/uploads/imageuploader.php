@@ -69,6 +69,28 @@ class ImageUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
      * $db->insert("my_table", $row);
      * </code>}.
      *
+     * We never just copy the original image file, we always re-render and store the result.
+     * Why?
+     *
+     * <ol>
+     * <li>So that all the meta-data (including geo-information) will always be removed from the image.</li>
+     * <li>So that it is harder to upload a file as an image that isn't actually an image, even if the
+     * attacker provides a fake mime-type.</li>
+     * <li>So that even if the file actually is an image but contains malicious content in its meta-data
+     * (some image types allow scripts to be included) this content gets removed as well, making it more
+     * unlikely that a potentially vulnerable third party software ever gets to see it.</li>
+     * </ol>
+     *
+     * {@internal{
+     * We are perfectly aware that if the GD-library were to have a vulnerability related to the processing
+     * of a certain image type, we might hereby expose it to user-land.
+     * Except we don't know how likely this scenario is. It might never happen, it might happen tomorrow.
+     *
+     * What we DO know, however, is that the scenario of an entirely unrelated library having a security
+     * flaw that could lead to that malicious file somehow getting included, executed, or distributed is much more likely.
+     * We thus accept the minor risk and do what can be done to not have potentially malicious file content on our server
+     * in the first place. }}
+     *
      * @param   \Yana\Http\Uploads\IsFile   $file      representing one entry in global $_FILES array
      * @param   string                      $fileId    name of target file
      * @param   array                       $settings  int    width       image width in pixel,
@@ -78,7 +100,7 @@ class ImageUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
      * @return  string
      * @throws  \Yana\Core\Exceptions\Files\InvalidImageException  when the uploaded file was no valid image
      */
-    public function upload(\Yana\Http\Uploads\IsFile $file, $fileId, array $settings)
+    public function upload(\Yana\Http\Uploads\IsFile $file, string $fileId, array $settings)
     {
         $dir = $this->_getConfiguration()->getDirectory();
         $fileTempName = $this->_getTempName($file);
@@ -87,20 +109,19 @@ class ImageUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
         // check mime-type of uploaded file
         $fileType = 'png';
         if ($file->getMimeType()) {
-            if (!preg_match('/^image\/(\w+)$/s', $file->getMimeType(), $fileType)) {
-                $message = "The uploaded file has an invalid MIME-type.";
+            if (!preg_match('/^image\/(jpe?g|png|gif)$/s', $file->getMimeType(), $match)) {
+                $message = "The uploaded file has an invalid MIME-type. Must be jpg, png or gif.";
                 $level = UPLOAD_ERR_FILE_TYPE;
                 $error = new \Yana\Core\Exceptions\Files\InvalidImageException($message, $level);
                 throw $error->setFilename($filename);
             }
-            $fileType = $fileType[1];
+            $fileType = $match[1];
+            unset($match);
         }
 
         /* name of output files */
         $path = "{$dir}/{$fileId}";
         $thumbnailPath = "{$dir}/thumb.{$fileId}";
-        assert(is_string($path), 'Wrong argument type for argument 2. String expected');
-        assert(is_string($thumbnailPath), 'Wrong argument type for argument 3. String expected');
 
         /*
          * process image
@@ -126,9 +147,9 @@ class ImageUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
             $height = $settings['height'];
         }
         $ratio = !empty($settings['ratio']);
-        if (!empty($settings['background'])) {
+        if (isset($settings['background']) && (is_array($settings['background']) || is_string($settings['background']))) {
             $background = $settings['background'];
-            if (preg_match('/#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i', "$background", $rgb)) {
+            if (is_string($background) && preg_match('/#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i', (string) $background, $rgb)) {
                 $background = array(
                     hexdec($rgb[1]),
                     hexdec($rgb[2]),
@@ -136,8 +157,8 @@ class ImageUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
                 );
             }
         }
-        $this->_createImageAndThumbnail($image, $path, $thumbnailPath, $width, $height, $ratio, (array) $background, $fileType, $fileTempName);
-        return "$path.$fileType";
+        $this->_createImageAndThumbnail($image, $path, $thumbnailPath, $width, $height, $ratio, $background, $fileTempName);
+        return "$path.jpg";
     }
 
 
@@ -147,23 +168,41 @@ class ImageUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
      * @param  \Yana\Media\Image $image  $image            source
      * @param  string                    $path             where to store file
      * @param  string                    $thumbnailPath    where to store tumbnail
-     * @param  int                       $width            resize to
-     * @param  int                       $height           resize to
+     * @param  int|NULL                  $width            resize to
+     * @param  int|NULL                  $height           resize to
      * @param  bool                      $keepAspectRatio  for resizing
      * @param  array                     $background       RGB color
-     * @param  string                    $fileEnding       of target
      * @param  string                    $fileTempName     of source
      * @codeCoverageIgnore
      */
-    protected function _createImageAndThumbnail(\Yana\Media\Image $image, $path, $thumbnailPath, $width, $height, $keepAspectRatio, array $background, $fileEnding, $fileTempName)
+    protected function _createImageAndThumbnail(\Yana\Media\Image $image, string $path, string $thumbnailPath, ?int $width, ?int $height, bool $keepAspectRatio, ?array $background, string $fileTempName)
     {
         // resize (if at least a width or height is given)
         if ($width || $height) {
             $image->createThumbnail($width, $height, $keepAspectRatio, $background);
-            $image->outputToFile($path, $fileEnding);
-        } else {
-            move_uploaded_file($fileTempName, "$path.$fileEnding");
         }
+        /* We never keep the original image file, we always re-render and create our own.
+         * Why?
+         *
+         * <ol>
+         * <li>So that all the meta-data (including geo-information) will always be removed from the image.</li>
+         * <li>So that it is harder to upload a file as an image that isn't actually an image, even if the
+         * attacker provides a fake mime-type.</li>
+         * <li>So that even if the file actually is an image but contains malicious content in its meta-data
+         * (some image types allow scripts to be included here) this contents gets removed, so that a potentially
+         * vulnerable third party software never gets to see it.</li>
+         * </ol>
+         *
+         * We are perfectly aware that if the GD-library were to have a vulnerability related to the processing
+         * of a certain image type, we are hereby exposing it to user-land.
+         * Except we don't know how likely this scenario is. What we DO know, however, is that it is preferable
+         * to do whatever necessary to not allow any potentially malicious file content to be stored on the server
+         * in the first place, even if that means accepting a minor risk.
+         * Just to prevent the much more likely scenario that an entirely unrelated library were to have a security
+         * flaw that could lead to that malicious file somehow getting included, executed, or distributed.
+         * We don't want that file on our server. Period.
+         */
+        $image->outputToFile($path, 'jpg');
         // create thumbnail
         $image->createThumbnail(100, 100, true, $background);
         $image->outputToFile($thumbnailPath, 'png');
