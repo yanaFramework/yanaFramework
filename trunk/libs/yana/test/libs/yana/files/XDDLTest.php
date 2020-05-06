@@ -968,4 +968,13 @@ class XDDLTest extends \PHPUnit_Framework_TestCase
         \Yana\Files\XDDL::getDatabase("no-such-database");
     }
 
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\InvalidSyntaxException
+     */
+    public function testGetDatabaseInvalidSyntaxException()
+    {
+        \Yana\Files\XDDL::getDatabase(__FILE__);
+    }
+
 }
