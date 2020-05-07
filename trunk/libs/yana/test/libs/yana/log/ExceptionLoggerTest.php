@@ -126,4 +126,22 @@ class ExceptionLoggerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('SuccessMessage', $this->resultObject[0]->getHeader());
     }
 
+    /**
+     * @test
+     */
+    public function testAddExceptionWithData()
+    {
+        $container = new \Yana\Core\VarContainer();
+        $token = \YANA_LEFT_DELIMITER . '$FILE' . \YANA_RIGHT_DELIMITER;
+        $languageItem = array('h' => 'H ' . $token . ' h', 'p' => 'P ' . $token . ' p');
+        $container->setVar('Yana\Core\Exceptions\Files\NotFoundException', $languageItem);
+        $this->object = new \Yana\Log\ExceptionLogger($container);
+        $exception = new \Yana\Core\Exceptions\Files\NotFoundException();
+        $exception->setFilename('Test');
+        $this->object->addException($exception);
+        $resultObject = $this->object->getMessages();
+        $this->assertEquals('H Test h', $resultObject[0]->getHeader());
+        $this->assertEquals('P Test p', $resultObject[0]->getText());
+    }
+
 }

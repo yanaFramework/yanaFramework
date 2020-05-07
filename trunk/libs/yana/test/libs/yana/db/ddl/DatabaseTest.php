@@ -52,21 +52,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     protected $foreignkey;
 
     /**
-     * @var \Yana\Db\Ddl\Functions\Definition
-     */
-    protected $function;
-
-    /**
-     * @var \Yana\Db\Ddl\Functions\Implementation
-     */
-    protected $functionimplementation;
-
-    /**
-     * @var \Yana\Db\Ddl\Functions\Parameter
-     */
-    protected $functionparameter;
-
-    /**
      * @var \Yana\Db\Ddl\Sequence
      */
     protected $sequence;
@@ -113,9 +98,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $this->database = new \Yana\Db\Ddl\Database('Database', CWD . '/resources/check.db.xml');
         $this->table = new \Yana\Db\Ddl\Table('table');
         $this->foreignkey = new \Yana\Db\Ddl\ForeignKey('foreignkey');
-        $this->function = new \Yana\Db\Ddl\Functions\Definition('function');
-        $this->functionimplementation = new \Yana\Db\Ddl\Functions\Implementation;
-        $this->functionparameter = new \Yana\Db\Ddl\Functions\Parameter('param');
         $this->sequence = new \Yana\Db\Ddl\Sequence('sequence');
         $this->grant = new \Yana\Db\Ddl\Grant();
         $this->indexcolumn = new \Yana\Db\Ddl\IndexColumn('indexColumn');
@@ -133,9 +115,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $this->database->setModified(true); // setting the file to modified forces the instance cache to be cleared
         unset($this->database); // this doesn't kill all references, UNLESS the files was previously set to modified
         unset($this->foreignkey);
-        unset($this->function);
-        unset($this->functionimplementation);
-        unset($this->functionparameter);
         unset($this->sequence);
         unset($this->table);
         unset($this->indexcolumn);
@@ -191,7 +170,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array('database'),
-            array('function'),
             array('table'),
             array('event')
         );
@@ -218,55 +196,12 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * set type
-     *
-     * @test
-     */
-    public function testSetType()
-    {
-        // DDL FunctionParameter
-        $this->functionparameter->setType('integer');
-        $result = $this->functionparameter->getType();
-        $this->assertEquals('integer', $result, 'assert failed, \Yana\Db\Ddl\Functions\Parameter : the expecting value of getType should be "integer" - the values should be equal');
-
-        $this->functionparameter->setType('');
-        $result = $this->functionparameter->getType();
-        $this->assertEquals('', $result, 'assert failed, \Yana\Db\Ddl\Functions\Parameter : the expecting value of getType should be an empty result - the values should be equal');
-    }
-
-    /**
-     * Mode
-     *
-     * @test
-     */
-    public function testMode()
-    {
-        // DDL FunctionParameter
-        $this->functionparameter->setMode(0);
-        $result = $this->functionparameter->getMode();
-        $this->assertEquals(0, $result, 'assert failed, \Yana\Db\Ddl\Functions\Parameter : the value should be match the number 0');
-
-        $this->functionparameter->setMode(2);
-        $result = $this->functionparameter->getMode();
-        $this->assertEquals(2, $result, 'assert failed, \Yana\Db\Ddl\Functions\Parameter : the value should be match the number 2');
-
-        $this->functionparameter->setMode(1);
-        $result = $this->functionparameter->getMode();
-        $this->assertEquals(1, $result, 'assert failed, \Yana\Db\Ddl\Functions\Parameter : the value should be match the number 1');
-
-        $this->functionparameter->setMode(20);
-        $result = $this->functionparameter->getMode();
-        $this->assertEquals(0, $result, 'assert failed, \Yana\Db\Ddl\Functions\Parameter : expected value is the default number 0 - only 0, 1, 2 numbers can be used in setMode by setting an other number the default must be choosen');
-    }
-
-    /**
      * Data-provider for testDescription
      */
     public function dataDescription()
     {
         return array(
             array('database'),
-            array('function'),
             array('table'),
             array('sequence')
         );
@@ -1104,45 +1039,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Implementation
-     *
-     * @test
-     */
-    public function testImplementation()
-    {
-       $test3 = $this->function->getImplementation("mysql");
-       $this->assertNull($test3, "\Yana\Db\Ddl\Functions\Definition, no test implementations are set");
-
-       $f1 = $this->function->addImplementation('mysql');
-       $f2 = $this->function->addImplementation('oracle');
-
-       $test1 = $this->function->getImplementations();
-       $this->assertEquals(count($test1), 2, "\Yana\Db\Ddl\Functions\Definition, a problem with reading/writing implementations has occured");
-
-       $test2 = $this->function->getImplementation("mysql");
-       $this->assertEquals(count($test2), 1, "\Yana\Db\Ddl\Functions\Definition, a problem with reading specified implementations has occured");
-    }
-
-    /**
-     * ImplementationAlreadyExistsException
-     *
-     * @expectedException \Yana\Core\Exceptions\AlreadyExistsException
-     *
-     * @test
-     */
-    public function testImplementationAlreadyExistsException()
-    {
-        try {
-            // supposed to succeed
-            $this->function->addImplementation();
-        } catch (\Yana\Core\Exceptions\AlreadyExistsException $e) {
-            $this->fail($e->getMessage());
-        }
-        // supposed to fail
-        $this->function->addImplementation();
-    }
-
-    /**
      * Increment
      *
      * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
@@ -1243,123 +1139,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $message = 'assert failed, \Yana\Db\Ddl\ForeignKey : expected 0 as value, the 0 number will be choosen when the number ' .
             'by setMatch does not match the numbers 0, 1, 2';
         $this->assertEquals(\Yana\Db\Ddl\KeyMatchStrategyEnumeration::SIMPLE, $result, $message);
-    }
-
-    /**
-     * Language
-     *
-     * @test
-     */
-    public function testLanguage()
-    {
-        // DDL FunctionImplementation
-        $this->functionimplementation->setLanguage('language');
-        $validate = $this->functionimplementation->getLanguage();
-        $this->assertEquals('language', $validate, '\Yana\Db\Ddl\Functions\Implementation : expected value is "language"');
-    }
-
-    /**
-     * Code
-     *
-     * @test
-     */
-    public function testCode()
-    {
-        // DDL FunctionImplementation
-        $this->functionimplementation->setCode('code');
-        $validate = $this->functionimplementation->getCode();
-        $this->assertEquals('code', $validate, '\Yana\Db\Ddl\Functions\Implementation : expected value is "code"');
-    }
-
-    /**
-     * Return
-     *
-     * @test
-     */
-    public function testReturn()
-    {
-        // DDL FunctionImplementation
-        $this->functionimplementation->setReturn('return');
-        $validate = $this->functionimplementation->getReturn();
-        $this->assertEquals('return', $validate, '\Yana\Db\Ddl\Functions\Implementation : expected "return" as value');
-
-        $this->functionimplementation->setReturn('');
-        $result = $this->functionimplementation->getReturn();
-        $this->assertNull($result, 'assert failed, \Yana\Db\Ddl\Functions\Implementation : expected null, the return is not set');
-    }
-
-    /**
-     * parameter definition
-     *
-     * @test
-     */
-    public function testParameter()
-    {
-        // DDL FunctionImplementation
-        $this->functionimplementation->addParameter('control');
-        $valid = $this->functionimplementation->getParameters();
-        $this->assertArrayHasKey('control', $valid, 'assert failed, \Yana\Db\Ddl\Functions\Implementation : expected "control" as value');
-
-        $valid = $this->functionimplementation->getParameterNames();
-        $this->assertEquals('control', $valid[0], 'assert failed, \Yana\Db\Ddl\Functions\Implementation : expected "control" as value');
-
-        $this->functionimplementation->getParameter('control');
-        $this->functionimplementation->addParameter('test');
-        $this->functionimplementation->addParameter('new');
-
-        $valid = $this->functionimplementation->getParameters();
-        $this->assertArrayHasKey('control', $valid, 'assert failed, \Yana\Db\Ddl\Functions\Implementation : the value "control" should be match a key in array');
-        $this->assertArrayHasKey('test', $valid, 'assert failed, \Yana\Db\Ddl\Functions\Implementation : the value "test" should be match a key in array');
-        $this->assertArrayHasKey('new', $valid, 'assert failed, \Yana\Db\Ddl\Functions\Implementation : the value "new" should be match a key in array');
-
-        $this->functionimplementation->dropParameter('test');
-        $valid = $this->functionimplementation->getParameters();
-        $this->assertArrayNotHasKey('test', $valid, 'assert failed, \Yana\Db\Ddl\Functions\Implementation : the value "test" should not be match a key in array');
-
-        $name = 'a';
-        $newParam = $this->functionimplementation->addParameter($name);
-        $valid = $this->functionimplementation->getParameters();
-        $this->assertArrayHasKey($name, $valid, 'assert failed, \Yana\Db\Ddl\Functions\Implementation : the value "name" should be match a key in array');
-
-        $parameter = $this->functionimplementation->getParameter('b');
-        $this->assertNull($parameter, 'function must return NULL for undefined parameter "b"');
-    }
-
-    /**
-     * addParameterAlreadyExistsException
-     *
-     * @test
-     *
-     * @expectedException \Yana\Core\Exceptions\AlreadyExistsException
-     */
-    public function testAddParameterAlreadyExistsException()
-    {
-        try {
-            // supposed to succeed
-            $this->functionimplementation->addParameter('parameter');
-        } catch (\Exception $e) {
-            $this->fail($e->getMessage());
-        }
-        // supposed to fail
-        $this->functionimplementation->addParameter('parameter');
-    }
-
-    /**
-     * Function: DBMS
-     *
-     * @test
-     */
-    public function testFunctionDBMS()
-    {
-        // DDL FunctionImplementation
-        $implementation = $this->function->addImplementation('MsSqL');
-        $validate = $implementation->getDBMS();
-        $this->assertEquals('mssql', $validate, 'assert failed, \Yana\Db\Ddl\Functions\Implementation : expected "mssql", the values should be equal');
-
-        $implementation = $this->function->addImplementation();
-        $validate = $implementation->getDBMS();
-        // expected generic
-        $this->assertEquals('generic', $validate, 'assert failed, \Yana\Db\Ddl\Functions\Implementation : expected "generic", the values should be equal');
     }
 
     /**
@@ -1623,11 +1402,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($parentForm, $childForm, '\Yana\Db\Ddl\Form::getParent, the values should be equal');
         $parentDatabase = $subForm->getDatabase();
         $this->assertEquals($database, $parentDatabase, '\Yana\Db\Ddl\Form::getDatabase, the values should be equal');
-
-        // \Yana\Db\Ddl\Functions\Definition
-        $childFunction = new \Yana\Db\Ddl\Functions\Definition('function', $database);
-        $parentFunction = $childFunction->getParent();
-        $this->assertEquals($database, $parentFunction, '\Yana\Db\Ddl\Functions\Definition::getParent, the values should be equal');
 
         // \Yana\Db\Ddl\Index
         $childIndex = new \Yana\Db\Ddl\Index('index', $parentTable);
