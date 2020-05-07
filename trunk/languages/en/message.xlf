@@ -55,37 +55,37 @@
                 </trans-unit>
             </group>
             <group id="Yana\Core\Exceptions\Files\AlreadyExistsException">
-                <trans-unit id="Yana\Core\Exceptions\Files\AlreadyExistsException">
+                <trans-unit id="Yana\Core\Exceptions\Files\AlreadyExistsException.p">
                     <target>File or directoy {$FILE} could not be created because another file or directory of the same name already exists.</target>
                     <source/>
                 </trans-unit>
             </group>
             <group id="Yana\Core\Exceptions\Files\DeletedException">
-                <trans-unit id="Yana\Core\Exceptions\Files\DeletedException">
+                <trans-unit id="Yana\Core\Exceptions\Files\DeletedException.p">
                     <target>A requested file or directory was deleted.</target>
                     <source/>
                 </trans-unit>
             </group>
             <group id="Yana\Core\Exceptions\Files\NotWriteableException">
-                <trans-unit id="Yana\Core\Exceptions\Files\NotWriteableException">
+                <trans-unit id="Yana\Core\Exceptions\Files\NotWriteableException.p">
                     <target>Unable to write to file or directory {$FILE}.</target>
                     <source/>
                 </trans-unit>
             </group>
             <group id="Yana\Core\Exceptions\Files\InvalidImageException">
-                <trans-unit id="Yana\Core\Exceptions\Files\InvalidImageException.h">
+                <trans-unit id="Yana\Core\Exceptions\Files\InvalidImageException.p">
                     <target>The file {$FILE} is not a valid image.</target>
                     <source/>
                 </trans-unit>
             </group>
             <group id="Yana\Core\Exceptions\Files\InvalidTypeException">
-                <trans-unit id="Yana\Core\Exceptions\Files\InvalidTypeException.h">
+                <trans-unit id="Yana\Core\Exceptions\Files\InvalidTypeException.p">
                     <target>The file {$FILE} has the wrong type: {$TYPE} expected.</target>
                     <source/>
                 </trans-unit>
             </group>
             <group id="Yana\Core\Exceptions\Files\UploadFailedException">
-                <trans-unit id="Yana\Core\Exceptions\Files\UploadFailedException.h">
+                <trans-unit id="Yana\Core\Exceptions\Files\UploadFailedException.p">
                     <target>The file {$FILE} could not be saved.</target>
                     <source/>
                 </trans-unit>
