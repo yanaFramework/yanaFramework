@@ -117,7 +117,7 @@ class Definition extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Dd
     /**
      * Get parent.
      *
-     * @return  \Yana\Db\Ddl\Database
+     * @return  \Yana\Db\Ddl\Database|NULL
      */
     public function getParent()
     {
@@ -131,9 +131,9 @@ class Definition extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Dd
      *
      * It is optional. If it is not set, the function returns NULL instead.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getTitle()
+    public function getTitle(): ?string
     {
         if (is_string($this->title)) {
             return $this->title;
@@ -149,11 +149,10 @@ class Definition extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Dd
      * To reset the property, leave the parameter empty.
      *
      * @param   string  $title  any text is valid
-     * @return  \Yana\Db\Ddl\Functions\Definition
+     * @return  $this
      */
-    public function setTitle($title = "")
+    public function setTitle(string $title = "")
     {
-        assert(is_string($title), 'Invalid argument $title: string expected');
         if (empty($title)) {
             $this->title = null;
         } else {
@@ -176,9 +175,9 @@ class Definition extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Dd
      * NULL instead. Note that the description may also contain an identifier
      * for automatic translation.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         if (is_string($this->description)) {
             return $this->description;
@@ -199,15 +198,14 @@ class Definition extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Dd
      * To reset the property, leave the parameter $description empty.
      *
      * @param   string  $description  any text is valid
-     * @return  \Yana\Db\Ddl\Functions\Definition
+     * @return  $this
      */
-    public function setDescription($description)
+    public function setDescription(string $description)
     {
-        assert(is_string($description), 'Invalid argument $description: string expected');
         if (empty($description)) {
             $this->description = null;
         } else {
-            $this->description = "$description";
+            $this->description = $description;
         }
         return $this;
     }
@@ -220,11 +218,10 @@ class Definition extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Dd
      * Returns NULL if no implementation is available.
      *
      * @param   string  $dbms   target DBMS, defaults to "generic"
-     * @return  \Yana\Db\Ddl\Functions\Implementation
+     * @return  \Yana\Db\Ddl\Functions\Implementation|NULL
      */
-    public function getImplementation($dbms = \Yana\Db\DriverEnumeration::GENERIC)
+    public function getImplementation(string $dbms = \Yana\Db\DriverEnumeration::GENERIC): ?\Yana\Db\Ddl\Functions\Implementation
     {
-        assert(is_string($dbms), 'Invalid argument $dbms: string expected');
         $lcDbms = strtolower($dbms);
         if (!isset($this->implementations[$lcDbms])) {
             return null;
@@ -242,7 +239,7 @@ class Definition extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Dd
      *
      * @return  array
      */
-    public function getImplementations()
+    public function getImplementations(): array
     {
         return $this->implementations;
     }
@@ -259,9 +256,9 @@ class Definition extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Dd
      * @return  \Yana\Db\Ddl\Functions\Implementation
      * @throws  \Yana\Core\Exceptions\AlreadyExistsException  when an implementation for the chosen DBMS already exists
      */
-    public function addImplementation($dbms = \Yana\Db\DriverEnumeration::GENERIC)
+    public function addImplementation(string $dbms = \Yana\Db\DriverEnumeration::GENERIC): \Yana\Db\Ddl\Functions\Implementation
     {
-        assert(is_string($dbms), 'Invalid argument $dbms: string expected');
+        $dbms = strtolower($dbms);
         if (!isset($this->implementations[$dbms])) {
             $implementation = new \Yana\Db\Ddl\Functions\Implementation($dbms);
             $this->implementations[$dbms] = $implementation;
@@ -280,7 +277,7 @@ class Definition extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Dd
      *
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed              $parent  parent node (if any)
-     * @return  \Yana\Db\Ddl\Functions\Definition
+     * @return  $this
      * @throws   \Yana\Core\Exceptions\InvalidArgumentException  when the name attribute is missing
      */
     public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)

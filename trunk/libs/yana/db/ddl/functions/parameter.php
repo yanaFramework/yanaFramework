@@ -88,7 +88,7 @@ class Parameter extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * @return  string
      */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
@@ -100,13 +100,12 @@ class Parameter extends \Yana\Db\Ddl\AbstractNamedObject
      * DBMS. For "generic" it is equivalent to all simple data types known in PHP.
      * The setting is mandatory.
      *
-     * @param   string  $type   data type of the parameter
-     * @return  \Yana\Db\Ddl\Functions\Parameter 
+     * @param   string  $type data type of the parameter
+     * @return  $this
      */
-    public function setType($type)
+    public function setType(string $type)
     {
-        assert(is_string($type), 'Invalid argument $type: string expected');
-        $this->type = "$type";
+        $this->type = $type;
         return $this;
     }
 
@@ -120,11 +119,13 @@ class Parameter extends \Yana\Db\Ddl\AbstractNamedObject
      *   <li> \Yana\Db\Ddl\Functions\ParameterTypeEnumeration::INOUT </li>
      * </ul>
      *
+     * Default is \Yana\Db\Ddl\Functions\ParameterTypeEnumeration::IN.
+     *
      * @return  int
      */
-    public function getMode()
+    public function getMode(): int
     {
-        return (int) $this->mode;
+        return $this->mode;
     }
 
     /**
@@ -140,11 +141,10 @@ class Parameter extends \Yana\Db\Ddl\AbstractNamedObject
      * The default is \Yana\Db\Ddl\Functions\ParameterTypeEnumeration::IN.
      *
      * @param   int  $mode  parameter input mode
-     * @return  \Yana\Db\Ddl\Functions\Parameter 
+     * @return  $this
      */
-    public function setMode($mode = \Yana\Db\Ddl\Functions\ParameterTypeEnumeration::IN)
+    public function setMode(int $mode = \Yana\Db\Ddl\Functions\ParameterTypeEnumeration::IN)
     {
-        assert(is_int($mode), 'Invalid argument $mode: integer expected');
         switch($mode)
         {
             case \Yana\Db\Ddl\Functions\ParameterTypeEnumeration::IN:
@@ -188,13 +188,18 @@ class Parameter extends \Yana\Db\Ddl\AbstractNamedObject
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed              $parent  parent node (if any)
      * @return  \Yana\Db\Ddl\Functions\Parameter
-     * @throws   \Yana\Core\Exceptions\InvalidArgumentException  when the name attribute is missing
+     * @throws   \Yana\Core\Exceptions\InvalidArgumentException  when the name or type attribute is missing
      */
     public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)
     {
         $attributes = $node->attributes();
         if (!isset($attributes['name'])) {
             $message = "Missing name attribute.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
+        }
+        if (!isset($attributes['type'])) {
+            $message = "Missing type attribute.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
         }

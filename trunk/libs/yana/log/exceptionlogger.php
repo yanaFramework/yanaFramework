@@ -118,7 +118,7 @@ class ExceptionLogger extends \Yana\Log\AbstactLogger
      *
      * @return  \Yana\Log\ViewHelpers\Message
      */
-    protected function _toMessage(\Yana\Core\Exceptions\IsException $exception)
+    protected function _toMessage(\Yana\Core\Exceptions\IsException $exception): \Yana\Log\ViewHelpers\Message
     {
         $viewMessage = new \Yana\Log\ViewHelpers\Message();
 
@@ -129,10 +129,12 @@ class ExceptionLogger extends \Yana\Log\AbstactLogger
             if ($this->_getInputContainer()->isVar($className)) {
                 $text = $this->_getInputContainer()->getVar($className);
                 if (isset($text['h'])) {
-                    $viewMessage->setHeader($text['h']);
+                    $header = \Yana\Util\Strings::replaceToken($text['h'], $exception->getData());
+                    $viewMessage->setHeader($header);
                 }
                 if (isset($text['p'])) {
-                    $viewMessage->setText($text['p']);
+                    $paragraph = \Yana\Util\Strings::replaceToken($text['p'], $exception->getData());
+                    $viewMessage->setText($paragraph);
                 }
                 break;
             }

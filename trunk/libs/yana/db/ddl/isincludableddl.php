@@ -40,14 +40,14 @@ interface IsIncludableDDL
     /**
      * Get parent.
      *
-     * @return  \Yana\Db\Ddl\Database
+     * @return  \Yana\Db\Ddl\Database|NULL
      */
     public function getParent();
 
     /**
      * Returns the object name.
      *
-     * @return  string
+     * @return  string|NULL
      */
     public function getName();
 

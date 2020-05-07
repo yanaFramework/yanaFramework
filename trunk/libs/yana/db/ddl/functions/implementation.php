@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Ddl\Functions;
 
@@ -123,7 +124,7 @@ class Implementation extends \Yana\Db\Ddl\DDL
      *
      * @return  string
      */
-    public function getDBMS()
+    public function getDBMS(): string
     {
         return $this->dbms;
     }
@@ -143,9 +144,8 @@ class Implementation extends \Yana\Db\Ddl\DDL
      *
      * @param   string  $dbms   target DBMS, defaults to "generic"
      */
-    public function __construct($dbms =\Yana\Db\DriverEnumeration::GENERIC)
+    public function __construct(string $dbms =\Yana\Db\DriverEnumeration::GENERIC)
     {
-        assert(is_string($dbms), 'Invalid argument $dbms: string expected');
         $this->dbms = strtolower($dbms);
     }
 
@@ -155,9 +155,9 @@ class Implementation extends \Yana\Db\Ddl\DDL
      * The data-type returned by the function.
      * Will return NULL if the returned type is void.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getReturn()
+    public function getReturn(): ?string
     {
         return $this->return;
     }
@@ -172,15 +172,14 @@ class Implementation extends \Yana\Db\Ddl\DDL
      * to 'void'.
      *
      * @param   string  $type  valid data-type in the selected programming-language
-     * @return  \Yana\Db\Ddl\Functions\Implementation 
+     * @return  $this
      */
-    public function setReturn($type = "")
+    public function setReturn(string $type = "")
     {
-        assert(is_string($type), 'Invalid argument $type: string expected');
         if (empty($type)) {
             $this->return = null;
         } else {
-            $this->return = "$type";
+            $this->return = $type;
         }
         return $this;
     }
@@ -193,11 +192,10 @@ class Implementation extends \Yana\Db\Ddl\DDL
      * function returns NULL instead.
      *
      * @param   string  $name   parameter name
-     * @return  \Yana\Db\Ddl\Functions\Parameter
+     * @return  \Yana\Db\Ddl\Functions\Parameter|NULL
      */
-    public function getParameter($name)
+    public function getParameter(string $name): ?\Yana\Db\Ddl\Functions\Parameter
     {
-        assert(is_string($name), 'Invalid argument $name: string expected');
         $tableName = mb_strtolower($name);
         if (isset($this->parameters[$tableName])) {
             return $this->parameters[$tableName];
@@ -218,7 +216,7 @@ class Implementation extends \Yana\Db\Ddl\DDL
      *
      * @return  array
      */
-    public function getParameters()
+    public function getParameters(): array
     {
         assert(is_array($this->parameters), 'member "parameters" is expected to be an array');
         return $this->parameters;
@@ -231,7 +229,7 @@ class Implementation extends \Yana\Db\Ddl\DDL
      *
      * @return  array
      */
-    public function getParameterNames()
+    public function getParameterNames(): array
     {
         assert(is_array($this->parameters), 'member "parameters" is expected to be an array');
         return array_keys($this->parameters);
@@ -252,9 +250,8 @@ class Implementation extends \Yana\Db\Ddl\DDL
      * @throws  \Yana\Core\Exceptions\AlreadyExistsException    when a parameter with the same name already exists
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  on invalid name
      */
-    public function addParameter($name)
+    public function addParameter(string $name): \Yana\Db\Ddl\Functions\Parameter
     {
-        assert(is_string($name), 'Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->parameters[$name])) {
             $message = "Another parameter with the name '$name' is already defined.";
@@ -274,9 +271,9 @@ class Implementation extends \Yana\Db\Ddl\DDL
      *
      * @param   string  $name   name for drop a parameter
      */
-    public function dropParameter($name)
+    public function dropParameter(string $name)
     {
-        assert(is_string($name), 'Invalid argument $name: string expected');
+        $name = mb_strtolower($name);
         if (isset($this->parameters[$name])) {
             unset($this->parameters[$name]);
         }
@@ -285,11 +282,10 @@ class Implementation extends \Yana\Db\Ddl\DDL
     /**
      * Get the implementing source-code for this function.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getCode()
+    public function getCode(): ?string
     {
-        assert(is_string($this->code), 'Invalid argument $this->code: string expected');
         return $this->code;
     }
 
@@ -300,12 +296,11 @@ class Implementation extends \Yana\Db\Ddl\DDL
      * Note that it is not checked wether or not the given code is valid.
      *
      * @param   string  $code  must be a valid implementation for the selected programming language (not checked here)
-     * @return  \Yana\Db\Ddl\Functions\Implementation 
+     * @return  $this 
      */
-    public function setCode($code)
+    public function setCode(string $code)
     {
-        assert(is_string($code), 'Invalid argument $code: string expected');
-        $this->code = "$code";
+        $this->code = $code;
         return $this;
     }
 
@@ -321,9 +316,9 @@ class Implementation extends \Yana\Db\Ddl\DDL
      * DBMS that support multiple languages may demand that you specify the
      * language you wish to use.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getLanguage()
+    public function getLanguage(): ?string
     {
         return $this->language;
     }
@@ -344,12 +339,15 @@ class Implementation extends \Yana\Db\Ddl\DDL
      * implemented for the given DBMS. So use this option with care!
      *
      * @param   string  $language   name of a programming-language
-     * @return  \Yana\Db\Ddl\Functions\Implementation 
+     * @return  $this 
      */
-    public function setLanguage($language)
+    public function setLanguage(string $language)
     {
-        assert(is_string($language), 'Invalid argument $language: string expected');
-        $this->language = "$language";
+        if ($language === "") {
+            $this->language = null;
+        } else {
+            $this->language = $language;
+        }
         return $this;
     }
 
@@ -358,7 +356,7 @@ class Implementation extends \Yana\Db\Ddl\DDL
      *
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed              $parent  parent node (if any)
-     * @return  \Yana\Db\Ddl\Functions\Implementation
+     * @return  $this
      */
     public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)
     {

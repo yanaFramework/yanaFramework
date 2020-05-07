@@ -52,7 +52,7 @@ class ReplaceTokenModifier extends \Yana\Views\Helpers\AbstractViewHelper implem
     {
         // @codeCoverageIgnoreStart
         if (empty($array)) {
-            $array = $this->_getViewManager()->getSmarty()->getTemplateVars();
+            $array = $this->_getRegistry()->getVars();
         }
         // @codeCoverageIgnoreEnd
         if (\is_string($string)) {
