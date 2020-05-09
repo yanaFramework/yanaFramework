@@ -243,7 +243,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
      * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      */
     public function testSetMaxInvalidArgumentException()
-{
+    {
         $this->object->setStart(2)->setMax(1);
     }
 

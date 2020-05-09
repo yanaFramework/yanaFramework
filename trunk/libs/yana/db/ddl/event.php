@@ -102,13 +102,10 @@ class Event extends \Yana\Db\Ddl\AbstractNamedObject
      * The code or function name that should be executed when the event is fired.
      * The syntax is dependent on the chosen language.
      *
-     * @return  string|NULL
+     * @return  string
      */
-    public function getAction(): ?string
+    public function getAction(): string
     {
-        if (empty($this->action)) {
-            return null;
-        }
         return $this->action;
     }
 
