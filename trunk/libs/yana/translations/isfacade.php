@@ -54,7 +54,7 @@ interface IsFacade extends \Yana\Translations\IsTranslation
      *
      * @return  string
      */
-    public function getLanguage();
+    public function getLanguage(): string;
 
     /**
      * Get name of selected country.
@@ -72,14 +72,14 @@ interface IsFacade extends \Yana\Translations\IsTranslation
      *
      * @return  string
      */
-    public function getCountry();
+    public function getCountry(): string;
 
     /**
      * Returns locale settings.
      *
      * @return  string
      */
-    public function getLocale();
+    public function getLocale(): string;
 
     /**
      * Read language strings from a file.
@@ -90,21 +90,21 @@ interface IsFacade extends \Yana\Translations\IsTranslation
      * You may access the file contents via $language->getVar('some.value')
      *
      * @param   string  $file  name of translation file that should be loaded
-     * @return  self
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\Translations\InvalidFileNameException       when the given identifier is invalid
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException                      when the give filename is invalid
      * @throws  \Yana\Core\Exceptions\Translations\LanguageFileNotFoundException  when the language file is not found
      */
-    public function readFile($file);
+    public function readFile(string $file);
 
     /**
      * Add a directory to the list of language directories.
      *
-     * @param   string  $directory  base directory
-     * @return  self
+     * @param   \Yana\Files\IsDir  $directory  base directory
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\NotFoundException   when the chosen directory does not exist
      */
-    public function addDirectory($directory);
+    public function addDirectory(\Yana\Files\IsDir $directory);
 
     /**
      * Set the system locale.
@@ -112,9 +112,9 @@ interface IsFacade extends \Yana\Translations\IsTranslation
      * @param   string  $selectedLanguage  current language
      * @param   string  $selectedCountry   current country (optional)
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the provided locale is not valid
-     * @return  self
+     * @return  $this
      */
-    public function setLocale($selectedLanguage, $selectedCountry = "");
+    public function setLocale(string $selectedLanguage, string $selectedCountry = "");
 
 }
 

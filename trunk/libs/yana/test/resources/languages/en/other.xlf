@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN"
+ "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd" >
+<xliff version="1.0">
+    <file source-language="en" datatype="html" original="" target-language="en">
+        <header/>
+        <body>
+            <trans-unit id="test">
+                <source/>
+                <target>other test</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

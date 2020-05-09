@@ -50,7 +50,7 @@ class XmlDataProviderTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $directory = CWD . '/resources/skin/';
-        $this->object = new \Yana\Views\MetaData\XmlDataProvider($directory);
+        $this->object = new \Yana\Views\MetaData\XmlDataProvider(new \Yana\Files\Dir($directory));
     }
 
     /**

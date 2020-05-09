@@ -24,6 +24,7 @@
  * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Translations;
 
@@ -59,6 +60,14 @@ class NullFacadeTest extends \PHPUnit_Framework_TestCase
     protected function tearDown()
     {
         
+    }
+
+    /**
+     * @test
+     */
+    public function testAddAcceptedLocale()
+    {
+        $this->assertSame($this->object, $this->object->addAcceptedLocale(new \Yana\Translations\Locale()));
     }
 
     /**
@@ -130,7 +139,7 @@ class NullFacadeTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddDirectory()
     {
-        $this->assertSame($this->object, $this->object->addDirectory("doesn't matter"));
+        $this->assertSame($this->object, $this->object->addDirectory(new \Yana\Files\Dir("doesn't matter")));
     }
 
     /**

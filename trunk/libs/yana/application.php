@@ -144,7 +144,7 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
             {
                 $langDir = $langDir . "/languages/";
                 if (is_dir($langDir)) {
-                    $language->addDirectory($langDir);
+                    $language->addDirectory(new \Yana\Files\Dir($langDir));
                 }
             }
             unset($langDir, $language);

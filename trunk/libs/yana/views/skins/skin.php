@@ -92,7 +92,7 @@ class Skin extends \Yana\Core\StdObject implements \Yana\Views\Skins\IsSkin
     protected function _getMetaDataProvider(): \Yana\Core\MetaData\IsDataProvider
     {
         if (!isset($this->_dataProvider)) {
-            $this->_dataProvider = new \Yana\Views\MetaData\XmlDataProvider(self::$_baseDirectory);
+            $this->_dataProvider = new \Yana\Views\MetaData\XmlDataProvider(new \Yana\Files\Dir(self::$_baseDirectory));
         }
         return $this->_dataProvider;
     }

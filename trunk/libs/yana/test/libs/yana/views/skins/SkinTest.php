@@ -181,7 +181,7 @@ class SkinTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetMetaDataProvider()
     {
-        $provider = new \Yana\Views\MetaData\XmlDataProvider(__DIR__);
+        $provider = new \Yana\Views\MetaData\XmlDataProvider(new \Yana\Files\Dir(__DIR__));
         $this->assertSame($provider, $this->_object->setMetaDataProvider($provider)->getMetaDataProvider());
     }
 

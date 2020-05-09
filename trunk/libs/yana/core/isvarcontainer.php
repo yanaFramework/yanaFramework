@@ -78,7 +78,7 @@ interface IsVarContainer
      *
      * @param   string  $key        key of updated element
      * @param   mixed   &$value     new value
-     * @return  \Yana\Core\IsVarContainer
+     * @return  $this
      */
     public function setVarByReference($key, &$value);
 
@@ -86,7 +86,7 @@ interface IsVarContainer
      * Replaces all elements of the container by reference.
      *
      * @param   array  &$value  set of new values
-     * @return  \Yana\Core\IsVarContainer
+     * @return  $this
      */
     public function setVarsByReference(array &$value);
 
@@ -98,7 +98,7 @@ interface IsVarContainer
      *
      * @param   string  $key        key of updated element
      * @param   mixed   $value      new value
-     * @return  \Yana\Core\IsVarContainer
+     * @return  $this
      */
     public function setVar($key, $value);
 
@@ -106,7 +106,7 @@ interface IsVarContainer
      * Replaces all elements of the container.
      *
      * @param   array  $value  set of new values
-     * @return  \Yana\Core\IsVarContainer
+     * @return  $this
      */
     public function setVars(array $value);
 

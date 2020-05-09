@@ -83,15 +83,13 @@ class XmlDataProvider extends \Yana\Core\MetaData\XmlDataProvider implements \Ya
      * @param   string                                 $id        identifier for the processed XML file to be loaded
      * @return  \Yana\Core\MetaData\IsPackageMetaData
      */
-    protected function _fillMetaData(\Yana\Core\MetaData\IsPackageMetaData $metaData, \Yana\Core\MetaData\XmlMetaData $xml, $id)
+    protected function _fillMetaData(\Yana\Core\MetaData\IsPackageMetaData $metaData, \Yana\Core\MetaData\XmlMetaData $xml, string $id): \Yana\Core\MetaData\IsPackageMetaData
     {
-        assert(is_string($id), 'Invalid argument $id: string expected');
-
         $metaData = parent::_fillMetaData($metaData, $xml, $id);
 
         if (!empty($xml) && $xml instanceof \Yana\Views\MetaData\XmlMetaData) {
 
-            $directory = $this->_getDirectory() . '/';
+            $directory = $this->_getDirectory()->getPath() . '/';
             assert(!isset($template), 'cannot redeclare variable $template');
             foreach ($xml->getTemplates($directory) as $template)
             {

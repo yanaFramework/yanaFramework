@@ -42,7 +42,7 @@ class MyFacade extends \Yana\Translations\Facade
     {
     }
 
-    protected function _setSystemLocale($locale)
+    protected function _setSystemLocale(string $locale)
     {
     }
 
@@ -54,7 +54,7 @@ class MyFacade extends \Yana\Translations\Facade
 class MyFacadeMockManager extends \Yana\Translations\MyFacade
 {
 
-    protected function _getManager()
+    protected function _getManager(): \Yana\Translations\IsTranslationManager
     {
         return new \Yana\Translations\NullFacade();
     }
@@ -188,7 +188,7 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddDirectory()
     {
-        $this->assertEquals($this->object, $this->object->addDirectory(__DIR__));
+        $this->assertEquals($this->object, $this->object->addDirectory(new \Yana\Files\Dir(__DIR__)));
     }
 
     /**

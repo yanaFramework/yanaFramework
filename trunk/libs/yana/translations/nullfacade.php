@@ -35,16 +35,28 @@ namespace Yana\Translations;
  *
  * @package     yana
  * @subpackage  translations
+ * @ignore
  */
-class NullFacade extends \Yana\Core\StdObject implements \Yana\Translations\IsFacade
+class NullFacade extends \Yana\Core\StdObject implements \Yana\Translations\IsFacade, \Yana\Translations\IsTranslationManager
 {
+
+    /**
+     * Does nothing.
+     *
+     * @param   \Yana\Translations\IsLocale  $locale  ignored
+     * @return  $this
+     */
+    public function addAcceptedLocale(\Yana\Translations\IsLocale $locale)
+    {
+        return $this;
+    }
 
     /**
      * Get name of selected language.
      *
      * @return  string
      */
-    public function getLanguage()
+    public function getLanguage(): string
     {
         return '';
     }
@@ -54,7 +66,7 @@ class NullFacade extends \Yana\Core\StdObject implements \Yana\Translations\IsFa
      *
      * @return  string
      */
-    public function getCountry()
+    public function getCountry(): string
     {
         return '';
     }
@@ -64,7 +76,7 @@ class NullFacade extends \Yana\Core\StdObject implements \Yana\Translations\IsFa
      *
      * @return  string
      */
-    public function getLocale()
+    public function getLocale(): string
     {
         return '';
     }
@@ -75,7 +87,7 @@ class NullFacade extends \Yana\Core\StdObject implements \Yana\Translations\IsFa
      * @param   string  $file  name of translation file that should be loaded
      * @return  $this
      */
-    public function readFile($file)
+    public function readFile(string $file)
     {
         return $this;
     }
@@ -125,10 +137,10 @@ class NullFacade extends \Yana\Core\StdObject implements \Yana\Translations\IsFa
     /**
      * Add a directory to the list of language directories.
      *
-     * @param   string  $directory  base directory
+     * @param   \Yana\Files\IsDir  $directory  base directory
      * @return  $this
      */
-    public function addDirectory($directory)
+    public function addDirectory(\Yana\Files\IsDir $directory)
     {
         return $this;
     }
@@ -140,7 +152,7 @@ class NullFacade extends \Yana\Core\StdObject implements \Yana\Translations\IsFa
      * @param   string  $selectedCountry   current country (optional)
      * @return  $this
      */
-    public function setLocale($selectedLanguage, $selectedCountry = "")
+    public function setLocale(string $selectedLanguage, string $selectedCountry = "")
     {
         return $this;
     }

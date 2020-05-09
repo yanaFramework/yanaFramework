@@ -42,15 +42,15 @@ interface IsTextContainer extends \Yana\Core\IsVarContainer
      * @param   string  $id  alpha-numeric text
      * @return  bool
      */
-    public function isLoaded($id);
+    public function isLoaded(string $id): bool;
 
     /**
      * Marks the id as loaded.
      *
      * @param   string  $id  alpha-numeric text
-     * @return  \Yana\Translations\TextData\TextContainer
+     * @return  $this
      */
-    public function setLoaded($id);
+    public function setLoaded(string $id);
 
     /**
      * Add translation strings.
@@ -58,7 +58,7 @@ interface IsTextContainer extends \Yana\Core\IsVarContainer
      * The keys are the translation-ids and the values are the translation strings.
      *
      * @param   array  $strings  list of translation strings
-     * @return  \Yana\Translations\TextData\TextContainer
+     * @return  $this
      */
     public function addVars(array $strings);
 
@@ -82,8 +82,9 @@ interface IsTextContainer extends \Yana\Core\IsVarContainer
      *
      * The idea is that you can easily look up all translation-ids in "group2",
      * so that you can get all translations in that group.
-     * 
-     * @return  array
+     *
+     * @param   array  $groups  to be added
+     * @return  $this
      */
     public function addGroups(array $groups);
 
@@ -93,7 +94,7 @@ interface IsTextContainer extends \Yana\Core\IsVarContainer
      * @param   string  $groupName  index to check for
      * @return  bool
      */
-    public function isGroup($groupName);
+    public function isGroup(string $groupName): bool;
 
     /**
      * Get translation groups.
@@ -108,7 +109,7 @@ interface IsTextContainer extends \Yana\Core\IsVarContainer
      *
      * @return  array
      */
-    public function getGroups();
+    public function getGroups(): array;
 
     /**
      * Returns group settings.
@@ -120,7 +121,7 @@ interface IsTextContainer extends \Yana\Core\IsVarContainer
      * @param   string  $groupName  index to retrieve
      * @return  array
      */
-    public function getGroupMembers($groupName);
+    public function getGroupMembers(string $groupName): array;
 
     /**
      * Replace a token within a provided text.

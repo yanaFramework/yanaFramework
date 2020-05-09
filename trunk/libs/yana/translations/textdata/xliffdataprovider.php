@@ -50,7 +50,7 @@ class XliffDataProvider extends \Yana\Core\StdObject implements \Yana\Translatio
     /**
      * Setup target directory and container.
      *
-     * @param  \Yana\Files\Dir  $directory  where the files will be found
+     * @param  \Yana\Files\IsDir  $directory  where the files will be found
      */
     public function __construct(\Yana\Files\IsDir $directory)
     {

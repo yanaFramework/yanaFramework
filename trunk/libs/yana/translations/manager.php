@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Translations;
 
@@ -53,8 +54,8 @@ class Manager extends \Yana\Translations\AbstractManager
     /**
      * Add a directory to the collection of accepted locales.
      *
-     * @param  \Yana\Translations\IsLocale  $locale  must correspond to existing translation directory
-     * @return  self
+     * @param   \Yana\Translations\IsLocale  $locale  must correspond to existing translation directory
+     * @return  $this
      */
     public function addAcceptedLocale(\Yana\Translations\IsLocale $locale)
     {
@@ -98,7 +99,7 @@ class Manager extends \Yana\Translations\AbstractManager
      * You may access the file contents via $language->getVar('some.value').
      *
      * @param   string  $id  name of translation package that should be loaded
-     * @return  self
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\Translations\InvalidFileNameException       when the given identifier is invalid
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException                      when the give filename is invalid
      * @throws  \Yana\Core\Exceptions\Translations\LanguageFileNotFoundException  when the language file is not found

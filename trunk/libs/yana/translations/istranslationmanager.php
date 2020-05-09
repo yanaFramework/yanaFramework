@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Translations;
 
@@ -53,8 +54,8 @@ interface IsTranslationManager extends \Yana\Translations\IsTranslation
     /**
      * Add a directory to the collection of accepted locales.
      *
-     * @param  \Yana\Translations\IsLocale  $locale  must correspond to existing translation directory
-     * @return  self
+     * @param   \Yana\Translations\IsLocale  $locale  must correspond to existing translation directory
+     * @return  $this
      */
     public function addAcceptedLocale(\Yana\Translations\IsLocale $locale);
 
@@ -65,7 +66,7 @@ interface IsTranslationManager extends \Yana\Translations\IsTranslation
      * If you add multiple, only the first will be used.
      *
      * @param   \Yana\Core\MetaData\IsDataProvider  $provider  to load information about a language pack
-     * @return  self
+     * @return  $this
      */
     public function addMetaDataProvider(\Yana\Core\MetaData\IsDataProvider $provider);
 
@@ -73,7 +74,7 @@ interface IsTranslationManager extends \Yana\Translations\IsTranslation
      * Adds a class that finds and loads translations.
      *
      * @param  \Yana\Translations\TextData\IsDataProvider  $provider  to load the contents of a language pack
-     * @return  self
+     * @return  $this
      */
     public function addTextDataProvider(\Yana\Translations\TextData\IsDataProvider $provider);
 

@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Translations\TextData;
 
@@ -53,7 +54,7 @@ class TextContainer extends \Yana\Core\VarContainer implements \Yana\Translation
      * @param   sclar  $key  some valid identifier, either a number or a non-empty text
      * @return  string
      */
-    protected function _toArrayOffset($key)
+    protected function _toArrayOffset($key): string
     {
         assert(is_scalar($key), 'Invalid argument $key: string expected');
         return (string) \mb_strtolower($key);
@@ -96,9 +97,8 @@ class TextContainer extends \Yana\Core\VarContainer implements \Yana\Translation
      * @param   string  $id  alpha-numeric text
      * @return  bool
      */
-    public function isLoaded($id)
+    public function isLoaded(string $id): bool
     {
-        assert(is_string($id), 'Invalid argument $id: string expected');
         $lowerCasedId = $this->_toArrayOffset($id);
         return !empty($this->_loaded[$lowerCasedId]);
     }
@@ -107,11 +107,10 @@ class TextContainer extends \Yana\Core\VarContainer implements \Yana\Translation
      * Marks the id as loaded.
      *
      * @param   string  $id  alpha-numeric text
-     * @return  \Yana\Translations\TextData\TextContainer
+     * @return  $this
      */
-    public function setLoaded($id)
+    public function setLoaded(string $id)
     {
-        assert(is_string($id), 'Invalid argument $id: string expected');
         $lowerCasedId = $this->_toArrayOffset($id);
         $this->_loaded[$lowerCasedId] = true;
         return $this;
@@ -123,17 +122,30 @@ class TextContainer extends \Yana\Core\VarContainer implements \Yana\Translation
      * The keys are the translation-ids and the values are the translation strings.
      *
      * @param   array  $strings  list of translation strings
-     * @return  \Yana\Translations\TextData\TextContainer
+     * @return  $this
      */
     public function addVars(array $strings)
     {
         assert(!isset($lcStrings), 'Cannot redeclare var $lcStrings');
-        $lcStrings = \array_change_key_case($strings, CASE_LOWER);
+        $lcStrings = \Yana\Util\Hashtable::changeCase($strings, CASE_LOWER);
         // This uses the union operator. It adds all elements of the right array, that are missing in the left array
         // The operator is diffrenent from array_merge() in the sense that it doesn't create duplicate values
         assert(!isset($combinedStrings), 'Cannot redeclare var $combinedStrings');
         $combinedStrings = $lcStrings + $this->getVars();
         $this->setVars($combinedStrings);
+        return $this;
+    }
+
+    /**
+     * Replaces all translation strings.
+     *
+     * @param   array  &$value  set of new values
+     * @return  $this
+     */
+    public function setVarsByReference(array &$strings)
+    {
+        $strings = \array_change_key_case($strings, CASE_LOWER);
+        parent::setVarsByReference($strings);
         return $this;
     }
 
@@ -157,13 +169,14 @@ class TextContainer extends \Yana\Core\VarContainer implements \Yana\Translation
      *
      * The idea is that you can easily look up all translation-ids in "group2",
      * so that you can get all translations in that group.
-     * 
-     * @return  array
+     *
+     * @param   array  $groups  to be added
+     * @return  $this
      */
     public function addGroups(array $groups)
     {
         assert(!isset($lcGroups), 'Cannot redeclare var $lcGroups');
-        $lcGroups = \array_change_key_case($groups, CASE_LOWER);
+        $lcGroups = \Yana\Util\Hashtable::changeCase($groups, CASE_LOWER);
         $this->_groups = \Yana\Util\Hashtable::merge($this->_groups, $lcGroups);
         return $this;
     }
@@ -174,9 +187,8 @@ class TextContainer extends \Yana\Core\VarContainer implements \Yana\Translation
      * @param   string  $groupName  index to check for
      * @return  bool
      */
-    public function isGroup($groupName)
+    public function isGroup(string $groupName): bool
     {
-        assert(is_string($groupName), 'Invalid argument $groupName: string expected');
         $lcGroupName = $this->_toArrayOffset($groupName);
         return isset($this->_groups[$lcGroupName]);
     }
@@ -194,7 +206,7 @@ class TextContainer extends \Yana\Core\VarContainer implements \Yana\Translation
      *
      * @return  array
      */
-    public function getGroups()
+    public function getGroups(): array
     {
         return $this->_groups;
     }
@@ -209,9 +221,8 @@ class TextContainer extends \Yana\Core\VarContainer implements \Yana\Translation
      * @param   string  $groupName  index to retrieve
      * @return  array
      */
-    public function getGroupMembers($groupName)
+    public function getGroupMembers(string $groupName): array
     {
-        assert(is_string($groupName), 'Invalid argument $groupName: string expected');
         $lcGroupName = $this->_toArrayOffset($groupName);
 
         $groupMembers = array();
@@ -221,7 +232,7 @@ class TextContainer extends \Yana\Core\VarContainer implements \Yana\Translation
 
             foreach ($groups[$lcGroupName] as $globalId => $localId)
             {
-                $groupMembers[$localId] = $this->getVar($globalId);
+                $groupMembers[$localId] = $this->getVar((string) $globalId);
             }
             unset($globalId, $localId);
 

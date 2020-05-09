@@ -58,7 +58,7 @@ class XmlDataProvider extends \Yana\Core\StdObject implements \Yana\Core\MetaDat
     /**
      * basic directory
      *
-     * @var  string
+     * @var  \Yana\Files\IsDir
      */
     private $_directory = "";
 
@@ -70,9 +70,11 @@ class XmlDataProvider extends \Yana\Core\StdObject implements \Yana\Core\MetaDat
     private $_validIds = array();
 
     /**
-     * @param  string  $directory  base directory
+     * <<constructor>> Initialize new instance.
+     *
+     * @param  \Yana\Files\IsDir  $directory  base directory
      */
-    public function __construct(string $directory)
+    public function __construct(\Yana\Files\IsDir $directory)
     {
         $this->_directory = $directory;
     }
@@ -92,9 +94,9 @@ class XmlDataProvider extends \Yana\Core\StdObject implements \Yana\Core\MetaDat
     /**
      * Returns path to basic directory.
      *
-     * @return  string
+     * @return  \Yana\Files\IsDir
      */
-    protected function _getDirectory(): string
+    protected function _getDirectory(): \Yana\Files\IsDir
     {
         return $this->_directory;
     }
@@ -109,7 +111,7 @@ class XmlDataProvider extends \Yana\Core\StdObject implements \Yana\Core\MetaDat
      */
     protected function _convertIdToFilePath(string $id): string
     {
-        $file = $this->_getDirectory() .'/' . $id . $this->_getFileExtension();
+        $file = $this->_getDirectory()->getPath() .'/' . $id . $this->_getFileExtension();
         return $file;
     }
 
@@ -121,9 +123,8 @@ class XmlDataProvider extends \Yana\Core\StdObject implements \Yana\Core\MetaDat
      * @param   string  $file  file path
      * @return  \Yana\Core\MetaData\XmlMetaData
      */
-    protected function _loadXmlByFileName($file)
+    protected function _loadXmlByFileName(string $file): \Yana\Core\MetaData\XmlMetaData
     {
-        assert(is_string($file), 'Invalid argument $file: string expected');
         return new \Yana\Core\MetaData\XmlMetaData($file, LIBXML_NOWARNING | LIBXML_NOERROR | LIBXML_NOENT, true);
     }
 
@@ -134,7 +135,7 @@ class XmlDataProvider extends \Yana\Core\StdObject implements \Yana\Core\MetaDat
      *
      * @return  \Yana\Core\MetaData\IsPackageMetaData
      */
-    protected function _createMetaData()
+    protected function _createMetaData(): \Yana\Core\MetaData\IsPackageMetaData
     {
         return new \Yana\Core\MetaData\PackageMetaData();
     }
@@ -152,13 +153,11 @@ class XmlDataProvider extends \Yana\Core\StdObject implements \Yana\Core\MetaDat
      * @param   string                                 $id        identifier for the processed XML file to be loaded
      * @return  \Yana\Core\MetaData\IsPackageMetaData
      */
-    protected function _fillMetaData(\Yana\Core\MetaData\IsPackageMetaData $metaData, \Yana\Core\MetaData\XmlMetaData $xml, $id)
+    protected function _fillMetaData(\Yana\Core\MetaData\IsPackageMetaData $metaData, \Yana\Core\MetaData\XmlMetaData $xml, string $id): \Yana\Core\MetaData\IsPackageMetaData
     {
-        assert(is_string($id), 'Invalid argument $id: string expected');
-
         if (!empty($xml)) {
             $file = $this->_convertIdToFilePath($id);
-            $directory = $this->_getDirectory() . '/';
+            $directory = $this->_getDirectory()->getPath() . '/';
             $previewImage = $directory . '/' . $id . "/icon.png";
             $metaData->setTitle($xml->getTitle())
                 ->setTexts($xml->getDescriptions())
@@ -180,10 +179,8 @@ class XmlDataProvider extends \Yana\Core\StdObject implements \Yana\Core\MetaDat
      * @return  \Yana\Core\MetaData\IsPackageMetaData
      * @throws  \Yana\Core\Exceptions\NotFoundException  when the file for this identifier is not found
      */
-    public function loadOject($id)
+    public function loadOject(string $id): \Yana\Core\MetaData\IsPackageMetaData
     {
-        assert(is_string($id), 'Invalid argument $id: string expected');
-
         $file = $this->_convertIdToFilePath((string) $id);
         if (!is_file($file)) {
             throw new \Yana\Core\Exceptions\NotFoundException("Configuration file not found: '{$file}'.");
@@ -201,7 +198,7 @@ class XmlDataProvider extends \Yana\Core\StdObject implements \Yana\Core\MetaDat
      *
      * @return  array
      */
-    public function getListOfValidIds()
+    public function getListOfValidIds(): array
     {
         assert(is_array($this->_validIds), 'is_array($this->_validIds)');
         if (empty($this->_validIds)) {

@@ -42,18 +42,18 @@ interface IsLocale
      *
      * @param   string  $selectedLanguage  2 character language code
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the provided language is not valid
-     * @return  self
+     * @return  $this
      */
-    public function setLanguage($selectedLanguage);
+    public function setLanguage(string $selectedLanguage);
 
     /**
      * Set the country part of the locale.
      *
      * @param   string  $selectedCountry   2 character country code
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the provided country is not valid
-     * @return  self
+     * @return  $this
      */
-    public function setCountry($selectedCountry);
+    public function setCountry(string $selectedCountry);
 
     /**
      * Get name of selected locale.
@@ -67,7 +67,7 @@ interface IsLocale
      *
      * @return  string
      */
-    public function toString();
+    public function toString(): string;
 
     /**
      * Get name of selected language.
@@ -83,7 +83,7 @@ interface IsLocale
      *
      * @return  string
      */
-    public function getLanguage();
+    public function getLanguage(): string;
 
     /**
      * Get name of selected country.
@@ -99,7 +99,7 @@ interface IsLocale
      *
      * @return  string
      */
-    public function getCountry();
+    public function getCountry(): string;
 
 }
 

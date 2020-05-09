@@ -46,14 +46,14 @@ interface IsDataProvider
      * @return  \Yana\Core\MetaData\IsPackageMetaData
      * @throws  \Yana\Core\Exceptions\NotFoundException
      */
-    public function loadOject($id);
+    public function loadOject(string $id): \Yana\Core\MetaData\IsPackageMetaData;
 
     /**
      * Returns a list of all ids of objects that can be loaded.
      *
      * @return  array
      */
-    public function getListOfValidIds();
+    public function getListOfValidIds(): array;
 
 }
 

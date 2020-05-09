@@ -72,12 +72,10 @@ class Locale extends \Yana\Core\StdObject implements \Yana\Translations\IsLocale
      *
      * @param   string  $selectedLanguage  2 character language code
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the provided language is not valid
-     * @return  \Yana\Translations\Locale
+     * @return  $this
      */
-    public function setLanguage($selectedLanguage)
+    public function setLanguage(string $selectedLanguage)
     {
-        assert(is_string($selectedLanguage), 'Invalid argument $selectedLanguage: string expected');
-
         assert(!isset($selectedLanguageLowercased), 'Cannot redeclare var $selectedLanguageLowercased');
         $selectedLanguageLowercased = mb_strtolower($selectedLanguage);
 
@@ -98,12 +96,10 @@ class Locale extends \Yana\Core\StdObject implements \Yana\Translations\IsLocale
      *
      * @param   string  $selectedCountry   2 character country code
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the provided country is not valid
-     * @return  \Yana\Translations\Locale
+     * @return  $this
      */
-    public function setCountry($selectedCountry)
+    public function setCountry(string $selectedCountry)
     {
-        assert(is_string($selectedCountry), 'Invalid argument $selectedCountry: string expected');
-
         assert(!isset($selectedCountryUppercased), 'Cannot redeclare var $selectedCountryUppercased');
         $selectedCountryUppercased = mb_strtoupper($selectedCountry);
 
@@ -141,7 +137,7 @@ class Locale extends \Yana\Core\StdObject implements \Yana\Translations\IsLocale
      *
      * @return  string
      */
-    public function toString()
+    public function toString(): string
     {
         assert(!isset($locale), 'Cannot redeclare var $locale');
         $locale = $this->getLanguage();
@@ -170,7 +166,7 @@ class Locale extends \Yana\Core\StdObject implements \Yana\Translations\IsLocale
      *
      * @return  string
      */
-    public function getLanguage()
+    public function getLanguage(): string
     {
         return $this->_language;
     }
@@ -189,7 +185,7 @@ class Locale extends \Yana\Core\StdObject implements \Yana\Translations\IsLocale
      *
      * @return  string
      */
-    public function getCountry()
+    public function getCountry(): string
     {
         return $this->_country;
     }

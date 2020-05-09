@@ -473,7 +473,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
         $languageDir = (string) $registry->getVar('LANGUAGEDIR');
         /* @var $translationFacade \Yana\Translations\Facade */
         $translationFacade = \Yana\Translations\Facade::getInstance();
-        $translationFacade->addDirectory($languageDir);
+        $translationFacade->addDirectory(new \Yana\Files\Dir($languageDir));
         $translationFacade->attachLogger($this->getLogger());
 
         $translationFacade->setLocale((string) $this->_configuration->default->language);

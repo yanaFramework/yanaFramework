@@ -46,7 +46,7 @@ class NullDataProvider extends \Yana\Core\StdObject implements \Yana\Core\MetaDa
      * @return  \Yana\Core\MetaData\IsPackageMetaData
      * @throws  \Yana\Core\Exceptions\NotFoundException  when the file for this identifier is not found
      */
-    public function loadOject($id)
+    public function loadOject(string $id): \Yana\Core\MetaData\IsPackageMetaData
     {
         return new \Yana\Core\MetaData\PackageMetaData();
     }
@@ -56,7 +56,7 @@ class NullDataProvider extends \Yana\Core\StdObject implements \Yana\Core\MetaDa
      *
      * @return  array
      */
-    public function getListOfValidIds()
+    public function getListOfValidIds(): array
     {
         return array();
     }

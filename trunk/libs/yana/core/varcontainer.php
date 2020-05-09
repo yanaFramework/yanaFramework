@@ -53,7 +53,7 @@ class VarContainer extends \Yana\Core\StdObject implements \Yana\Core\IsVarConta
      * @param   sclar  $key  some valid identifier, either a number or a non-empty text
      * @return  string
      */
-    protected function _toArrayOffset($key)
+    protected function _toArrayOffset($key): string
     {
         assert(is_scalar($key), 'Invalid argument $key: string expected');
         return (string) $key;
@@ -139,7 +139,7 @@ class VarContainer extends \Yana\Core\StdObject implements \Yana\Core\IsVarConta
      *
      * @param   string  $key     key of updated element
      * @param   mixed   &$value  new value
-     * @return  \Yana\Core\VarContainer
+     * @return  $this
      */
     public function setVarByReference($key, &$value)
     {
@@ -154,7 +154,7 @@ class VarContainer extends \Yana\Core\StdObject implements \Yana\Core\IsVarConta
      * Replaces all elements of the container by reference.
      *
      * @param   array  &$value  set of new values
-     * @return  \Yana\Core\VarContainer
+     * @return  $this
      */
     public function setVarsByReference(array &$value)
     {
@@ -170,7 +170,7 @@ class VarContainer extends \Yana\Core\StdObject implements \Yana\Core\IsVarConta
      *
      * @param   string  $key    key of updated element
      * @param   mixed   $value  new value
-     * @return  \Yana\Core\VarContainer
+     * @return  $this
      */
     public function setVar($key, $value)
     {
@@ -182,7 +182,7 @@ class VarContainer extends \Yana\Core\StdObject implements \Yana\Core\IsVarConta
      * Replaces all elements of the container.
      *
      * @param   array  $value  set of new values
-     * @return  \Yana\Core\VarContainer
+     * @return  $this
      */
     public function setVars(array $value)
     {

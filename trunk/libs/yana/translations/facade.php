@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Translations;
 
@@ -54,7 +55,7 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
      *
      * @return  \Yana\Translations\IsTranslationManager
      */
-    protected function _getManager()
+    protected function _getManager(): \Yana\Translations\IsTranslationManager
     {
         if (!isset($this->_manager)) {
             $this->_manager = new \Yana\Translations\Manager();
@@ -70,10 +71,8 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
      * @param  string  $locale  new system locale
      * @return  \Yana\Translations\Manager
      */
-    protected function _setSystemLocale($locale)
+    protected function _setSystemLocale(string $locale)
     {
-        assert(is_string($locale), 'Invalid argument $locale: string expected');
-
         // set system locale
         setlocale(LC_ALL, $locale);
 
@@ -95,7 +94,7 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
      *
      * @return  \Yana\Translations\IsLocale
      */
-    protected function _getLocale()
+    protected function _getLocale(): \Yana\Translations\IsLocale
     {
         if (!isset($this->_locale)) {
             $this->_locale = new \Yana\Translations\Locale();
@@ -131,7 +130,7 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
      *
      * @return  string
      */
-    public function getLanguage()
+    public function getLanguage(): string
     {
         return $this->_getLocale()->getLanguage();
     }
@@ -152,7 +151,7 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
      *
      * @return  string
      */
-    public function getCountry()
+    public function getCountry(): string
     {
         return $this->_getLocale()->getCountry();
     }
@@ -169,7 +168,7 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
      *
      * @return  string
      */
-    public function getLocale()
+    public function getLocale(): string
     {
         return $this->_getLocale()->toString();
     }
@@ -183,15 +182,13 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
      * You may access the file contents via $language->getVar('some.value')
      *
      * @param   string  $file  name of translation file that should be loaded
-     * @return  self
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\Translations\InvalidFileNameException       when the given identifier is invalid
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException                      when the give filename is invalid
      * @throws  \Yana\Core\Exceptions\Translations\LanguageFileNotFoundException  when the language file is not found
      */
-    public function readFile($file)
+    public function readFile(string $file)
     {
-        assert(is_string($file), 'Wrong type for argument 1. String expected');
-
         $this->_getManager()->loadTranslations($file);
         return $this;
     }
@@ -259,19 +256,16 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
     /**
      * Add a directory to the list of language directories.
      *
-     * @param   string  $directory  base directory
-     * @return  self
+     * @param   \Yana\Files\IsDir  $directory  base directory
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\NotFoundException   when the chosen directory does not exist
      *
      * @ignore
      */
-    public function addDirectory($directory)
+    public function addDirectory(\Yana\Files\IsDir $directory)
     {
-        assert(is_string($directory), 'Wrong type for argument 1. String expected');
-
-        $dir = new \Yana\Files\Dir($directory);
-        $textProvider = new \Yana\Translations\TextData\XliffDataProvider($dir);
-        $metaProvider = new \Yana\Translations\MetaData\XmlDataProvider((string) $directory);
+        $textProvider = new \Yana\Translations\TextData\XliffDataProvider($directory);
+        $metaProvider = new \Yana\Translations\MetaData\XmlDataProvider($directory);
         $this->_getManager()->addTextDataProvider($textProvider)->addMetaDataProvider($metaProvider);        
         return $this;
     }
@@ -282,13 +276,10 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
      * @param   string  $selectedLanguage  current language
      * @param   string  $selectedCountry   current country (optional)
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the provided locale is not valid
-     * @return  self
+     * @return  $this
      */
-    public function setLocale($selectedLanguage, $selectedCountry = "")
+    public function setLocale(string $selectedLanguage, string $selectedCountry = "")
     {
-        assert(is_string($selectedLanguage), 'Wrong type for argument 1. String expected');
-        assert(is_string($selectedCountry), 'Wrong argument type for argument 2. String expected.');
-
         $this->_locale = new \Yana\Translations\Locale($selectedLanguage, $selectedCountry);
         $this->_setSystemLocale($this->_locale->toString());
         $this->_getManager()->addAcceptedLocale($this->_locale);
