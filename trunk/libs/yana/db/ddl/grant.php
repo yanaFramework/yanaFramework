@@ -149,9 +149,9 @@ class Grant extends \Yana\Db\Ddl\DDL
      * The role a user plays inside a user group.
      * This may be any string value.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getRole()
+    public function getRole(): ?string
     {
         if (is_string($this->role)) {
             return $this->role;
@@ -169,15 +169,14 @@ class Grant extends \Yana\Db\Ddl\DDL
      * Note that it is not checked wether the role is in use ore not.
      *
      * @param   string  $role  new value of this property
-     * @return  \Yana\Db\Ddl\Grant
+     * @return  $this
      */
-    public function setRole($role = "")
+    public function setRole(string $role = "")
     {
-        assert(is_string($role), 'Wrong type for argument 1. String expected');
-        if (empty($role)) {
+        if ($role === "") {
             $this->role = null;
         } else {
-            $this->role = "$role";
+            $this->role = $role;
         }
         return $this;
     }
@@ -190,9 +189,9 @@ class Grant extends \Yana\Db\Ddl\DDL
      *
      * You may additionally define security levels to check.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getUser()
+    public function getUser(): ?string
     {
         if (is_string($this->user)) {
             return $this->user;
@@ -212,15 +211,14 @@ class Grant extends \Yana\Db\Ddl\DDL
      * Note that it is not checked wether the group is in use ore not.
      *
      * @param   string  $user  new value of this property
-     * @return  \Yana\Db\Ddl\Grant
+     * @return  $this
      */
-    public function setUser($user = "")
+    public function setUser(string $user = "")
     {
-        assert(is_string($user), 'Wrong type for argument 1. String expected');
-        if (empty($user)) {
+        if ($user === "") {
             $this->user = null;
         } else {
-            $this->user = "$user";
+            $this->user = $user;
         }
         return $this;
     }
@@ -233,9 +231,9 @@ class Grant extends \Yana\Db\Ddl\DDL
      * highest.
      * If there is no restriction, the function returns NULL.
      *
-     * @return  int
+     * @return  int|NULL
      */
-    public function getLevel()
+    public function getLevel(): ?int
     {
         if (is_int($this->level)) {
             return $this->level;
@@ -253,18 +251,17 @@ class Grant extends \Yana\Db\Ddl\DDL
      *
      * @param   int|NULL  $level  new value of this property
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the given security level is outside range [0,100]
-     * @return  \Yana\Db\Ddl\Grant
+     * @return  $this
      */
-    public function setLevel($level = null)
+    public function setLevel(?int $level = null)
     {
-        assert(is_null($level) || is_int($level), 'Wrong type for argument 1. Integer expected');
         if (is_null($level)) {
             $this->level = null;
         } elseif ($level < 0 || $level > 100) {
             $message = "Security level '$level' outside range [0,100].";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
         } else {
-            $this->level = (int) $level;
+            $this->level = $level;
         }
         return $this;
     }
@@ -276,7 +273,7 @@ class Grant extends \Yana\Db\Ddl\DDL
      *
      * @return  bool
      */
-    public function isSelectable()
+    public function isSelectable(): bool
     {
         return !empty($this->select);
     }
@@ -289,12 +286,11 @@ class Grant extends \Yana\Db\Ddl\DDL
      * This value defaults to bool(true).
      *
      * @param   bool  $isSelectable  true: selectable, false: not selectable
-     * @return  \Yana\Db\Ddl\Grant
+     * @return  $this
      */
-    public function setSelect($isSelectable = true)
+    public function setSelect(bool $isSelectable = true)
     {
-        assert(is_bool($isSelectable), 'Wrong type for argument 1. Boolean expected');
-        $this->select = (bool) $isSelectable;
+        $this->select = $isSelectable;
         return $this;
     }
 
@@ -305,7 +301,7 @@ class Grant extends \Yana\Db\Ddl\DDL
      *
      * @return  bool
      */
-    public function isInsertable()
+    public function isInsertable(): bool
     {
         return !empty($this->insert);
     }
@@ -318,12 +314,11 @@ class Grant extends \Yana\Db\Ddl\DDL
      * This value defaults to bool(true).
      *
      * @param   bool  $isInsertable  true = allow, false = disallow insert statements
-     * @return  \Yana\Db\Ddl\Grant
+     * @return  $this
      */
-    public function setInsert($isInsertable = true)
+    public function setInsert(bool $isInsertable = true)
     {
-        assert(is_bool($isInsertable), 'Wrong type for argument 1. Boolean expected');
-        $this->insert = (bool) $isInsertable;
+        $this->insert = $isInsertable;
         return $this;
     }
 
@@ -334,7 +329,7 @@ class Grant extends \Yana\Db\Ddl\DDL
      *
      * @return  bool
      */
-    public function isUpdatable()
+    public function isUpdatable(): bool
     {
         return !empty($this->update);
     }
@@ -347,12 +342,11 @@ class Grant extends \Yana\Db\Ddl\DDL
      * This value defaults to bool(true).
      *
      * @param   bool  $isUpdatable  new value of this property
-     * @return  \Yana\Db\Ddl\Grant
+     * @return  $this
      */
-    public function setUpdate($isUpdatable = true)
+    public function setUpdate(bool $isUpdatable = true)
     {
-        assert(is_bool($isUpdatable), 'Wrong type for argument 1. Boolean expected');
-        $this->update = (bool) $isUpdatable;
+        $this->update = $isUpdatable;
         return $this;
     }
 
@@ -363,7 +357,7 @@ class Grant extends \Yana\Db\Ddl\DDL
      *
      * @return  bool
      */
-    public function isDeletable()
+    public function isDeletable(): bool
     {
         return !empty($this->delete);
     }
@@ -376,12 +370,11 @@ class Grant extends \Yana\Db\Ddl\DDL
      * This value defaults to bool(true).
      *
      * @param   bool  $isDeletable  new value of this property
-     * @return  \Yana\Db\Ddl\Grant
+     * @return  $this
      */
-    public function setDelete($isDeletable = true)
+    public function setDelete(bool $isDeletable = true)
     {
-        assert(is_bool($isDeletable), 'Wrong type for argument 1. Boolean expected');
-        $this->delete = (bool) $isDeletable;
+        $this->delete = $isDeletable;
         return $this;
     }
 
@@ -396,7 +389,7 @@ class Grant extends \Yana\Db\Ddl\DDL
      *
      * @return  bool
      */
-    public function isGrantable()
+    public function isGrantable(): bool
     {
         return !empty($this->grant);
     }
@@ -407,12 +400,11 @@ class Grant extends \Yana\Db\Ddl\DDL
      * Tells whether the user may temporarily grant his security permissions to other users.
      *
      * @param   bool  $isGrantable  true: may grant, false: may not grant
-     * @return  \Yana\Db\Ddl\Grant
+     * @return  $this
      */
-    public function setGrantOption($isGrantable = true)
+    public function setGrantOption(bool $isGrantable = true)
     {
-        assert(is_bool($isGrantable), 'Wrong type for argument 1. Boolean expected');
-        $this->grant = (bool) $isGrantable;
+        $this->grant = $isGrantable;
         return $this;
     }
 
@@ -473,7 +465,7 @@ class Grant extends \Yana\Db\Ddl\DDL
      * @param   bool   $grant   must be grantable
      * @return  bool
      */
-    public static function checkPermissions(array $grants, $select = false, $insert = false, $update = false, $delete = false, $grant = false)
+    public static function checkPermissions(array $grants, bool $select = false, bool $insert = false, bool $update = false, bool $delete = false, bool $grant = false): bool
     {
         $hasPermission = true;
         /* @var $grant \Yana\Db\Ddl\Grant */
@@ -493,7 +485,7 @@ class Grant extends \Yana\Db\Ddl\DDL
      *
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed              $parent  parent node (if any)
-     * @return  \Yana\Db\Ddl\Grant
+     * @return  $this
      */
     public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)
     {

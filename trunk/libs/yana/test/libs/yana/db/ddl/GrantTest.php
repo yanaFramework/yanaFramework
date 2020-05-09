@@ -24,6 +24,7 @@
  * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Ddl;
 
@@ -41,7 +42,7 @@ class GrantTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var Grant
+     * @var \Yana\Db\Ddl\Grant
      */
     protected $object;
 
@@ -51,7 +52,7 @@ class GrantTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new Grant;
+        $this->object = new \Yana\Db\Ddl\Grant();
     }
 
     /**
@@ -233,14 +234,33 @@ class GrantTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testCheckPermissionWithRequirements()
+    {
+        $this->object->setUser(__FUNCTION__);
+        $this->assertFalse($this->object->checkPermission());
+    }
+
+    /**
+     * @test
+     */
     public function testCheckPermissions()
     {
         $this->object->setDelete(false);
         $this->object->setGrantOption(false);
         $grants = array($this->object);
-        $this->assertTrue($this->object->checkPermissions($grants));
-        $this->assertTrue($this->object->checkPermissions($grants, true, true, true));
-        $this->assertFalse($this->object->checkPermissions($grants, true, true, true, true));
+        $this->assertTrue(\Yana\Db\Ddl\Grant::checkPermissions($grants));
+        $this->assertTrue(\Yana\Db\Ddl\Grant::checkPermissions($grants, true, true, true));
+        $this->assertFalse(\Yana\Db\Ddl\Grant::checkPermissions($grants, true, true, true, true));
+    }
+
+    /**
+     * @test
+     */
+    public function testUnserializeFromXDDL()
+    {
+        $data = '<grant/>';
+        $this->object = \Yana\Db\Ddl\Grant::unserializeFromXDDL(new \SimpleXMLElement($data));
+        $this->assertTrue($this->object->checkPermission());
     }
 
 }

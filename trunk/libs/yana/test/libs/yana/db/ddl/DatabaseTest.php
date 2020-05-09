@@ -57,16 +57,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     protected $table;
 
     /**
-     * @var \Yana\Db\Ddl\Grant
-     */
-    protected $grant;
-
-    /**
-     * @var \Yana\Db\Ddl\Event
-     */
-    protected $event;
-
-    /**
      * sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
@@ -78,8 +68,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $this->database = new \Yana\Db\Ddl\Database('Database', CWD . '/resources/check.db.xml');
         $this->table = new \Yana\Db\Ddl\Table('table');
         $this->foreignkey = new \Yana\Db\Ddl\ForeignKey('foreignkey');
-        $this->grant = new \Yana\Db\Ddl\Grant();
-        $this->event = new \Yana\Db\Ddl\Event('action');
     }
 
     /**
@@ -92,7 +80,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         unset($this->database); // this doesn't kill all references, UNLESS the files was previously set to modified
         unset($this->foreignkey);
         unset($this->table);
-        unset($this->event);
         chdir(CWD);
     }
 
@@ -142,8 +129,7 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array('database'),
-            array('table'),
-            array('event')
+            array('table')
         );
     }
 
@@ -924,175 +910,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * user role
-     *
-     * @test
-     */
-    public function testRole()
-    {
-        // setter and getter
-        $this->grant->setRole("test");
-        $role = $this->grant->getRole();
-        $this->assertEquals("test", $role, 'getRole() should return the same value as set with setRole().');
-
-        // default value
-        $this->grant->setRole();
-        $role = $this->grant->getRole();
-        $this->assertEquals(null, $role, 'User role should default to null.');
-    }
-
-    /**
-     * user group
-     *
-     * @test
-     */
-    public function testUser()
-    {
-        // setter and getter
-        $this->grant->setUser("test");
-        $user = $this->grant->getUser();
-        $this->assertEquals("test", $user, 'getUser() should return the same value as set with setUser().');
-
-        // default value
-        $this->grant->setUser();
-        $user = $this->grant->getUser();
-        $this->assertEquals(null, $user, 'User group should default to null.');
-    }
-
-    /**
-     * security level
-     *
-     * @test
-     */
-    public function testLevel()
-    {
-        // setter and getter
-        $this->grant->setLevel(0);
-        $level = $this->grant->getLevel();
-        $this->assertEquals(0, $level, 'getLevel() should return the same value as set with setLevel().');
-        $this->grant->setLevel(100);
-        $level = $this->grant->getLevel();
-        $this->assertEquals(100, $level, 'getLevel() should return the same value as set with setLevel().');
-
-        // default value
-        $this->grant->setLevel();
-        $level = $this->grant->getLevel();
-        $this->assertEquals(null, $level, 'Security level should default to null.');
-    }
-
-    /**
-     * security level exceeding lower bounds
-     *
-     * @test
-     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
-     */
-    public function testLevelInvalidArgument1()
-    {
-        $this->grant->setLevel(-1);
-    }
-
-    /**
-     * security level exceeding upper bounds
-     *
-     * @test
-     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
-     */
-    public function testLevelInvalidArgument2()
-    {
-        $this->grant->setLevel(101);
-    }
-
-    /**
-     * select statements
-     *
-     * @test
-     */
-    public function testSelect()
-    {
-        // set to false
-        $this->grant->setSelect(false);
-        $isSelectable = $this->grant->isSelectable();
-        $this->assertFalse($isSelectable, 'isSelectable() should return the same value as set with setSelect().');
-
-        // default value
-        $this->grant->setSelect();
-        $isSelectable = $this->grant->isSelectable();
-        $this->assertTrue($isSelectable, 'Selectable should default to true.');
-    }
-
-    /**
-     * insert statements
-     *
-     * @test
-     */
-    public function testInsert()
-    {
-        // set to false
-        $this->grant->setInsert(false);
-        $isInsertable = $this->grant->isInsertable();
-        $this->assertFalse($isInsertable, 'isInsertable() should return the same value as set with setInsert().');
-
-        // default value
-        $this->grant->setInsert();
-        $isInsertable = $this->grant->isInsertable();
-        $this->assertTrue($isInsertable, 'Insertable should default to true.');
-    }
-
-    /**
-     * update statements
-     *
-     * @test
-     */
-    public function testUpdate()
-    {
-        // set to false
-        $this->grant->setUpdate(false);
-        $isUpdatable = $this->grant->isUpdatable();
-        $this->assertFalse($isUpdatable, 'isUpdatable() should return the same value as set with setUpdate().');
-
-        // default value
-        $this->grant->setUpdate();
-        $isUpdatable = $this->grant->isUpdatable();
-        $this->assertTrue($isUpdatable, 'Updatable should default to true.');
-    }
-
-    /**
-     * delete statements
-     *
-     * @test
-     */
-    public function testDelete()
-    {
-        // set to false
-        $this->grant->setDelete(false);
-        $isDeletable = $this->grant->isDeletable();
-        $this->assertFalse($isDeletable, 'isDeletable() should return the same value as set with setDelete().');
-
-        // default value
-        $this->grant->setDelete();
-        $isDeletable = $this->grant->isDeletable();
-        $this->assertTrue($isDeletable, 'Deletable should default to true.');
-    }
-
-    /**
-     * grant option
-     *
-     * @test
-     */
-    public function testGrantable()
-    {
-        // set to false
-        $this->grant->setGrantOption(false);
-        $isGrantable = $this->grant->isGrantable();
-        $this->assertFalse($isGrantable, 'isGrantable() should return the same value as set with setGrantOption().');
-
-        // default value
-        $this->grant->setGrantOption();
-        $isGrantable = $this->grant->isGrantable();
-        $this->assertTrue($isGrantable, 'Grantable should default to true.');
-    }
-
-    /**
      * @test
      */
     public function testGrants()
@@ -1793,76 +1610,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     {
         $result = $this->database->getChangeLog();
         $this->assertTrue($result instanceof \Yana\Db\Ddl\ChangeLog, 'assert failed, \Yana\Db\Ddl\Database : the value should be an instance of \Yana\Db\Ddl\ChangeLog');
-    }
-
-    /**
-     * Action
-     *
-     * @test
-     */
-    public function testAction()
-    {
-        // \Yana\Db\Ddl\Event
-        $this->event->setAction('action');
-        $result = $this->event->getAction();
-        $this->assertEquals('action', $result , 'assert failed, \Yana\Db\Ddl\Event : the value "action" should be the same as the expected value');
-
-        $this->event->setAction();
-        $result = $this->event->getAction();
-        $this->assertNull($result, 'assert failed, \Yana\Db\Ddl\Event : expected null - action is not set');
-    }
-
-    /**
-     * Language
-     *
-     * @test
-     */
-    public function testLanguageFormAction()
-    {
-        // \Yana\Db\Ddl\Event
-        $this->event->setLanguage('language');
-        $result = $this->event->getLanguage();
-        $this->assertEquals('language', $result , 'assert failed, \Yana\Db\Ddl\Event : the value "language" should be the same as the expected value');
-
-        $this->event->setLanguage();
-        $result = $this->event->getLanguage();
-        $this->assertNull($result, 'assert failed, \Yana\Db\Ddl\Event : expected null - language is not set');
-    }
-
-    /**
-     * Label
-     *
-     * @test
-     */
-    public function testLabelFormAction()
-    {
-        // \Yana\Db\Ddl\Event
-        $this->event->setLabel('label');
-        $result = $this->event->getLabel();
-        $this->assertEquals('label', $result , 'assert failed, \Yana\Db\Ddl\Event :the value "label" should be the same as the expected value');
-
-        $this->event->setLabel();
-        $result = $this->event->getLabel();
-        $this->assertNull($result, 'assert failed, \Yana\Db\Ddl\Event : expected null - label is not set');
-    }
-
-    /**
-     * Icon
-     *
-     * @test
-     */
-    public function testIcon()
-    {
-        // \Yana\Db\Ddl\Event
-        $icon = CWD.'resources/image/logo.png';
-        $this->event->setIcon($icon);
-        $get = $this->event->getIcon();
-        $this->assertInternalType('string', $get, 'assert failed, "\Yana\Db\Ddl\Event:getIcon" the value should be from type string');
-        $this->assertEquals($icon, $get, 'assert failed, "\Yana\Db\Ddl\Event:getIcon" the values should be equal - expected the same path to a file');
-
-        $this->event->setIcon('');
-        $result = $this->event->getIcon();
-        $this->assertNull($result, 'assert failed, \Yana\Db\Ddl\Event : expected null - icon is not set');
     }
 
     /**
