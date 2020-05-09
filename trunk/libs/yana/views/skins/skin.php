@@ -292,7 +292,7 @@ class Skin extends \Yana\Core\StdObject implements \Yana\Views\Skins\IsSkin
      */
     public static function getSkinDirectory(string $skinName): string
     {
-        return self::$_baseDirectory . "$skinName/";
+        return self::$_baseDirectory . $skinName . '/';
     }
 
     /**

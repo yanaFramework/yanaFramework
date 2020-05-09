@@ -88,7 +88,7 @@ class XmlDataProvider extends \Yana\Core\MetaData\XmlDataProvider implements \Ya
 
         if (!empty($xml) && $xml instanceof \Yana\Views\MetaData\XmlMetaData) {
 
-            $directory = $this->_getDirectory()->getPath() . '/';
+            $directory = $this->_getDirectory()->getPath();
             assert(!isset($template), 'cannot redeclare variable $template');
             foreach ($xml->getTemplates($directory) as $template)
             {
