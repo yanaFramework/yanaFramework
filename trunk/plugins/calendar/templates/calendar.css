@@ -1,23 +1,20 @@
 /* calendar display css options*/
 #calendar
 {
-    width: 800px;
+    min-width: 500px;
+    max-width: 1000px;
+    width: 70%;
     margin-left: auto;
     margin-right: 5px;
     font-family: Verdana, Helvetica, Arial, Courier;
     float:left;
-    -moz-box-shadow: 5px 5px 5px #aaa;
-    -webkit-box-shadow: 5px 5px 5px #aaa;
     box-shadow: 5px 5px 5px #aaa;
 }
 
 #calendar .fc-header
 {
-    background: #414649 url(highlight2.jpg) repeat-x scroll 0 0;
-    -moz-border-radius-topleft: 4px;
-    -moz-border-radius-topright: 4px;
-    -webkit-border-top-left-radius: 4px;
-    -webkit-border-top-right-radius: 4px;
+    background: #333;
+    border-radius: 4px 4px 0 0;
 }
 
 #calendar .fc-header .fc-header-left,
@@ -78,9 +75,29 @@ tr.gui_generator_new_row
     margin: 0px 0px 0px 2px;
 }
 
-.calendar_list .header
+.calendar_list .header,
+#index_body .calendar_list .header
 {
     margin-bottom: 10px;
+    border-radius: 4px 4px 0 0;
+    padding: .5em;
+    box-shadow: 0px 0px 0px transparent;
+    background-image: none;
+    background-color: #333;
+    font-size: 14pt;
+}
+
+.calendar_list
+{
+    border-radius: 4px;
+    opacity: .8;
+    transition: opacity .5s, background-color .5s;
+}
+
+.calendar_list:hover
+{
+    opacity: 1;
+    background-color: #ddd;
 }
 
 .calendar_list_label_position
