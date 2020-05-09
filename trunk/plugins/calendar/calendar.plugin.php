@@ -57,12 +57,14 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
             $category = $categories['category'];
             foreach ($category as $cat)
             {
+                $itemId = $cat['@id'];
                 $item['name'] = $cat['name'];
                 $item['color'] = $cat['color'];
-                $result[] = $item;
+                $result[$itemId] = $item;
             }
         }
         \Plugins\Calendar\Calendar::setCategories($result);
+        \Plugins\Calendar\Calendar::setAdditionalEventKeys(array('extends' => array('event' => array('created_by'))));
     }
 
     /**
@@ -111,10 +113,9 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
                 return null; // error - no such calendar
             }
 
-            $_SESSION[__CLASS__]['calendar_filename'] = $this->fileIdtoPath($dataset['CALENDAR_FILENAME']);
+            $_SESSION[__CLASS__]['calendar_filename'] = $this->_fileIdtoPath($dataset['CALENDAR_FILENAME']);
             $path = $_SESSION[__CLASS__]['calendar_filename'];
             $calendar = new \Plugins\Calendar\Calendar($path, $this->_getPluginsFacade()->getPluginRegistry('calendar'), $id);
-            \Plugins\Calendar\Calendar::setAdditionalEventKeys(array('extends' => array('event' => array('created_by'))));
             $owner = $dataset['USER_CREATED'];
             $calendar->setOwner($owner);
             $name = $dataset['CALENDAR_NAME'];
@@ -144,8 +145,6 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
      * @script      ../../skins/default/scripts/calendar/calendar.js
      * @script      ../../skins/default/scripts/calendar/calendar-setup.js
      * @style       ../../skins/default/scripts/calendar/calendar.css
-     *
-     * @access      public
      */
     public function get_calendar_input()
     {
@@ -179,13 +178,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
         $yana->setVar('monthOptions', $month);
 
         // set default categories
-        $categories = $pluginRegistry->getVar('categories');
-        if (!empty($categories)) {
-            $categories = $categories['category'];
-        } else {
-            $categories = array();
-        }
-        $yana->setVar('categories', $categories);
+        $yana->setVar('categories', \Plugins\Calendar\Calendar::getCategories());
 
         // set default month repeat options
 
@@ -201,12 +194,12 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
         $yana->setVar('monthNumbers', $numbers);
 
         // get calendar list
-        $userCalendarList = $this->getCalendarList();
+        $userCalendarList = $this->_getCalendarList();
 
         if (empty($userCalendarList)) {
-            $createCalendar = $this->createCalendar('default');
+            $createCalendar = $this->_createCalendar('default');
             if ($createCalendar) {
-                $userCalendarList = $this->getCalendarList();
+                $userCalendarList = $this->_getCalendarList();
             }
             $yana->setVar('calendarList', $userCalendarList);
         } else {
@@ -307,7 +300,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function new_calendar($new_calendar_name)
     {
-        return $this->createCalendar($new_calendar_name);
+        return $this->_createCalendar($new_calendar_name);
     }
 
     /**
@@ -316,7 +309,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
      * @param   string  $name  calendar name
      * @return  bool
      */
-    protected function createCalendar($name)
+    protected function _createCalendar($name)
     {
         assert(is_string($name), 'Wrong argument type argument 1. String expected');
 
@@ -350,7 +343,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
         try {
             $file->write();
             // insert a new database entry with the currentUser informations about the calendar file
-            $result = $this->insertCalendar($name, $fileName);
+            $result = $this->_insertCalendar($name, $fileName);
 
         } catch(\Exception $e) {
             $result = false;
@@ -373,7 +366,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
      * @return  string
      * @ignore
      */
-    protected function fileIdtoPath($id)
+    protected function _fileIdtoPath($id)
     {
         if (empty($id)) {
             return null;
@@ -400,7 +393,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
     {
         $YANA = $this->_getApplication();
         $event = $ARGS['event'];
-        $eventData = $this->prepareEventData($event);
+        $eventData = $this->_prepareEventData($event);
         if ($eventData['freq'] == 'NONE') {
             $fields = array('freq','alldayinterval', 'monthrepeatinterval', 'monthdayinterval', 'numbers', 'month',
                 'year_weekinterval', 'year_day', 'year_month', 'until_date', 'count_nr');
@@ -488,7 +481,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
      * @return  array
      * @ignore
      */
-    protected function prepareEventData(array $events)
+    protected function _prepareEventData(array $events)
     {
         $data = array();
         foreach($events as $items)
@@ -568,11 +561,11 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
     {
         $calendar = $this->_getCalendar();
         $xmlContent = $calendar->send($ARGS);
-        $result = $this->setICal(null, $xmlContent);
+        $result = $this->_setICal(null, $xmlContent);
         if (empty($result)) {
             return false;
         } else {
-            return $this->downloadFile($result);
+            return $this->_downloadCalendar($result);
         }
     }
 
@@ -613,7 +606,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
     public function calendar_delete_serial_entry(array $ARGS)
     {
         $event = $ARGS['event'];
-        $eventData = $this->prepareEventData($event);
+        $eventData = $this->_prepareEventData($event);
         if (empty($eventData)) {
             return '';
         }
@@ -644,7 +637,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
     {
         // check if selected calendar exists and the crrent user is it's owner
         $db = $this->_getDatabase();
-        $row = $db->select("calendar.$current_calendar", array('user_created', '=', $this->_getSession()->getCurrentUserName()));
+        $row = $db->select("calendar." . (int) $current_calendar, array('user_created', '=', $this->_getSession()->getCurrentUserName()));
         if (empty($row)) {
             return false; // error - the calendar does not exist, or the user has no permission to view it
         } else {
@@ -661,7 +654,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
      *
      * @return  array  current user calendar list
      */
-    protected function getCalendarList()
+    protected function _getCalendarList()
     {
         $where = array('user_created', '=', $this->_getSession()->getCurrentUserName());
         $db = $this->_getDatabase();
@@ -699,7 +692,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
      *
      * @return  bool
      */
-    protected function insertCalendar($name, $filename, $url = "", $subscribe = false)
+    protected function _insertCalendar($name, $filename, $url = "", $subscribe = false)
     {
         $user = $this->_getSession()->getCurrentUserName();
         if (empty($user)) {
@@ -756,11 +749,11 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
         if (empty($data) || !isset($data['CALENDAR_URL']) || !isset($data['CALENDAR_FILENAME'])) {
             return false; // has no URL - nothing to refresh
         }
-        $xml = $this->iCalToXCal($data['CALENDAR_URL']); // convert ical into xcal
+        $xml = $this->_iCalToXCal($data['CALENDAR_URL']); // convert ical into xcal
         if (!$xml) {
             return false;
         }
-        $path = $this->fileIdtoPath($data['CALENDAR_FILENAME']);
+        $path = $this->_fileIdtoPath($data['CALENDAR_FILENAME']);
         if (file_put_contents($path, $xml)) {
             return true;
         } else {
@@ -802,14 +795,14 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
         $filename = $name.time();
 
         // convert ical into xcal
-        $xml = $this->iCalToXCal($path);
+        $xml = $this->_iCalToXCal($path);
         if ($xml == false) {
             return false;
         }
         $content = $xml;
-        $writeXML = $this->writeXml($content, $filename);
+        $writeXML = $this->_writeXml($content, $filename);
         if ($writeXML) {
-            $result = $this->insertCalendar($name, $filename, $url, true);
+            $result = $this->_insertCalendar($name, $filename, $url, true);
             $db = $this->_getDatabase();
             try {
                 $db->commit();
@@ -829,7 +822,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
      * @param   string  $fileName  file name
      * @return  bool
      */
-    protected function writeXml(string $content, string $fileName)
+    protected function _writeXml(string $content, string $fileName)
     {
         /* @var $dir Dir */
         $dir = $this->_getPluginsFacade()->getFileObjectFromVirtualDrive('calendar:/xcal');
@@ -859,7 +852,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
     public function remove_user_calendar($key)
     {
         $calendarID = $key;
-        $this->removeCalendarFile($calendarID);
+        $this->_removeCalendarFile($calendarID);
         $where = array('user_created', '=', $this->_getSession()->getCurrentUserName());
         $db = $this->_getDatabase();
         /* remove the row */
@@ -879,7 +872,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
      * @param   integer  $datasetID  id of the current calendar too remove
      * @return  bool
      */
-    protected function removeCalendarFile($datasetID)
+    protected function _removeCalendarFile($datasetID)
     {
         $isSuccess = false;
         $db = $this->_getDatabase();
@@ -889,7 +882,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
 
             $fileName = $calendar['CALENDAR_FILENAME'];
             if (!empty($fileName)) {
-                $isSuccess = (bool) $this->removeXCalFile($fileName);
+                $isSuccess = (bool) $this->_removeXCalFile($fileName);
             }
         }
 
@@ -909,7 +902,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
      * @return  xml|bool    if succesfull than return an xml object otherweise false
      * @ignore
      */
-    protected function iCalToXCal($path)
+    protected function _iCalToXCal($path)
     {
         assert(is_string($path), 'Wrong argument type argument 1. String expected');
 
@@ -1142,23 +1135,23 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
         }
 
         // convert ical into xcal
-        $xml = $this->iCalToXCal($filePath);
+        $xml = $this->_iCalToXCal($filePath);
         if ($xml == false) {
             return false;
         }
         // set calendar name and the file name of the calendar
         $name = $calendarName;
-        $fileName = md5($name.$fileName);
+        $fileName = md5($name . $fileName);
 
         // create the xml calendar file
-        $xmlWrite = $this->writeXml($xml, $fileName);
+        $xmlWrite = $this->_writeXml($xml, $fileName);
 
         // insert a new database entry when xml file is created
         if (!$xmlWrite || empty($name) || empty($fileName)) {
             return false;
         }
         // inserts entries into database, but does not commit them
-        if (!$this->insertCalendar($name, $fileName)) {
+        if (!$this->_insertCalendar($name, $fileName)) {
             return false;
         }
         // commit the new entry into database
@@ -1179,7 +1172,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
      * @param   string   $xmlContent   xml contetn of an event
      * @return  bool
      */
-    protected function setICal($datasetID = null, $xmlContent = '')
+    protected function _setICal($datasetID = null, $xmlContent = '')
     {
         $db = $this->_getDatabase();
         if ($datasetID != null && is_int($datasetID)) {
@@ -1246,10 +1239,10 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
                             // only for categories
                             $categoriesBegin = 0;
                             if (strtoupper($name) == 'CATEGORIES') {
-                                $string .= strtoupper($name).':';
+                                $string .= strtoupper($name) . ':';
                                 $categoriesBegin = 1;
                             } else {
-                                $string .= 'BEGIN:'.strtoupper($name)."\n";
+                                $string .= 'BEGIN:' . strtoupper($name) . "\n";
                             }
                             $categories = null;
                             foreach ($value->children() as $childName => $childValue)
@@ -1260,18 +1253,17 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
                                     } else {
                                         $categoriesSeperator = '';
                                     }
-                                    $categories .=$categoriesSeperator.$childValue;
+                                    $categories .= $categoriesSeperator . $childValue;
                                     $categoriesBegin = 0;
                                 } else {
-                                    $string .= strtoupper($childName).':'.$childValue."\n";
+                                    $string .= strtoupper($childName) . ':' . $childValue . "\n";
                                 }
-
                             }
                             if (isset($categories)) {
-                                $string .= $categories."\n";
+                                $string .= $categories . "\n";
                             }
                             if (strtoupper($name) != 'CATEGORIES') {
-                                $string .= 'END:'.strtoupper($name)."\n";
+                                $string .= 'END:' . strtoupper($name) . "\n";
                             }
                         }
                     }
@@ -1280,15 +1272,15 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
                         {
                             if ($name == 'attendee') {
                                 if ($key == 'cn') {
-                                    $string .= strtoupper($name).';'.$key.'='.$item.';';
+                                    $string .= strtoupper($name) . ';' . $key . '=' . $item . ';';
                                 }
                                 if ($key == 'rsvp') {
-                                    $string .= $key.'='.$item.':';
+                                    $string .= $key . '=' . $item . ':';
                                 }
                             }
                         }
                         if ($name == 'attendee') {
-                            $string .= $value."\n";
+                            $string .= $value . "\n";
                         } else {
                             if ($value->attributes()) {
                                 $attr = $value->attributes();
@@ -1296,22 +1288,22 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
                                 {
                                     $additional = explode(':', $value);
                                     if (!isset($additional[1])) {
-                                        $string .= strtoupper($name).';'.$attrKey.'='.$attrV.':'.$additional[0]."\n";
+                                        $string .= strtoupper($name) . ';' . $attrKey . '=' . $attrV . ':' . $additional[0] . "\n";
                                     } else {
-                                        $string .= strtoupper($name).';'.$attrKey.'='.$attrV.':'.$additional[0].':'.
-                                            $additional[1]."\n";
+                                        $string .= strtoupper($name) . ';' . $attrKey . '=' . $attrV . ':' . $additional[0] . ':' .
+                                            $additional[1] . "\n";
                                     }
                                 }
                             }
                         }
                     }
                     if (!$value->attributes() && !$value->children()) {
-                        $string .= strtoupper($name).':'.$value."\n";
+                        $string .= strtoupper($name) . ':' . $value . "\n";
                     }
                 }
-                    $string .= 'END:'.strtoupper($rootName)."\n";
+                $string .= 'END:' . strtoupper($rootName) . "\n";
             }
-            $string .= 'END:'.strtoupper($root)."\n";
+            $string .= 'END:' . strtoupper($root) . "\n";
         }
         $dataSet = array();
         if (!empty($calendarID)) {
@@ -1345,22 +1337,22 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
         $calendarID = $key;
         // convert the xcal dataset into the ical format
         $data = array();
-        $data = $this->setICal($calendarID);
+        $data = $this->_setICal($calendarID);
 
         if (empty($data)) {
             return false;
         }
-        return $this->downloadFile($data);
+        return $this->_downloadCalendar($data);
     }
 
     /**
      * Download ICAL file.
      *
-     * @param   array   $data   file information
-     * @return  bool    return bool false if the expected param is Empty
+     * @param   array|bool   $data   file information
+     * @return  bool         return bool false if the expected param is Empty
      * @ignore
      */
-    protected function downloadFile($data)
+    protected function _downloadCalendar($data)
     {
         if (empty($data)) {
             return false;
@@ -1391,7 +1383,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
      * @param   string  $fileName  name of the removed file
      * @return  bool
      */
-    protected function removeXCalFile($fileName)
+    protected function _removeXCalFile($fileName)
     {
         /* @var $dir Dir */
         $dir = $this->_getPluginsFacade()->getFileObjectFromVirtualDrive('calendar:/xcal');

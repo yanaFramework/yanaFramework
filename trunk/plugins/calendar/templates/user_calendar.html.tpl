@@ -151,8 +151,8 @@
                             var location = $("#location").val();
                             var result = false;
                             if (title == '') {
-                                var catrgory = $('#category').val();
-                                $('#title').val(catrgory);
+                                var category = $('#category').val();
+                                $('#title').val(category);
                             }
                             return result;
                         };
@@ -981,7 +981,7 @@
                         });
                         $("#category").change(function () {
                             $('#category').removeClass();
-                            var setTitle = this.value;
+                            var setTitle = $('#category option:selected').text();
                             $('#title').val(setTitle);
 
                         });

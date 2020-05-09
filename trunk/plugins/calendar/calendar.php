@@ -231,11 +231,15 @@ class Calendar extends \Yana\Files\AbstractResource
      */
     public static function setCategories(array $categories)
     {
-        assert(is_array($categories), 'Wrong argument type argument 1. Array expected');
-        if (empty($categories)) {
-            self::$categories = array();
-        } else {
-            self::$categories = $categories;
+        self::$categories = array();
+        if (!empty($categories)) {
+            foreach ($categories as $categoryId => $category)
+            {
+                self::$categories[(string) $categoryId] = array(
+                    'name' => (string) $category['name'],
+                    'color' => (string) $category['color']
+                );
+            };
         }
     }
 
@@ -523,9 +527,9 @@ class Calendar extends \Yana\Files\AbstractResource
         if (!empty($eventCategory)) {
             $cat = self::getCategories();
             if (is_array($cat) && !empty($cat)) {
-                foreach ($cat as $category)
+                foreach ($cat as $categoryId => $category)
                 {
-                    if (isset($category['name']) && $category['name'] == $eventCategory) {
+                    if ($categoryId == $eventCategory) {
                         $className = $category['color'];
                     }
                 }

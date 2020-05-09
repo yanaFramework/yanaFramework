@@ -237,7 +237,7 @@
             <group id="calendar_buttons">
                 <trans-unit id="calendar_buttons.send">
                     <source>send</source>
-                    <target>Senden</target>
+                    <target>Termin versenden</target>
                 </trans-unit>
                 <trans-unit id="calendar_buttons.save">
                     <source>Save</source>

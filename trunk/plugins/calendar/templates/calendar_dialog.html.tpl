@@ -22,7 +22,7 @@
                     <input type="text" name="title" id="title" value=""/>
                     <select name="category" id="category">
                         {foreach from=$categories key=key item=item}
-                            <option value="{$item.name}" {if $item.color}class="{$item.color}"{/if}>{$item.name}</option>
+                            <option value="{$key}" {if $item.color}class="{$item.color}"{/if}>{$item.name}</option>
                         {/foreach}
                     </select>
                     <input type="text" name="location" id="location" value=""/>

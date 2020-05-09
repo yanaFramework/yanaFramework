@@ -422,6 +422,7 @@ select.allDayInterval
 
 /* this block defined the categories and the event properties */
 .event_orange,
+.event_orange .fc-event-skin,
 .fc-agenda .event_orange .fc-event-time,
 .event_orange a
 {
@@ -432,6 +433,7 @@ select.allDayInterval
 
 
 .event_blue,
+.event_blue .fc-event-skin,
 .fc-agenda .event_blue .fc-event-time,
 .event_blue a
 {
@@ -441,6 +443,7 @@ select.allDayInterval
 }
 
 .event_brown,
+.event_brown .fc-event-skin,
 .fc-agenda .event_brown .fc-event-time,
 .event_brown a
 {
@@ -451,6 +454,7 @@ select.allDayInterval
 
 
 .event_light_orange,
+.event_light_orange .fc-event-skin,
 .fc-agenda .event_light_orange .fc-event-time,
 .event_light_orange a
 {
@@ -460,6 +464,7 @@ select.allDayInterval
 }
 
 .event_light_brown,
+.event_light_brown .fc-event-skin,
 .fc-agenda .event_light_brown .fc-event-time,
 .event_light_brown a
 {
@@ -470,6 +475,7 @@ select.allDayInterval
 
 
 .event_light_green,
+.event_light_green .fc-event-skin,
 .fc-agenda .event_light_green .fc-event-time,
 .event_light_green a
 {
@@ -480,6 +486,7 @@ select.allDayInterval
 
 
 .event_light_blue,
+.event_light_blue .fc-event-skin,
 .fc-agenda .event_light_blue .fc-event-time,
 .event_light_blue a
 {
@@ -490,6 +497,7 @@ select.allDayInterval
 
 
 .event_grey,
+.event_grey .fc-event-skin,
 .fc-agenda .event_grey .fc-event-time,
 .event_grey a
 {
@@ -500,6 +508,7 @@ select.allDayInterval
 
 
 .event_red,
+.event_red .fc-event-skin,
 .fc-agenda .event_red .fc-event-time,
 .event_red a
 {
@@ -510,6 +519,7 @@ select.allDayInterval
 
 
 .event_dark_blue,
+.event_dark_blue .fc-event-skin,
 .fc-agenda .event_dark_blue .fc-event-time,
 .event_dark_blue a
 {
@@ -520,6 +530,7 @@ select.allDayInterval
 
 
 .event_green,
+.event_green .fc-event-skin,
 .fc-agenda .event_green .fc-event-time,
 .event_green a
 {
@@ -529,10 +540,12 @@ select.allDayInterval
 }
 
 .event_default_color,
+.event_default_color .fc-event-skin,
 .fc-agenda .event_default_color .fc-event-time,
 .event_default_color a
 {
-    background-color: #9ab !important;
+    border-color: steelblue;                  /* border color */
+    background-color: steelblue !important;
     color: #000000;
 }
 

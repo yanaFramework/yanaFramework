@@ -1,51 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <calendar>
     <categories>
-        <category>
-            <name>{lang id="categories.none"}</name>            
+        <category id="none">
+            <name>{lang id="categories.none"}</name>
             <color>event_default_color</color>
         </category>
-        <category>
+        <category id="calls">
             <name>{lang id="categories.calls"}</name>
             <color>event_orange</color>
         </category>
-        <category>
+        <category id="meeting">
             <name>{lang id="categories.meeting"}</name>
             <color>vent_blue</color>
         </category>
-        <category>
+        <category id="favorite">
             <name>{lang id="categories.favorite"}</name>
             <color>event_brown</color>
         </category>
-        <category>
+        <category id="public_holiday">
             <name>{lang id="categories.public_holiday"}</name>
             <color>event_light_orange</color>
         </category>
-        <category>
+        <category id="vacation">
             <name>{lang id="categories.vacation"}</name>
             <color>event_light_brown</color>
         </category>
-        <category>
+        <category id="question">
             <name>{lang id="categories.question"}</name>
             <color>event_light_green</color>
         </category>
-        <category>
+        <category id="birthday">
             <name>{lang id="categories.birthday"}</name>
             <color>event_light_blue</color>
         </category>
-        <category>
+        <category id="business">
             <name>{lang id="categories.business"}</name>
             <color>event_grey</color>
         </category>
-        <category>
+        <category id="presents">
             <name>{lang id="categories.presents"}</name>
             <color>event_red</color>
         </category>
-        <category>
+        <category id="ideas">
             <name>{lang id="categories.ideas"}</name>
             <color>event_dark_blue</color>
         </category>
-        <category>
+        <category id="jubilee">
             <name>{lang id="categories.jubilee"}</name>
             <color>event_green</color>
         </category>
