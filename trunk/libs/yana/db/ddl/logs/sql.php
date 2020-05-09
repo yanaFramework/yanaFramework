@@ -103,7 +103,7 @@ class Sql extends \Yana\Db\Ddl\Logs\AbstractLog
      * Returns the name of the target DBMS for this definition as a lower-cased string.
      * The default is "generic".
      *
-     * @return  string
+     * @return  string|NULL
      */
     public function getDBMS(): ?string
     {
@@ -132,7 +132,7 @@ class Sql extends \Yana\Db\Ddl\Logs\AbstractLog
         if ($dbms === "") {
             $this->dbms = null;
         } else {
-            $this->dbms =  strtolower($dbms);
+            $this->dbms = strtolower($dbms);
         }
         return $this;
     }

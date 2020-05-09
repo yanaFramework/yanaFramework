@@ -102,9 +102,9 @@ class Event extends \Yana\Db\Ddl\AbstractNamedObject
      * The code or function name that should be executed when the event is fired.
      * The syntax is dependent on the chosen language.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getAction()
+    public function getAction(): ?string
     {
         if (empty($this->action)) {
             return null;
@@ -119,12 +119,11 @@ class Event extends \Yana\Db\Ddl\AbstractNamedObject
      * The syntax is dependent on the chosen language.
      *
      * @param   string  $action  function name (if language = php) or program code (if language = javascript)
-     * @return  \Yana\Db\Ddl\Event 
+     * @return  $this
      */
-    public function setAction($action = "")
+    public function setAction(string $action = "")
     {
-        assert(is_string($action), 'Wrong type for argument 1. String expected');
-        $this->action = "$action";
+        $this->action = $action;
         return $this;
     }
 
@@ -134,9 +133,9 @@ class Event extends \Yana\Db\Ddl\AbstractNamedObject
      * Returns the programming language of the event-implementation as a string or NULL if the
      * option is not set.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getLanguage()
+    public function getLanguage(): ?string
     {
         if (is_string($this->language)) {
             return $this->language;
@@ -155,15 +154,14 @@ class Event extends \Yana\Db\Ddl\AbstractNamedObject
      * To reset the property, leave the parameter empty.
      *
      * @param   string  $language   name of programming language (currently just "javascript" and "php" are supported)
-     * @return  \Yana\Db\Ddl\Event 
+     * @return  $this
      */
-    public function setLanguage($language = "")
+    public function setLanguage(string $language = "")
     {
-        assert(is_string($language), 'Wrong type for argument 1. String expected');
-        if (empty($language)) {
+        if ($language === "") {
             $this->language = null;
         } else {
-            $this->language = "$language";
+            $this->language = $language;
         }
         return $this;
     }
@@ -173,9 +171,9 @@ class Event extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * Returns the label used for the clickable link as a string or NULL if the property is not set.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getLabel()
+    public function getLabel(): ?string
     {
         if (is_string($this->label)) {
             return $this->label;
@@ -191,15 +189,14 @@ class Event extends \Yana\Db\Ddl\AbstractNamedObject
      * To reset the property, leave the parameter empty.
      *
      * @param   string  $label  any text
-     * @return  \Yana\Db\Ddl\Event 
+     * @return  $this
      */
-    public function setLabel($label = "")
+    public function setLabel(string $label = "")
     {
-        assert(is_string($label), 'Wrong type for argument 1. String expected');
-        if (empty($label)) {
+        if ($label === "") {
             $this->label = null;
         } else {
-            $this->label = "$label";
+            $this->label = $label;
         }
         return $this;
     }
@@ -210,9 +207,9 @@ class Event extends \Yana\Db\Ddl\AbstractNamedObject
      * Returns the title-attribute used for the clickable link as a string or NULL if the property
      * is not set.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getTitle()
+    public function getTitle(): ?string
     {
         if (is_string($this->title)) {
             return $this->title;
@@ -228,15 +225,14 @@ class Event extends \Yana\Db\Ddl\AbstractNamedObject
      * To reset the property, leave the parameter empty.
      *
      * @param   string  $title  any text, but no HTML
-     * @return  \Yana\Db\Ddl\Event 
+     * @return  $this
      */
-    public function setTitle($title = "")
+    public function setTitle(string $title = "")
     {
-        assert(is_string($title), 'Wrong type for argument 1. String expected');
-        if (empty($title)) {
+        if ($title === "") {
             $this->title = null;
         } else {
-            $this->title = "$title";
+            $this->title = $title;
         }
         return $this;
     }
@@ -247,9 +243,9 @@ class Event extends \Yana\Db\Ddl\AbstractNamedObject
      * Returns the file path for the icon image that should be displayed on the clickable link
      * or NULL if the property is not set.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getIcon()
+    public function getIcon(): ?string
     {
         if (is_string($this->icon)) {
             return $this->icon;
@@ -265,15 +261,15 @@ class Event extends \Yana\Db\Ddl\AbstractNamedObject
      * To reset the property, leave the parameter empty.
      *
      * @param   string  $icon   icon image
+     * @return  $this
      */
-    public function setIcon($icon = "")
+    public function setIcon(string $icon = "")
     {
-        assert(is_string($icon), 'Wrong type for argument 1. String expected');
         assert(empty($icon) || is_file($icon), 'Invalid argument type argument 1. File expected');
-        if (empty($icon)) {
+        if ($icon === "") {
             $this->icon = null;
         } else {
-            $this->icon = "$icon";
+            $this->icon = $icon;
         }
         return $this;
     }

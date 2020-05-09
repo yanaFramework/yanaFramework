@@ -62,7 +62,7 @@ class Constraint extends \Yana\Db\Ddl\AbstractUnnamedObject
         '#pcdata' => array('constraint', 'string')
     );
 
-    /** @var string */ protected $dbms = "generic";
+    /** @var string */ protected $dbms = \Yana\Db\DriverEnumeration::GENERIC;
     /** @var string */ protected $constraint = null;
 
     /**#@-*/
@@ -73,9 +73,9 @@ class Constraint extends \Yana\Db\Ddl\AbstractUnnamedObject
      * Returns the name of the target DBMS for this definition as a lower-cased string.
      * The default is "generic".
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getDBMS()
+    public function getDBMS(): ?string
     {
         return $this->dbms;
     }
@@ -94,16 +94,14 @@ class Constraint extends \Yana\Db\Ddl\AbstractUnnamedObject
      * Generic values are usually simulated using PHP-code.
      *
      * @param   string  $dbms  target DBMS, defaults to "generic"
-     * @return  \Yana\Db\Ddl\Constraint
+     * @return  $this
      */
-    public function setDBMS($dbms = \Yana\Db\DriverEnumeration::GENERIC)
+    public function setDBMS(string $dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
-        assert(is_string($dbms), 'Wrong type for argument 1. String expected');
-
-        if (empty($dbms)) {
+        if ($dbms === "") {
             $this->dbms = null;
         } else {
-            $this->dbms = strtolower((string) $dbms);
+            $this->dbms = strtolower($dbms);
         }
         return $this;
     }
@@ -115,9 +113,9 @@ class Constraint extends \Yana\Db\Ddl\AbstractUnnamedObject
      * The syntax depends on the target DBMS. For type "generic" the feature is emulated using PHP
      * code.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getConstraint()
+    public function getConstraint(): ?string
     {
         if (is_string($this->constraint)) {
             return $this->constraint;
@@ -137,15 +135,14 @@ class Constraint extends \Yana\Db\Ddl\AbstractUnnamedObject
      * BE WARNED: As always - do NOT use this function with any unchecked user input.
      *
      * @param   string  $constraint  evaluation rule
-     * @return  \Yana\Db\Ddl\Constraint
+     * @return  $this
      */
-    public function setConstraint($constraint = "")
+    public function setConstraint(string $constraint = "")
     {
-        assert(is_string($constraint), 'Wrong type for argument 1. String expected');
-        if (empty($constraint)) {
+        if ($constraint === "") {
             $this->constraint = null;
         } else {
-            $this->constraint = "$constraint";
+            $this->constraint = $constraint;
         }
         return $this;
     }
@@ -157,7 +154,7 @@ class Constraint extends \Yana\Db\Ddl\AbstractUnnamedObject
      *
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed              $parent  parent node (if any)
-     * @return  \Yana\Db\Ddl\Constraint
+     * @return  $this
      */
     public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)
     {

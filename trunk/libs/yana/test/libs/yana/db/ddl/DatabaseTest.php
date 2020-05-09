@@ -52,11 +52,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     protected $foreignkey;
 
     /**
-     * @var \Yana\Db\Ddl\Sequence
-     */
-    protected $sequence;
-
-    /**
      * @var \Yana\Db\Ddl\Table
      */
     protected $table;
@@ -67,24 +62,9 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     protected $grant;
 
     /**
-     * @var \Yana\Db\Ddl\IndexColumn
-     */
-    protected $indexcolumn;
-
-    /**
      * @var \Yana\Db\Ddl\Event
      */
     protected $event;
-
-    /**
-     * @var \Yana\Db\Ddl\Trigger
-     */
-    protected $trigger;
-
-    /**
-     * @var \Yana\Db\Ddl\Constraint
-     */
-    protected $constraint;
 
     /**
      * sets up the fixture, for example, opens a network connection.
@@ -98,12 +78,8 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $this->database = new \Yana\Db\Ddl\Database('Database', CWD . '/resources/check.db.xml');
         $this->table = new \Yana\Db\Ddl\Table('table');
         $this->foreignkey = new \Yana\Db\Ddl\ForeignKey('foreignkey');
-        $this->sequence = new \Yana\Db\Ddl\Sequence('sequence');
         $this->grant = new \Yana\Db\Ddl\Grant();
-        $this->indexcolumn = new \Yana\Db\Ddl\IndexColumn('indexColumn');
         $this->event = new \Yana\Db\Ddl\Event('action');
-        $this->trigger = new \Yana\Db\Ddl\Trigger();
-        $this->constraint = new \Yana\Db\Ddl\Constraint();
     }
 
     /**
@@ -115,12 +91,8 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $this->database->setModified(true); // setting the file to modified forces the instance cache to be cleared
         unset($this->database); // this doesn't kill all references, UNLESS the files was previously set to modified
         unset($this->foreignkey);
-        unset($this->sequence);
         unset($this->table);
-        unset($this->indexcolumn);
         unset($this->event);
-        unset($this->trigger);
-        unset($this->constraint);
         chdir(CWD);
     }
 
@@ -202,8 +174,7 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array('database'),
-            array('table'),
-            array('sequence')
+            array('table')
         );
     }
 
@@ -270,23 +241,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Cycle
-     *
-     * @test
-     */
-    public function testCycle()
-    {
-       // DDL Sequence
-       $this->sequence->setCycle(true);
-       $result = $this->sequence->isCycle();
-       $this->assertTrue($result, 'assert failed, \Yana\Db\Ddl\Sequence : expected true - setCycle was set with true');
-
-       $this->sequence->setCycle(false);
-       $result = $this->sequence->isCycle();
-       $this->assertFalse($result, 'assert failed, \Yana\Db\Ddl\Sequence : expected false - setCycle was set with false');
-    }
-
-    /**
      * Deferrable
      *
      * @test
@@ -323,24 +277,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($valid, '\Yana\Db\Ddl\Column::isForeignKey - key expected ');
         $valid = $ColumnC->isForeignKey();
         $this->assertFalse($valid, '\Yana\Db\Ddl\Column::isForeignKey - key expected ');
-
-    }
-
-    /**
-     * Length
-     *
-     * @test
-     */
-    public function testGetLength()
-    {
-        // \Yana\Db\Ddl\IndexColumn
-        $this->indexcolumn->setLength(20);
-        $length = $this->indexcolumn->getLength();
-        $this->assertEquals(20, $length, 'assert failed, \Yana\Db\Ddl\IndexColumn: set und get do not match');
-
-        $this->indexcolumn->setLength(0);
-        $length = $this->indexcolumn->getLength();
-        $this->assertNull($length, '\Yana\Db\Ddl\IndexColumn:setLength should return Null, if not set');
     }
 
     /**
@@ -390,16 +326,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('array',$result2, '\Yana\Db\Ddl\Table::');
         $this->assertTrue(empty($result1), '\Yana\Db\Ddl\Table::');
         $this->assertFalse(empty($result2), '\Yana\Db\Ddl\Table::');
-
-        // \Yana\Db\Ddl\Constraint
-        $testArray1 = array("someConstraints 1", "someConstraints 2", "someConstraints 3");
-        $this->constraint->setConstraint($testArray1[0]);
-        $result1 = $this->constraint->getConstraint();
-        $this->assertEquals($testArray1[0], $result1, '\Yana\Db\Ddl\Constraint::getConstraint failed');
-
-        $this->constraint->setConstraint();
-        $result1 = $this->constraint->getConstraint();
-        $this->assertNull($result1, '\Yana\Db\Ddl\Constraint::getConstrain failed');
     }
 
     /**
@@ -772,34 +698,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Sorting
-     *
-     * @test
-     */
-    public function testSorting()
-    {
-        $result = true;
-        try {
-            $this->indexcolumn->setSorting(4711);
-        } catch (\Exception $e) {
-            $result = false;
-        }
-        $this->assertFalse($result, "\Yana\Db\Ddl\IndexColumn::setSorting should not accept anything but Boolean");
-
-        $this->indexcolumn->setSorting();
-        $descending = $this->indexcolumn->isDescendingOrder();
-        $ascending = $this->indexcolumn->isAscendingOrder();
-        $this->assertFalse($descending, '\Yana\Db\Ddl\IndexColumn::isDescendingOrder setting or retrieving the sorting is misaligned');
-        $this->assertTrue($ascending, '\Yana\Db\Ddl\IndexColumn::isAscendingOrder setting or retrieving the sorting is misaligned');
-
-        $this->indexcolumn->setSorting(false);
-        $descending = $this->indexcolumn->isDescendingOrder();
-        $ascending = $this->indexcolumn->isAscendingOrder();
-        $this->assertTrue($descending, '\Yana\Db\Ddl\IndexColumn::isDescendingOrder setting or retrieving the sorting is misaligned');
-        $this->assertFalse($ascending, '\Yana\Db\Ddl\IndexColumn::isAscendingOrder setting or retrieving the sorting is misaligned');
-    }
-
-    /**
      * dropInit
      *
      * @test
@@ -988,122 +886,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Start
-     *
-     * @test
-     */
-    public function testStart()
-    {
-        $this->sequence->setStart(1);
-        $get = $this->sequence->getStart();
-        $this->assertEquals(1, $get, 'assert failed, \Yana\Db\Ddl\Sequence : expected "1" as number');
-
-        $this->sequence->setStart(0);
-        $get = $this->sequence->getStart();
-        $this->assertNull($get, 'assert failed, \Yana\Db\Ddl\Sequence : expected null, start is not set');
-    }
-
-    /**
-     * Start
-     *
-     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
-     * @test
-     */
-    public function testSetStartInvalidArgument1()
-    {
-        $this->sequence->setMin(6);
-        $this->sequence->setStart(5);
-    }
-
-    /**
-     * Increment
-     *
-     * @test
-     */
-    public function testIncrement()
-    {
-
-        $get = $this->sequence->getIncrement();
-        $this->assertEquals(1, $get, 'if not defined otherwise, Sequenz should iterate with 1-Steps');
-
-        $this->sequence->setIncrement(2);
-        $get = $this->sequence->getIncrement();
-        $this->assertEquals(2, $get, 'assert failed, \Yana\Db\Ddl\Sequence : the values should be equal');
-
-        try {
-            $this->sequence->setIncrement(0);
-            $this->fail("Increment value may not be set to '0'.");
-        } catch (\Yana\Core\Exceptions\InvalidArgumentException $e) {
-            // success
-        }
-    }
-
-    /**
-     * Increment
-     *
-     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
-     * @test
-     */
-    function testSetIncrementInvalidArgument()
-    {
-         $this->sequence->setIncrement(0);
-    }
-
-    /**
-     * Min
-     *
-     * @test
-     */
-    public function testMin()
-    {
-        $this->sequence->setMin();
-        $get = $this->sequence->getMin();
-        $this->assertEquals(null, $get, 'setMin() without arguments should reset the property.');
-
-        $this->sequence->setMin(1);
-        $get = $this->sequence->getMin();
-        $this->assertEquals(1, $get, 'getMin() should return the same value as previously set by setMin().');
-
-        $this->sequence->setStart(2);
-        $this->sequence->setMin(2); // should succeed
-        $get = $this->sequence->getMin();
-        $this->assertEquals(2, $get, 'setMin() to lower boundary must succeed.');
-        try {
-            $this->sequence->setMin(3);
-            $this->fail("Should not be able to set minimum higher than start value.");
-        } catch (\Yana\Core\Exceptions\InvalidArgumentException $e) {
-            // success
-        }
-    }
-
-    /**
-     * Max
-     *
-     * @test
-     */
-    public function testMax()
-    {
-        $this->sequence->setMax();
-        $get = $this->sequence->getMax();
-        $this->assertEquals(null, $get, 'setMax() without arguments should reset the property.');
-
-        $this->sequence->setMax(3);
-        $get = $this->sequence->getMax();
-        $this->assertEquals(3, $get, 'getMax() should return the same value as previously set by setMax().');
-
-        $this->sequence->setStart(2);
-        $this->sequence->setMax(2); // should succeed
-        $get = $this->sequence->getMax();
-        $this->assertEquals(2, $get, 'setMax() to lower boundary must succeed.');
-        try {
-            $this->sequence->setMax(1);
-            $this->fail("Should not be able to set maximum lower than start value.");
-        } catch (\Yana\Core\Exceptions\InvalidArgumentException $e) {
-            // success
-        }
-    }
-
-    /**
      * TargetTable
      *
      * @test
@@ -1139,42 +921,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $message = 'assert failed, \Yana\Db\Ddl\ForeignKey : expected 0 as value, the 0 number will be choosen when the number ' .
             'by setMatch does not match the numbers 0, 1, 2';
         $this->assertEquals(\Yana\Db\Ddl\KeyMatchStrategyEnumeration::SIMPLE, $result, $message);
-    }
-
-    /**
-     * Data-provider for testDBMS
-     */
-    public function dataDBMS()
-    {
-        return array(
-            array('trigger'),
-            array('constraint')
-        );
-    }
-
-    /**
-     * DBMS
-     *
-     * @dataProvider dataDBMS
-     * @param  string  $propertyName
-     * @test
-     */
-    public function testDBMS($propertyName)
-    {
-        $object = $this->$propertyName;
-        $object->setDBMS('mssql');
-        $validate = $object->getDBMS();
-        $this->assertEquals('mssql', $validate, get_class($object) . ': getDBMS() must return same value as set via setDBMS().');
-
-        $object->setDBMS();
-        $result = $object->getDBMS();
-        // expected generic
-        $this->assertEquals('generic', $result, get_class($object) . ': default DBMS should be "generic".');
-
-        $object->setDBMS('');
-        $result = $object->getDBMS();
-        // expected generic
-        $this->assertNull($result, get_class($object) . ': empty DBMS value should default to NULL.');
     }
 
     /**

@@ -117,9 +117,9 @@ class Trigger extends \Yana\Db\Ddl\AbstractUnnamedObject
      * Returns the name of the target DBMS for this definition as a lower-cased string.
      * The default is "generic".
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getDBMS()
+    public function getDBMS(): ?string
     {
         return $this->dbms;
     }
@@ -138,12 +138,10 @@ class Trigger extends \Yana\Db\Ddl\AbstractUnnamedObject
      * Generic values are usually simulated using PHP-code.
      *
      * @param   string  $dbms  target DBMS, defaults to "generic"
-     * @return  \Yana\Db\Ddl\Trigger
+     * @return  $this
      */
-    public function setDBMS($dbms = \Yana\Db\DriverEnumeration::GENERIC)
+    public function setDBMS(string $dbms = \Yana\Db\DriverEnumeration::GENERIC)
     {
-        assert(is_string($dbms), 'Wrong type for argument 1. String expected');
-
         if (empty($dbms)) {
             $this->dbms = null;
         } else {
@@ -158,9 +156,9 @@ class Trigger extends \Yana\Db\Ddl\AbstractUnnamedObject
      * Retrieve the trigger code and return it.
      * The syntax of the code depends on the type of DBMS used.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getTrigger()
+    public function getTrigger(): ?string
     {
         if (is_string($this->trigger)) {
             return $this->trigger;
@@ -186,12 +184,11 @@ class Trigger extends \Yana\Db\Ddl\AbstractUnnamedObject
      * This setting is mandatory.
      *
      * @param   string  $trigger  code that should be executed (possibly a function call)
-     * @return  \Yana\Db\Ddl\Trigger
+     * @return  $this
      */
-    public function setTrigger($trigger)
+    public function setTrigger(string $trigger)
     {
-        assert(is_string($trigger), 'Wrong type for argument 1. String expected');
-        $this->trigger = "$trigger";
+        $this->trigger = $trigger;
         return $this;
     }
 
@@ -202,7 +199,7 @@ class Trigger extends \Yana\Db\Ddl\AbstractUnnamedObject
      *
      * @return  bool
      */
-    public function isBefore()
+    public function isBefore(): bool
     {
         return ($this->on === 'before');
     }
@@ -215,7 +212,7 @@ class Trigger extends \Yana\Db\Ddl\AbstractUnnamedObject
      *
      * @return  bool
      */
-    public function isAfter()
+    public function isAfter(): bool
     {
         return ($this->on === 'after');
     }
@@ -229,7 +226,7 @@ class Trigger extends \Yana\Db\Ddl\AbstractUnnamedObject
      *
      * @return  bool
      */
-    public function isInstead()
+    public function isInstead(): bool
     {
         return ($this->on === 'instead');
     }
@@ -242,7 +239,7 @@ class Trigger extends \Yana\Db\Ddl\AbstractUnnamedObject
      * A trigger may either fire before, after or instead of a statement, but not on a combination
      * of these. This setting is mandatory. There is no default value.
      *
-     * @return  \Yana\Db\Ddl\Trigger
+     * @return  $this
      */
     public function setBefore()
     {
@@ -259,7 +256,7 @@ class Trigger extends \Yana\Db\Ddl\AbstractUnnamedObject
      * A trigger may either fire before, after or instead of a statement, but not on a combination
      * of these. This setting is mandatory. There is no default value.
      *
-     * @return  \Yana\Db\Ddl\Trigger
+     * @return  $this
      */
     public function setAfter()
     {
@@ -277,7 +274,7 @@ class Trigger extends \Yana\Db\Ddl\AbstractUnnamedObject
      * A trigger may either fire before, after or instead of a statement, but not on a combination
      * of these. This setting is mandatory. There is no default value.
      *
-     * @return  \Yana\Db\Ddl\Trigger
+     * @return  $this
      */
     public function setInstead()
     {
@@ -296,7 +293,7 @@ class Trigger extends \Yana\Db\Ddl\AbstractUnnamedObject
      *
      * @return  bool
      */
-    public function isInsert()
+    public function isInsert(): bool
     {
         return !empty($this->insert);
     }
@@ -312,7 +309,7 @@ class Trigger extends \Yana\Db\Ddl\AbstractUnnamedObject
      *
      * @return  bool
      */
-    public function isUpdate()
+    public function isUpdate(): bool
     {
         return !empty($this->update);
     }
@@ -328,7 +325,7 @@ class Trigger extends \Yana\Db\Ddl\AbstractUnnamedObject
      *
      * @return  bool
      */
-    public function isDelete()
+    public function isDelete(): bool
     {
         return !empty($this->delete);
     }
@@ -343,12 +340,11 @@ class Trigger extends \Yana\Db\Ddl\AbstractUnnamedObject
      * The API will create seperate triggers for each event in that case.
      *
      * @param   bool  $isInsert  true: fire on insert, false: ignore insert
-     * @return  \Yana\Db\Ddl\Trigger
+     * @return  $this
      */
-    public function setInsert($isInsert = true)
+    public function setInsert(bool $isInsert = true)
     {
-        assert(is_bool($isInsert), 'Wrong type for argument 1. Boolean expected');
-        $this->insert = (bool) $isInsert;
+        $this->insert = $isInsert;
         return $this;
     }
 
@@ -362,12 +358,11 @@ class Trigger extends \Yana\Db\Ddl\AbstractUnnamedObject
      * The API will create seperate triggers for each event in that case.
      *
      * @param   bool  $isUpdate  true: fire on update, false: ignore update
-     * @return  \Yana\Db\Ddl\Trigger
+     * @return  $this
      */
-    public function setUpdate($isUpdate = true)
+    public function setUpdate(bool $isUpdate = true)
     {
-        assert(is_bool($isUpdate), 'Wrong type for argument 1. Boolean expected');
-        $this->update = (bool) $isUpdate;
+        $this->update = $isUpdate;
         return $this;
     }
 
@@ -381,12 +376,11 @@ class Trigger extends \Yana\Db\Ddl\AbstractUnnamedObject
      * The API will create seperate triggers for each event in that case.
      *
      * @param   bool  $isDelete  true: fire on delete, false: ignore delete
-     * @return  \Yana\Db\Ddl\Trigger
+     * @return  $this
      */
-    public function setDelete($isDelete = true)
+    public function setDelete(bool $isDelete = true)
     {
-        assert(is_bool($isDelete), 'Wrong type for argument 1. Boolean expected');
-        $this->delete = (bool) $isDelete;
+        $this->delete = $isDelete;
         return $this;
     }
 
@@ -397,7 +391,7 @@ class Trigger extends \Yana\Db\Ddl\AbstractUnnamedObject
      *
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed             $parent  parent node (if any)
-     * @return  \Yana\Db\Ddl\Trigger
+     * @return  $this
      */
     public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)
     {

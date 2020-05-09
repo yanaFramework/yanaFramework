@@ -60,7 +60,7 @@ class XmlDataProviderTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Translations\MetaData\MyXmlDataProvider(__DIR__);
+        $this->object = new \Yana\Translations\MetaData\MyXmlDataProvider(new \Yana\Files\Dir(__DIR__));
     }
 
     /**

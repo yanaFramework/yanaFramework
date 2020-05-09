@@ -173,13 +173,12 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
      * @param   string  $description  new value of this property
      * @return  \Yana\Db\Ddl\Sequence
      */
-    public function setDescription($description)
+    public function setDescription(string $description)
     {
-        assert(is_string($description), 'Wrong type for argument 1. String expected');
-        if (empty($description)) {
+        if ($description === "") {
             $this->description = null;
         } else {
-            $this->description = "$description";
+            $this->description = $description;
         }
         return $this;
     }

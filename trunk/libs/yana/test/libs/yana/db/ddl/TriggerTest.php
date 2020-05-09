@@ -71,7 +71,7 @@ class TriggerTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetDBMS()
     {
-        $this->assertSame("generic", $this->object->getDBMS());
+        $this->assertSame(\Yana\Db\DriverEnumeration::GENERIC, $this->object->getDBMS());
     }
 
     /**

@@ -90,7 +90,7 @@ class IndexColumn extends \Yana\Db\Ddl\AbstractNamedObject
      * @name    \Yana\Db\Ddl\IndexColumn::isAscendingOrder()
      * @see     \Yana\Db\Ddl\IndexColumn::isDescendingOrder()
      */
-    public function isAscendingOrder()
+    public function isAscendingOrder(): bool
     {
         return (bool) $this->isAscending;
     }
@@ -106,7 +106,7 @@ class IndexColumn extends \Yana\Db\Ddl\AbstractNamedObject
      * @name    \Yana\Db\Ddl\IndexColumn::isDescendingOrder()
      * @see     \Yana\Db\Ddl\IndexColumn::isAscendingOrder()
      */
-    public function isDescendingOrder()
+    public function isDescendingOrder(): bool
     {
         return ! (bool) $this->isAscending;
     }
@@ -122,12 +122,11 @@ class IndexColumn extends \Yana\Db\Ddl\AbstractNamedObject
      * @param   bool  $isAscending  true: sort ascending, false: sort descending
      * @name    \Yana\Db\Ddl\IndexColumn::isDescendingOrder()
      * @see     \Yana\Db\Ddl\IndexColumn::isAscendingOrder()
-     * @return  \Yana\Db\Ddl\Index
+     * @return  $this
      */
-    public function setSorting($isAscending = true)
+    public function setSorting(bool $isAscending = true)
     {
-        assert(is_bool($isAscending), 'Wrong type for argument 1. Boolean expected');
-        $this->isAscending = (bool) $isAscending;
+        $this->isAscending = $isAscending;
         return $this;
     }
 
@@ -156,11 +155,11 @@ class IndexColumn extends \Yana\Db\Ddl\AbstractNamedObject
      * So you are best adviced to check in detail if you really need a full-text
      * index or not.
      *
-     * @return  int
+     * @return  int|NULL
      * @name    \Yana\Db\Ddl\IndexColumn::getLength()
      * @see     \Yana\Db\Ddl\IndexColumn::setLength()
      */
-    public function getLength()
+    public function getLength(): ?int
     {
         if (is_int($this->length)) {
             return $this->length;
@@ -177,12 +176,11 @@ class IndexColumn extends \Yana\Db\Ddl\AbstractNamedObject
      * @param   int  $length    maximum length of index values
      * @name    \Yana\Db\Ddl\IndexColumn::setLength()
      * @see     \Yana\Db\Ddl\IndexColumn::getLength()
-     * @return  \Yana\Db\Ddl\Index
+     * @return  $this
      */
-    public function setLength($length)
+    public function setLength(int $length)
     {
-        assert(is_int($length), 'Wrong type for argument 1. Integer expected');
-        if (empty($length)) {
+        if ($length === 0) {
             $this->length = null;
         } else {
             $this->length = $length;
@@ -211,8 +209,8 @@ class IndexColumn extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed              $parent  parent node (if any)
-     * @return  \Yana\Db\Ddl\IndexColumn
-     * @throws   \Yana\Core\Exceptions\InvalidArgumentException  when the name attribute is missing
+     * @return  $thisColumn
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the name attribute is missing
      */
     public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)
     {
