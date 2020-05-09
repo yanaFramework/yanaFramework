@@ -234,10 +234,10 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
         foreach ($data as &$event)
         {
             if (!empty($event['start'])) {
-                $event['start'] = date('Y-m-d H:i:s', (int) $event['start']);
+                $event['start'] = date('Y-m-d H:i:s', (int) (is_float($event['start']) ? $event['start'] / 1000 : $event['start']));
             }
             if (!empty($event['end'])) {
-                $event['end'] = date('Y-m-d H:i:s', (int) $event['end']);
+                $event['end'] = date('Y-m-d H:i:s', (int) (is_float($event['end']) ? $event['end'] / 1000 : $event['end']));
             }
         }
         return $data;

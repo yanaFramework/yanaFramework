@@ -59,11 +59,6 @@
     </frequency>
     <days>
         <day>
-            <name>{lang id="day_names.sunday"}</name>
-            <short>{lang id="short_day_names.sunday"}</short>
-            <default>SU</default>
-        </day>
-        <day>
             <name>{lang id="day_names.monday"}</name>
             <short>{lang id="short_day_names.monday"}</short>
             <default>MO</default>
@@ -92,6 +87,11 @@
             <name>{lang id="day_names.saturday"}</name>
             <short>{lang id="short_day_names.saturday"}</short>
             <default>SA</default>
+        </day>
+        <day>
+            <name>{lang id="day_names.sunday"}</name>
+            <short>{lang id="short_day_names.sunday"}</short>
+            <default>SU</default>
         </day>
     </days>
     <months>
