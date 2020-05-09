@@ -56,16 +56,15 @@ class XmlDataProvider extends \Yana\Core\MetaData\XmlDataProvider implements \Ya
      * @param   string  $file  file path
      * @return  \Yana\Core\MetaData\XmlMetaData
      */
-    protected function _loadXmlByFileName($file)
+    protected function _loadXmlByFileName(string $file): \Yana\Core\MetaData\XmlMetaData
     {
-        assert(is_string($file), 'Invalid argument $file: string expected');
         return new \Yana\Views\MetaData\XmlMetaData($file, LIBXML_NOWARNING | LIBXML_NOERROR | LIBXML_NOENT, true);
     }
 
     /**
      * Create new instance of meta data class.
      *
-     * @return \Yana\Views\MetaData\SkinMetaData
+     * @return \Yana\Views\MetaData\IsSkinMetaData
      */
     protected function _createMetaData()
     {

@@ -135,7 +135,7 @@ class XmlDataProvider extends \Yana\Core\StdObject implements \Yana\Core\MetaDat
      *
      * @return  \Yana\Core\MetaData\IsPackageMetaData
      */
-    protected function _createMetaData(): \Yana\Core\MetaData\IsPackageMetaData
+    protected function _createMetaData()
     {
         return new \Yana\Core\MetaData\PackageMetaData();
     }
