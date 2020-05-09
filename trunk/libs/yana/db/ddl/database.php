@@ -361,7 +361,7 @@ class Database extends \Yana\Db\Ddl\AbstractUnnamedObject
      */
     public function addInclude(string $include)
     {
-        $this->includes[] = "$include";
+        $this->includes[] = $include;
     }
 
     /**
@@ -547,10 +547,10 @@ class Database extends \Yana\Db\Ddl\AbstractUnnamedObject
      */
     public function setTitle(string $title = "")
     {
-        if (empty($title)) {
+        if ($title === "") {
             $this->title = null;
         } else {
-            $this->title = "$title";
+            $this->title = $title;
         }
         return $this;
     }
@@ -592,10 +592,10 @@ class Database extends \Yana\Db\Ddl\AbstractUnnamedObject
      */
     public function setCharset(string $charset = "")
     {
-        if (empty($charset)) {
+        if ($charset === "") {
             $this->charset = null;
         } else {
-            $this->charset = "$charset";
+            $this->charset = $charset;
         }
         return $this;
     }
@@ -676,7 +676,7 @@ class Database extends \Yana\Db\Ddl\AbstractUnnamedObject
      */
     public function setReadonly(bool $isReadonly = false)
     {
-        $this->readonly = (bool) $isReadonly;
+        $this->readonly = $isReadonly;
         return $this;
     }
 

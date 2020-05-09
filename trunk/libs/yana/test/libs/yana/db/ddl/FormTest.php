@@ -74,6 +74,19 @@ class FormTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     */
+    public function testAddFormGetParent()
+    {
+        $database = new \Yana\Db\Ddl\Database();
+        $childForm = new \Yana\Db\Ddl\Form('form', $database);
+
+        $subForm = $childForm->addForm('subform');
+        $this->assertEquals($childForm, $subForm->getParent());
+        $this->assertEquals($database, $subForm->getDatabase());
+    }
+
+    /**
+     * @test
      * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      */
     public function test__constructInvalidArgumentException()
