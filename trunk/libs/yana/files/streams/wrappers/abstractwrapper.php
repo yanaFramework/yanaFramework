@@ -91,7 +91,8 @@ abstract class AbstractWrapper extends \Yana\Core\StdObject implements \Yana\Fil
     {
         $lowerCasedName = strtolower($name);
         if ($lowerCasedName == 'context') {
-            return $this->setResource($value);
+            $this->setResource($value);
+            return $value;
         }
         return parent::__set($name, $value);
     }

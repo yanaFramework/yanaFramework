@@ -34,6 +34,19 @@ require_once __DIR__ . '/../../../../include.php';
 
 /**
  * @package  test
+ * @ignore
+ */
+class MyQuery extends \Yana\Db\Queries\AbstractQuery
+{
+    protected function toString(): string
+    {
+        return "";
+    }
+
+}
+
+/**
+ * @package  test
  */
 class DriverTest extends \PHPUnit_Framework_TestCase
 {
@@ -179,6 +192,18 @@ class DriverTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testSendQueryObjectWithCache()
+    {
+        $connection = new \Yana\Db\FileDb\Connection($this->schema);
+        $query = new \Yana\Db\Queries\Select($connection);
+        $query->setTable('t');
+        $resultObject = $this->object->sendQueryObject($query);
+        $this->assertSame($resultObject, $this->object->sendQueryObject($query));
+    }
+
+    /**
+     * @test
+     */
     public function testSendQueryObjectCount()
     {
         $connection = new \Yana\Db\FileDb\Connection($this->schema);
@@ -193,13 +218,49 @@ class DriverTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testSendQueryObjectCountWithCache()
+    {
+        $connection = new \Yana\Db\FileDb\Connection($this->schema);
+        $query = new \Yana\Db\Queries\SelectCount($connection);
+        $query->setTable('t');
+        $resultObject = $this->object->sendQueryObject($query);
+        $this->assertSame($resultObject, $this->object->sendQueryObject($query));
+    }
+
+    /**
+     * @test
+     */
     public function testSendQueryObjectExists()
     {
         $connection = new \Yana\Db\FileDb\Connection($this->schema);
-        $selectQuery = new \Yana\Db\Queries\SelectExist($connection);
-        $selectQuery->setTable('t');
+        $query = new \Yana\Db\Queries\SelectExist($connection);
+        $query->setTable('t');
         $resultObject = new \Yana\Db\FileDb\Result(array(1));
-        $this->assertEquals($resultObject, $this->object->sendQueryObject($selectQuery));
+        $this->assertEquals($resultObject, $this->object->sendQueryObject($query));
+    }
+
+    /**
+     * @test
+     */
+    public function testSendQueryObjectExistsFalse()
+    {
+        $connection = new \Yana\Db\FileDb\Connection($this->schema);
+        $query = new \Yana\Db\Queries\SelectExist($connection);
+        $query->setTable('t')->setRow('no-such-row');
+        $resultObject = new \Yana\Db\FileDb\Result(array());
+        $this->assertEquals($resultObject, $this->object->sendQueryObject($query));
+    }
+
+    /**
+     * @test
+     */
+    public function testSendQueryObjectExistsWithCache()
+    {
+        $connection = new \Yana\Db\FileDb\Connection($this->schema);
+        $query = new \Yana\Db\Queries\SelectExist($connection);
+        $query->setTable('t');
+        $resultObject = $this->object->sendQueryObject($query);
+        $this->assertSame($resultObject, $this->object->sendQueryObject($query));
     }
 
     /**
@@ -209,9 +270,32 @@ class DriverTest extends \PHPUnit_Framework_TestCase
     public function testSendQueryObjectInsertInvalidSyntaxException()
     {
         $connection = new \Yana\Db\FileDb\Connection($this->schema);
-        $selectQuery = new \Yana\Db\Queries\Insert($connection);
-        $selectQuery->setTable('t');
-        $this->object->sendQueryObject($selectQuery);
+        $query = new \Yana\Db\Queries\Insert($connection);
+        $query->setTable('t');
+        $this->object->sendQueryObject($query);
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Db\Queries\Exceptions\InvalidPrimaryKeyException
+     */
+    public function testSendQueryObjectUpdateInvalidPrimaryKeyException()
+    {
+        $connection = new \Yana\Db\FileDb\Connection($this->schema);
+        $query = new \Yana\Db\Queries\Update($connection);
+        $query->setTable('t');
+        $this->object->sendQueryObject($query);
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Db\Queries\Exceptions\NotSupportedException
+     */
+    public function testSendQueryObjectNotSupportedException()
+    {
+        $connection = new \Yana\Db\FileDb\Connection($this->schema);
+        $query = new \Yana\Db\FileDb\MyQuery($connection);
+        $this->object->sendQueryObject($query);
     }
 
     /**

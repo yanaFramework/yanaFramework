@@ -590,24 +590,26 @@ abstract class AbstractQuery extends \Yana\Db\Queries\AbstractConnectionWrapper 
          * the parent table is does not have itself as one of its descendants.
          */
         $primaryKey = mb_strtoupper((string) $table->getPrimaryKey());
-        $primaryKeyColumn = $table->getColumn($primaryKey);
-        assert($primaryKeyColumn instanceof \Yana\Db\Ddl\Column, 'Misspelled primary key column: ' . $primaryKey);
-        while ($primaryKeyColumn->isForeignKey())
-        {
-            $fTableKey = mb_strtoupper($table->getTableByForeignKey($primaryKey));
-            // detect circular reference (when table is already in parent list)
-            if (in_array($fTableKey, $parents)) {
-                break;
-            }
-
-            $foreignTable = $dbSchema->getTable($fTableKey);
-            assert($foreignTable instanceof \Yana\Db\Ddl\Table, 'Misspelled foreign key in table: ' . $tableName);
-            $foreignKey = mb_strtoupper($foreignTable->getPrimaryKey());
-            $this->setJoin($fTableKey, $foreignKey, $tableName, $primaryKey);
-            $this->_setParentTable($table, $foreignTable);
-            $table = $foreignTable;
-            $primaryKey = $foreignKey;
+        if ($primaryKey !== "") {
             $primaryKeyColumn = $table->getColumn($primaryKey);
+            assert($primaryKeyColumn instanceof \Yana\Db\Ddl\Column, 'Misspelled primary key column: ' . $primaryKey);
+            while ($primaryKeyColumn->isForeignKey())
+            {
+                $fTableKey = mb_strtoupper($table->getTableByForeignKey($primaryKey));
+                // detect circular reference (when table is already in parent list)
+                if (in_array($fTableKey, $parents)) {
+                    break;
+                }
+
+                $foreignTable = $dbSchema->getTable($fTableKey);
+                assert($foreignTable instanceof \Yana\Db\Ddl\Table, 'Misspelled foreign key in table: ' . $tableName);
+                $foreignKey = mb_strtoupper($foreignTable->getPrimaryKey());
+                $this->setJoin($fTableKey, $foreignKey, $tableName, $primaryKey);
+                $this->_setParentTable($table, $foreignTable);
+                $table = $foreignTable;
+                $primaryKey = $foreignKey;
+                $primaryKeyColumn = $table->getColumn($primaryKey);
+            }
         }
         return $this;
     }

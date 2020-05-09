@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Db\FileDb;
 
@@ -63,6 +64,11 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
      * @var string
      */
     private static $_baseDir = null;
+ 
+    /**
+     * @var \Yana\Db\FileDb\Helpers\WhereClauseHelper
+     */
+    private $_whereClauseHelper = null;
 
     /**
      * <<constructor>> Initialize query parser.
@@ -71,12 +77,6 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
      */
     public function __construct(\Yana\Db\Queries\IsParser $parser)
     {
-        // @codeCoverageIgnoreStart
-        if (!isset(self::$_baseDir)) {
-            // if no directory given load default directory from config
-            self::setBaseDirectory(\Yana\Db\Ddl\DDL::getDirectory());
-        }
-        // @codeCoverageIgnoreEnd
         $this->_setSqlParser($parser);
 
         $this->_setSchema($parser->getSchema());
@@ -84,21 +84,33 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
         assert($databaseName > "", 'database name must not be empty');
         $this->_setDatabaseName($databaseName);
 
-        if (!is_dir(self::$_baseDir . $this->_getDatabaseName())) {
+        if (!is_dir(self::getBaseDirectory() . $this->_getDatabaseName())) {
             // @codeCoverageIgnoreStart
-            mkdir(self::$_baseDir . $this->_getDatabaseName());
-            chmod(self::$_baseDir . $this->_getDatabaseName(), 0700);
+            mkdir(self::getBaseDirectory() . $this->_getDatabaseName());
+            chmod(self::getBaseDirectory() . $this->_getDatabaseName(), 0700);
             // @codeCoverageIgnoreEnd
         }
         $this->rollback();
     }
 
     /**
+     * Create and return helper object.
+     *
+     * @return  \Yana\Db\FileDb\Helpers\WhereClauseHelper
+     */
+    protected function _getWhereClauseHelper(): \Yana\Db\FileDb\Helpers\WhereClauseHelper
+    {
+        if (!isset($this->_whereClauseHelper)) {
+            $this->_whereClauseHelper = new \Yana\Db\FileDb\Helpers\WhereClauseHelper($this->_getSchema(), $this->_getTable());
+        }
+        return $this->_whereClauseHelper;
+    }
+    /**
      * Returns SQL parser.
      *
      * @return  \Yana\Db\Queries\IsParser
      */
-    protected function _getSqlParser()
+    protected function _getSqlParser(): \Yana\Db\Queries\IsParser
     {
         return $this->_sqlParser;
     }
@@ -107,7 +119,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
      * Inject SQL parser.
      *
      * @param   \Yana\Db\Queries\IsParser  $parser  to handle SQL statements
-     * @return  self
+     * @return  $this
      */
     protected function _setSqlParser(\Yana\Db\Queries\IsParser $parser)
     {
@@ -123,20 +135,27 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
      * @param  string  $directory  new base directory
      * @ignore
      */
-    public static function setBaseDirectory($directory)
+    public static function setBaseDirectory(string $directory)
     {
         assert(is_dir($directory), 'Wrong type for argument 1. Directory expected');
-        self::$_baseDir = "$directory";
+        self::$_baseDir = $directory;
     }
 
     /**
      * Get directory where database files are to be stored.
      *
+     * If no directory was given, this will load the default directory from DDL config.
+     *
      * @return  string
      * @ignore
      */
-    public static function getBaseDirectory()
+    public static function getBaseDirectory(): string
     {
+        if (!isset(self::$_baseDir)) {
+            // @codeCoverageIgnoreStart
+            self::$_baseDir = \Yana\Db\Ddl\DDL::getDirectory();
+            // @codeCoverageIgnoreEnd
+        }
         return self::$_baseDir;
     }
 
@@ -399,7 +418,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
                                 if (!isset($_row[$targetColumn])) {
                                     continue;
                                 }
-                                if (strcasecmp($_row[$targetColumn], $row[$sourceColumn]) === 0) {
+                                if (strcasecmp((string) $_row[$targetColumn], (string) $row[$sourceColumn]) === 0) {
                                     $isMatch = true;
                                     break;
                                 }
@@ -536,7 +555,8 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
             if (!empty($having)) {
                 $this->_doHaving($result, $having);
             }
-            $this->_doLimit($result, $offset, $limit);
+            $limitHelper = new \Yana\Db\FileDb\Helpers\ResultLimitHelper($result);
+            $result = $limitHelper($offset, $limit);
         } // end if
         $result = new \Yana\Db\FileDb\Result($result);
         /*
@@ -654,7 +674,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
         $this->_setSortColumns($query->getOrderBy());
         $this->_setDescendingSortColumns($query->getDescending());
 
-        $row = mb_strtoupper($query->getRow());
+        $row = mb_strtoupper((string) $query->getRow());
         if ($row === '*') {
             $message = "Cannot update entry. No primary key provided.";
             throw new \Yana\Db\Queries\Exceptions\InvalidPrimaryKeyException($message);
@@ -668,7 +688,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
 
         /* update cell */
         if ($query->getExpectedResult() === \Yana\Db\ResultEnumeration::CELL) {
-            $column = mb_strtoupper($query->getColumn());
+            $column = mb_strtoupper((string) $query->getColumn());
             if ($column === '*') {
                 $message = "Syntax error. No column name provided in update statement.";
                 throw new \Yana\Db\Queries\Exceptions\InvalidSyntaxException($message);
@@ -682,7 +702,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
         }
 
         assert(!isset($primaryKey), 'Cannot redeclare var $primaryKey');
-        $primaryKey = mb_strtoupper($this->_getTable()->getPrimaryKey());
+        $primaryKey = mb_strtoupper((string) $this->_getTable()->getPrimaryKey());
 
         /* get reference to Index file */
         assert(!isset($idxfile), 'Cannot redeclare var $idxfile');
@@ -692,7 +712,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
         assert(!isset($column), 'Cannot redeclare var $column');
         foreach ($this->_getTable()->getColumns() as $column)
         {
-            $columnName = mb_strtoupper($column->getName());
+            $columnName = mb_strtoupper((string) $column->getName());
             if (isset($set[$columnName])) {
                 /*
                  * check unique constraint
@@ -724,7 +744,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
                     /*
                      * error - constraint is breached
                      */
-                    if (!empty($tmp) && strcasecmp($tmp, $row) !== 0) {
+                    if (!empty($tmp) && strcasecmp((string) $tmp, (string) $row) !== 0) {
                         $message = "Cannot update entry with column {$columnName}" .
                                 "= " . $set[$columnName] . ". The column has an unique constraint " .
                                 "and another entry with the same value already exists.";
@@ -740,7 +760,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
         $smlfile = $this->_getSmlFile();
 
         /* if primary key is renamed, the old one has to be replaced */
-        if (isset($set[$primaryKey]) && strcasecmp($row, $set[$primaryKey]) !== 0) { // updating primary key
+        if (isset($set[$primaryKey]) && strcasecmp((string) $row, (string) $set[$primaryKey]) !== 0) { // updating primary key
             $smlfile->remove("$primaryKey.$row"); // remove old row
             $row = mb_strtoupper((string) $set[$primaryKey]);
             unset($set[$primaryKey]);
@@ -813,7 +833,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
         }
 
         assert(!isset($primaryKey), 'Cannot redeclare var $primaryKey');
-        $primaryKey = mb_strtoupper($this->_getTable()->getPrimaryKey());
+        $primaryKey = mb_strtoupper((string) $this->_getTable()->getPrimaryKey());
 
         if ($this->_getTable()->getColumn($primaryKey)->isAutoIncrement()) {
             $this->_increment($set);
@@ -839,7 +859,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
         assert(!isset($columnName), 'Cannot redeclare var $columnName');
         foreach ($this->_getTable()->getColumns() as $column)
         {
-            $columnName = mb_strtoupper($column->getName());
+            $columnName = mb_strtoupper((string) $column->getName());
             if (isset($set[$columnName])) {
                 /*
                  * check unique constraint
@@ -918,7 +938,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
         }
 
         assert(!isset($primaryKey), 'Cannot redeclare var $primaryKey');
-        $primaryKey = mb_strtoupper($this->_getTable()->getPrimaryKey());
+        $primaryKey = mb_strtoupper((string) $this->_getTable()->getPrimaryKey());
         assert(!isset($row), 'Cannot redeclare var $row');
         foreach ($rows as $row)
         {
@@ -1011,12 +1031,11 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
      * Returns bool(true) on success and bool(false) on error.
      *
      * @param   string  $tableName  table name
-     * @return  \Yana\Db\FileDb\Driver
+     * @return  $this
      * @throws  \Yana\Db\Queries\Exceptions\TableNotFoundException  if selected table does not exist
      */
-    private function _select($tableName)
+    private function _select(string $tableName)
     {
-        assert(is_string($tableName), 'Wrong type for argument 1. String expected');
         assert(!empty($tableName), 'Wrong type for argument 1. String must not be empty');
         $tableName = mb_strtolower(trim("$tableName"));
 
@@ -1072,7 +1091,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
      * @return  string
      * @throws  \Yana\Core\Exceptions\NotFoundException
      */
-    private function _getSourceDatabaseNameForTable(\Yana\Db\Ddl\Table $table)
+    private function _getSourceDatabaseNameForTable(\Yana\Db\Ddl\Table $table): string
     {
         assert(!isset($parent), 'Cannot redeclare $parent');
         $parent = $table->getParent();
@@ -1116,7 +1135,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
         /*
          * 2) simulate auto-increment
          */
-        $primaryKey = \mb_strtoupper($this->_getTable()->getPrimaryKey());
+        $primaryKey = \mb_strtoupper((string) $this->_getTable()->getPrimaryKey());
         if (empty($set[$primaryKey])) {
             $index = $this->_getAutoIncrement()->getNextValue();
             $set[$primaryKey] = $index;
@@ -1141,7 +1160,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
             /*
              * note: the first index is the primary key - NOT the table name
              */
-            return $smlfile->length($this->_getTable()->getPrimaryKey());
+            return $smlfile->length((string) $this->_getTable()->getPrimaryKey());
         } else {
             $result = $this->_get(array(), $where);
             return count($result);
@@ -1158,15 +1177,10 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
      * @param   int    $limit       limit
      * @return  array
      */
-    private function _get(array $columns = array(), array $where = array(), array $having = array(), $offset = 0, $limit = 0)
+    private function _get(array $columns = array(), array $where = array(), array $having = array(), int $offset = 0, int $limit = 0): array
     {
-        assert(is_int($offset), 'Wrong type for argument 3. Integer expected');
-        assert(is_int($limit), 'Wrong type for argument 4. Integer expected');
         assert($offset >= 0, 'Invalid argument 3. Must be a positive integer');
         assert($limit >= 0, 'Invalid argument 4. Must be a positive integer');
-
-        $limit = (int) $limit;
-        $offset = (int) $offset;
 
         // if table does not exist, then there is nothing to get
         if (!isset($this->_src[$this->_getDatabaseName()][$this->_getTableName()])) {
@@ -1176,7 +1190,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
         // initialize vars
         $result     = array();
         $smlfile    = $this->_getSmlFile();
-        $primaryKey = mb_strtoupper($this->_getTable()->getPrimaryKey($this->_getTableName()));
+        $primaryKey = mb_strtoupper((string) $this->_getTable()->getPrimaryKey($this->_getTableName()));
         $data       = $smlfile->getVar($primaryKey);
 
         // if the target table is empty ...
@@ -1214,7 +1228,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
                 continue;
             }
             // implements the resultset
-            if ($this->_doWhere($current, $where) === true) {
+            if ($this->_getWhereClauseHelper()->__invoke($current, $where) === true) {
                 $this->_buildResultset($result, $columns, $current, array(), $doCollapse);
             }
         } // end foreach
@@ -1226,7 +1240,8 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
         }
 
         // 4) limit results
-        $this->_doLimit($result, $offset, $limit);
+        $limitHelper = new \Yana\Db\FileDb\Helpers\ResultLimitHelper($result);
+        $result = $limitHelper($offset, $limit);
 
         // 5) return resultset
         return $result;
@@ -1243,7 +1258,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
      * @param   array  $joinedRow   joined row-set
      * @param   bool   $collapse    should duplicate entries be collapsed to a single row?
      */
-    private function _buildResultset(array &$result, $columns, array $rowSet, array $joinedRow, $collapse)
+    private function _buildResultset(array &$result, array $columns, array $rowSet, array $joinedRow, bool $collapse)
     {
         if (empty($columns)) {
             $result[] = \Yana\Util\Hashtable::merge($joinedRow, $rowSet);
@@ -1370,26 +1385,6 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
     }
 
     /**
-     * limits and offsets
-     *
-     * @param  array  &$result  result
-     * @param  int    $offset   offset
-     * @param  int    $limit    limit
-     */
-    private function _doLimit(array &$result, $offset, $limit)
-    {
-        if ($limit > 0 || $offset > 0) {
-            if ($limit <= 0) {
-                $limit = count($result);
-            }
-            if ($offset < 0) {
-                $offset = 0;
-            }
-            $result = array_slice($result, $offset, $limit);
-        }
-    }
-
-    /**
      * Commit transaction.
      *
      * @param   bool  $commit on / off
@@ -1449,18 +1444,13 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
      * @param   bool    $isLeftJoin  is left join
      * @return  array
      */
-    private function _join($tableA, $tableB, $columnA, $columnB, array $columns, array $where, $isLeftJoin)
+    private function _join(string $tableA, string $tableB, string $columnA, string $columnB, array $columns, array $where, bool $isLeftJoin): array
     {
-        assert(is_string($tableA), 'Wrong argument type for argument 1. String expected.');
-        assert(is_string($tableB), 'Wrong argument type for argument 2. String expected.');
-        assert(is_string($columnA), 'Wrong argument type for argument 3. String expected.');
-        assert(is_string($columnB), 'Wrong argument type for argument 4. String expected.');
-
         /* prepare input */
-        $tableA  = mb_strtoupper("$tableA");
-        $columnA = mb_strtoupper("$columnA");
-        $tableB  = mb_strtoupper("$tableB");
-        $columnB = mb_strtoupper("$columnB");
+        $tableA  = mb_strtoupper($tableA);
+        $columnA = mb_strtoupper($columnA);
+        $tableB  = mb_strtoupper($tableB);
+        $columnB = mb_strtoupper($columnB);
 
         /* the following implements the productive process */
 
@@ -1470,7 +1460,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
             $tableADef = $this->_getSchema()->getTable($tableA);
             $columnADef = $tableADef->getColumn($columnA);
             $aIsPk = $columnADef->isPrimaryKey();
-            $pkA = mb_strtoupper($tableADef->getPrimaryKey());
+            $pkA = mb_strtoupper((string) $tableADef->getPrimaryKey());
         } catch (\Yana\Core\Exceptions\NotFoundException $e) {
             return array();
         }
@@ -1486,7 +1476,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
             $tableBDef = $this->_getSchema()->getTable($tableB);
             $columnBDef = $tableBDef->getColumn($columnB);
             $bIsPk = $columnBDef->isPrimaryKey();
-            $pkB = mb_strtoupper($tableBDef->getPrimaryKey());
+            $pkB = mb_strtoupper((string) $tableBDef->getPrimaryKey());
         } catch (\Yana\Core\Exceptions\NotFoundException $e) {
             return array();
         }
@@ -1511,10 +1501,6 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
         }
         if ($columnBDef->hasIndex()) {
             $indexB =& $this->_idx[$this->_getDatabaseName()][$this->_getTableName()];
-        }
-
-        if (empty($columns)) {
-            $columns = null;
         }
 
         /* $columnA must be foreign key */
@@ -1612,7 +1598,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
                 $joinedValueExists = false;
                 foreach ($cursorB as $idB => $rowB)
                 {
-                    if (isset($rowB[$columnB]) && strcmp($rowB[$columnB], $row[$columnA]) === 0) {
+                    if (isset($rowB[$columnB]) && strcmp((string) $rowB[$columnB], (string) $row[$columnA]) === 0) {
                         $joinedValueExists = true;
                         $row[$pkB]         = $idB;
                         $value[]           = $rowB;
@@ -1639,7 +1625,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
             {
                 /* add primary key to result - otherwise it would be missing */
                 $currentValue[$pkA] = $id;
-                if ($this->_doWhere($currentValue, $where, $ignoreTable) === true) {
+                if ($this->_getWhereClauseHelper()->__invoke($currentValue, $where, $ignoreTable) === true) {
                     $this->_buildResultset($resultSet, $columns, $currentValue, $row, true);
                 }
             } // end foreach value
@@ -1666,7 +1652,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
         assert(!isset($current), 'Cannot redeclare var $current');
         foreach ($result as $i => $current)
         {
-            if ($this->_doWhere($current, $having) !== true) {
+            if ($this->_getWhereClauseHelper()->__invoke($current, $having) !== true) {
                 unset($result[$i]);
             }
         }
@@ -1674,168 +1660,11 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
     }
 
     /**
-     * Implements where-clause.
-     *
-     * Each where clause is an array of 3 entries:
-     * <ol>
-     * <li> left operand </li>
-     * <li> operator </li>
-     * <li> right operand </li>
-     * </ol>
-     *
-     * List of supported operators:
-     * <ul>
-     * <li> and, or (indicates that both operands are sub-clauses) </li>
-     * <li> =, <>, !=, <, <=, >, >=, like, regexp </li>
-     * </ul>
-     *
-     * Note that not all DBMS support the operator "regexp".
-     * Also note that this simulation uses the Perl-compatible regular
-     * expressions syntax (PCRE).
-     *
-     * Example:
-     * <code>
-     * array(
-     *     array('col1', '=', 'val1'),
-     *     'and',
-     *     array(
-     *         array('col2', '<', 1),
-     *         'or',
-     *         array('col2', '>', 3)
-     *     )
-     * )
-     * </code>
-     *
-     * The example above translates to: col1 = 'val1' and (col2 < 1 or col2 > 3).
-     *
-     * The function returns bool(true) if the where clause matches $current,
-     * returns bool(false) otherwise.
-     *
-     * @param   array               $current      dataset that is to be checked
-     * @param   array               $where        where clause (left operand, right, operand, operator)
-     * @param   \Yana\Db\Ddl\Table  $ignoreTable  used to set an overwrite for tables during outer joins
-     * @return  bool
-     */
-    private function _doWhere(array $current, array $where, \Yana\Db\Ddl\Table $ignoreTable = null)
-    {
-        if (empty($where)) {
-            return true;
-        }
-        /* if all required information is provided */
-        assert(count($where) === 3, 'Where clause must have exactly 3 items: left + right operands + operator');
-        $leftOperand = array_shift($where);
-        $operator = array_shift($where);
-        $rightOperand = array_shift($where);
-
-        /**
-         * 1) is sub-clause
-         */
-        switch ($operator)
-        {
-            case \Yana\Db\Queries\OperatorEnumeration::OR:
-                return $this->_doWhere($current, $leftOperand) || $this->_doWhere($current, $rightOperand);
-
-            case \Yana\Db\Queries\OperatorEnumeration::AND:
-                return $this->_doWhere($current, $leftOperand) && $this->_doWhere($current, $rightOperand);
-
-        }
-
-        /**
-         * 2) is singular clause
-         */
-        $table = null;
-        if (is_array($leftOperand)) { // content is: table.column
-            $tableName = array_shift($leftOperand); // get table name
-            $leftOperand = array_shift($leftOperand); // get just the column
-            $table = $this->_getSchema()->getTable($tableName);
-            assert($table instanceof \Yana\Db\Ddl\Table, 'Table not found');
-            unset($tableName);
-        } else {
-            $table = $this->_getTable();
-        }
-        if (isset($current[mb_strtoupper((string) $leftOperand)])) {
-            $value = $current[mb_strtoupper((string) $leftOperand)];
-        } elseif ($table !== $ignoreTable) {
-            $value = null;
-        } else {
-            return true; // the table is not checked - used for ON-clause during outer joins
-        }
-        /* handle non-scalar values */
-        if (!is_null($value) && !is_scalar($value)) {
-            $value = \Yana\Files\SML::encode($value);
-        }
-        /* switch by operator */
-        switch ($operator)
-        {
-            case '<>':
-                // fall through
-                $operator = \Yana\Db\Queries\OperatorEnumeration::NOT_EQUAL;
-            case \Yana\Db\Queries\OperatorEnumeration::NOT_EQUAL:
-                // fall through
-            case '==':
-            case \Yana\Db\Queries\OperatorEnumeration::EQUAL:
-                $column = $table->getColumn($leftOperand);
-                assert($column instanceof \Yana\Db\Ddl\Column, 'Column not found');
-                if (is_null($rightOperand)) {
-                    return is_null($value) xor $operator === '!=';
-                }
-                if ($column->isPrimaryKey() || $column->isForeignKey()) {
-                    return strcasecmp($value, $rightOperand) === 0 xor $operator === \Yana\Db\Queries\OperatorEnumeration::NOT_EQUAL;
-                }
-                return (strcmp($value, $rightOperand) === 0) xor $operator === \Yana\Db\Queries\OperatorEnumeration::NOT_EQUAL;
-
-            case \Yana\Db\Queries\OperatorEnumeration::NOT_LIKE:
-                $operator = \Yana\Db\Queries\OperatorEnumeration::NOT_REGEX;
-                // fall through
-            case \Yana\Db\Queries\OperatorEnumeration::LIKE:
-                $rightOperand = preg_quote($rightOperand, '/');
-                $rightOperand = str_replace('%', '.*', $rightOperand);
-                $rightOperand = str_replace('_', '.?', $rightOperand);
-                // fall through
-            case \Yana\Db\Queries\OperatorEnumeration::REGEX:
-                return preg_match('/^' . $rightOperand . '$/is', $value) === 1 xor $operator === \Yana\Db\Queries\OperatorEnumeration::NOT_REGEX;
-
-            case \Yana\Db\Queries\OperatorEnumeration::LESS:
-                return ($value < $rightOperand);
-
-            case \Yana\Db\Queries\OperatorEnumeration::GREATER:
-                return ($value > $rightOperand);
-
-            case \Yana\Db\Queries\OperatorEnumeration::LESS_OR_EQUAL:
-                return ($value <= $rightOperand);
-
-            case \Yana\Db\Queries\OperatorEnumeration::GREATER_OR_EQUAL:
-                return ($value >= $rightOperand);
-
-            case \Yana\Db\Queries\OperatorEnumeration::IN:
-                if ($rightOperand instanceof \Yana\Db\Queries\Select) {
-                    $rightOperand = $rightOperand->getResults();
-                }
-                return (bool) in_array($value, $rightOperand);
-
-            case \Yana\Db\Queries\OperatorEnumeration::NOT_IN:
-                if ($rightOperand instanceof \Yana\Db\Queries\Select) {
-                    $rightOperand = $rightOperand->getResults();
-                }
-                return !in_array($value, $rightOperand);
-
-            case \Yana\Db\Queries\OperatorEnumeration::EXISTS:
-                return ($rightOperand instanceof \Yana\Db\Queries\SelectExist) && $rightOperand->doesExist();
-
-            case \Yana\Db\Queries\OperatorEnumeration::NOT_EXISTS:
-                return ($rightOperand instanceof \Yana\Db\Queries\SelectExist) && !$rightOperand->doesExist();
-
-            default:
-                return true;
-        } // end switch
-    }
-
-    /**
      * initialize and return current index file by reference
      *
      * @return  \Yana\Db\FileDb\Index
      */
-    private function _getIndexFile()
+    private function _getIndexFile(): \Yana\Db\FileDb\Index
     {
         if (!isset($this->_idx[$this->_getDatabaseName()][$this->_getTableName()])) {
             $message = "Index-file not found for databae " . $this->_getDatabaseName() .
@@ -1850,7 +1679,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
      *
      * @param  string  $database  database name
      */
-    private function _setIndexFile($database)
+    private function _setIndexFile(string $database)
     {
         $filename = $this->_getFilename($database, 'idx');
         $smlfile = $this->_getSmlFile();
@@ -1877,7 +1706,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
      *
      * @return  \Yana\Files\SML
      */
-    private function _getSmlFile()
+    private function _getSmlFile(): \Yana\Files\SML
     {
         return $this->_src[$this->_getDatabaseName()][$this->_getTableName()];
     }
@@ -1888,7 +1717,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
      * @param   string  $database  database name
      * @throws  \Yana\Core\Exceptions\NotReadableException  when the SML source file could not be read
      */
-    private function _setSmlFile($database)
+    private function _setSmlFile(string $database)
     {
         if (!isset($this->_src[$this->_getDatabaseName()][$this->_getTableName()])) {
             $filename = $this->_getFilename($database, 'sml');
@@ -1913,10 +1742,8 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
      * @param  bool    &$isCreated  
      * @return \Yana\Files\SML
      */
-    private function _createSmlFile($filename, &$isCreated = false)
+    private function _createSmlFile(string $filename, bool &$isCreated = false)
     {
-        assert(is_string($filename), 'Invalid argument $filename: string expected');
-
         $smlfile = new \Yana\Files\SML($filename, CASE_UPPER);
         if (!$smlfile->exists()) {
             $isCreated = true;
@@ -1933,17 +1760,13 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
      * @param   string  $tableName  name of the table in lower-cased letters
      * @return  string
      */
-    private function _getFilename($database, $extension, $tableName = "")
+    private function _getFilename(string $database, string $extension, string $tableName = ""): string
     {
-        assert(is_string($database), 'Invalid argument $database: string expected');
-        assert(is_string($extension), 'Invalid argument $extension: string expected');
-        assert(is_string($tableName), 'Invalid argument $tableName: string expected');
-
         if (empty($tableName)) {
             $tableName = $this->_getTableName();
         }
 
-        return realpath(self::$_baseDir) . '/' . $database . '/' . $tableName . '.' . $extension;
+        return realpath(self::getBaseDirectory()) . '/' . $database . '/' . $tableName . '.' . $extension;
     }
 
 }
