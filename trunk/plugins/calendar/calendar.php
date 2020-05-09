@@ -330,7 +330,7 @@ class Calendar extends \Yana\Files\AbstractResource
                 }
             }
             if ($key == 'rrule' && !empty($xml->{$key})) {
-                $event['rrule'] = new \Plugins\Calendar\RecurranceRule(
+                $event['rrule'] = new \Plugins\Calendar\Recurrance(
                     $xml->uid,
                     $xml->dtstart,
                     $xml->dtend,
@@ -926,7 +926,7 @@ class Calendar extends \Yana\Files\AbstractResource
                             $until = self::_arrayToTime($until);
                         }
                         if (is_int($until)) {
-                            $until = date('Ymd\THis\Z', $until);
+                            $until = date('Ymd\THis\Z', (int) $until);
                         }
                         $repeat = 'UNTIL='.$until.';';
                     }

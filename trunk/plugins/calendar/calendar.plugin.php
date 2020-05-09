@@ -114,6 +114,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
             $_SESSION[__CLASS__]['calendar_filename'] = $this->fileIdtoPath($dataset['CALENDAR_FILENAME']);
             $path = $_SESSION[__CLASS__]['calendar_filename'];
             $calendar = new \Plugins\Calendar\Calendar($path, $this->_getPluginsFacade()->getPluginRegistry('calendar'), $id);
+            \Plugins\Calendar\Calendar::setAdditionalEventKeys(array('extends' => array('event' => array('created_by'))));
             $owner = $dataset['USER_CREATED'];
             $calendar->setOwner($owner);
             $name = $dataset['CALENDAR_NAME'];
@@ -240,10 +241,10 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
         foreach ($data as &$event)
         {
             if (!empty($event['start'])) {
-                $event['start'] = date('Y-m-d H:i:s', $event['start']);
+                $event['start'] = date('Y-m-d H:i:s', (int) $event['start']);
             }
             if (!empty($event['end'])) {
-                $event['end'] = date('Y-m-d H:i:s', $event['end']);
+                $event['end'] = date('Y-m-d H:i:s', (int) $event['end']);
             }
         }
         return $data;

@@ -259,7 +259,7 @@
             <group id="calendar_fields">
                 <trans-unit id="calendar_fields.title">
                     <source>Title</source>
-                    <target>Title</target>
+                    <target>Titel</target>
                 </trans-unit>
                 <trans-unit id="calendar_fields.date">
                     <source>date</source>
@@ -279,7 +279,7 @@
                 </trans-unit>
                 <trans-unit id="calendar_fields.created_by">
                     <source>created by</source>
-                    <target>Erstelt von</target>
+                    <target>Erstellt von</target>
                 </trans-unit>
                 <trans-unit id="calendar_fields.location">
                     <source>Location</source>

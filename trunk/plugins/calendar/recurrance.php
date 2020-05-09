@@ -20,7 +20,7 @@ namespace Plugins\Calendar;
  * @package    yana
  * @subpackage plugins
  */
-class RecurranceRule extends \Yana\Core\StdObject
+class Recurrance extends \Yana\Core\StdObject
 {
 
     /* @var  string  */ protected  $id               = null;
@@ -2341,7 +2341,7 @@ class RecurranceRule extends \Yana\Core\StdObject
                     if (is_array($monthDay) && isset($monthDay[0])) {
                         $monthDay = (int) $monthDay[0];
                     } else {
-                        continue;
+                        return array();
                     }
                     $month = $this->getMonth();
                     $result = $this->getSpecialYearResult($dateResult, $month, $monthDay, $this->isInterval(), $this->isCount(), $this->isUntil());
@@ -2376,7 +2376,7 @@ class RecurranceRule extends \Yana\Core\StdObject
                     if (is_array($monthDay) && isset($monthDay[0])) {
                         $monthDay = (int) $monthDay[0];
                     } else {
-                        continue;
+                        return array();
                     }
                     $month = $this->getMonth();
                     $dates = array();
@@ -2414,7 +2414,7 @@ class RecurranceRule extends \Yana\Core\StdObject
                     if (is_array($monthDay) && isset($monthDay[0])) {
                         $monthDay = (int) $monthDay[0];
                     } else {
-                        continue;
+                        return array();
                     }
                     $month = $this->getMonth();
                     $count = $this->getCount() - 1;
@@ -2450,7 +2450,7 @@ class RecurranceRule extends \Yana\Core\StdObject
                     if (is_array($monthDay) && isset($monthDay[0])) {
                         $monthDay = (int) $monthDay[0];
                     } else {
-                        continue;
+                        return array();
                     }
                     $month = $this->getMonth();                    
                     $dates = array();
@@ -2486,7 +2486,7 @@ class RecurranceRule extends \Yana\Core\StdObject
                     if (is_array($monthDay) && isset($monthDay[0])) {
                         $monthDay = (int) $monthDay[0];
                     } else {
-                        continue;
+                        return array();
                     }
                     $month = $this->getMonth();
                     $dates = array();
