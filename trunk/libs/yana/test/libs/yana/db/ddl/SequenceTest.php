@@ -43,6 +43,11 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
+     * @var \Yana\Db\Ddl\Database
+     */
+    protected $parent;
+
+    /**
      * @var \Yana\Db\Ddl\Sequence
      */
     protected $object;
@@ -53,7 +58,8 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Db\Ddl\Sequence('sequence');
+        $this->parent = new \Yana\Db\Ddl\Database();
+        $this->object = new \Yana\Db\Ddl\Sequence('sequence', $this->parent);
     }
 
     /**
@@ -68,148 +74,213 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testDescription()
+    public function testGetParent()
     {
-        $this->object->setDescription('description');
-        $result = $this->object->getDescription();
-        $this->assertEquals('description', $result, 'expected value is "description"  - the values should be equal');
-
-        $this->object->setDescription('');
-        $result = $this->object->getDescription();
-        $this->assertNull($result, 'the description is expected null');
+        $this->assertSame($this->parent, $this->object->getParent());
     }
 
     /**
-     * Cycle
-     *
      * @test
      */
-    public function testCycle()
+    public function testGetDescription()
     {
-       // DDL Sequence
-       $this->object->setCycle(true);
-       $result = $this->object->isCycle();
-       $this->assertTrue($result, 'assert failed, \Yana\Db\Ddl\Sequence : expected true - setCycle was set with true');
-
-       $this->object->setCycle(false);
-       $result = $this->object->isCycle();
-       $this->assertFalse($result, 'assert failed, \Yana\Db\Ddl\Sequence : expected false - setCycle was set with false');
+        $this->assertNull($this->object->getDescription());
     }
 
     /**
-     * Start
-     *
+     * @test
+     */
+    public function testSetDescription()
+    {
+        $this->assertSame(__FUNCTION__, $this->object->setDescription(__FUNCTION__)->getDescription());
+        $this->assertNull($this->object->setDescription('')->getDescription());
+    }
+
+    /**
+     * @test
+     */
+    public function testIsCycle()
+    {
+       $this->assertFalse($this->object->isCycle());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetCycle()
+    {
+       $this->assertTrue($this->object->setCycle(true)->isCycle());
+       $this->assertFalse($this->object->setCycle(false)->isCycle());
+       $this->assertTrue($this->object->setCycle(true)->isCycle());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetStart()
+    {
+        $this->assertNull($this->object->getStart());
+    }
+
+    /**
      * @test
      */
     public function testStart()
     {
+        $this->assertSame(1, $this->object->setStart(1)->getStart());
+        $this->assertNull($this->object->setStart(0)->getStart());
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
+     */
+    public function testSetStartInvalidArgument()
+    {
+        $this->object->setMin(2);
         $this->object->setStart(1);
-        $get = $this->object->getStart();
-        $this->assertEquals(1, $get, 'assert failed, \Yana\Db\Ddl\Sequence : expected "1" as number');
-
-        $this->object->setStart(0);
-        $get = $this->object->getStart();
-        $this->assertNull($get, 'assert failed, \Yana\Db\Ddl\Sequence : expected null, start is not set');
     }
 
     /**
-     * Start
-     *
+     * @test
      * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
-     * @test
      */
-    public function testSetStartInvalidArgument1()
+    public function testSetStartInvalidArgument2()
     {
-        $this->object->setMin(6);
-        $this->object->setStart(5);
+        $this->object->setMax(1);
+        $this->object->setStart(2);
     }
 
     /**
-     * Increment
-     *
      * @test
      */
-    public function testIncrement()
+    public function testGetIncrement()
     {
-
-        $get = $this->object->getIncrement();
-        $this->assertEquals(1, $get, 'if not defined otherwise, Sequenz should iterate with 1-Steps');
-
-        $this->object->setIncrement(2);
-        $get = $this->object->getIncrement();
-        $this->assertEquals(2, $get, 'assert failed, \Yana\Db\Ddl\Sequence : the values should be equal');
-
-        try {
-            $this->object->setIncrement(0);
-            $this->fail("Increment value may not be set to '0'.");
-        } catch (\Yana\Core\Exceptions\InvalidArgumentException $e) {
-            // success
-        }
+        $this->assertEquals(1, $this->object->getIncrement());
     }
 
     /**
-     * Increment
-     *
+     * @test
+     */
+    public function testSetIncrement()
+    {
+        $this->assertEquals(2, $this->object->setIncrement(2)->getIncrement());
+
+    }
+
+    /**
+     * @test
      * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
-     * @test
      */
-    function testSetIncrementInvalidArgument()
+    public function testSetIncrementInvalidArgumentException()
     {
-         $this->object->setIncrement(0);
+        $this->object->setIncrement(0);
     }
 
     /**
-     * Min
-     *
      * @test
      */
-    public function testMin()
+    public function testGetMin()
     {
-        $this->object->setMin();
-        $get = $this->object->getMin();
-        $this->assertEquals(null, $get, 'setMin() without arguments should reset the property.');
-
-        $this->object->setMin(1);
-        $get = $this->object->getMin();
-        $this->assertEquals(1, $get, 'getMin() should return the same value as previously set by setMin().');
-
-        $this->object->setStart(2);
-        $this->object->setMin(2); // should succeed
-        $get = $this->object->getMin();
-        $this->assertEquals(2, $get, 'setMin() to lower boundary must succeed.');
-        try {
-            $this->object->setMin(3);
-            $this->fail("Should not be able to set minimum higher than start value.");
-        } catch (\Yana\Core\Exceptions\InvalidArgumentException $e) {
-            // success
-        }
+        $this->assertNull($this->object->getMin());
     }
 
     /**
-     * Max
-     *
      * @test
      */
-    public function testMax()
+    public function testSetMin()
     {
-        $this->object->setMax();
-        $get = $this->object->getMax();
-        $this->assertEquals(null, $get, 'setMax() without arguments should reset the property.');
+        $this->assertSame(1, $this->object->setMin(1)->getMin());
+        $this->assertSame(0, $this->object->setMin(0)->getMin());
+        $this->assertNull($this->object->setMin()->getMin());
+    }
 
-        $this->object->setMax(3);
-        $get = $this->object->getMax();
-        $this->assertEquals(3, $get, 'getMax() should return the same value as previously set by setMax().');
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
+     */
+    public function testSetMinInvalidArgumentException()
+    {
+        $this->object->setMax(1)->setMin(2);
+    }
 
-        $this->object->setStart(2);
-        $this->object->setMax(2); // should succeed
-        $get = $this->object->getMax();
-        $this->assertEquals(2, $get, 'setMax() to lower boundary must succeed.');
-        try {
-            $this->object->setMax(1);
-            $this->fail("Should not be able to set maximum lower than start value.");
-        } catch (\Yana\Core\Exceptions\InvalidArgumentException $e) {
-            // success
-        }
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
+     */
+    public function testSetMinInvalidArgumentException2()
+    {
+        $this->object->setStart(1)->setMin(2);
+    }
+
+    /**
+     * @test
+     */
+    public function testGetMax()
+    {
+        $this->assertNull($this->object->getMax());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetMax()
+    {
+        $this->assertSame(1, $this->object->setMax(1)->getMax());
+        $this->assertNull($this->object->setMax()->getMax());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetMax2()
+    {
+        $this->assertSame(2, $this->object->setStart(2)->setMax(2)->getMax());
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
+     */
+    public function testSetMaxInvalidArgumentException()
+{
+        $this->object->setStart(2)->setMax(1);
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
+     */
+    public function testUnserializeFromXDDLInvalidArgumentException()
+    {
+        $data = "<sequence/>";
+        \Yana\Db\Ddl\Sequence::unserializeFromXDDL(new \SimpleXMLElement($data));
+    }
+
+    /**
+     * @test
+     */
+    public function testUnserializeFromXDDL()
+    {
+        $data = '<sequence name="Test"/>';
+        $this->object = \Yana\Db\Ddl\Sequence::unserializeFromXDDL(new \SimpleXMLElement($data));
+        $this->assertSame('test', $this->object->getName());
+        $this->assertSame(1, $this->object->getIncrement());
+    }
+
+    /**
+     * @test
+     */
+    public function testUnserializeFromXDDLWithArguments()
+    {
+        $data = '<sequence name="Test" min="1" start="2" max="3" increment="4" cycle="yes"/>';
+        $this->object = \Yana\Db\Ddl\Sequence::unserializeFromXDDL(new \SimpleXMLElement($data));
+        $this->assertSame('test', $this->object->getName());
+        $this->assertSame(1, $this->object->getMin());
+        $this->assertSame(2, $this->object->getStart());
+        $this->assertSame(3, $this->object->getMax());
+        $this->assertSame(4, $this->object->getIncrement());
+        $this->assertTrue($this->object->isCycle());
     }
 
 }

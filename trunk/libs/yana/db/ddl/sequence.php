@@ -154,9 +154,9 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
      *
      * The description is used for your documentation purposes only.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         if (is_string($this->description)) {
             return $this->description;
@@ -171,7 +171,7 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
      * The description is used for your documentation purposes only.
      *
      * @param   string  $description  new value of this property
-     * @return  \Yana\Db\Ddl\Sequence
+     * @return  $this
      */
     public function setDescription(string $description)
     {
@@ -191,9 +191,9 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
      * The value defaults to the minimal value for ascending sequences and to the maximal value for
      * descending sequences.
      *
-     * @return  int
+     * @return  int|NULL
      */
-    public function getStart()
+    public function getStart(): ?int
     {
         if (is_int($this->start)) {
             return $this->start;
@@ -217,10 +217,9 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
      * @param   int  $start  start value
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the start value is not within the min and max values
      */
-    public function setStart($start = null)
+    public function setStart(int $start = 0)
     {
-        assert(is_null($start) || is_int($start), 'Wrong type for argument 1. Integer expected');
-        if (empty($start)) {
+        if ($start === 0) {
             $this->start = null;
 
         } elseif ((!is_null($this->min) && $start < $this->min) || (!is_null($this->max) && $start > $this->max)) {
@@ -229,7 +228,7 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
 
         } else {
-            $this->start = (int) $start;
+            $this->start = $start;
         }
         return $this;
     }
@@ -244,13 +243,9 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
      *
      * @return  int
      */
-    public function getIncrement()
+    public function getIncrement(): int
     {
-        if (is_int($this->increment)) {
-            return $this->increment;
-        } else {
-            return 1;
-        }
+        return $this->increment;
     }
 
     /**
@@ -266,14 +261,13 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
      * To reset the value, leave the argument $increment empty.
      *
      * @param   int  $increment  increment value
-     * @return  \Yana\Db\Ddl\Sequence
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the increment value equals 0.
      */
-    public function setIncrement($increment = 1)
+    public function setIncrement(int $increment = 1)
     {
-        assert(is_int($increment), 'Wrong type for argument 1. Integer expected');
         if (!empty($increment)) {
-            $this->increment = (int) $increment;
+            $this->increment = $increment;
 
         } else {
             $message = "Increment value must not be 0 in sequence '{$this->name}'.";
@@ -288,9 +282,9 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
      * The minimal value is a lower boundary for a sequence.
      * All sequence values must be larger or equal the minimal value.
      *
-     * @return  int
+     * @return  int|NULL
      */
-    public function getMin()
+    public function getMin(): ?int
     {
         if (is_int($this->min)) {
             return $this->min;
@@ -307,13 +301,12 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
      * Note: the start value may not be lower than the minimal value.
      * The minimal value may not be larger than the maximal value.
      *
-     * @param   int  $min  minimum value
-     * @return  \Yana\Db\Ddl\Sequence
+     * @param   int|NULL  $min  minimum value
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the min value is greater than the current max value
      */
-    public function setMin($min = null)
+    public function setMin(?int $min = null)
     {
-        assert(is_null($min) || is_int($min), 'Wrong type for argument 1. Integer expected');
         if (is_null($min)) {
             $this->min = null;
 
@@ -334,9 +327,9 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
      * The maximum value is an upper boundary for a sequence.
      * All sequence values must be smaller or equal the maximum value.
      *
-     * @return  int
+     * @return  int|NULL
      */
-    public function getMax()
+    public function getMax(): ?int
     {
         if (is_int($this->max)) {
             return $this->max;
@@ -353,14 +346,15 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
      * Note: the start value may not be larger than the maximum value.
      * The maximum value may not be smaller or equal the minimum value.
      *
-     * @param   int  $max  maximum value
-     * @return  \Yana\Db\Ddl\Sequence
+     * To remove the constraint, either set it to int(0) or leave the argument empty.
+     *
+     * @param   int  $max  maximum value, defaults to 0
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the max value is smaller than the current min value
      */
-    public function setMax($max = null)
+    public function setMax(int $max = 0)
     {
-        assert(is_null($max) || is_int($max), 'Wrong type for argument 1. Integer expected');
-        if (empty($max)) {
+        if ($max === 0) {
             $this->max = null;
 
         } elseif ((!is_null($this->start) && $this->start > $max) || (!is_null($this->min) && $max < $this->min)) {
@@ -369,7 +363,7 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
 
         } else {
-            $this->max = (int) $max;
+            $this->max = $max;
         }
         return $this;
     }
@@ -383,7 +377,7 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
      *
      * @return  bool
      */
-    public function isCycle()
+    public function isCycle(): bool
     {
         return !empty($this->cycle);
     }
@@ -398,12 +392,11 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
      * The default is false.
      *
      * @param   bool  $isCycle  new value of this property
-     * @return  \Yana\Db\Ddl\Sequence
+     * @return  $this
      */
-    public function setCycle($isCycle = false)
+    public function setCycle(bool $isCycle = false)
     {
-        assert(is_bool($isCycle), 'Wrong type for argument 1. Boolean expected');
-        $this->cycle = (bool) $isCycle;
+        $this->cycle = $isCycle;
         return $this;
     }
 
@@ -412,7 +405,7 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
      *
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed             $parent  parent node (if any)
-     * @return  \Yana\Db\Ddl\Sequence
+     * @return  $this
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the name attribute is missing
      */
     public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)
