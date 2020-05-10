@@ -800,16 +800,12 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
             return false;
         }
         $content = $xml;
-        $writeXML = $this->_writeXml($content, $filename);
-        if ($writeXML) {
-            $result = $this->_insertCalendar($name, $filename, $url, true);
-            $db = $this->_getDatabase();
-            try {
-                $db->commit();
-            } catch (\Exception $e) {
-                $result = false;
-            }
-        } else {
+        $this->_writeXml($content, $filename);
+        $result = $this->_insertCalendar($name, $filename, $url, true);
+        $db = $this->_getDatabase();
+        try {
+            $db->commit();
+        } catch (\Exception $e) {
             $result = false;
         }
         return $result;
@@ -820,7 +816,6 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
      *
      * @param   string  $content   file contents
      * @param   string  $fileName  file name
-     * @return  bool
      */
     protected function _writeXml(string $content, string $fileName)
     {
@@ -906,8 +901,8 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
     {
         assert(is_string($path), 'Wrong argument type argument 1. String expected');
 
-        $icalendarData = @file_get_contents($path);
-        if ($icalendarData == false) {
+        $icalendarData = file_get_contents($path);
+        if (!$icalendarData) {
             return false;
         }
         // Detecting line endings
@@ -934,15 +929,8 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
             $lines2[]=$line;
         }
 
-        $dtd = \Plugins\Calendar\Calendar::getDtd();
-        if (empty($dtd)) {
-            $dtdString = '<!DOCTYPE iCalendar SYSTEM "../../../config/dtd/xcal.dtd">' . "\n";
-        } else {
-            $dtdString = $dtd;
-        }
-
         $xml = '<?xml version="1.0"?>' . "\n";
-        $xml .= $dtdString;
+        $xml .= '<!DOCTYPE iCalendar SYSTEM "../../../config/dtd/xcal.dtd">' . "\n";
         $xml .= '<iCalendar>' . "\n";
         $spaces = 0;
 
@@ -1144,10 +1132,10 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
         $fileName = md5($name . $fileName);
 
         // create the xml calendar file
-        $xmlWrite = $this->_writeXml($xml, $fileName);
+        $this->_writeXml($xml, $fileName);
 
         // insert a new database entry when xml file is created
-        if (!$xmlWrite || empty($name) || empty($fileName)) {
+        if (empty($name) || empty($fileName)) {
             return false;
         }
         // inserts entries into database, but does not commit them
