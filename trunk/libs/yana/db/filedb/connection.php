@@ -99,10 +99,13 @@ class Connection extends \Yana\Db\AbstractConnection
     }
 
     /**
-     * Send SQL-statement directly to teh FileDB driver.
+     * Send SQL-statement directly to the FileDB driver.
      *
      * Note: FileDB was designed to understand the statements generated
      * by the query-builder and is not intended to be called directly.
+     *
+     * This will nevertheless try to parse the statement (if a fitting SQL parser implementation is available)
+     * and return the result.
      *
      * @param   string  $sqlStmt  one SQL statement to execute
      * @param   int     $offset   the row to start from
