@@ -453,7 +453,6 @@ class Insert extends \Yana\Db\Queries\AbstractQuery implements \Yana\Db\Queries\
         }
 
         // upload new files
-        $this->deleteFiles($this->files); // just in case there are any
         $this->uploadFiles($this->files);
 
         // return result object

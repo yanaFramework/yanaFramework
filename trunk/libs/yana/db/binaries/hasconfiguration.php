@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Binaries;
 
@@ -51,7 +52,7 @@ trait HasConfiguration
      *
      * @return  string
      */
-    public function getDirectory()
+    public function getDirectory(): string
     {
         return $this->_directory;
     }
@@ -60,9 +61,9 @@ trait HasConfiguration
      * Set path to directory where blob-files are stored.
      * 
      * @param   string  $directory
-     * @return  self
+     * @return  $this
      */
-    public function setDirectory($directory)
+    public function setDirectory(string $directory)
     {
         assert(is_dir($directory), 'Directory does not exist');
         $this->_directory = realpath($directory) . DIRECTORY_SEPARATOR;
@@ -74,7 +75,7 @@ trait HasConfiguration
      *
      * @return  \Yana\Data\Adapters\IsDataAdapter
      */
-    public function getFileNameCache()
+    public function getFileNameCache(): \Yana\Data\Adapters\IsDataAdapter
     {
         if (!isset($this->_fileNameCache)) {
             $this->_fileNameCache = new \Yana\Data\Adapters\SessionAdapter(__CLASS__);
@@ -86,7 +87,7 @@ trait HasConfiguration
      * Set data adapter for caching file names.
      *
      * @param   \Yana\Data\Adapters\IsDataAdapter  $fileNameCache  for example session cache
-     * @return  self
+     * @return  $this
      */
     public function setFileNameCache(\Yana\Data\Adapters\IsDataAdapter $fileNameCache)
     {

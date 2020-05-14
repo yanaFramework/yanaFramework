@@ -40,6 +40,11 @@ class UpdateTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
+     * @var  \Yana\Db\Ddl\Database
+     */
+    protected $schema;
+
+    /**
      * @var  \Yana\Db\Queries\Update
      */
     protected $query;
@@ -58,8 +63,8 @@ class UpdateTest extends \PHPUnit_Framework_TestCase
         try {
             chdir(CWD . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
             if (!isset($this->db)) {
-                $schema = \Yana\Files\XDDL::getDatabase('check');
-                $this->db = new \Yana\Db\FileDb\Connection($schema);
+                $this->schema = \Yana\Files\XDDL::getDatabase('check');
+                $this->db = new \Yana\Db\FileDb\Connection($this->schema);
             }
             // reset database
             $this->db->remove('i', array(), 0);
@@ -155,5 +160,16 @@ class UpdateTest extends \PHPUnit_Framework_TestCase
         $this->query->setTable('t');
         $this->assertSame(array(), $this->query->getOldValues());
     }
+
+//    public function testFileUpload()
+//    {
+//        $configuration = \Yana\Db\Binaries\ConfigurationSingleton::getInstance();
+//        $configuration->setDirectory(CWD . 'resources/blobs');
+//        $this->schema->getTable('t')->addColumn('file', \Yana\Db\Ddl\ColumnTypeEnumeration::FILE);
+//        $this->schema->getTable('t')->addColumn('image', \Yana\Db\Ddl\ColumnTypeEnumeration::IMAGE);
+//        $_FILES[];
+//        $this->query->setTable('t')
+//            ->setRow(Ä)
+//    }
 
 }

@@ -41,28 +41,28 @@ interface IsConfiguration
      *
      * @return  string
      */
-    public function getDirectory();
+    public function getDirectory(): string;
 
     /**
      * Set path to directory where blob-files are stored.
      * 
      * @param   string  $directory
-     * @return  self
+     * @return  $this
      */
-    public function setDirectory($directory);
+    public function setDirectory(string $directory);
 
     /**
      * Returns data adapter for caching file names.
      *
      * @return  \Yana\Data\Adapters\IsDataAdapter
      */
-    public function getFileNameCache();
+    public function getFileNameCache(): \Yana\Data\Adapters\IsDataAdapter;
 
     /**
      * Set data adapter for caching file names.
      *
      * @param   \Yana\Data\Adapters\IsDataAdapter  $fileNameCache  for example session cache
-     * @return  self
+     * @return  $this
      */
     public function setFileNameCache(\Yana\Data\Adapters\IsDataAdapter $fileNameCache);
 }

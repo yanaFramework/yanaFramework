@@ -345,6 +345,7 @@ class Update extends \Yana\Db\Queries\Insert implements \Yana\Db\Queries\IsUpdat
         \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::INFO, $this->getOldValues());
 
         // send query
+        $this->deleteFiles($this->files); // just in case there are any
         return parent::sendQuery();
     }
 
