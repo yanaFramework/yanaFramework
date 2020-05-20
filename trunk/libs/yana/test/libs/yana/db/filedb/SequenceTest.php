@@ -75,7 +75,6 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         chdir(CWD . '../../..' );
-        \Yana\Db\FileDb\Driver::setBaseDirectory(CWD . '/resources/db/');
         \Yana\Db\Ddl\Database::setDirectory(CWD . '/resources/');
         try {
 

@@ -78,24 +78,7 @@ class DriverTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        \Yana\Db\FileDb\Driver::setBaseDirectory(\Yana\Db\Ddl\DDL::getDirectory());
-    }
 
-    /**
-     * @test
-     */
-    public function testSetBaseDirectory()
-    {
-        $this->assertNull(\Yana\Db\FileDb\Driver::setBaseDirectory(__DIR__));
-        $this->assertSame(__DIR__, \Yana\Db\FileDb\Driver::getBaseDirectory());
-    }
-
-    /**
-     * @test
-     */
-    public function testGetBaseDirectory()
-    {
-        $this->assertSame(\Yana\Db\Ddl\DDL::getDirectory(), \Yana\Db\FileDb\Driver::getBaseDirectory());
     }
 
     /**

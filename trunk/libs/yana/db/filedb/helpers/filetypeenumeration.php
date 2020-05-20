@@ -1,6 +1,6 @@
 <?php
 /**
- * include this before any test-case
+ * YANA library
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -21,34 +21,33 @@
  *
  * This notice MAY NOT be removed.
  *
- * @package  test
+ * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
+ *
  * @ignore
  */
+declare(strict_types=1);
 
-date_default_timezone_set('Europe/Paris');
+namespace Yana\Db\FileDb\Helpers;
 
 /**
- * @ignore
+ * <<enumeration>> File DB file extensions.
+ *
+ * @package     yana
+ * @subpackage  db
  */
-require_once dirname(__FILE__) . '/../../../library.php';
+class FileTypeEnumeration extends \Yana\Core\AbstractEnumeration
+{
 
-/**
- * @ignore
- */
-require_once dirname(__FILE__) . '/../../smarty/bootstrap.php';
+    /**
+     * For files containing database indexes
+     */
+    const INDEX = 'idx';
+    /**
+     * For files containing SML-encoded data
+     */
+    const DATA = 'sml';
 
-if (!defined('CWD')) {
-    define('CWD', dirname(__FILE__) . DIRECTORY_SEPARATOR);
 }
-if (empty($_SERVER['DOCUMENT_ROOT']) && isset($_SERVER['OS']) && preg_match('/windows/i', $_SERVER['OS'])) {
-    $_SERVER['DOCUMENT_ROOT'] =  realpath(CWD . "../../../../../") . '/htdocs/';
-    $path = dirname($_SERVER["DOCUMENT_ROOT"]); // Will be used when importing test-case
-}
-
-\Yana\Db\Ddl\DDL::setDirectory(CWD . '/resources/');
-\Yana\Db\FileDb\Helpers\FilenameMapper::setBaseDirectory(CWD . 'resources/db/');
-
-\Yana\Plugins\Facade::setPluginDirectory(new \Yana\Files\Dir(CWD . '/../../../plugins/'));
 
 ?>

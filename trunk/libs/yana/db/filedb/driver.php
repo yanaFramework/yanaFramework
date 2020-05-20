@@ -83,13 +83,6 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
         $databaseName = $this->_getSchema()->getName();
         assert($databaseName > "", 'database name must not be empty');
         $this->_setDatabaseName($databaseName);
-
-        if (!is_dir(self::getBaseDirectory() . $this->_getDatabaseName())) {
-            // @codeCoverageIgnoreStart
-            mkdir(self::getBaseDirectory() . $this->_getDatabaseName());
-            chmod(self::getBaseDirectory() . $this->_getDatabaseName(), 0700);
-            // @codeCoverageIgnoreEnd
-        }
         $this->rollback();
     }
 
@@ -125,38 +118,6 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
     {
         $this->_sqlParser = $parser;
         return $this;
-    }
-
-    /**
-     * Set directory where database files are to be stored.
-     *
-     * Note: the directory must be read- and writeable.
-     *
-     * @param  string  $directory  new base directory
-     * @ignore
-     */
-    public static function setBaseDirectory(string $directory)
-    {
-        assert(is_dir($directory), 'Wrong type for argument 1. Directory expected');
-        self::$_baseDir = $directory;
-    }
-
-    /**
-     * Get directory where database files are to be stored.
-     *
-     * If no directory was given, this will load the default directory from DDL config.
-     *
-     * @return  string
-     * @ignore
-     */
-    public static function getBaseDirectory(): string
-    {
-        if (!isset(self::$_baseDir)) {
-            // @codeCoverageIgnoreStart
-            self::$_baseDir = \Yana\Db\Ddl\DDL::getDirectory();
-            // @codeCoverageIgnoreEnd
-        }
-        return self::$_baseDir;
     }
 
     /**
@@ -395,7 +356,8 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
 
                         // load tablespace
                         if (!isset($this->_src[$this->_getDatabaseName()][$targetTable])) {
-                            $filename = $this->_getFilename($database, 'sml', $targetTable);
+                            $filename = $this->_getFilenameMapper()
+                                ->__invoke($database, \Yana\Db\FileDb\Helpers\FileTypeEnumeration::DATA, $targetTable);
                             $sml = $this->_createSmlFile($filename);
                             $sml->failSafeRead();
                             $this->_src[$this->_getDatabaseName()][$targetTable] = $sml;
@@ -1116,25 +1078,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
      */
     private function _increment(array &$set)
     {
-        /*
-         * 1) initialize counter
-         */
-        if (is_null($this->_getAutoIncrement())) {
-            $name = __CLASS__ . '\\' . $this->_getDatabaseName() . '\\' . $this->_getTableName();
-            try {
-                $sequence = new \Yana\Db\FileDb\Sequence($name);
-            } catch (\Yana\Db\Queries\Exceptions\NotFoundException $e) {
-                \Yana\Db\FileDb\Sequence::create($name);
-                $sequence = new \Yana\Db\FileDb\Sequence($name);
-                unset($e);
-            }
-            unset($name);
-            $this->_setAutoIncrement($sequence);
-        }
-
-        /*
-         * 2) simulate auto-increment
-         */
+        assert(!isset($primaryKey), 'Cannot redeclare var $primaryKey');
         $primaryKey = \mb_strtoupper((string) $this->_getTable()->getPrimaryKey());
         if (empty($set[$primaryKey])) {
             $index = $this->_getAutoIncrement()->getNextValue();
@@ -1681,7 +1625,8 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
      */
     private function _setIndexFile(string $database)
     {
-        $filename = $this->_getFilename($database, 'idx');
+        $filename = $this->_getFilenameMapper()
+            ->__invoke($database, \Yana\Db\FileDb\Helpers\FileTypeEnumeration::INDEX, $this->_getTableName());
         $smlfile = $this->_getSmlFile();
         $idxfile = $this->_createIndex($smlfile, $filename);
         $this->_idx[$this->_getDatabaseName()][$this->_getTableName()] = $idxfile;
@@ -1720,11 +1665,13 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
     private function _setSmlFile(string $database)
     {
         if (!isset($this->_src[$this->_getDatabaseName()][$this->_getTableName()])) {
-            $filename = $this->_getFilename($database, 'sml');
+            $filename = $this->_getFilenameMapper()
+                ->__invoke($database, \Yana\Db\FileDb\Helpers\FileTypeEnumeration::DATA, $this->_getTableName());
             $isCreated = false;
             $smlfile = $this->_createSmlFile($filename, $isCreated);
             if ($isCreated && $database != $this->_getDatabaseName()) {
-                $filename = $this->_getFilename($this->_getDatabaseName(), 'sml');
+                $filename = $this->_getFilenameMapper()
+                    ->__invoke($this->_getDatabaseName(), \Yana\Db\FileDb\Helpers\FileTypeEnumeration::DATA, $this->_getTableName());
                 $smlfile = $this->_createSmlFile($filename);
             }
             $smlfile->failSafeRead();
@@ -1753,20 +1700,13 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
     }
 
     /**
-     * Return path to database SML file.
+     * Return helper object.
      *
-     * @param   string  $database   database name in lower-cased letters
-     * @param   string  $extension  extension
-     * @param   string  $tableName  name of the table in lower-cased letters
-     * @return  string
+     * @return  \Yana\Db\FileDb\Helpers\FilenameMapper
      */
-    private function _getFilename(string $database, string $extension, string $tableName = ""): string
+    private function _getFilenameMapper(): \Yana\Db\FileDb\Helpers\FilenameMapper
     {
-        if (empty($tableName)) {
-            $tableName = $this->_getTableName();
-        }
-
-        return realpath(self::getBaseDirectory()) . '/' . $database . '/' . $tableName . '.' . $extension;
+        return new \Yana\Db\FileDb\Helpers\FilenameMapper();
     }
 
 }

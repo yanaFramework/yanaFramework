@@ -1,6 +1,6 @@
 <?php
 /**
- * include this before any test-case
+ * PHPUnit test-case.
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -23,32 +23,32 @@
  *
  * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
- * @ignore
  */
 
-date_default_timezone_set('Europe/Paris');
+namespace Yana\Db\FileDb\Helpers;
 
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/../../../library.php';
+require_once __DIR__ . '/../../../../../include.php';
 
 /**
- * @ignore
+ * @package  test
  */
-require_once dirname(__FILE__) . '/../../smarty/bootstrap.php';
+class FileTypeEnumerationTest extends \PHPUnit_Framework_TestCase
+{
 
-if (!defined('CWD')) {
-    define('CWD', dirname(__FILE__) . DIRECTORY_SEPARATOR);
+    /**
+     * @test
+     */
+    public function testGetValidItems()
+    {
+        $items = \Yana\Db\FileDb\Helpers\FileTypeEnumeration::getValidItems();
+        foreach ($items as $value)
+        {
+            $this->assertInternalType('string', $value);
+            $this->assertGreaterThan("", $value);
+        }
+    }
+
 }
-if (empty($_SERVER['DOCUMENT_ROOT']) && isset($_SERVER['OS']) && preg_match('/windows/i', $_SERVER['OS'])) {
-    $_SERVER['DOCUMENT_ROOT'] =  realpath(CWD . "../../../../../") . '/htdocs/';
-    $path = dirname($_SERVER["DOCUMENT_ROOT"]); // Will be used when importing test-case
-}
-
-\Yana\Db\Ddl\DDL::setDirectory(CWD . '/resources/');
-\Yana\Db\FileDb\Helpers\FilenameMapper::setBaseDirectory(CWD . 'resources/db/');
-
-\Yana\Plugins\Facade::setPluginDirectory(new \Yana\Files\Dir(CWD . '/../../../plugins/'));
-
-?>

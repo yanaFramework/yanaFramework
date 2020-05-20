@@ -92,8 +92,24 @@ abstract class AbstractDriver extends \Yana\Core\StdObject implements \Yana\Db\I
      *
      * @return  \Yana\Db\FileDb\Sequence
      */
-    protected function _getAutoIncrement()
+    protected function _getAutoIncrement(): \Yana\Db\FileDb\Sequence
     {
+        if (!isset($this->_autoIncrement)) {
+            assert(!isset($name), 'Cannot redeclare var $name');
+            $name = $this->getClass() . '\\' . $this->_getDatabaseName() . '\\' . $this->_getTableName();
+            try {
+                assert(!isset($sequence), 'Cannot redeclare var $sequence');
+                $sequence = new \Yana\Db\FileDb\Sequence($name);
+
+            } catch (\Yana\Db\Queries\Exceptions\NotFoundException $e) {
+                \Yana\Db\FileDb\Sequence::create($name);
+                $sequence = new \Yana\Db\FileDb\Sequence($name);
+                unset($e);
+            }
+            unset($name);
+            $this->_setAutoIncrement($sequence);
+            unset($sequence);
+        }
         return $this->_autoIncrement;
     }
 
@@ -102,7 +118,7 @@ abstract class AbstractDriver extends \Yana\Core\StdObject implements \Yana\Db\I
      *
      * @return  \Yana\Db\Ddl\Database
      */
-    protected function _getSchema()
+    protected function _getSchema(): \Yana\Db\Ddl\Database
     {
         return $this->_schema;
     }
@@ -112,7 +128,7 @@ abstract class AbstractDriver extends \Yana\Core\StdObject implements \Yana\Db\I
      *
      * @return  string
      */
-    protected function _getDatabaseName()
+    protected function _getDatabaseName(): string
     {
         return $this->_databaseName;
     }
@@ -163,7 +179,7 @@ abstract class AbstractDriver extends \Yana\Core\StdObject implements \Yana\Db\I
      * @return  bool
      * @codeCoverageIgnore
      */
-    protected function _isAutoCommit()
+    protected function _isAutoCommit(): bool
     {
         return $this->_autoCommit;
     }
@@ -182,7 +198,7 @@ abstract class AbstractDriver extends \Yana\Core\StdObject implements \Yana\Db\I
      * Set auto-increment sequence counter.
      *
      * @param   \Yana\Db\FileDb\Sequence  $autoIncrement
-     * @return  self
+     * @return  $this
      */
     protected function _setAutoIncrement(\Yana\Db\FileDb\Sequence $autoIncrement)
     {
@@ -194,7 +210,7 @@ abstract class AbstractDriver extends \Yana\Core\StdObject implements \Yana\Db\I
      * Return database schema.
      *
      * @param   \Yana\Db\Ddl\Database  $schema
-     * @return  self
+     * @return  $this
      */
     protected function _setSchema(\Yana\Db\Ddl\Database $schema)
     {
@@ -206,13 +222,11 @@ abstract class AbstractDriver extends \Yana\Core\StdObject implements \Yana\Db\I
      * Set name of the database.
      *
      * @param   string  $database
-     * @return  self
+     * @return  $this
      */
-    protected function _setDatabaseName($database)
+    protected function _setDatabaseName(string $database)
     {
-        assert(is_string($database), 'Invalid argument $database: string expected');
-
-        $this->_databaseName = (string) $database;
+        $this->_databaseName = $database;
         return $this;
     }
 
@@ -220,7 +234,7 @@ abstract class AbstractDriver extends \Yana\Core\StdObject implements \Yana\Db\I
      * Return schema of currently selected table.
      *
      * @param   \Yana\Db\Ddl\Table  $table
-     * @return  self
+     * @return  $this
      */
     protected function _setTable(\Yana\Db\Ddl\Table $table)
     {
@@ -232,13 +246,11 @@ abstract class AbstractDriver extends \Yana\Core\StdObject implements \Yana\Db\I
      * Set name of currently selected table.
      *
      * @param   string  $tableName
-     * @return  self
+     * @return  $this
      */
-    protected function _setTableName($tableName)
+    protected function _setTableName(string $tableName)
     {
-        assert(is_string($tableName), 'Invalid argument variable: string expected');
-
-        $this->_tableName = (string) $tableName;
+        $this->_tableName = $tableName;
         return $this;
     }
 
@@ -248,7 +260,7 @@ abstract class AbstractDriver extends \Yana\Core\StdObject implements \Yana\Db\I
      * A lower-cased list of columns the resultset is ordered by.
      *
      * @param   array  $sort
-     * @return  self
+     * @return  $this
      */
     protected function _setSortColumns(array $sort)
     {
@@ -260,7 +272,7 @@ abstract class AbstractDriver extends \Yana\Core\StdObject implements \Yana\Db\I
      * Set to columns for which the search-order is reversed.
      *
      * @param   array  $desc
-     * @return  self
+     * @return  $this
      */
     protected function _setDescendingSortColumns(array $desc)
     {
@@ -272,7 +284,7 @@ abstract class AbstractDriver extends \Yana\Core\StdObject implements \Yana\Db\I
      * Set to bool(true) if all queries should be committed automatically.
      *
      * @param   bool  $autoCommit
-     * @return  self
+     * @return  $this
      */
     protected function _setAutoCommit($autoCommit)
     {
@@ -285,7 +297,7 @@ abstract class AbstractDriver extends \Yana\Core\StdObject implements \Yana\Db\I
     /**
      *
      * @param   \Yana\Db\Queries\AbstractQuery  $query
-     * @return  self
+     * @return  $this
      */
     protected function _setQuery(\Yana\Db\Queries\AbstractQuery $query)
     {
