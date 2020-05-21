@@ -67,6 +67,7 @@ class DriverTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
+        \Yana\Db\FileDb\Helpers\FilenameMapper::setBaseDirectory(\Yana\Db\Ddl\DDL::getDirectory());
         $this->schema = \Yana\Files\XDDL::getDatabase('check');
         $parser = new \Yana\Db\Queries\Parser(new \Yana\Db\FileDb\Connection($this->schema));
         $this->object = new \Yana\Db\FileDb\NullDriver($parser);
