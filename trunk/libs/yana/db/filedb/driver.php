@@ -61,14 +61,14 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
     private $_sqlParser = null;
  
     /**
-     * @var string
-     */
-    private static $_baseDir = null;
- 
-    /**
      * @var \Yana\Db\FileDb\Helpers\WhereClauseHelper
      */
     private $_whereClauseHelper = null;
+ 
+    /**
+     * @var \Yana\Db\FileDb\Helpers\FilenameMapper
+     */
+    private $_filenameMapper = null;
 
     /**
      * <<constructor>> Initialize query parser.
@@ -1703,7 +1703,10 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
      */
     private function _getFilenameMapper(): \Yana\Db\FileDb\Helpers\FilenameMapper
     {
-        return new \Yana\Db\FileDb\Helpers\FilenameMapper();
+        if (!isset($this->_filenameMapper)) {
+            $this->_filenameMapper = new \Yana\Db\FileDb\Helpers\FilenameMapper();
+        }
+        return $this->_filenameMapper;
     }
 
 }
