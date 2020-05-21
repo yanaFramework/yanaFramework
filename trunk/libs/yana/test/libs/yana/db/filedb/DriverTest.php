@@ -62,11 +62,17 @@ class DriverTest extends \PHPUnit_Framework_TestCase
     protected $schema;
 
     /**
+     * @var string
+     */
+    protected $baseDirectory;
+
+    /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
     protected function setUp()
     {
+        $this->baseDirectory = \Yana\Db\FileDb\Helpers\FilenameMapper::getBaseDirectory();
         \Yana\Db\FileDb\Helpers\FilenameMapper::setBaseDirectory(\Yana\Db\Ddl\DDL::getDirectory());
         $this->schema = \Yana\Files\XDDL::getDatabase('check');
         $parser = new \Yana\Db\Queries\Parser(new \Yana\Db\FileDb\Connection($this->schema));
@@ -79,7 +85,7 @@ class DriverTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        \Yana\Db\FileDb\Helpers\FilenameMapper::setBaseDirectory(CWD . 'resources/db/');
+        \Yana\Db\FileDb\Helpers\FilenameMapper::setBaseDirectory($this->baseDirectory);
     }
 
     /**
