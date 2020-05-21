@@ -79,7 +79,7 @@ class DriverTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-
+        \Yana\Db\FileDb\Helpers\FilenameMapper::setBaseDirectory(CWD . 'resources/db/');
     }
 
     /**
