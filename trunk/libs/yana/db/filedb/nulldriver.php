@@ -49,7 +49,7 @@ class NullDriver extends \Yana\Db\FileDb\Driver
      *
      * @return  bool
      */
-    protected function _isAutoCommit()
+    protected function _isAutoCommit(): bool
     {
         return false;
     }
@@ -60,7 +60,7 @@ class NullDriver extends \Yana\Db\FileDb\Driver
      * @param   bool  $commit on / off
      * @return  \Yana\Db\FileDb\Result
      */
-    protected function _write($commit = false)
+    protected function _write(bool $commit = false): \Yana\Db\FileDb\Result
     {
         return parent::_write(false);
     }

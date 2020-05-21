@@ -1336,11 +1336,8 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
      * @throws  \Yana\Db\DatabaseException  when changes have not been saved
      * @codeCoverageIgnore
      */
-    protected function _write($commit = false)
+    protected function _write(bool $commit = false): \Yana\Db\FileDb\Result
     {
-        /* pessimistic scanning */
-        assert(is_bool($commit), 'Wrong argument type for argument 1. Boolean expected.');
-
         $this->_cache = array();
 
         /* wait for commit */
