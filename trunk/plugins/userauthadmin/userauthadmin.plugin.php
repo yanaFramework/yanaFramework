@@ -67,8 +67,8 @@ class UserAuthAdminPlugin extends \Yana\Plugins\AbstractPlugin
      * @type        config
      * @user        group: admin, level: 100
      * @template    message
-     * @onsuccess   goto: get_user_list
-     * @onerror     goto: get_user_list
+     * @onsuccess   goto: get_auth_admin
+     * @onerror     goto: get_auth_admin
      *
      * @return      bool
      */
@@ -87,8 +87,8 @@ class UserAuthAdminPlugin extends \Yana\Plugins\AbstractPlugin
      * @type        config
      * @user        group: admin, level: 100
      * @template    message
-     * @onsuccess   goto: get_user_list
-     * @onerror     goto: get_user_list
+     * @onsuccess   goto: get_auth_admin
+     * @onerror     goto: get_auth_admin
      *
      * @return      bool
      * @param       array  $selected_entries  array of params passed to the function
@@ -108,8 +108,8 @@ class UserAuthAdminPlugin extends \Yana\Plugins\AbstractPlugin
      * @type        config
      * @user        group: admin, level: 100
      * @template    message
-     * @onsuccess   goto: get_user_list
-     * @onerror     goto: get_user_list
+     * @onsuccess   goto: get_auth_admin
+     * @onerror     goto: get_auth_admin
      *
      * @return      bool
      */
