@@ -110,6 +110,16 @@
                     <source/>
                 </trans-unit>
             </group>
+            <group id="Yana\Core\Exceptions\Security\AuthenticationProviderNotFoundException">
+                <trans-unit id="Yana\Core\Exceptions\Security\AuthenticationProviderNotFoundException.h">
+                    <target>Access denied.</target>
+                    <source/>
+                </trans-unit>
+                <trans-unit id="Yana\Core\Exceptions\Security\AuthenticationProviderNotFoundException.p">
+                    <target>The authentication method required to verify your username and password has not been setup properly. Please contact an administrator.</target>
+                    <source/>
+                </trans-unit>
+            </group>
             <group id="Yana\Core\Exceptions\Security\InvalidLoginException">
                 <trans-unit id="Yana\Core\Exceptions\Security\InvalidLoginException.h">
                     <target>Access denied.</target>

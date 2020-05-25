@@ -1,5 +1,7 @@
 <?php
 /**
+ * YANA library
+ *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
  * License:   GNU GPL  http://www.gnu.org/licenses/
@@ -19,27 +21,24 @@
  *
  * This notice MAY NOT be removed.
  *
- * @author     Thomas Meyer <tm@yanaframework.net>
- * @link       http://www.yanaframework.net
- * @license    http://www.gnu.org/licenses/gpl.txt
- * @package    yana
- * @copyright  2020 Thomas Meyer
+ * @package  yana
+ * @license  http://www.gnu.org/licenses/gpl.txt
  */
 declare(strict_types=1);
 
-error_reporting(~E_DEPRECATED);
-require_once 'library.php';
+namespace Yana\Core\Exceptions\Security;
 
-$application = new \Yana\ApplicationBuilder();
-/* Uncomment this to print all error messages to screen */
-$errorReporting = YANA_ERROR_ON;
+/**
+ * <<exception>> Authentication provider not found.
+ *
+ * When a login could not be verified because no valid authentication provider was found.
+ *
+ * @package     yana
+ * @subpackage  core
+ */
+class AuthenticationProviderNotFoundException extends \Yana\Core\Exceptions\Security\InvalidLoginException
+{
+    /* intentionally left blank */
+}
 
-/* Uncomment this to send all error messages to a log file or database */
-//$errorReporting = YANA_ERROR_LOG;
-
-/* Hide error messages from users */
-//$errorReporting = YANA_ERROR_OFF;
-
-$application->setErrorReporting($errorReporting)
-    ->execute();
 ?>

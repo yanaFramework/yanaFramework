@@ -110,6 +110,16 @@
                     <target>Die Aktion '{$ACTION}' ist undefiniert, Operation abgebrochen.<it id="br1" pos="open">&lt;br /&gt;</it><bpt id="noscript1">&lt;noscript&gt;</bpt>Hinweis an IE-Nutzer: In einigen IE-Versionen gibt es ein bekanntes Problem mit einer nicht standardkonformen Verarbeitung des HTML "button" tags. Diese Software besitzt einen JavaScript-Workaround für das Problem. Aktivieren Sie JavaScript und versuchen Sie es erneut.<ept id="noscript1">&lt;/noscript&gt;</ept></target>
                 </trans-unit>
             </group>
+            <group id="Yana\Core\Exceptions\Security\AuthenticationProviderNotFoundException">
+                <trans-unit id="Yana\Core\Exceptions\Security\AuthenticationProviderNotFoundException.h">
+                    <source>Access denied.</source>
+                    <target>Zugriff verweigert.</target>
+                </trans-unit>
+                <trans-unit id="Yana\Core\Exceptions\Security\AuthenticationProviderNotFoundException.p">
+                    <source>The authentication method required to verify your username and password has not been setup properly. Please contact an administrator.</source>
+                    <target>Die Authentifizierungsmethode um Ihren Nutzernamen und Passwort zu bestätigen wurde nicht korrekt konfiguriert. Bitte wenden Sie sich an einen Administrator.</target>
+                </trans-unit>
+            </group>
             <group id="Yana\Core\Exceptions\Security\InvalidLoginException">
                 <trans-unit id="Yana\Core\Exceptions\Security\InvalidLoginException.h">
                     <source>Access denied.</source>
