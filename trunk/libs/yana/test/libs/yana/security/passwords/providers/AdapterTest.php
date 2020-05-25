@@ -96,7 +96,7 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \Yana\Core\Exceptions\NotFoundException
+     * @expectedException \Yana\Core\Exceptions\Security\AuthenticationProviderNotFoundException
      */
     public function testOffsetGetNotFoundException()
     {

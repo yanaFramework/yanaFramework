@@ -83,7 +83,7 @@ class Adapter extends \Yana\Security\Passwords\Providers\AbstractAdapter
      *
      * @param   scalar  $providerId  database ID
      * @return  \Yana\Security\Passwords\Providers\IsEntity
-     * @throws  \Yana\Core\Exceptions\NotFoundException  when no such database entry exists
+     * @throws  \Yana\Core\Exceptions\Security\AuthenticationProviderNotFoundException  when no such database entry exists
      */
     public function offsetGet($providerId)
     {
@@ -96,7 +96,7 @@ class Adapter extends \Yana\Security\Passwords\Providers\AbstractAdapter
 
             $message = "No authentication provider setup found with id: " . (int) $providerId;
             $level = \Yana\Log\TypeEnumeration::ERROR;
-            throw new \Yana\Core\Exceptions\NotFoundException($message, $level, $e);
+            throw new \Yana\Core\Exceptions\Security\AuthenticationProviderNotFoundException($message, $level, $e);
         }
     }
 
