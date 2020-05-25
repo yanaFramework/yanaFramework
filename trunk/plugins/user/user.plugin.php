@@ -393,9 +393,18 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
             $level = \Yana\Log\TypeEnumeration::ERROR;
             throw new \Yana\Core\Exceptions\Security\InvalidLoginException("Invalid name or password.", $level);
 
+        } catch (\Yana\Core\Exceptions\Security\AuthenticationProviderNotFoundException $e) {
+
+            if (isset($session['on_login_goto'])) {
+                unset($session['on_login_goto']);
+            }
+
+            $this->_getApplication()->getLogger()->addLog("Login attempt failed for user '{$user}'. " . $e->getMessage());
+
+            throw $e;
+
         } catch (\Yana\Core\Exceptions\Security\InvalidLoginException $e) {
 
-            // delay output if attempt failed to make brute-force attacks more difficult to commit
             if (isset($session['on_login_goto'])) {
                 unset($session['on_login_goto']);
             }
