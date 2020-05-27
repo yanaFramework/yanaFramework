@@ -13,6 +13,7 @@
         </description>
     </head>
     <body>
-        <template id="INDEX" file="null/index.html.tpl"/>
+        <template id="INDEX" file="null/index.html.tpl">
+        </template>
     </body>
 </skin>
