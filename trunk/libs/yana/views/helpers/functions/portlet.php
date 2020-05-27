@@ -61,7 +61,7 @@ class Portlet extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vi
     {
         if (isset($params['action'])) {
             $formatter = $this->_getDependencyContainer()->getUrlFormatter();
-            $url = $formatter("action={$params['action']}");
+            $url = $formatter("action={$params['action']}", true);
         } else {
             $message = "Missing argument 'action' in function " . __FUNCTION__ . "()";
             $this->_getLogger()->addLog($message, \Yana\Log\TypeEnumeration::WARNING);

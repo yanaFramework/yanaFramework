@@ -82,7 +82,7 @@ class PortletTest extends \PHPUnit_Framework_TestCase
         $params = array('action' => 'myAction', 'id' => 'myId', 'title' => 'myTitle', 'args' => 'myArgs');
         $template = new \Smarty_Internal_Template("name", new \Smarty());
         $string = $this->object->__invoke($params, $template);
-        $url = (new \Yana\Views\Helpers\Formatters\UrlFormatter())->__invoke('action=myAction');
+        $url = (new \Yana\Views\Helpers\Formatters\UrlFormatter())->__invoke('action=myAction', true);
         $expected = "<script type=\"text/javascript\">yanaPortlet('$url', 'myId', 'myArgs', 'myTitle')</script>" .
             "<noscript><iframe class=\"yana_portlet\" src=\"{$url}&amp;myArgs\"></iframe></noscript>";
         $this->assertSame($expected, $string);
@@ -105,7 +105,7 @@ class PortletTest extends \PHPUnit_Framework_TestCase
         $params = array('action' => 'myAction');
         $template = new \Smarty_Internal_Template("name", new \Smarty());
         $string = $this->object->__invoke($params, $template);
-        $url = (new \Yana\Views\Helpers\Formatters\UrlFormatter())->__invoke('action=myAction');
+        $url = (new \Yana\Views\Helpers\Formatters\UrlFormatter())->__invoke('action=myAction', true);
         $expected = "<script type=\"text/javascript\">yanaPortlet('$url', '___invoke_%s', '', '')</script>" .
             "<noscript><iframe class=\"yana_portlet\" src=\"{$url}&amp;\"></iframe></noscript>";
         $this->assertStringMatchesFormat($expected, $string);
