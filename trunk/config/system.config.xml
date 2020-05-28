@@ -20,7 +20,7 @@
         They must implement \Yana\Security\Passwords\Providers\IsAuthenticationProvider.
     -->
     <authentication name="standard">\Yana\Security\Passwords\Providers\Standard</authentication>
-    <authentication name="LDAP">\Yana\Security\Passwords\Providers\Ldap</authentication>
+    <authentication name="ldap">\Yana\Security\Passwords\Providers\Ldap</authentication>
     <templates>
         <leftdelimiter>{</leftdelimiter>
         <!-- Smarty template right delimiter. -->
