@@ -37,7 +37,7 @@ namespace Yana\Security\Dependencies;
  *
  * @ignore
  */
-interface IsFacadeContainer extends \Yana\Security\Dependencies\IsContainer
+interface IsFacadeContainer extends \Yana\Security\Dependencies\IsContainer, \Yana\Security\Dependencies\IsPasswordContainer
 {
 
     /**

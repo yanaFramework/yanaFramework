@@ -49,7 +49,7 @@ interface IsBehavior
      * @param   string  $recoveryId  user password recovery id
      * @return  bool
      */
-    public function checkRecoveryId($recoveryId);
+    public function checkRecoveryId(string $recoveryId): bool;
 
     /**
      * Compare password with password of current user.
@@ -69,7 +69,7 @@ interface IsBehavior
      * @param   string  $password  non-empty alpha-numeric text with optional special characters
      * @return  $this
      */
-    public function changePassword($password);
+    public function changePassword(string $password);
 
     /**
      * Change password.
@@ -78,7 +78,7 @@ interface IsBehavior
      *
      * @return  string
      */
-    public function generateRandomPassword();
+    public function generateRandomPassword(): string;
 
     /**
      * Create new password recovery id.
@@ -91,14 +91,14 @@ interface IsBehavior
      *
      * @return  string
      */
-    public function generatePasswordRecoveryId();
+    public function generatePasswordRecoveryId(): string;
 
     /**
      * Get wrapped user.
      *
      * @return  \Yana\Security\Data\Users\IsEntity
      */
-    public function getUser();
+    public function getUser(): \Yana\Security\Data\Users\IsEntity;
 
     /**
      * Replaces currently wrapped user.

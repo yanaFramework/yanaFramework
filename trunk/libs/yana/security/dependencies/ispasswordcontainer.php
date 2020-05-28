@@ -31,44 +31,41 @@ declare(strict_types=1);
 namespace Yana\Security\Dependencies;
 
 /**
- * <<interface>> Defines dependencies required by behavior-builder.
+ * <<interface>> Defines dependencies required by password behavior-builder.
  *
  * @package     yana
  * @subpackage  security
  *
  * @ignore
  */
-interface IsContainer
+interface IsPasswordContainer
 {
 
     /**
-     * Retrieve password behavior dependency.
+     * Retrieve password algorithm dependency.
      *
-     * @param   string  $userId  user name
-     * @return  \Yana\Security\Passwords\Behaviors\IsBehavior
+     * @return  \Yana\Security\Passwords\IsAlgorithm
      */
-    public function getPasswordBehavior(): \Yana\Security\Passwords\Behaviors\IsBehavior;
+    public function getPasswordAlgorithm(): \Yana\Security\Passwords\IsAlgorithm;
 
     /**
-     * Retrieve login behavior dependency.
+     * Retrieve password generator dependency.
      *
-     * @return  \Yana\Security\Logins\IsBehavior
+     * @return  \Yana\Security\Passwords\Generators\IsAlgorithm
      */
-    public function getLoginBehavior(): \Yana\Security\Logins\IsBehavior;
+    public function getPasswordGenerator(): \Yana\Security\Passwords\Generators\IsAlgorithm;
 
     /**
-     * Retrieve levels data adapter.
+     * Returns an authentication provider.
      *
-     * @return  \Yana\Security\Data\SecurityLevels\Adapter
-     */
-    public function getLevelsAdapter(): \Yana\Security\Data\SecurityLevels\Adapter;
-
-    /**
-     * Retrieve rules data adapter.
+     * The authentication provider is used to check and/or change passwords.
+     * If none has been set, this function will initialize and return a standard
+     * authentication provider by default.
      *
-     * @return  \Yana\Security\Data\SecurityRules\Adapter
+     * @param   \Yana\Security\Data\Users\IsEntity  $user  entity
+     * @return  \Yana\Security\Passwords\Providers\IsAuthenticationProvider
      */
-    public function getRulesAdapter(): \Yana\Security\Data\SecurityRules\Adapter;
+    public function getAuthenticationProvider(\Yana\Security\Data\Users\IsEntity $user): \Yana\Security\Passwords\Providers\IsAuthenticationProvider;
 
 }
 

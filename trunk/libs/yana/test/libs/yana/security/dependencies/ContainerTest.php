@@ -226,7 +226,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetPasswordBehavior()
     {
-        $object = new \Yana\Security\Passwords\Behaviors\StandardBehavior($this->object->getPasswordAlgorithm(), $this->object->getPasswordGenerator(), $this->object->getAuthenticationProvider());
+        $object = new \Yana\Security\Passwords\Behaviors\StandardBehavior($this->object);
         $this->assertSame($object, $this->object->setPasswordBehavior($object)->getPasswordBehavior());
     }
 

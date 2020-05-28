@@ -89,10 +89,8 @@ class StandardBehavior extends \Yana\Security\Passwords\Behaviors\AbstractBehavi
      * @param   string  $recoveryId  user password recovery id
      * @return  bool
      */
-    public function checkRecoveryId($recoveryId)
+    public function checkRecoveryId(string $recoveryId): bool
     {
-        assert(is_string($recoveryId), 'Wrong type for argument $userPwd. String expected');
-
         assert(!isset($user), 'Cannot redeclare variable $user');
         $user = $this->getUser();
         assert(!isset($isCorrect), 'Cannot redeclare variable $isCorrect');
@@ -128,7 +126,7 @@ class StandardBehavior extends \Yana\Security\Passwords\Behaviors\AbstractBehavi
         switch (true)
         {
             case $this->_isUninitializedPassword($user):
-            case $userPwd > "" && $this->_getAuthenticationProvider()->checkPassword($user, $userPwd):
+            case $userPwd > "" && $this->_getAuthenticationProvider($user)->checkPassword($user, $userPwd):
                 $isCorrect = true;
         }
 
@@ -148,18 +146,18 @@ class StandardBehavior extends \Yana\Security\Passwords\Behaviors\AbstractBehavi
      * Set login password to $password for current user.
      *
      * @param   string  $password  non-empty alpha-numeric text with optional special characters
-     * @return  \Yana\Security\Passwords\Behaviors\IsBehavior
+     * @return  $this
      */
-    public function changePassword($password)
+    public function changePassword(string $password)
     {
-        assert(is_string($password) && strlen($password) > 0, 'Wrong type for argument 1. String expected');
+        assert(strlen($password) > 0, 'Password must not be empty');
 
         $user = $this->getUser();
         $user
                 // reset password recovery id if there is any
                 ->setPasswordRecoveryId("")
                 ->setPasswordRecoveryTime(0);
-        $this->_getAuthenticationProvider()->changePassword($user, $password);
+        $this->_getAuthenticationProvider($user)->changePassword($user, $password);
 
         return $this;
     }
@@ -171,7 +169,7 @@ class StandardBehavior extends \Yana\Security\Passwords\Behaviors\AbstractBehavi
      *
      * @return  string
      */
-    public function generateRandomPassword()
+    public function generateRandomPassword(): string
     {
         // auto-generate new random password
         $password = $this->_getGenerator()->__invoke(10);
@@ -191,7 +189,7 @@ class StandardBehavior extends \Yana\Security\Passwords\Behaviors\AbstractBehavi
      *
      * @return  string
      */
-    public function generatePasswordRecoveryId()
+    public function generatePasswordRecoveryId(): string
     {
         $recoveryId = $this->_getGenerator()->__invoke(10);
         $recoveryIdHash = $this->_getAlgorithm()->__invoke($recoveryId);

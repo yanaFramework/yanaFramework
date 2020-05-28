@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Security\Data\Users;
 
@@ -53,7 +54,7 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      * Set the identifying value for this entity.
      *
      * @param   string  $id  unique identier
-     * @return  self
+     * @return  $this
      */
     public function setId($id);
 
@@ -63,7 +64,7 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      * Set number of times user entered the password incorrectly.
      *
      * @param   int  $failureCount  must be positive
-     * @return  self
+     * @return  $this
      */
     public function setFailureCount($failureCount);
 
@@ -73,7 +74,7 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      * Set the last time when the user entered a password incorrectly.
      *
      * @param   int  $failureTime  valid timestamp
-     * @return  self
+     * @return  $this
      */
     public function setFailureTime($failureTime);
 
@@ -83,7 +84,7 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      * Set the number of times the user successfully logged in.
      *
      * @param   int  $loginCount  must be positive
-     * @return  self
+     * @return  $this
      */
     public function setLoginCount($loginCount);
 
@@ -93,7 +94,7 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      * Set the time the user last successfully logged in.
      *
      * @param   int  $loginTime  a valid timestamp
-     * @return  self
+     * @return  $this
      */
     public function setLoginTime($loginTime);
 
@@ -110,7 +111,7 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      * Sets prefered language of the user, that is used to provide translates GUI elements.
      *
      * @param   string  $language  language or locale string
-     * @return  self
+     * @return  $this
      */
     public function setLanguage($language);
 
@@ -173,7 +174,7 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      * Sets the user's mail address. This information is required to send the user a password.
      *
      * @param   string  $mail  e-mail address
-     * @return  self
+     * @return  $this
      */
     public function setMail($mail);
 
@@ -191,7 +192,7 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      * if a simpler GUI is prefered.
      *
      * @param   bool  $isExpert  use expert settings (yes/no)
-     * @return  self
+     * @return  $this
      */
     public function setExpert($isExpert);
 
@@ -212,7 +213,7 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      * should be deactivated (suspended) without permanently deleting the user settings.
      *
      * @param   bool  $isActive  use expert settings (yes/no)
-     * @return  self
+     * @return  $this
      */
     public function setActive($isActive);
 
@@ -308,7 +309,7 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      * We think this is acceptable since it also makes the user less vulnerable to session-riding-attacks.
      *
      * @param   string  $checkSum  MD5-checksum of session-id
-     * @return  self
+     * @return  $this
      */
     public function setSessionCheckSum($checkSum);
 
@@ -328,7 +329,7 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      * The user must enter this id in order to reset the password.
      *
      * @param   string  $passwordRecoveryId  some identifier (preferably a hash value)
-     * @return  self
+     * @return  $this
      */
     public function setPasswordRecoveryId($passwordRecoveryId);
 
@@ -336,7 +337,7 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      * Set time when the last password recovery request was made.
      *
      * @param   int $passwordRecoveryTime  a valid timestamp
-     * @return  self
+     * @return  $this
      */
     public function setPasswordRecoveryTime($passwordRecoveryTime);
 
@@ -344,7 +345,7 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      * Set time when the user last changed his password.
      *
      * @param   int  $passwordChangedTime  a valid timestamp
-     * @return  self
+     * @return  $this
      */
     public function setPasswordChangedTime($passwordChangedTime);
 
@@ -354,7 +355,7 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      * When a new password is set it must not be one of those.
      *
      * @param   array  $recentPasswords  list of password hashes
-     * @return  self
+     * @return  $this
      */
     public function setRecentPasswords(array $recentPasswords);
 
@@ -364,7 +365,7 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      * Should not be changed manually.
      *
      * @param   int  $timeCreated  valid timestamp
-     * @return  self
+     * @return  $this
      */
     public function setTimeCreated($timeCreated);
 
@@ -372,7 +373,7 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      * Set login password to $password.
      *
      * @param   string  $password user password
-     * @return  self
+     * @return  $this
      */
     public function setPassword($password);
 

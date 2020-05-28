@@ -41,14 +41,7 @@ namespace Yana\Core\Dependencies;
 trait HasSecurity
 {
 
-    use \Yana\Data\Adapters\HasCache, \Yana\Core\Dependencies\HasSession;
-
-    /**
-     * Database connection.
-     *
-     * @var  \Yana\Db\IsConnection
-     */
-    private $_dataConnection = null;
+    use \Yana\Data\Adapters\HasCache, \Yana\Core\Dependencies\HasSession, \Yana\Security\Dependencies\HasPassword;
 
     /**
      * Level data adapter.
@@ -82,40 +75,11 @@ trait HasSecurity
     private $_loginBehavior = null;
 
     /**
-     * @var  \Yana\Security\Passwords\Builders\Builder
-     */
-    private $_passwordAlgorithmBuilder = null;
-
-    /**
-     * @var  \Yana\Security\Passwords\IsAlgorithm
-     */
-    private $_passwordAlgorithm = null;
-
-    /**
-     * @var  \Yana\Security\Passwords\Generators\IsAlgorithm
-     */
-    private $_passwordGenerator = null;
-
-    /**
      * Handles the changing of passwords.
      *
      * @var  \Yana\Security\Passwords\Behaviors\IsBehavior
      */
     private $_passwordBehavior = null;
-
-    /**
-     * Used to change and check passwords.
-     *
-     * @var  \Yana\Security\Passwords\Providers\IsAuthenticationProvider
-     */
-    private $_authenticationProvider = null;
-
-    /**
-     * Used to change and check passwords.
-     *
-     * @var  \Yana\Security\Passwords\Behaviors\IsBuilder
-     */
-    private $_passwordBehaviorBuilder = null;
 
     /**
      * Get default user settings.
@@ -130,38 +94,6 @@ trait HasSecurity
      * @return  array
      */
     abstract public function getDefaultUserRequirements(): array;
-
-    /**
-     * Returns a ready-to-use factory to create open database connections.
-     *
-     * @return  \Yana\Db\IsConnectionFactory
-     */
-    abstract public function getConnectionFactory(): \Yana\Db\IsConnectionFactory;
-
-    /**
-     * Get database connection.
-     *
-     * @return  \Yana\Db\IsConnection
-     */
-    protected function _getDataConnection(): \Yana\Db\IsConnection
-    {
-        if (!isset($this->_dataConnection)) {
-            $this->_dataConnection = $this->getConnectionFactory()->createConnection('user');
-        }
-        return $this->_dataConnection;
-    }
-
-    /**
-     * Set connection to user database.
-     *
-     * @param   \Yana\Db\IsConnection  $dataConnection  connection to user database
-     * @return  $this
-     */
-    protected function _setDataConnection(\Yana\Db\IsConnection $dataConnection)
-    {
-        $this->_dataConnection = $dataConnection;
-        return $this;
-    }
 
     /**
      * Builds and returns a rule-checker object.
@@ -207,42 +139,6 @@ trait HasSecurity
     }
 
     /**
-     * Inject password algorithm builder instance.
-     *
-     * @param   \Yana\Security\Passwords\Builders\Builder  $passwordAlgorithmBuilder  dependency
-     * @return  $this
-     */
-    public function setPasswordAlgorithmBuilder(\Yana\Security\Passwords\Builders\Builder $passwordAlgorithmBuilder)
-    {
-        $this->_passwordAlgorithmBuilder = $passwordAlgorithmBuilder;
-        return $this;
-    }
-
-    /**
-     * Inject specific password algorithm.
-     *
-     * @param   \Yana\Security\Passwords\IsAlgorithm  $passwordAlgorithm  dependency
-     * @return  $this
-     */
-    public function setPasswordAlgorithm(\Yana\Security\Passwords\IsAlgorithm $passwordAlgorithm)
-    {
-        $this->_passwordAlgorithm = $passwordAlgorithm;
-        return $this;
-    }
-
-    /**
-     * Inject password generator.
-     *
-     * @param   \Yana\Security\Passwords\Generators\IsAlgorithm  $passwordGenerator  dependency
-     * @return  $this
-     */
-    public function setPasswordGenerator(\Yana\Security\Passwords\Generators\IsAlgorithm $passwordGenerator)
-    {
-        $this->_passwordGenerator = $passwordGenerator;
-        return $this;
-    }
-
-    /**
      * Inject password checking behavior.
      *
      * @param   \Yana\Security\Passwords\Behaviors\IsBehavior  $passwordBehavior  dependency
@@ -252,64 +148,6 @@ trait HasSecurity
     {
         $this->_passwordBehavior = $passwordBehavior;
         return $this;
-    }
-
-    /**
-     * Inject password behavior builder.
-     *
-     * @param   \Yana\Security\Passwords\Behaviors\IsBuilder  $builder  dependency
-     * @return  $this
-     */
-    public function setPasswordBehaviorBuilder(\Yana\Security\Passwords\Behaviors\IsBuilder $builder)
-    {
-        $this->_passwordBehaviorBuilder = $builder;
-        return $this;
-    }
-
-    /**
-     * Set auhtentication provider dependency.
-     *
-     * @param   \Yana\Security\Passwords\Providers\IsAuthenticationProvider  $provider  dependency
-     * @return  $this
-     */
-    public function setAuthenticationProvider(\Yana\Security\Passwords\Providers\IsAuthenticationProvider $provider)
-    {
-        $this->_authenticationProvider = $provider;
-        return $this;
-    }
-
-    /**
-     * Retrieve authentication provider dependency.
-     *
-     * The authentication provider is used to check and/or change passwords.
-     * If none has been set, this function will initialize and return a standard
-     * authentication provider by default.
-     *
-     * @return  \Yana\Security\Passwords\Providers\IsAuthenticationProvider
-     */
-    public function getAuthenticationProvider(): \Yana\Security\Passwords\Providers\IsAuthenticationProvider
-    {
-        if (!isset($this->_authenticationProvider)) {
-            $builder = $this->getAuthenticationProviderBuilder();
-            $this->_authenticationProvider = $builder->buildFromUserName($this->getSession()->getCurrentUserName());
-            unset($builder);
-        }
-        return $this->_authenticationProvider;
-    }
-
-    /**
-     * Retrieve algorithm builder.
-     *
-     * The builder's purpose is to select and create instances of hashing algorithms used to create and compare password hashes.
-     *
-     * @return  \Yana\Security\Passwords\Builders\IsBuilder
-     */
-    public function getPasswordAlgorithmBuilder(): \Yana\Security\Passwords\Builders\IsBuilder
-    {
-        if (!isset($this->_passwordAlgorithmBuilder)) {
-            $this->_passwordAlgorithmBuilder = new \Yana\Security\Passwords\Builders\Builder();
-        }
-        return $this->_passwordAlgorithmBuilder;
     }
 
     /**
@@ -326,57 +164,6 @@ trait HasSecurity
     }
 
     /**
-     * Retrieve password algorithm dependency.
-     *
-     * @return  \Yana\Security\Passwords\IsAlgorithm
-     */
-    public function getPasswordAlgorithm(): \Yana\Security\Passwords\IsAlgorithm
-    {
-        if (!isset($this->_passwordAlgorithm)) {
-            $this->_passwordAlgorithm =
-                $this->getPasswordAlgorithmBuilder()
-                    ->add(\Yana\Security\Passwords\Builders\Enumeration::BASIC)
-                    ->add(\Yana\Security\Passwords\Builders\Enumeration::BLOWFISH)
-                    ->add(\Yana\Security\Passwords\Builders\Enumeration::SHA256)
-                    ->add(\Yana\Security\Passwords\Builders\Enumeration::SHA512)
-                    ->add(\Yana\Security\Passwords\Builders\Enumeration::BCRYPT)
-                    ->__invoke();
-        }
-        return $this->_passwordAlgorithm;
-    }
-
-    /**
-     * Retrieve password generator dependency.
-     *
-     * @return  \Yana\Security\Passwords\Generators\IsAlgorithm
-     */
-    public function getPasswordGenerator(): \Yana\Security\Passwords\Generators\IsAlgorithm
-    {
-        if (!isset($this->_passwordGenerator)) {
-            $this->_passwordGenerator = new \Yana\Security\Passwords\Generators\StandardAlgorithm();
-        }
-        return $this->_passwordGenerator;
-    }
-
-    /**
-     * Retrieve password behavior builder dependency.
-     *
-     * @return \Yana\Security\Passwords\Behaviors\IsBuilder
-     */
-    public function getPasswordBehaviorBuilder(): \Yana\Security\Passwords\Behaviors\IsBuilder
-    {
-        if (!isset($this->_passwordBehaviorBuilder)) {
-            $this->_passwordBehaviorBuilder = new \Yana\Security\Passwords\Behaviors\Builder();
-            $this->_passwordBehaviorBuilder
-                    ->setPasswordAlgorithm($this->getPasswordAlgorithm())
-                    ->setPasswordGenerator($this->getPasswordGenerator())
-                    ->setPasswordAlgorithmBuilder($this->getPasswordAlgorithmBuilder())
-                    ->setAuthenticationProvider($this->getAuthenticationProvider());
-        }
-        return $this->_passwordBehaviorBuilder;
-    }
-
-    /**
      * Retrieve password behavior dependency.
      *
      * @return  \Yana\Security\Passwords\Behaviors\IsBehavior
@@ -384,8 +171,7 @@ trait HasSecurity
     public function getPasswordBehavior(): \Yana\Security\Passwords\Behaviors\IsBehavior
     {
         if (!isset($this->_passwordBehavior)) {
-            $builder = $this->getPasswordBehaviorBuilder();
-            $this->_passwordBehavior = $builder->__invoke();
+            $this->_passwordBehavior = new \Yana\Security\Passwords\Behaviors\StandardBehavior($this);
         }
         return $this->_passwordBehavior;
     }
@@ -447,26 +233,6 @@ trait HasSecurity
     }
 
     /**
-     * Create and return authentication provider builder.
-     *
-     * @return \Yana\Security\Passwords\Providers\IsBuilder
-     */
-    public function getAuthenticationProviderBuilder(): \Yana\Security\Passwords\Providers\IsBuilder
-    {
-        return new \Yana\Security\Passwords\Providers\Builder($this->getPasswordAlgorithm(), $this->_getAuthenticationProviderAdapter());
-    }
-
-    /**
-     * Create and return authentication provider adapter.
-     *
-     * @return \Yana\Security\Passwords\Providers\IsAdapter
-     */
-    protected function _getAuthenticationProviderAdapter(): \Yana\Security\Passwords\Providers\IsAdapter
-    {
-        return new \Yana\Security\Passwords\Providers\Adapter($this->_getDataConnection(), $this->_getAuthenticationProviderMapper());
-    }
-
-    /**
      * Create and return user database mapper.
      *
      * @return  \Yana\Data\Adapters\IsEntityMapper
@@ -476,15 +242,6 @@ trait HasSecurity
         return new \Yana\Security\Data\Users\Mapper();
     }
 
-    /**
-     * Create and return authentication provider database mapper.
-     *
-     * @return  \Yana\Data\Adapters\IsEntityMapper
-     */
-    protected function _getAuthenticationProviderMapper(): \Yana\Data\Adapters\IsEntityMapper
-    {
-        return new \Yana\Security\Passwords\Providers\Mapper();
-    }
 }
 
 ?>

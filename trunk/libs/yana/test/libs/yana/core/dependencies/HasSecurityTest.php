@@ -156,15 +156,6 @@ class HasSecurityTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testSetPasswordBehaviorBuilder()
-    {
-        $object = new \Yana\Security\Passwords\Behaviors\Builder();
-        $this->assertSame($object, $this->object->setPasswordBehaviorBuilder($object)->getPasswordBehaviorBuilder());
-    }
-
-    /**
-     * @test
-     */
     public function testSetPasswordBehavior()
     {
         $object = new \Yana\Security\Passwords\Behaviors\StandardBehavior($this->object->getPasswordAlgorithm(), $this->object->getPasswordGenerator(), $this->object->getAuthenticationProvider());
@@ -241,15 +232,6 @@ class HasSecurityTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertTrue(($provider = $this->object->getAuthenticationProvider()) instanceof \Yana\Security\Passwords\Providers\Standard);
         $this->assertSame($provider, $this->object->getAuthenticationProvider());
-    }
-
-    /**
-     * @test
-     */
-    public function testGetPasswordBehaviorBuilder()
-    {
-        $this->assertTrue(($builder = $this->object->getPasswordBehaviorBuilder()) instanceof \Yana\Security\Passwords\Behaviors\Builder);
-        $this->assertSame($builder, $this->object->getPasswordBehaviorBuilder());
     }
 
 }

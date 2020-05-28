@@ -25,19 +25,19 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Security\Passwords\Behaviors;
+namespace Yana\Security\Dependencies;
 
 /**
  * @ignore
  */
-require_once __DIR__ . '/../../../../../include.php';
+require_once __DIR__ . '/../../../../include.php';
 
 /**
  * Test-case
  *
  * @package  test
  */
-class BuilderTest extends \PHPUnit_Framework_TestCase
+class HasPasswordTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
@@ -51,7 +51,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Security\Passwords\Behaviors\Builder();
+        $this->object = new \Yana\Security\Dependencies\PasswordContainer();
     }
 
     /**
@@ -96,7 +96,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
     public function testSetAuthenticationProvider()
     {
         $provider = new \Yana\Security\Passwords\Providers\Ldap("");
-        $this->assertSame($provider, $this->object->setAuthenticationProvider($provider)->getAuthenticationProvider());
+        $this->assertSame($provider, $this->object->setAuthenticationProvider($provider)->getAuthenticationProvider(new \Yana\Security\Data\Users\Entity("test")));
     }
 
     /**
@@ -105,7 +105,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
     public function testGetAuthenticationProvider()
     {
         $provider = new \Yana\Security\Passwords\Providers\Standard($this->object->getPasswordAlgorithm());
-        $this->assertEquals($provider, $this->object->getAuthenticationProvider());
+        $this->assertEquals($provider, $this->object->getAuthenticationProvider(new \Yana\Security\Data\Users\Entity("test")));
     }
 
     /**
@@ -133,14 +133,6 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
     {
         $generatorAlgorithm = $this->object->getPasswordGenerator();
         $this->assertTrue($generatorAlgorithm instanceof \Yana\Security\Passwords\Generators\IsAlgorithm, 'Instance of IsAlgorithm expected.');
-    }
-
-    /**
-     * @test
-     */
-    public function test__invoke()
-    {
-        $this->assertTrue($this->object->__invoke() instanceof \Yana\Security\Passwords\Behaviors\IsBehavior, 'Instance of IsBehavior expected.');
     }
 
 }

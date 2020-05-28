@@ -51,10 +51,12 @@ class StandardBehaviorTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $password = new \Yana\Security\Passwords\NullAlgorithm();
-        $generator = new \Yana\Security\Passwords\Generators\NullAlgorithm();
-        $provider = new \Yana\Security\Passwords\Providers\Standard($password);
-        $this->object = new \Yana\Security\Passwords\Behaviors\StandardBehavior($password, $generator, $provider);
+        $container = new \Yana\Security\Dependencies\PasswordContainer();
+        $container->setPasswordAlgorithm(new \Yana\Security\Passwords\NullAlgorithm());
+        $container->setPasswordGenerator(new \Yana\Security\Passwords\Generators\NullAlgorithm());
+        $container->setAuthenticationProvider(new \Yana\Security\Passwords\Providers\Standard($container->getPasswordAlgorithm()));
+
+        $this->object = new \Yana\Security\Passwords\Behaviors\StandardBehavior($container);
         $this->object->setUser(new \Yana\Security\Data\Users\Entity('test'));
     }
 

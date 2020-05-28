@@ -47,21 +47,9 @@ abstract class AbstractBehavior extends \Yana\Core\StdObject implements \Yana\Se
     private $_user = null;
 
     /**
-     * @var  \Yana\Security\Passwords\IsAlgorithm
+     * @var  \Yana\Security\Dependencies\IsPasswordContainer
      */
-    private $_algorithm = null;
-
-    /**
-     * @var  \Yana\Security\Passwords\Generators\IsAlgorithm
-     */
-    private $_generator = null;
-
-    /**
-     * Can be injected. Used to change and check passwords.
-     *
-     * @var  \Yana\Security\Passwords\Providers\IsAuthenticationProvider
-     */
-    private $_authenticationProvider = null;
+    private $_container = null;
 
     /**
      * Initialize dependencies.
@@ -70,11 +58,9 @@ abstract class AbstractBehavior extends \Yana\Core\StdObject implements \Yana\Se
      * @param  \Yana\Security\Passwords\Generators\IsAlgorithm              $generator  to generade new random passwords
      * @param  \Yana\Security\Passwords\Providers\IsAuthenticationProvider  $provider   used to check and change passwords
      */
-    public function __construct(\Yana\Security\Passwords\IsAlgorithm $algorithm, \Yana\Security\Passwords\Generators\IsAlgorithm $generator, \Yana\Security\Passwords\Providers\IsAuthenticationProvider $provider)
+    public function __construct(\Yana\Security\Dependencies\IsPasswordContainer $container)
     {
-        $this->_algorithm = $algorithm;
-        $this->_generator = $generator;
-        $this->_authenticationProvider = $provider;
+        $this->_container = $container;
     }
 
     /**
@@ -82,11 +68,12 @@ abstract class AbstractBehavior extends \Yana\Core\StdObject implements \Yana\Se
      *
      * The authentication provider is used to check and/or change passwords.
      *
+     * @param   \Yana\Security\Data\Users\IsEntity  $user  entity
      * @return  \Yana\Security\Passwords\Providers\IsAuthenticationProvider
      */
-    protected function _getAuthenticationProvider(): \Yana\Security\Passwords\Providers\IsAuthenticationProvider
+    protected function _getAuthenticationProvider(\Yana\Security\Data\Users\IsEntity $user): \Yana\Security\Passwords\Providers\IsAuthenticationProvider
     {
-        return $this->_authenticationProvider;
+        return $this->_container->getAuthenticationProvider($user);
     }
 
     /**
@@ -94,7 +81,7 @@ abstract class AbstractBehavior extends \Yana\Core\StdObject implements \Yana\Se
      *
      * @return  \Yana\Security\Data\Users\IsEntity
      */
-    public function getUser()
+    public function getUser(): \Yana\Security\Data\Users\IsEntity
     {
         if (!isset($this->_user)) {
             $this->_user = new \Yana\Security\Data\Users\Guest();
@@ -109,7 +96,7 @@ abstract class AbstractBehavior extends \Yana\Core\StdObject implements \Yana\Se
      */
     protected function _getAlgorithm()
     {
-        return $this->_algorithm;
+        return $this->_container->getPasswordAlgorithm();
     }
 
     /**
@@ -119,7 +106,7 @@ abstract class AbstractBehavior extends \Yana\Core\StdObject implements \Yana\Se
      */
     protected function _getGenerator()
     {
-        return $this->_generator;
+        return $this->_container->getPasswordGenerator();
     }
 
     /**
@@ -131,30 +118,6 @@ abstract class AbstractBehavior extends \Yana\Core\StdObject implements \Yana\Se
     public function setUser(\Yana\Security\Data\Users\IsEntity $user)
     {
         $this->_user = $user;
-        return $this;
-    }
-
-    /**
-     * Replaces currently used password hash algorithm.
-     *
-     * @param   \Yana\Security\Passwords\IsAlgorithm  $algorithm  new algorithm to use
-     * @return  \Yana\Security\Passwords\Behaviors\IsBehavior
-     */
-    protected function _setAlgorithm(\Yana\Security\Passwords\IsAlgorithm $algorithm)
-    {
-        $this->_algorithm = $algorithm;
-        return $this;
-    }
-
-    /**
-     * Replaces currently used password generating algorithm.
-     *
-     * @param   \Yana\Security\Passwords\Generators\IsAlgorithm  $generator  new algorithm to use
-     * @return  \Yana\Security\Passwords\Behaviors\IsBehavior
-     */
-    protected function _setGenerator(\Yana\Security\Passwords\Generators\IsAlgorithm $generator)
-    {
-        $this->_generator = $generator;
         return $this;
     }
 

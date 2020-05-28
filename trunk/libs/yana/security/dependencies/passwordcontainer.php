@@ -26,49 +26,42 @@
  *
  * @ignore
  */
-declare(strict_types=1);
 
 namespace Yana\Security\Dependencies;
 
 /**
- * <<interface>> Defines dependencies required by behavior-builder.
+ * Dependency container.
+ *
+ * For testing purposes.
  *
  * @package     yana
  * @subpackage  security
- *
  * @ignore
  */
-interface IsContainer
+class PasswordContainer extends \Yana\Core\StdObject implements \Yana\Security\Dependencies\IsPasswordContainer
 {
 
-    /**
-     * Retrieve password behavior dependency.
-     *
-     * @param   string  $userId  user name
-     * @return  \Yana\Security\Passwords\Behaviors\IsBehavior
-     */
-    public function getPasswordBehavior(): \Yana\Security\Passwords\Behaviors\IsBehavior;
+    use \Yana\Security\Dependencies\HasPassword;
 
     /**
-     * Retrieve login behavior dependency.
-     *
-     * @return  \Yana\Security\Logins\IsBehavior
+     * @var \Yana\Db\IsConnectionFactory
      */
-    public function getLoginBehavior(): \Yana\Security\Logins\IsBehavior;
+    private $_connectionFactory = null;
 
     /**
-     * Retrieve levels data adapter.
+     * Returns a ready-to-use factory to create open database connections.
      *
-     * @return  \Yana\Security\Data\SecurityLevels\Adapter
+     * @return  \Yana\Db\IsConnectionFactory
      */
-    public function getLevelsAdapter(): \Yana\Security\Data\SecurityLevels\Adapter;
-
-    /**
-     * Retrieve rules data adapter.
-     *
-     * @return  \Yana\Security\Data\SecurityRules\Adapter
-     */
-    public function getRulesAdapter(): \Yana\Security\Data\SecurityRules\Adapter;
+    public function getConnectionFactory(): \Yana\Db\IsConnectionFactory
+    {
+        if (!isset($this->_connectionFactory)) {
+            $cache = new \Yana\Data\Adapters\SessionAdapter(__CLASS__);
+            $schemaFactory = new \Yana\Db\SchemaFactory($cache);
+            $this->_connectionFactory = new \Yana\Db\ConnectionFactory($schemaFactory);
+        }
+        return $this->_connectionFactory;
+    }
 
 }
 
