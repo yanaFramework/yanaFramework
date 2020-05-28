@@ -159,6 +159,11 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
     private $_urlFormatter = null;
 
     /**
+     * @var \Yana\Db\Sources\IsAdapter
+     */
+    private $_dataSourceAdapter = null;
+
+    /**
      * <<constructor>> Creates an instance.
      *
      * @param  \Yana\Util\IsXmlObject  $configuration  loaded from XML file in config-directory
