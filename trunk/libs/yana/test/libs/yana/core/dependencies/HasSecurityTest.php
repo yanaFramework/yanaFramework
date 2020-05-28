@@ -37,7 +37,7 @@ require_once __DIR__ . '/../../../../include.php';
  * @ignore
  * @package  test
  */
-class MyHasSecurity
+class MyHasSecurity implements \Yana\Security\Dependencies\IsPasswordContainer
 {
 
     use \Yana\Core\Dependencies\HasSecurity;
@@ -150,7 +150,7 @@ class HasSecurityTest extends \PHPUnit_Framework_TestCase
     public function testSetAuthenticationProvider()
     {
         $object = new \Yana\Security\Passwords\Providers\Ldap("");
-        $this->assertSame($object, $this->object->setAuthenticationProvider($object)->getAuthenticationProvider());
+        $this->assertSame($object, $this->object->setAuthenticationProvider($object)->getAuthenticationProvider(new \Yana\Security\Data\Users\Entity('test')));
     }
 
     /**
@@ -158,7 +158,8 @@ class HasSecurityTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetPasswordBehavior()
     {
-        $object = new \Yana\Security\Passwords\Behaviors\StandardBehavior($this->object->getPasswordAlgorithm(), $this->object->getPasswordGenerator(), $this->object->getAuthenticationProvider());
+        $container = new \Yana\Security\Dependencies\PasswordContainer();
+        $object = new \Yana\Security\Passwords\Behaviors\StandardBehavior($container);
         $this->assertSame($object, $this->object->setPasswordBehavior($object)->getPasswordBehavior());
     }
 
@@ -230,8 +231,8 @@ class HasSecurityTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetAuthenticationProvider()
     {
-        $this->assertTrue(($provider = $this->object->getAuthenticationProvider()) instanceof \Yana\Security\Passwords\Providers\Standard);
-        $this->assertSame($provider, $this->object->getAuthenticationProvider());
+        $this->assertTrue(($provider = $this->object->getAuthenticationProvider(new \Yana\Security\Data\Users\Entity('test'))) instanceof \Yana\Security\Passwords\Providers\Standard);
+        $this->assertSame($provider, $this->object->getAuthenticationProvider(new \Yana\Security\Data\Users\Entity('test')));
     }
 
 }
