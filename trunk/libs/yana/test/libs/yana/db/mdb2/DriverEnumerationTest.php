@@ -49,4 +49,20 @@ class DriverEnumerationTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    /**
+     * @test
+     */
+    public function testMapAliasToDriver()
+    {
+        $this->assertSame(__FUNCTION__, \Yana\Db\Mdb2\DriverEnumeration::mapAliasToDriver(__FUNCTION__));
+        $this->assertSame(\Yana\Db\Mdb2\DriverEnumeration::FRONTBASE, \Yana\Db\Mdb2\DriverEnumeration::mapAliasToDriver(\Yana\Db\DriverEnumeration::FRONTBASE));
+        $this->assertSame(\Yana\Db\Mdb2\DriverEnumeration::INTERBASE, \Yana\Db\Mdb2\DriverEnumeration::mapAliasToDriver(\Yana\Db\DriverEnumeration::INTERBASE));
+        $this->assertSame(\Yana\Db\Mdb2\DriverEnumeration::MSSQL, \Yana\Db\Mdb2\DriverEnumeration::mapAliasToDriver(\Yana\Db\DriverEnumeration::MSSQL));
+        $this->assertSame(\Yana\Db\Mdb2\DriverEnumeration::MYSQL, \Yana\Db\Mdb2\DriverEnumeration::mapAliasToDriver(\Yana\Db\DriverEnumeration::MYSQL));
+        $this->assertSame(\Yana\Db\Mdb2\DriverEnumeration::ORACLE, \Yana\Db\Mdb2\DriverEnumeration::mapAliasToDriver(\Yana\Db\DriverEnumeration::ORACLE));
+        $this->assertSame(\Yana\Db\Mdb2\DriverEnumeration::POSTGRESQL, \Yana\Db\Mdb2\DriverEnumeration::mapAliasToDriver(\Yana\Db\DriverEnumeration::POSTGRESQL));
+        $this->assertSame(\Yana\Db\Mdb2\DriverEnumeration::SQLITE, \Yana\Db\Mdb2\DriverEnumeration::mapAliasToDriver(\Yana\Db\DriverEnumeration::SQLLITE));
+        $this->assertSame(\Yana\Db\Mdb2\DriverEnumeration::QUERYSIM, \Yana\Db\Mdb2\DriverEnumeration::mapAliasToDriver(\Yana\Db\DriverEnumeration::QUERYSIM));
+    }
+
 }

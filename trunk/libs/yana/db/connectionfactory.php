@@ -187,7 +187,10 @@ class ConnectionFactory extends \Yana\Core\StdObject implements \Yana\Db\IsConne
     protected function _buildDoctrineConnection(\Yana\Db\Ddl\Database $schema, \Yana\Db\Sources\IsEntity $connectionSettings): ?\Yana\Db\Doctrine\Connection
     {
         try {
-            $factory = new \Yana\Db\Doctrine\ConnectionFactory($connectionSettings->toDsn());
+            $dsn = $connectionSettings->toDsn();
+            $dbms = \Yana\Db\Doctrine\DriverEnumeration::mapAliasToDriver($dsn[\Yana\Db\Sources\DsnEnumeration::DBMS]);
+            $dsn[\Yana\Db\Sources\DsnEnumeration::DBMS] = $dbms;
+            $factory = new \Yana\Db\Doctrine\ConnectionFactory($dsn);
             return new \Yana\Db\Doctrine\Connection($schema, $factory);
 
         } catch (\Exception $e) {
@@ -208,7 +211,10 @@ class ConnectionFactory extends \Yana\Core\StdObject implements \Yana\Db\IsConne
     protected function _buildMdb2Connection(\Yana\Db\Ddl\Database $schema, \Yana\Db\Sources\IsEntity $connectionSettings): ?\Yana\Db\Mdb2\Connection
     {
         try {
-            $factory = new \Yana\Db\Mdb2\ConnectionFactory($connectionSettings->toDsn());
+            $dsn = $connectionSettings->toDsn();
+            $dbms = \Yana\Db\Mdb2\DriverEnumeration::mapAliasToDriver($dsn[\Yana\Db\Sources\DsnEnumeration::DBMS]);
+            $dsn[\Yana\Db\Sources\DsnEnumeration::DBMS] = $dbms;
+            $factory = new \Yana\Db\Mdb2\ConnectionFactory($dsn);
             return new \Yana\Db\Mdb2\Connection($schema, $factory);
 
         } catch (\Exception $e) {

@@ -45,6 +45,64 @@ class DriverEnumeration extends \Yana\Core\AbstractEnumeration
     const QUERYSIM = 'querysim';
     const SQLITE = 'sqlite';
 
+    /**
+     * Maps a driver alias as given by MDB2 or Doctrine to common DBMS driver name.
+     *
+     * If the alias is unknown, it is returned unchanged.
+     *
+     * @param   string  $dbms  alias to map
+     * @return  string
+     */
+    public static function mapAliasToDriver(string $dbms): string
+    {
+        switch ($dbms)
+        {
+            // Mapping aliases (driver names) to real DBMS names
+            case \Yana\Db\DriverEnumeration::MYSQL:
+            case \Yana\Db\Doctrine\DriverEnumeration::MYSQL:
+            case \Yana\Db\Doctrine\DriverEnumeration::MYSQL_2:
+            case \Yana\Db\Doctrine\DriverEnumeration::MYSQL_PDO:
+            case \Yana\Db\Doctrine\DriverEnumeration::MYSQL_DRIZZLE:
+                return self::MYSQL;
+
+            case \Yana\Db\DriverEnumeration::MSSQL:
+            case \Yana\Db\Doctrine\DriverEnumeration::MSSQL:
+            case \Yana\Db\Doctrine\DriverEnumeration::MSSQL_PDO:
+                return self::MSSQL;
+
+            case \Yana\Db\DriverEnumeration::POSTGRESQL:
+            case \Yana\Db\Doctrine\DriverEnumeration::POSTGRESQL:
+            case \Yana\Db\Doctrine\DriverEnumeration::POSTGRESQL_ALIAS:
+            case \Yana\Db\Doctrine\DriverEnumeration::POSTGRESQL_ALIAS2:
+            case \Yana\Db\Doctrine\DriverEnumeration::POSTGRESQL_PDO:
+                return self::POSTGRESQL;
+
+            case \Yana\Db\DriverEnumeration::SQLLITE:
+            case \Yana\Db\Doctrine\DriverEnumeration::SQLITE:
+            case \Yana\Db\Doctrine\DriverEnumeration::SQLITE_ALIAS:
+            case \Yana\Db\Doctrine\DriverEnumeration::SQLITE_PDO:
+                return self::SQLITE;
+
+            case \Yana\Db\DriverEnumeration::ORACLE:
+            case \Yana\Db\Doctrine\DriverEnumeration::ORACLE:
+            case \Yana\Db\Doctrine\DriverEnumeration::ORACLE_ALIAS:
+            case \Yana\Db\Doctrine\DriverEnumeration::ORACLE_PDO:
+                return self::ORACLE;
+
+            case \Yana\Db\DriverEnumeration::FRONTBASE:
+                return self::FRONTBASE;
+
+            case \Yana\Db\DriverEnumeration::INTERBASE:
+                return self::INTERBASE;
+
+            case \Yana\Db\DriverEnumeration::QUERYSIM:
+                return self::QUERYSIM;
+            // any other
+            default:
+                return $dbms;
+        }
+    }
+
 }
 
 ?>

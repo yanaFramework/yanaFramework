@@ -56,6 +56,50 @@ class DriverEnumeration extends \Yana\Core\AbstractEnumeration
     const ORACLE_PDO = 'pdo_oci';
     const SYBASE = 'sqlanywhere';
 
+    /**
+     * Maps a driver alias as given by MDB2 or Doctrine to common DBMS driver name.
+     *
+     * If the alias is unknown, it is returned unchanged.
+     *
+     * @param   string  $dbms  alias to map
+     * @return  string
+     */
+    public static function mapAliasToDriver(string $dbms): string
+    {
+        switch ($dbms)
+        {
+            // Mapping aliases (driver names) to real DBMS names
+            case \Yana\Db\DriverEnumeration::MYSQL:
+            case \Yana\Db\Mdb2\DriverEnumeration::MYSQL:
+                return self::MYSQL;
+
+            case \Yana\Db\DriverEnumeration::MSSQL:
+            case \Yana\Db\Mdb2\DriverEnumeration::MSSQL:
+                return self::MSSQL;
+
+            case \Yana\Db\DriverEnumeration::DB2:
+                return self::DB2;
+
+            case \Yana\Db\DriverEnumeration::POSTGRESQL:
+            case \Yana\Db\Mdb2\DriverEnumeration::POSTGRESQL:
+                return self::POSTGRESQL;
+
+            case \Yana\Db\DriverEnumeration::SQLLITE:
+            case \Yana\Db\Mdb2\DriverEnumeration::SQLITE:
+                return self::SQLITE;
+
+            case \Yana\Db\DriverEnumeration::ORACLE:
+            case \Yana\Db\Mdb2\DriverEnumeration::ORACLE:
+                return self::ORACLE;
+
+            case \Yana\Db\DriverEnumeration::SYBASE:
+                return self::SYBASE;
+            // any other
+            default:
+                return $dbms;
+        }
+    }
+
 }
 
 ?>

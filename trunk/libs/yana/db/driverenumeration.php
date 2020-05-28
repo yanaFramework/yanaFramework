@@ -47,6 +47,7 @@ class DriverEnumeration extends \Yana\Core\AbstractEnumeration
     const POSTGRESQL = 'postgresql';
     const SYBASE = 'sybase';
     const SQLLITE = 'sqlite';
+    const QUERYSIM = 'querysim';
 
     /**
      * Maps a driver alias as given by MDB2 or Doctrine to common DBMS driver name.
