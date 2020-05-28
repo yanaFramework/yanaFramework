@@ -173,13 +173,16 @@ abstract class AbstractPlugin extends \stdClass implements \Yana\IsPlugin
      * $db = $this->_createConnection('user');
      * </code>
      *
-     * @param   string  $schema  name of the database schema file (see config/db/*.xml),
-     *                           or instance of \Yana\Db\Ddl\Database
+     * @param   string  $schema                  name of the database schema file (see config/db/*.xml)
+     * @param   string  $optionalDataSourceName  if you wish another than the default data source, add the name here
      * @return  \Yana\Db\IsConnection
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when no such database was found
+     * @throws  \Yana\Db\ConnectionException             when connection to database failed
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when a data source name was given, but no unique data source with that name was found
      */
-    protected function _connectToDatabase(string $schema): \Yana\Db\IsConnection
+    protected function _connectToDatabase(string $schema, ?string $optionalDataSourceName = null): \Yana\Db\IsConnection
     {
-        return $this->_getApplication()->connect($schema);
+        return $this->_getApplication()->connect($schema, $optionalDataSourceName);
     }
 
     /**
