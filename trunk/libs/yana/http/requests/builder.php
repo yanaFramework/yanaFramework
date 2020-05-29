@@ -64,7 +64,7 @@ class Builder extends \Yana\Http\Requests\Container
             ->setRequest(new \Yana\Http\Requests\ValueWrapper($_REQUEST))
             ->setGet(new \Yana\Http\Requests\ValueWrapper($_GET))
             ->setPost(new \Yana\Http\Requests\ValueWrapper($_POST))
-            ->setCookie(new \Yana\Http\Requests\ValueWrapper($_COOKIE))
+            ->setCookie(new \Yana\Http\Requests\ValueWrapper(isset($_COOKIE) ? $_COOKIE : array()))
             ->setArguments(new \Yana\Http\Requests\ValueWrapper(self::_createArgumentsFromSuperGlobals()))
             ->setMethod(new \Yana\Http\Requests\Method($methodName));
 
