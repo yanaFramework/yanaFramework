@@ -273,15 +273,6 @@ if (!defined('YANA_CACHE_ACTIVE')) {
     define("YANA_CACHE_ACTIVE", error_reporting() === 0);
 }
 
-if (!defined('YANA_AUTODEQUOTE')) {
-    /**
-     * reverse the effect of magic quotes
-     *
-     * Set this to bool(true) if you want to enforce that magic-quoting is off.
-     */
-    define('YANA_AUTODEQUOTE',           true);
-}
-
 if (!defined('YANA_DB_STRICT')) {
     /**
      * activate/deactivate strict database checks

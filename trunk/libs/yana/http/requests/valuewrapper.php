@@ -102,20 +102,17 @@ class ValueWrapper extends \Yana\Http\Requests\AbstractValueWrapper
      */
     public function asArrayOfStrings()
     {
-        return $this->_untaintArray($this->asUnsafeArray(), YANA_AUTODEQUOTE && get_magic_quotes_gpc());
+        return $this->_untaintArray($this->asUnsafeArray());
     }
 
     /**
      * Untaint request vars.
      *
      * @param   array  $unsafeValues  request vars
-     * @param   bool   $unquote       true: strip slashes, false: leave slashes alone
      * @return  array
      */
-    private function _untaintArray(array $unsafeValues, $unquote = false)
+    private function _untaintArray(array $unsafeValues)
     {
-        assert(is_bool($unquote), 'Invalid argument $unquote. Bool expected.');
-
         assert(!isset($value), 'Cannot redeclare var $value');
         $value = array_change_key_case($unsafeValues, CASE_LOWER);
         assert(!isset($sanitizer), 'Cannot redeclare var $sanitizer');
@@ -128,10 +125,7 @@ class ValueWrapper extends \Yana\Http\Requests\AbstractValueWrapper
         foreach ($value as $i => $item)
         {
             if (is_array($item)) {
-                $value[$i] = $this->_untaintArray($value[$i], $unquote);
-            } elseif (is_string($item) && $unquote === true) {
-                $item = stripcslashes($item);
-                $value[$i] = $sanitizer($item);
+                $value[$i] = $this->_untaintArray($value[$i]);
             } elseif (is_scalar($item)) {
                 $value[$i] = $sanitizer((string) $item);
             }
