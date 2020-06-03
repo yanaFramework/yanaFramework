@@ -179,10 +179,10 @@ class WhereClauseHelper extends \Yana\Core\StdObject
                 $operator = \Yana\Db\Queries\OperatorEnumeration::NOT_REGEX;
                 // fall through
             case \Yana\Db\Queries\OperatorEnumeration::LIKE:
-                $rightOperand = str_replace(array('%', '_'), array('.*', '.?'), preg_quote($rightOperand, '/'));
+                $rightOperand = str_replace(array('%', '_'), array('.*', '.?'), preg_quote((string) $rightOperand, '/'));
                 // fall through
             case \Yana\Db\Queries\OperatorEnumeration::REGEX:
-                return preg_match('/^' . $rightOperand . '$/is', $value) === 1 xor $operator === \Yana\Db\Queries\OperatorEnumeration::NOT_REGEX;
+                return is_scalar($value) && is_scalar($rightOperand) && preg_match('/^' . (string) $rightOperand . '$/is', (string) $value) === 1 xor $operator === \Yana\Db\Queries\OperatorEnumeration::NOT_REGEX;
 
             case \Yana\Db\Queries\OperatorEnumeration::LESS:
                 return ($value < $rightOperand);

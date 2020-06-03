@@ -369,4 +369,24 @@ class WhereClauseHelperTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->object->__invoke($rows, $where));
     }
 
+    /**
+     * @test
+     */
+    public function test__invokeRegexWithInt()
+    {
+        $rows = array('A' => '123');
+        $where = array('a', \Yana\Db\Queries\OperatorEnumeration::REGEX, 123);
+        $this->assertTrue($this->object->__invoke($rows, $where));
+    }
+
+    /**
+     * @test
+     */
+    public function test__invokeRegexWithInvalidValue()
+    {
+        $rows = array('A' => '123');
+        $where = array('a', \Yana\Db\Queries\OperatorEnumeration::REGEX, array(1));
+        $this->assertFalse($this->object->__invoke($rows, $where));
+    }
+
 }
