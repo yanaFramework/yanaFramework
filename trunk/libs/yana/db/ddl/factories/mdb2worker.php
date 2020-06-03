@@ -158,7 +158,12 @@ class Mdb2Worker extends \Yana\Db\Ddl\Factories\AbstractMdb2Worker
         assert(!isset($contraintName), 'Cannot redeclare var $contraintName');
         foreach ($this->_getWrapper()->listTableConstraints($tableName) as $contraintName => $contraintInfo)
         {
-            $mapper->createConstraint($table, $contraintInfo, $contraintName);
+            try {
+                $mapper->createConstraint($table, $contraintInfo, $contraintName);
+
+            } catch (\Yana\Core\Exceptions\NotImplementedException $e) {
+                // Compound primary keys are not supported. We skip this one.
+            }
         }
         unset($contraintInfo, $contraintName);
     }

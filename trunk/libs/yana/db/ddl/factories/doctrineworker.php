@@ -154,7 +154,12 @@ class DoctrineWorker extends \Yana\Db\Ddl\Factories\AbstractDoctrineWorker
         foreach ($this->_getWrapper()->listTableIndexes($tableName) as $indexInfo)
         {
             $indexName = $indexInfo->getName();
-            $mapper->createIndex($table, $indexInfo, $indexName);
+            try {
+                $mapper->createIndex($table, $indexInfo, $indexName);
+
+            } catch (\Yana\Core\Exceptions\NotImplementedException $e) {
+                // Compound primary keys are not supported. We skip this one.
+            }
         }
         unset($indexInfo, $indexName);
     }
