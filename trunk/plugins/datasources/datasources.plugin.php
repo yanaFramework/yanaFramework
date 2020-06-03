@@ -68,8 +68,8 @@ class DatasourcesPlugin extends \Yana\Plugins\AbstractPlugin
      * Provide edit-form.
      *
      * @type      read
-     * @user      group: Datasources
-     * @user      group: admin, level: 1
+     * @user      group: datasources
+     * @user      group: admin, level: 100
      * @menu      group: setup
      * @template  templates/datasources.html.tpl
      * @language  Datasources
@@ -83,8 +83,8 @@ class DatasourcesPlugin extends \Yana\Plugins\AbstractPlugin
      * Process search query.
      *
      * @type      read
-     * @user      group: Datasources
-     * @user      group: admin, level: 1
+     * @user      group: datasources
+     * @user      group: admin, level: 100
      * @template  templates/datasources.html.tpl
      * @language  Datasources
      */
@@ -97,8 +97,8 @@ class DatasourcesPlugin extends \Yana\Plugins\AbstractPlugin
      * Save changes made in edit-form.
      *
      * @type       write
-     * @user       group: Datasources, role: moderator
-     * @user       group: admin, level: 75
+     * @user       group: datasources, role: moderator
+     * @user       group: admin, level: 100
      * @template   MESSAGE
      * @language   Datasources
      * @onsuccess  goto: datasources
@@ -118,8 +118,8 @@ class DatasourcesPlugin extends \Yana\Plugins\AbstractPlugin
      * Returns bool(true) on success and bool(false) on error.
      *
      * @type       write
-     * @user       group: Datasources, role: moderator
-     * @user       group: admin, level: 75
+     * @user       group: datasources, role: moderator
+     * @user       group: admin, level: 100
      * @template   MESSAGE
      * @language   Datasources
      * @onsuccess  goto: datasources
@@ -140,8 +140,8 @@ class DatasourcesPlugin extends \Yana\Plugins\AbstractPlugin
      * Returns bool(true) on success and bool(false) on error.
      *
      * @type       write
-     * @user       group: Datasources, role: moderator
-     * @user       group: admin, level: 30
+     * @user       group: datasources, role: moderator
+     * @user       group: admin, level: 100
      * @template   MESSAGE
      * @language   Datasources
      * @onsuccess  goto: datasources
@@ -161,8 +161,8 @@ class DatasourcesPlugin extends \Yana\Plugins\AbstractPlugin
      * Returns bool(true) on success and bool(false) on error.
      *
      * @type       read
-     * @user       group: Datasources, role: moderator
-     * @user       group: admin, level: 75
+     * @user       group: datasources, role: moderator
+     * @user       group: admin, level: 100
      * @template   NULL
      * @return     string
      */
@@ -172,7 +172,6 @@ class DatasourcesPlugin extends \Yana\Plugins\AbstractPlugin
         $worker = new \Yana\Forms\Worker($this->_getDatabase(), $form);
         return $worker->export();
     }
-
 
 }
 
