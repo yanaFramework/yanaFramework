@@ -36,14 +36,26 @@ class UserGroupPlugin extends \Yana\Plugins\AbstractPlugin
 
     /**
      * Registers user-group security rule.
-     *
-     * @access  public
      */
     public function __construct()
     {
         $security = $this->_getSecurityFacade();
         $defaultProfileId = $this->_getApplication()->getDefault('profile');
         $security->addSecurityRule(new \Yana\Security\Rules\SecurityGroupRule($defaultProfileId));
+    }
+
+    /**
+     * Default event handler.
+     *
+     * Returns bool(true) on success and bool(false) on error.
+     *
+     * @param   string  $event  name of the called event in lower-case
+     * @param   array   $ARGS   array of arguments passed to the function
+     * @return  bool
+     */
+    public function catchAll($event, array $ARGS)
+    {
+        return true;
     }
 
 }
