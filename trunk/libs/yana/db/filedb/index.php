@@ -169,7 +169,7 @@ class Index extends \Yana\Core\StdObject
             return true;
         }
 
-        assert($this->_table->isColumn($column), 'No such column.');
+        assert($this->_table->isColumn($column), 'No such column: ' . $column . ' in table: ' . $this->_table->getName());
         $primaryKey = \mb_strtoupper($this->_table->getPrimaryKey());
 
         /* no need to index primary key, it is an index by itself */
