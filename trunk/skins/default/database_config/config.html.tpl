@@ -55,14 +55,10 @@
             <span class="label">{lang id="DATABASE.9"}:</span>
             <select name="dbms">
                 <option value="db2" {if    $DATABASE_DBMS=="db2"}selected="selected"{/if}>DB2</option>
-                <option value="dbase" {if  $DATABASE_DBMS=="dbase"}selected="selected"{/if}>dBase</option>
                 <option value="fbsql" {if  $DATABASE_DBMS=="fbsql"}selected="selected"{/if}>FrontBase</option>
                 <option value="ibase" {if  $DATABASE_DBMS=="ibase"}selected="selected"{/if}>InterBase</option>
-                <option value="ifx" {if    $DATABASE_DBMS=="ifx"}selected="selected"{/if}>Informix</option>
-                <option value="access" {if $DATABASE_DBMS=="access"}selected="selected"{/if}>Microsoft Access</option>
                 <option value="mssql" {if  $DATABASE_DBMS=="mssql"}selected="selected"{/if}>Microsoft SQL-Server</option>
-                <option value="mysql" {if  $DATABASE_DBMS=="mysql"}selected="selected"{/if}>MySQL &lt;=4.0</option>
-                <option value="mysqli" {if $DATABASE_DBMS=="mysqli"}selected="selected"{/if}>MySQL &gt;=4.1 (PHP5)</option>
+                <option value="mysql" {if  $DATABASE_DBMS=="mysql"}selected="selected"{/if}>MySQL / Maria-DB</option>
                 <option value="oci8" {if   $DATABASE_DBMS=="oci8"}selected="selected"{/if}>Oracle OCI8</option>
                 <option value="pgsql" {if  $DATABASE_DBMS=="pgsql"}selected="selected"{/if}>PostgreSQL</option>
                 <option value="sybase" {if $DATABASE_DBMS=="sybase"}selected="selected"{/if}>Sybase</option>
