@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Security\Rules;
 
@@ -48,10 +49,9 @@ class SecurityLevelRule extends \Yana\Security\Rules\AbstractRule
      *
      * @param  string  $defaultProfileId  used as fallback
      */
-    public function __construct($defaultProfileId)
+    public function __construct(string $defaultProfileId)
     {
-        assert(is_string($defaultProfileId), 'Wrong type for argument: $defaultProfileId. String expected');
-        $this->_defaultProfileId = (string) $defaultProfileId;
+        $this->_defaultProfileId = $defaultProfileId;
     }
 
     /**
@@ -59,7 +59,7 @@ class SecurityLevelRule extends \Yana\Security\Rules\AbstractRule
      *
      * @return  string
      */
-    protected function _getDefaultProfileId()
+    protected function _getDefaultProfileId(): string
     {
         return $this->_defaultProfileId;
     }
@@ -73,13 +73,10 @@ class SecurityLevelRule extends \Yana\Security\Rules\AbstractRule
      * @param   \Yana\Security\Data\Behaviors\IsBehavior         $user       user information to check
      * @return  bool|NULL
      */
-    public function __invoke(\Yana\Security\Rules\Requirements\IsRequirement $required, $profileId, $action, \Yana\Security\Data\Behaviors\IsBehavior $user)
+    public function __invoke(\Yana\Security\Rules\Requirements\IsRequirement $required, string $profileId, string $action, \Yana\Security\Data\Behaviors\IsBehavior $user): ?bool
     {
-        if ($required->getLevel() < 0) {
+        if ($required->getLevel() <= 0) {
             return null;
-        }
-        if ($required->getLevel() === 0) {
-            return true;
         }
         if (!$user->isLoggedIn()) {
             return false;

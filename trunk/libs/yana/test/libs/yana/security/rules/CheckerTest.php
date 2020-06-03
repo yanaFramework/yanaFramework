@@ -24,6 +24,7 @@
  * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Security\Rules;
 
@@ -37,7 +38,7 @@ require_once __DIR__ . '/../../../../include.php';
  */
 class MyFalseRule extends \Yana\Security\Rules\NullRule
 {
-    public function __invoke(Requirements\IsRequirement $required, $profileId, $action, \Yana\Security\Data\Behaviors\IsBehavior $user)
+    public function __invoke(Requirements\IsRequirement $required, string $profileId, string $action, \Yana\Security\Data\Behaviors\IsBehavior $user): ?bool
     {
         return false;
     }

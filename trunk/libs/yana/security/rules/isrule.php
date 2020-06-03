@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Security\Rules;
 
@@ -68,7 +69,7 @@ interface IsRule
      * @param   \Yana\Security\Data\Behaviors\IsBehavior         $user       user information to check
      * @return  bool|NULL
      */
-    public function __invoke(\Yana\Security\Rules\Requirements\IsRequirement $required, $profileId, $action, \Yana\Security\Data\Behaviors\IsBehavior $user);
+    public function __invoke(\Yana\Security\Rules\Requirements\IsRequirement $required, string $profileId, string $action, \Yana\Security\Data\Behaviors\IsBehavior $user): ?bool;
 
 }
 

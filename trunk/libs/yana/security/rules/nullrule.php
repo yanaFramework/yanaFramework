@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Security\Rules;
 
@@ -46,9 +47,9 @@ class NullRule extends \Yana\Security\Rules\AbstractRule
      * @param   string                                           $profileId  current application-profile id
      * @param   string                                           $action     name of the action the user tries to execute
      * @param   \Yana\Security\Data\Behaviors\IsBehavior         $user       user information to check
-     * @return  bool
+     * @return  bool|NULL
      */
-    public function __invoke(\Yana\Security\Rules\Requirements\IsRequirement $required, $profileId, $action, \Yana\Security\Data\Behaviors\IsBehavior $user)
+    public function __invoke(\Yana\Security\Rules\Requirements\IsRequirement $required, string $profileId, string $action, \Yana\Security\Data\Behaviors\IsBehavior $user): ?bool
     {
         return true;
     }
