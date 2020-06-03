@@ -231,11 +231,7 @@
                 length="32"
                 notnull="yes"
                 title='{lang id="PROFILE_ID"}'>
-                <!--
-                                <DISPLAY>
-                                    <READONLY>100</READONLY>
-                                </DISPLAY>
-                -->
+                <default>DEFAULT</default>
             </string>
             <reference
                 name="user_created"
@@ -349,7 +345,9 @@
             <string
                 name="profile"
                 length="32"
-                title='{lang id="PROFILE_ID"}'>
+                title='{lang id="PROFILE_ID"}'
+                notnull="yes">
+                <default>DEFAULT</default>
             </string>
             <reference
                 name="user_created"
