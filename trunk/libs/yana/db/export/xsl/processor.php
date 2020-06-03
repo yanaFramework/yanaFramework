@@ -50,7 +50,7 @@ class Processor extends \Yana\Core\StdObject implements \Yana\Db\Export\Xsl\IsPr
     {
         if (!\class_exists('\XSLTProcessor')) {
             $message = "The PHP XSL extension was not found. Windows users: add 'extension=php_xsl.dll' to your php.ini file." .
-                " On Linux please use 'apt-get install php5-xsl' on your console.";
+                " On Linux please use 'apt-get install php7-xsl' on your console.";
             throw new \Yana\Db\Export\Xsl\ProcessorException($message, \Yana\Log\TypeEnumeration::ERROR);
         }
     }
