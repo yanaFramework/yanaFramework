@@ -101,12 +101,11 @@ class StandardBehavior extends \Yana\Security\Logins\AbstractBehavior
             throw new \Yana\Core\Exceptions\Security\InvalidLoginException();
         }
         /* never reuse old sessions, to prevent injection of data or session id */
-        $this->handleLogout($user);
+        $session->unsetAll()->destroy();
 
         /* create new session with new session id */
         $sessionId = $this->_getSessionIdGenerator()->createAuthenticatedSessionId();
         $session->setId($sessionId)->start(); // overwrites the session id
-        $session->unsetAll();
 
         /* initiate session and user database entry */
         $this
