@@ -111,7 +111,7 @@ class QueryBuilder extends \Yana\Db\Queries\AbstractQueryBuilder implements \Yan
             /**
              * We use addOrderBy(), not setOrderBy() because the previous call to setKey() may already have set the order by clause.
              */
-            assert('!isset($columnName); // Cannot redeclare var $columnName');
+            assert(!isset($columnName), 'Cannot redeclare var $columnName');
             foreach ($orderBy as $columnName)
             {
                 /**
