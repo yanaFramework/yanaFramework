@@ -162,7 +162,8 @@ class ConfigPlugin extends \Yana\Plugins\AbstractPlugin
                 'IMAGE' => $pluginConfiguration->getIcon(),
                 /* indicates if plugin is active */
                 'ACTIVE' => $active,
-                'NAME' => $pluginTitle
+                'NAME' => $pluginTitle,
+                'SETUP' => array()
             );
 
             /* get setup information */
