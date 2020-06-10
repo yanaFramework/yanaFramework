@@ -70,6 +70,11 @@ class ApplicationBuilder extends \Yana\Core\StdObject
     private static $_application = null;
 
     /**
+     * @var  \Yana\
+     */
+    private $_applicationDependencyContainer = null;
+
+    /**
      * Set error reporting level.
      *
      * You may use the following constants:
@@ -205,48 +210,6 @@ class ApplicationBuilder extends \Yana\Core\StdObject
      */
     private function _runOnline()
     {
-        /* session preparation
-         *
-         * {@internal
-         *
-         * NOTE on session handling in PHP:
-         *
-         * As a default PHP marks a session as "expired" after 24 minutes, BUT it is deleted
-         * no sooner than on the next run of the garbage collector.
-         *
-         * The garbage collector is randomly started on an incoming request.
-         * The propability in percent that the gc runs on a request is calculated by
-         * (session.gc_probability / session.gc_divisor * 100). Where gc_probability defaults
-         * to 1 and gc_divisor defaults to 100, which actually results in 1% and means the gc
-         * should run once each 100 requests.
-         *
-         * If you got low traffic you should consider increasing the value of
-         * "session.gc_probability" from default 1 to a higher value e.g. 5.
-         * This means: the garbage collector will run on 5% of all incomming requests.
-         *
-         * Example: ini_set("session.gc_probability", "5");
-         *
-         * Don't use too high values either, as this might slow down your server.
-         * E.g. running the gc on every request is certainly a bad idea.
-         *
-         * Abbr: "gc" = garbage collector
-         * }}
-         */
-        session_name(YANA_SESSION_NAME);
-        // limit session cookie to 1 hour and the local script directory
-        session_set_cookie_params(3600, dirname($_SERVER['PHP_SELF']) . '/');
-        // set session lifetime to 1 hour
-        ini_set("session.gc_maxlifetime", "3600");
-        @session_start();
-
-        // Check language settings
-        if (isset($_GET['language'])) {
-            $_SESSION['language'] = $_GET['language'];
-            unset($_GET['language']);
-        } elseif (!isset($_SESSION['language']) && isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-            // this tries to autodetect the clients prefered language
-            $_SESSION['language'] = mb_substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
-        }
         /* {@internal
          *
          * Things to check BEFORE enabling output compression:
@@ -266,13 +229,85 @@ class ApplicationBuilder extends \Yana\Core\StdObject
          */
         $outputCompressionActive = false;
         if (headers_sent() === false && !ini_get('zlib.output_compression')) {
-            $acceptEncoding = $_SERVER['HTTP_ACCEPT_ENCODING'];
-            if (isset($acceptEncoding) && strpos($acceptEncoding, "gzip") !== false) {
+            if (isset($_SERVER['HTTP_ACCEPT_ENCODING']) && strpos($_SERVER['HTTP_ACCEPT_ENCODING'], "gzip") !== false) {
                 // "output compression level" is an integer between -1 (off/default) - 9 (max)
                 ini_set('zlib.output_compression_level', 6);
                 ob_start("ob_gzhandler");
                 $outputCompressionActive = true;
             }
+        }
+        /* session preparation
+         *
+         * {@internal
+         *
+         * NOTE on session handling in PHP:
+         *
+         * As a default PHP marks a session as "expired" after 24 minutes, BUT it is deleted
+         * no sooner than on the next run of the garbage collector.
+         *
+         * The garbage collector is randomly started on an incoming request.
+         * The propability in percent that the gc runs on a request is calculated by
+         * (session.gc_probability / session.gc_divisor * 100). Where gc_probability defaults
+         * to 1 and gc_divisor defaults to 100, which actually results in 1% and means the gc
+         * should run once every 100 requests.
+         *
+         * If you got low traffic you should consider increasing the value of
+         * "session.gc_probability" from default 1 to a higher value e.g. 5.
+         * This means: the garbage collector will run on 5% of all incoming requests.
+         *
+         * Example: ini_set("session.gc_probability", "5");
+         *
+         * Don't use too high values either, as this might slow down your server.
+         * E.g. running the gc on every request is certainly a bad idea.
+         *
+         * Abbr: "gc" = garbage collector
+         * }}
+         */
+        $session = $this->_getApplicationDependencyContainer()->getSession();
+        /**
+         * Force session autostart = off.
+         *
+         * PHP has an option to have a session autostart for each request.
+         * The problem with this is that it causes PHP to look for the session ID
+         * under the default session name.
+         *
+         * If a script changes the session name to something else (like we do),
+         * PHP will not find the existing session ID, and start a new session instead
+         * of resuming the one that is already there, causing your active session
+         * to be ignored and PHP starting a fresh session each and every time your
+         * script is called.
+         *
+         * What is more, since the session is already started, subsequently switching the
+         * session save handler will result in a corrupted session since (guess what?)
+         * the session has already been started using a different save handler.
+         *
+         * To avoid this behavior, we check if a session under another than the designated
+         * session name has already been started and if so, we terminate it.
+         */
+        $session->destroy();
+        if (YANA_SESSION_NAME) {
+            $session->setName(YANA_SESSION_NAME);
+        }
+        // limit session cookie to 1 hour and the local script directory
+        session_set_cookie_params(3600, dirname($_SERVER['SCRIPT_NAME']) . '/');
+        // set session lifetime to 1 hour
+        ini_set("session.gc_maxlifetime", "3600");
+        $session->start(); // Throws a notice when called on an active session
+
+        /**
+         * Check language settings.
+         *
+         * Language settings AKA "locales" have either of the following formats: "ww" OR "ww-WW".
+         *
+         * Where the first to letters are the lower-case language identifier and
+         * the last two letter are the capitalized country identifier (where applicable)
+         */
+        if (isset($_GET['language']) && preg_match('/^[a-z]{2}(-[A-Z]{2})?$/s', $_GET['language'])) {
+            $session['language'] = $_GET['language'];
+
+        } elseif (!isset($session['language']) && isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && preg_match('/^[a-z]{2}/', $_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+            // this tries to autodetect the clients prefered language
+            $session['language'] = mb_substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
         }
         $application = $this->buildApplication();
         $application->execute();         // Handle the request
@@ -290,7 +325,7 @@ class ApplicationBuilder extends \Yana\Core\StdObject
      *
      * @return  \Yana\Application
      */
-    public function buildApplication()
+    public function buildApplication(): \Yana\Application
     {
         if (!isset(self::$_application)) {
             self::$_application = $this->_createApplication();
@@ -303,10 +338,23 @@ class ApplicationBuilder extends \Yana\Core\StdObject
      *
      * @return  \Yana\Application
      */
-    private function _createApplication()
+    private function _createApplication(): \Yana\Application
     {
-        $application = new \Yana\Application($this->_createApplicationDependencyContainer());
+        $application = new \Yana\Application($this->_getApplicationDependencyContainer());
         return $application;
+    }
+
+    /**
+     * Return the application dependencies.
+     *
+     * @return  \Yana\Core\Dependencies\IsApplicationContainer
+     */
+    private function _getApplicationDependencyContainer(): \Yana\Core\Dependencies\IsApplicationContainer
+    {
+        if (!isset($this->_applicationDependencyContainer)) {
+            $this->_applicationDependencyContainer = $this->_createApplicationDependencyContainer();
+        }
+        return $this->_applicationDependencyContainer;
     }
 
     /**
@@ -314,7 +362,7 @@ class ApplicationBuilder extends \Yana\Core\StdObject
      *
      * @return  \Yana\Core\Dependencies\IsApplicationContainer
      */
-    private function _createApplicationDependencyContainer()
+    private function _createApplicationDependencyContainer(): \Yana\Core\Dependencies\IsApplicationContainer
     {
         $configuration = $this->_loadConfiguration();
         $dependencyContainer = new \Yana\Core\Dependencies\Container($configuration);
@@ -340,7 +388,7 @@ class ApplicationBuilder extends \Yana\Core\StdObject
      *
      * @return  \Yana\Util\Xml\IsObject
      */
-    private function _loadConfiguration()
+    private function _loadConfiguration(): \Yana\Util\Xml\IsObject
     {
         $configurationFactory = new \Yana\ConfigurationFactory();
         $configuration = $configurationFactory->loadConfiguration(__DIR__ . "/../../config/system.config.xml");
