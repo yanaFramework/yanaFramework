@@ -1,5 +1,5 @@
 <div id="yana_stdout">
-{if count($STDOUT) > 0}
+{if $STDOUT && count($STDOUT) > 0}
     <div id="messagebox" class="errlvl_{$STDOUT->getLevel()}">
         <div class="errlvl_{$STDOUT->getLevel()}">
         {foreach item=message from=$STDOUT}
