@@ -225,7 +225,7 @@ class Manager extends \Yana\Views\Managers\AbstractManager implements \Yana\View
             if (isset($_SERVER['QUERY_STRING'])) {
                 $query = $_REQUEST;
                 ksort($query);
-                unset($query[YANA_SESSION_NAME]);
+                unset($query[session_name()]);
                 assert(is_array($query), 'Array expected: $query');
                 $queryString = http_build_query($query);
                 unset($query);

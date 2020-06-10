@@ -46,20 +46,20 @@ interface IsWrapper extends \Yana\Core\IsCountableArray
      *
      * @return  string
      */
-    public function getId();
+    public function getId(): string;
 
     /**
      * Set new session-id.
      *
      * @param   string  $newId  new session-id
-     * @return  \Yana\Core\Sessions\IsWrapper
+     * @return  $this
      */
-    public function setId($newId);
+    public function setId(string $newId);
 
     /**
      * Resets all session-data and clears the session array.
      *
-     * @return \Yana\Core\Sessions\IsWrapper
+     * @return  $this
      */
     public function unsetAll();
 
@@ -67,24 +67,24 @@ interface IsWrapper extends \Yana\Core\IsCountableArray
      * Replace the session-id without destroying session-data.
      *
      * @param   bool  $deleteOldSession  Whether to delete the old associated session file or not.
-     * @return  \Yana\Core\Sessions\IsWrapper
+     * @return  $this
      */
-    public function regenerateId($deleteOldSession = false);
+    public function regenerateId(bool $deleteOldSession = false);
 
     /**
      * Returns the name of the session-id variable.
      *
      * @return  string
      */
-    public function getName();
+    public function getName(): string;
 
     /**
      * Replaces the name of the session-id variable.
      *
      * @param  string  $name  new session name
-     * @return \Yana\Core\Sessions\IsWrapper
+     * @return $this
      */
-    public function setName($name);
+    public function setName(string $name);
 
     /**
      * Start or resumes the current session.
@@ -94,7 +94,7 @@ interface IsWrapper extends \Yana\Core\IsCountableArray
      *
      * @return  bool
      */
-    public function start();
+    public function start(): bool;
 
     /**
      * Writes all changes to the session and ends it.
@@ -102,13 +102,25 @@ interface IsWrapper extends \Yana\Core\IsCountableArray
     public function stop();
 
     /**
-     * Destroys all session-data.
+     * If there is an active session, destroys all session-data.
      *
      * Note! This does not remove the session cookie or terminate the session.
      *
      * @return  bool
      */
-    public function destroy();
+    public function destroy(): bool;
+
+    /**
+     * Set the session cookie parameters.
+     *
+	 * @param   int          $lifetime   Lifetime of the session cookie, defined in seconds.
+	 * @param   string|NULL  $path       Path on the domain where the cookie will work. Use a single slash ('/') for all paths on the domain.
+	 * @param   string|NULL  $domain     Cookie domain, for example 'www.php.net'. To make cookies visible on all subdomains then the domain must be prefixed with a dot like '.php.net'.
+	 * @param   bool         $isSecure   If bool(true) cookie will only be sent over secure connections.
+	 * @param   bool         $isHttpOnly If bool(true) PHP will attempt to send the httponly flag when setting the session cookie.
+	 * @link http://php.net/manual/en/function.session-set-cookie-params.php
+     */
+    public function setCookieParameters(int $lifetime, ?string $path = null, ?string $domain = null, bool $isSecure = false, bool $isHttpOnly = false);
 
     /**
      * Gets the session cookie parameters.
@@ -126,7 +138,7 @@ interface IsWrapper extends \Yana\Core\IsCountableArray
      *
      * @return  array
      */
-    public function getCookieParameters();
+    public function getCookieParameters(): array;
 
     /**
      * Serialize the current session array to a string.
@@ -143,7 +155,7 @@ interface IsWrapper extends \Yana\Core\IsCountableArray
      * @param   string  $serializedArray  serialized session data
      * @return  bool
      */
-    public function fromString($serializedArray);
+    public function fromString(string $serializedArray): bool;
 
 }
 

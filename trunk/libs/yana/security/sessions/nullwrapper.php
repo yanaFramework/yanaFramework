@@ -67,7 +67,7 @@ class NullWrapper extends \Yana\Core\Sessions\NullWrapper implements \Yana\Secur
      *
      * @return  string
      */
-    public function getCurrentUserName()
+    public function getCurrentUserName(): string
     {
         return $this->offsetExists($this->_userNameKey) ? $this->offsetGet($this->_userNameKey) : "";
     }
@@ -78,7 +78,7 @@ class NullWrapper extends \Yana\Core\Sessions\NullWrapper implements \Yana\Secur
      * Note that this function does not check if the user is actually logged in!
      *
      * @param   \Yana\Security\Data\Users\IsEntity $user  entity
-     * @return  \Yana\Security\Sessions\IsWrapper
+     * @return  $this
      */
     public function setCurrentUserName(\Yana\Security\Data\Users\IsEntity $user)
     {
@@ -91,7 +91,7 @@ class NullWrapper extends \Yana\Core\Sessions\NullWrapper implements \Yana\Secur
      *
      * @return  string
      */
-    public function getApplicationUserId()
+    public function getApplicationUserId(): string
     {
         return $this->offsetExists($this->_applicationUserId) ? $this->offsetGet($this->_applicationUserId) : "";
     }
@@ -100,12 +100,11 @@ class NullWrapper extends \Yana\Core\Sessions\NullWrapper implements \Yana\Secur
      * Set current user's application id.
      *
      * @param   string  $applicationUserId  some string
-     * @return  \Yana\Security\Sessions\IsWrapper
+     * @return  $this
      */
-    public function setApplicationUserId($applicationUserId)
+    public function setApplicationUserId(string $applicationUserId)
     {
-        assert(is_string($applicationUserId), 'Wrong argument type: $applicationUserId. String expected.');
-        $this->offsetSet($this->_applicationUserId, (string) $applicationUserId);
+        $this->offsetSet($this->_applicationUserId, $applicationUserId);
         return $this;
     }
 
@@ -114,7 +113,7 @@ class NullWrapper extends \Yana\Core\Sessions\NullWrapper implements \Yana\Secur
      *
      * @return  string
      */
-    public function getSessionUserId()
+    public function getSessionUserId(): string
     {
         return $this->offsetExists($this->_sessionUserId) ? $this->offsetGet($this->_sessionUserId) : "";
     }
@@ -123,12 +122,11 @@ class NullWrapper extends \Yana\Core\Sessions\NullWrapper implements \Yana\Secur
      * Set current user's session id.
      *
      * @param   string  $sessionUserId  some string
-     * @return  \Yana\Security\Sessions\IsWrapper
+     * @return  $this
      */
-    public function setSessionUserId($sessionUserId)
+    public function setSessionUserId(string $sessionUserId)
     {
-        assert(is_string($sessionUserId), 'Wrong argument type: $sessionUserId. String expected.');
-        $this->offsetSet($this->_sessionUserId, (string) $sessionUserId);
+        $this->offsetSet($this->_sessionUserId, $sessionUserId);
         return $this;
     }
 
@@ -137,7 +135,7 @@ class NullWrapper extends \Yana\Core\Sessions\NullWrapper implements \Yana\Secur
      *
      * @return  string
      */
-    public function getCurrentLanguage()
+    public function getCurrentLanguage(): string
     {
         return $this->offsetExists($this->_languageKey) ? $this->offsetGet($this->_languageKey) : "";
     }
@@ -146,12 +144,11 @@ class NullWrapper extends \Yana\Core\Sessions\NullWrapper implements \Yana\Secur
      * Set current user's selected language id.
      *
      * @param   string  $language  some string
-     * @return  \Yana\Security\Sessions\IsWrapper
+     * @return  $this
      */
-    public function setCurrentLanguage($language)
+    public function setCurrentLanguage(string $language)
     {
-        assert(is_string($language), 'Wrong argument type: $language. String expected.');
-        $this->offsetSet($this->_languageKey, (string) $language);
+        $this->offsetSet($this->_languageKey, $language);
         return $this;
     }
 

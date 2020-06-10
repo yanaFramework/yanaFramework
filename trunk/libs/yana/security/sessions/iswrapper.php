@@ -47,7 +47,7 @@ interface IsWrapper extends \Yana\Core\Sessions\IsWrapper
      *
      * @return  string
      */
-    public function getCurrentUserName();
+    public function getCurrentUserName(): string;
 
     /**
      * Overwrite the currently selected user name.
@@ -55,7 +55,7 @@ interface IsWrapper extends \Yana\Core\Sessions\IsWrapper
      * Note that this function does not check if the user is actually logged in!
      *
      * @param   \Yana\Security\Data\Users\IsEntity  $user  entity
-     * @return  \Yana\Security\Sessions\IsWrapper
+     * @return  $this
      */
     public function setCurrentUserName(\Yana\Security\Data\Users\IsEntity $user);
 
@@ -64,45 +64,45 @@ interface IsWrapper extends \Yana\Core\Sessions\IsWrapper
      *
      * @return  string
      */
-    public function getApplicationUserId();
+    public function getApplicationUserId(): string;
 
     /**
      * Set current user's application id.
      *
      * @param   string  $applicationUserId  some string
-     * @return  \Yana\Security\Sessions\IsWrapper
+     * @return  $this
      */
-    public function setApplicationUserId($applicationUserId);
+    public function setApplicationUserId(string $applicationUserId);
 
     /**
      * Retrieve the current user's session id.
      *
      * @return  string
      */
-    public function getSessionUserId();
+    public function getSessionUserId(): string;
 
     /**
      * Set current user's session id.
      *
      * @param   string  $sessionUserId  some string
-     * @return  \Yana\Security\Sessions\IsWrapper
+     * @return  $this
      */
-    public function setSessionUserId($sessionUserId);
+    public function setSessionUserId(string $sessionUserId);
 
     /**
      * Retrieve the current user's selected language id.
      *
      * @return  string
      */
-    public function getCurrentLanguage();
+    public function getCurrentLanguage(): string;
 
     /**
      * Set current user's selected language id.
      *
      * @param   string  $language  some string
-     * @return  \Yana\Security\Sessions\IsWrapper
+     * @return  $this
      */
-    public function setCurrentLanguage($language);
+    public function setCurrentLanguage(string $language);
 
 }
 

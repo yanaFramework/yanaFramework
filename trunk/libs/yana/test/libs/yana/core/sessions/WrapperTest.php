@@ -244,6 +244,26 @@ class WrapperTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @runInSeparateProcess
+     */
+    public function testSetCookieParameters()
+    {
+        $this->assertNull($this->object->setCookieParameters(1234, 'Ab', 'cD', true, true));
+        $param = $this->object->getCookieParameters();
+        $this->assertArrayHasKey("lifetime", $param);
+        $this->assertArrayHasKey("path", $param);
+        $this->assertArrayHasKey("domain", $param);
+        $this->assertArrayHasKey("secure", $param);
+        $this->assertArrayHasKey("httponly", $param);
+        $this->assertSame(1234, $param["lifetime"]);
+        $this->assertSame("Ab", $param["path"]);
+        $this->assertSame("cD", $param["domain"]);
+        $this->assertSame(true, $param["secure"]);
+        $this->assertSame(true, $param["httponly"]);
+    }
+
+    /**
+     * @test
      */
     public function testGetCookieParameters()
     {
@@ -253,11 +273,6 @@ class WrapperTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey("domain", $param);
         $this->assertArrayHasKey("secure", $param);
         $this->assertArrayHasKey("httponly", $param);
-        $this->assertSame(0, $param["lifetime"]);
-        $this->assertSame("/", $param["path"]);
-        $this->assertSame("", $param["domain"]);
-        $this->assertSame(false, $param["secure"]);
-        $this->assertSame(false, $param["httponly"]);
     }
 
     /**

@@ -24,6 +24,7 @@
  * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Core\Sessions;
 
@@ -235,6 +236,16 @@ class NullWrapperTest extends \PHPUnit_Framework_TestCase
     public function testGetCookieParameters()
     {
         $expected = array("lifetime" => "0", "path" => "", "domain" => "", "secure" => "0", "httponly" => "1");
+        $this->assertEquals($expected, $this->object->getCookieParameters());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetCookieParameters()
+    {
+        $this->assertNull($this->object->setCookieParameters(1234, 'Ab', 'cD', true, false));
+        $expected = array("lifetime" => 1234, "path" => "Ab", "domain" => "cD", "secure" => true, "httponly" => false);
         $this->assertEquals($expected, $this->object->getCookieParameters());
     }
 

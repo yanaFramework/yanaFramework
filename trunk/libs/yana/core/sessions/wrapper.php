@@ -119,7 +119,7 @@ class Wrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\IsWrap
      *
      * @return  int
      */
-    public function count()
+    public function count(): int
     {
         return count($_SESSION);
     }
@@ -129,7 +129,7 @@ class Wrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\IsWrap
      *
      * @return  string
      */
-    public function getId()
+    public function getId(): string
     {
         return \session_id();
     }
@@ -138,12 +138,10 @@ class Wrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\IsWrap
      * Set new session-id.
      *
      * @param   string  $newId  new session-id
-     * @return  \Yana\Core\Sessions\IsWrapper
+     * @return  $this
      */
-    public function setId($newId)
+    public function setId(string $newId)
     {
-        assert(is_string($newId), 'Invalid argument $newId: string expected');
-
         \session_id($newId);
         return $this;
     }
@@ -151,7 +149,7 @@ class Wrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\IsWrap
     /**
      * Resets all session-data and clears the session array.
      *
-     * @return  \Yana\Core\Sessions\IsWrapper
+     * @return  $this
      */
     public function unsetAll()
     {
@@ -164,12 +162,10 @@ class Wrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\IsWrap
      * Replace the session-id without destroying session-data.
      *
      * @param   bool  $deleteOldSession  Whether to delete the old associated session file or not.
-     * @return  \Yana\Core\Sessions\IsWrapper
+     * @return  $this
      */
-    public function regenerateId($deleteOldSession = false)
+    public function regenerateId(bool $deleteOldSession = false)
     {
-        assert(is_bool($deleteOldSession), 'Invalid argument $deleteOldSession: bool expected');
-
         /* regenerate_id() will issue a warning if it is called while the session is not in an active state.
          * To avoid that, we will auto-activate the session if none is there.
          *
@@ -185,7 +181,7 @@ class Wrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\IsWrap
      *
      * @return  string
      */
-    public function getName()
+    public function getName(): string
     {
         return \session_name();
     }
@@ -194,13 +190,11 @@ class Wrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\IsWrap
      * Replaces the name of the session-id variable.
      *
      * @param   string  $name  new session name
-     * @return  \Yana\Core\Sessions\IsWrapper
+     * @return  $this
      */
-    public function setName($name)
+    public function setName(string $name)
     {
-        assert(is_string($name), 'Invalid argument $name: string expected');
-
-        \session_name((string) $name);
+        \session_name($name);
         return $this;
     }
 
@@ -210,9 +204,9 @@ class Wrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\IsWrap
      * Note: if session_autostart is active, calling this function isn't necessary.
      * Returns bool(true) on success and bool(true) on error. 
      *
-     * @return  bool
+	 * @return  bool
      */
-    public function start()
+    public function start(): bool
     {
         $result = false;
         /* Check the state of the session and only call start() if the session is not active (yet).
@@ -234,6 +228,24 @@ class Wrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\IsWrap
     }
 
     /**
+     * Set the session cookie parameters.
+     *
+     * Also updated the session garbage collector maximum lifetime.
+     *
+     * @param   int          $lifetime   Lifetime of the session cookie, defined in seconds.
+     * @param   string|NULL  $path       Path on the domain where the cookie will work. Use a single slash ('/') for all paths on the domain.
+     * @param   string|NULL  $domain     Cookie domain, for example 'www.php.net'. To make cookies visible on all subdomains then the domain must be prefixed with a dot like '.php.net'.
+     * @param   bool         $isSecure   If bool(true) cookie will only be sent over secure connections.
+     * @param   bool         $isHttpOnly If bool(true) PHP will attempt to send the httponly flag when setting the session cookie.
+     * @link http://php.net/manual/en/function.session-set-cookie-params.php
+     */
+    public function setCookieParameters(int $lifetime, ?string $path = null, ?string $domain = null, bool $isSecure = false, bool $isHttpOnly = false)
+    {
+        ini_set("session.gc_maxlifetime", (string) $lifetime);
+        session_set_cookie_params($lifetime, $path, $domain, $isSecure, $isHttpOnly);
+    }
+
+    /**
      * Writes all changes to the session and ends it.
      */
     public function stop()
@@ -242,15 +254,15 @@ class Wrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\IsWrap
     }
 
     /**
-     * Destroys all session-data.
+     * If there is an active session, destroys all session-data.
      *
      * Note! This does not remove the session cookie or terminate the session.
      *
      * @return  bool
      */
-    public function destroy()
+    public function destroy(): bool
     {
-        return \session_destroy();
+        return \session_status() === \PHP_SESSION_ACTIVE ? \session_destroy() : true;
     }
 
     /**
@@ -269,7 +281,7 @@ class Wrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\IsWrap
      *
      * @return  array
      */
-    public function getCookieParameters()
+    public function getCookieParameters(): array
     {
         return \session_get_cookie_params();
     }
@@ -292,9 +304,8 @@ class Wrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\IsWrap
      * @param   string  $serializedArray  serialized session data
      * @return  bool
      */
-    public function fromString($serializedArray)
+    public function fromString(string $serializedArray): bool
     {
-        assert(is_string($serializedArray), 'Invalid argument $serializedArray: string expected');
         return \session_decode($serializedArray);
     }
 

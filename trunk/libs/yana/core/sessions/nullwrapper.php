@@ -58,6 +58,11 @@ class NullWrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\Is
     private $_name = "";
 
     /**
+     * @var array
+     */
+    private $_cookieParameters = array("lifetime" => "0", "path" => "", "domain" => "", "secure" => "0", "httponly" => "1");
+
+    /**
      * Create a new instance
      *
      * @param  array  $sessionData  your fake session data
@@ -134,7 +139,7 @@ class NullWrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\Is
      *
      * @return  int
      */
-    public function count()
+    public function count(): int
     {
         return count($this->_data);
     }
@@ -144,7 +149,7 @@ class NullWrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\Is
      *
      * @return  string
      */
-    public function getId()
+    public function getId(): string
     {
         return $this->_id;
     }
@@ -153,20 +158,18 @@ class NullWrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\Is
      * Set new session-id.
      *
      * @param   string  $newId  new session-id
-     * @return  \Yana\Core\SessionWrapper
+     * @return  $this
      */
-    public function setId($newId)
+    public function setId(string $newId)
     {
-        assert(is_string($newId), 'Invalid argument $newId: string expected');
-
-        $this->_id = (string) $newId;
+        $this->_id = $newId;
         return $this;
     }
 
     /**
      * Resets all session-data and clears the session array.
      *
-     * @return \Yana\Core\SessionWrapper
+     * @return  $this
      */
     public function unsetAll()
     {
@@ -178,12 +181,10 @@ class NullWrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\Is
      * Replace the session-id without destroying session-data.
      *
      * @param   bool  $deleteOldSession  Whether to delete the old associated session file or not.
-     * @return  \Yana\Core\Sessions\NullWrapper
+     * @return  $this
      */
-    public function regenerateId($deleteOldSession = false)
+    public function regenerateId(bool $deleteOldSession = false)
     {
-        assert(is_bool($deleteOldSession), 'Invalid argument $deleteOldSession: bool expected');
-
         $this->_id = "";
         $this->unsetAll();
         return $this;
@@ -194,7 +195,7 @@ class NullWrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\Is
      *
      * @return  string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->_name;
     }
@@ -203,12 +204,11 @@ class NullWrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\Is
      * Replaces the name of the session-id variable.
      *
      * @param  string  $name  new session name
+     * @return $this
      */
-    public function setName($name)
+    public function setName(string $name)
     {
-        assert(is_string($name), 'Invalid argument $name: string expected');
-
-        $this->_name = (string) $name;
+        $this->_name = $name;
         return $this;
     }
 
@@ -220,7 +220,7 @@ class NullWrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\Is
      *
      * @return  bool
      */
-    public function start()
+    public function start(): bool
     {
         return true;
     }
@@ -240,9 +240,29 @@ class NullWrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\Is
      *
      * @return  bool
      */
-    public function destroy()
+    public function destroy(): bool
     {
         return true;
+    }
+
+    /**
+     * Set the session cookie parameters.
+     *
+	 * @param   int          $lifetime   Lifetime of the session cookie, defined in seconds.
+	 * @param   string|NULL  $path       Path on the domain where the cookie will work. Use a single slash ('/') for all paths on the domain.
+	 * @param   string|NULL  $domain     Cookie domain, for example 'www.php.net'. To make cookies visible on all subdomains then the domain must be prefixed with a dot like '.php.net'.
+	 * @param   bool         $isSecure   If bool(true) cookie will only be sent over secure connections.
+	 * @param   bool         $isHttpOnly If bool(true) PHP will attempt to send the httponly flag when setting the session cookie.
+     */
+    public function setCookieParameters(int $lifetime, ?string $path = null, ?string $domain = null, bool $isSecure = false, bool $isHttpOnly = false)
+    {
+        $this->_cookieParameters = array(
+            "lifetime" => $lifetime,
+            "path" => $path,
+            "domain" => $domain,
+            "secure" => $isSecure,
+            "httponly" => $isHttpOnly
+        );
     }
 
     /**
@@ -261,9 +281,9 @@ class NullWrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\Is
      *
      * @return  array
      */
-    public function getCookieParameters()
+    public function getCookieParameters(): array
     {
-        return array("lifetime" => "0", "path" => "", "domain" => "", "secure" => "0", "httponly" => "1");
+        return $this->_cookieParameters;
     }
 
     /**
@@ -284,9 +304,8 @@ class NullWrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\Is
      * @param   string  $serializedArray  serialized session data
      * @return  bool
      */
-    public function fromString($serializedArray)
+    public function fromString(string $serializedArray): bool
     {
-        assert(is_string($serializedArray), 'Invalid argument $serializedArray: string expected');
         $this->_data = \unserialize($serializedArray);
         return true;
     }
