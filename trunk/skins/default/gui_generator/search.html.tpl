@@ -1,20 +1,10 @@
-{if $form->isSelectable()}
-    {if $form->getFields() && $form->getSearchAction()}
-        <fieldset>
-            {if {$form->getTitle()} > ""}
-                <legend onclick="$(this).find('~ div, ~ input').toggle('slow')">{$form->getTitle()}</legend>
-            {/if}
-            {if $form->getLayout() < 3}
-                {import file="layout2.html.tpl" form=$form->getSearchForm()}
-            {elseif $form->getLayout() === 3}
-                {import file="layout3.html.tpl" form=$form->getSearchForm()}
-            {else}
-                {import file="layout4.html.tpl" form=$form->getSearchForm()}
-            {/if}
-            <input type="submit" name="action[{$form->getSearchAction()}]" value='{lang id="ok"}'/>
-        </fieldset>
+{if $form->isSelectable() && $form->getFields() && $form->getSearchAction()}
+    {if $form->getLayout() < 3}
+        {import file="layout2.html.tpl" form=$form->getSearchForm()}
+    {elseif $form->getLayout() === 3}
+        {import file="layout3.html.tpl" form=$form->getSearchForm()}
+    {else}
+        {import file="layout4.html.tpl" form=$form->getSearchForm()}
     {/if}
-    {foreach from=$form->getForms() item="subform"}
-        {import file="search.html.tpl" form=$subform}
-    {/foreach}
+    <input type="submit" name="action[{$form->getSearchAction()}]" value='{lang id="ok"}'/>
 {/if}

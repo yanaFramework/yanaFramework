@@ -741,7 +741,9 @@ fieldset:hover > .gui_generator_toolbar > .gui_generator_settings
     padding: 5px;
     display: block;
     width: 200px;
-    height: 250px;
+    min-height: 200px;
+    height: 100%;
+    max-height: 400px;
     background-color: #fff;
     -moz-box-shadow: 2px 2px 2px #aaa;
     -webkit-box-shadow: 2px 2px 2px #aaa;
@@ -751,6 +753,7 @@ fieldset:hover > .gui_generator_toolbar > .gui_generator_settings
     margin: 5px;
     display: inline-block;
     overflow: auto;
+    vertical-align: top;
 }
 
 .gui_generator_gallery_content .gui_generator_gallery_title
@@ -759,9 +762,34 @@ fieldset:hover > .gui_generator_toolbar > .gui_generator_settings
     text-shadow: 1px 1px 1px #aaa;
 }
 
+.gui_generator_gallery_content .gui_generator_gallery_title label
+{
+    display: block;
+    margin-top: 1.25em;
+    border: 0px none transparent;
+    background: #ddd;
+    border-radius: 4px;
+    padding: .5em 1em .5em 0;
+    text-align: right;
+}
+
+.gui_generator_gallery_content .gui_generator_gallery_title label .gui_generator_description
+{
+    display: inline-block;
+    font-size: .5em;
+    background: #555;
+    color: #fff;
+    border-radius: 2px;
+    position: relative;
+    padding: .2em 1em;
+    margin-left: .5em;
+    top: -2em;
+    float: left;
+}
+
 .gui_generator_gallery_entry .gui_generator_image
 {
-    width: 200px;
+    width: 100%;
     margin: auto;
     overflow: hidden;
     margin-bottom: 1em;

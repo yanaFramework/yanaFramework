@@ -15,7 +15,12 @@
             </div>
             <div class="gui_generator_gallery_title">
                 {foreach from=$form item="field"}
-                    {if $field->getType() !== 'image'}{$field}{/if}
+                    {if $field->getType() !== 'image' && (($form->isUpdatable() && $field->isUpdatable() && $form->getUpdateAction()) || $field->getValue())}
+                        <label>
+                            <span class="gui_generator_description">{$field->getTitle()}</span>
+                            {$field}
+                        </label>
+                    {/if}
                 {/foreach}
             </div>
         </div>

@@ -63,6 +63,20 @@
                 {/if}
             </div>
         </form>
+        {if $form->isSelectable() && ($form->getSearchAction() || $form->hasSearchableChildren())}
+            <form method="post" action="{$PHP_SELF}" enctype="multipart/form-data" accept-charset="UTF-8">
+                <input type="hidden" name="id" value="{$ID}"/>
+                <input type="hidden" name="{$SESSION_NAME}" value="{$SESSION_ID}"/>
+                <input type="hidden" name="action" value="{$form->getSearchAction()}"/>
+                <fieldset id="{$form->getName()}-search" class="gui_generator_search">
+                    <legend>
+                        <span class="icon_magnifier">&nbsp;</span>
+                        {lang id="advanced_search"}
+                    </legend>
+                    {import file="search.html.tpl" form=$form}
+                </fieldset>
+            </form>
+        {/if}
         {if $form->isSelectable() && !$form->getContext('update')->getRows()->count()}
             <div class="gui_generator_no_entries_found">{lang id="NO_ENTRIES_FOUND"}</div>
         {/if}
@@ -149,23 +163,35 @@
             </form>
         {/if}
         <script type="text/javascript"><!--
-            $('#{$form->getName()}-settings').hide();
-            var subFormText = 
-            {if $form->getEntriesPerPage() == 1}
-                '<a class="gui_generator_icon_up buttonize" title=\'{lang id="title_overview"}\'' +
-                'href={"action={$ACTION}&{$formName}[entries]=5&{$formName}[layout]={$form->getTemplate()}&{$formName}[page]=0"|href}>' +
-                '<span class="icon_upload">&nbsp;</span></a>' +
-            {/if}
-            {if $form->isInsertable() && $form->getInsertAction()}
-                '<a class="gui_generator_icon_new buttonize" href="javascript://" ' +
-                'onclick="$(\'#{$formName}-new\').slideToggle()">' +
-                '<span class="icon_new">&nbsp;</span>&nbsp;{lang id="new_entry"}</a>' +
-            {/if}
-                '<a class="gui_generator_icon_settings buttonize" href="javascript://"' +
-                'onclick="return yanaGuiToggleVisibility(\'{$form->getName()}-settings\');">' +
-                '<span class="icon_edit">&nbsp;</span>&nbsp;{lang id="view_settings"}</a>';
-            $('#{$form->getName()}-toolbar').prepend(subFormText);
-            $('#{$form->getName()}-new').hide();
+            $(document).ready(function() {
+                $('#{$form->getName()}-settings').hide();
+                var subFormText = 
+                {if $form->getEntriesPerPage() == 1}
+                    '<a class="gui_generator_icon_up buttonize" title=\'{lang id="title_overview"}\'' +
+                    'href={"action={$ACTION}&{$formName}[entries]=5&{$formName}[layout]={$form->getTemplate()}&{$formName}[page]=0"|href}>' +
+                    '<span class="icon_upload">&nbsp;</span></a>' +
+                {/if}
+                {if $form->isInsertable() && $form->getInsertAction()}
+                    '<a class="gui_generator_icon_new buttonize" href="javascript://" ' +
+                    'onclick="return yanaGuiToggleVisibility(\'{$formName}-new\');">' +
+                    '<span class="icon_new">&nbsp;</span>&nbsp;{lang id="new_entry"}</a>' +
+                {/if}
+                {if $form->isSelectable() && ($form->getEvent('search') || $form->hasSearchableChildren())}
+                    '<a class="gui_generator_icon_search buttonize" href="javascript://"' +
+                    'onclick="return yanaGuiToggleVisibility(\'{$form->getName()}-search\');">' +
+                    '<span class="icon_magnifier">&nbsp;</span>&nbsp;{lang id="advanced_search"}</a>' +
+                {/if}
+                    '<a class="gui_generator_icon_settings buttonize" href="javascript://"' +
+                    'onclick="return yanaGuiToggleVisibility(\'{$form->getName()}-settings\');">' +
+                    '<span class="icon_edit">&nbsp;</span>&nbsp;{lang id="view_settings"}</a>';
+                $('#{$form->getName()}-toolbar').prepend(subFormText);
+                $('#{$form->getName()}-new').hide();
+                $('#{$form->getName()}-search').hide();
+                $.fn.fancybox.defaults.hideOnContentClick = true;
+                $.fn.fancybox.defaults.titlePosition = 'over';
+                $.fn.fancybox.defaults.showCloseButton = false;
+                $.fn.fancybox.defaults.type = 'image';
+            });
         //--></script>
     </fieldset>
 {/if}
