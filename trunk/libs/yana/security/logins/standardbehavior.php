@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Security\Logins;
 
@@ -193,7 +194,7 @@ class StandardBehavior extends \Yana\Security\Logins\AbstractBehavior
         if ($session->getCurrentLanguage() > "") {
             $user->setLanguage($session->getCurrentLanguage());
         }
-        // make session cookie expire (get's deleted)
+        // make session cookie expires (get's deleted)
         if (\filter_has_var(\INPUT_COOKIE, $session->getName())) {
             $this->_setCookie("", time() - 42000);
         }
@@ -218,7 +219,7 @@ class StandardBehavior extends \Yana\Security\Logins\AbstractBehavior
      * @param   int     $timeStamp  cookie lifetamp (set to 0 for session cookie)
      * @return  $this
      */
-    private function _setCookie($sessionId, $timeStamp = 0)
+    private function _setCookie(string $sessionId, int $timeStamp = 0)
     {
         if (!\headers_sent()) {
             $session = $this->_getSession();

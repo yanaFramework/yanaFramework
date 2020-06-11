@@ -156,14 +156,11 @@ class Feed extends \Yana\Core\StdObject implements \Yana\RSS\IsFeed
      *
      * @param  string  $description  a text to describe context and purpose of this channel
      */
-    public function __construct(string $description)
+    public function __construct(string $description, string $title = "", string $locale = "")
     {
         $this->setDescription($description);
-
-        // auto-generated fields
-        $language = \Yana\Translations\Facade::getInstance();
-        $this->_title = (string) $language->getVar('program_title');
-        $this->_language = (string) $language->getLocale();
+        $this->_title = $title;
+        $this->_language = $locale;
     }
 
     /**

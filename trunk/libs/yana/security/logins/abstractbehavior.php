@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Security\Logins;
 
@@ -69,7 +70,7 @@ abstract class AbstractBehavior extends \Yana\Core\StdObject implements \Yana\Se
      *
      * @return  \Yana\Security\Sessions\IsWrapper
      */
-    protected function _getSession()
+    protected function _getSession(): \Yana\Security\Sessions\IsWrapper
     {
         if (!isset($this->_session)) {
             // @codeCoverageIgnoreStart
@@ -84,7 +85,7 @@ abstract class AbstractBehavior extends \Yana\Core\StdObject implements \Yana\Se
      *
      * @return  \Yana\Security\Sessions\IsIdGenerator
      */
-    protected function _getSessionIdGenerator()
+    protected function _getSessionIdGenerator(): \Yana\Security\Sessions\IsIdGenerator
     {
         if (!isset($this->_sessionIdGenerator)) {
             $this->_sessionIdGenerator = new \Yana\Security\Sessions\IdGenerator();

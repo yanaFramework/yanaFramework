@@ -117,7 +117,7 @@ class IdResource extends \Yana\Views\Resources\FileResource
     private function _loadDependencies(\Yana\Views\MetaData\TemplateMetaData $templateData)
     {
         // load language files associated with the template
-        $language = \Yana\Translations\Facade::getInstance();
+        $language = $this->_getLanguage();
         foreach ($templateData->getLanguages() as $languageFile)
         {
             try {

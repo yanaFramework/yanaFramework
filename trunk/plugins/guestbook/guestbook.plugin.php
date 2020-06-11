@@ -298,7 +298,12 @@ class GuestbookPlugin extends \Yana\Plugins\AbstractPlugin
         assert(is_array($rows), 'unexpected result: $rows');
 
         /* create RSS feed */
-        $rss = new \Yana\RSS\Feed($YANA->getLanguage()->getVar('RSS_DESCRIPTION'));
+        $lang = $YANA->getLanguage();
+        $rss = new \Yana\RSS\Feed(
+            (string) $lang->getVar('RSS_DESCRIPTION'),
+            (string) $lang->getVar('program_title'),
+            (string) $lang->getLocale()
+        );
         if ($rss->getDescription() == "") {
             $rss->setDescription('the 10 most recent guestbook entries');
         }

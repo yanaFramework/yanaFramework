@@ -262,7 +262,12 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
         /*
          * create RSS feed
          */
-        $rss = new \Yana\RSS\Feed($YANA->getLanguage()->getVar('RSS_DESCRIPTION'));
+        $lang = $YANA->getLanguage();
+        $rss = new \Yana\RSS\Feed(
+            (string) $lang->getVar('RSS_DESCRIPTION'),
+            (string) $lang->getVar('program_title'),
+            (string) $lang->getLocale()
+        );
         $urlFormatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
         $textFormatter = new \Yana\Views\Helpers\Formatters\TextFormatterCollection();
         /*
