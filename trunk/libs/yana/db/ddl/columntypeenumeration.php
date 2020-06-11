@@ -68,7 +68,7 @@ class ColumnTypeEnumeration extends \Yana\Core\AbstractEnumeration
      *
      * @return  array
      */
-    public static function getSupportedTypes()
+    public static function getSupportedTypes(): array
     {
         return array(
             self::ARR,
@@ -105,9 +105,8 @@ class ColumnTypeEnumeration extends \Yana\Core\AbstractEnumeration
      * @param   string  $type  to compare
      * @return  bool
      */
-    public static function isSingleLine($type)
+    public static function isSingleLine(string $type): bool
     {
-        assert(is_string($type), 'Invalid argument type $type: String expected');
         // filter by column type
         switch ($type)
         {
@@ -142,7 +141,7 @@ class ColumnTypeEnumeration extends \Yana\Core\AbstractEnumeration
      * @param   string  $type  to compare
      * @return  bool
      */
-    public static function isMultiLine($type)
+    public static function isMultiLine(string $type): bool
     {
         // filter by column type
         switch ($type)
@@ -166,14 +165,13 @@ class ColumnTypeEnumeration extends \Yana\Core\AbstractEnumeration
      *
      * @return  bool
      */
-    public static function isFilterable($type)
+    public static function isFilterable(string $type): bool
     {
         // filter by column type
         switch ($type)
         {
             case self::BOOL:
             case self::COLOR:
-            case self::ENUM:
             case self::FLOAT:
             case self::INET:
             case self::INT:

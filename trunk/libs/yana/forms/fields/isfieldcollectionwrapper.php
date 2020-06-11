@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Forms\Fields;
 
@@ -48,14 +49,14 @@ interface IsFieldCollectionWrapper extends \Yana\Core\IsCollection
      *
      * @return  \Yana\Forms\Setups\IsContext
      */
-    public function getContext();
+    public function getContext(): \Yana\Forms\Setups\IsContext;
 
     /**
      * Get form facade.
      *
      * @return  \Yana\Forms\Facade
      */
-    public function getForm();
+    public function getForm(): \Yana\Forms\Facade;
 
     /**
      * Get primary key of the current row.
@@ -78,7 +79,7 @@ interface IsFieldCollectionWrapper extends \Yana\Core\IsCollection
      *
      * @return  bool
      */
-    public function hasRows();
+    public function hasRows(): bool;
 
     /**
      * Returns the number of rows.
@@ -87,7 +88,7 @@ interface IsFieldCollectionWrapper extends \Yana\Core\IsCollection
      *
      * @return  int
      */
-    public function getRowCount();
+    public function getRowCount(): int;
 
     /**
      * Advances the pointer one row.

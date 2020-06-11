@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Forms\Fields;
 
@@ -67,7 +68,7 @@ class FieldCollectionWrapper extends \Yana\Forms\Fields\AbstractFieldCollectionW
      *
      * @return  bool
      */
-    public function hasRows()
+    public function hasRows(): bool
     {
         return $this->getRowCount() > 0;
     }
@@ -79,7 +80,7 @@ class FieldCollectionWrapper extends \Yana\Forms\Fields\AbstractFieldCollectionW
      *
      * @return  int
      */
-    public function getRowCount()
+    public function getRowCount(): int
     {
         return $this->getContext()->getRows()->count();
     }

@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Forms\Fields;
 
@@ -118,7 +119,7 @@ abstract class AbstractFieldCollectionWrapper extends \Yana\Core\StdObject imple
      *
      * @return  \Yana\Forms\Setups\IsContext
      */
-    public function getContext()
+    public function getContext(): \Yana\Forms\Setups\IsContext
     {
         return $this->_context;
     }
@@ -128,7 +129,7 @@ abstract class AbstractFieldCollectionWrapper extends \Yana\Core\StdObject imple
      *
      * @return  \Yana\Forms\Facade
      */
-    public function getForm()
+    public function getForm(): \Yana\Forms\Facade
     {
         return $this->_form;
     }

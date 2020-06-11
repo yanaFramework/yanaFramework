@@ -303,7 +303,7 @@ class ApplicationBuilder extends \Yana\Core\StdObject
          * Where the first to letters are the lower-case language identifier and
          * the last two letter are the capitalized country identifier (where applicable)
          */
-        if (isset($_GET['language']) && preg_match('/^[a-z]{2}(-[A-Z]{2})?$/s', $_GET['language'])) {
+        if (isset($_GET['language']) && preg_match('/^[a-z]{2}(-[A-Z]{2})?$/is', $_GET['language'])) {
             $session['language'] = $_GET['language'];
 
         } elseif (!isset($session['language']) && isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && preg_match('/^[a-z]{2}/', $_SERVER['HTTP_ACCEPT_LANGUAGE'])) {

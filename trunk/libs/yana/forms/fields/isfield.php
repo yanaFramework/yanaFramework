@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Forms\Fields;
 
@@ -42,28 +43,28 @@ interface IsField
      *
      * @return  \Yana\Db\Ddl\Column
      */
-    public function getColumn();
+    public function getColumn(): \Yana\Db\Ddl\Column;
 
     /**
      * Get field definition.
      *
      * @return  \Yana\Db\Ddl\Field
      */
-    public function getField();
+    public function getField(): \Yana\Db\Ddl\Field;
 
     /**
      * Get form context.
      *
      * @return  \Yana\Forms\Setups\IsContext
      */
-    public function getContext();
+    public function getContext(): \Yana\Forms\Setups\IsContext;
 
     /**
      * Get form structure.
      *
-     * @return  \Yana\Forms\Facade
+     * @return  \Yana\Forms\Fields\FieldCollectionWrapper
      */
-    public function getForm();
+    public function getForm(): \Yana\Forms\Fields\FieldCollectionWrapper;
 
     /**
      * Get title.
@@ -72,7 +73,7 @@ interface IsField
      *
      * @return  string
      */
-    public function getTitle();
+    public function getTitle(): string;
 
     /**
      * Check if a filter is set.
@@ -81,7 +82,7 @@ interface IsField
      *
      * @return  bool
      */
-    public function hasFilter();
+    public function hasFilter(): bool;
 
     /**
      * Check if column has a scalar type.
@@ -95,7 +96,7 @@ interface IsField
      *
      * @return  bool
      */
-    public function isFilterable();
+    public function isFilterable(): bool;
 
     /**
      * Check if the field has a column element.
@@ -109,7 +110,7 @@ interface IsField
      *
      * @return  bool
      */
-    public function refersToTable();
+    public function refersToTable(): bool;
 
     /**
      * Is single-line.
@@ -119,7 +120,7 @@ interface IsField
      *
      * @return  bool
      */
-    public function isSingleLine();
+    public function isSingleLine(): bool;
 
     /**
      * Is multi-line.
@@ -129,7 +130,7 @@ interface IsField
      *
      * @return  bool
      */
-    public function isMultiLine();
+    public function isMultiLine(): bool;
 
     /**
      * Get the column filter value.
@@ -141,7 +142,7 @@ interface IsField
      *
      * @return  string
      */
-    public function getFilterValue();
+    public function getFilterValue(): string;
 
     /**
      * Get CSS class attribute.
@@ -152,7 +153,7 @@ interface IsField
      *
      * @return  string
      */
-    public function getCssClass();
+    public function getCssClass(): string;
 
     /**
      * Get form value.
@@ -168,7 +169,7 @@ interface IsField
      * If the field has a range of minimal and maximal value, this returns the minimal value of the field.
      * Otherwise it returns NULL.
      *
-     * @return  scalar
+     * @return  scalar|NULL
      */
     public function getMinValue();
 
@@ -179,7 +180,7 @@ interface IsField
      * If the field has a range of minimal and maximal value, this returns the maximal value of the field.
      * Otherwise it returns NULL.
      *
-     * @return  scalar
+     * @return  scalar|NULL
      */
     public function getMaxValue();
 
@@ -191,9 +192,9 @@ interface IsField
      *
      * If the value is empty, the function return NULL instead.
      *
-     * @return  array
+     * @return  array|NULL
      */
-    public function getValueAsWhereClause();
+    public function getValueAsWhereClause(): ?array;
 
 }
 

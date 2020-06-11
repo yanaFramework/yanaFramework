@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Forms\Fields;
 
@@ -49,7 +50,7 @@ class Field extends \Yana\Forms\Fields\AbstractField
      *
      * @return  \Yana\Forms\Setups\IsContext
      */
-    public function getContext()
+    public function getContext(): \Yana\Forms\Setups\IsContext
     {
         return $this->getForm()->getContext();
     }
@@ -61,7 +62,7 @@ class Field extends \Yana\Forms\Fields\AbstractField
      *
      * @return  string
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         $title = $this->getField()->getTitle();
         if (empty($title)) {
@@ -80,7 +81,7 @@ class Field extends \Yana\Forms\Fields\AbstractField
      *
      * @return  bool
      */
-    public function hasFilter()
+    public function hasFilter(): bool
     {
         return !is_null($this->_filter);
     }
@@ -97,7 +98,7 @@ class Field extends \Yana\Forms\Fields\AbstractField
      *
      * @return  bool
      */
-    public function isFilterable()
+    public function isFilterable(): bool
     {
         return \Yana\Db\Ddl\ColumnTypeEnumeration::isFilterable((string) $this->getColumn()->getType()) && (bool) $this->refersToTable();
     }
@@ -113,7 +114,7 @@ class Field extends \Yana\Forms\Fields\AbstractField
      *
      * @return  bool
      */
-    public function refersToTable()
+    public function refersToTable(): bool
     {
         return is_null($this->getField()->getColumn());
     }
@@ -126,7 +127,7 @@ class Field extends \Yana\Forms\Fields\AbstractField
      *
      * @return  bool
      */
-    public function isSingleLine()
+    public function isSingleLine(): bool
     {
         return \Yana\Db\Ddl\ColumnTypeEnumeration::isSingleLine((string) $this->getColumn()->getType());
     }
@@ -139,7 +140,7 @@ class Field extends \Yana\Forms\Fields\AbstractField
      *
      * @return  bool
      */
-    public function isMultiLine()
+    public function isMultiLine(): bool
     {
         return \Yana\Db\Ddl\ColumnTypeEnumeration::isMultiLine((string) $this->getColumn()->getType());
     }
@@ -154,7 +155,7 @@ class Field extends \Yana\Forms\Fields\AbstractField
      *
      * @return  string
      */
-    public function getFilterValue()
+    public function getFilterValue(): string
     {
         return $this->getForm()->getSetup()->getFilter($this->getName());
     }
@@ -168,10 +169,10 @@ class Field extends \Yana\Forms\Fields\AbstractField
      *
      * @return  string
      */
-    public function getCssClass()
+    public function getCssClass(): string
     {
         $cssClass = $this->getField()->getCssClass();
-        if (empty($cssClass)) {
+        if (!is_string($cssClass)) {
             return "gui_generator_col_" . $this->getColumn()->getName();
         } else {
             return $cssClass;
@@ -207,7 +208,7 @@ class Field extends \Yana\Forms\Fields\AbstractField
      * If the field has a range of minimal and maximal value, this returns the minimal value of the field.
      * Otherwise it returns NULL.
      *
-     * @return  scalar
+     * @return  scalar|NULL
      */
     public function getMinValue()
     {
@@ -226,7 +227,7 @@ class Field extends \Yana\Forms\Fields\AbstractField
      * If the field has a range of minimal and maximal value, this returns the maximal value of the field.
      * Otherwise it returns NULL.
      *
-     * @return  scalar
+     * @return  scalar|NULL
      */
     public function getMaxValue()
     {
@@ -246,9 +247,9 @@ class Field extends \Yana\Forms\Fields\AbstractField
      *
      * If the value is empty, the function return NULL instead.
      *
-     * @return  array
+     * @return  array|NULL
      */
-    public function getValueAsWhereClause()
+    public function getValueAsWhereClause(): ?array
     {
         $whereClause = null;
         $tableName = $this->getForm()->getBaseForm()->getTable();

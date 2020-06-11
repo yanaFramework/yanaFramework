@@ -24,6 +24,7 @@
  * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Ddl;
 
@@ -101,7 +102,7 @@ class ColumnTypeEnumerationTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(\Yana\Db\Ddl\ColumnTypeEnumeration::isFilterable(\Yana\Db\Ddl\ColumnTypeEnumeration::ARR));
         $this->assertTrue(\Yana\Db\Ddl\ColumnTypeEnumeration::isFilterable(\Yana\Db\Ddl\ColumnTypeEnumeration::BOOL));
         $this->assertTrue(\Yana\Db\Ddl\ColumnTypeEnumeration::isFilterable(\Yana\Db\Ddl\ColumnTypeEnumeration::COLOR));
-        $this->assertTrue(\Yana\Db\Ddl\ColumnTypeEnumeration::isFilterable(\Yana\Db\Ddl\ColumnTypeEnumeration::ENUM));
+        $this->assertFalse(\Yana\Db\Ddl\ColumnTypeEnumeration::isFilterable(\Yana\Db\Ddl\ColumnTypeEnumeration::ENUM));
         $this->assertTrue(\Yana\Db\Ddl\ColumnTypeEnumeration::isFilterable(\Yana\Db\Ddl\ColumnTypeEnumeration::FLOAT));
         $this->assertTrue(\Yana\Db\Ddl\ColumnTypeEnumeration::isFilterable(\Yana\Db\Ddl\ColumnTypeEnumeration::INET));
         $this->assertTrue(\Yana\Db\Ddl\ColumnTypeEnumeration::isFilterable(\Yana\Db\Ddl\ColumnTypeEnumeration::INT));

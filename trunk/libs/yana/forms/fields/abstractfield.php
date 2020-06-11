@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Forms\Fields;
 
@@ -98,7 +99,7 @@ abstract class AbstractField extends \Yana\Core\StdObject implements \Yana\Forms
      *
      * @return  \Yana\Db\Ddl\Column
      */
-    public function getColumn()
+    public function getColumn(): \Yana\Db\Ddl\Column
     {
         return $this->_column;
     }
@@ -108,7 +109,7 @@ abstract class AbstractField extends \Yana\Core\StdObject implements \Yana\Forms
      *
      * @return  \Yana\Db\Ddl\Field
      */
-    public function getField()
+    public function getField(): \Yana\Db\Ddl\Field
     {
         return $this->_field;
     }
@@ -116,9 +117,9 @@ abstract class AbstractField extends \Yana\Core\StdObject implements \Yana\Forms
     /**
      * Get form structure.
      *
-     * @return  \Yana\Forms\Facade
+     * @return  \Yana\Forms\Fields\FieldCollectionWrapper
      */
-    public function getForm()
+    public function getForm(): \Yana\Forms\Fields\FieldCollectionWrapper
     {
         return $this->_form;
     }
