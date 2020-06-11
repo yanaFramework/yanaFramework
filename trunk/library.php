@@ -73,27 +73,6 @@ if (empty($docrefExt)) {
     ini_set('docref_ext', '.php');
 }
 unset($docrefRoot, $docrefExt);
-/**#@+
- * directory scanning
- *
- * These constants are used by the functions dirlist() and Dir::dirlist().
- * See the documentation of these for details.
- *
- * @see  dirlist()
- * @see  Dir::dirlist()
- */
-
-if (!defined('YANA_GET_ALL')) {
-    define('YANA_GET_ALL',   0);
-}
-if (!defined('YANA_GET_FILES')) {
-    define('YANA_GET_FILES', 1);
-}
-if (!defined('YANA_GET_DIRS')) {
-    define('YANA_GET_DIRS',  2);
-}
-
-/**#@-*/
 if (!defined('CASE_MIXED')) {
     /**
      * used for change case commands
@@ -146,23 +125,6 @@ if (!defined('YANA_ERROR_LOG')) {
      * Use this for testing.
      */
     define('YANA_ERROR_LOG', 'log');
-}
-/**#@-*/
-
-/**#@+
- * additional upload error states provided by the framework
- */
-if (!defined('UPLOAD_ERR_SIZE')) {
-    define('UPLOAD_ERR_SIZE', -1);
-}
-if (!defined('UPLOAD_ERR_FILE_TYPE')) {
-    define('UPLOAD_ERR_FILE_TYPE', -2);
-}
-if (!defined('UPLOAD_ERR_INVALID_TARGET')) {
-    define('UPLOAD_ERR_INVALID_TARGET', -4);
-}
-if (!defined('UPLOAD_ERR_OTHER')) {
-    define('UPLOAD_ERR_OTHER', -5);
 }
 /**#@-*/
 
@@ -316,14 +278,7 @@ if (!defined('YANA_RIGHT_DELIMITER_REGEXP')) {
  */
 
 if (!defined('YANA_SESSION_NAME')) {
-    define('YANA_SESSION_NAME',          'ysid');
-}
-
-if (!defined('YANA_TPL_CACHE')) {
-    define('YANA_TPL_CACHE',             0);
-}
-if (!defined('YANA_TPL_CACHE_DIR')) {
-    define('YANA_TPL_CACHE_DIR',         true);
+    define('YANA_SESSION_NAME', 'ysid');
 }
 
 /**#@-*/

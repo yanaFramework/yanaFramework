@@ -111,8 +111,7 @@ class ImageUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
         if ($file->getMimeType()) {
             if (!preg_match('/^image\/(jpe?g|png|gif)$/s', $file->getMimeType(), $match)) {
                 $message = "The uploaded file has an invalid MIME-type. Must be jpg, png or gif.";
-                $level = UPLOAD_ERR_FILE_TYPE;
-                $error = new \Yana\Core\Exceptions\Files\InvalidImageException($message, $level);
+                $error = new \Yana\Core\Exceptions\Files\InvalidImageException($message);
                 throw $error->setFilename($filename);
             }
             $fileType = $match[1];
@@ -135,8 +134,7 @@ class ImageUploader extends \Yana\Db\Binaries\Uploads\AbstractUploader
          */
         if ($image->isBroken()) {
             $message = "The uploaded file was not a valid image.";
-            $level = UPLOAD_ERR_FILE_TYPE;
-            $error = new \Yana\Core\Exceptions\Files\InvalidImageException($message, $level);
+            $error = new \Yana\Core\Exceptions\Files\InvalidImageException($message);
             throw $error->setFilename($filename);
         }
         $width = $height = $background = null; // init image settings

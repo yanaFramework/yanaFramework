@@ -113,14 +113,14 @@ interface IsWrapper extends \Yana\Core\IsCountableArray
     /**
      * Set the session cookie parameters.
      *
-	 * @param   int          $lifetime   Lifetime of the session cookie, defined in seconds.
-	 * @param   string|NULL  $path       Path on the domain where the cookie will work. Use a single slash ('/') for all paths on the domain.
-	 * @param   string|NULL  $domain     Cookie domain, for example 'www.php.net'. To make cookies visible on all subdomains then the domain must be prefixed with a dot like '.php.net'.
-	 * @param   bool         $isSecure   If bool(true) cookie will only be sent over secure connections.
-	 * @param   bool         $isHttpOnly If bool(true) PHP will attempt to send the httponly flag when setting the session cookie.
+     * @param   int     $lifetime   Lifetime of the session cookie, defined in seconds.
+     * @param   string  $path       Path on the domain where the cookie will work. Use a single slash ('/') for all paths on the domain.
+     * @param   string  $domain     Cookie domain, for example 'www.php.net'. To make cookies visible on all subdomains then the domain must be prefixed with a dot like '.php.net'.
+     * @param   bool    $isSecure   If bool(true) cookie will only be sent over secure connections.
+     * @param   bool    $isHttpOnly If bool(true) PHP will attempt to send the httponly flag when setting the session cookie.
 	 * @link http://php.net/manual/en/function.session-set-cookie-params.php
      */
-    public function setCookieParameters(int $lifetime, ?string $path = null, ?string $domain = null, bool $isSecure = false, bool $isHttpOnly = false);
+    public function setCookieParameters(int $lifetime, string $path = "", string $domain = "", bool $isSecure = false, bool $isHttpOnly = false);
 
     /**
      * Gets the session cookie parameters.

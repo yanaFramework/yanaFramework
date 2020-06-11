@@ -289,10 +289,12 @@ class ApplicationBuilder extends \Yana\Core\StdObject
             $session->setName(YANA_SESSION_NAME);
         }
         // limit session cookie to 1 hour and the local script directory
-        session_set_cookie_params(3600, dirname($_SERVER['SCRIPT_NAME']) . '/');
+        $session->setCookieParameters(3600, dirname($_SERVER['SCRIPT_NAME']) . '/');
         // set session lifetime to 1 hour
         ini_set("session.gc_maxlifetime", "3600");
         $session->start(); // Throws a notice when called on an active session
+        // reset session expiry time
+        setcookie($session->getName(), $session->getId(), time() + 3600);
 
         /**
          * Check language settings.

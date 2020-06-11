@@ -166,7 +166,7 @@ class ValueSanitizerWorker extends \Yana\Db\Helpers\AbstractValueSanitizerWorker
              */
             if ($maxFileSize > 0 && isset($value['size']) && $value['size'] > $maxFileSize) {
                 $message = "Uploaded file is too large.";
-                $alert = new \Yana\Core\Exceptions\Files\SizeException($message, UPLOAD_ERR_SIZE);
+                $alert = new \Yana\Core\Exceptions\Files\SizeException($message);
                 $alert->setFilename(isset($value['name']) ? (string) $value['name'] : '');
                 throw $alert->setMaxSize((int) $maxFileSize);
             }
@@ -179,7 +179,7 @@ class ValueSanitizerWorker extends \Yana\Db\Helpers\AbstractValueSanitizerWorker
             }
             if ($maxFileSize > 0 && $value->getSizeInBytes() > $maxFileSize) {
                 $message = "Uploaded file is too large.";
-                $alert = new \Yana\Core\Exceptions\Files\SizeException($message, UPLOAD_ERR_SIZE);
+                $alert = new \Yana\Core\Exceptions\Files\SizeException($message);
                 $alert->setFilename($value->getName());
                 throw $alert->setMaxSize((int) $maxFileSize);
             }

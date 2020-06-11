@@ -95,12 +95,6 @@ abstract class AbstractUploader extends \Yana\Core\StdObject
      *        case UPLOAD_ERR_EXTENSION:
      *            exit('File upload stopped by extension');
      *        break;
-     *        case UPLOAD_ERR_FILE_TYPE:
-     *            exit('uploaded file is not a recognized image');
-     *        break;
-     *        case UPLOAD_ERR_OTHER:
-     *            exit('misc. (unexpected) errors');
-     *        break;
      *     }
      * }
      * </code>
@@ -109,10 +103,8 @@ abstract class AbstractUploader extends \Yana\Core\StdObject
      *
      * @param   \Yana\Http\Uploads\IsFile  $file  item taken from $_FILES array
      * @return  string
-     * @throws  \Yana\Core\Exceptions\Files\NotWriteableException on UPLOAD_ERR_INVALID_TARGET and UPLOAD_ERR_OTHER
-     * @throws  \Yana\Core\Exceptions\Files\UploadFailedException on UPLOAD_ERR_FILE_TYPE
-     * @throws  \Yana\Core\Exceptions\Files\SizeException         on UPLOAD_ERR_FORM_SIZE, UPLOAD_ERR_SIZE, UPLOAD_ERR_FORM_SIZE
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException    when the given array contains no filename
+     * @throws  \Yana\Core\Exceptions\Files\SizeException         on UPLOAD_ERR_FORM_SIZE, UPLOAD_ERR_FORM_SIZE
+     * @throws  \Yana\Core\Exceptions\Files\NotWriteableException if none other matches
      */
     protected function _getTempName(\Yana\Http\Uploads\IsFile $file): string
     {
@@ -125,7 +117,6 @@ abstract class AbstractUploader extends \Yana\Core\StdObject
                 // all fine - proceed!
             break;
 
-            case UPLOAD_ERR_SIZE:
             case UPLOAD_ERR_INI_SIZE:
                 $maxSize = ini_get("upload_max_filesize");
             case UPLOAD_ERR_FORM_SIZE:
@@ -139,13 +130,6 @@ abstract class AbstractUploader extends \Yana\Core\StdObject
                 $alert = new \Yana\Core\Exceptions\Files\SizeException($message, $file->getErrorCode());
                 throw $alert->setFilename($filename)->setMaxSize($maxSize);
 
-            case UPLOAD_ERR_FILE_TYPE:
-                $message = "Uploaded file has a file type that is either not recognized or not permitted.";
-                $error = new \Yana\Core\Exceptions\Files\UploadFailedException($message, UPLOAD_ERR_FILE_TYPE);
-                throw $error->setFilename($filename);
-
-            case UPLOAD_ERR_INVALID_TARGET:
-            case UPLOAD_ERR_OTHER:
             default:
                 $message = "Unable to write uploaded file '{$filename}'.";
                 $error = new \Yana\Core\Exceptions\Files\NotWriteableException($message, $file->getErrorCode());

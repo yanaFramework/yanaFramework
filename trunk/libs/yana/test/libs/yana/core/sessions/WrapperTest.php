@@ -264,6 +264,70 @@ class WrapperTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @runInSeparateProcess
+     */
+    public function testSetCookieParameters4()
+    {
+        $this->assertNull($this->object->setCookieParameters(1234, 'Ab', 'cD', true, true));
+        $this->assertNull($this->object->setCookieParameters(1234, 'Ab', 'cD', true));
+        $param = $this->object->getCookieParameters();
+        $this->assertSame(1234, $param["lifetime"]);
+        $this->assertSame("Ab", $param["path"]);
+        $this->assertSame("cD", $param["domain"]);
+        $this->assertSame(true, $param["secure"]);
+        $this->assertSame(true, $param["httponly"]);
+    }
+
+    /**
+     * @test
+     * @runInSeparateProcess
+     */
+    public function testSetCookieParameters3()
+    {
+        $this->assertNull($this->object->setCookieParameters(1234, 'Ab', 'cD', true, true));
+        $this->assertNull($this->object->setCookieParameters(1234, 'Ab', 'cD'));
+        $param = $this->object->getCookieParameters();
+        $this->assertSame(1234, $param["lifetime"]);
+        $this->assertSame("Ab", $param["path"]);
+        $this->assertSame("cD", $param["domain"]);
+        $this->assertSame(true, $param["secure"]);
+        $this->assertSame(true, $param["httponly"]);
+    }
+
+    /**
+     * @test
+     * @runInSeparateProcess
+     */
+    public function testSetCookieParameters2()
+    {
+        $this->assertNull($this->object->setCookieParameters(1234, 'Ab', 'cD', true, true));
+        $this->assertNull($this->object->setCookieParameters(1234, 'Ab'));
+        $param = $this->object->getCookieParameters();
+        $this->assertSame(1234, $param["lifetime"]);
+        $this->assertSame("Ab", $param["path"]);
+        $this->assertSame("cD", $param["domain"]);
+        $this->assertSame(true, $param["secure"]);
+        $this->assertSame(true, $param["httponly"]);
+    }
+
+    /**
+     * @test
+     * @runInSeparateProcess
+     */
+    public function testSetCookieParameters1()
+    {
+        $this->assertNull($this->object->setCookieParameters(1234, 'Ab', 'cD', true, true));
+        $this->assertNull($this->object->setCookieParameters(1234));
+        $param = $this->object->getCookieParameters();
+        $this->assertSame(1234, $param["lifetime"]);
+        $this->assertSame("Ab", $param["path"]);
+        $this->assertSame("cD", $param["domain"]);
+        $this->assertSame(true, $param["secure"]);
+        $this->assertSame(true, $param["httponly"]);
+    }
+
+    /**
+     * @test
      */
     public function testGetCookieParameters()
     {

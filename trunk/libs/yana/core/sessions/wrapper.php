@@ -232,17 +232,34 @@ class Wrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\IsWrap
      *
      * Also updated the session garbage collector maximum lifetime.
      *
-     * @param   int          $lifetime   Lifetime of the session cookie, defined in seconds.
-     * @param   string|NULL  $path       Path on the domain where the cookie will work. Use a single slash ('/') for all paths on the domain.
-     * @param   string|NULL  $domain     Cookie domain, for example 'www.php.net'. To make cookies visible on all subdomains then the domain must be prefixed with a dot like '.php.net'.
-     * @param   bool         $isSecure   If bool(true) cookie will only be sent over secure connections.
-     * @param   bool         $isHttpOnly If bool(true) PHP will attempt to send the httponly flag when setting the session cookie.
+     * @param   int     $lifetime   Lifetime of the session cookie, defined in seconds.
+     * @param   string  $path       Path on the domain where the cookie will work. Use a single slash ('/') for all paths on the domain.
+     * @param   string  $domain     Cookie domain, for example 'www.php.net'. To make cookies visible on all subdomains then the domain must be prefixed with a dot like '.php.net'.
+     * @param   bool    $isSecure   If bool(true) cookie will only be sent over secure connections.
+     * @param   bool    $isHttpOnly If bool(true) PHP will attempt to send the httponly flag when setting the session cookie.
      * @link http://php.net/manual/en/function.session-set-cookie-params.php
      */
-    public function setCookieParameters(int $lifetime, ?string $path = null, ?string $domain = null, bool $isSecure = false, bool $isHttpOnly = false)
+    public function setCookieParameters(int $lifetime, string $path = "", string $domain = "", bool $isSecure = false, bool $isHttpOnly = false)
     {
         ini_set("session.gc_maxlifetime", (string) $lifetime);
-        session_set_cookie_params($lifetime, $path, $domain, $isSecure, $isHttpOnly);
+        switch (\func_num_args())
+        {
+            case 5:
+                session_set_cookie_params($lifetime, $path, $domain, $isSecure, $isHttpOnly);
+            break;
+            case 4:
+                session_set_cookie_params($lifetime, $path, $domain, $isSecure);
+            break;
+            case 3:
+                session_set_cookie_params($lifetime, $path, $domain);
+            break;
+            case 2:
+                session_set_cookie_params($lifetime, $path);
+            break;
+            case 1:
+                session_set_cookie_params($lifetime);
+            break;
+        }
     }
 
     /**

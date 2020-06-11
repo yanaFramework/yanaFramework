@@ -108,21 +108,11 @@ class AbstractUploaderTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \Yana\Core\Exceptions\Files\UploadFailedException
-     */
-    public function testGetTempNameUploadFailedException()
-    {
-        $file = new \Yana\Http\Uploads\File('ignored', '', 'Test', 0, UPLOAD_ERR_FILE_TYPE);
-        $this->object->getTempName($file);
-    }
-
-    /**
-     * @test
      * @expectedException \Yana\Core\Exceptions\Files\NotWriteableException
      */
     public function testGetTempNameNotWriteableException()
     {
-        $file = new \Yana\Http\Uploads\File('ignored', '', 'Test', 0, UPLOAD_ERR_OTHER);
+        $file = new \Yana\Http\Uploads\File('ignored', '', 'Test', 0, -10);
         $this->object->getTempName($file);
     }
 
