@@ -88,7 +88,7 @@ abstract class AbstractHelper extends \Yana\Core\StdObject
      *
      * @var  string
      */
-    public function getId()
+    public function getId(): string
     {
         return $this->_id;
     }
@@ -97,12 +97,11 @@ abstract class AbstractHelper extends \Yana\Core\StdObject
      * Set HTML attribute "id".
      *
      * @param   string  $id  must be valid unique identifier
-     * @return  \Yana\Forms\Fields\HtmlBuilder 
+     * @return  $this
      */
-    public function setId($id)
+    public function setId(string $id)
     {
-        assert(is_string($id), 'Invalid argument $id: string expected');
-        $this->_id = \Yana\Util\Strings::htmlSpecialChars((string) $id, ENT_QUOTES);
+        $this->_id = \Yana\Util\Strings::htmlSpecialChars($id, ENT_QUOTES);
         return $this;
     }
 
@@ -111,7 +110,7 @@ abstract class AbstractHelper extends \Yana\Core\StdObject
      *
      * @return  string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->_name;
     }
@@ -120,12 +119,11 @@ abstract class AbstractHelper extends \Yana\Core\StdObject
      * Set HTML attribute "name".
      *
      * @param   string  $name  must be valid unique identifier
-     * @return  \Yana\Forms\Fields\HtmlBuilder 
+     * @return  $this
      */
-    public function setName($name)
+    public function setName(string $name)
     {
-        assert(is_string($name), 'Invalid argument $name: string expected');
-        $this->_name = \Yana\Util\Strings::htmlSpecialChars((string) $name, ENT_QUOTES);
+        $this->_name = \Yana\Util\Strings::htmlSpecialChars($name, ENT_QUOTES);
         return $this;
     }
 
@@ -134,7 +132,7 @@ abstract class AbstractHelper extends \Yana\Core\StdObject
      *
      * @return  string
      */
-    public function getCssClass()
+    public function getCssClass(): string
     {
         return $this->_class;
     }
@@ -143,12 +141,11 @@ abstract class AbstractHelper extends \Yana\Core\StdObject
      * Set HTML attribute "class".
      *
      * @param   string  $class  must be valid CSS class name
-     * @return  \Yana\Forms\Fields\HtmlBuilder 
+     * @return  $this
      */
-    public function setCssClass($class)
+    public function setCssClass(string $class)
     {
-        assert(is_string($class), 'Invalid argument $class: string expected');
-        $this->_class = \Yana\Util\Strings::htmlSpecialChars((string) $class, ENT_QUOTES);
+        $this->_class = \Yana\Util\Strings::htmlSpecialChars($class, ENT_QUOTES);
         return $this;
     }
 
@@ -157,7 +154,7 @@ abstract class AbstractHelper extends \Yana\Core\StdObject
      *
      * @return  string
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->_title;
     }
@@ -166,11 +163,10 @@ abstract class AbstractHelper extends \Yana\Core\StdObject
      * Set HTML attribute "id".
      *
      * @param   string  $title  any text without HTML code
-     * @return  \Yana\Forms\Fields\HtmlBuilder 
+     * @return  $this
      */
-    public function setTitle($title)
+    public function setTitle(string $title)
     {
-        assert(is_string($title), 'Invalid argument $id: string expected');
         $this->_title = \Yana\Util\Strings::htmlSpecialChars($title, ENT_QUOTES);
         return $this;
     }
@@ -182,7 +178,7 @@ abstract class AbstractHelper extends \Yana\Core\StdObject
      *
      * @return  int
      */
-    public function getMaxLength()
+    public function getMaxLength(): int
     {
         return $this->_maxLength;
     }
@@ -193,13 +189,12 @@ abstract class AbstractHelper extends \Yana\Core\StdObject
      * To reset the value, set it to 0.
      *
      * @param   int  $maxLength  must be a positive number
-     * @return  \Yana\Forms\Fields\HtmlBuilder 
+     * @return  $this
      */
-    public function setMaxLength($maxLength)
+    public function setMaxLength(int $maxLength)
     {
-        assert(is_int($maxLength), 'Invalid argument $maxLength: int expected');
         assert($maxLength >= 0, 'Invalid argument $maxLength: must be >= 0');
-        $this->_maxLength = (int) $maxLength;
+        $this->_maxLength = $maxLength;
         return $this;
     }
 
@@ -208,7 +203,7 @@ abstract class AbstractHelper extends \Yana\Core\StdObject
      *
      * @return  string
      */
-    public function getAttr()
+    public function getAttr(): string
     {
         return $this->_attr;
     }
@@ -217,12 +212,11 @@ abstract class AbstractHelper extends \Yana\Core\StdObject
      * Set other HTML attributes as HTML code.
      *
      * @param   string  $attr  list of HTML attributes.
-     * @return  \Yana\Forms\Fields\HtmlBuilder 
+     * @return  $this
      */
-    public function setAttr($attr)
+    public function setAttr(string $attr)
     {
-        assert(is_string($attr), 'Invalid argument $attr: string expected');
-        $this->_attr = \Yana\Util\Strings::htmlSpecialChars((string) $attr, ENT_NOQUOTES);
+        $this->_attr = \Yana\Util\Strings::htmlSpecialChars($attr, ENT_NOQUOTES);
         return $this;
     }
 

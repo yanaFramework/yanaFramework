@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana;
 
@@ -89,9 +90,9 @@ class ApplicationBuilder extends \Yana\Core\StdObject
      *
      * @param  string  $logging  examples: YANA_ERROR_OFF, YANA_ERROR_LOG,
      *                           YANA_ERROR_ON or E_ALL, E_ALL & ~E_NOTICE
-     * @return ApplicationBuilder
+     * @return $this
      */
-    public function setErrorReporting($logging)
+    public function setErrorReporting(string $logging)
     {
         if (!defined('YANA_ERROR_REPORTING')) {
             /**
@@ -151,7 +152,7 @@ class ApplicationBuilder extends \Yana\Core\StdObject
      *
      * @return bool
      */
-    private function _isCommandLineCall()
+    private function _isCommandLineCall(): bool
     {
         return defined('STDIN') && !isset($_SERVER['REQUEST_METHOD']);
     }
@@ -163,7 +164,7 @@ class ApplicationBuilder extends \Yana\Core\StdObject
      *
      * @return  \Yana\Log\IsLogger
      */
-    private function _getErrorLogger()
+    private function _getErrorLogger(): \Yana\Log\IsLogger
     {
         if (!isset($this->_errorLogger)) {
             $this->_errorLogger = new \Yana\Log\NullLogger();
@@ -174,7 +175,7 @@ class ApplicationBuilder extends \Yana\Core\StdObject
     /**
      * This builds and runs a Yana application.
      *
-     * @return self
+     * @return $this
      */
     public function execute()
     {
@@ -231,8 +232,8 @@ class ApplicationBuilder extends \Yana\Core\StdObject
         if (headers_sent() === false && !ini_get('zlib.output_compression')) {
             if (isset($_SERVER['HTTP_ACCEPT_ENCODING']) && strpos($_SERVER['HTTP_ACCEPT_ENCODING'], "gzip") !== false) {
                 // "output compression level" is an integer between -1 (off/default) - 9 (max)
-                ini_set('zlib.output_compression_level', 6);
-                ob_start("ob_gzhandler");
+                ini_set('zlib.output_compression_level', '6');
+                ob_start('ob_gzhandler');
                 $outputCompressionActive = true;
             }
         }
@@ -290,9 +291,7 @@ class ApplicationBuilder extends \Yana\Core\StdObject
         }
         // limit session cookie to 1 hour and the local script directory
         $session->setCookieParameters(3600, dirname($_SERVER['SCRIPT_NAME']) . '/');
-        // set session lifetime to 1 hour
-        ini_set("session.gc_maxlifetime", "3600");
-        $session->start(); // Throws a notice when called on an active session
+        $session->start();
         // reset session expiry time
         setcookie($session->getName(), $session->getId(), time() + 3600);
 

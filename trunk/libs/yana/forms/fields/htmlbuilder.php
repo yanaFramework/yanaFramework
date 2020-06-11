@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Forms\Fields;
 
@@ -45,7 +46,7 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      *
      * @return  \Yana\Db\Binaries\FileNameCache
      */
-    protected function _getFilenameCache()
+    protected function _getFilenameCache(): \Yana\Db\Binaries\FileNameCache
     {
         return new \Yana\Db\Binaries\FileNameCache();
     }
@@ -55,7 +56,7 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      *
      * @return  \Yana\Views\Helpers\Formatters\UrlFormatter
      */
-    protected function _getUrlFormatter()
+    protected function _getUrlFormatter(): \Yana\Views\Helpers\Formatters\UrlFormatter
     {
         return new \Yana\Views\Helpers\Formatters\UrlFormatter();
     }
@@ -65,7 +66,7 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      *
      * @return  \Yana\Translations\Facade
      */
-    protected function _getTranslationFacade()
+    protected function _getTranslationFacade(): \Yana\Translations\IsFacade
     {
         return \Yana\Translations\Facade::getInstance();
     }
@@ -76,13 +77,15 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      * If the item list is a multi-dimensional array, "optgroup" elements will be created to
      * group the items. Note that you should not use nested optgroups.
      *
-     * @param   array   $values         item list
-     * @param   string  $selectedValue  selected value
-     * @param   string  $null           text for NULL item (may be empty if there is none)
+     * @param   array        $values         item list
+     * @param   scalar|NULL  $selectedValue  selected value
+     * @param   string       $null           text for NULL item (may be empty if there is none)
      * @return  string
      */
-    public function buildSelect(array $values, $selectedValue, $null = "")
+    public function buildSelect(array $values, $selectedValue, string $null = ""): string
     {
+        assert(is_null($selectedValue) || is_scalar($selectedValue), 'Invalid argument $selectedValue: scalar expected');
+
         return $this->_getSelect($values, (array) $selectedValue, false, $null);
     }
 
@@ -93,10 +96,10 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      * group the items. Note that you should not use nested optgroups.
      *
      * @param   array   $values         item list
-     * @param   array   $selectedValue  selected values
+     * @param   array   $selectedValue  selected (scalar) values
      * @return  string
      */
-    public function buildSelectMultiple(array $values, array $selectedValue)
+    public function buildSelectMultiple(array $values, array $selectedValue): string
     {
         return $this->_getSelect($values, $selectedValue, true);
     }
@@ -114,7 +117,7 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      * @param   array  $value  must have indexes: "day", "month" and "year", defaults to current timestamp
      * @return  string
      */
-    public function buildDateSelector(array $value = array())
+    public function buildDateSelector(array $value = array()): string
     {
         assert(!isset($day), 'Cannot redeclare var $day');
         assert(!isset($month), 'Cannot redeclare var $month');
@@ -174,7 +177,7 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      * @param   array  $value  must have indexes: "hour" and "minute", defaults to current timestamp
      * @return  string
      */
-    public function buildTimeSelector(array $value = array())
+    public function buildTimeSelector(array $value = array()): string
     {
         // get timestamp
         switch (true)
@@ -215,7 +218,7 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      * @param  int  $minInt  minimum index number to return: [x,2050]
      * @return array
      */
-    private function _arrayFill($maxInt, $minInt = 1)
+    private function _arrayFill(int $maxInt, int $minInt = 1): array
     {
         $array = array();
         for ($i = $minInt; $i <= $maxInt; $i++)
@@ -234,7 +237,7 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      * @param   string  $null            text for NULL item (may be empty if there is none)
      * @return  string
      */
-    private function _getSelect(array $values, array $selectedValues, $isMultiple = false, $null = "")
+    private function _getSelect(array $values, array $selectedValues, bool $isMultiple = false, string $null = ""): string
     {
         if (empty($values)) {
             return '';
@@ -253,7 +256,7 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      * @param   array  $selectedValues  selected values
      * @return  string
      */
-    private function _getOptions(array $values, array $selectedValues)
+    private function _getOptions(array $values, array $selectedValues): string
     {
         $result = "";
         foreach ($values as $key => $text)
@@ -273,12 +276,13 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      * Create HTML radio element.
      *
      * @param   array   $values    item list
-     * @param   string  $selected  selected value
+     * @param   scalar  $selected  selected value
      * @param   string  $null      text for NULL item (may be empty if there is none)
      * @return  string
      */
-    public function buildRadio(array $values, $selected, $null = "")
+    public function buildRadio(array $values, $selected, string $null = ""): string
     {
+        assert(is_scalar($selected), 'Invalid argument $selected: scalar expected');
         $attr = ($this->getAttr() > '' ? ' ' : '') . $this->getAttr();
         $class = $this->getCssClass();
         $result = '';
@@ -306,7 +310,7 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      * @param   array   $checked  selected values
      * @return  string
      */
-    public function buildCheckboxes(array $values, array $checked)
+    public function buildCheckboxes(array $values, array $checked): string
     {
         $class = ($this->getCssClass()) ? $this->getCssClass() : "gui_generator_check";
         $attr = ($this->getAttr() > '' ? ' ' : '') . $this->getAttr();
@@ -330,7 +334,7 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      * @param   bool    $isChecked  true = checkbox is checked, false = checkbox is not checked
      * @return  string
      */
-    public function buildBoolCheckbox($isChecked)
+    public function buildBoolCheckbox(bool $isChecked): string
     {
         $class = ($this->getCssClass()) ? $this->getCssClass() : "gui_generator_check";
         return '<input type="hidden" name="' . $this->getName() . '" value="0"/>' . // add a default value
@@ -348,7 +352,7 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      * @param   array   $checked   selected values
      * @return  string
      */
-    private function _getCheckBoxes($template, &$attr, array $items, array $checked)
+    private function _getCheckBoxes(string $template, string &$attr, array $items, array $checked): string
     {
         $result = "";
         foreach ($items as $key => $text)
@@ -375,7 +379,7 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      * @param   bool   $isNumeric  true = numeric list, false = associative array
      * @return  string 
      */
-    public function buildList(array $values = array(), $isNumeric = false)
+    public function buildList(array $values = array(), bool $isNumeric = false): string
     {
         assert(!isset($lang), 'Cannot redeclare var $lang');
         $lang = $this->_getTranslationFacade();
@@ -432,13 +436,13 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
     /**
      * Create HTML input field of type text.
      *
-     * @param   string  $value  some text, must not contain line-breaks.
-     * @param   string  $type   valid HTML type attribute.
+     * @param   scalar|NULL  $value  some text, must not contain line-breaks.
+     * @param   string       $type   valid HTML type attribute.
      * @return  string
      */
-    public function buildTextfield($value, $type = 'text')
+    public function buildTextfield($value, string $type = 'text'): string
     {
-        assert(is_string($type), 'Invalid argument $text: string expected');
+        assert(is_null($value) || is_scalar($value), 'Invalid argument $value: scalar expected');
         assert((bool) preg_match("/^[a-z]+$/", $type), 'Invalid argument $text: must only contain characters a-z');
         $maxLength = (int) $this->getMaxLength();
         $attr = ($this->getAttr() > '' ? ' ' : '') . $this->getAttr();
@@ -453,13 +457,12 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      *
      * This also adds a checkbox to delete existing files on demand.
      *
-     * @param   bool  $hasDelete  true = add "delete" button for existing file, false = no "delete" button
-     * @return  string 
+     * @param   bool    $hasDelete  true = add "delete" button for existing file, false = no "delete" button
+     * @param   string  $mimeType   value of the "accept" attribute
+     * @return  string
      */
-    public function buildFilefield($hasDelete, $mimeType = '')
+    public function buildFilefield(bool $hasDelete, string $mimeType = ''): string
     {
-        assert(is_bool($hasDelete), 'Invalid argument $hasDelete: bool expected');
-        assert(is_string($mimeType), 'Invalid argument $mimeType: string expected');
         $attr = ($this->getAttr() > '' ? ' ' : '') . $this->getAttr();
         if ($mimeType) {
             $attr .= ' accept="' . \Yana\Util\Strings::htmlSpecialChars((string) $mimeType) . '"';
@@ -485,11 +488,12 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
     /**
      * Create HTML textarea field.
      *
-     * @param   string  $value  some text, must not contain line-breaks.
+     * @param   scalar|NULL  $value  some text, must not contain line-breaks.
      * @return  string
      */
-    public function buildTextarea($value)
+    public function buildTextarea($value): string
     {
+        assert(is_null($value) || is_scalar($value), 'Invalid argument $value: scalar expected');
         $check = 'cols="20"';
         if ($this->getMaxLength() > 2000) {
             $check = 'cols="30"';
@@ -507,14 +511,12 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      * @param   string  $downloadAction  name of function called to download the file
      * @return  string 
      */
-    public function buildFileDownload($filename, $downloadAction)
+    public function buildFileDownload(string $filename, string $downloadAction): string
     {
-        if (empty($filename) || !is_string($filename) || empty($downloadAction) || !is_string($downloadAction)) {
+        if ($filename === "" || $downloadAction === "") {
             return '<span class="icon_blank">&nbsp;</span>';
         }
 
-        assert(is_string($filename), 'Invalid argument $filename: string expected');
-        assert(is_string($downloadAction), 'Invalid argument $downloadAction: string expected');
         $lang = $this->_getTranslationFacade();
         $fileId = $this->_getFilenameCache()->storeFilename($filename);
         $formatter = $this->_getUrlFormatter();
@@ -530,9 +532,9 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      * @param   string  $downloadAction  name of function called to download the file
      * @return  string 
      */
-    public function buildImageDownload($filename, $downloadAction)
+    public function buildImageDownload(string $filename, string $downloadAction): string
     {
-        if (empty($filename) || empty($downloadAction)) {
+        if ($filename === "" || $downloadAction === "") {
             return '<span class="icon_blank">&nbsp;</span>';
         }
 
@@ -551,7 +553,7 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      * @param   string  $value  some text, must not contain line-breaks.
      * @return  string
      */
-    public function buildColorpicker($value)
+    public function buildColorpicker(string $value): string
     {
         return $this->buildTextfield($value, 'color');
     }
@@ -562,9 +564,9 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      * @param   string  $content  HTML content
      * @return  string
      */
-    public function buildSpan($content)
+    public function buildSpan(string $content): string
     {
-        return $this->_buildTag('span', $content);
+        return $this->_buildTag('span', (string) $content);
     }
 
     /**
@@ -573,7 +575,7 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      * @param   string  $content  HTML content
      * @return  string
      */
-    public function buildDiv($content)
+    public function buildDiv(string $content): string
     {
         return $this->_buildTag('div', $content);
     }
@@ -584,7 +586,7 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      * @param   string  $url  target URL
      * @return  string 
      */
-    public function buildExternalLink($url)
+    public function buildExternalLink(string $url): string
     {
         $lang = $this->_getTranslationFacade();
 
@@ -610,13 +612,8 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      * @param   float   $rangeStep  smallest possible step
      * @return  string
      */
-    public function buildRange($value, $rangeMin, $rangeMax, $rangeStep)
+    public function buildRange(float $value, float $rangeMin, float $rangeMax, float $rangeStep): string
     {
-        assert(is_float($value), 'Invalid argument $value: float expected');
-        assert(is_float($rangeMin), 'Invalid argument $rangeMin: float expected');
-        assert(is_float($rangeMax), 'Invalid argument $rangeMax: float expected');
-        assert(is_float($rangeStep), 'Invalid argument $rangeStep: float expected');
-
         $attr = ($this->getAttr() > '' ? ' ' : '') . $this->getAttr();
         return '<input' . $attr .' id="' . $this->getId() . '" name="' . $this->getName() . '" ' .
             'class="' . $this->getCssClass() . '" type="range" value="' . (float) $value .
@@ -630,12 +627,14 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      * Build simple div/span/textarea tags.
      *
      * @param   string  $tagName  the name of the tag
-     * @param   string  $content  the content between the opening and closing tag
+     * @param   scalar  $content  the content between the opening and closing tag
      * @param   string  $more     additional attributes (if any)
      * @return  string
      */
-    protected function _buildTag($tagName, $content, $more = "")
+    protected function _buildTag(string $tagName, $content, string $more = ""): string
     {
+        assert(is_scalar($content), 'Invalid argument $content: scalar expected');
+
         return '<' . $tagName . ($this->getAttr() > '' ? ' ' : '') . $this->getAttr() . ' id="' . $this->getId() . '" title="' . $this->getTitle() .
             '" class="' . $this->getCssClass() . '"' . ($more > '' ? ' ' : '') . $more . '>' . $content . '</' . $tagName . '>';
     }

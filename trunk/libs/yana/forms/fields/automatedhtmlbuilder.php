@@ -45,7 +45,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
      * Set name attribute based on field settings.
      *
      * @param   \Yana\Forms\Fields\IsField  $field  definition to create name from
-     * @return  \Yana\Forms\Fields\AutomatedHtmlBuilder
+     * @return  $this
      */
     private function _setName(\Yana\Forms\Fields\IsField $field)
     {
@@ -62,7 +62,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
      * Set id attribute based on field settings.
      *
      * @param   \Yana\Forms\Fields\IsField  $field  definition to create id from
-     * @return  \Yana\Forms\Fields\AutomatedHtmlBuilder
+     * @return  $this
      */
     private function _setId(\Yana\Forms\Fields\IsField $field)
     {
@@ -74,7 +74,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
      * Set id attribute based on row number and field settings.
      *
      * @param   \Yana\Forms\Fields\IsField  $field  definition to create name from
-     * @return  \Yana\Forms\Fields\AutomatedHtmlBuilder
+     * @return  $this
      */
     private function _setIdByRow(\Yana\Forms\Fields\IsField $field)
     {
@@ -88,7 +88,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
      * Set class attribute based on field settings.
      *
      * @param   \Yana\Forms\Fields\IsField  $field  definition to create id from
-     * @return  \Yana\Forms\Fields\AutomatedHtmlBuilder
+     * @return  $this
      */
     private function _setCssClass(\Yana\Forms\Fields\IsField $field)
     {
@@ -107,7 +107,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
      *
      * @ignore
      */
-    public function __invoke(\Yana\Forms\Fields\IsField $field)
+    public function __invoke(\Yana\Forms\Fields\IsField $field): string
     {
         $this->_setName($field);
         $setup = $field->getForm()->getSetup();
@@ -122,7 +122,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                 return $this->buildByTypeNonUpdatable($field, $setup) . $this->createLink($field);
             case \Yana\Forms\Setups\ContextNameEnumeration::SEARCH:
                 $this->_setId($field);
-                return $this->buildByTypeSearchfield($field, $setup);
+                return $this->buildByTypeSearchfield($field);
             case \Yana\Forms\Setups\ContextNameEnumeration::INSERT:
                 $this->_setId($field);
                 return $this->buildByTypeUpdatable($field, $setup);
@@ -142,11 +142,11 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
      *
      * @ignore
      */
-    protected function buildByTypeUpdatable(\Yana\Forms\Fields\IsField $field, \Yana\Forms\IsSetup $setup)
+    protected function buildByTypeUpdatable(\Yana\Forms\Fields\IsField $field, \Yana\Forms\IsSetup $setup): string
     {
         $column = $field->getColumn();
 
-        $lang = \Yana\Translations\Facade::getInstance();
+        $lang = $this->_getTranslationFacade();
 
         // retrieve search arguments
         $value = $field->getValue();
@@ -300,12 +300,12 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
      * Returns the HTML-code representing an input element for the current field.
      *
      * @param   \Yana\Forms\Fields\IsField  $field  structure definition
-     * @param   \Yana\Forms\IsSetup          $setup  information about how to treat the form
+     * @param   \Yana\Forms\IsSetup         $setup  information about how to treat the form
      * @return  string
      *
      * @ignore
      */
-    protected function buildByTypeNonUpdatable(\Yana\Forms\Fields\IsField $field, \Yana\Forms\IsSetup $setup)
+    protected function buildByTypeNonUpdatable(\Yana\Forms\Fields\IsField $field, \Yana\Forms\IsSetup $setup): string
     {
         // retrieve search arguments
         $value = $field->getValue();
@@ -329,7 +329,8 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                 $this->setCssClass("gui_generator_bool icon_" . $value);
                 return $this->buildSpan('&nbsp;');
             case \Yana\Db\Ddl\ColumnTypeEnumeration::COLOR:
-                $this->setAttr('style="background-color: ' . \Yana\Util\Strings::htmlSpecialChars((string) $value) . '"')->setCssClass("gui_generator_color");
+                $this->setAttr('style="background-color: ' . \Yana\Util\Strings::htmlSpecialChars((string) $value) . '"');
+                $this->setCssClass("gui_generator_color");
                 return $this->buildSpan(\Yana\Util\Strings::htmlSpecialChars((string) $value));
             case \Yana\Db\Ddl\ColumnTypeEnumeration::FILE:
                 $this->setCssClass('gui_generator_file_download');
@@ -342,10 +343,10 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                 $value = $textFormatter(\Yana\Util\Strings::htmlSpecialChars((string) $value));
             // fall through
             case \Yana\Db\Ddl\ColumnTypeEnumeration::HTML:
-                if (mb_strlen($value) > 25) {
+                if (mb_strlen((string) $value) > 25) {
                     $this->setCssClass('gui_generator_readonly_textarea');
                 }
-                return $this->buildDiv($value);
+                return $this->buildDiv((string) $value);
             case \Yana\Db\Ddl\ColumnTypeEnumeration::IMAGE:
                 if (!is_string($value)) {
                     $value = "";
@@ -404,16 +405,15 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
      * Returns the HTML-code representing an input element for the current field.
      *
      * @param   \Yana\Forms\Fields\IsField  $field  structure definition
-     * @param   \Yana\Forms\IsSetup         $setup  information about how to treat the form
      * @return  string
      *
      * @ignore
      */
-    protected function buildByTypeSearchfield(\Yana\Forms\Fields\IsField $field, \Yana\Forms\IsSetup $setup)
+    protected function buildByTypeSearchfield(\Yana\Forms\Fields\IsField $field): string
     {
         $column = $field->getColumn();
 
-        $lang = \Yana\Translations\Facade::getInstance();
+        $lang = $this->_getTranslationFacade();
 
         // retrieve search arguments
         $value = $field->getValue();
@@ -504,7 +504,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
      * @return  string
      * @ignore
      */
-    protected function createLink(\Yana\Forms\Fields\IsField $field)
+    protected function createLink(\Yana\Forms\Fields\IsField $field): string
     {
         $result = "";
         if ($field->getField() instanceof \Yana\Db\Ddl\Field && count($field->getField()->getEvents()) > 0) {
@@ -512,7 +512,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
             if (empty($value) && $value !== false) {
                 return '';
             }
-            $lang = \Yana\Translations\Facade::getInstance();
+            $lang = $this->_getTranslationFacade();
             $form = $field->getForm();
             $table = $form->getTable();
             $id = 'id="' . $form->getName() . '-' . $table->getPrimaryKey() . '-' .
@@ -574,7 +574,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
      * @return  string
      * @ignore
      */
-    protected function createJavascriptEvents(\Yana\Forms\Fields\IsField $field)
+    protected function createJavascriptEvents(\Yana\Forms\Fields\IsField $field): string
     {
         $eventsAsHtml = "";
         if ($field->getField()) {
