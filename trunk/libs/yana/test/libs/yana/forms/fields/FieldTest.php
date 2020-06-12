@@ -104,9 +104,27 @@ class FieldTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testGetFilter()
+    {
+        $this->assertSame('', $this->object->getFilter());
+    }
+
+    /**
+     * @test
+     */
     public function testHasFilter()
     {
         $this->assertFalse($this->object->hasFilter());
+        $this->assertTrue($this->object->setFilter(__FUNCTION__)->hasFilter());
+        $this->assertFalse($this->object->setFilter("")->hasFilter());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetFilter()
+    {
+        $this->assertSame(__FUNCTION__, $this->object->setFilter(__FUNCTION__)->getFilter());
     }
 
     /**

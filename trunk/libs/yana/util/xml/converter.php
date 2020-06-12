@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Util\Xml;
 
@@ -248,7 +249,7 @@ class Converter extends \Yana\Core\AbstractUtility
      *
      * @return  \Yana\Util\Xml\StdObject
      */
-    public static function convertXmlToObject(\SimpleXMLElement $xml)
+    public static function convertXmlToObject(\SimpleXMLElement $xml): \Yana\Util\Xml\StdObject
     {
         $attributes = $xml->attributes();
         $children = $xml->children();
@@ -307,7 +308,7 @@ class Converter extends \Yana\Core\AbstractUtility
     /**
      * Takes an object and converts it to an associative array.
      *
-     * @param   \Yana\Util\Xml\IsObject  $xml  any object to convert
+     * @param   \Yana\Util\Xml\IsObject|array  $xml  any object to convert
      * @return  array
      */
     private static function _mapObjectToAssociativeArray($xml)
@@ -339,7 +340,7 @@ class Converter extends \Yana\Core\AbstractUtility
      * @param   \Yana\Util\Xml\IsObject  $xml  any object to convert
      * @return  array
      */
-    public static function convertObjectToAssociativeArray(\Yana\Util\Xml\IsObject $xml)
+    public static function convertObjectToAssociativeArray(\Yana\Util\Xml\IsObject $xml): array
     {
         return self::_mapObjectToAssociativeArray($xml);
     }

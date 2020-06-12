@@ -355,20 +355,19 @@ class Worker extends \Yana\Forms\QueryBuilder
     /**
      * Returns the contents of the form as CSV string.
      *
+     * @param   string  $colSep     column seperator
+     * @param   string  $rowSep     row seperator
+     * @param   bool    $hasHeader  add column names as first line (yes/no)
+     * @param   string  $stringDelim  any character that isn't the row or column seperator
      * @return  string
-     *
-     * @todo implement this
+     * @throws  \Yana\Core\Exceptions\InvalidValueException  if the database query is incomplete or invalid
      */
-    public function export()
+    public function export(string $colSep = ';', string $rowSep = "\n", bool $hasHeader = true, string $stringDelim = '"'): string
     {
+        assert(!isset($select), 'Cannot redeclare var $select');
+        $select = $this->buildSelectQuery();
         assert(!isset($csv), 'Cannot redeclare var $csv');
-        $csv = "";
-        assert(!isset($form), 'Cannot redeclare var $form');
-        $form = $this->getForm();
-        if ($form) {
-            $updatedEntries = $form->getSetup()->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE)->getRows()->toArray();
-            // @todo implement this here
-        }
+        $csv = $select->toCSV($colSep, $rowSep, $hasHeader);
         return $csv;
     }
 

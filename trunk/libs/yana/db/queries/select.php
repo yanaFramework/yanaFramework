@@ -557,64 +557,76 @@ class Select extends \Yana\Db\Queries\SelectCount implements \Yana\Db\Queries\Is
      * @param   string  $colSep       column seperator
      * @param   string  $rowSep       row seperator
      * @param   bool    $hasHeader    add column names as first line (yes/no)
+     * @param   string  $stringDelim  any character that isn't the row or column seperator
      * @return  string
      * @name    \Yana\Db\Queries\Select::toCSV()
      * @throws  \Yana\Core\Exceptions\InvalidValueException  if the database query is incomplete or invalid
      */
-    public function toCSV(string $colSep = ';', string $rowSep = "\n", bool $hasHeader = true): string
+    public function toCSV(string $colSep = ';', string $rowSep = "\n", bool $hasHeader = true, string $stringDelim = '"'): string
     {
-        assert(is_string($colSep), 'Wrong argument type for argument 1. String expected.');
-        assert(is_string($rowSep), 'Wrong argument type for argument 2. String expected.');
-        assert(is_bool($hasHeader), 'Wrong argument type for argument 4. Boolean expected.');
+        assert(!isset($csv), 'Cannot redeclare var $csv');
         $csv = "";
+        assert(!isset($resultset), 'Cannot redeclare var $resultset');
         $resultset = $this->getResults(); // array of data
+        assert(!isset($lang), 'Cannot redeclare var $lang');
+        $lang = \Yana\Translations\Facade::getInstance();
+
+        assert(!isset($header), 'Cannot redeclare var $header');
+        $header = array();
+        // create header
+        if ($hasHeader) {
+            assert(!isset($columnTitle), 'Cannot redeclare var $columnTitle');
+            foreach ($this->getColumnTitles() as $columnTitle)
+            {
+                $header[] = $lang->replaceToken($columnTitle);
+            }
+            unset($columnTitle);
+        }
+                // create body
         switch ($this->getExpectedResult())
         {
             // handle cells
             case \Yana\Db\ResultEnumeration::CELL:
                 // create header
                 if ($hasHeader) {
-                    $header = $this->getColumnTitles();
                     $csv .= $this->_rowToCsv($header, $colSep, $rowSep);
                 }
                 // create body
-                return $csv . $this->_valueToCSV($resultset) . "$rowSep";
+                return $csv . $this->_valueToCSV($resultset, $stringDelim) . $rowSep;
             // handle rows
             case \Yana\Db\ResultEnumeration::ROW:
                 // create header
                 if ($hasHeader) {
-                    $header = $this->getColumnTitles();
                     if (empty($header)) {
                         foreach (array_keys($resultset) as $title)
                         {
-                            $header[] = $title;
+                            $header[] = $lang->replaceToken($title);
                         }
                     }
-                    $csv .= self::_rowToCsv($header, $colSep, $rowSep);
+                    $csv .= self::_rowToCsv($header, $colSep, $rowSep, $stringDelim);
                 }
                 // create body
-                return $csv . self::_rowToCsv($resultset, $colSep, $rowSep);
+                return $csv . self::_rowToCsv($resultset, $colSep, $rowSep, $stringDelim);
             // handle tables and columns
             case \Yana\Db\ResultEnumeration::COLUMN:
             case \Yana\Db\ResultEnumeration::TABLE:
                 // create header
                 if ($hasHeader) {
-                    $header = $this->getColumnTitles();
                     if (empty($header) && !empty($resultset)) {
                         foreach (array_keys(current($resultset)) as $title)
                         {
-                            $header[] = $title;
+                            $header[] = $lang->replaceToken($title);
                         }
                     }
-                    $csv .= self::_rowToCsv($header, $colSep, $rowSep);
+                    $csv .= self::_rowToCsv($header, $colSep, $rowSep, $stringDelim);
                 }
                 // create body
                 foreach ($resultset as $row)
                 {
                     if (is_array($row)) {
-                        $csv .= self::_rowToCsv($row, $colSep, $rowSep);
+                        $csv .= self::_rowToCsv($row, $colSep, $rowSep, $stringDelim);
                     } else {
-                        $csv .= self::_valueToCSV($row);
+                        $csv .= self::_valueToCSV($row, $stringDelim);
                     }
                 }
                 return $csv;
@@ -633,34 +645,34 @@ class Select extends \Yana\Db\Queries\SelectCount implements \Yana\Db\Queries\Is
      * @param   array   $row          row data
      * @param   string  $colSep       column seperator
      * @param   string  $rowSep       row seperator
+     * @param   string  $stringDelim  any character that isn't the row or column seperator
      * @return  string
      * @see     \Yana\Db\Queries\Select::toCSV()
      */
-    private static function _rowToCsv(array $row, $colSep, $rowSep)
+    private static function _rowToCsv(array $row, string $colSep, string $rowSep, string $stringDelim = '"'): string
     {
-        assert(is_string($colSep), 'Wrong argument type for argument 2. String expected.');
-        assert(is_string($rowSep), 'Wrong argument type for argument 3. String expected.');
         $csv = "";
         foreach ($row as $value)
         {
             if (!empty($csv)) {
-                $csv .= "$colSep";
+                $csv .= $colSep;
             }
-            $csv .= self::_valueToCSV($value);
+            $csv .= self::_valueToCSV($value, $stringDelim);
         }
-        return $csv . "$rowSep";
+        return $csv . $rowSep;
     }
 
     /**
      * Returns an escaped string for the given value.
      *
      * @param   mixed   $value        data
+     * @param   string  $stringDelim  any character that isn't the row or column seperator
      * @return  string
      * @see     \Yana\Db\Queries\Select::toCSV()
      */
-    private static function _valueToCSV($value)
+    private static function _valueToCSV($value, string $stringDelim = '"'): string
     {
-        return '"' . str_replace('"', '""', print_r($value, true)) . '"';
+        return $stringDelim . str_replace($stringDelim, $stringDelim . $stringDelim, print_r($value, true)) . $stringDelim;
     }
 
     /**

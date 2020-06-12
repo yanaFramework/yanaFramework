@@ -79,6 +79,14 @@
         {/if}
         {if $form->isSelectable() && !$form->getContext('update')->getRows()->count()}
             <div class="gui_generator_no_entries_found">{lang id="NO_ENTRIES_FOUND"}</div>
+            {if $form->hasFilter()}
+                <form method="post" action="{$PHP_SELF}" enctype="multipart/form-data" accept-charset="UTF-8">
+                    <input type="hidden" name="id" value="{$ID}"/>
+                    <input type="hidden" name="{$SESSION_NAME}" value="{$SESSION_ID}"/>
+                    {if $ACTION}<input type="hidden" name="action" value="{$ACTION}"/>{/if}
+                    <input type="submit" title='{lang id="WHERE.DELETE"}' name="{$form->getName()}[dropfilter]" value='{lang id="WHERE.DELETE"}'/>
+                </form>
+            {/if}
         {/if}
         {if $form->isInsertable() && $form->getInsertAction()}
             <form method="post" action="{$PHP_SELF}" enctype="multipart/form-data" accept-charset="UTF-8" id="{$form->getName()}-new">
@@ -176,17 +184,24 @@
                     'onclick="return yanaGuiToggleVisibility(\'{$formName}-new\');">' +
                     '<span class="icon_new">&nbsp;</span>&nbsp;{lang id="new_entry"}</a>' +
                 {/if}
-                {if $form->isSelectable() && ($form->getEvent('search') || $form->hasSearchableChildren())}
+                {if $form->isSelectable() && ($form->getEvent('search') || $form->hasSearchableChildren()) && $form->getContext('update')->getRows()->count()}
                     '<a class="gui_generator_icon_search buttonize" href="javascript://"' +
                     'onclick="return yanaGuiToggleVisibility(\'{$form->getName()}-search\');">' +
                     '<span class="icon_magnifier">&nbsp;</span>&nbsp;{lang id="advanced_search"}</a>' +
                 {/if}
+                {*if $form->isSelectable() && $form->getExportAction()}
+                    '<a class="gui_generator_icon_export buttonize" href="javascript://"' +
+                    'onclick="return yanaGuiToggleVisibility(\'{$form->getName()}-export\');">' +
+                    '<span class="icon_download">&nbsp;</span>&nbsp;{lang id="export_as_csv"}</a>' +
+                {/if*}
                     '<a class="gui_generator_icon_settings buttonize" href="javascript://"' +
                     'onclick="return yanaGuiToggleVisibility(\'{$form->getName()}-settings\');">' +
                     '<span class="icon_edit">&nbsp;</span>&nbsp;{lang id="view_settings"}</a>';
                 $('#{$form->getName()}-toolbar').prepend(subFormText);
-                $('#{$form->getName()}-new').hide();
                 $('#{$form->getName()}-search').hide();
+                {if !($form->isInsertable() && !$form->hasFilter() && $form->getInsertAction() && $form->isSelectable() && !$form->getContext('update')->getRows()->count())}
+                    $('#{$form->getName()}-new').hide();
+                {/if}
                 $.fn.fancybox.defaults.hideOnContentClick = true;
                 $.fn.fancybox.defaults.titlePosition = 'over';
                 $.fn.fancybox.defaults.showCloseButton = false;

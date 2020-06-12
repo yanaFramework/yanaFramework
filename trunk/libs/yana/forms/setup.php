@@ -24,6 +24,8 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
+
 namespace Yana\Forms;
 
 /**
@@ -61,7 +63,7 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      *
      * @var  int
      */
-    private $_entriesPerPage = 5;
+    private $_entriesPerPage = 10;
 
     /**
      * selected layout
@@ -159,12 +161,11 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      * If the context does not exist, it is created.
      *
      * @param   string  $name  describes what the form does (insert, update, search, read)
-     * @return  \Yana\Forms\Setups\IsContext
+     * @return  $thiss\IsContext
      * @see \Yana\Forms\Setups\ContextNameEnumeration
      */
-    public function getContext($name)
+    public function getContext(string $name): \Yana\Forms\Setups\IsContext
     {
-        assert(is_string($name), 'Invalid argument $name: string expected');
         if (!isset($this->_contexts[$name])) {
             $this->_contexts[$name] = new \Yana\Forms\Setups\Context($name);
         }
@@ -179,7 +180,7 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      *
      * @return  array
      */
-    public function getContexts()
+    public function getContexts(): array
     {
         return $this->_contexts;
     }
@@ -204,7 +205,7 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      *
      * @return  \Yana\Db\Ddl\Reference[]
      */
-    public function getForeignKeys()
+    public function getForeignKeys(): array
     {
         return $this->_foreignKeyRefrences;
     }
@@ -220,9 +221,8 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      * @param   \Yana\Db\Ddl\Reference  $foreignKey  settings of source reference
      * @return  $this
      */
-    public function addForeignKeyReference($columnName, \Yana\Db\Ddl\Reference $foreignKey)
+    public function addForeignKeyReference(string $columnName, \Yana\Db\Ddl\Reference $foreignKey)
     {
-        assert(is_string($columnName), 'Invalid argument $columnName: string expected');
         $this->_foreignKeyRefrences[$columnName] = $foreignKey;
         return $this;
     }
@@ -236,17 +236,15 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      *
      * @param   int  $page  number of start page
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if $page is < 0
-     * @return  \Yana\Forms\Setup
+     * @return  $this
      */
-    public function setPage($page = 0)
+    public function setPage(int $page = 0)
     {
-        assert(is_int($page), 'Wrong type for argument 1. Integer expected');
-
         /* default values */
         if ($page < 0) {
             throw new \Yana\Core\Exceptions\InvalidArgumentException("Page number must be a positive integer.");
         }
-        $this->_page = (int) $page;
+        $this->_page = $page;
         return $this;
     }
 
@@ -257,7 +255,7 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      *
      * @return  int
      */
-    public function getPage()
+    public function getPage(): int
     {
         return $this->_page;
     }
@@ -270,17 +268,15 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      *
      * @param   int  $entryCount  number of entry
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if $entryCount is < 0
-     * @return  \Yana\Forms\Setup
+     * @return  $this
      */
-    public function setEntryCount($entryCount)
+    public function setEntryCount(int $entryCount)
     {
-        assert(is_int($entryCount), 'Invalid argument $entryCount: int expected');
-
         /* default values */
         if ($entryCount < 0) {
             throw new \Yana\Core\Exceptions\InvalidArgumentException("Entry count must be a positive integer.");
         }
-        $this->_entryCount = (int) $entryCount;
+        $this->_entryCount = $entryCount;
         $this->_pageCount = (int) ceil($this->_entryCount / $this->getEntriesPerPage());
         if ($this->getPage() >= $this->_pageCount) {
             $this->setPage(0); // make sure the user cannot go beyond the last page
@@ -295,7 +291,7 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      *
      * @return  int
      */
-    public function getEntryCount()
+    public function getEntryCount(): int
     {
         return $this->_entryCount;
     }
@@ -307,7 +303,7 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      *
      * @return  int
      */
-    public function getPageCount()
+    public function getPageCount(): int
     {
         return $this->_pageCount;
     }
@@ -317,27 +313,25 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      *
      * @param   int  $entries  number of entries per page, must be >= 1
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if $entries is < 1
-     * @return  \Yana\Forms\Setup
+     * @return  $this
      */
-    public function setEntriesPerPage($entries = 5)
+    public function setEntriesPerPage(int $entries = 10)
     {
-        assert(is_int($entries), 'Wrong type for argument 1. Integer expected');
-
         if ($entries < 1) {
             throw new \Yana\Core\Exceptions\InvalidArgumentException("Number of entries per page must be an integer > 0.");
         }
-        $this->_entriesPerPage = (int) $entries;
+        $this->_entriesPerPage = $entries;
         return $this;
     }
 
     /**
      * Get number of entries to show per page.
      *
-     * Expected to default to 5.
+     * Expected to default to 10.
      *
      * @return  int
      */
-    public function getEntriesPerPage()
+    public function getEntriesPerPage(): int
     {
         return $this->_entriesPerPage;
     }
@@ -350,7 +344,7 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      *
      * @return  bool
      */
-    public function hasFilter()
+    public function hasFilter(): bool
     {
         return !empty($this->_filters);
     }
@@ -363,10 +357,9 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      * @param   string  $columnName  where to apply the filter on
      * @return  string
      */
-    public function getFilter($columnName)
+    public function getFilter(string $columnName): string
     {
-        assert(is_string($columnName), 'Wrong argument type argument 1. String expected');
-        return isset($this->_filters[$columnName]) ? $this->_filters[$columnName] : "";
+        return isset($this->_filters[$columnName]) ? (string) $this->_filters[$columnName] : "";
     }
 
     /**
@@ -376,7 +369,7 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      *
      * @return  array
      */
-    public function getFilters()
+    public function getFilters(): array
     {
         assert(is_array($this->_filters), 'Member "filters" is expected to be an array.');
         return $this->_filters;
@@ -390,14 +383,12 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      *
      * @param   string  $columnName  where to apply the filter on
      * @param   string  $value       new filter value
-     * @return  \Yana\Forms\Setup
+     * @return  $this
      */
-    public function setFilter($columnName, $value = "")
+    public function setFilter(string $columnName, string $value = "")
     {
-        assert(is_string($columnName), 'Wrong argument type argument 1. String expected');
-        assert(is_string($value), 'Wrong argument type argument 2. String expected');
-        if (!empty($value)) {
-            $value = strtr((string) $value, '*?', '%_'); // translate wildcards
+        if ($value > "") {
+            $value = strtr($value, '*?', '%_'); // translate wildcards
             $value = \Yana\Util\Strings::htmlSpecialChars($value);
             $this->_filters[$columnName] = $value;
         } else {
@@ -412,7 +403,7 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      * Leave the parameter empty to reset all filters.
      *
      * @param   array  $filters  associative array, where keys are the colum names and values are the filter strings
-     * @return  \Yana\Forms\Setup
+     * @return  $this
      */
     public function setFilters(array $filters = array())
     {
@@ -428,7 +419,7 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      * Set values for autocompletion of columns.
      *
      * @param   array  $values  associative array, where keys are the colum names and values rows
-     * @return  \Yana\Forms\Setup
+     * @return  $this
      */
     public function setReferenceValues(array $values)
     {
@@ -444,9 +435,8 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      * @param   string  $columnName  name of column-index to look up
      * @return  array
      */
-    public function getReferenceValues($columnName)
+    public function getReferenceValues(string $columnName): array
     {
-        assert(is_string($columnName), 'Invalid argument $name: string expected');
         assert(!isset($columnNameUpper), 'Cannot redeclare $columnNameUpper');
         $columnNameUpper = strtoupper($columnName);
         assert(!isset($values), 'Cannot redeclare $values');
@@ -464,13 +454,12 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      * These are numbered (0..n), where 0 is always the default.
      *
      * @param   int  $layout  template settings (int 0...n)
-     * @return  \Yana\Forms\Setup
+     * @return  $this
      */
-    public function setLayout($layout = 0)
+    public function setLayout(int $layout = 0)
     {
-        assert(is_int($layout), 'Wrong type for argument 1. Integer expected');
         assert($layout >= 0, 'Invalid argument. Layout must be a positive integer');
-        $this->_layout = (int) $layout;
+        $this->_layout = $layout;
         return $this;
     }
 
@@ -483,7 +472,7 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      *
      * @return  int
      */
-    public function getLayout()
+    public function getLayout(): int
     {
         assert(is_int($this->_layout), 'Member "layout" is expected to be an integer.');
         return $this->_layout;
@@ -496,7 +485,7 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      *
      * @return  string
      */
-    public function getOrderByField()
+    public function getOrderByField(): string
     {
         assert(is_string($this->_orderByField), 'Member "orderByField" is expected to be a string.');
         return $this->_orderByField;
@@ -508,11 +497,10 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      * Call this without input to reset the value.
      *
      * @param   string  $fieldName  name of field to order by
-     * @return  \Yana\Forms\Setup
+     * @return  $this
      */
-    public function setOrderByField($fieldName = "")
+    public function setOrderByField(string $fieldName = "")
     {
-        assert(is_string($fieldName), 'Wrong argument type argument 1. String expected');
         $this->_orderByField = $fieldName;
         return $this;
     }
@@ -521,11 +509,10 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      * Set order in which the resultset should be sorted.
      *
      * @param   bool $isDescending  True = descending, False = ascending order
-     * @return  \Yana\Forms\Setup
+     * @return  $this
      */
-    public function setSortOrder($isDescending = false)
+    public function setSortOrder(bool $isDescending = false)
     {
-        assert(is_bool($isDescending), 'Wrong argument type argument 1. Boolean expected');
         $this->_isDescending = !empty($isDescending);
         return $this;
     }
@@ -538,10 +525,10 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      *
      * @return  bool
      */
-    public function isDescending()
+    public function isDescending(): bool
     {
         assert(is_bool($this->_isDescending), 'Member "isDescending" is expected to be bool.');
-        return !empty($this->_isDescending);
+        return $this->_isDescending;
     }
 
     /**
@@ -552,11 +539,10 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      * To reset the value, leave the parameter empty.
      *
      * @param   string  $searchTerm  term entered in global search box
-     * @return  \Yana\Forms\Setup
+     * @return  $this
      */
-    public function setSearchTerm($searchTerm = "")
+    public function setSearchTerm(string $searchTerm = "")
     {
-        assert(is_string($searchTerm), 'Wrong argument type argument 1. String expected');
         $this->_searchTerm = $searchTerm;
         return $this;
     }
@@ -568,7 +554,7 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      *
      * @return  string
      */
-    public function getSearchTerm()
+    public function getSearchTerm(): string
     {
         return $this->_searchTerm;
     }
@@ -577,11 +563,10 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      * Set download action.
      *
      * @param   string  $action action name
-     * @return  \Yana\Forms\Setup
+     * @return  $this
      */
-    public function setDownloadAction($action)
+    public function setDownloadAction(string $action)
     {
-        assert(is_string($action), 'Wrong type for argument 1. String expected');
         $this->_downloadAction = $action;
         return $this;
     }
@@ -595,7 +580,7 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      *
      * @return  string
      */
-    public function getDownloadAction()
+    public function getDownloadAction(): string
     {
         return $this->_downloadAction;
     }
@@ -604,11 +589,10 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      * Set search action.
      *
      * @param   string  $action  action name
-     * @return  \Yana\Forms\Setup
+     * @return  $this
      */
-    public function setSearchAction($action)
+    public function setSearchAction(string $action)
     {
-        assert(is_string($action), 'Wrong type for argument 1. String expected');
         $this->getContext(\Yana\Forms\Setups\ContextNameEnumeration::SEARCH)->setAction($action);
         return $this;
     }
@@ -618,7 +602,7 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      *
      * @return  string
      */
-    public function getSearchAction()
+    public function getSearchAction(): string
     {
         return $this->getContext(\Yana\Forms\Setups\ContextNameEnumeration::SEARCH)->getAction();
     }
@@ -627,11 +611,10 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      * Set insert action.
      *
      * @param   string  $action  action name
-     * @return  \Yana\Forms\Setup
+     * @return  $this
      */
-    public function setInsertAction($action)
+    public function setInsertAction(string $action)
     {
-        assert(is_string($action), 'Wrong type for argument 1. String expected');
         $this->getContext(\Yana\Forms\Setups\ContextNameEnumeration::INSERT)->setAction($action);
         return $this;
     }
@@ -641,7 +624,7 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      *
      * @return  string
      */
-    public function getInsertAction()
+    public function getInsertAction(): string
     {
         return $this->getContext(\Yana\Forms\Setups\ContextNameEnumeration::INSERT)->getAction();
     }
@@ -650,11 +633,10 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      * Set update action.
      *
      * @param   string  $action  action name
-     * @return  \Yana\Forms\Setup
+     * @return  $this
      */
-    public function setUpdateAction($action)
+    public function setUpdateAction(string $action)
     {
-        assert(is_string($action), 'Wrong type for argument 1. String expected');
         $this->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE)->setAction($action);
         return $this;
     }
@@ -664,7 +646,7 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      *
      * @return  string
      */
-    public function getUpdateAction()
+    public function getUpdateAction(): string
     {
         return $this->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE)->getAction();
     }
@@ -673,11 +655,10 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      * Set delete action.
      *
      * @param   string  $action action name
-     * @return  \Yana\Forms\Setup
+     * @return  $this
      */
-    public function setDeleteAction($action)
+    public function setDeleteAction(string $action)
     {
-        assert(is_string($action), 'Wrong type for argument 1. String expected');
         $this->_deleteAction = $action;
         return $this;
     }
@@ -687,7 +668,7 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      *
      * @return  string
      */
-    public function getDeleteAction()
+    public function getDeleteAction(): string
     {
         return $this->_deleteAction;
     }
@@ -696,11 +677,10 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      * Set export action.
      *
      * @param   string  $action action name
-     * @return  \Yana\Forms\Setup
+     * @return  $this
      */
-    public function setExportAction($action)
+    public function setExportAction(string $action)
     {
-        assert(is_string($action), 'Wrong type for argument 1. String expected');
         $this->_exportAction = $action;
         return $this;
     }
@@ -710,7 +690,7 @@ class Setup extends \Yana\Core\StdObject implements \Yana\Forms\IsSetup
      *
      * @return  string
      */
-    public function getExportAction()
+    public function getExportAction(): string
     {
         return $this->_exportAction;
     }

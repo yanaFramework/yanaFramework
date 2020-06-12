@@ -1,6 +1,6 @@
 <div id="{$form->getName()}-form" class="gui_generator_form">
     <div class="gui_tabs">
-        {if $form->isSelectable()}
+        {if $form->isSelectable() && ($form->getContext('update')->getRows()->count() || $form->getSearchTerm() > '')}
             <div class="gui_generator_toolbar">
                 <form method="post" action="{$PHP_SELF}" enctype="multipart/form-data" accept-charset="UTF-8"
                       id="{$form->getName()}-search-small" class="gui_generator_search_small">

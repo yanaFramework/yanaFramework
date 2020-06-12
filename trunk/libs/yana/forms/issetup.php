@@ -45,9 +45,9 @@ interface IsSetup
      * If the context does not exist, it is created.
      *
      * @param   string  $name  context name
-     * @return  \Yana\Forms\Setups\IsContext
+     * @return  $thiss\IsContext
      */
-    public function getContext($name);
+    public function getContext(string $name): \Yana\Forms\Setups\IsContext;
 
     /**
      * Get an array of all registered setup contexts.
@@ -57,7 +57,7 @@ interface IsSetup
      *
      * @return  array
      */
-    public function getContexts();
+    public function getContexts(): array;
 
     /**
      * Set a setup context.
@@ -75,7 +75,7 @@ interface IsSetup
      *
      * @return  \Yana\Db\Ddl\Reference[]
      */
-    public function getForeignKeys();
+    public function getForeignKeys(): array;
 
     /**
      * Add a foreign key reference.
@@ -88,7 +88,7 @@ interface IsSetup
      * @param   \Yana\Db\Ddl\Reference $foreignKey  settings of source reference
      * @return  $this
      */
-    public function addForeignKeyReference($columnName, \Yana\Db\Ddl\Reference $foreignKey);
+    public function addForeignKeyReference(string $columnName, \Yana\Db\Ddl\Reference $foreignKey);
 
     /**
      * Set current page.
@@ -99,9 +99,9 @@ interface IsSetup
      *
      * @param   int  $page  number of start page
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if $page is < 0
-     * @return  \Yana\Forms\Setup
+     * @return  $this
      */
-    public function setPage($page = 0);
+    public function setPage(int $page = 0);
 
     /**
      * Get the currently selected page.
@@ -110,7 +110,7 @@ interface IsSetup
      *
      * @return  int
      */
-    public function getPage();
+    public function getPage(): int;
 
     /**
      * Set number of rows.
@@ -120,9 +120,9 @@ interface IsSetup
      *
      * @param   int  $entryCount  number of entry
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if $entryCount is < 0
-     * @return  \Yana\Forms\Setup
+     * @return  $this
      */
-    public function setEntryCount($entryCount);
+    public function setEntryCount(int $entryCount);
 
     /**
      * Get the number of entries.
@@ -131,7 +131,7 @@ interface IsSetup
      *
      * @return  int
      */
-    public function getEntryCount();
+    public function getEntryCount(): int;
 
     /**
      * Get the currently selected page.
@@ -140,25 +140,25 @@ interface IsSetup
      *
      * @return  int
      */
-    public function getPageCount();
+    public function getPageCount(): int;
 
     /**
      * Set number of entries per page.
      *
      * @param   int  $entries  number of entries per page, must be >= 1
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if $entries is < 1
-     * @return  \Yana\Forms\Setup
+     * @return  $this
      */
-    public function setEntriesPerPage($entries = 5);
+    public function setEntriesPerPage(int $entries = 10);
 
     /**
      * Get number of entries to show per page.
      *
-     * Expected to default to 5.
+     * Expected to default to 10.
      *
      * @return  int
      */
-    public function getEntriesPerPage();
+    public function getEntriesPerPage(): int;
 
     /**
      * Check if form has a filter.
@@ -168,7 +168,7 @@ interface IsSetup
      *
      * @return  bool
      */
-    public function hasFilter();
+    public function hasFilter(): bool;
 
     /**
      * Get filter value.
@@ -178,7 +178,7 @@ interface IsSetup
      * @param   string  $columnName  where to apply the filter on
      * @return  string
      */
-    public function getFilter($columnName);
+    public function getFilter(string $columnName): string;
 
     /**
      * Get filter values.
@@ -187,7 +187,7 @@ interface IsSetup
      *
      * @return  array
      */
-    public function getFilters();
+    public function getFilters(): array;
 
     /**
      * Set filter value for the selected column.
@@ -197,9 +197,9 @@ interface IsSetup
      *
      * @param   string  $columnName  where to apply the filter on
      * @param   string  $value       new filter value
-     * @return  \Yana\Forms\Setup
+     * @return  $this
      */
-    public function setFilter($columnName, $value = "");
+    public function setFilter(string $columnName, string $value = "");
 
     /**
      * Set filter values for all columns.
@@ -207,7 +207,7 @@ interface IsSetup
      * Leave the parameter empty to reset all filters.
      *
      * @param   array  $filters  associative array, where keys are the colum names and values are the filter strings
-     * @return  \Yana\Forms\Setup
+     * @return  $this
      */
     public function setFilters(array $filters = array());
 
@@ -215,7 +215,7 @@ interface IsSetup
      * Set values for autocompletion of columns.
      *
      * @param   array  $values  associative array, where keys are the colum names and values rows
-     * @return  \Yana\Forms\Setup
+     * @return  $this
      */
     public function setReferenceValues(array $values);
 
@@ -227,7 +227,7 @@ interface IsSetup
      * @param   string  $columnName  name of column-index to look up
      * @return  array
      */
-    public function getReferenceValues($columnName);
+    public function getReferenceValues(string $columnName): array;
 
     /**
      * Select a template for output.
@@ -236,9 +236,9 @@ interface IsSetup
      * These are numbered (0..n), where 0 is always the default.
      *
      * @param   int  $layout  template settings (int 0...n)
-     * @return  \Yana\Forms\Setup
+     * @return  $this
      */
-    public function setLayout($layout = 0);
+    public function setLayout(int $layout = 0);
 
     /**
      * Get selected a layout for output.
@@ -249,7 +249,7 @@ interface IsSetup
      *
      * @return  int
      */
-    public function getLayout();
+    public function getLayout(): int;
 
     /**
      * Get name of field that should be used to sort the table contents.
@@ -258,7 +258,7 @@ interface IsSetup
      *
      * @return  string
      */
-    public function getOrderByField();
+    public function getOrderByField(): string;
 
     /**
      * Set name of field to order output by
@@ -266,17 +266,17 @@ interface IsSetup
      * Call this without input to reset the value.
      *
      * @param   string  $fieldName  name of field to order by
-     * @return  \Yana\Forms\Setup
+     * @return  $this
      */
-    public function setOrderByField($fieldName = "");
+    public function setOrderByField(string $fieldName = "");
 
     /**
      * Set order in which the resultset should be sorted.
      *
      * @param   bool $isDescending  True = descending, False = ascending order
-     * @return  \Yana\Forms\Setup
+     * @return  $this
      */
-    public function setSortOrder($isDescending = false);
+    public function setSortOrder(bool $isDescending = false);
 
     /**
      * Check if resultset should be sorted in descending order.
@@ -286,7 +286,7 @@ interface IsSetup
      *
      * @return  bool
      */
-    public function isDescending();
+    public function isDescending(): bool;
 
     /**
      * Set search term.
@@ -296,9 +296,9 @@ interface IsSetup
      * To reset the value, leave the parameter empty.
      *
      * @param   string  $searchTerm  term entered in global search box
-     * @return  \Yana\Forms\Setup
+     * @return  $this
      */
-    public function setSearchTerm($searchTerm = "");
+    public function setSearchTerm(string $searchTerm = "");
 
     /**
      * Get currently selected search term.
@@ -307,15 +307,15 @@ interface IsSetup
      *
      * @return  string
      */
-    public function getSearchTerm();
+    public function getSearchTerm(): string;
 
     /**
      * Set download action.
      *
      * @param   string  $action action name
-     * @return  \Yana\Forms\Setup
+     * @return  $this
      */
-    public function setDownloadAction($action);
+    public function setDownloadAction(string $action);
 
     /**
      * Get download action.
@@ -326,82 +326,82 @@ interface IsSetup
      *
      * @return  string
      */
-    public function getDownloadAction();
+    public function getDownloadAction(): string;
 
     /**
      * Set search action.
      *
      * @param   string  $action  action name
-     * @return  \Yana\Forms\Setup
+     * @return  $this
      */
-    public function setSearchAction($action);
+    public function setSearchAction(string $action);
 
     /**
      * Get search action.
      *
      * @return  string
      */
-    public function getSearchAction();
+    public function getSearchAction(): string;
 
     /**
      * Set insert action.
      *
      * @param   string  $action  action name
-     * @return  \Yana\Forms\Setup
+     * @return  $this
      */
-    public function setInsertAction($action);
+    public function setInsertAction(string $action);
 
     /**
      * Get insert action.
      *
      * @return  string
      */
-    public function getInsertAction();
+    public function getInsertAction(): string;
 
     /**
      * Set update action.
      *
      * @param   string  $action  action name
-     * @return  \Yana\Forms\Setup
+     * @return  $this
      */
-    public function setUpdateAction($action);
+    public function setUpdateAction(string $action);
 
     /**
      * Get update action.
      *
      * @return  string
      */
-    public function getUpdateAction();
+    public function getUpdateAction(): string;
 
     /**
      * Set delete action.
      *
      * @param   string  $action action name
-     * @return  \Yana\Forms\Setup
+     * @return  $this
      */
-    public function setDeleteAction($action);
+    public function setDeleteAction(string $action);
 
     /**
      * Get delete action.
      *
      * @return  string
      */
-    public function getDeleteAction();
+    public function getDeleteAction(): string;
 
     /**
      * Set export action.
      *
      * @param   string  $action action name
-     * @return  \Yana\Forms\Setup
+     * @return  $this
      */
-    public function setExportAction($action);
+    public function setExportAction(string $action);
 
     /**
      * Get export action.
      *
      * @return  string
      */
-    public function getExportAction();
+    public function getExportAction(): string;
 
 }
 

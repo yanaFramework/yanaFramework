@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Util;
 
@@ -31,6 +32,7 @@ namespace Yana\Util;
  * <<Utility>> Encapsulated very basic debugging functions.
  *
  * @package    yana
+ * @subpackage util
  * @codeCoverageIgnore
  */
 class DebugUtility extends \Yana\Core\AbstractUtility
@@ -42,7 +44,7 @@ class DebugUtility extends \Yana\Core\AbstractUtility
      * @param   array  $arguments  list of elements to print
      * @return  string
      */
-    public static function formatArguments(array $arguments)
+    public static function formatArguments(array $arguments): string
     {
         $output = "";
         if (count($arguments) > 0) {
@@ -66,7 +68,7 @@ class DebugUtility extends \Yana\Core\AbstractUtility
      * @param   array  $backtrace  created using debug_backtrace()
      * @return  string
      */
-    public static function formatBacktrace(array $backtrace)
+    public static function formatBacktrace(array $backtrace): string
     {
         $output = "";
 

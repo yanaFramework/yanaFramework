@@ -190,8 +190,8 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Forms\Setups\IsBuild
         if (!empty($request['orderby'])) {
             $this->object->setOrderByField($request['orderby']);
         }
-        if (!empty($request['desc'])) {
-            $this->object->setSortOrder(true);
+        if (isset($request['desc'])) {
+            $this->object->setSortOrder((bool) $request['desc']);
         }
         return $this;
     }

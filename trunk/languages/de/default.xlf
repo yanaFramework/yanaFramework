@@ -530,6 +530,10 @@
                 <source>advanced search</source>
                 <target>Erweiterte Suche</target>
             </trans-unit>
+            <trans-unit id="export_as_csv">
+                <source>export as CSV</source>
+                <target>Als CSV exportieren</target>
+            </trans-unit>
             <trans-unit id="new_entry">
                 <source>new entry</source>
                 <target>Neuer Eintrag</target>

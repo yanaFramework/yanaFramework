@@ -200,20 +200,51 @@ class QueryBuilder extends \Yana\Forms\AbstractQueryBuilder
      * @param  string                               $searchTerm  the string for which to search the files
      * @param  \Yana\Forms\Fields\FieldCollectionWrapper  $columnList  use this form as template for the query
      */
-    private function _processSearchTerm(\Yana\Db\Queries\Select $select, $searchTerm, \Yana\Forms\Fields\FieldCollectionWrapper $columnList)
+    private function _processSearchTerm(\Yana\Db\Queries\Select $select, string $searchTerm, \Yana\Forms\Fields\FieldCollectionWrapper $columnList)
     {
-        assert(is_string($searchTerm), 'Invalid argument type: $searchTerm. String expected.');
         if (!empty($searchTerm)) {
 
-            $searchTerm = preg_replace('/\s+/', '%', $searchTerm);
             $clause = array();
-            // process fields
-            foreach ($columnList as $field)
+            $lang = \Yana\Translations\Facade::getInstance();
+
+            assert(!isset($_clause), 'Cannot redeclare var $_clause');
+            assert(!isset($field), 'Cannot redeclare var $field');
+            assert(!isset($column), 'Cannot redeclare var $column');
+
+            /* @var $field \Yana\Forms\Fields\IsField */
+            foreach ($columnList as $field) // process fields
             {
-                $_clause = array($field->getName(), 'like', "%$searchTerm%");
-                $clause = (empty($clause)) ? $_clause : array($clause, 'OR', $_clause);
+                $column = $field->getColumn();
+                switch ($column->getType())
+                {
+                    case \Yana\Db\Ddl\ColumnTypeEnumeration::REFERENCE:
+                        assert(!isset($enumValues), 'Cannot redeclare var $enumValues');
+                        $enumValues = $field->getForm()->getSetup()->getReferenceValues($column->getName());
+                    // fall through
+                    case \Yana\Db\Ddl\ColumnTypeEnumeration::ENUM:
+                    case \Yana\Db\Ddl\ColumnTypeEnumeration::SET:
+                        if (!isset($enumValues)) {
+                            $enumValues = $field->getColumn()->getEnumerationItems();
+                        }
+                        assert(!isset($enumKey), 'Cannot redeclare var $enumKey');
+                        assert(!isset($enumTitle), 'Cannot redeclare var $enumTitle');
+                        foreach ($enumValues as $enumKey => $enumTitle)
+                        {
+                            if (stripos($lang->replaceToken($enumTitle), $searchTerm) !== false) {
+                                $_clause = array($field->getName(), '=', (string) $enumKey);
+                                $clause = (empty($clause)) ? $_clause : array($clause, 'OR', $_clause);
+                            }
+                        }
+                        unset($enumValues, $enumKey, $enumTitle);
+                    break;
+                    default:
+                        if ($field->isFilterable()) {
+                            $_clause = array($field->getName(), 'like', "%" . preg_replace('/\s+/s', '%', $searchTerm) . "%");
+                            $clause = (empty($clause)) ? $_clause : array($clause, 'OR', $_clause);
+                        }
+                }
             }
-            unset($_clause);
+            unset($_clause, $field, $column);
             $select->addWhere($clause);
         }
     }
@@ -269,7 +300,8 @@ class QueryBuilder extends \Yana\Forms\AbstractQueryBuilder
                 /* @var $field FormFieldFacade */
                 $field = $updateForm->offsetGet($columnName);
                 if ($field && $field->isSelectable() && $field->isFilterable()) {
-                    $havingClause = array($columnName, 'like', $filter);
+                    $field->setFilter((string) $filter);
+                    $havingClause = array($columnName, 'like', (string) $filter);
                     $select->addHaving($havingClause);
                 }
             }

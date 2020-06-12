@@ -73,11 +73,12 @@ interface IsSelectQuery extends
      * @param   string  $colSep       column seperator
      * @param   string  $rowSep       row seperator
      * @param   bool    $hasHeader    add column names as first line (yes/no)
+     * @param   string  $stringDelim  any character that isn't the row or column seperator
      * @return  string
      * @name    \Yana\Db\Queries\Select::toCSV()
      * @throws  \Yana\Core\Exceptions\InvalidValueException  if the database query is incomplete or invalid
      */
-    public function toCSV(string $colSep = ';', string $rowSep = "\n", bool $hasHeader = true): string;
+    public function toCSV(string $colSep = ';', string $rowSep = "\n", bool $hasHeader = true, string $stringDelim = '"'): string;
 
     /**
      * get list of column titles

@@ -76,6 +76,27 @@ interface IsField
     public function getTitle(): string;
 
     /**
+     * Returns filter term or NULL if there is none.
+     *
+     * The filter is set in the GUI by clicking on the filter symbol in the table header.
+     *
+     * @param   string  $filter  any single line string
+     * @return  $this
+     */
+    public function setFilter(string $filter);
+
+    /**
+     * Returns filter term.
+     *
+     * If there is no filter, an empty string is returned.
+     *
+     * The filter is set in the GUI by clicking on the filter symbol in the table header.
+     *
+     * @return  string
+     */
+    public function getFilter(): string;
+
+    /**
      * Check if a filter is set.
      *
      * Returns bool(true) if a filter has been set on the column and bool(false) otherwise.

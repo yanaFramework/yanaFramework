@@ -39,11 +39,11 @@ class Field extends \Yana\Forms\Fields\AbstractField
 {
 
     /**
-     * Caches the filter (having clause) on this field.
+     * Caches the filter on this field.
      *
-     * @var  array
+     * @var  string
      */
-    private $_filter = null;
+    private $_filter = "";
 
     /**
      * Get form context.
@@ -75,6 +75,34 @@ class Field extends \Yana\Forms\Fields\AbstractField
     }
 
     /**
+     * Returns filter term or NULL if there is none.
+     *
+     * The filter is set in the GUI by clicking on the filter symbol in the table header.
+     *
+     * @param   string  $filter  any single line string
+     * @return  $this
+     */
+    public function setFilter(string $filter)
+    {
+        $this->_filter = $filter;
+        return $this;
+    }
+
+    /**
+     * Returns filter term.
+     *
+     * If there is no filter, an empty string is returned.
+     *
+     * The filter is set in the GUI by clicking on the filter symbol in the table header.
+     *
+     * @return  string
+     */
+    public function getFilter(): string
+    {
+        return $this->_filter;
+    }
+
+    /**
      * Check if a filter is set.
      *
      * Returns bool(true) if a filter has been set on the column and bool(false) otherwise.
@@ -83,7 +111,7 @@ class Field extends \Yana\Forms\Fields\AbstractField
      */
     public function hasFilter(): bool
     {
-        return !is_null($this->_filter);
+        return $this->_filter !== '';
     }
 
     /**

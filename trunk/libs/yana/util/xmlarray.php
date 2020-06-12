@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Util;
 
@@ -37,7 +38,7 @@ namespace Yana\Util;
  * </code>
  *
  * @package    yana
- * @subpackage core
+ * @subpackage util
  * @name       XmlArray
  */
 class XmlArray extends \SimpleXMLElement implements \Yana\Util\IsXmlArray
@@ -113,7 +114,7 @@ class XmlArray extends \SimpleXMLElement implements \Yana\Util\IsXmlArray
      * @param   bool   $asNumericArray  return result either as numeric (true) or associative array (false)
      * @return  mixed
      */
-    public function toArray($asNumericArray = false)
+    public function toArray(bool $asNumericArray = false)
     {
         switch ($asNumericArray)
         {
@@ -140,9 +141,9 @@ class XmlArray extends \SimpleXMLElement implements \Yana\Util\IsXmlArray
      * Note: a node may either be a container or a text node.
      * It must not be both. This means: it must not have inline nodes.
      *
-     * @return  \Yana\Util\IsXmlObject
+     * @return  \Yana\Util\Xml\IsObject
      */
-    public function toObject()
+    public function toObject(): \Yana\Util\Xml\IsObject
     {
         return \Yana\Util\Xml\Converter::convertXmlToObject($this);
     }

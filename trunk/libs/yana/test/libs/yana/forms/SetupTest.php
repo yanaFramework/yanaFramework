@@ -24,6 +24,7 @@
  * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Forms;
 
@@ -108,7 +109,7 @@ class SetupTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetEntriesPerPage()
     {
-        $this->assertEquals(5, $this->object->getEntriesPerPage());
+        $this->assertEquals(10, $this->object->getEntriesPerPage());
     }
 
     /**
