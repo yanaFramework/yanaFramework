@@ -240,13 +240,19 @@ class MediaDbPlugin extends \Yana\Plugins\AbstractPlugin
      * @type       read
      * @user       group: mediadb, role: moderator
      * @user       group: admin, level: 75
+     * @language   mediadb
      * @template   NULL
-     * @return     string
+     *
+     * @param   string  $col     column seperator
+     * @param   string  $row     row seperator
+     * @param   bool    $header  add column names as first line (yes/no)
+     * @param   string  $text    any character that isn't the row or column seperator
      */
-    public function mediadb_export_mediafolder()
+    public function mediadb_export_mediafolder(string $col = ';', string $row = "\n", bool $header = true, string $text = '"')
     {
-        $csv = $this->_getMediafolderFormWorker()->export();
-        return $csv;
+        $this->_getApplication()->getLanguage()->loadTranslations('mediadb');
+        $csv = $this->_getMediafolderFormWorker()->export($col, $row, $header, $text);
+        print $csv;
     }
 }
 ?>

@@ -564,72 +564,28 @@ class Select extends \Yana\Db\Queries\SelectCount implements \Yana\Db\Queries\Is
      */
     public function toCSV(string $colSep = ';', string $rowSep = "\n", bool $hasHeader = true, string $stringDelim = '"'): string
     {
-        assert(!isset($csv), 'Cannot redeclare var $csv');
-        $csv = "";
-        assert(!isset($resultset), 'Cannot redeclare var $resultset');
-        $resultset = $this->getResults(); // array of data
-        assert(!isset($lang), 'Cannot redeclare var $lang');
-        $lang = \Yana\Translations\Facade::getInstance();
+        $csvGenerator = new \Yana\Util\Csv();
+        $csvGenerator
+            ->setColumnDelimiter($colSep)
+            ->setRowDelimiter($rowSep)
+            ->setHeader($hasHeader)
+            ->setStringDelimiter($stringDelim);
 
         assert(!isset($header), 'Cannot redeclare var $header');
-        $header = array();
-        // create header
-        if ($hasHeader) {
-            assert(!isset($columnTitle), 'Cannot redeclare var $columnTitle');
-            foreach ($this->getColumnTitles() as $columnTitle)
-            {
-                $header[] = $lang->replaceToken($columnTitle);
-            }
-            unset($columnTitle);
-        }
-                // create body
+        $header = $this->getColumnTitles();
+
         switch ($this->getExpectedResult())
         {
             // handle cells
             case \Yana\Db\ResultEnumeration::CELL:
-                // create header
-                if ($hasHeader) {
-                    $csv .= $this->_rowToCsv($header, $colSep, $rowSep);
-                }
-                // create body
-                return $csv . $this->_valueToCSV($resultset, $stringDelim) . $rowSep;
+                return $csvGenerator->convertCellToCSV((string) $this->getResults(), (string) current($header));
             // handle rows
             case \Yana\Db\ResultEnumeration::ROW:
-                // create header
-                if ($hasHeader) {
-                    if (empty($header)) {
-                        foreach (array_keys($resultset) as $title)
-                        {
-                            $header[] = $lang->replaceToken($title);
-                        }
-                    }
-                    $csv .= self::_rowToCsv($header, $colSep, $rowSep, $stringDelim);
-                }
-                // create body
-                return $csv . self::_rowToCsv($resultset, $colSep, $rowSep, $stringDelim);
+                return $csvGenerator->convertRowToCSV($this->getResults(), $header);
             // handle tables and columns
             case \Yana\Db\ResultEnumeration::COLUMN:
             case \Yana\Db\ResultEnumeration::TABLE:
-                // create header
-                if ($hasHeader) {
-                    if (empty($header) && !empty($resultset)) {
-                        foreach (array_keys(current($resultset)) as $title)
-                        {
-                            $header[] = $lang->replaceToken($title);
-                        }
-                    }
-                    $csv .= self::_rowToCsv($header, $colSep, $rowSep, $stringDelim);
-                }
-                // create body
-                foreach ($resultset as $row)
-                {
-                    if (is_array($row)) {
-                        $csv .= self::_rowToCsv($row, $colSep, $rowSep, $stringDelim);
-                    } else {
-                        $csv .= self::_valueToCSV($row, $stringDelim);
-                    }
-                }
-                return $csv;
+                return $csvGenerator->convertTableToCSV($this->getResults(), $header);
             default:
                 /* Query is incomplete or invalid.
                  * This may occur if no table is selected.
@@ -637,42 +593,6 @@ class Select extends \Yana\Db\Queries\SelectCount implements \Yana\Db\Queries\Is
                 $message = "Unable to create CSV string. Your query is invalid.";
                 throw new \Yana\Core\Exceptions\InvalidValueException($message, E_USER_WARNING);
         }
-    }
-
-    /**
-     * Returns the CSV contents as a single-line string.
-     *
-     * @param   array   $row          row data
-     * @param   string  $colSep       column seperator
-     * @param   string  $rowSep       row seperator
-     * @param   string  $stringDelim  any character that isn't the row or column seperator
-     * @return  string
-     * @see     \Yana\Db\Queries\Select::toCSV()
-     */
-    private static function _rowToCsv(array $row, string $colSep, string $rowSep, string $stringDelim = '"'): string
-    {
-        $csv = "";
-        foreach ($row as $value)
-        {
-            if (!empty($csv)) {
-                $csv .= $colSep;
-            }
-            $csv .= self::_valueToCSV($value, $stringDelim);
-        }
-        return $csv . $rowSep;
-    }
-
-    /**
-     * Returns an escaped string for the given value.
-     *
-     * @param   mixed   $value        data
-     * @param   string  $stringDelim  any character that isn't the row or column seperator
-     * @return  string
-     * @see     \Yana\Db\Queries\Select::toCSV()
-     */
-    private static function _valueToCSV($value, string $stringDelim = '"'): string
-    {
-        return $stringDelim . str_replace($stringDelim, $stringDelim . $stringDelim, print_r($value, true)) . $stringDelim;
     }
 
     /**

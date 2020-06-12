@@ -401,6 +401,16 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @expectedException \Yana\Core\Exceptions\InvalidValueException
+     */
+    public function testToCSVInvalidValueException()
+    {
+        $this->query = new \Yana\Db\Queries\Select($this->db);
+        $this->query->toCSV();
+    }
+
+    /**
+     * @test
      */
     public function testGetColumnTitles()
     {
