@@ -245,7 +245,7 @@
                     'onclick="return yanaGuiToggleVisibility(\'{$form->getName()}-search\');">' +
                     '<span class="icon_magnifier">&nbsp;</span>&nbsp;{lang id="advanced_search"}</a>' +
                 {/if}
-                {if $form->isSelectable() && $form->getExportAction()}
+                {if $form->isSelectable() && $form->getExportAction() && $form->getContext('update')->getRows()->count()}
                     '<a class="gui_generator_icon_export buttonize" href="javascript://"' +
                     'onclick="return yanaGuiToggleVisibility(\'{$form->getName()}-export\');">' +
                     '<span class="icon_download">&nbsp;</span>&nbsp;{lang id="export_as_csv"}</a>' +

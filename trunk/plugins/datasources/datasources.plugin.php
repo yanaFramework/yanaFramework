@@ -156,21 +156,32 @@ class DatasourcesPlugin extends \Yana\Plugins\AbstractPlugin
     }
 
     /**
-     * Export entry from database.
+     * Export data as CSV.
      *
-     * Returns bool(true) on success and bool(false) on error.
+     * Creates the CSV, sets it up as download and exits the program.
      *
      * @type       read
-     * @user       group: datasources, role: moderator
-     * @user       group: admin, level: 100
+     * @user       group: datasources
+     * @user       group: admin, level: 1
      * @template   NULL
-     * @return     string
+     *
+     * @param   int   $col     column seperator index
+     * @param   int   $row     row seperator index
+     * @param   bool  $header  add column names as first line (yes/no)
+     * @param   int   $text    text seperator index
      */
-    public function datasources_export()
+    public function datasources_export(int $col = 1, int $row = 1, bool $header = true, int $text = 1)
     {
+        if (!\headers_sent()) {
+            header("Content-Disposition: attachment; filename=export.csv");
+            header("Content-type: text/csv");
+        }
+        $this->_getApplication()->getLanguage()->loadTranslations('Datasources');
         $form = $this->_getDatasourcesForm();
         $worker = new \Yana\Forms\Worker($this->_getDatabase(), $form);
-        return $worker->export();
+        $csv = $worker->export($col, $row, $header, $text);
+        print $csv;
+        exit(0);
     }
 
 }
