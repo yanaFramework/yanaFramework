@@ -117,7 +117,63 @@
                             {captcha}
                         </label>
                     {/if}
-                    <input type="submit" name="action[{$form->getInsertAction()}]" value='{lang id="button_save"}'/>
+                    <div class="gui_generator_buttons">
+                        <input type="submit" name="action[{$form->getInsertAction()}]" value='{lang id="button_save"}'/>
+                    </div>
+                </fieldset>
+            </form>
+        {/if}
+        {if $form->isSelectable() && $form->getExportAction()}
+            <form method="post" action="{$PHP_SELF}" enctype="multipart/form-data" accept-charset="UTF-8" id="{$form->getName()}-export">
+                <input type="hidden" name="id" value="{$ID}"/>
+                <input type="hidden" name="{$SESSION_NAME}" value="{$SESSION_ID}"/>
+                <input type="hidden" name="action" value="{$form->getExportAction()}"/>
+                <fieldset class="gui_generator_export">
+                    <legend>
+                        <span class="icon_download">&nbsp;</span>
+                        {lang id="export_as_csv"}
+                    </legend>
+                    <div class="gui_generator_config">
+                        <div class="optionbody" title='{lang id="export_as_csv"}' id="{$form->getName()}-export">
+                            <div class="optionitem gui_generator_export_column" id="{$form->getName()}-export-col">
+                                <div class="label">{lang id="csv_column_delimiter"}</div>
+                                <select name="col">
+                                    <option value="1">;</option>
+                                    <option value="2">,</option>
+                                    <option value="3">{lang id="char_tab"}</option>
+                                </select>
+                            </div>
+                            <div class="optionitem gui_generator_export_row" id="{$form->getName()}-export-row">
+                                <div class="label">{lang id="csv_row_delimiter"}</div>
+                                <select name="row">
+                                    <option value="1">{lang id="char_new_line"}</option>
+                                    <option value="2">;</option>
+                                </select>
+                            </div>
+                            <div class="optionitem  gui_generator_export_string" id="{$form->getName()}-export-string">
+                                <div class="label">{lang id="csv_string_delimiter"}</div>
+                                <select name="text">
+                                    <option value="1">"</option>
+                                    <option value="2">'</option>
+                                    <option value="3">{lang id="char_none"}</option>
+                                </select>
+                            </div>
+                            <div class="optionitem gui_generator_export_header" id="{$form->getName()}-export-header">
+                                <div class="label">{lang id="csv_has_header"}</div>
+                                <label class="gui_generator_bool">
+                                    <input type="radio" name="header" value="1" checked="checked">
+                                    {lang id="yes"}
+                                </label>
+                                <label class="gui_generator_bool">
+                                    <input type="radio" name="header" value="0">
+                                    {lang id="no"}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="gui_generator_buttons">
+                        <input type="submit" name="action[{$form->getExportAction()}]" value='{lang id="ok"}'/>
+                    </div>
                 </fieldset>
             </form>
         {/if}
@@ -189,16 +245,17 @@
                     'onclick="return yanaGuiToggleVisibility(\'{$form->getName()}-search\');">' +
                     '<span class="icon_magnifier">&nbsp;</span>&nbsp;{lang id="advanced_search"}</a>' +
                 {/if}
-                {*if $form->isSelectable() && $form->getExportAction()}
+                {if $form->isSelectable() && $form->getExportAction()}
                     '<a class="gui_generator_icon_export buttonize" href="javascript://"' +
                     'onclick="return yanaGuiToggleVisibility(\'{$form->getName()}-export\');">' +
                     '<span class="icon_download">&nbsp;</span>&nbsp;{lang id="export_as_csv"}</a>' +
-                {/if*}
+                {/if}
                     '<a class="gui_generator_icon_settings buttonize" href="javascript://"' +
                     'onclick="return yanaGuiToggleVisibility(\'{$form->getName()}-settings\');">' +
                     '<span class="icon_edit">&nbsp;</span>&nbsp;{lang id="view_settings"}</a>';
                 $('#{$form->getName()}-toolbar').prepend(subFormText);
                 $('#{$form->getName()}-search').hide();
+                $('#{$form->getName()}-export').hide();
                 {if !($form->isInsertable() && !$form->hasFilter() && $form->getInsertAction() && $form->isSelectable() && !$form->getContext('update')->getRows()->count())}
                     $('#{$form->getName()}-new').hide();
                 {/if}

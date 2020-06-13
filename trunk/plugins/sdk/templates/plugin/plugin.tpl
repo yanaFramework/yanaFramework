@@ -190,21 +190,31 @@ class {$plugin->getClassName()} extends \Yana\Plugins\AbstractPlugin
 {/if}
 {if $form->getEvent('export')}
     /**
-     * Export entry from database.
+     * Export data as CSV.
      *
-     * Returns bool(true) on success and bool(false) on error.
+     * Creates the CSV, sets it up as download and exits the program.
      *
      * @type       read
-     * @user       group: {$plugin->getId()}, role: moderator
-     * @user       group: admin, level: 75
+     * @user       group: {$plugin->getId()}
+     * @user       group: admin, level: 1
      * @template   NULL
-     * @return     string
+     *
+     * @param   int   $col     column seperator index
+     * @param   int   $row     row seperator index
+     * @param   bool  $header  add column names as first line (yes/no)
+     * @param   int   $text    text seperator index
      */
-    public function {$form->getEvent('export')->getAction()}()
+    public function {$form->getEvent('export')->getAction()}(int $col = 1, int $row = 1, bool $header = true, int $text = 1)
     {
+        if (!\headers_sent()) {
+            header("Content-Disposition: attachment; filename=export.csv");
+            header("Content-type: text/csv");
+        }
         $form = $this->_get{$form->getName()|capitalize}Form();
         $worker = new \Yana\Forms\Worker($this->_getDatabase(), $form);
-        return $worker->export();
+        $csv = $worker->export($col, $row, $header, $text);
+        print $csv;
+        exit(0);
     }
 
 {/if}

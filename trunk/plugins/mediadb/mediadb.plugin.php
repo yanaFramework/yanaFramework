@@ -233,26 +233,33 @@ class MediaDbPlugin extends \Yana\Plugins\AbstractPlugin
     }
 
     /**
-     * write new entry to database
+     * Export data as CSV.
      *
-     * Returns bool(true) on success and bool(false) on error.
+     * Creates the CSV, sets it up as download and exits the program.
      *
      * @type       read
-     * @user       group: mediadb, role: moderator
-     * @user       group: admin, level: 75
+     * @user       group: mediadb
+     * @user       group: admin, level: 1
      * @language   mediadb
      * @template   NULL
      *
-     * @param   string  $col     column seperator
-     * @param   string  $row     row seperator
-     * @param   bool    $header  add column names as first line (yes/no)
-     * @param   string  $text    any character that isn't the row or column seperator
+     * @param   int   $col     column seperator index
+     * @param   int   $row     row seperator index
+     * @param   bool  $header  add column names as first line (yes/no)
+     * @param   int   $text    text seperator index
      */
-    public function mediadb_export_mediafolder(string $col = ';', string $row = "\n", bool $header = true, string $text = '"')
+    public function mediadb_export_mediafolder(int $col = 1, int $row = 1, bool $header = true, int $text = 1)
     {
+        if (!\headers_sent()) {
+            header("Content-Disposition: attachment; filename=export.csv");
+            header("Content-type: text/csv");
+        }
         $this->_getApplication()->getLanguage()->loadTranslations('mediadb');
         $csv = $this->_getMediafolderFormWorker()->export($col, $row, $header, $text);
         print $csv;
+        exit(0);
     }
+
 }
+
 ?>

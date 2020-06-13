@@ -355,19 +355,56 @@ class Worker extends \Yana\Forms\QueryBuilder
     /**
      * Returns the contents of the form as CSV string.
      *
-     * @param   string  $colSep     column seperator
-     * @param   string  $rowSep     row seperator
-     * @param   bool    $hasHeader  add column names as first line (yes/no)
-     * @param   string  $stringDelim  any character that isn't the row or column seperator
+     * @param   int   $col        column seperator: 1 = ";", 2 = ",", 3 = "\t"
+     * @param   int   $row        row seperator: 1 = "\n", 2 = ";"
+     * @param   bool  $hasHeader  add column names as first line (yes/no)
+     * @param   int   $text       text seperator: 1 = '"', 2 = "'", 3 = none
      * @return  string
      * @throws  \Yana\Core\Exceptions\InvalidValueException  if the database query is incomplete or invalid
      */
-    public function export(string $colSep = ';', string $rowSep = "\n", bool $hasHeader = true, string $stringDelim = '"'): string
+    public function export(int $col = 1, int $row = 1, bool $hasHeader = true, int $text = 1): string
     {
+        switch ($col)
+        {
+            case 3:
+                $columnDelimiter = "\t";
+            break;
+            case 2:
+                $columnDelimiter = ",";
+            break;
+            case 1:
+            default:
+                $columnDelimiter = ";";
+            break;
+        }
+        switch ($row)
+        {
+            case 2:
+                $rowDelimiter = ";";
+            break;
+            case 1:
+            default:
+                $rowDelimiter = "\n";
+            break;
+        }
+        switch ($text)
+        {
+            case 3:
+                $textDelimiter = "";
+            break;
+            case 2:
+                $textDelimiter = "'";
+            break;
+            case 1:
+            default:
+                $textDelimiter = '"';
+            break;
+        }
+
         assert(!isset($select), 'Cannot redeclare var $select');
         $select = $this->buildSelectQuery();
         assert(!isset($csv), 'Cannot redeclare var $csv');
-        $csv = $select->toCSV($colSep, $rowSep, $hasHeader);
+        $csv = $select->toCSV($columnDelimiter, $rowDelimiter, $hasHeader, $textDelimiter);
         return $csv;
     }
 

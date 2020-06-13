@@ -542,6 +542,34 @@
                 <source>view settings</source>
                 <target>Darstellung</target>
             </trans-unit>
+            <trans-unit id="csv_column_delimiter">
+                <source>Column delimiter</source>
+                <target>Spaltentrenner</target>
+            </trans-unit>
+            <trans-unit id="csv_row_delimiter">
+                <source>Row delimiter</source>
+                <target>Zeilentrenner</target>
+            </trans-unit>
+            <trans-unit id="csv_string_delimiter">
+                <source>String delimiter</source>
+                <target>Textbegrenzer</target>
+            </trans-unit>
+            <trans-unit id="csv_has_header">
+                <source>Include column headers</source>
+                <target>Spaltenüberschriften einfügen</target>
+            </trans-unit>
+            <trans-unit id="char_none">
+                <source>none</source>
+                <target>keiner</target>
+            </trans-unit>
+            <trans-unit id="char_tab">
+                <source>tab stop</source>
+                <target>Tabulator</target>
+            </trans-unit>
+            <trans-unit id="char_new_line">
+                <source>line break</source>
+                <target>Zeilenumbruch</target>
+            </trans-unit>
             <trans-unit id="descr_show">
                 <source>Show {$FIRST_PAGE} - {$OFFSET_PAGE} of {$LAST_PAGE} Entries</source>
                 <target>Zeige {$FIRST_PAGE} - {$OFFSET_PAGE} von {$LAST_PAGE} Einträgen</target>

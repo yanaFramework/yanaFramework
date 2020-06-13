@@ -539,6 +539,34 @@
                 <source/>
                 <target>view settings</target>
             </trans-unit>
+            <trans-unit id="csv_column_delimiter">
+                <source/>
+                <target>Column delimiter</target>
+            </trans-unit>
+            <trans-unit id="csv_row_delimiter">
+                <source/>
+                <target>Row delimiter</target>
+            </trans-unit>
+            <trans-unit id="csv_string_delimiter">
+                <source/>
+                <target>String delimiter</target>
+            </trans-unit>
+            <trans-unit id="csv_has_header">
+                <source/>
+                <target>Include column headers</target>
+            </trans-unit>
+            <trans-unit id="char_none">
+                <source/>
+                <target>none</target>
+            </trans-unit>
+            <trans-unit id="char_tab">
+                <source/>
+                <target>tab stop</target>
+            </trans-unit>
+            <trans-unit id="char_new_line">
+                <source/>
+                <target>line break</target>
+            </trans-unit>
             <trans-unit id="descr_show">
                 <source/>
                 <target>show {$FIRST_PAGE} - {$OFFSET_PAGE} of {$LAST_PAGE} entries</target>
