@@ -594,6 +594,11 @@ a.gui_generator_ext_link img
     text-align: right;
     padding-right: 10px;
 }
+.gui_generator_edit .gui_generator_buttons
+{
+    padding-left: 0;
+    text-align: center;
+}
 .gui_generator_buttons
 {
     display: block;
