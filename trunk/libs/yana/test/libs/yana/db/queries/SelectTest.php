@@ -523,11 +523,34 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
+     */
+    public function testGetResultsInvalidArgumentException()
+    {
+        $this->query->getResults();
+    }
+
+    /**
+     * @test
      */
     public function testGetResults()
     {
         $this->query->setTable('t');
         $this->assertSame(array(), $this->query->getResults());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetResultsWithColumn()
+    {
+        // add expected value
+        $row = array('ftid' => 1, 'ftvalue' => 1);
+        $this->db->insert('ft', $row);
+        $this->db->commit();
+
+        $this->query->setKey('ft.*.ftvalue');
+        $this->assertSame(array('1' => 1), $this->query->getResults());
     }
 
     /**

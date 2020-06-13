@@ -732,37 +732,39 @@ class Select extends \Yana\Db\Queries\SelectCount implements \Yana\Db\Queries\Is
      */
     public function getResults()
     {
-        $result = $this->sendQuery();
-
         $returnedType = $this->getExpectedResult();
-        $table = $this->getDatabase()->getSchema()->getTable($this->getTable());
-        assert($table instanceof \Yana\Db\Ddl\Table, '$table instanceof \Yana\Db\Ddl\Table');
+        if ($returnedType === \Yana\Db\ResultEnumeration::UNKNOWN) {
+            throw new \Yana\Core\Exceptions\InvalidArgumentException("Syntax error. The input is not a valid key address.");
+        }
+        $result = $this->sendQuery();
 
         assert(!isset($output), 'Cannot redeclare var $output');
         $output = array();
-        $id = $table->getPrimaryKey();
 
         for ($i = 0; $i < $result->countRows(); $i++)
         {
             $row = $result->fetchRow($i);
             // Error: unexpected result
             if (!is_array($row)) {
+                // @codeCoverageIgnoreStart
 
+                /* This should be unreachable, unless there is either a bug in the database module,
+                 * or somebody has been fiddling with the schema files, causing corrupted data.
+                 */
                 \Yana\Log\LogManager::getLogger()->addLog("Returned data for statement '$this' must be an array. " .
                     "Instead database returned the following value '{$row}'. " .
                     "The result was considered to be an error.");
                 break;
-
+                // @codeCoverageIgnoreEnd
             }
             switch ($returnedType)
             {
                 case \Yana\Db\ResultEnumeration::TABLE:
+                    $table = $this->getDatabase()->getSchema()->getTable($this->getTable());
+                    assert($table instanceof \Yana\Db\Ddl\Table, '$table instanceof \Yana\Db\Ddl\Table');
+                    $id = $table->getPrimaryKey();
                     assert(!isset($rowId), 'Cannot redeclare var $rowId');
-                    if (isset($row[$id])) {
-                        $rowId = mb_strtoupper((string) $row[$id]);
-                    } else {
-                        $rowId = $i;
-                    }
+                    $rowId = isset($row[$id]) ? mb_strtoupper((string) $row[$id]) : $i;
                     assert(!isset($refKey), 'Cannot redeclare var $refKey');
                     if (!empty($output[$rowId])) {
                         $output[$rowId] = array($output[$rowId]);
@@ -773,7 +775,10 @@ class Select extends \Yana\Db\Queries\SelectCount implements \Yana\Db\Queries\Is
                     }
                     unset($rowId);
                 break;
-                case $returnedType === \Yana\Db\ResultEnumeration::COLUMN:
+                case \Yana\Db\ResultEnumeration::COLUMN:
+                    $table = $this->getDatabase()->getSchema()->getTable($this->getTable());
+                    assert($table instanceof \Yana\Db\Ddl\Table, '$table instanceof \Yana\Db\Ddl\Table');
+                    $id = $table->getPrimaryKey();
                     if (isset($row[$id])) {
                         $rowId = $row[$id];
                         if (count($row) > 1) {
@@ -822,11 +827,10 @@ class Select extends \Yana\Db\Queries\SelectCount implements \Yana\Db\Queries\Is
                             }
                         // fall through
                         case \Yana\Db\ResultEnumeration::COLUMN:
+                            $table = $this->getDatabase()->getSchema()->getTable($this->getTable());
+                            assert($table instanceof \Yana\Db\Ddl\Table, '$table instanceof \Yana\Db\Ddl\Table');
                             $column = $table->getColumn($this->getColumn());
                         break;
-                        default:
-                            throw new \Yana\Core\Exceptions\InvalidArgumentException("Syntax error. " .
-                                "The input is not a valid key address.");
                     } // end switch
                     // decode cell
                     assert($column instanceof \Yana\Db\Ddl\Column, '$column instanceof \Yana\Db\Ddl\Column');

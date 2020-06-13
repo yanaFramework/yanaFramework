@@ -346,11 +346,11 @@ class WorkerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @todo implement this
+     * @expectedException \Yana\Core\Exceptions\InvalidValueException
      */
-    public function testExport()
+    public function testExportInvalidValueException()
     {
-        $this->assertSame("", $this->object->export());
+        $this->object->export();
     }
 
     /**
