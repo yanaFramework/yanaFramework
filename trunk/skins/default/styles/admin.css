@@ -103,7 +103,7 @@
 /* setup links for active plug-ins */
 #config_plugins a
 {
-    color: inherit;
+    color: #000;
 }
 #config_plugins .selected_option > a,
 #config_plugins .default_selected_option > a,
