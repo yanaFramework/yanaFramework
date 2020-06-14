@@ -250,12 +250,14 @@ class MediaDbPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function mediadb_export_mediafolder(int $col = 1, int $row = 1, bool $header = true, int $text = 1)
     {
+        $lang = $this->_getApplication()->getLanguage()->loadTranslations('mediadb');
+        $worker = $this->_getMediafolderFormWorker();
         if (!\headers_sent()) {
-            header("Content-Disposition: attachment; filename=export.csv");
+            $formTitle = $lang->replaceToken($worker->getForm()->getTitle());
+            header("Content-Disposition: attachment; filename=" . $formTitle . "_" . \date('Y-m-d') . ".csv");
             header("Content-type: text/csv");
         }
-        $this->_getApplication()->getLanguage()->loadTranslations('mediadb');
-        $csv = $this->_getMediafolderFormWorker()->export($col, $row, $header, $text);
+        $csv = $worker->export($col, $row, $header, $text);
         print $csv;
         exit(0);
     }
