@@ -402,7 +402,7 @@ class Worker extends \Yana\Forms\QueryBuilder
         }
 
         assert(!isset($select), 'Cannot redeclare var $select');
-        $select = $this->buildSelectQuery();
+        $select = $this->buildSelectQuery()->setLimit(0)->setOffset(0);
         assert(!isset($csv), 'Cannot redeclare var $csv');
         $csv = $select->toCSV($columnDelimiter, $rowDelimiter, $hasHeader, $textDelimiter);
         return $csv;
