@@ -13,7 +13,7 @@
             <input type="hidden" name="id" value="{$ID}"/>
             <input type="hidden" name="action" value="check_login"/>
 
-            <h2>{lang id="USER.14"}</h2>
+            <h1>{lang id="USER.14"}</h1>
       
             <div class="label">
                 <label>
