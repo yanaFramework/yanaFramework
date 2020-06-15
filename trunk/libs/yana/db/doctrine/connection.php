@@ -290,7 +290,7 @@ class Connection extends \Yana\Db\AbstractConnection
         }
         $message = "SQL import " . (($success) ? "was successful." : "has failed");
         $level = \Yana\Log\TypeEnumeration::INFO;
-        \Yana\Log\LogManager::getLogger()->addLog("SQL import failed.", $level, $sqlFile);
+        \Yana\Log\LogManager::getLogger()->addLog($message, $level, $sqlFile);
         return (bool) $success;
     }
 
