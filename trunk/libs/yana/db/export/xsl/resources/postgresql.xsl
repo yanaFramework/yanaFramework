@@ -361,7 +361,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
         <xsl:when test="(name() = 'time') and $default = 'CURRENT_TIMESTAMP'">CURRENT_TIMESTAMP(0)</xsl:when>
         <xsl:when test="(name() = 'timestamp') and $default = 'CURRENT_TIMESTAMP'">NULL</xsl:when>
         <!-- Number types -->
-        <xsl:when test="name() = 'integer' or name() = 'float'">
+        <xsl:when test="name() = 'range' or name() = 'integer' or name() = 'float'">
             <xsl:choose>
                 <xsl:when test="string(number($default)) = 'NaN'">NULL</xsl:when>
                 <xsl:otherwise><xsl:value-of select="number($default)"/></xsl:otherwise>
@@ -370,7 +370,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
         <xsl:otherwise>
             <xsl:text>'</xsl:text>
             <xsl:call-template name="replace">
-                <xsl:with-param name="string" select="@title"/>
+                <xsl:with-param name="string" select="$default"/>
                 <xsl:with-param name="from">'</xsl:with-param>
                 <xsl:with-param name="to">\'</xsl:with-param>
             </xsl:call-template>
