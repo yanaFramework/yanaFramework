@@ -152,7 +152,7 @@ class ConnectionFactory extends \Yana\Core\StdObject implements \Yana\Db\IsConne
      * @throws  \Yana\Db\ConnectionException                    when connection to database failed
      * @return  \Yana\Db\IsConnection
      */
-    protected function _createConnection(\Yana\Db\Ddl\Database $schema, \Yana\Db\Sources\IsEntity $connectionSettings = null, $ignoreFileDb)
+    protected function _createConnection(\Yana\Db\Ddl\Database $schema, \Yana\Db\Sources\IsEntity $connectionSettings = null, bool $ignoreFileDb = YANA_DATABASE_ACTIVE)
     {
         $connections = $this->_getConnections();
         $schemaName = $schema->getName();
@@ -184,12 +184,17 @@ class ConnectionFactory extends \Yana\Core\StdObject implements \Yana\Db\IsConne
      * @return  \Yana\Db\Doctrine\Connection|null
      * @codeCoverageIgnore
      */
-    protected function _buildDoctrineConnection(\Yana\Db\Ddl\Database $schema, \Yana\Db\Sources\IsEntity $connectionSettings): ?\Yana\Db\Doctrine\Connection
+    protected function _buildDoctrineConnection(\Yana\Db\Ddl\Database $schema, \Yana\Db\Sources\IsEntity $connectionSettings = null): ?\Yana\Db\Doctrine\Connection
     {
         try {
-            $dsn = $connectionSettings->toDsn();
-            $dbms = \Yana\Db\Doctrine\DriverEnumeration::mapAliasToDriver($dsn[\Yana\Db\Sources\DsnEnumeration::DBMS]);
-            $dsn[\Yana\Db\Sources\DsnEnumeration::DBMS] = $dbms;
+            assert(!isset($dsn), 'Cannot redeclare var $dsn');
+            $dsn = null;
+            if (!is_null($connectionSettings)) {
+                $dsn = $connectionSettings->toDsn();
+                $dbms = \Yana\Db\Doctrine\DriverEnumeration::mapAliasToDriver($dsn[\Yana\Db\Sources\DsnEnumeration::DBMS]);
+                $dsn[\Yana\Db\Sources\DsnEnumeration::DBMS] = $dbms;
+            }
+            assert(!isset($factory), 'Cannot redeclare var $factory');
             $factory = new \Yana\Db\Doctrine\ConnectionFactory($dsn);
             return new \Yana\Db\Doctrine\Connection($schema, $factory);
 
@@ -208,12 +213,17 @@ class ConnectionFactory extends \Yana\Core\StdObject implements \Yana\Db\IsConne
      * @return  \Yana\Db\Mdb2\Connection|null
      * @codeCoverageIgnore
      */
-    protected function _buildMdb2Connection(\Yana\Db\Ddl\Database $schema, \Yana\Db\Sources\IsEntity $connectionSettings): ?\Yana\Db\Mdb2\Connection
+    protected function _buildMdb2Connection(\Yana\Db\Ddl\Database $schema, \Yana\Db\Sources\IsEntity $connectionSettings = null): ?\Yana\Db\Mdb2\Connection
     {
         try {
-            $dsn = $connectionSettings->toDsn();
-            $dbms = \Yana\Db\Mdb2\DriverEnumeration::mapAliasToDriver($dsn[\Yana\Db\Sources\DsnEnumeration::DBMS]);
-            $dsn[\Yana\Db\Sources\DsnEnumeration::DBMS] = $dbms;
+            assert(!isset($dsn), 'Cannot redeclare var $dsn');
+            $dsn = null;
+            if (!is_null($connectionSettings)) {
+                $dsn = $connectionSettings->toDsn();
+                $dbms = \Yana\Db\Mdb2\DriverEnumeration::mapAliasToDriver($dsn[\Yana\Db\Sources\DsnEnumeration::DBMS]);
+                $dsn[\Yana\Db\Sources\DsnEnumeration::DBMS] = $dbms;
+            }
+            assert(!isset($factory), 'Cannot redeclare var $factory');
             $factory = new \Yana\Db\Mdb2\ConnectionFactory($dsn);
             return new \Yana\Db\Mdb2\Connection($schema, $factory);
 

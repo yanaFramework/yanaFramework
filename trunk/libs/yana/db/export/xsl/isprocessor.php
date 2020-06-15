@@ -59,7 +59,7 @@ interface IsProcessor
      * @param   \DOMDocument $xslDocument  XSL template that will do the transformation
      * @return  array list of SQL commands
      */
-    public function transformDocument(\DOMDocument $xmlDocument, \DOMDocument $xslDocument);
+    public function transformDocument(\DOMDocument $xmlDocument, \DOMDocument $xslDocument): array;
 
 }
 

@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Mdb2;
 
@@ -154,6 +155,9 @@ class ConnectionFactory extends \Yana\Core\StdObject implements \Yana\Db\Mdb2\Is
         if (is_array($dsn)) {
             $dsn = \Yana\Util\Hashtable::changeCase($dsn, CASE_UPPER);
             $this->_dsn = \Yana\Util\Hashtable::merge($this->_dsn, $dsn);
+        }
+        if (isset($this->_dsn['DBMS']) && is_string($this->_dsn['DBMS'])) {
+            $this->_dsn['DBMS'] = \Yana\Db\Mdb2\DriverEnumeration::mapAliasToDriver($this->_dsn['DBMS']);
         }
     }
 

@@ -183,6 +183,9 @@ class ConnectionFactory extends \Yana\Core\StdObject implements \Yana\Db\Doctrin
             $dsn = \Yana\Util\Hashtable::changeCase($dsn, CASE_UPPER);
             $this->_dsn = \Yana\Util\Hashtable::merge($this->_dsn, $dsn);
         }
+        if (isset($this->_dsn['DBMS']) && is_string($this->_dsn['DBMS'])) {
+            $this->_dsn['DBMS'] = \Yana\Db\Doctrine\DriverEnumeration::mapAliasToDriver($this->_dsn['DBMS']);
+        }
     }
 
 

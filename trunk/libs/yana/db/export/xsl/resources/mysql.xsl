@@ -227,7 +227,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
     <!-- Add PRIMARY KEY constraint -->
     <xsl:value-of select="concat('&#09;PRIMARY KEY (`', primarykey/., '`)')"/><!-- Create primary-key -->
-    <xsl:if test="constraint[@dbms = 'mysql']"> CHECK (<xsl:value-of select="default[@dbms = 'mysql']"/>)</xsl:if>
+    <xsl:if test="constraint[@dbms = 'mysql']"> CHECK (<xsl:value-of select="constraint[@dbms = 'mysql']"/>)</xsl:if>
     
     <!-- Add UNIQUE constraints -->
     <xsl:if test="declaration/*[@unique = 'yes']">
@@ -274,7 +274,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <xsl:if test="$isReference = 0">
         <xsl:if test="@notnull = 'yes'"> NOT NULL</xsl:if>
     </xsl:if>
-    <xsl:if test="constraint[@dbms = 'mysql']"> CHECK (<xsl:value-of select="default[@dbms = 'mysql']"/>)</xsl:if>
+    <xsl:if test="constraint[@dbms = 'mysql']"> CHECK (<xsl:value-of select="constraint[@dbms = 'mysql']"/>)</xsl:if>
 
     <!-- Add default value -->
     <xsl:if test="$isReference = 0">
@@ -485,6 +485,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
             <xsl:text> WITH CASCADED CHECK OPTION</xsl:text>
         </xsl:when>
     </xsl:choose>
+    <xsl:value-of select="';&#10;'"/><!-- End of view -->
 </xsl:template>
 
 <!-- Unhandled elements -->

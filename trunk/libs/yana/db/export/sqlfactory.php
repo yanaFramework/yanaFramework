@@ -90,13 +90,14 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
      * @param   int  $dbmsType  index of DBMS to use
      * @return  array
      */
-    private function _transformToSql($dbmsType)
+    private function _transformToSql(int $dbmsType): array
     {
         $xslDocument = $this->_getProvider()->getXslDocument($dbmsType);
         $xmlDocument = new \DOMDocument();
         $xddlDocument = $this->schema->serializeToXDDL();
         $xmlDocument->loadXML($xddlDocument->asXML()); // Source file
-        return $this->_getProcessor()->transformDocument($xmlDocument, $xslDocument);
+        $sqlStatements = $this->_getProcessor()->transformDocument($xmlDocument, $xslDocument);
+        return $sqlStatements;
     }
 
     /**
@@ -112,7 +113,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
      *
      * @return  array
      */
-    public function createMySQL()
+    public function createMySQL(): array
     {
         $sqlStatements = $this->_transformToSql(\Yana\Db\Export\Xsl\IsProvider::MYSQL);
         return $sqlStatements;
@@ -131,7 +132,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
      *
      * @return  array
      */
-    public function createPostgreSQL()
+    public function createPostgreSQL(): array
     {
         $sqlStatements = $this->_transformToSql(\Yana\Db\Export\Xsl\IsProvider::POSTGRESQL);
         return $sqlStatements;
@@ -151,7 +152,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
      * @return  array
      * @codeCoverageIgnore
      */
-    public function createMSSQL()
+    public function createMSSQL(): array
     {
         $sqlStatements = $this->_transformToSql(\Yana\Db\Export\Xsl\IsProvider::MSSQL);
         return $sqlStatements;
@@ -388,7 +389,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
      * @see     \Yana\Db\Export\SqlFactory::createMSSQL()
      * @codeCoverageIgnore
      */
-    public function createMSAccess()
+    public function createMSAccess(): array
     {
         return $this->createMSSQL();
     }
@@ -407,7 +408,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
      * @return  array
      * @codeCoverageIgnore
      */
-    public function createDB2()
+    public function createDB2(): array
     {
         $sqlStatements = $this->_transformToSql(\Yana\Db\Export\Xsl\IsProvider::DB2);
         return $sqlStatements;
@@ -709,7 +710,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
      * @return  array
      * @codeCoverageIgnore
      */
-    public function createOracleDB()
+    public function createOracleDB(): array
     {
         $sqlStatements = $this->_transformToSql(\Yana\Db\Export\Xsl\IsProvider::ORACLEDB);
         return $sqlStatements;
@@ -939,6 +940,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
 
         return $SQL;
     }
+
 }
 
 ?>

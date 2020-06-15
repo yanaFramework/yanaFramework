@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Db\Export;
 
@@ -91,9 +92,9 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
      *
      * This "connection" can be used to build an insert query to create a SQL statement for a DBMS of your choice.
      *
-     * @return  \Yana\Db\Helpers\IsSqlKeywordChecker
+     * @return  \Yana\Db\NullConnection
      */
-    protected function _getNullConnection()
+    protected function _getNullConnection(): \Yana\Db\NullConnection
     {
         if (!isset($this->_nullConnection)) {
             // @codeCoverageIgnoreStart
@@ -122,7 +123,7 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
      * @param   bool  $extractData       for extract Data set true otherwise false
      * @return  array
      */
-    public function createMySQL($extractStructure = true, $extractData = true)
+    public function createMySQL(bool $extractStructure = true, bool $extractData = true): array
     {
         $sql = array();
         if ($extractStructure) {
@@ -174,7 +175,7 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
      * @param   bool  $extractData       for extract Data set true otherwise false
      * @return  array
      */
-    public function createPostgreSQL($extractStructure = true, $extractData = true)
+    public function createPostgreSQL(bool $extractStructure = true, bool $extractData = true): array
     {
         $sql = array();
         if ($extractStructure) {
@@ -226,7 +227,7 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
      * @param   bool  $extractData       for extract Data set true otherwise false
      * @return  array
      */
-    public function createMSSQL($extractStructure = true, $extractData = true)
+    public function createMSSQL(bool $extractStructure = true, bool $extractData = true): array
     {
         $sql = array();
         if ($extractStructure) {
@@ -271,7 +272,7 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
      * @return  array
      * @see     \Yana\Db\Export\SqlFactory::createMSSQL()
      */
-    public function createMSAccess($extractStructure = true, $extractData = true)
+    public function createMSAccess(bool $extractStructure = true, bool $extractData = true): array
     {
         return $this->createMSSQL($extractStructure, $extractData);
     }
@@ -295,7 +296,7 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
      * @param   bool  $extractData       for extract Data set true otherwise false
      * @return  array
      */
-    public function createDB2($extractStructure = true, $extractData = true)
+    public function createDB2(bool $extractStructure = true, bool $extractData = true): array
     {
         $sql = array();
         if ($extractStructure) {
@@ -347,7 +348,7 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
      * @param   bool  $extractData       for extract Data set true otherwise false
      * @return  array
      */
-    public function createOracleDB($extractStructure = true, $extractData = true)
+    public function createOracleDB(bool $extractStructure = true, bool $extractData = true): array
     {
         $sql = array();
         if ($extractStructure) {

@@ -74,7 +74,7 @@ class Processor extends \Yana\Core\StdObject implements \Yana\Db\Export\Xsl\IsPr
      * @param   \DOMDocument $xslDocument  XSL template that will do the transformation
      * @return  array list of SQL commands
      */
-    public function transformDocument(\DOMDocument $xmlDocument, \DOMDocument $xslDocument)
+    public function transformDocument(\DOMDocument $xmlDocument, \DOMDocument $xslDocument): array
     {
         // XSLT processor
         $xsltProcessor = new \XSLTProcessor();
@@ -83,11 +83,13 @@ class Processor extends \Yana\Core\StdObject implements \Yana\Db\Export\Xsl\IsPr
         // Transform to SQL
         $sql = $xsltProcessor->transformToXml($xmlDocument);
         $array = array();
-        foreach (preg_split('/(?<=;)$/m', $sql) as $line)
-        {
-            $line = trim($line);
-            if ($line !== "") {
-                $array[] = $line;
+        if (is_string($sql)) {
+            foreach (preg_split('/(?<=;)$/m', $sql) as $line)
+            {
+                $line = trim($line);
+                if ($line !== "") {
+                    $array[] = $line;
+                }
             }
         }
         return $array;

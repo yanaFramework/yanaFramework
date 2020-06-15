@@ -238,7 +238,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
     <!-- Add PRIMARY KEY constraint -->
     <xsl:value-of select="concat('&#09;PRIMARY KEY (&#34;', primarykey/., '&#34;)')"/><!-- Create primary-key -->
-    <xsl:if test="constraint[@dbms = 'postgresql']"> CHECK (<xsl:value-of select="default[@dbms = 'postgresql']"/>)</xsl:if>
+    <xsl:if test="constraint[@dbms = 'postgresql']"> CHECK (<xsl:value-of select="constraint[@dbms = 'postgresql']"/>)</xsl:if>
     
     <!-- Add UNIQUE constraints -->
     <xsl:if test="declaration/*[@unique = 'yes']">
@@ -284,7 +284,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <!-- Add NOT NULL constraint -->
     <xsl:if test="@notnull = 'yes'"> NOT NULL</xsl:if>
     <xsl:if test="@unique = 'yes'"> UNIQUE</xsl:if>
-    <xsl:if test="constraint[@dbms = 'postgresql']"> CHECK (<xsl:value-of select="default[@dbms = 'postgresql']"/>)</xsl:if>
+    <xsl:if test="constraint[@dbms = 'postgresql']"> CHECK (<xsl:value-of select="constraint[@dbms = 'postgresql']"/>)</xsl:if>
 
     <!-- Add default value -->
     <xsl:if test="$isReference = 0 and $default != 'NULL'">
@@ -484,6 +484,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
             <xsl:text> WITH CASCADED CHECK OPTION</xsl:text>
         </xsl:when>
     </xsl:choose>
+    <xsl:value-of select="';&#10;'"/><!-- End of table -->
 </xsl:template>
 
 <xsl:template name="sequence">
