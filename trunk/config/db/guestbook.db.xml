@@ -45,12 +45,12 @@
             <enum
                 name="guestbook_opinion"
                 title='{lang id="RATE_0"}'>
-                <option>{lang id="23"}:</option>
-                <option>{lang id="RATE_1"}</option>
-                <option>{lang id="RATE_2"}</option>
-                <option>{lang id="RATE_3"}</option>
-                <option>{lang id="RATE_4"}</option>
-                <option>{lang id="RATE_5"}</option>
+                <option value="0">{lang id="23"}:</option>
+                <option value="1">{lang id="RATE_1"}</option>
+                <option value="2">{lang id="RATE_2"}</option>
+                <option value="3">{lang id="RATE_3"}</option>
+                <option value="4">{lang id="RATE_4"}</option>
+                <option value="5">{lang id="RATE_5"}</option>
             </enum>
             <timestamp
                 name="guestbook_date"

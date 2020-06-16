@@ -211,7 +211,7 @@
 >
 <!ELEMENT option (#PCDATA)>
 <!ATTLIST option
-  value  %implied;
+  value  %required;
 >
 <!ELEMENT list (description?, grant*, constraint*)>
 <!ATTLIST list
