@@ -131,6 +131,8 @@ class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function db_install($dbms, array $list)
     {
+        @set_time_limit(500);
+
         if (empty($dbms) || empty($list)) {
             /* nothing to do */
             $message = "No databases for target DBMS selected.";
@@ -315,6 +317,7 @@ class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
             $level = \Yana\Log\TypeEnumeration::INFO;
             throw new \Yana\Core\Exceptions\Forms\MissingInputException($message, $level);
         }
+        $tablesProcessed = array();
 
         assert(!isset($dbSchema), 'Cannot redeclare var $dbSchema');
         foreach ($list as $item)
@@ -340,6 +343,11 @@ class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
             foreach ($sortedTableList as $table)
             {
                 $tableName = $table->getName();
+                if (\in_array($tableName, $tablesProcessed)) {
+                    continue;
+                } else {
+                    $tablesProcessed[] = $tableName;
+                }
                 /**
                  * select table
                  */
@@ -438,7 +446,7 @@ class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
                                 $db->commit(); // may throw exception
                                 $i = 0;
                             } catch (\Exception $e) {
-                                \Yana\Log\LogManager::getLogger()->addLog("Failed to commit changes to Database.");
+                                $message = "Failed to commit changes to Database.";
                                 $level = \Yana\Log\TypeEnumeration::ERROR;
                                 \Yana\Log\LogManager::getLogger()->addLog($message. " " . $e->getMessage(), $level);
                                 throw new \Yana\Db\CommitFailedException($message, $level, $e);
@@ -454,7 +462,7 @@ class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
                     try {
                         $db->commit(); // may throw exception
                     } catch (\Exception $e) {
-                        \Yana\Log\LogManager::getLogger()->addLog("Failed to commit changes to Database.");
+                        $message = "Failed to commit changes to Database.";
                         $level = \Yana\Log\TypeEnumeration::ERROR;
                         \Yana\Log\LogManager::getLogger()->addLog($message. " " . $e->getMessage(), $level);
                         throw new \Yana\Db\CommitFailedException($message, $level, $e);

@@ -273,7 +273,7 @@ class ValueSanitizerWorker extends \Yana\Db\Helpers\AbstractValueSanitizerWorker
     public function asIpAddress(): string
     {
         $value = $this->_getValue();
-        if (filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_NO_RES_RANGE) === false) {
+        if ($value !== '127.0.0.1' && $value !== '::1' && filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_NO_RES_RANGE) === false) {
             throw new \Yana\Core\Exceptions\Forms\InvalidValueException();
         }
         return $value;

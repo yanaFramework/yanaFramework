@@ -478,7 +478,7 @@ class ValueSanitizerWorkerTest extends \PHPUnit_Framework_TestCase
      */
     public function testAsIpAddressInvalidValueException3()
     {
-        $value = "127.0.0.1";
+        $value = "127.0.0.2";
         $this->object = new \Yana\Db\Helpers\ValueSanitizerWorker($value);
         $this->object->asIpAddress();
     }
@@ -489,7 +489,7 @@ class ValueSanitizerWorkerTest extends \PHPUnit_Framework_TestCase
      */
     public function testAsIpAddressInvalidValueException4()
     {
-        $value = "::1";
+        $value = "fe80::";
         $this->object = new \Yana\Db\Helpers\ValueSanitizerWorker($value);
         $this->object->asIpAddress();
     }

@@ -174,7 +174,7 @@ class Connection extends \Yana\Db\AbstractConnection
          */
 
         // security check
-        if (preg_match("/;.*(?:select|insert|delete|update|create|alter|grant|revoke).*$/is", $sqlStmt)) {
+        if (preg_match("/;[\s\-]*(?:select|insert|delete|update|create|alter|grant|revoke).*$/is", $sqlStmt)) {
             $message = "A semicolon has been found in the current input '{$sqlStmt}', " .
                 "indicating multiple queries.\n\t\t As this might be the result of a hacking attempt " .
                 "it is prohibited for security reasons and the queries won't be executed.";
