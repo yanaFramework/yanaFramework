@@ -308,19 +308,19 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
         <xsl:when test="name() = 'time'">DATETIME</xsl:when>
         <xsl:when test="name() = 'timestamp'">BIGINT</xsl:when>
         <xsl:when test="name() = 'integer'">INT</xsl:when>
-        <xsl:when test="name() = 'tel'">varchar</xsl:when>
-        <xsl:when test="name() = 'mail'">varchar</xsl:when>
-        <xsl:when test="name() = 'url'">varchar</xsl:when>
-        <xsl:when test="name() = 'inet'">varchar</xsl:when>
-        <xsl:when test="name() = 'password'">varchar</xsl:when>
-        <xsl:when test="name() = 'image'">varchar</xsl:when>
-        <xsl:when test="name() = 'file'">varchar</xsl:when>
+        <xsl:when test="name() = 'tel'">VARCHAR</xsl:when>
+        <xsl:when test="name() = 'mail'">VARCHAR</xsl:when>
+        <xsl:when test="name() = 'url'">VARCHAR</xsl:when>
+        <xsl:when test="name() = 'inet'">VARCHAR</xsl:when>
+        <xsl:when test="name() = 'password'">VARCHAR</xsl:when>
+        <xsl:when test="name() = 'image'">VARCHAR</xsl:when>
+        <xsl:when test="name() = 'file'">VARCHAR</xsl:when>
         <xsl:when test="name() = 'string' and @fixed = 'yes' and @length">CHAR</xsl:when>
         <!--
           Types "list" and "array" contain JSON-encoded strings.
         -->
-        <xsl:when test="name() = 'list'">varchar</xsl:when>
-        <xsl:when test="name() = 'array'">varchar</xsl:when>
+        <xsl:when test="name() = 'list'">VARCHAR</xsl:when>
+        <xsl:when test="name() = 'array'">VARCHAR</xsl:when>
         <!--
           MySQL has a native SET type that is implemented as an integer (a byte-array to be precise).
           Thus the SET data type is limited to 64 elements max, due to the max size of the byte array.
@@ -438,6 +438,8 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <xsl:template name="length">
     <xsl:param name="type"/>
     <xsl:choose>
+        <xsl:when test="name() = 'enum'">0</xsl:when>
+        <xsl:when test="name() = 'set'">0</xsl:when>
         <!-- MySQL maps Boolean to TinyInt(1) -->
         <xsl:when test="name() = 'bool'">1</xsl:when>
         <!-- Hex-color values are mapped to Char(7), example: #123456 -->

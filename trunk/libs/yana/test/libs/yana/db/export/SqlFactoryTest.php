@@ -248,7 +248,7 @@ class SqlFactoryTest extends \PHPUnit_Framework_TestCase
                 . "\n\t`surname` VARCHAR(30) NOT NULL,"
                 . "\n\t`date_of_birth` DATE NOT NULL DEFAULT CURRENT_DATE(),"
                 . "\n\t`phone` VARCHAR(30) NOT NULL,"
-                . "\n\t`manager` VARCHAR(1),"
+                . "\n\t`manager` ENUM ('yes', 'no'),"
                 . "\n\t`foo_department_id` INT(11) NOT NULL,"
                 . "\n\t`get_car` BIGINT,"
                 . "\n\tPRIMARY KEY (`id`)"
@@ -256,7 +256,7 @@ class SqlFactoryTest extends \PHPUnit_Framework_TestCase
             2 => "CREATE TABLE IF NOT EXISTS `foo_producer` ("
                 . "\n\t`id` INT(11) NOT NULL AUTO_INCREMENT,"
                 . "\n\t`name` VARCHAR(30) NOT NULL,"
-                . "\n\t`website` VARCHAR(40) DEFAULT '',"
+                . "\n\t`website` VARCHAR(45) DEFAULT 'www.test.org',"
                 . "\n\tPRIMARY KEY (`id`)"
                 . "\n);",
             3 => "CREATE TABLE IF NOT EXISTS `foo_car_typ` ("
@@ -274,8 +274,8 @@ class SqlFactoryTest extends \PHPUnit_Framework_TestCase
                 . "\n\t`car_typ_id` INT(11) NOT NULL,"
                 . "\n\t`employee_id` INT(11),"
                 . "\n\t`is_new` TINYINT(1) DEFAULT 1,"
-                . "\n\t`car_color` CHAR(7) DEFAULT '',"
-                . "\n\t`preview` TEXT(128),"
+                . "\n\t`car_color` CHAR(7) DEFAULT '#CCCCCC',"
+                . "\n\t`preview` VARCHAR(128),"
                 . "\n\t`payment` INT DEFAULT 50,"
                 . "\n\tPRIMARY KEY (`id`),"
                 . "\n\tUNIQUE `foo_car` (`car_typ_id`)"
@@ -416,13 +416,13 @@ class SqlFactoryTest extends \PHPUnit_Framework_TestCase
         $expected = array(
             0 => "CREATE TABLE IF NOT EXISTS `test` ("
                 . "\n\t`test_id` INT(8) NOT NULL AUTO_INCREMENT,"
-                . "\n\t`test_title` VARCHAR(80) NOT NULL DEFAULT '',"
+                . "\n\t`test_title` VARCHAR(80) NOT NULL DEFAULT 'test',"
                 . "\n\t`test_text` TEXT NOT NULL,"
                 . "\n\t`test_created` BIGINT NOT NULL,"
-                . "\n\t`test_author` VARCHAR(80) DEFAULT '',"
-                . "\n\t`test_color` CHAR(7) DEFAULT '',"
+                . "\n\t`test_author` VARCHAR(80) DEFAULT 'test',"
+                . "\n\t`test_color` CHAR(7) DEFAULT '#000000',"
                 . "\n\t`test_range` DOUBLE,"
-                . "\n\t`test_enum` TEXT,"
+                . "\n\t`test_enum` ENUM ('default', '1', 'a', 'Abc', '123'),"
                 . "\n\t`profile_id` VARCHAR(128) NOT NULL,"
                 . "\n\tPRIMARY KEY (`test_id`),"
                 . "\n\tUNIQUE `test` (`test_id`)"
@@ -431,7 +431,7 @@ class SqlFactoryTest extends \PHPUnit_Framework_TestCase
                 . "\n\t`testcmt_id` INT(8) NOT NULL AUTO_INCREMENT,"
                 . "\n\t`testcmt_text` TEXT NOT NULL,"
                 . "\n\t`testcmt_created` BIGINT NOT NULL,"
-                . "\n\t`test_author` VARCHAR(80) DEFAULT '',"
+                . "\n\t`test_author` VARCHAR(80) DEFAULT 'test',"
                 . "\n\t`test_id` INT(8),"
                 . "\n\t`profile_id` VARCHAR(128) NOT NULL,"
                 . "\n\tPRIMARY KEY (`testcmt_id`),"
@@ -441,7 +441,7 @@ class SqlFactoryTest extends \PHPUnit_Framework_TestCase
             // the following foreign key references an undefined table `table` (should we check for this and suppress the foreign-key?)
             3 => "ALTER TABLE `test` ADD CONSTRAINT `test_foreign` FOREIGN KEY (`test_id`) REFERENCES `table` (`column_id`);",
             4 => "ALTER TABLE `testcmt` ADD CONSTRAINT `testforeign` FOREIGN KEY (`testcmt_id`) REFERENCES `test` (`test_id`);",
-            5 => "CREATE VIEW `test_view` (test_id, test_title) AS Select Test_title as bar, Test_id as id from Test where Test_id > 5",
+            5 => "CREATE VIEW `test_view` (test_id, test_title) AS Select Test_title as bar, Test_id as id from Test where Test_id > 5;",
         );
         $result = $sqlFactory->createMySQL();
         $this->assertEquals($expected, $result);
