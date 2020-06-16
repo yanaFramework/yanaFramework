@@ -151,7 +151,6 @@ class ValueConverter extends \Yana\Core\StdObject implements \Yana\Db\Helpers\Is
         {
             case \Yana\Db\Ddl\ColumnTypeEnumeration::ARR:
             case \Yana\Db\Ddl\ColumnTypeEnumeration::LST:
-            case \Yana\Db\Ddl\ColumnTypeEnumeration::SET:
                 if (is_string($value)) {
                     $value = json_decode($value, true);
 
@@ -161,6 +160,20 @@ class ValueConverter extends \Yana\Core\StdObject implements \Yana\Db\Helpers\Is
                 assert(is_array($value), 'Unexpected result: $value should be an array.');
                 if ($key !== "") {
                     $value = \Yana\Util\Hashtable::get($value, mb_strtolower($key));
+                }
+                return $value;
+
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::SET:
+                if (is_string($value)) {
+                    $value = explode(',', $value);
+                    // Already a string, we don't need to do anything.
+
+                } elseif (!is_array($value)) {
+                    return null; // Just in case the value is invalid
+                }
+                assert(is_array($value), 'Unexpected result: $value should be an array.');
+                if ($key !== "") {
+                    $value = isset($value[$key]) ? $value[$key] : null;
                 }
                 return $value;
 
@@ -353,9 +366,14 @@ class ValueConverter extends \Yana\Core\StdObject implements \Yana\Db\Helpers\Is
             case \Yana\Db\Ddl\ColumnTypeEnumeration::DATE:
                 return $this->getQuotingAlgorithm()->quote(date('c', (int) $value));
 
+            case \Yana\Db\Ddl\ColumnTypeEnumeration::SET:
+                if (!is_array($value)) {
+                    $value = array($value);
+                }
+                return $this->getQuotingAlgorithm()->quote((string) implode(',', $value));
+
             case \Yana\Db\Ddl\ColumnTypeEnumeration::ARR:
             case \Yana\Db\Ddl\ColumnTypeEnumeration::LST:
-            case \Yana\Db\Ddl\ColumnTypeEnumeration::SET:
                 $value = \json_encode($value);
             // fall through
             default:

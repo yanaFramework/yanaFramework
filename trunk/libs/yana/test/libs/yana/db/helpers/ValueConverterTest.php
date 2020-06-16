@@ -110,12 +110,45 @@ class ValueConverterTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testConvertToInternalValueArray()
+    {
+        $column = new \Yana\Db\Ddl\Column(__FUNCTION__);
+        $column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::ARR);
+        $value = array(1 => array(0 => 'a', 2 => 'b'), 2 => 'c');
+        $this->assertSame($expected = 'b', $this->object->convertToInternalValue($value, $column, '1.2'));
+    }
+
+    /**
+     * @test
+     */
+    public function testConvertToInternalValueSetWithArray()
+    {
+        $column = new \Yana\Db\Ddl\Column(__FUNCTION__);
+        $column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::SET);
+        $value = array('a', 'b', 'c');
+        $this->assertSame($expected = 'b', $this->object->convertToInternalValue($value, $column, '1'));
+    }
+
+    /**
+     * @test
+     */
     public function testConvertToInternalValueSet()
     {
         $column = new \Yana\Db\Ddl\Column(__FUNCTION__);
         $column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::SET);
-        $value = array(1 => array(0 => 'a', 2 => 'b'), 2 => 'c');
-        $this->assertSame($expected = 'b', $this->object->convertToInternalValue($value, $column, '1.2'));
+        $value = 'a,b,c';
+        $this->assertSame($expected = 'b', $this->object->convertToInternalValue($value, $column, '1'));
+    }
+
+    /**
+     * @test
+     */
+    public function testConvertToInternalValueSetNoKeyWithArray()
+    {
+        $column = new \Yana\Db\Ddl\Column(__FUNCTION__);
+        $column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::SET);
+        $value = array('a', 'b', 'c');
+        $this->assertSame($value, $this->object->convertToInternalValue($value, $column));
     }
 
     /**
@@ -125,6 +158,17 @@ class ValueConverterTest extends \PHPUnit_Framework_TestCase
     {
         $column = new \Yana\Db\Ddl\Column(__FUNCTION__);
         $column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::SET);
+        $value = 'a,b,c';
+        $this->assertSame(array('a', 'b', 'c'), $this->object->convertToInternalValue($value, $column));
+    }
+
+    /**
+     * @test
+     */
+    public function testConvertToInternalValueArrayNoKey()
+    {
+        $column = new \Yana\Db\Ddl\Column(__FUNCTION__);
+        $column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::ARR);
         $value = array(1 => array(0 => 'a', 2 => 'b'), 2 => 'c');
         $this->assertSame($value, $this->object->convertToInternalValue($value, $column));
     }
@@ -132,10 +176,10 @@ class ValueConverterTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testConvertToInternalValueSetJson()
+    public function testConvertToInternalValueArrayJson()
     {
         $column = new \Yana\Db\Ddl\Column(__FUNCTION__);
-        $column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::SET);
+        $column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::ARR);
         $value = array(1 => array(0 => 'a', 2 => 'b'), 2 => 'c');
         $this->assertSame($expected = 'b', $this->object->convertToInternalValue(\json_encode($value), $column, '1.2'));
     }
@@ -147,8 +191,30 @@ class ValueConverterTest extends \PHPUnit_Framework_TestCase
     {
         $column = new \Yana\Db\Ddl\Column(__FUNCTION__);
         $column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::SET);
+        $value = 'a,b,c';
+        $this->assertNull($this->object->convertToInternalValue($value, $column, '3'));
+    }
+
+    /**
+     * @test
+     */
+    public function testConvertToInternalValueArrayNull()
+    {
+        $column = new \Yana\Db\Ddl\Column(__FUNCTION__);
+        $column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::SET);
         $value = array(1 => array(0 => 'a', 2 => 'b'), 2 => 'c');
         $this->assertNull($this->object->convertToInternalValue($value, $column, '3'));
+    }
+
+    /**
+     * @test
+     */
+    public function testConvertToInternalValueArrayInvalidValue()
+    {
+        $column = new \Yana\Db\Ddl\Column(__FUNCTION__);
+        $column->setType(\Yana\Db\Ddl\ColumnTypeEnumeration::ARR);
+        $value = 123;
+        $this->assertNull($this->object->convertToInternalValue($value, $column, '1.2'));
     }
 
     /**
@@ -448,8 +514,60 @@ class ValueConverterTest extends \PHPUnit_Framework_TestCase
     {
         $quotingAlgorithm = new \Yana\Db\Sql\Quoting\NullAlgorithm();
         $this->object->setQuotingAlgorithm($quotingAlgorithm);
-        $this->assertSame('"abc"', $this->object->convertValueToString('abc', \Yana\Db\Ddl\ColumnTypeEnumeration::SET));
-        $this->assertSame("[1,2,3]", $this->object->convertValueToString(array(1, 2, 3), \Yana\Db\Ddl\ColumnTypeEnumeration::SET));
+        $this->assertSame("abc", $this->object->convertValueToString(array("abc"), \Yana\Db\Ddl\ColumnTypeEnumeration::SET));
+        $this->assertSame("1,2,3", $this->object->convertValueToString(array(1, 2, 3), \Yana\Db\Ddl\ColumnTypeEnumeration::SET));
+    }
+
+    /**
+     * @test
+     */
+    public function testConvertValueToStringSetNoArray()
+    {
+        $quotingAlgorithm = new \Yana\Db\Sql\Quoting\NullAlgorithm();
+        $this->object->setQuotingAlgorithm($quotingAlgorithm);
+        $this->assertSame("abc", $this->object->convertValueToString('abc', \Yana\Db\Ddl\ColumnTypeEnumeration::SET));
+    }
+
+    /**
+     * @test
+     */
+    public function testConvertValueToStringArray()
+    {
+        $quotingAlgorithm = new \Yana\Db\Sql\Quoting\NullAlgorithm();
+        $this->object->setQuotingAlgorithm($quotingAlgorithm);
+        $this->assertSame('["abc"]', $this->object->convertValueToString(array("abc"), \Yana\Db\Ddl\ColumnTypeEnumeration::ARR));
+        $this->assertSame("[1,2,3]", $this->object->convertValueToString(array(1, 2, 3), \Yana\Db\Ddl\ColumnTypeEnumeration::ARR));
+    }
+
+    /**
+     * @test
+     */
+    public function testConvertValueToStringArrayNoArray()
+    {
+        $quotingAlgorithm = new \Yana\Db\Sql\Quoting\NullAlgorithm();
+        $this->object->setQuotingAlgorithm($quotingAlgorithm);
+        $this->assertSame('"abc"', $this->object->convertValueToString('abc', \Yana\Db\Ddl\ColumnTypeEnumeration::ARR));
+    }
+
+    /**
+     * @test
+     */
+    public function testConvertValueToStringList()
+    {
+        $quotingAlgorithm = new \Yana\Db\Sql\Quoting\NullAlgorithm();
+        $this->object->setQuotingAlgorithm($quotingAlgorithm);
+        $this->assertSame('["abc"]', $this->object->convertValueToString(array("abc"), \Yana\Db\Ddl\ColumnTypeEnumeration::LST));
+        $this->assertSame("[1,2,3]", $this->object->convertValueToString(array(1, 2, 3), \Yana\Db\Ddl\ColumnTypeEnumeration::LST));
+    }
+
+    /**
+     * @test
+     */
+    public function testConvertValueToStringListNoArray()
+    {
+        $quotingAlgorithm = new \Yana\Db\Sql\Quoting\NullAlgorithm();
+        $this->object->setQuotingAlgorithm($quotingAlgorithm);
+        $this->assertSame('"abc"', $this->object->convertValueToString('abc', \Yana\Db\Ddl\ColumnTypeEnumeration::LST));
     }
 
 }

@@ -100,6 +100,7 @@ class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
                 {
                     /* @var $foreignKey \Yana\Db\Ddl\ForeignKey */
                     if (!\in_array($foreignKey->getTargetTable(), array_keys($tables))) {
+                        unset($foreignKey);
                         $abortCount++;
                         continue 2;
                     }

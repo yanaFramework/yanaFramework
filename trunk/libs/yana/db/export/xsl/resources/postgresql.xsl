@@ -298,11 +298,12 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
         <xsl:when test="@autoincrement = 'yes' and (not(@length) or @length &gt; 8)">bigserial</xsl:when>
         <xsl:when test="@autoincrement = 'yes'">serial</xsl:when>
         <xsl:when test="name() = 'bool'">boolean</xsl:when>
+        <!-- Colors are stored as text #RRGGBB (without alpha-channel). -->
         <xsl:when test="name() = 'color'">char</xsl:when>
         <xsl:when test="name() = 'date'">date</xsl:when>
         <!-- @todo look up datatype LIST/ARRAY -->
         <xsl:when test="name() = 'float' and @precision">numeric</xsl:when>
-        <xsl:when test="name() = 'float'' and (not(@length) or @length &gt; 4)">double precision</xsl:when>
+        <xsl:when test="name() = 'float' and (not(@length) or @length &gt; 4)">double precision</xsl:when>
         <xsl:when test="name() = 'float'">real</xsl:when>
         <xsl:when test="name() = 'range'">double precision</xsl:when>
         <xsl:when test="name() = 'text'">text</xsl:when>
@@ -312,9 +313,42 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
         <xsl:when test="name() = 'integer' and @length and @length &lt; 3">smallint</xsl:when>
         <xsl:when test="name() = 'integer' and @length and @length &gt; 8">bigint</xsl:when>
         <xsl:when test="name() = 'integer'">integer</xsl:when>
-        <!-- @todo look up datatype INET -->
         <xsl:when test="name() = 'inet'">inet</xsl:when>
+        <xsl:when test="name() = 'tel'">varchar</xsl:when>
+        <xsl:when test="name() = 'mail'">varchar</xsl:when>
+        <xsl:when test="name() = 'url'">varchar</xsl:when>
+        <xsl:when test="name() = 'password'">varchar</xsl:when>
+        <xsl:when test="name() = 'image'">varchar</xsl:when>
+        <xsl:when test="name() = 'file'">varchar</xsl:when>
         <xsl:when test="name() = 'string' and @fixed = 'yes'">char</xsl:when>
+        <!--
+          Types "list" and "array" contain JSON-encoded strings.
+        -->
+        <xsl:when test="name() = 'list'">varchar</xsl:when>
+        <xsl:when test="name() = 'array'">varchar</xsl:when>
+        <xsl:when test="name() = 'set'">varchar</xsl:when>
+        <xsl:when test="name() = 'enum'">
+            <xsl:text>ENUM (</xsl:text>
+            <!--
+                The enum tag may contain "option" and "optgroup" elements, where "optgroup" contains more "option" elements.
+            -->
+            <xsl:for-each select="option | optgroup/option">
+                <xsl:text>'</xsl:text>
+                <xsl:choose>
+                    <xsl:when test="@value">
+                        <xsl:value-of select="@value"/>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:value-of select="."/>
+                    </xsl:otherwise>
+                </xsl:choose>
+                <xsl:text>'</xsl:text>
+                <xsl:if test="position() != last()">
+                    <xsl:text>, </xsl:text>
+                </xsl:if>
+            </xsl:for-each>
+            <xsl:text>)</xsl:text>
+        </xsl:when>
         <xsl:when test="not(@length)">text</xsl:when>
         <xsl:otherwise>varchar</xsl:otherwise>
     </xsl:choose>
@@ -386,6 +420,41 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
         <!-- Hex-color values are mapped to Char(7), example: #123456 -->
         <xsl:when test="name() = 'color'">7</xsl:when>
         <xsl:when test="name() = 'date' or name() = 'time' or name() = 'timestamp'">0</xsl:when>
+        <!--
+          Following international standard E.164, all int. phone numbers are limited to a max of 15 digits plus leading zeros.
+          However, people may have a telephone system that adds more digits (we assume not more than 5).
+          We will go with 30 digits by default, which should be more than enough for all that we know.
+        -->
+        <xsl:when test="name() = 'tel'">30</xsl:when>
+        <!--
+          According to RFC 5321, e-mail addresses may not exceed a maximum length of 254 octets.
+          (Addresses containing multibyte characters will have to be shorter.)
+        -->
+        <xsl:when test="name() = 'mail'">254</xsl:when>
+        <!--
+          The maximum length of URLs supported by the majority of browsers is 2048 characters.
+          We will use that as the default.
+        -->
+        <xsl:when test="name() = 'url'">2048</xsl:when>
+        <!--
+          Passwords will be stored as hashes. We do not want to exceed 255 characters on default.
+        -->
+        <xsl:when test="name() = 'password'">255</xsl:when>
+        <!--
+          Types "list" and "array" contain JSON-encoded strings.
+          They are not limited in size per se, but we don't want them to end up being BLOBs either.
+          The maximum size a varchar can be is 65535 characters, except: This is also the maximum row size.
+          So this is only valid if this is the only varchar in the row.
+          We thus go with a fairly reasonable 10k characters as a maximum.
+          This is high enough that most arrays should fit, and still low enough that we can
+          have a couple of them in a table without immediately hitting the row-size limit.
+        -->
+        <xsl:when test="name() = 'list' or name() = 'array'">10000</xsl:when>
+        <xsl:when test="name() = 'set'">512</xsl:when>
+        <!--
+          Types "file" and "image" don't actually store the blobs in the database,
+          they just store the filename. Ergo, we don't need more than 255 characters.
+        -->
         <xsl:when test="name() = 'file' or name() = 'image'">128</xsl:when>
         <xsl:when test="name() = 'text'">0</xsl:when>
         <xsl:when test="name() = 'float' and @length">

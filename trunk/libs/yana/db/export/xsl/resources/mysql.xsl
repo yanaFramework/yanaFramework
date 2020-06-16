@@ -292,7 +292,13 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <!-- Handle column type -->
 <xsl:template name="type">
     <xsl:choose>
+        <!--
+            MySQL doesn't have a native boolean data type. So we simulate using TINYINT.
+            Note that there is no difference between "TINYINT" without length, and "TINYINT(1)", MySQL ignores the length given.
+            We add it anyway for our own documentation purposes as many people expect any TINYINT(1) they see to be a boolean.
+        -->
         <xsl:when test="name() = 'bool'">TINYINT</xsl:when>
+        <!-- Colors are stored as text #RRGGBB (without alpha-channel). -->
         <xsl:when test="name() = 'color'">CHAR</xsl:when>
         <xsl:when test="name() = 'date'">DATE</xsl:when>
         <xsl:when test="name() = 'float' and @precision">DECIMAL</xsl:when>
@@ -302,7 +308,68 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
         <xsl:when test="name() = 'time'">DATETIME</xsl:when>
         <xsl:when test="name() = 'timestamp'">BIGINT</xsl:when>
         <xsl:when test="name() = 'integer'">INT</xsl:when>
-        <xsl:when test="name() = 'string' and @fixed = 'yes'">CHAR</xsl:when>
+        <xsl:when test="name() = 'tel'">varchar</xsl:when>
+        <xsl:when test="name() = 'mail'">varchar</xsl:when>
+        <xsl:when test="name() = 'url'">varchar</xsl:when>
+        <xsl:when test="name() = 'inet'">varchar</xsl:when>
+        <xsl:when test="name() = 'password'">varchar</xsl:when>
+        <xsl:when test="name() = 'image'">varchar</xsl:when>
+        <xsl:when test="name() = 'file'">varchar</xsl:when>
+        <xsl:when test="name() = 'string' and @fixed = 'yes' and @length">CHAR</xsl:when>
+        <!--
+          Types "list" and "array" contain JSON-encoded strings.
+        -->
+        <xsl:when test="name() = 'list'">varchar</xsl:when>
+        <xsl:when test="name() = 'array'">varchar</xsl:when>
+        <!--
+          MySQL has a native SET type that is implemented as an integer (a byte-array to be precise).
+          Thus the SET data type is limited to 64 elements max, due to the max size of the byte array.
+          SET is not supported by most other RDBMS.
+        -->
+        <xsl:when test="name() = 'set'">
+            <xsl:text>SET (</xsl:text>
+            <!--
+                The set tag may contain "option" and "optgroup" elements, where "optgroup" contains more "option" elements.
+            -->
+            <xsl:for-each select="option | optgroup/option">
+                <xsl:text>'</xsl:text>
+                <xsl:choose>
+                    <xsl:when test="@value">
+                        <xsl:value-of select="@value"/>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:value-of select="."/>
+                    </xsl:otherwise>
+                </xsl:choose>
+                <xsl:text>'</xsl:text>
+                <xsl:if test="position() != last()">
+                    <xsl:text>, </xsl:text>
+                </xsl:if>
+            </xsl:for-each>
+            <xsl:text>)</xsl:text>
+        </xsl:when>
+        <xsl:when test="name() = 'enum'">
+            <xsl:text>ENUM (</xsl:text>
+            <!--
+                The enum tag may contain "option" and "optgroup" elements, where "optgroup" contains more "option" elements.
+            -->
+            <xsl:for-each select="option | optgroup/option">
+                <xsl:text>'</xsl:text>
+                <xsl:choose>
+                    <xsl:when test="@value">
+                        <xsl:value-of select="@value"/>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:value-of select="."/>
+                    </xsl:otherwise>
+                </xsl:choose>
+                <xsl:text>'</xsl:text>
+                <xsl:if test="position() != last()">
+                    <xsl:text>, </xsl:text>
+                </xsl:if>
+            </xsl:for-each>
+            <xsl:text>)</xsl:text>
+        </xsl:when>
         <xsl:when test="not(@length)">TEXT</xsl:when>
         <xsl:otherwise>VARCHAR</xsl:otherwise>
     </xsl:choose>
@@ -375,8 +442,47 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
         <xsl:when test="name() = 'bool'">1</xsl:when>
         <!-- Hex-color values are mapped to Char(7), example: #123456 -->
         <xsl:when test="name() = 'color'">7</xsl:when>
-        <xsl:when test="name() = 'inet'">40</xsl:when>
+        <!--
+          A typical IPv6 address has a maximum length of 39 characters: 0000:0000:0000:0000:0000:0000:0000:0000.
+          However with an IPv4-mapped IPv6 address, it is possible to include the IPv4 base-10 address, resulting in:
+          0000:0000:0000:0000:0000:ffff:192.168.100.100 = 45 characters. This is the maximum length of IP addresses.
+        -->
+        <xsl:when test="name() = 'inet'">45</xsl:when>
         <xsl:when test="name() = 'date' or name() = 'time' or name() = 'timestamp'">0</xsl:when>
+        <!--
+          Following international standard E.164, all int. phone numbers are limited to a max of 15 digits plus leading zeros.
+          However, people may have a telephone system that adds more digits (we assume not more than 5).
+          We will go with 30 digits by default, which should be more than enough for all that we know.
+        -->
+        <xsl:when test="name() = 'tel'">30</xsl:when>
+        <!--
+          According to RFC 5321, e-mail addresses may not exceed a maximum length of 254 octets.
+          (Addresses containing multibyte characters will have to be shorter.)
+        -->
+        <xsl:when test="name() = 'mail'">254</xsl:when>
+        <!--
+          The maximum length of URLs supported by the majority of browsers is 2048 characters.
+          We will use that as the default.
+        -->
+        <xsl:when test="name() = 'url'">2048</xsl:when>
+        <!--
+          Passwords will be stored as hashes. We do not want to exceed 255 characters on default.
+        -->
+        <xsl:when test="name() = 'password'">255</xsl:when>
+        <!--
+          Types "list" and "array" contain JSON-encoded strings.
+          They are not limited in size per se, but we don't want them to end up being BLOBs either.
+          The maximum size a varchar can be is 65535 characters, except: This is also the maximum row size.
+          So this is only valid if this is the only varchar in the row.
+          We thus go with a fairly reasonable 10k characters as a maximum.
+          This is high enough that most arrays should fit, and still low enough that we can
+          have a couple of them in a table without immediately hitting the row-size limit.
+        -->
+        <xsl:when test="name() = 'list' or name() = 'array'">10000</xsl:when>
+        <!--
+          Types "file" and "image" don't actually store the blobs in the database,
+          they just store the filename. Ergo, we don't need more than 255 characters.
+        -->
         <xsl:when test="name() = 'file' or name() = 'image'">128</xsl:when>
         <xsl:when test="name() = 'text'">0</xsl:when>
         <xsl:when test="name() = 'float' and @length">
