@@ -157,6 +157,7 @@
             </integer>
             <string
                 name="newuser_key"
+                length="255"
                 notnull="yes">
             </string>
             <mail
