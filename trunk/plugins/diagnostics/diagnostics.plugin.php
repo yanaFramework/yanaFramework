@@ -57,48 +57,16 @@ class DiagnosticsPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function test($details = false, $xml = false)
     {
-        $YANA = $this->_getApplication();
-
-        /* get report */
-        assert(!isset($report), 'Cannot redeclare var $report');
-        $report = $YANA->getReport();
-        assert($report instanceof \Yana\Report\IsReport, 'unexpected return type - instance of Report\IsReport expected');
-
+        $helper = new \Plugins\Diagnostics\DiagnosticsHelper($this->_getApplication());
         if ($xml) {
 
             header('Content-type: text/xml');
             header('Charset: utf-8');
-            print($report->asXML());
+            print $helper->runDiagnosticsReportAsXml();
 
         } else {
 
-            /* create objects */
-            assert(!isset($doc), 'Cannot redeclare var $doc');
-            $doc = new \DOMDocument();
-            assert(!isset($xsl), 'Cannot redeclare var $xsl');
-            $xsl = new \XSLTProcessor();
-            $xslFile = $YANA->getPlugins()->{'diagnostics:/report.file'};
-
-            /* load stylesheet */
-            $doc->load($xslFile->getPath());
-            $xsl->importStyleSheet($doc);
-            unset($xslFile);
-
-            /* add parameters */
-            if ($details) {
-                $xsl->setParameter("", "details", "1");
-            } else {
-                $xsl->setParameter("", "details", "0");
-            }
-            $urlFormatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
-            $detailsUrl = $urlFormatter('action=' . __FUNCTION__ . "&details=" . !$details, true);
-            $xsl->setParameter("", "urlChooseDetails", $detailsUrl);
-            $xmlUrl = $urlFormatter('action=' . __FUNCTION__ . "&xml=1", true);
-            $xsl->setParameter("", "urlChooseXml", $xmlUrl);
-
-            /* transform and output report */
-            $doc->loadXML($report->asXML());
-            print($xsl->transformToXML($doc));
+            print $helper->runDiagnosticsReportAsHtml($details);
         }
 
         exit(0);
