@@ -168,8 +168,8 @@ class CanonicalUrlBuilder extends \Yana\Http\Uris\Container implements \Yana\Htt
             $builder->setHttpHost($_SERVER['HTTP_HOST']);
         }
 
-        if (isset($_SERVER['PHP_SELF']) && is_string($_SERVER['PHP_SELF'])) {
-            $builder->setPhpSelf($_SERVER['PHP_SELF']);
+        if (isset($_SERVER['SCRIPT_NAME']) && is_string($_SERVER['SCRIPT_NAME'])) {
+            $builder->setPhpSelf($_SERVER['SCRIPT_NAME']);
         }
 
         if (!empty($_POST) && is_array($_POST)) {

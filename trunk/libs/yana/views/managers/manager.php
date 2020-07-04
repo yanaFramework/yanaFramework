@@ -240,7 +240,7 @@ class Manager extends \Yana\Views\Managers\AbstractManager implements \Yana\View
                 unset($builder);
 
             } else {
-                $id = $_SERVER['PHP_SELF'];
+                $id = $_SERVER['SCRIPT_NAME'];
             }
             unset($queryString);
 
