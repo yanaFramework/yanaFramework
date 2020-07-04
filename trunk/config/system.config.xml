@@ -261,7 +261,7 @@
     		<directory>default/</directory>
     	</skin>
         <!-- Default locale -->
-    	<language>de</language>
+    	<language>en</language>
         <!-- Database driver information -->
     	<database>
     		<options>
