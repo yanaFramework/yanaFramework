@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Installation Wizard</title>
+    <link rel="stylesheet" type="text/css" href="data/index.css">
+    <script type="text/javascript" src="data/index.js"></script>
+</head>
+
+
+<body>
+
+        <h1>{language installation}</h1>
+
+        <p>
+            {language install_info}
+        </p>
+
+        <form name="install_form" action="">
+
+            <p>
+                <button type="button" onclick="install('install_frame', document.forms['components'].elements, document.forms['install_form'].elements, 'page_2_2');">
+                    {language install_start}
+                </button>
+            </p>
+
+            <div id="progressbar" style="display: none;">&nbsp;</div>
+
+        </form>
+
+        <!-- Installation Log -->
+        <iframe frameborder="0" id="install_frame" src="about:blank" class="frame"></iframe>
+
+</body>
+
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>{language title}</title>
+    <link rel="stylesheet" type="text/css" href="data/index.css"/>
+    <script type="text/javascript" src="data/index.js"></script>
+    <script type="text/javascript">
+    var language = new Array();
+    language['php_self'] = '{language php_self}';
+    language['license_rejected'] = '{language license_rejected}';
+    language['pass_too_short'] = '{language pass_too_short}';
+    language['pass_miss'] = '{language pass_miss}';
+    language['install_failure'] = '{language install_failure}';
+    language['install_success'] = '{language install_success}';
+    </script>
+</head>
+
+
+<body>
+
+<!-- BEGIN document head -->
+
+<p class="headline">
+    <a href="{language php_self}">{language title}</a>
+    <span id="document_title">{language welcome}</span>
+    <span style="margin-left: 100px;">{language language}:
+        <a href="?language=en" title="{language english}">en</a>
+    </span>
+</p>
+
+<noscript>
+
+    <p>JavaScript has to be activated to view this page.</p>
+
+</noscript>
+
+<!-- END   document head -->
+
+<!-- BEGIN document menu -->
+
+{include page_nav}
+
+<!-- END   document menu -->
+
+<!-- BEGIN: document content -->
+
+<div id="pages">
+
+    <!-- BEGIN: Page 1.1 -->
+
+    <div id="page_1_1" class="hidden-page">
+        {include page_1_1}
+    </div>
+
+    <!-- END   Page 1.1 -->
+
+    <!-- BEGIN: Page 1.2 -->
+
+    <div id="stop_page_1_2" class="hidden-page">
+        {include page_1_2}
+
+    </div>
+
+    <!-- END   Page 1.2 -->
+
+    <!-- BEGIN: Page 2.1 -->
+
+    <div id="page_2_1" class="hidden-page">
+        {include page_2_1}
+
+        <!-- BEGIN document controls -->
+        {include page_abort}
+        <!-- END   document controls -->
+
+    </div>
+
+    <!-- END   Page 2.1 -->
+
+    <!-- BEGIN: Page 2.2 -->
+
+    <div id="stop_page_2_2" class="hidden-page">
+        {include page_2_2}
+
+        <!-- BEGIN document controls -->
+        {include page_abort}
+        <!-- END   document controls -->
+
+    </div>
+
+    <!-- END   Page 2.2 -->
+
+    <!-- BEGIN: Page 3.1 -->
+
+    <div id="page_3_1" class="hidden-page">
+        {include page_3_1}
+
+        <!-- BEGIN document controls -->
+        {include page_abort}
+        <!-- END   document controls -->
+
+    </div>
+
+    <!-- END   Page 3.1 -->
+
+    <!-- BEGIN: Page 3.2 -->
+
+    <div id="page_3_2" class="hidden-page">
+        {include page_3_2}
+
+        <!-- BEGIN document controls -->
+        {include page_abort}
+        <!-- END   document controls -->
+
+    </div>
+
+    <!-- END   Page 3.2 -->
+
+    <!-- BEGIN: Page 4 -->
+
+    <div id="page_4" class="hidden-page">
+        {include page_4_1}
+
+        <!-- BEGIN document controls -->
+        {include page_abort}
+        <!-- END   document controls -->
+
+    </div>
+
+    <!-- END   Page 4 -->
+
+</div>
+
+<script language="javascript" type="text/javascript">
+show('page_1_1');
+</script>
+
+<!-- END:   document content -->
+
+<!-- BEGIN document foot -->
+
+<p class="footline">Footer</p>
+
+<!-- END   document foot -->
+</body>
+
+</html>

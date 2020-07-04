@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Installation Wizard</title>
+    <link rel="stylesheet" type="text/css" href="data/index.css">
+    <script type="text/javascript" src="data/index.js"></script>
+</head>
+
+
+<body>
+
+        <h1>{language test}</h1>
+
+        <p>
+            {language test_details}<br>
+            <label><input type="checkbox" id="test_details"> {language more_details}</label>
+        </p>
+
+        <p>
+            {language test_info}
+            <button onclick="test('test', document.getElementById('test_details').checked);">OK</button>
+        </p>
+
+        <!-- Test Log -->
+        <iframe frameborder="0" id="test" src="about:blank" class="frame"></iframe>
+
+</body>
+
+</html>

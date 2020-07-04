@@ -1,0 +1,103 @@
+<?php
+// This file contains the texts and translations in all supported languages that the installer may display during installation
+$LANGUAGE = array(
+    'welcome' => array(
+        'en' => 'welcome', // mandatory
+        'fr' => 'optional translation'), // You may add as many translations as you like
+
+    'title' => array(
+        'en' => 'Installation Wizard'),
+
+    'info' => array(
+        'en' => 'This {language title} installs the software on your server.'), // Note that you may reference translations inside your text as shown here
+
+    // Some more examples
+    'language' => array(
+        'en' => 'Language'),
+    'english' => array(
+        'en' => 'view this page in English'),
+    'navigation' => array(
+        'en' => 'navigation'),
+    'previous' => array(
+        'en' => 'previous'),
+    'next' => array(
+        'en' => 'next'),
+    'abort' => array(
+        'en' => 'abort installation'),
+    'license_link' => array(
+        'en' => 'You can view the license text here'),
+    'publisher_link' => array(
+        'en' => 'publisher\'s website'),
+    'software_uses' => array(
+        'en' => 'This software uses the'),
+    'author' => array(
+        'en' => 'author'),
+    'proceed' => array(
+        'en' => 'proceed'),
+    'license_proceed' => array(
+        'en' => 'To begin the installation, you need to read the license agreement and accept to be bound to the restrictions defined therein.'),
+    'license_accept' => array(
+        'en' => 'I have read and accepted the license agreement'),
+    'license_reject' => array(
+        'en' => 'I do not accept the license agreement'),
+    'license_rejected' => array(
+        'en' => 'Without a valid license the installation can not continue.'),
+    'pass_too_short' => array(
+        'en' => 'The passwords need to be at least 8 characters long. Please try again.'),
+    'pass_miss' => array(
+        'en' => 'The two entered passwords do not match. Please try again.'),
+    'license' => array(
+        'en' => 'Your license'),
+    'license_info' => array(
+        'en' => "To be able to use the product you must accept the following license agreements.\n\nPlease scroll on to the end of the page."),
+    'php_self' => array(
+        'en' => $_SERVER['SCRIPT_NAME']),
+    'components' => array(
+        'en' => 'choose components to install'),
+    'choose_all' => array(
+        'en' => 'full installation'),
+    'choose_minimal' => array(
+        'en' => 'minimal installation'),
+    'choose_typical' => array(
+        'en' => 'typical installation'),
+    'installation' => array(
+        'en' => 'installation'),
+    'install_info' => array(
+        'en' => 'Click the button to start the installation.'),
+    'install_start' => array(
+        'en' => 'start installation now'),
+    'install_complete' => array(
+        'en' => 'installation complete'),
+    'install_complete_info' => array(
+        'en' => 'The installation is now complete. Thank you!'),
+    'install_success' => array(
+        'en' => 'components unpacked successfully'),
+    'install_failure' => array(
+        'en' => 'Failure while unpacking components!'),
+    'pass' => array(
+        'en' => 'Set password for administrator'),
+    'pass_info' => array(
+        'en' => 'Please enter a password and click on OK.'),
+    'pass1' => array(
+        'en' => 'password'),
+    'pass2' => array(
+        'en' => 'repeat password'),
+    'pass_hint' => array(
+        'en' => 'Suggestions for secure passwords'),
+    'pass_text' => array(
+        'en' => 'The password should\'nt be easy to guess. Birthdates, names and words from dictionaries are not well suited.
+            It should be at least 8 characters long and should contain at least 1 capital letter, 1 number and 1 special char.'),
+    'test' => array(
+        'en' => 'Check installation for errors'),
+    'test_details' => array(
+        'en' => 'Check the box &quot;{language more_details}&quot; to get a detailed list.'),
+    'test_info' => array(
+        'en' => 'Please click OK to begin the check.'),
+    'more_details' => array(
+        'en' => 'more details'),
+    'run_application' => array(
+        'en' => 'Run the application now.'),
+    'finish' => array(
+        'en' => 'finish'),
+);
+?>
