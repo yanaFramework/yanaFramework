@@ -1,0 +1,52 @@
+YANA Framework {VERSION} - {DATE}
+=================================
+
+software  Yana PHP-Framework
+version   {VERSION} - {DATE}
+author    Thomas Meyer <tm@yanaframework.net>
+link      http://www.yanaframework.net
+license   GNU GPL v3 http://www.gnu.org/licenses/gpl.txt
+
+Quick-Installation Guide (English)
+==================================
+
+  1) Open a connection to your webspace via your ftp client.
+  2) Copy the files "install.php", "install.pak" and "yana.zip" to a
+     directory on your server. You don't need to copy any other files.
+  3) Set access rights for this directory via your ftp client, so that the
+     script will be able to read and write files.
+  4) Close the ftp connection.
+  5) Open the file "install.php" in your web browser.
+  6) Select the "English" language by clicking on "en" on the top of the screen.
+  7) Follow the instructions on the screen.
+
+A complete installation guide and all other information can be found as part
+of the frameworks manual.
+
+If you haven't already, you may download the manual at:
+https://yanaframework.net/download/manual_en.zip
+
+Or read online at: https://yanaframework.net/docs_en/index.html
+
+
+Kurzanleitung (Deutsch)
+=======================
+
+  1. Stellen Sie mit Ihrem FTP-Programm eine Verbindung zu Ihrem Webspace her.
+  2. Kopieren Sie die Dateien "install.php", "install.pak" und "yana.zip" in
+     ein Verzeichnis auf Ihren Server.
+     Andere Dateien müssen nicht kopiert werden.
+  3. Setzen Sie die Zugriffsrechte für dieses Verzeichnis über Ihr FTP-Programm
+     so, dass es dem Skript möglich ist, Dateien zu lesen und zu schreiben.
+  4. Schließen Sie die FTP-Verbindung.
+  5. Öffnen Sie die Datei "install.php" über Ihren Webbrowser.
+  6. Wählen Sie "Deutsch" durch Klick auf "de" oben rechts.
+  7. Folgen Sie den Anweisungen auf dem Bildschirm.
+
+Eine vollständige Installationsanleitung und alle weiteren Informationen finden
+sie im Handbuch des Frameworks.
+
+Das Handbuch finden Sie als Download unter:
+https://yanaframework.net/download/manual.zip
+
+Oder lesen Sie online unter: https://yanaframework.net/docs/index.html
