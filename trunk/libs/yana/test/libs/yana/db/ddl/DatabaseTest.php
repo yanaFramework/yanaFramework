@@ -768,6 +768,47 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     */
+    public function testGetTablesSortedByForeignKey()
+    {
+        $newTableB = $this->object->addTable("b");
+        $newTableA = $this->object->addTable("a");
+        $newTableA->addColumn("col1", "integer");
+        $newTableB->addColumn("col2", "integer");
+        $newTableA->setPrimaryKey("col1");
+        $fk = $newTableB->addForeignKey("A");
+        $fk->setColumn('col2');
+        $this->assertSame(array('b', 'a'), $this->object->getTableNames());
+        $sortedTables = $this->object->getTablesSortedByForeignKey();
+        $this->assertSame(array('a', 'b'), array_keys($sortedTables));
+    }
+
+    /**
+     * @test
+     */
+    public function testGetTablesSortedByForeignKeyCircularReference()
+    {
+        $tableA = $this->object->addTable("a");
+        $tableB = $this->object->addTable("b");
+        $tableA->addColumn("col1", "integer");
+        $tableA->setPrimaryKey("col1");
+        $tableB->addColumn("col2", "integer");
+        $tableB->setPrimaryKey("col2");
+        $tableB->addForeignKey("a")->setColumn('col2');
+        $tableA->addForeignKey("b")->setColumn('col1');
+        $this->assertSame(array(), $this->object->getTablesSortedByForeignKey());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetTablesSortedByForeignKeyEmpty()
+    {
+        $this->assertSame(array(), $this->object->getTablesSortedByForeignKey());
+    }
+
+    /**
      * getTableByForeignKey
      *
      * @test

@@ -751,6 +751,55 @@ class Database extends \Yana\Db\Ddl\AbstractUnnamedObject
     }
 
     /**
+     * Returns a list of table definitions sorted by foreign keys.
+     *
+     * This should be used when you plan to copy/insert data into a database.
+     * Call this function so that you know which tables to insert first and
+     * not run into trouble with foreign key constraints being violated.
+     *
+     * Note! Your schema should NOT contain circular references (for obvious
+     * reasons). If it does, this function will, however, not run into an
+     * endless loop, it will simply abort and return an incomplete list.
+     *
+     * @return  array
+     */
+    public function getTablesSortedByForeignKey(): array
+    {
+        assert(!isset($tables), 'Cannot redeclare var $tables');
+        $tables = array();
+        assert(!isset($tablesToBeSorted), 'Cannot redeclare var $tablesToBeSorted');
+        $tablesToBeSorted = $this->getTables();
+        assert(!isset($sortedThisRound), 'Cannot redeclare var $abortCount');
+        $sortedThisRound = -1;
+        while (!empty($tablesToBeSorted) && $sortedThisRound !== 0)
+        {
+            $sortedThisRound = 0;
+            assert(!isset($i), 'Cannot redeclare var $i');
+            assert(!isset($table), 'Cannot redeclare var $table');
+            foreach ($tablesToBeSorted as $i => $table)
+            {
+                assert($table instanceof \Yana\Db\Ddl\Table);
+                assert(!isset($foreignKey), 'Cannot redeclare var $foreignKey');
+                foreach ($table->getForeignKeys() as $foreignKey)
+                {
+                    /* @var $foreignKey \Yana\Db\Ddl\ForeignKey */
+                    if (!\in_array($foreignKey->getTargetTable(), array_keys($tables))) {
+                        unset($foreignKey);
+                        continue 2;
+                    }
+                }
+                unset($foreignKey);
+                $sortedThisRound++;
+                $tables[$table->getName()] = $table;
+                unset($tablesToBeSorted[$i]);
+            }
+            unset($i, $table);
+        }
+
+        return $tables;
+    }
+
+    /**
      * List all tables by name.
      *
      * Returns a numeric array with the names of all registered tables.
