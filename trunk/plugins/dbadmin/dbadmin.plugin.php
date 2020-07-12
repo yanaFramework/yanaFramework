@@ -68,7 +68,6 @@ class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
         $yana->setVar("DATABASE_PORT",        YANA_DATABASE_PORT);
         $yana->setVar("DATABASE_USER",        YANA_DATABASE_USER);
         $yana->setVar("DATABASE_PASSWORD",    YANA_DATABASE_PASSWORD);
-        $yana->setVar("DATABASE_PREFIX",      YANA_DATABASE_PREFIX);
         $yana->setVar("DATABASE_NAME",        YANA_DATABASE_NAME);
         $yana->setVar("YANA_DATABASE_ACTIVE", YANA_DATABASE_ACTIVE);
         $DATABASE_LIST = \Yana\Db\Ddl\DDL::getListOfFiles();
@@ -536,13 +535,12 @@ class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
      * @param       string  $user         DBMS username
      * @param       string  $password     DBMS password
      * @param       string  $name         database name
-     * @param       string  $prefix       table prefix
      * @param       bool    $autoinstall  install automatically?
      * @param       bool    $autosync     synchronize automatically?
      * @param       array   $list         list of database schemas
      */
     public function set_db_configuration($active, $dbms, $host = "", $port = "", $user = "", $password = "", $name = "",
-        $prefix = "", $autoinstall = false, $autosync = false, array $list = array())
+        $autoinstall = false, $autosync = false, array $list = array())
     {
         /**
          * 1) Test if connection is available
@@ -617,14 +615,20 @@ class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
          * 3) Write changes to file
          */
         $text = "<?php
-        if (!defined('YANA_DATABASE_ACTIVE'))   define('YANA_DATABASE_ACTIVE', $active);
-        if (!defined('YANA_DATABASE_DBMS'))     define('YANA_DATABASE_DBMS', \"$dbms\");
-        if (!defined('YANA_DATABASE_HOST'))     define('YANA_DATABASE_HOST', \"$host\");
-        if (!defined('YANA_DATABASE_PORT'))     define('YANA_DATABASE_PORT', \"$port\");
-        if (!defined('YANA_DATABASE_USER'))     define('YANA_DATABASE_USER', \"$user\");
-        if (!defined('YANA_DATABASE_PASSWORD')) define('YANA_DATABASE_PASSWORD', \"$password\");
-        if (!defined('YANA_DATABASE_PREFIX'))   define('YANA_DATABASE_PREFIX', \"$prefix\");
-        if (!defined('YANA_DATABASE_NAME'))     define('YANA_DATABASE_NAME', \"$name\");\n?>";
+        if (!defined('YANA_DATABASE_ACTIVE'))   " .
+            "define('YANA_DATABASE_ACTIVE', " . ($active === "true" ? "true" : "false") . ");
+        if (!defined('YANA_DATABASE_DBMS'))     " .
+            "define('YANA_DATABASE_DBMS', \"" . addslashes($dbms) . "\");
+        if (!defined('YANA_DATABASE_HOST'))     " .
+            "define('YANA_DATABASE_HOST', \"" . addslashes($host) . "\");
+        if (!defined('YANA_DATABASE_PORT'))     " .
+            "define('YANA_DATABASE_PORT', \"" . addslashes($port) . "\");
+        if (!defined('YANA_DATABASE_USER'))     " .
+            "define('YANA_DATABASE_USER', \"" . addslashes($user) . "\");
+        if (!defined('YANA_DATABASE_PASSWORD')) " .
+            "define('YANA_DATABASE_PASSWORD', \"" . addslashes($password) . "\");
+        if (!defined('YANA_DATABASE_NAME'))     " .
+            "define('YANA_DATABASE_NAME', \"" . addslashes($name) . "\");\n?>";
         assert(!isset($file), 'Cannot redeclare var $file');
         /* @var $file \Yana\Files\Text */
         $file = $this->_getApplication()->getPlugins()->{"dbadmin:/dbconfig.text"};
