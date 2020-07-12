@@ -76,46 +76,6 @@ class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
     }
 
     /**
-     * 
-     * @param   \Yana\Db\Ddl\Database  $schema  containing tables to be sorted.
-     * @return  array
-     */
-    protected function _sortTablesByForeignKey(\Yana\Db\Ddl\Database $schema): array
-    {
-        assert(!isset($tables), 'Cannot redeclare var $tables');
-        $tables = array();
-        assert(!isset($tablesToBeSorted), 'Cannot redeclare var $tablesToBeSorted');
-        $tablesToBeSorted = $schema->getTables();
-        assert(!isset($abortCount), 'Cannot redeclare var $abortCount');
-        $abortCount = 0;
-        while (!empty($tablesToBeSorted) && $abortCount < 5000)
-        {
-            assert(!isset($i), 'Cannot redeclare var $i');
-            assert(!isset($table), 'Cannot redeclare var $table');
-            foreach ($tablesToBeSorted as $i => $table)
-            {
-                assert($table instanceof \Yana\Db\Ddl\Table);
-                assert(!isset($foreignKey), 'Cannot redeclare var $foreignKey');
-                foreach ($table->getForeignKeys() as $foreignKey)
-                {
-                    /* @var $foreignKey \Yana\Db\Ddl\ForeignKey */
-                    if (!\in_array($foreignKey->getTargetTable(), array_keys($tables))) {
-                        unset($foreignKey);
-                        $abortCount++;
-                        continue 2;
-                    }
-                }
-                unset($foreignKey);
-                $tables[$table->getName()] = $table;
-                unset($tablesToBeSorted[$i]);
-            }
-            unset($i, $table);
-        }
-
-        return $tables;
-    }
-
-    /**
      * install databases
      *
      * @type        config
@@ -338,7 +298,7 @@ class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
             $fileSelectQuery = new \Yana\Db\Queries\Select($fileDb);
             $fileSelectQuery->useInheritance(false);
 
-            $sortedTableList = $this->_sortTablesByForeignKey($dbSchema);
+            $sortedTableList = $dbSchema->getTablesSortedByForeignKey();
 
             /* @var $table \Yana\Db\Ddl\Table */
             foreach ($sortedTableList as $table)
