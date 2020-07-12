@@ -21,7 +21,7 @@
  *
  * This notice MAY NOT be removed.
  *
- * @author     Thomas Meyer <tm@yanaframework.net>
+ * @author      Thomas Meyer <tm@yanaframework.net>
  * @link        http://www.yanaframework.net
  * @license     http://www.gnu.org/licenses/gpl.txt
  * @copyright   2020 Thomas Meyer
@@ -77,10 +77,13 @@ define('DISABLED', 0);
 define('ENABLED', 1);
 define('MANDATORY', 2);
 define('FOLDER', 3);
+define('HOOK_PREINSTALL', 0);
 define('HOOK_TEST', 1);
 define('HOOK_ADMIN', 2);
 define('HOOK_INSTALLATION_COMPLETE', 3);
 define('HOOK_TERMINATE_PROGRAM', 4);
+define('HOOK_DATABASE', 5);
+define('HOOK_LDAP', 6);
 
 /**#@-*/
 
@@ -99,6 +102,12 @@ class InstallUtility
     private const OPT_PASS = 'pass';
     private const OPT_DETAILS = 'details';
     private const OPT_START = 'start';
+    private const OPT_ACTIVE = 'active';
+    private const OPT_HOST = 'host';
+    private const OPT_PORT = 'port';
+    private const OPT_USER = 'user';
+    private const OPT_DBMS = 'dbms';
+    private const OPT_DB_NAME = 'name';
 
     private const DEFAULT_LANG = 'en';
 
@@ -107,6 +116,8 @@ class InstallUtility
     private const ACTION_TEST = 'test';
     private const ACTION_ABORT = 'abort';
     private const ACTION_CLEAN = 'cleanup';
+    private const ACTION_LDAP = 'ldap';
+    private const ACTION_DATABASE = 'database';
 
     /**
      * Main program.
@@ -173,6 +184,24 @@ class InstallUtility
 
             case self::ACTION_CLEAN:
                 self::removeInstallFiles(!empty($options[self::OPT_START]), false);
+            break;
+
+            case self::ACTION_LDAP:
+                if (!empty($options[self::OPT_ACTIVE]) && isset($options[self::OPT_HOST]) && is_string($options[self::OPT_HOST])) {
+                    self::ldapAction($options[self::OPT_HOST]);
+                }
+            break;
+
+            case self::ACTION_DATABASE:
+                if (!empty($options[self::OPT_ACTIVE])) {
+                    $dbms = isset($options[self::OPT_DBMS]) ? (string) $options[self::OPT_DBMS] : "";
+                    $host = isset($options[self::OPT_HOST]) ? (string) $options[self::OPT_HOST] : "";
+                    $port = !empty($options[self::OPT_PORT]) ? (string) $options[self::OPT_PORT] : "";
+                    $user = isset($options[self::OPT_USER]) ? (string) $options[self::OPT_USER] : "";
+                    $pass = isset($options[self::OPT_PASS]) ? (string) $options[self::OPT_PASS] : "";
+                    $name = isset($options[self::OPT_DB_NAME]) ? (string) $options[self::OPT_DB_NAME] : "";
+                    self::databaseAction($dbms, $host, $port, $user, $pass, $name);
+                }
             break;
 
             default:
@@ -580,7 +609,7 @@ class InstallUtility
      * @param  bool    $do_relocate  start installed application now (on/off)
      * @param  string  $baseURI      base URI
      */
-    private static function terminateInstaller($do_relocate, $baseURI)
+    private static function terminateInstaller(bool $do_relocate, string $baseURI)
     {
         $function = self::getHook(HOOK_TERMINATE_PROGRAM);
         return $function($do_relocate, $baseURI);
@@ -592,10 +621,37 @@ class InstallUtility
      * @param   bool  $show_details  show/hide details
      * @return  bool
      */
-    private static function testAction($showDetails)
+    private static function testAction(bool $showDetails): bool
     {
         $function = self::getHook(HOOK_TEST);
         return $function($showDetails);
+    }
+
+    /**
+     * configure LDAP server.
+     *
+     * @param   string  $hostName  IP or host name
+     */
+    private static function ldapAction(string $hostName)
+    {
+        $function = self::getHook(HOOK_LDAP);
+        $function($hostName);
+    }
+
+    /**
+     * configure database connection.
+     *
+     * @param  string  $dbms  type of database management system
+     * @param  string  $host  IP or host address
+     * @param  string  $port  port on host server
+     * @param  string  $user  user name
+     * @param  string  $pass  password
+     * @param  string  $name  database name
+     */
+    private static function databaseAction(string $dbms, string $host, string $port, string $user, string $pass, string $name)
+    {
+        $function = self::getHook(HOOK_DATABASE);
+        $function($dbms, $host, $port, $user, $pass, $name);
     }
 
     /**#@-*/
@@ -615,23 +671,6 @@ class InstallUtility
      */
     private static function check()
     {
-        /**
-         * check version of PHP
-         */
-        if (!defined('PHP_VERSION')) {
-            define('PHP_VERSION', phpversion());
-        }
-        /**
-         * calculate memory limit
-         */
-        $memoryLimit = strtoupper(ini_get('memory_limit'));
-        $memoryLimitInMb = (int) $memoryLimit;
-        if (strpos($memoryLimit, 'K') !== false) {
-            $memoryLimitInMb /= 1024;
-        } elseif (strpos($memoryLimit, 'G') !== false) {
-            $memoryLimitInMb *= 1024;
-        }
-
         switch (false)
         {
             /**
@@ -651,61 +690,12 @@ class InstallUtility
             /**
              * 3) check required libraries
              */
-            case extension_loaded('mbstring'):
-                die("Error: This program requires the 'mbstring' extension. To fix this please activate the extension in the 'php.ini' file of your server. If you don't do this, installation cannot continue.");
-            break;
-
-            case extension_loaded('zlib'):
-                die("Error: This program requires the 'zlib' extension. If you don't install this library, installation cannot continue.");
-            break;
-
             case class_exists('\ZipArchive'):
                 die("Error: This program requires PHP to be compiled with Zip support: using the config option '--with-zip' for PHP 7.4 or '--enable-zip' for earlier versions.");
             break;
 
             case extension_loaded('pcre'):
                 die("Error: This program requires the 'pcre' library. If you don't install this library, installation cannot continue.");
-            break;
-
-            case class_exists('\SimpleXMLElement'):
-                die("Error: This program requires the 'simplexml' extension. If you don't install this library, installation cannot continue.");
-            break;
-
-            case extension_loaded('xml'):
-                die("Error: This program requires the 'xml' (XML Parser) library. If you don't install this library, installation cannot continue.");
-            break;
-
-            /**
-             * 4) check memory limit
-             */
-            case $memoryLimitInMb <= 0 || $memoryLimitInMb >= 16:
-                die("Error: The memory limit of your server is $memoryLimit. This application requires at least 32MB RAM. To fix this please change the setting 'memory_limit' in the 'php.ini' file of your server. If you don't do this, installation cannot continue.");
-            break;
-
-            /**
-             * 5) check php version
-             */
-            case version_compare(PHP_VERSION, '7.2.0') >= 0:
-                die("Error: Your version of PHP (" . PHP_VERSION . ") is older than the minimum required version 7.2. Be advised that you should update before you continue with the installation.");
-            break;
-
-            /**
-             * 6) check warnings and notices
-             *
-             * 6.1) Outdated PHP version
-             */
-            case version_compare(PHP_VERSION, '7.3.0') >= 0:
-                print "<p>Note: Your version of PHP is reaching its end of life by December this year. Consider upgrading your installation of PHP to ensure your installation remains safe.</p>\n";
-            // fall through
-
-            default:
-                /**
-                 * 6.2) memory limit
-                 */
-                if ($memoryLimitInMb > 0 && $memoryLimitInMb < 32) {
-                    print "<p>Warning: The memory limit of your server is $memoryLimit. This application requires at least 32MB RAM. This means that you may run into an out-of-memory error. You can prevent this, by raising the setting 'memory_limit' in the 'php.ini' file of your server. If you don't do this, be warned that you may not be able to run the application.</p>";
-
-                }
             break;
         } /* end switch */
     }
