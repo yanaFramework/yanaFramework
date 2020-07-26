@@ -221,13 +221,7 @@ class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
                 assert(!isset($stmt), 'Cannot redeclare var $stmt');
                 foreach ($initStmts as $stmt)
                 {
-                    $parser = new \Yana\Db\Queries\Parser($database);
-                    try {
-                        $initialization[] = $parser->parseSQL($stmt);
-                    } catch (\Yana\Core\Exceptions\InvalidArgumentException $e) {
-                        unset($e);
-                        continue;
-                    }
+                    $initialization[] = new \Yana\Db\Queries\Sql($database, $stmt);
                 }
                 unset($stmt, $parser);
             }
