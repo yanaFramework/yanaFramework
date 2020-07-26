@@ -46,6 +46,7 @@ class Sql extends \Yana\Db\Queries\AbstractSql
      * Sends the query to the database server and returns a result-object.
      *
      * @return  \Yana\Db\IsResult
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException if the SQL statement is not valid
      */
     public function sendQuery()
     {
