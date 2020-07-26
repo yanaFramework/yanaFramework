@@ -99,38 +99,7 @@ class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
             $level = \Yana\Log\TypeEnumeration::INFO;
             throw new \Yana\Core\Exceptions\Forms\MissingInputException($message, $level);
         }
-        $dbms = mb_strtoupper($dbms);
         $dbList = $list;
-
-        /* Mapping the DBMS to the SQL export function in class \Yana\Db\Export\SqlFactory */
-        switch ($dbms)
-        {
-            case 'DB2':
-                $methodName  = 'createDB2';
-            break;
-            case 'ACCESS':
-            case 'MSSQL':
-                $methodName  = 'createMSSQL';
-            break;
-            case 'MYSQL':
-            case 'MYSQLI':
-                $dbms         = 'MYSQL';
-                $methodName  = 'createMySQL';
-            break;
-            case 'OCI8':
-                $methodName  = 'createOracleDB';
-            break;
-            case 'PGSQL':
-                $methodName  = 'createPostgreSQL';
-            break;
-
-            // Other DBMS are currently not supported
-            default:
-                $message = "Chosen DBMS is invalid.";
-                $level = \Yana\Log\TypeEnumeration::WARNING;
-                $error = new \Yana\Core\Exceptions\Forms\InvalidSyntaxException($message, $level);
-                throw $error->setValue($dbms)->setValid('DB2, MSSQL, MYSQL, OCI8, PGSQL')->setField('DBMS');
-        }
 
         /* Mapping the DBMS to it's installation directory */
         $installDirectory = $this->_getApplication()->getResource('system:/dbinstall/' . mb_strtolower($dbms));
@@ -153,50 +122,26 @@ class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
 
         foreach ($dbList as $item)
         {
-            /* check the input */
-            if (!is_string($item)) {
-                $message = 'Did not create SQL file because the input is invalid.';
-                $code = \Yana\Log\TypeEnumeration::WARNING;
-                $error = new \Yana\Core\Exceptions\Forms\InvalidValueException($message, $code);
-                throw $error->setField('DBMS');
-            } else {
-                $item = mb_strtolower($item);
-            }
+            $item = \Yana\Util\Strings::toLowerCase((string) $item);
 
             $installFile = $installDirectory . $item . '.sql';
             $database = $this->_openConnection($item);
-            $dbSchema = $database->getSchema(); // may throw \Yana\Core\Exceptions\NotFoundException
 
             /* If no SQL file for the current $item does exist,
              * we need to call the appropriate \Yana\Db\Export\SqlFactory method
              * instead.
              */
             if (!is_readable($installFile)) {
-                $sqlFactory = new \Yana\Db\Export\SqlFactory($database->getSchema());
 
-                /* If the \Yana\Db\Export\SqlFactory class does not support the desired function.
-                 */
-                if (!method_exists($sqlFactory, $methodName)) {
+                $sqlFacade = new \Yana\Db\Export\SqlFacade($database);
+                try {
+                    $sqlFacade->__invoke(); // Generates SQL and executes it, may throw exception
 
-                    if (!file_exists($installFile)) {
-                        $message = "Unable to install database '$item'. There is no installation file available.";
-                    } else {
-                        $message = "Unable to install database '$item'. Cannot read sql file '$installFile'.";
-                    }
+                } catch (\Exception $e) {
+                    $message = "Unable to install database '$item'. Cannot read sql file '$installFile'.";
                     $level = \Yana\Log\TypeEnumeration::WARNING;
-                    throw new \Yana\Db\Queries\Exceptions\NotCreatedException($message, $level);
-
-                /* Else, create and execute the SQL statements.
-                 */
-                } else {
-                    /* create ... */
-                    $sqlStmts = $sqlFactory->$methodName();
-                    /* ... execute */
-                    if (is_array($sqlStmts) && count($sqlStmts) > 0 && $database->importSQL($sqlStmts) === false) {
-                        \Yana\Log\LogManager::getLogger()->addLog("Note: Unable to install database '$item'.");
-                        continue;
-                    }
-                } /* end if */
+                    throw new \Yana\Db\Queries\Exceptions\NotCreatedException($message, $level, $e);
+                }
 
             /* If a SQL file is available, always prefer using the SQL file.
              */
@@ -211,37 +156,6 @@ class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
                 \Yana\Log\LogManager::getLogger()->addLog("SQL file '$installFile' has been imported.");
 
             } /* end if */
-
-            /* initialize tables (store)
-             */
-            assert(!isset($initStmts), 'Cannot redeclare var $initStmts');
-            $initStmts = $dbSchema->getInit();
-            if (is_array($initStmts) && !empty($initStmts)) {
-                assert(!isset($parser), 'Cannot redeclare var $parser');
-                assert(!isset($stmt), 'Cannot redeclare var $stmt');
-                foreach ($initStmts as $stmt)
-                {
-                    $initialization[] = new \Yana\Db\Queries\Sql($database, $stmt);
-                }
-                unset($stmt, $parser);
-            }
-            unset($initStmts);
-
-        } /* end foreach */
-
-        /* initialize tables (send)
-         */
-        foreach ($initialization as $stmt)
-        {
-            assert($stmt instanceof \Yana\Db\Queries\AbstractQuery);
-            $result = $stmt->sendQuery();
-            if (!$result) {
-                $message = "Unable to initialize database.";
-                $level = \Yana\Log\TypeEnumeration::WARNING;
-                \Yana\Log\LogManager::getLogger()->addLog($message, $level);
-                throw new \Yana\Db\Queries\Exceptions\NotCreatedException($message, $level);
-            }
-            $stmt->getDatabase()->commit(); // may throw exception
         }
     }
 
