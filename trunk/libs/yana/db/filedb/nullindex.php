@@ -46,7 +46,7 @@ class NullIndex extends \Yana\Db\FileDb\Index
      *
      * @return  bool
      */
-    public function commit()
+    public function commit(): bool
     {
         return true;
     }

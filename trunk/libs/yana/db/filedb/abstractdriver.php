@@ -136,9 +136,9 @@ abstract class AbstractDriver extends \Yana\Core\StdObject implements \Yana\Db\I
     /**
      * Return schema of currently selected table.
      *
-     * @return  \Yana\Db\Ddl\Table
+     * @return  \Yana\Db\Ddl\Table|null
      */
-    protected function _getTable()
+    protected function _getTable(): ?\Yana\Db\Ddl\Table
     {
         return $this->_table;
     }
@@ -148,7 +148,7 @@ abstract class AbstractDriver extends \Yana\Core\StdObject implements \Yana\Db\I
      *
      * @return  string
      */
-    protected function _getTableName()
+    protected function _getTableName(): string
     {
         return $this->_tableName;
     }
@@ -158,7 +158,7 @@ abstract class AbstractDriver extends \Yana\Core\StdObject implements \Yana\Db\I
      *
      * @return  array
      */
-    protected function _getSortColumns()
+    protected function _getSortColumns(): array
     {
         return $this->_sortColumns;
     }
@@ -168,7 +168,7 @@ abstract class AbstractDriver extends \Yana\Core\StdObject implements \Yana\Db\I
      *
      * @return  array
      */
-    protected function _getDescendingSortColumns()
+    protected function _getDescendingSortColumns(): array
     {
         return $this->_descendingSortColumns;
     }
@@ -187,9 +187,9 @@ abstract class AbstractDriver extends \Yana\Core\StdObject implements \Yana\Db\I
     /**
      * Returns the current query as an object.
      *
-     * @return  \Yana\Db\Queries\AbstractQuery
+     * @return  \Yana\Db\Queries\AbstractQuery|null
      */
-    protected function _getQuery()
+    protected function _getQuery(): ?\Yana\Db\Queries\AbstractQuery
     {
         return $this->_query;
     }
@@ -286,10 +286,8 @@ abstract class AbstractDriver extends \Yana\Core\StdObject implements \Yana\Db\I
      * @param   bool  $autoCommit
      * @return  $this
      */
-    protected function _setAutoCommit($autoCommit)
+    protected function _setAutoCommit(bool $autoCommit)
     {
-        assert(is_bool($autoCommit), 'Invalid argument $autoCommit: bool expected');
-
         $this->_autoCommit = (bool) $autoCommit;
         return $this;
     }
@@ -316,7 +314,7 @@ abstract class AbstractDriver extends \Yana\Core\StdObject implements \Yana\Db\I
      * refer to the same structure file.
      *
      * @param    \Yana\Core\IsObject  $anotherObject object to compare
-     * @return   string
+     * @return   bool
      */
     public function equals(\Yana\Core\IsObject $anotherObject)
     {
