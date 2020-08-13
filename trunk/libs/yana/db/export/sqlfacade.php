@@ -29,13 +29,9 @@ declare(strict_types=1);
 namespace Yana\Db\Export;
 
 /**
- * <<facade>>  database Creator
+ * <<facade>> SQL DDL creator.
  *
- * This decorator class is intended to create SQL DDL (data definition language)
- * from YANA Framework - database structure files.
- *
- * For this task it provides functions which create specific
- * DDL for various DBS.
+ * Creates SQL DDL (data definition language) from XDDL files.
  *
  * @package     yana
  * @subpackage  db

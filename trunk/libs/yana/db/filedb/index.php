@@ -259,15 +259,16 @@ class Index extends \Yana\Core\StdObject
     }
 
     /**
-     * get index for some column
+     * Get index for some column.
      *
-     * Returns an associative array on success,
-     * returns bool(false) on error.
+     * If $value is null, returns an associative array.
      *
      * The resulting array uses the following syntax:
      * array (
      *     column_value => primary_key_value
      * )
+     *
+     * If $value is NOT null, returns the index of above array identified by $value.
      *
      * {@internal
      *
@@ -283,7 +284,7 @@ class Index extends \Yana\Core\StdObject
      *
      * @param   string  $column column name
      * @param   scalar  $value  value
-     * @return  array
+     * @return  array|scalar
      * @throws  \Yana\Core\Exceptions\NotFoundException  when the requested column or value does not exist
      */
     public function getVar($column, $value = null)
@@ -292,7 +293,7 @@ class Index extends \Yana\Core\StdObject
         assert(is_null($value) || is_scalar($value), 'Wrong argument type for argument 2. Scalar expected.');
 
         $index = $this->_getVar($column, $value);
-        if (count($index) === 0) {
+        if (is_array($index) && count($index) === 0) {
             throw new \Yana\Core\Exceptions\NotFoundException(
                 "SQL syntax error. No such index '$column' in table '" . $this->_table->getName() . "'.",
                 \Yana\Log\TypeEnumeration::WARNING
@@ -301,6 +302,13 @@ class Index extends \Yana\Core\StdObject
         return $index;
     }
 
+    /**
+     * Get index for some column.
+     *
+     * @param   string  $column column name
+     * @param   scalar  $value  value
+     * @return  array|scalar
+     */
     private function _getVar(string $column, $value = null)
     {
         assert(is_null($value) || is_scalar($value), 'Wrong argument type for argument 2. Scalar expected.');
