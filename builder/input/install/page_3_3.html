@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Installation Wizard</title>
+    <link rel="stylesheet" type="text/css" href="data/index.css">
+    <script type="text/javascript" src="data/index.js"></script>
+</head>
+
+
+<body>
+
+        <h1>{language ldap}</h1>
+
+        <p>
+            {language ldap_info}
+        </p>
+
+        <form name="ldap_form" action="">
+
+            <p>
+                {language ldap_active}
+                <label>
+                  {language yes}
+                  <input type="radio" name="active" value="1"/>
+                </label>
+                <label>
+                  {language no}
+                  <input type="radio" name="active" value="0" checked="checked"/>
+                </label>
+            </p>
+            <p>
+                <label>
+                    <span class="label">{language host}</span>
+                    <input type="text" name="host"/>
+                </label>
+            </p>
+            <p>
+                <button type="button" onclick="ldap(
+                    document.forms['ldap_form'].elements['active'].value,
+                    document.forms['ldap_form'].elements['host'].value,
+                    'ldap_frame');">
+                    OK
+                </button>
+            </p>
+
+        </form>
+
+        <!-- LDAP Log -->
+        <iframe frameborder="0" id="ldap_frame" src="about:blank" class="frame"></iframe>
+
+</body>
+
+</html>

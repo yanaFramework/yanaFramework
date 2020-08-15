@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Installation Wizard</title>
+    <link rel="stylesheet" type="text/css" href="data/index.css">
+    <script type="text/javascript" src="data/index.js"></script>
+</head>
+
+
+<body>
+
+        <h1>{language database}</h1>
+
+        <p>
+            {language database_info}
+        </p>
+
+        <form name="database_form" action="">
+
+            <p>
+                {language database_active}
+                <label>
+                  {language yes}
+                  <input type="radio" name="active" value="1"/>
+                </label>
+                <label>
+                  {language no}
+                  <input type="radio" name="active" value="0" checked="checked"/>
+                </label>
+            </p>
+            <p>
+                <label>
+                    <span class="label">{language dbms}</span>
+                    <select name="dbms">
+                        <option value="mysql">MySQL / Maria-DB</option>
+                        <option value="pgsql">PostgreSQL</option>
+                        <option value="mssql">Microsoft SQL-Server</option>
+                        <option value="oci8">Oracle OCI8</option>
+                    </select>
+                </label>
+            </p>
+            <p>
+                <label>
+                    <span class="label">{language host}</span>
+                    <input type="text" name="host"/>
+                </label>
+            </p>
+            <p>
+                <label>
+                    <span class="label">{language port}</span>
+                    <input type="text" name="port"/>
+                </label>
+            </p>
+            <p>
+                <label>
+                    <span class="label">{language database_name}</span>
+                    <input type="text" name="name"/>
+                </label>
+            </p>
+            <p>
+                <label>
+                    <span class="label">{language user}</span>
+                    <input type="text" name="user"/>
+                </label>
+            </p>
+            <p>
+                <label>
+                    <span class="label">{language pass1}</span>
+                    <input type="password" name="pass" id="db_password"/>
+                </label>
+                <label>
+                    <span class="label">{language pass2}</span>
+                    <input type="password" name="pass2" id="db_password_repeat"/>
+                </label>
+            </p>
+            <p>
+                <button type="button" onclick="database(
+                    document.forms['database_form'].elements['active'].value,
+                    document.forms['database_form'].elements['dbms'].value,
+                    document.forms['database_form'].elements['host'].value,
+                    document.forms['database_form'].elements['port'].value,
+                    document.forms['database_form'].elements['user'].value,
+                    document.forms['database_form'].elements['pass'].value,
+                    document.forms['database_form'].elements['pass2'].value,
+                    document.forms['database_form'].elements['name'].value,
+                    'database_frame');">
+                    OK
+                </button>
+            </p>
+
+        </form>
+
+        <!-- Database Log -->
+        <iframe frameborder="0" id="database_frame" src="about:blank" class="frame"></iframe>
+
+</body>
+
+</html>

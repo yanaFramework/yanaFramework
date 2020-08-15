@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Installation Wizard</title>
+    <link rel="stylesheet" type="text/css" href="data/index.css">
+    <script type="text/javascript" src="data/index.js"></script>
+</head>
+
+
+<body>
+
+        <h1>{language pass}</h1>
+
+        <p>
+            {language pass_info}
+        </p>
+
+        <form name="password_form" action="">
+
+            <p>
+                <label>
+                    {language pass1}:
+                    <input type="password" name="pass" id="password"/>
+                </label>
+                <label>
+                    {language pass2}:
+                    <input type="password" name="pass2" id="password_repeat"/>
+                </label>
+            </p>
+            <p>
+                <button type="button" onclick="adminPassword('password', 'password_repeat', 'password_frame', document.forms['password_form'].elements);">
+                    OK
+                </button>
+            </p>
+
+        </form>
+
+        <!-- Password Log -->
+        <iframe frameborder="0" id="password_frame" src="about:blank" class="frame"></iframe>
+
+        <h2>{language pass_hint}</h2>
+
+        <p>{language pass_text}</p>
+
+</body>
+
+</html>

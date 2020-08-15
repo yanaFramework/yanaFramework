@@ -1,0 +1,196 @@
+<?php
+$LANGUAGE += array
+(
+'language' => array(
+    'de' => 'Sprache',
+    'en' => 'Language'),
+'english' => array(
+    'de' => 'view this page in English',
+    'en' => 'view this page in English'),
+'german' => array(
+    'de' => 'diese Seite auf Deutsch zeigen',
+    'en' => 'diese Seite auf Deutsch zeigen'),
+'title' => array(
+    'de' => 'Installationsprogramm',
+    'en' => 'Installation Wizard'),
+'welcome' => array(
+    'de' => 'Herzlich willkommen',
+    'en' => 'Welcome'),
+'navigation' => array(
+    'de' => 'Navigation',
+    'en' => 'navigation'),
+'previous' => array(
+    'de' => 'zur&uuml;ck',
+    'en' => 'previous'),
+'next' => array(
+    'de' => 'weiter',
+    'en' => 'next'),
+'abort' => array(
+    'de' => 'Installation abbrechen',
+    'en' => 'abort installation'),
+'license_link' => array(
+    'de' => 'Den Lizenztext können Sie hier einsehen',
+    'en' => 'The text of the license may be viewed here'),
+'publisher_link' => array(
+    'de' => 'Webseite des Herstellers',
+    'en' => 'publisher\'s website'),
+'software_uses' => array(
+    'de' => 'Diese Software benutzt',
+    'en' => 'This software uses the'),
+'author' => array(
+    'de' => 'Autor',
+    'en' => 'author'),
+'proceed' => array(
+    'de' => 'Installation fortsetzen',
+    'en' => 'Proceed installation'),
+'license_proceed' => array(
+    'de' => 'Um mit der Installation zu beginnen, müssen Sie die Lizenzbedingungen lesen und erklären, dass Sie akzeptieren, an diese Bedingungen gebunden zu sein.',
+    'en' => 'To begin the installation, you need to read the license agreement and accept to be bound to the restrictions defined therein.'),
+'license_accept' => array(
+    'de' => 'Ich habe die Lizenzbedingungen gelesen und akzeptiert',
+    'en' => 'I have read and accepted the license agreement'),
+'license_reject' => array(
+    'de' => 'Ich akzeptiere die Lizenzbedingungen nicht',
+    'en' => 'I do not accept the license agreement'),
+'license_rejected' => array(
+    'de' => 'Ohne gültige Lizenz kann die Installation leider nicht fortgesetzt werden.',
+    'en' => 'Without a valid license the installation can not continue.'),
+'pass_too_short' => array(
+    'de' => 'Das Passwort muss mindestens 8 Zeichen lang sein. Versuchen Sie es erneut.',
+    'en' => 'The passwords need to be at least 8 characters long. Please try again.'),
+'pass_miss' => array(
+    'de' => 'Die eingegebenen Passwörter stimmen nicht überein. Versuchen Sie es erneut.',
+    'en' => 'The two entered passwords do not match. Please try again.'),
+'license' => array(
+    'de' => 'Ihre Lizenz',
+    'en' => 'Your license'),
+'license_info' => array(
+    'de' => "Um das Produkt nutzen zu können, müssen Sie die folgenden Lizenzbedingungen akzeptieren.\n\nBitte scrollen Sie bis zum Ende der Seite.",
+    'en' => "To be able to use the product you must accept the following license agreements.\n\nPlease scroll on to the end of the page."),
+'php_self' => array(
+    'de' => $_SERVER['SCRIPT_NAME'],
+    'en' => $_SERVER['SCRIPT_NAME']),
+'components' => array(
+    'de' => 'Komponenten zur Installation auswählen',
+    'en' => 'Choose components to install'),
+'choose_all' => array(
+    'de' => 'Volle Installation',
+    'en' => 'full installation'),
+'choose_minimal' => array(
+    'de' => 'Minimale Installation',
+    'en' => 'minimal installation'),
+'choose_typical' => array(
+    'de' => 'Typische Installation',
+    'en' => 'typical installation'),
+'installation' => array(
+    'de' => 'Installation',
+    'en' => 'Installation'),
+'install_info' => array(
+    'de' => 'Klicken Sie auf die Schaltfläche um mit der Installation zu beginnen.',
+    'en' => 'Click the button to start the installation.'),
+'install_start' => array(
+    'de' => 'Installation jetzt starten',
+    'en' => 'start installation now'),
+'install_complete' => array(
+    'de' => 'Installation abgeschlossen',
+    'en' => 'Installation complete'),
+'install_complete_info' => array(
+    'de' => 'Die Installation ist nun abgeschlossen. Vielen Dank!',
+    'en' => 'The installation is now complete. Thank you!'),
+'install_success' => array(
+    'de' => 'Komponenten wurden erfolgreich entpackt',
+    'en' => 'components unpacked successfully'),
+'install_failure' => array(
+    'de' => 'Entpacken der Komponenten gescheitert!',
+    'en' => 'Failure while unpacking components!'),
+'pass' => array(
+    'de' => 'Passwort für Administrator festlegen',
+    'en' => 'Set password for administrator'),
+'pass_info' => array(
+    'de' => 'Bitte geben Sie ein Passwort ein und bestätigen Sie mit Klick auf OK.',
+    'en' => 'Please enter a password and click on OK.'),
+'pass1' => array(
+    'de' => 'Passwort',
+    'en' => 'password'),
+'pass2' => array(
+    'de' => 'Passwort wiederholen',
+    'en' => 'repeat password'),
+'pass_hint' => array(
+    'de' => 'Empfehlungen f&uuml;r sichere Passwörter',
+    'en' => 'Suggestions for secure passwords'),
+'pass_text' => array(
+    'de' => 'Das Passwort sollte nicht leicht zu erraten sein. Geburtstage, Namen von Personen und alle Begriffe, die man in Duden oder Wörterbüchern findet, sind denkbar ungeeignet.
+        Es sollte mehr als 8 Zeichen lang sein und mindestens 1 Großbuchstaben, 1 Zahl und 1 Sonderzeichen enthalten, jedoch möglichst nicht am Anfang oder Ende des Wortes.
+
+        Dass man sich "gute Passwörter" so schlecht merken könne, ist nicht korrekt.
+        Ein einfaches Beispiel: "n8sleuchtenMond&amp;*e" (nachts leuchten Mond und Sterne)
+
+        Alternativ können Sie auch einen Satz überlegen, welcher leicht zu merken ist und die Anfangsbuchstaben der Worte als Passwort verwenden.
+        Zum Beispiel: "meine Oma fährt 1 rote Harley mit 180 Km / Stunde nach Berlin" als Passwort "mOf1rHm180K/SnB".',
+    'en' => 'The password should\'nt be easy to guess. Birthdates, names and words from dictionaries are not well suited.
+        It should be at least 8 characters long and should contain at least 1 capital letter, 1 number and 1 special char.
+        
+        Good passwords need not to be difficult to remember.
+        E.g.: "@n8moon&amp;*sshinebr8" (at night moon and stars shine bright)
+        
+        Also you may imagine a sentence and take the first letter of the words as the password.
+        E.g.: "my Granny drives 1 red Harley at 100 Miles / Hour to London" as password "mGd1rHa100M/HtL"'),
+'test' => array(
+    'de' => 'Installation auf Fehler prüfen',
+    'en' => 'Check installation for errors'),
+'test_details' => array(
+    'de' => 'Setzen Sie einen Haken bei &quot;{language more_details}&quot;, wenn Sie eine detailierte Aufschlüsselung wünschen.',
+    'en' => 'Check the box &quot;{language more_details}&quot; to get a detailed list.'),
+'test_info' => array(
+    'de' => 'Bitte klicken Sie auf OK um mit der Prüfung zu beginnen.',
+    'en' => 'Please click OK to begin the check.'),
+'more_details' => array(
+    'de' => 'mehr Details',
+    'en' => 'more details'),
+'database' => array(
+    'de' => 'Optionale Datenbankverbindung einrichten',
+    'en' => 'Optional database connection'),
+'database_info' => array(
+    'de' => 'Dieses Formular gestattet die Konfiguration einer primären Datenbankverbindung zur Speicherung von Konfigurationsdaten. Für den Betrieb des Frameworks ist dies nicht notwendig, insbesondere in Entwicklungsumgebungen kann davon abgesehen werden. Falls Sie diesen Schritt überspringen wollen haben Sie später noch Gelegenheit eine Datenbankverbindung über das Administrationsmenü einzurichten.',
+    'en' => 'This form allows the configuration of a primary database connection to store configuration data. For the operation of the framework itself it is unnecessary to do this now, especially in a development environment it is all but a requirement. If you choose to skip this step, you may always come back to it later and set up a database connection later via the administration panel.'),
+'database_active' => array(
+    'de' => 'Soll jetzt eine Datenbankverbindung eingerichtet werden?',
+    'en' => 'Do you want to set up a database connection now?'),
+'dbms' => array(
+    'de' => 'Typ der Datenbank',
+    'en' => 'Type of database host'),
+'host' => array(
+    'de' => 'Hostname',
+    'en' => 'Host name'),
+'port' => array(
+    'de' => 'Portnummer',
+    'en' => 'Port number'),
+'database_name' => array(
+    'de' => 'Datenbankname',
+    'en' => 'Database name'),
+'user' => array(
+    'de' => 'Nutzername',
+    'en' => 'User name'),
+'ldap' => array(
+    'de' => 'Optionale Unterstützung für Active-Directory (LDAP)',
+    'en' => 'Optional support for active directory (LDAP)'),
+'ldap_info' => array(
+    'de' => 'Falls Sie ein Windowsnetzwerk mit einem Active-Directory-Server betreiben und einzelne oder alle Nutzer über diesen Server mit ihrem Windowspasswort authentifizieren möchten, können Sie hier die Adresse des Active-Directory-Servers konfigurieren. Sollten Sie dies nicht wünschen oder sich unsicher sein überspringen Sie diesen Punkt durch Klick auf "{language next}". Beachten Sie bitte, dass zum Betrieb dieses Features die LDAP-Bibliothek für PHP installiert und aktiviert sein muss. Falls Sie diese Funktion im Moment noch nicht konfigurieren wollen, so können Sie dies auch später über das Administrationsmenü nachholen.',
+    'en' => 'If you are running a Windows network with an Active Directory server and wish to authenticate some or alle of your users against this server using their Windows passwords, enter the address of your Active Directory server below to set it up. If you do not wish to do that or are unsure as to what this means, you may skip this step by clicking on "{language next}". Please note that in order to be able to use this feature the "ldap" library for PHP has to be installed and activated. In case you do not with to set up this functionality just yet, you can always come back to it later and set it up via the administration panel.'),
+'ldap_active' => array(
+    'de' => 'Soll die LDAP-Unterstützung für die Nutzerauthentifizierung konfiguriert werden?',
+    'en' => 'Do you want to configure LDAP support for user autentication?'),
+'yes' => array(
+    'de' => 'ja',
+    'en' => 'yes'),
+'no' => array(
+    'de' => 'nein',
+    'en' => 'no'),
+'run_application' => array(
+    'de' => 'Die Anwendung jetzt starten.',
+    'en' => 'Run the application now.'),
+'finish' => array(
+    'de' => 'Fertigstellen',
+    'en' => 'installation completed'),
+);
+?>
