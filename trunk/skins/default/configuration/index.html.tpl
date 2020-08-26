@@ -36,15 +36,15 @@
     <!-- Change User-mode -->
     &nbsp; &nbsp; &nbsp;
     {if !$USER_IS_EXPERT}
-      <a title="{lang id="ADMIN.14"}" href={"action=config_usermode"|href} onclick="config_usermode(this, '{lang id="ADMIN.13"}', 'config_is_expert', document.getElementById('table_configmenu'));return false">
-         <span class="buttonize"><span class="icon_change">&nbsp;</span></span>
-        {lang id="ADMIN.14"}
-      </a>
+        <a title="{lang id="ADMIN.14"}" href={"action=config_usermode"|href} onclick="config_usermode(this, '{lang id="ADMIN.13"}', 'config_is_expert', document.getElementById('table_configmenu'));return false">
+            <span class="buttonize"><span class="icon_change">&nbsp;</span></span>
+            <span id="config_usermode_title">{lang id="ADMIN.14"}</span>
+        </a>
     {else}
-      <a title="{lang id="ADMIN.13"}" href={"action=config_usermode"|href} onclick="config_usermode(this, '{lang id="ADMIN.14"}', 'config_is_expert', document.getElementById('table_configmenu'));return false">
-         <span class="buttonize"><span class="icon_change">&nbsp;</span></span>
-        {lang id="ADMIN.13"}
-      </a>
+        <a title="{lang id="ADMIN.13"}" href={"action=config_usermode"|href} onclick="config_usermode(this, '{lang id="ADMIN.14"}', 'config_is_expert', document.getElementById('table_configmenu'));return false">
+            <span class="buttonize"><span class="icon_change">&nbsp;</span></span>
+            <span id="config_usermode_title">{lang id="ADMIN.13"}</span>
+        </a>
     {/if}
 
     <div class="config_is_expert" style="{$isExpertStyle}">

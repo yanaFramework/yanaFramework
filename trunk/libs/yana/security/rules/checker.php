@@ -178,13 +178,12 @@ class Checker extends \Yana\Security\Rules\AbstractChecker
         assert(!isset($rule), 'cannot redeclare $rule');
         foreach ($this->_getRules()->toArray() as $rule)
         {
-            switch ($rule($requirement, $profileId, $action, $user)) // Can return TRUE, FALSE, or NULL.
-            {
-                case false:
-                    return -1; // access denied
-                case true:
-                    $result = 1; // access granted
-                // else: rule does not apply
+            // Can return TRUE, FALSE, or NULL.
+            $isGranted = $rule($requirement, $profileId, $action, $user);
+            if ($isGranted === false) {
+                return -1; // access denied
+            } elseif ($isGranted === true) {
+                $result = 1; // access granted
             }
         }
         unset($rule);

@@ -118,7 +118,7 @@ interface IsWrapper extends \Yana\Core\IsCountableArray
      * @param   string  $domain     Cookie domain, for example 'www.php.net'. To make cookies visible on all subdomains then the domain must be prefixed with a dot like '.php.net'.
      * @param   bool    $isSecure   If bool(true) cookie will only be sent over secure connections.
      * @param   bool    $isHttpOnly If bool(true) PHP will attempt to send the httponly flag when setting the session cookie.
-	 * @link http://php.net/manual/en/function.session-set-cookie-params.php
+     * @link http://php.net/manual/en/function.session-set-cookie-params.php
      */
     public function setCookieParameters(int $lifetime, string $path = "", string $domain = "", bool $isSecure = false, bool $isHttpOnly = false);
 

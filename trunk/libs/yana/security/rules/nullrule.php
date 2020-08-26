@@ -41,7 +41,24 @@ class NullRule extends \Yana\Security\Rules\AbstractRule
 {
 
     /**
-     * Always returns bool(true).
+     * @var bool|null
+     */
+    private $_returnValue = null;
+
+    /**
+     * <<constructor>> Set up value to return.
+     *
+     * @param  bool|null  $returnValue  the value to return
+     */
+    public function __construct(?bool $returnValue = true)
+    {
+        $this->_returnValue = $returnValue;
+    }
+
+    /**
+     * Always returns the predefined value.
+     *
+     * Default is bool(true).
      * 
      * @param   \Yana\Security\Rules\Requirements\IsRequirement  $required   list of required permissions
      * @param   string                                           $profileId  current application-profile id
@@ -51,7 +68,7 @@ class NullRule extends \Yana\Security\Rules\AbstractRule
      */
     public function __invoke(\Yana\Security\Rules\Requirements\IsRequirement $required, string $profileId, string $action, \Yana\Security\Data\Behaviors\IsBehavior $user): ?bool
     {
-        return true;
+        return $this->_returnValue;
     }
 
 }

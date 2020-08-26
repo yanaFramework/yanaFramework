@@ -34,17 +34,6 @@ namespace Yana\Security\Rules;
 require_once __DIR__ . '/../../../../include.php';
 
 /**
- * @ignore
- */
-class MyFalseRule extends \Yana\Security\Rules\NullRule
-{
-    public function __invoke(Requirements\IsRequirement $required, string $profileId, string $action, \Yana\Security\Data\Behaviors\IsBehavior $user): ?bool
-    {
-        return false;
-    }
-}
-
-/**
  * Test-case
  *
  * @package  test
@@ -141,8 +130,56 @@ class CheckerTest extends \PHPUnit_Framework_TestCase
         $builder = new \Yana\Security\Data\Behaviors\Builder();
         $user = $builder(new \Yana\Security\Data\Users\Entity("test"));
         $this->assertTrue($this->filledChecker->checkByRequirement($requirement, $profileId, $action, $user), 'Must return TRUE if rule returns TRUE');
-        $this->filledChecker->addSecurityRule(new \Yana\Security\Rules\MyFalseRule()); // always returns FALSE
+        $this->filledChecker->addSecurityRule(new \Yana\Security\Rules\NullRule(false)); // always returns FALSE
         $this->assertFalse($this->filledChecker->checkByRequirement($requirement, $profileId, $action, $user), 'Must return FALSE if rule returns FALSE');
+    }
+
+    /**
+     * @test
+     */
+    public function testCheckByRequirementWithNull()
+    {
+        $this->filledChecker->addSecurityRule(new \Yana\Security\Rules\NullRule(null)); // always returns NULL
+        $this->filledChecker->addSecurityRule(new \Yana\Security\Rules\NullRule()); // always returns TRUE
+        $profileId = "test";
+        $action = "test";
+        $requirement = new \Yana\Security\Rules\Requirements\Requirement("group", "role", 0);
+        $builder = new \Yana\Security\Data\Behaviors\Builder();
+        $user = $builder(new \Yana\Security\Data\Users\Entity("test"));
+        $this->assertTrue($this->filledChecker->checkByRequirement($requirement, $profileId, $action, $user), 'Must return TRUE if rule returns TRUE');
+        $this->filledChecker->addSecurityRule(new \Yana\Security\Rules\NullRule(false)); // always returns FALSE
+        $this->assertFalse($this->filledChecker->checkByRequirement($requirement, $profileId, $action, $user), 'Must return FALSE if rule returns FALSE');
+    }
+
+    /**
+     * @test
+     */
+    public function testCheckByRequirementWithLevel1()
+    {
+        $this->filledChecker->addSecurityRule(new \Yana\Security\Rules\NullRule(null)); // always returns NULL
+        $this->filledChecker->addSecurityRule(new \Yana\Security\Rules\NullRule()); // always returns TRUE
+        $profileId = "test";
+        $action = "test";
+        $requirement = new \Yana\Security\Rules\Requirements\Requirement("", "", 1);
+        $builder = new \Yana\Security\Data\Behaviors\Builder();
+        $user = $builder(new \Yana\Security\Data\Users\Entity("test"));
+        $this->assertTrue($this->filledChecker->checkByRequirement($requirement, $profileId, $action, $user), 'Must return TRUE if rule returns TRUE');
+        $this->filledChecker->addSecurityRule(new \Yana\Security\Rules\NullRule(false)); // always returns FALSE
+        $this->assertFalse($this->filledChecker->checkByRequirement($requirement, $profileId, $action, $user), 'Must return FALSE if rule returns FALSE');
+    }
+
+    /**
+     * @test
+     */
+    public function testCheckRulesWithNull()
+    {
+        $this->filledChecker->addSecurityRule(new \Yana\Security\Rules\NullRule(null)); // always returns NULL
+        $this->filledChecker->addSecurityRule(new \Yana\Security\Rules\NullRule()); // always returns TRUE
+        $profileId = "test";
+        $action = "test";
+        $builder = new \Yana\Security\Data\Behaviors\Builder();
+        $user = $builder(new \Yana\Security\Data\Users\Entity("test"));
+        $this->assertTrue($this->filledChecker->checkRules($profileId, $action, $user), 'Must return TRUE if rule returns TRUE');
     }
 
 }

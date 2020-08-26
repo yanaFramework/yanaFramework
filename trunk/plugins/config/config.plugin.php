@@ -403,7 +403,7 @@ class ConfigPlugin extends \Yana\Plugins\AbstractPlugin
             $user->setExpert(!$user->isExpert()); // negate current user-mode setting
             $user->saveChanges(); // may throw exception
 
-        } catch (Exception $e) { // error - update operation failed
+        } catch (\Exception $e) { // error - update operation failed
 
             $this->_getApplication()->getLogger()->addLog("Unable to update user '$userName'.");
             return false;

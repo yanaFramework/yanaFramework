@@ -23,7 +23,7 @@ function config_usermode($o, $message, $className, $baseNode)
         $message = $o.currentMessage;
     }
     $o.currentMessage = $o.title;
-    $o.title = $o.innerHTML = $message;
+    $o.title = document.getElementById('config_usermode_title').innerHTML = $message;
     var nodes = yanaGetElementsByClassName($className, $baseNode);
     for (var i = 0; i < nodes.length; i++)
     {

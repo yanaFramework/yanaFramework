@@ -116,4 +116,24 @@ class SecurityGroupRuleTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->object->__invoke($requiredAdmin, "PRIVATE", "", $user));
     }
 
+    /**
+     * @test
+     */
+    public function test__invokeLevel1()
+    {
+        $requiredAdmin = new \Yana\Security\Rules\Requirements\Requirement("", "", 1);
+
+        $entity = new \Yana\Security\Data\Users\Entity('ADMINISTRATOR');
+        $entity->setActive(true)->setPassword('UNINITIALIZED');
+        $container = new \Yana\Security\Dependencies\Container();
+        $schema = \Yana\Files\XDDL::getDatabase('user');
+        restore_error_handler();
+        $connection = new \Yana\Db\FileDb\NullConnection($schema);
+        $container->setDataConnection($connection);
+        $user = new \Yana\Security\Data\Behaviors\Standard($container, $entity);
+
+        $this->assertNull($this->object->__invoke($requiredAdmin, "default", "", $user));
+        $this->assertNull($this->object->__invoke($requiredAdmin, "PRIVATE", "", $user));
+    }
+
 }
