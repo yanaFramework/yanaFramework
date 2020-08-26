@@ -180,18 +180,18 @@
     color: #aaa;
     font-weight: normal;
 }
-.default_selected_option,
-.selected_option,
-.unselected_option
+#config_plugins .default_selecte_option,
+#config_plugins .selected_option,
+#config_plugins .unselected_option
 {
     padding: 1em;
     opacity: .7;
     filter: grayscale(.6);
     transition: opacity .5s, filter .5s, background .5s;
 }
-.default_selected_option:hover,
-.selected_option:hover,
-.unselected_option:hover
+#config_plugins .default_selected_option:hover,
+#config_plugins .selected_option:hover,
+#config_plugins .unselected_option:hover
 {
     background: #ddd;
     border-radius: 1em;
