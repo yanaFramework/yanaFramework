@@ -46,8 +46,7 @@ $(function(){
     </label>
     <input type="submit" value="{lang id="BUTTON_SAVE"}"/>
     <div class="floating_menu">
-        <div class="header comment">
-            <img src="../styles/icon5.gif" border="0" alt="{lang id="USER.6D"}" style="float: right;" onclick="yanaPasswordSetWidth(yanaToggleHelp(this));"/>
+        <div class="header">
             {lang id="USER.6B"}
         </div>
         <div class="progressbar" style="width:140px;margin:auto;">0%</div>

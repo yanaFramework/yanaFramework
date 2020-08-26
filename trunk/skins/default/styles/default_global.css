@@ -103,15 +103,9 @@ fieldset > legend
 }
 #index_body .header
 {
-    font-size: 18pt;
+    font-size: 1.5em;
     font-family: 'Arial', 'Helvetica', sans-serif;
     font-weight: bold;
-    -moz-border-radius: 20px;
-    -webkit-border-radius: 20px;
-    border-radius: 20px;
-    -moz-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
-    -webkit-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
-    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
 }
 .label
 {
@@ -225,25 +219,23 @@ a.embtag_tag_hide:hover, .embtag_tag_hide a:hover, .embtag_tag_hide:hover
 }
 .floating_menu
 {
-    background: #edf0ff url("menu_bgd.gif") repeat-y top right;
+    background: #c8c8c8;
     color: #000;
-    border: 1px solid #4863A0;
-    padding: 2px;
+    padding: .25em;
+    z-index: 10;
+    box-shadow: 0 0 .5em #000;
 }
 .floating_menu .header
 {
     font-weight: bold;
     text-align: center;
-    padding: 2px;
-    background: #5C9BC1 url("th_bgd.gif") repeat-x;
-    font-size: 11px;
-    color: #000;
-    margin-bottom: 5px;
+    padding: .5em;
+    font-size: 1.5em;
+    margin-bottom: .5em;
 }
 .floating_menu .help
 {
-    background: #A3C0D7 url("menu_bgd.gif") repeat-y top left;
-    border: 1px solid #ace;
+    background: #eee;
 }
 .applicationBarLabel
 {
