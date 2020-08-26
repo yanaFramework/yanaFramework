@@ -289,11 +289,11 @@ class ApplicationBuilder extends \Yana\Core\StdObject
         if (YANA_SESSION_NAME) {
             $session->setName(YANA_SESSION_NAME);
         }
-        // limit session cookie to 1 hour and the local script directory
-        $session->setCookieParameters(3600, dirname($_SERVER['SCRIPT_NAME']));
+
+        $cookie = $this->_getApplicationDependencyContainer()->getCookie();
         $session->start();
         // reset session expiry time
-        setcookie($session->getName(), $session->getId(), time() + 3600);
+        $cookie[$session->getName()] = $session->getId();
 
         /**
          * Check language settings.

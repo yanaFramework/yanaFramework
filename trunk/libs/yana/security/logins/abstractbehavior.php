@@ -44,6 +44,11 @@ abstract class AbstractBehavior extends \Yana\Core\StdObject implements \Yana\Se
 {
 
     /**
+     * @var  \Yana\Core\Sessions\IsCookieWrapper
+     */
+    private $_cookie = null;
+
+    /**
      * @var  \Yana\Security\Sessions\IsWrapper
      */
     private $_session = null;
@@ -57,11 +62,16 @@ abstract class AbstractBehavior extends \Yana\Core\StdObject implements \Yana\Se
      * Create new instance.
      *
      * @param  \Yana\Security\Sessions\IsWrapper      $session    some session wrapper
+     * @param  \Yana\Core\Sessions\IsCookieWrapper    $cookie     wrapper for cookie functions
      * @param  \Yana\Security\Sessions\IsIdGenerator  $generator  provide your own only when doing unit-tests
      */
-    public function __construct(\Yana\Security\Sessions\IsWrapper $session = null, \Yana\Security\Sessions\IsIdGenerator $generator = null)
-    {
+    public function __construct(
+        \Yana\Security\Sessions\IsWrapper $session = null,
+        \Yana\Core\Sessions\IsCookieWrapper $cookie = null,
+        \Yana\Security\Sessions\IsIdGenerator $generator = null
+    ) {
         $this->_session = $session;
+        $this->_cookie = $cookie;
         $this->_sessionIdGenerator = $generator;
     }
 
@@ -93,6 +103,18 @@ abstract class AbstractBehavior extends \Yana\Core\StdObject implements \Yana\Se
         return $this->_sessionIdGenerator;
     }
 
+    /**
+     * Returns wrapper for cookie functions.
+     *
+     * @return \Yana\Core\Sessions\IsCookieWrapper
+     */
+    protected function _getCookie(): \Yana\Core\Sessions\IsCookieWrapper
+    {
+        if (!isset($this->_cookie)) {
+            $this->_cookie = new \Yana\Core\Sessions\CookieWrapper();
+        }
+        return $this->_cookie;
+    }
 }
 
 ?>

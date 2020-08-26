@@ -58,6 +58,13 @@ interface IsFacadeContainer extends \Yana\Security\Dependencies\IsContainer, \Ya
     public function getSession(): \Yana\Security\Sessions\IsWrapper;
 
     /**
+     * Retrieve cookie wrapper.
+     *
+     * @return  \Yana\Core\Sessions\IsCookieWrapper
+     */
+    public function getCookie(): \Yana\Core\Sessions\IsCookieWrapper;
+
+    /**
      * Returns a ready-to-use factory to create open database connections.
      *
      * @return  \Yana\Db\IsConnectionFactory

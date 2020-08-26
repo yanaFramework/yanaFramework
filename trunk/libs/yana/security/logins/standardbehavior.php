@@ -195,8 +195,8 @@ class StandardBehavior extends \Yana\Security\Logins\AbstractBehavior
             $user->setLanguage($session->getCurrentLanguage());
         }
         // make session cookie expires (get's deleted)
-        if (\filter_has_var(\INPUT_COOKIE, $session->getName())) {
-            $this->_setCookie("", time() - 42000);
+        if ($this->_getCookie()->offsetExists($session->getName())) {
+            $this->_getCookie()->offsetUnset($session->getName());
         }
         // unset session data
         $session->unsetAll();
@@ -216,18 +216,12 @@ class StandardBehavior extends \Yana\Security\Logins\AbstractBehavior
      * Send cookie value.
      *
      * @param   string  $sessionId  current session id (set to blank to reset)
-     * @param   int     $timeStamp  cookie lifetamp (set to 0 for session cookie)
      * @return  $this
      */
-    private function _setCookie(string $sessionId, int $timeStamp = 0)
+    private function _setCookie(string $sessionId)
     {
-        if (!\headers_sent()) {
-            $session = $this->_getSession();
-            $params = $session->getCookieParameters();
-            setcookie($session->getName(), $sessionId, $timeStamp, $params["path"],
-                $params["domain"], $params["secure"], $params["httponly"]
-            );
-        }
+        $cookie = $this->_getCookie();
+        $cookie[$this->_getSession()->getName()] = $sessionId;
         return $this;
     }
 

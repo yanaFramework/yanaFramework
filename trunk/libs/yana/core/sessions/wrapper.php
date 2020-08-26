@@ -228,41 +228,6 @@ class Wrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\IsWrap
     }
 
     /**
-     * Set the session cookie parameters.
-     *
-     * Also updated the session garbage collector maximum lifetime.
-     *
-     * @param   int     $lifetime   Lifetime of the session cookie, defined in seconds.
-     * @param   string  $path       Path on the domain where the cookie will work. Use a single slash ('/') for all paths on the domain.
-     * @param   string  $domain     Cookie domain, for example 'www.php.net'. To make cookies visible on all subdomains then the domain must be prefixed with a dot like '.php.net'.
-     * @param   bool    $isSecure   If bool(true) cookie will only be sent over secure connections.
-     * @param   bool    $isHttpOnly If bool(true) PHP will attempt to send the httponly flag when setting the session cookie.
-     * @link http://php.net/manual/en/function.session-set-cookie-params.php
-     */
-    public function setCookieParameters(int $lifetime, string $path = "", string $domain = "", bool $isSecure = false, bool $isHttpOnly = false)
-    {
-        ini_set("session.gc_maxlifetime", (string) $lifetime);
-        switch (\func_num_args())
-        {
-            case 5:
-                session_set_cookie_params($lifetime, $path, $domain, $isSecure, $isHttpOnly);
-            break;
-            case 4:
-                session_set_cookie_params($lifetime, $path, $domain, $isSecure);
-            break;
-            case 3:
-                session_set_cookie_params($lifetime, $path, $domain);
-            break;
-            case 2:
-                session_set_cookie_params($lifetime, $path);
-            break;
-            case 1:
-                session_set_cookie_params($lifetime);
-            break;
-        }
-    }
-
-    /**
      * Writes all changes to the session and ends it.
      */
     public function stop()
@@ -280,27 +245,6 @@ class Wrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\IsWrap
     public function destroy(): bool
     {
         return \session_status() === \PHP_SESSION_ACTIVE ? \session_destroy() : true;
-    }
-
-    /**
-     * Gets the session cookie parameters.
-     *
-     * Returns an associative array containing the following information:
-     * <ul>
-     * <li>int "lifetime" of the cookie in seconds, default is 0</li>
-     * <li>string "path" of the application it corresponds to, default is "/".</li>
-     * <li>string "domain" that the cookie is valid for, default is "" (if this isn't your domain, something is seriously wrong)</li>
-     * <li>bool "secure" if TRUE, then the cookie contents are only sent via SSL, default is FALSE.
-     *    (if this is TRUE then the request was made using SSL or you wouldn't be seeing the cookie)</li>
-     * <li>"httponly" if TRUE, the cookie will not be sent using JavaScript, default is FALSE.
-     *    (if this is TRUE, you have not been contacted using a script, or you wouldn't have gotten the cookie)</li>
-     * </ul>
-     *
-     * @return  array
-     */
-    public function getCookieParameters(): array
-    {
-        return \session_get_cookie_params();
     }
 
     /**

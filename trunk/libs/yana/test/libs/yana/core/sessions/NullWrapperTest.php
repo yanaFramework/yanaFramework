@@ -233,25 +233,6 @@ class NullWrapperTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testGetCookieParameters()
-    {
-        $expected = array("lifetime" => "0", "path" => "", "domain" => "", "secure" => "0", "httponly" => "1");
-        $this->assertEquals($expected, $this->object->getCookieParameters());
-    }
-
-    /**
-     * @test
-     */
-    public function testSetCookieParameters()
-    {
-        $this->assertNull($this->object->setCookieParameters(1234, 'Ab', 'cD', true, false));
-        $expected = array("lifetime" => 1234, "path" => "Ab", "domain" => "cD", "secure" => true, "httponly" => false);
-        $this->assertEquals($expected, $this->object->getCookieParameters());
-    }
-
-    /**
-     * @test
-     */
     public function test__toString()
     {
         $data = array(1, 'a', 12 => 3.5);

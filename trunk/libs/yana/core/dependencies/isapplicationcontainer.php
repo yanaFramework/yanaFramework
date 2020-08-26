@@ -138,7 +138,6 @@ interface IsApplicationContainer
      * @return  \Yana\Db\Sources\IsAdapter
      */
     public function getDataSourcesAdapter(): \Yana\Db\Sources\IsAdapter;
-
 }
 
 ?>

@@ -41,7 +41,7 @@ namespace Yana\Core\Dependencies;
 trait HasSecurity
 {
 
-    use \Yana\Data\Adapters\HasCache, \Yana\Core\Dependencies\HasSession, \Yana\Security\Dependencies\HasPassword;
+    use \Yana\Data\Adapters\HasCache, \Yana\Core\Dependencies\HasSession, \Yana\Security\Dependencies\HasPassword, \Yana\Core\Dependencies\HasCookie;
 
     /**
      * Level data adapter.
@@ -158,7 +158,7 @@ trait HasSecurity
     public function getLoginBehavior(): \Yana\Security\Logins\IsBehavior
     {
         if (!isset($this->_loginBehavior)) {
-            $this->_loginBehavior = new \Yana\Security\Logins\StandardBehavior($this->getSession());
+            $this->_loginBehavior = new \Yana\Security\Logins\StandardBehavior($this->getSession(), $this->getCookie());
         }
         return $this->_loginBehavior;
     }
