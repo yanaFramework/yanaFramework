@@ -141,6 +141,7 @@
 {
     background-image: url(plugin_blank.png);
     background-repeat: no-repeat;
+    background-position: 1em 1em;
 }
 #config_plugins .unselected_option .config_plugin_image
 {
