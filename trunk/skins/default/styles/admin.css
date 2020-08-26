@@ -137,21 +137,16 @@
     vertical-align: top;
     border-bottom: 1px solid #999;
 }
-#config_plugins .unselected_option
-{
-    background-image: url(plugin_blank.png);
-    background-repeat: no-repeat;
-    background-position: 1em 1em;
-}
 #config_plugins .unselected_option .config_plugin_image
 {
-    visibility: hidden;
+    filter: grayscale(.9) contrast(.1) brightness(1.35);
+    opacity: .25;
 }
 #config_plugins .unselected_option:hover .config_plugin_image
 {
-    visibility: visible;
     opacity: 0.5;
-    filter: alpha(opacity=20);
+    filter: grayscale(.1) contrast(.9) brightness(1);
+    transition: opacity .5s, filter 1s;
 }
 #config_plugins .unselected_option .title
 {
