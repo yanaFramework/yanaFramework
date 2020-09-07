@@ -55,13 +55,14 @@ class CookieWrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\
 
     /**
      * <<constructor>> Initialize session vars.
+     *
+     * @codeCoverageIgnore
      */
     public function __construct()
     {
         if (!isset($_COOKIE)) {
             $_COOKIE = array();
         }
-        // @codeCoverageIgnoreStart
         if (\is_numeric(\ini_get('session.cookie_lifetime'))) {
             $this->_lifetime = (int) \ini_get('session.cookie_lifetime');
         }
@@ -78,7 +79,6 @@ class CookieWrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\
             $this->_isHttpOnly = \filter_var(\ini_get('session.cookie_httponly'), \FILTER_VALIDATE_BOOLEAN);
         }
         $this->setSameSite(\strtolower((string) \ini_get('session.cookie_samesite')));
-        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -133,10 +133,13 @@ class CookieWrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\
         return $value;
     }
 
+    /**
+     * Calls session_set_cookie_params() with PHP-version dependent parameter list.
+     */
     private function _setCookieParameters()
     {
         // @codeCoverageIgnoreStart
-        if (PHP_VERSION_ID < 70300) {
+        if (PHP_VERSION_ID < 70300) { // PHP prior to 7.3 does not support the "samesite" setting.
             \session_set_cookie_params(
                 $this->getLifetime(),
                 $this->getPath(),
@@ -145,11 +148,10 @@ class CookieWrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\
                 $this->isHttpOnly()
             );
         } else {
+            // PHP 7.3 and up support "samesite", but only if params are given as an array.
             \session_set_cookie_params(
-                (string) $key,
-                (string) $value,
                 array(
-                    'expires' => $expires,
+                    'expires' => $this->getLifetime(),
                     'path' => $this->getPath(),
                     'domain' => $this->getDomain(),
                     'secure' => $this->isSecure(),
@@ -161,6 +163,13 @@ class CookieWrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\
         // @codeCoverageIgnoreEnd        
     }
 
+    /**
+     * Send a cookie to the browser.
+     *
+     * @param  scalar        $key       index in $_COOKIE array
+     * @param  scalar|array  $value     value to assign, NULL for delete
+     * @param  bool          $isDelete  wether to assign or delete the entry
+     */
     private function _setCookie($key, $value, bool $isDelete = false)
     {
         if (\is_array($value)) {
@@ -169,11 +178,11 @@ class CookieWrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\
                 $this->_setCookie("{$key}[{$i}]", $v, $isDelete);
             }
         } elseif (!\headers_sent()) {
+            // @codeCoverageIgnoreStart
             $expires = ($isDelete ? time() -42000 :
                     ($this->getLifetime() > 0 ? time() + $this->getLifetime() : 0)
                 );
             // The rest of the cookie parameters are applied automatically
-            // @codeCoverageIgnoreStart
             if (PHP_VERSION_ID < 70300) {
                 \setcookie((string) $key, (string) $value, $expires,
                     $this->getPath() . // prior to PHP 7.3 same site policy could be added via a hack
