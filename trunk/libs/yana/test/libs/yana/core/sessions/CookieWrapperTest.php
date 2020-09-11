@@ -34,6 +34,20 @@ require_once __DIR__ . '/../../../../include.php';
 
 /**
  * @package  test
+ * @ignore
+ */
+class MyCookieWrapper extends \Yana\Core\Sessions\CookieWrapper
+{
+    public function __construct()
+    {
+        if (!isset($_COOKIE)) {
+            $_COOKIE = array();
+        }
+    }
+}
+
+/**
+ * @package  test
  */
 class CookieWrapperTest extends \PHPUnit_Framework_TestCase
 {
@@ -49,7 +63,7 @@ class CookieWrapperTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Core\Sessions\CookieWrapper();
+        $this->object = new \Yana\Core\Sessions\MyCookieWrapper();
     }
 
     /**

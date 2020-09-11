@@ -246,7 +246,11 @@
                 </trans-unit>
                 <trans-unit id="user.gender.g">
                     <source/>
-                    <target>group of persons</target>
+                    <target>multiple people</target>
+                </trans-unit>
+                <trans-unit id="user.gender.o">
+                    <source/>
+                    <target>other</target>
                 </trans-unit>
             </group>
             <group id="user.option">

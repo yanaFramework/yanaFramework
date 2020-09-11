@@ -255,6 +255,10 @@
                     <source>group of persons</source>
                     <target>Gruppe mehrerer Personen</target>
                 </trans-unit>
+                <trans-unit id="user.gender.o">
+                    <source>other</source>
+                    <target>divers</target>
+                </trans-unit>
             </group>
             <group id="user.option">
                 <trans-unit id="user.option.0">

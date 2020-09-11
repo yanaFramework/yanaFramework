@@ -98,20 +98,19 @@ class UserProfilePlugin extends \Yana\Plugins\AbstractPlugin
     {
         $form = $this->_getDetailForm();
 
-        $updateContext = $form->getUpdateForm()->getContext(); // switch to update context
-        $rows = $updateContext->getRows(); // and get the updated rows
+        $rows = $form->getUpdateValues(); // and get the updated rows
         if (!isset($rows[0]) || !is_array($rows[0])) { // this form doesn't contain a primary key, so the values will be at index "0"
             $message = "Input is invalid";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Core\Exceptions\Forms\MissingInputException($message, $level);
         }
 
-        // Add user name to updated row or else we will get a database error
-        $userName = \mb_strtoupper($this->_getSession()->getCurrentUserName());
-        $updateContext->setRows(array($userName => $rows[0]));
         // Just for statistical purposes we keep track of when the form was changed
-        $updateContext->updateRow($userName, array('USERPROFILE_MODIFIED' => time()));
-
+        //$rows[0]['USERPROFILE_MODIFIED'] = time();
+        // Add user name to updated row or else we will get a database error
+        $userName = $this->_getSession()->getCurrentUserName();
+        $updateContext = $form->getSetup()->getContext(\Yana\Forms\Setups\ContextNameEnumeration::UPDATE); // switch to update context
+        $updateContext->setRows(array($userName => (array) $rows[0]));
         $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
         return $worker->update();
     }

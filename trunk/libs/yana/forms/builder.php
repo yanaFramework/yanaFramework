@@ -149,7 +149,7 @@ class Builder extends \Yana\Forms\AbstractBuilder
 
         // This needs to be done after the rows have been set. Otherwise the user input would be overwritten.
         if ($request || $files) {
-            $this->_getSetupBuilder()->updateValues(\array_merge_recursive($files, $request));
+            $this->_getSetupBuilder()->updateValues(\Yana\Util\Hashtable::merge($files, $request));
         }
 
         $cache[$formName] = $this->_getSetupBuilder()->__invoke(); // add to cache

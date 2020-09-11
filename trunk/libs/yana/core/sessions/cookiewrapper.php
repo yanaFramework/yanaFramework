@@ -42,11 +42,34 @@ namespace Yana\Core\Sessions;
 class CookieWrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\IsCookieWrapper
 {
 
+    /**
+     * @var int
+     */
     private $_lifetime = 0;
+
+    /**
+     * @var string
+     */
     private $_path = "/";
+
+    /**
+     * @var string
+     */
     private $_domain = "";
+
+    /**
+     * @var bool
+     */
     private $_isHttpOnly = false;
+
+    /**
+     * @var bool
+     */
     private $_isSecure = false;
+
+    /**
+     * @var string
+     */
     private $_sameSite = "lax";
 
     const SAMESITE_NONE = "none";

@@ -124,6 +124,7 @@
                 <option value='G'>{lang id="USER.GENDER.G"}</option>
                 <option value='M'>{lang id="USER.GENDER.M"}</option>
                 <option value='F'>{lang id="USER.GENDER.F"}</option>
+                <option value='O'>{lang id="USER.GENDER.O"}</option>
             </enum>
             <image
                 name="userprofile_image"
