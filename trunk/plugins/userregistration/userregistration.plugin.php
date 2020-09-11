@@ -254,6 +254,7 @@ class UserRegistrationPlugin extends \Yana\Plugins\AbstractPlugin
         $vars = array('DATE' => date('d-m-Y'));
 
         $headers = new \Yana\Mails\Headers\MailHeaderCollection();
+        $headers->setAsHtml();
         if ($sender) {
             $headers->setFromAddress($sender);
         }

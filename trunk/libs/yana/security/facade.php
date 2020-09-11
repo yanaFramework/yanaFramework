@@ -305,18 +305,23 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
     /**
      * Create a new user using form data.
      *
+     * Note: This does NOT save the user.
+     *
      * @param   array  $formData  needs to match the form described in the user database
+     * @param   array  $adapter   optional user adapter to inject
      * @return  \Yana\Security\Data\Behaviors\IsBehavior
      * @throws  \Yana\Core\Exceptions\User\MissingNameException    when no user name is given
      * @throws  \Yana\Core\Exceptions\User\MissingMailException    when no mail address is given
      * @throws  \Yana\Core\Exceptions\User\AlreadyExistsException  if another user with the same name already exists
-     * @throws  \Yana\Db\CommitFailedException                     when the database entry could not be created
      */
-    public function createUserByFormData(array $formData)
+    public function createUserByFormData(array $formData, \Yana\Security\Data\Users\IsDataAdapter $adapter = null): \Yana\Security\Data\Behaviors\IsBehavior
     {
         assert(!isset($entity), '$entity already declared');
         $entity = $this->_getContainer()->getUserAdapter()->toEntity($formData); // May throw MissingNameException
-        $entity->setDataAdapter($this->_getContainer()->getUserAdapter());
+        if (is_null($adapter)) {
+            $adapter = $this->_getContainer()->getUserAdapter();
+        }
+        $entity->setDataAdapter($adapter);
         assert(!isset($builder), '$builder already declared');
         $builder = $this->_createUserBuilder();
         assert(!isset($user), '$user already declared');
@@ -330,15 +335,6 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
             throw new \Yana\Core\Exceptions\User\AlreadyExistsException(
                 "A user with the name '{$user->getId()}' already exists.", \Yana\Log\TypeEnumeration::WARNING
             );
-        }
-
-        try {
-            $user->saveChanges(); // may throw exception
-
-        } catch (\Exception $e) {
-            $message = "Unable to commit changes to the database server while trying to update settings for user '{$user->getId()}'.";
-            $level = \Yana\Log\TypeEnumeration::ERROR;
-            throw new \Yana\Db\CommitFailedException($message, $level, $e);
         }
         return $user;
     }

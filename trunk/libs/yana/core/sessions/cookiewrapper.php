@@ -147,11 +147,11 @@ class CookieWrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\
                 $this->isSecure(),
                 $this->isHttpOnly()
             );
-        } else {
+        } elseif (\session_status() === \PHP_SESSION_NONE) {
             // PHP 7.3 and up support "samesite", but only if params are given as an array.
             \session_set_cookie_params(
                 array(
-                    'expires' => $this->getLifetime(),
+                    'lifetime' => $this->getLifetime(),
                     'path' => $this->getPath(),
                     'domain' => $this->getDomain(),
                     'secure' => $this->isSecure(),
@@ -186,9 +186,21 @@ class CookieWrapper extends \Yana\Core\StdObject implements \Yana\Core\Sessions\
             if (PHP_VERSION_ID < 70300) {
                 \setcookie((string) $key, (string) $value, $expires,
                     $this->getPath() . // prior to PHP 7.3 same site policy could be added via a hack
-                        ($this->getSameSite() ? '; samesite=' . $this->getSameSite() : ""));
+                        ($this->getSameSite() ? '; samesite=' . $this->getSameSite() : ""),
+                    $this->getDomain(),
+                    $this->isSecure(),
+                    $this->isHttpOnly()
+                );
             } else {
-                \setcookie((string) $key, (string) $value, $expires);
+                $options = array(
+                    'expires' => $expires,
+                    'path' => $this->getPath(),
+                    'domain' => $this->getDomain(),
+                    'secure' => $this->isSecure(),
+                    'httponly' => $this->isHttpOnly(),
+                    'samesite' => $this->getSameSite()
+                );
+                \setcookie((string) $key, (string) $value, $options);
             }
         }
     }

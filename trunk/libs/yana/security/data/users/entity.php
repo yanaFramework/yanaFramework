@@ -26,6 +26,7 @@
  *
  * @ignore
  */
+declare(strict_types=1);
 
 namespace Yana\Security\Data\Users;
 
@@ -50,11 +51,11 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
     /** @var int    */ private $_failureCount = 0;
     /** @var int    */ private $_failureTime = 0;
     /** @var int    */ private $_loginCount = 0;
-    /** @var int    */ private $_loginTime = 0;
+    /** @var int    */ private $_loginTime = null;
     /** @var bool   */ private $_isExpert = false;
     /** @var string */ private $_passwordRecoveryId = null;
-    /** @var int    */ private $_passwordRecoveryTime = null;
-    /** @var int    */ private $_passwordChangedTime = null;
+    /** @var int    */ private $_passwordRecoveryTime = 0;
+    /** @var int    */ private $_passwordChangedTime = 0;
     /** @var array  */ private $_recentPasswords = array();
     /** @var int    */ private $_timeCreated = null;
     /** @var string */ private $_sessionCheckSum = null;
@@ -98,13 +99,12 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      * Set number of times user entered the password incorrectly.
      *
      * @param   int  $failureCount  must be positive
-     * @return  self
+     * @return  $this
      */
-    public function setFailureCount($failureCount)
+    public function setFailureCount(int $failureCount)
     {
-        assert(is_int($failureCount), 'Wrong type for argument 1. Integer expected');
         assert($failureCount >= 0, 'Integer must be positive');
-        $this->_failureCount = (int) $failureCount;
+        $this->_failureCount = $failureCount;
         return $this;
     }
 
@@ -114,12 +114,11 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      * Set the last time when the user entered a password incorrectly.
      *
      * @param   int  $failureTime  valid timestamp
-     * @return  self
+     * @return  $this
      */
-    public function setFailureTime($failureTime)
+    public function setFailureTime(int $failureTime)
     {
-        assert(is_int($failureTime), 'Wrong type for argument 1. Integer expected');
-        $this->_failureTime = (int) $failureTime;
+        $this->_failureTime = $failureTime;
         return $this;
     }
 
@@ -129,13 +128,12 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      * Set the number of times the user successfully logged in.
      *
      * @param   int  $loginCount  must be positive
-     * @return  self
+     * @return  $this
      */
-    public function setLoginCount($loginCount)
+    public function setLoginCount(int $loginCount)
     {
-        assert(is_int($loginCount), 'Wrong type for argument 1. Integer expected');
         assert($loginCount >= 0, 'Integer must be positive');
-        $this->_loginCount = (int) $loginCount;
+        $this->_loginCount = $loginCount;
         return $this;
     }
 
@@ -145,12 +143,11 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      * Set the time the user last successfully logged in.
      *
      * @param   int  $loginTime  a valid timestamp
-     * @return  self
+     * @return  $this
      */
-    public function setLoginTime($loginTime)
+    public function setLoginTime(int $loginTime)
     {
-        assert(is_int($loginTime), 'Wrong type for argument 1. Integer expected');
-        $this->_loginTime = (int) $loginTime;
+        $this->_loginTime = $loginTime;
         return $this;
     }
 
@@ -160,12 +157,11 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      * The user must enter this id in order to reset the password.
      *
      * @param   string  $passwordRecoveryId  some identifier (preferably a hash value)
-     * @return  self
+     * @return  $this
      */
-    public function setPasswordRecoveryId($passwordRecoveryId)
+    public function setPasswordRecoveryId(string $passwordRecoveryId)
     {
-        assert(is_string($passwordRecoveryId), 'Wrong type for argument 1. String expected');
-        $this->_passwordRecoveryId = (string) $passwordRecoveryId;
+        $this->_passwordRecoveryId = $passwordRecoveryId;
         return $this;
     }
 
@@ -173,12 +169,11 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      * Set time when the last password recovery request was made.
      *
      * @param   int $passwordRecoveryTime  a valid timestamp
-     * @return  self
+     * @return  $this
      */
-    public function setPasswordRecoveryTime($passwordRecoveryTime)
+    public function setPasswordRecoveryTime(int $passwordRecoveryTime)
     {
-        assert(is_int($passwordRecoveryTime), 'Wrong type for argument 1. Integer expected');
-        $this->_passwordRecoveryTime = (int) $passwordRecoveryTime;
+        $this->_passwordRecoveryTime = $passwordRecoveryTime;
         return $this;
     }
 
@@ -186,12 +181,11 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      * Set time when the user last changed his password.
      *
      * @param   int  $passwordChangedTime  a valid timestamp
-     * @return  self
+     * @return  $this
      */
-    public function setPasswordChangedTime($passwordChangedTime)
+    public function setPasswordChangedTime(int $passwordChangedTime)
     {
-        assert(is_int($passwordChangedTime), 'Wrong type for argument 1. Integer expected');
-        $this->_passwordChangedTime = (int) $passwordChangedTime;
+        $this->_passwordChangedTime = $passwordChangedTime;
         return $this;
     }
 
@@ -201,7 +195,7 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      * When a new password is set it must not be one of those.
      *
      * @param   array  $recentPasswords  list of password hashes
-     * @return  self
+     * @return  $this
      */
     public function setRecentPasswords(array $recentPasswords)
     {
@@ -215,12 +209,11 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      * Should not be changed manually.
      *
      * @param   int  $timeCreated  valid timestamp
-     * @return  self
+     * @return  $this
      */
-    public function setTimeCreated($timeCreated)
+    public function setTimeCreated(int $timeCreated)
     {
-        assert(is_int($timeCreated), 'Wrong type for argument 1. Integer expected');
-        $this->_timeCreated = (int) $timeCreated;
+        $this->_timeCreated = $timeCreated;
         return $this;
     }
 
@@ -230,13 +223,11 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      * The checksum should be a hexadecimal number represented as a string no longer than 32 chars.
      *
      * @param   string  $checkSum  MD5-checksum of session-id
-     * @return  self
+     * @return  $this
      */
-    public function setSessionCheckSum($checkSum)
+    public function setSessionCheckSum(string $checkSum)
     {
-        assert(is_string($checkSum), 'Invalid argument $checkSum: string expected');
-
-        $this->_sessionCheckSum = (string) $checkSum;
+        $this->_sessionCheckSum = $checkSum;
         return $this;
     }
 
@@ -248,7 +239,7 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      * 
      * @return  string
      */
-    public function getSessionCheckSum()
+    public function getSessionCheckSum(): ?string
     {
         return $this->_sessionCheckSum;
     }
@@ -256,9 +247,9 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
     /**
      * Get password hash.
      *
-     * @return  string
+     * @return  string|null
      */
-    public function getPassword()
+    public function getPassword(): ?string
     {
         return $this->_password;
     }
@@ -266,14 +257,12 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
     /**
      * Set login password to $password.
      *
-     * @param   string  $password user password
-     * @return  self
+     * @param   string  $password  user password
+     * @return  $this
      */
-    public function setPassword($password)
+    public function setPassword(string $password)
     {
-        assert(is_string($password), 'Wrong type for argument 1. String expected');
-
-        $this->_password = "$password";
+        $this->_password = $password;
         return $this;
     }
 
@@ -283,22 +272,20 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      * Sets prefered language of the user, that is used to provide translates GUI elements.
      *
      * @param   string  $language  language or locale string
-     * @return  self
+     * @return  $this
      */
-    public function setLanguage($language)
+    public function setLanguage(string $language)
     {
-        assert(is_string($language), 'Wrong type for argument 1. String expected');
-
-        $this->_language = "$language";
+        $this->_language = $language;
         return $this;
     }
 
     /**
      * Get selected language.
      *
-     * @return  string
+     * @return  string|NULL
      */
-    public function getLanguage()
+    public function getLanguage(): ?string
     {
         return $this->_language;
     }
@@ -313,7 +300,7 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      *
      * @return  int
      */
-    public function getFailureCount()
+    public function getFailureCount(): int
     {
         return (int) $this->_failureCount;
     }
@@ -328,9 +315,9 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      *
      * @return  int
      */
-    public function getFailureTime()
+    public function getFailureTime(): int
     {
-        return (int) $this->_failureTime;
+        return $this->_failureTime;
     }
 
     /**
@@ -339,11 +326,12 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      * Returns the number of times the user sucessfully logged-in.
      *
      * The default is 0.
+     *
      * @return  int
      */
-    public function getLoginCount()
+    public function getLoginCount(): int
     {
-        return (int) $this->_loginCount;
+        return $this->_loginCount;
     }
 
     /**
@@ -354,11 +342,11 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      *
      * The default is 0.
      *
-     * @return  int
+     * @return  int|NULL
      */
-    public function getLoginTime()
+    public function getLoginTime(): ?int
     {
-        return (int) $this->_loginTime;
+        return $this->_loginTime;
     }
 
     /**
@@ -367,22 +355,20 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      * Sets the user's mail address. This information is required to send the user a password.
      *
      * @param   string  $mail  e-mail address
-     * @return  self
+     * @return  $this
      */
-    public function setMail($mail)
+    public function setMail(string $mail)
     {
-        assert(is_string($mail), 'Wrong type for argument 1. String expected');
-
-        $this->_mail = "$mail";
+        $this->_mail = $mail;
         return $this;
     }
 
     /**
      * Get mail address.
      *
-     * @return  string
+     * @return  string|null
      */
-    public function getMail()
+    public function getMail(): ?string
     {
         return $this->_mail;
     }
@@ -394,13 +380,11 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      * if a simpler GUI is prefered.
      *
      * @param   bool  $isExpert  use expert settings (yes/no)
-     * @return  self
+     * @return  $this
      */
-    public function setExpert($isExpert)
+    public function setExpert(bool $isExpert)
     {
-        assert(is_bool($isExpert), 'Wrong type for argument 1. Boolean expected');
-
-        $this->_isExpert = !empty($isExpert);
+        $this->_isExpert = $isExpert;
         return $this;
     }
 
@@ -412,9 +396,9 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      *
      * @return  bool
      */
-    public function isExpert()
+    public function isExpert(): bool
     {
-        return !empty($this->_isExpert);
+        return $this->_isExpert;
     }
 
     /**
@@ -424,13 +408,11 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      * should be deactivated (suspended) without permanently deleting the user settings.
      *
      * @param   bool  $isActive  use expert settings (yes/no)
-     * @return  self
+     * @return  $this
      */
-    public function setActive($isActive)
+    public function setActive(bool $isActive)
     {
-        assert(is_bool($isActive), 'Wrong type for argument 1. Boolean expected');
-
-        $this->_isActive = (bool) $isActive;
+        $this->_isActive = $isActive;
         return $this;
     }
 
@@ -441,19 +423,19 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      *
      * @return  bool
      */
-    public function isActive()
+    public function isActive(): bool
     {
-        return (bool) $this->_isActive;
+        return $this->_isActive;
     }
 
     /**
      * Get the time when the user was created.
      *
-     * @return  int
+     * @return  int|null
      */
-    public function getTimeCreated()
+    public function getTimeCreated(): ?int
     {
-        return (int) $this->_timeCreated;
+        return $this->_timeCreated;
     }
 
     /**
@@ -467,9 +449,9 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      *
      * @return  int
      */
-    public function getPasswordChangedTime()
+    public function getPasswordChangedTime(): int
     {
-        return (int) $this->_passwordChangedTime;
+        return $this->_passwordChangedTime;
     }
 
     /**
@@ -484,20 +466,20 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      *
      * @return  array
      */
-    public function getRecentPasswords()
+    public function getRecentPasswords(): array
     {
         return $this->_recentPasswords;
     }
 
     /**
-     * get password recovery id
+     * Get password recovery id.
      *
      * When the user requests a new password, a recovery id is created and sent to his mail address.
      * This is to ensure that the user is a allowed to reset the password.
      *
-     * @return  string
+     * @return  string|null
      */
-    public function getPasswordRecoveryId()
+    public function getPasswordRecoveryId(): ?string
     {
         return $this->_passwordRecoveryId;
     }
@@ -512,9 +494,9 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      *
      * @return  int
      */
-    public function getPasswordRecoveryTime()
+    public function getPasswordRecoveryTime(): int
     {
-        return (int) $this->_passwordRecoveryTime;
+        return $this->_passwordRecoveryTime;
     }
 
 }

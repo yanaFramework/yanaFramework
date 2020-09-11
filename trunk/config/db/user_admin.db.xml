@@ -22,7 +22,7 @@
         </input>
         <input name="auth_id">
             <grant insert="no" update="no"/>
-            <grant insert="yes" update="yes" user="admin" level="100"/>
+            <grant insert="no" update="yes" user="admin" level="100"/>
         </input>
         <form name="securityrules" table="securityrules" allinput="yes">
             <grant select="no"/>

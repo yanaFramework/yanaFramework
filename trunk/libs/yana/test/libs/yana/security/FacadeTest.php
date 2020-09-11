@@ -256,19 +256,6 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \Yana\Db\CommitFailedException
-     */
-    public function testCreateUserByFormDataCommitFailedException()
-    {
-        $this->schema->setReadonly(true);
-        $formData = array(
-            \Yana\Security\Data\Tables\UserEnumeration::ID => '123',
-            \Yana\Security\Data\Tables\UserEnumeration::MAIL => 'test@mail.tld');
-        $this->object->createUserByFormData($formData);
-    }
-
-    /**
-     * @test
      */
     public function testCreateUserByFormData()
     {

@@ -130,28 +130,28 @@ class Mapper extends \Yana\Core\StdObject implements \Yana\Data\Adapters\IsEntit
                 \Yana\Security\Data\Tables\UserEnumeration::IS_EXPERT_MODE => $user->isExpert(),
                 \Yana\Security\Data\Tables\UserEnumeration::RECENT_PASSWORDS => $user->getRecentPasswords()
             );
-            if ($user->getLanguage() !== null) {
+            if ($user->getLanguage()) {
                 $row[\Yana\Security\Data\Tables\UserEnumeration::LANGUAGE] = $user->getLanguage();
             }
-            if ($user->getPassword() !== null) {
+            if ($user->getPassword()) {
                 $row[\Yana\Security\Data\Tables\UserEnumeration::PASSWORD] = $user->getPassword();
             }
-            if ($user->getMail() !== null) {
+            if ($user->getMail()) {
                 $row[\Yana\Security\Data\Tables\UserEnumeration::MAIL] = $user->getMail();
             }
-            if ($user->getPasswordRecoveryId() !== null) {
+            if ($user->getPasswordRecoveryId()) {
                 $row[\Yana\Security\Data\Tables\UserEnumeration::PASSWORD_RECOVERY_ID] = $user->getPasswordRecoveryId();
             }
-            if ($user->getPasswordRecoveryTime() !== null) {
+            if ($user->getPasswordRecoveryTime()) {
                 $row[\Yana\Security\Data\Tables\UserEnumeration::PASSWORD_RECOVERY_TIME] = $user->getPasswordRecoveryTime();
             }
-            if ($user->getPasswordChangedTime() !== null) {
+            if ($user->getPasswordChangedTime()) {
                 $row[\Yana\Security\Data\Tables\UserEnumeration::PASSWORD_TIME] = $user->getPasswordChangedTime();
             }
-            if ($user->getTimeCreated() !== null) {
+            if ($user->getTimeCreated()) {
                 $row[\Yana\Security\Data\Tables\UserEnumeration::TIME_CREATED] = $user->getTimeCreated();
             }
-            if ($user->getSessionCheckSum() !== null) {
+            if ($user->getSessionCheckSum()) {
                 $row[\Yana\Security\Data\Tables\UserEnumeration::SESSION_CHECKSUM] = $user->getSessionCheckSum();
             }
         }

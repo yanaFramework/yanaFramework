@@ -24,6 +24,7 @@
  * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Security\Data\Users;
 
@@ -241,7 +242,7 @@ class EntityTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetLoginTime()
     {
-        $this->assertSame(0, $this->object->getLoginTime());
+        $this->assertNull($this->object->getLoginTime());
     }
 
     /**
@@ -301,7 +302,7 @@ class EntityTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetTimeCreated()
     {
-        $this->assertSame(0, $this->object->getTimeCreated());
+        $this->assertNull($this->object->getTimeCreated());
     }
 
     /**

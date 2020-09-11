@@ -191,13 +191,13 @@ interface IsFacade
      * Create a new user using form data.
      *
      * @param   array  $formData  needs to match the form described in the user database
+     * @param   array  $adapter   optional user adapter to inject
      * @return  \Yana\Security\Data\Behaviors\IsBehavior
      * @throws  \Yana\Core\Exceptions\User\MissingNameException    when no user name is given
      * @throws  \Yana\Core\Exceptions\User\MissingMailException    when no mail address is given
      * @throws  \Yana\Core\Exceptions\User\AlreadyExistsException  if another user with the same name already exists
-     * @throws  \Yana\Db\CommitFailedException                     when the database entry could not be created
      */
-    public function createUserByFormData(array $formData);
+    public function createUserByFormData(array $formData, \Yana\Security\Data\Users\IsDataAdapter $adapter = null): \Yana\Security\Data\Behaviors\IsBehavior;
 
     /**
      * Remove the chosen user from the database.

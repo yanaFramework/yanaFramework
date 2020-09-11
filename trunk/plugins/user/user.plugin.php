@@ -238,7 +238,7 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
             'TIME' => date("m.d.y H:i:s"),
             'WEBSITE' => $website
         );
-        $headers = array('from' => $sender);
+        $headers = array('from' => $sender, 'content-type' => 'text/html; charset=UTF-8');
         return (bool) $templateMailer->send($recipient, $subject, $vars, $headers);
     }
 

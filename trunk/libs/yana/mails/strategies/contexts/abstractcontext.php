@@ -46,7 +46,13 @@ abstract class AbstractContext extends \Yana\Core\StdObject implements \Yana\Mai
     /**
      * Sets the mailing strategy.
      *
-     * The mailing strategy is an algorithm that 
+     * The mailing strategy is an algorithm that handles sending the actual e-mail.
+     *
+     * For examples on how to use this:
+     * You could inject a NULL-object (that doesn't actually send an e-mail) for unit testing purposes.
+     * An object, that just displays the mail instead of sending it for debugging.
+     * An object, that sends the mail to an internal messenging system for community mailing aso.
+     * Or use a custom mail handler to connect to an SMTP that is not the default SMTP server of your system.
      *
      * @param \Yana\Mails\Strategies\IsStrategy $strategy
      */
@@ -55,7 +61,14 @@ abstract class AbstractContext extends \Yana\Core\StdObject implements \Yana\Mai
         $this->_strategy = $strategy;
     }
 
-    protected function _getMailingStrategy()
+    /**
+     * Returns the chosen mailing strategy.
+     *
+     * The mailing strategy object is an algorithm that handles the sending of e-mails.
+     *
+     * @return \Yana\Mails\Strategies\IsStrategy
+     */
+    protected function _getMailingStrategy(): \Yana\Mails\Strategies\IsStrategy
     {
         return $this->_strategy;
     }
@@ -70,7 +83,7 @@ abstract class AbstractContext extends \Yana\Core\StdObject implements \Yana\Mai
      * @param   array  $headers  key-value pairs of mail headers
      * @return  array
      */
-    protected function _sanitizeHeaders(array $headers)
+    protected function _sanitizeHeaders(array $headers): array
     {
         $errorCount = 0;
 
@@ -93,7 +106,7 @@ abstract class AbstractContext extends \Yana\Core\StdObject implements \Yana\Mai
      * @param   int    &$errorCount  number of removed headers
      * @return  array
      */
-    private function _walkHeader(array $values, &$errorCount)
+    private function _walkHeader(array $values, &$errorCount): array
     {
         $sanitizedHeaders = array();
         foreach ($values as $key => $value)
@@ -139,7 +152,7 @@ abstract class AbstractContext extends \Yana\Core\StdObject implements \Yana\Mai
      * @param   array  $headers  key-value pairs of mail headers
      * @return  array
      */
-    protected function _restrictHeaders(array $headers)
+    protected function _restrictHeaders(array $headers): array
     {
         $restrictedHeaders = array();
 
@@ -225,10 +238,8 @@ abstract class AbstractContext extends \Yana\Core\StdObject implements \Yana\Mai
      * @param  string  $subject  some text
      * @return string
      */
-    protected function _sanitizeSubject($subject)
+    protected function _sanitizeSubject(string $subject): string
     {
-        assert(is_string($subject), 'Invalid argument $subject: string expected');
-
         return strip_tags(\Yana\Data\StringValidator::sanitize($subject, 128, \Yana\Data\StringValidator::LINEBREAK));
     }
 
@@ -238,7 +249,7 @@ abstract class AbstractContext extends \Yana\Core\StdObject implements \Yana\Mai
      * @param  array  $headers  key-value pairs of mail headers
      * @return array
      */
-    protected function _addDefaultHeaders(array $headers)
+    protected function _addDefaultHeaders(array $headers): array
     {
         $defaultHeaders = array(
             'x-mailer' => "PHP/". phpversion(),
@@ -259,7 +270,7 @@ abstract class AbstractContext extends \Yana\Core\StdObject implements \Yana\Mai
      * @param   array  $headers  key-value pairs of mail headers
      * @return  string
      */
-    protected function _convertHeadersToString(array $headers)
+    protected function _convertHeadersToString(array $headers): string
     {
         $headerString = "";
         $replaceCharacters = array("\n", "\r", "\f", ":");
@@ -278,7 +289,7 @@ abstract class AbstractContext extends \Yana\Core\StdObject implements \Yana\Mai
      * @param   string   $contentType  may be plain text or HTML
      * @return  string
      */
-    protected function _sanitizeText($text, $contentType)
+    protected function _sanitizeText(string $text, string $contentType): string
     {
         $sanitizedText = $textWithAtStripped = preg_replace('/@/', '[at]', "$text");
         if (preg_match('/^text\/plain/i', $contentType)) {

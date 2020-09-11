@@ -712,7 +712,7 @@ class GuestbookPlugin extends \Yana\Plugins\AbstractPlugin
             $subject = $YANA->getLanguage()->getVar("mail_subject");
             $vars = \Yana\Util\Hashtable::changeCase($vars, CASE_UPPER);
             $vars['DATE'] = date('d-m-Y');
-            $headers = array('from' => $sender);
+            $headers = array('from' => $sender, 'content-type' => 'text/html; charset=UTF-8');
             $templateMailer->send($recipient, $subject, $vars, $headers);
         }
     }

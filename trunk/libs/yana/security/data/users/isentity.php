@@ -66,7 +66,7 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      * @param   int  $failureCount  must be positive
      * @return  $this
      */
-    public function setFailureCount($failureCount);
+    public function setFailureCount(int $failureCount);
 
     /**
      * Password failure time.
@@ -76,7 +76,7 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      * @param   int  $failureTime  valid timestamp
      * @return  $this
      */
-    public function setFailureTime($failureTime);
+    public function setFailureTime(int $failureTime);
 
     /**
      * Number of successful logins.
@@ -86,7 +86,7 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      * @param   int  $loginCount  must be positive
      * @return  $this
      */
-    public function setLoginCount($loginCount);
+    public function setLoginCount(int $loginCount);
 
     /**
      * Last login time.
@@ -96,14 +96,14 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      * @param   int  $loginTime  a valid timestamp
      * @return  $this
      */
-    public function setLoginTime($loginTime);
+    public function setLoginTime(int $loginTime);
 
     /**
      * Get password hash.
      *
-     * @return  string
+     * @return  string|null
      */
-    public function getPassword();
+    public function getPassword(): ?string;
 
     /**
      * Update language.
@@ -113,14 +113,14 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      * @param   string  $language  language or locale string
      * @return  $this
      */
-    public function setLanguage($language);
+    public function setLanguage(string $language);
 
     /**
      * Get selected language.
      *
-     * @return  string
+     * @return  string|null
      */
-    public function getLanguage();
+    public function getLanguage(): ?string;
 
     /**
      * Get failure count.
@@ -132,7 +132,7 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      *
      * @return  int
      */
-    public function getFailureCount();
+    public function getFailureCount(): int;
 
     /**
      * Get failure time.
@@ -144,7 +144,7 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      *
      * @return  int
      */
-    public function getFailureTime();
+    public function getFailureTime(): int;
 
     /**
      * Get the timestamp when user last sucessfully logged-in.
@@ -154,9 +154,9 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      *
      * The default is 0.
      *
-     * @return  int
+     * @return  int|null
      */
-    public function getLoginTime();
+    public function getLoginTime(): ?int;
 
     /**
      * Get login count.
@@ -164,9 +164,10 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      * Returns the number of times the user sucessfully logged-in.
      *
      * The default is 0.
+     *
      * @return  int
      */
-    public function getLoginCount();
+    public function getLoginCount(): int;
 
     /**
      * Update mail.
@@ -176,14 +177,14 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      * @param   string  $mail  e-mail address
      * @return  $this
      */
-    public function setMail($mail);
+    public function setMail(string $mail);
 
     /**
      * Get mail address.
      *
-     * @return  string
+     * @return  string|null
      */
-    public function getMail();
+    public function getMail(): ?string;
 
     /**
      * Update expert setting.
@@ -194,7 +195,7 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      * @param   bool  $isExpert  use expert settings (yes/no)
      * @return  $this
      */
-    public function setExpert($isExpert);
+    public function setExpert(bool $isExpert);
 
     /**
      * User prefers expert settings.
@@ -204,7 +205,7 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      *
      * @return  bool
      */
-    public function isExpert();
+    public function isExpert(): bool;
 
     /**
      * Update expert setting.
@@ -215,7 +216,7 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      * @param   bool  $isActive  use expert settings (yes/no)
      * @return  $this
      */
-    public function setActive($isActive);
+    public function setActive(bool $isActive);
 
     /**
      * User is active.
@@ -224,7 +225,7 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      *
      * @return  bool
      */
-    public function isActive();
+    public function isActive(): bool;
 
     /**
      * Get the time when the user was created.
@@ -244,7 +245,7 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      *
      * @return  int
      */
-    public function getPasswordChangedTime();
+    public function getPasswordChangedTime(): int;
 
     /**
      * Get list of 10 recent passwords.
@@ -258,17 +259,17 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      *
      * @return  array
      */
-    public function getRecentPasswords();
+    public function getRecentPasswords(): array;
 
     /**
-     * get password recovery id
+     * Get password recovery id.
      *
      * When the user requests a new password, a recovery id is created and sent to his mail address.
      * This is to ensure that the user is a allowed to reset the password.
      *
-     * @return  string
+     * @return  string|null
      */
-    public function getPasswordRecoveryId();
+    public function getPasswordRecoveryId(): ?string;
 
     /**
      * Get password recovery time.
@@ -280,7 +281,7 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      *
      * @return  int
      */
-    public function getPasswordRecoveryTime();
+    public function getPasswordRecoveryTime(): int;
 
     /**
      * Set session-checksum.
@@ -311,7 +312,7 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      * @param   string  $checkSum  MD5-checksum of session-id
      * @return  $this
      */
-    public function setSessionCheckSum($checkSum);
+    public function setSessionCheckSum(string $checkSum);
 
     /**
      * Get session-checksum.
@@ -319,9 +320,9 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      * Will return NULL if the user never did a login before.
      * Otherwise it will return the checksum of the least recently used session.
      * 
-     * @return  string
+     * @return  string|NULL
      */
-    public function getSessionCheckSum();
+    public function getSessionCheckSum(): ?string;
 
     /**
      * Set a hash-id for password recovery.
@@ -331,7 +332,7 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      * @param   string  $passwordRecoveryId  some identifier (preferably a hash value)
      * @return  $this
      */
-    public function setPasswordRecoveryId($passwordRecoveryId);
+    public function setPasswordRecoveryId(string $passwordRecoveryId);
 
     /**
      * Set time when the last password recovery request was made.
@@ -339,7 +340,7 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      * @param   int $passwordRecoveryTime  a valid timestamp
      * @return  $this
      */
-    public function setPasswordRecoveryTime($passwordRecoveryTime);
+    public function setPasswordRecoveryTime(int $passwordRecoveryTime);
 
     /**
      * Set time when the user last changed his password.
@@ -347,7 +348,7 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      * @param   int  $passwordChangedTime  a valid timestamp
      * @return  $this
      */
-    public function setPasswordChangedTime($passwordChangedTime);
+    public function setPasswordChangedTime(int $passwordChangedTime);
 
     /**
      * Set a list of recent passwords.
@@ -367,7 +368,7 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      * @param   int  $timeCreated  valid timestamp
      * @return  $this
      */
-    public function setTimeCreated($timeCreated);
+    public function setTimeCreated(int $timeCreated);
 
     /**
      * Set login password to $password.
@@ -375,7 +376,7 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      * @param   string  $password user password
      * @return  $this
      */
-    public function setPassword($password);
+    public function setPassword(string $password);
 
 }
 

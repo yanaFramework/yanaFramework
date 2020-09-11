@@ -85,7 +85,6 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
      * @onerror     goto: GET_USER_LIST
      * @language    user
      *
-     * @access      public
      * @return      bool
      * @param       array  $target  array of params passed to the function
      */
@@ -118,21 +117,27 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
             return false;
         }
 
-        assert(!isset($YANA), '$YANA already declared');
-        $YANA = $this->_getApplication();
-        $YANA->setVar('PASSWORT', $password);
-        $YANA->setVar('NAME', $user->getId());
         if (filter_var($user->getMail(), FILTER_VALIDATE_EMAIL)) {
+            assert(!isset($YANA), '$YANA already declared');
+            $YANA = $this->_getApplication();
             assert(!isset($sender), 'Cannot redeclare var $sender');
             $sender = (string) $YANA->getVar("PROFILE.MAIL");
             if (filter_var($sender, FILTER_VALIDATE_EMAIL)) {
                 $template = $YANA->getView()->createContentTemplate("id:USER_PASSWORD_MAIL");
                 $templateMailer = new \Yana\Mails\TemplateMailer($template);
-                $recipient = $user->getMail();
-                $subject = $YANA->getLanguage()->getVar("user.mail_subject");
-                $vars = array('DATE' => date('d-m-Y'));
-                $headers = array('from' => $sender);
-                $templateMailer->send($recipient, $subject, $vars, $headers);
+                $templateMailer->send(
+                    $user->getMail(), // reciepient
+                    $YANA->getLanguage()->getVar("user.mail_subject"), // subject
+                    array( // template vars
+                        'PASSWORT' => $password,
+                        'NAME' => $user->getId(),
+                        'DATE' => date('d-m-Y')
+                    ),
+                    array(
+                        'from' => $sender,
+                        'content-type' => 'text/html; charset=UTF-8'
+                    ) // headers
+                );
             }
             unset($sender);
         }
@@ -148,7 +153,6 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
      * @title       {lang id="user.2"}
      * @user        group: admin, level: 100
      *
-     * @access      public
      * @return      bool
      */
     public function get_user_list()
@@ -168,7 +172,6 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
      * @onsuccess   goto: GET_USER_LIST
      * @onerror     goto: GET_USER_LIST
      *
-     * @access      public
      * @return      bool
      */
     public function set_user_edit()
@@ -216,7 +219,6 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
      * @onsuccess   goto: GET_USER_LIST
      * @onerror     goto: GET_USER_LIST
      *
-     * @access      public
      * @return      bool
      * @param       array  $selected_entries  array of params passed to the function
      */
@@ -243,7 +245,6 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
      * @onsuccess   goto: GET_USER_LIST
      * @onerror     goto: GET_USER_LIST
      *
-     * @access      public
      * @return      bool
      */
     public function set_user_new()
@@ -275,7 +276,6 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
      * @onsuccess   goto: get_user_list
      * @onerror     goto: get_user_list
      *
-     * @access      public
      * @return      bool
      */
     public function set_access_edit()
@@ -296,7 +296,6 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
      * @onsuccess   goto: get_user_list
      * @onerror     goto: get_user_list
      *
-     * @access      public
      * @return      bool
      * @param       array  $selected_entries  array of params passed to the function
      */
@@ -318,7 +317,6 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
      * @onsuccess   goto: get_user_list
      * @onerror     goto: get_user_list
      *
-     * @access      public
      * @return      bool
      */
     public function set_access_new()
@@ -339,7 +337,6 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
      * @onsuccess   goto: get_user_list
      * @onerror     goto: get_user_list
      *
-     * @access      public
      * @return      bool
      */
     public function set_securitylevel_edit()
@@ -360,7 +357,6 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
      * @onsuccess   goto: get_user_list
      * @onerror     goto: get_user_list
      *
-     * @access      public
      * @return      bool
      * @param       array  $selected_entries  array of params passed to the function
      */
@@ -382,7 +378,6 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
      * @onsuccess   goto: get_user_list
      * @onerror     goto: get_user_list
      *
-     * @access      public
      * @return      bool
      */
     public function set_securitylevel_new()
