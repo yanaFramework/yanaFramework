@@ -69,7 +69,7 @@ class QuerySerializer extends \Yana\Db\Queries\AbstractQuerySerializer
      */
     protected function _toTableString(\Yana\Db\Queries\IsQuery $query): string
     {
-        return $query->getDatabase()->quoteId(YANA_DATABASE_PREFIX . (string) $query->getTable());
+        return $query->getDatabase()->quoteId((string) $query->getTable());
     }
 
     /**
@@ -110,7 +110,7 @@ class QuerySerializer extends \Yana\Db\Queries\AbstractQuerySerializer
                         if ($set !== '') {
                             $set .= ', ';
                         }
-                        $set .= $query->getDatabase()->quoteId(\YANA_DATABASE_PREFIX . $query->getTable()) . '.'
+                        $set .= $query->getDatabase()->quoteId($query->getTable()) . '.'
                             . $query->getDatabase()->quoteId($column) . ' = ';
                         if ($this->_isCollectingParametersForBinding()) {
                             $set .= '?';
@@ -126,7 +126,7 @@ class QuerySerializer extends \Yana\Db\Queries\AbstractQuerySerializer
                 unset($values);
             break;
             case \Yana\Db\ResultEnumeration::CELL:
-                $set = $query->getDatabase()->quoteId(\YANA_DATABASE_PREFIX . $query->getTable()) . '.'
+                $set = $query->getDatabase()->quoteId($query->getTable()) . '.'
                     . $query->getDatabase()->quoteId($query->getColumn()) . ' = ';
                 if ($this->_isCollectingParametersForBinding()) {
                     $set .= '?';
@@ -197,7 +197,7 @@ class QuerySerializer extends \Yana\Db\Queries\AbstractQuerySerializer
          */
         // left operand
         if (is_array($leftOperand)) {
-            $leftOperand = $connection->quoteId(YANA_DATABASE_PREFIX . $leftOperand[0]) . '.' . $leftOperand[1];
+            $leftOperand = $connection->quoteId($leftOperand[0]) . '.' . $leftOperand[1];
         }
         // right operand
         if ($operator === \Yana\Db\Queries\OperatorEnumeration::EXISTS || $operator === \Yana\Db\Queries\OperatorEnumeration::NOT_EXISTS) {
@@ -228,7 +228,7 @@ class QuerySerializer extends \Yana\Db\Queries\AbstractQuerySerializer
             $rightOperand = "(" . $list . ")";
             unset($list);
         } elseif (is_array($rightOperand)) {
-            $rightOperand = $connection->quoteId(YANA_DATABASE_PREFIX . $rightOperand[0]) . '.' . $rightOperand[1];
+            $rightOperand = $connection->quoteId($rightOperand[0]) . '.' . $rightOperand[1];
         } elseif (is_string($rightOperand)) {
             if ($this->_isCollectingParametersForBinding()) {
                 $this->_bindQueryParameter($rightOperand);
@@ -368,10 +368,10 @@ class QuerySerializer extends \Yana\Db\Queries\AbstractQuerySerializer
             switch (true)
             {
                 case $join->isLeftJoin():
-                    $joins .= ' LEFT JOIN ' . $connection->quoteId(YANA_DATABASE_PREFIX . $join->getJoinedTableName());
+                    $joins .= ' LEFT JOIN ' . $connection->quoteId($join->getJoinedTableName());
                 break;
                 case $join->isInnerJoin():
-                    $joins .= ' JOIN ' . $connection->quoteId(YANA_DATABASE_PREFIX .  $join->getJoinedTableName());
+                    $joins .= ' JOIN ' . $connection->quoteId( $join->getJoinedTableName());
                 break;
             };
             if ($join->getForeignKey() === "" || $join->getTargetKey() === "") {
@@ -383,10 +383,10 @@ class QuerySerializer extends \Yana\Db\Queries\AbstractQuerySerializer
                 case $join->isLeftJoin():
                 case $join->isInnerJoin():
                     $joins .= ' ON ' .
-                        ($join->getSourceTableName() > "" ? $connection->quoteId(YANA_DATABASE_PREFIX . $join->getSourceTableName()) . '.' : "") .
+                        ($join->getSourceTableName() > "" ? $connection->quoteId($join->getSourceTableName()) . '.' : "") .
                         $connection->quoteId($join->getForeignKey()) .
                         ' = ' .
-                        ($join->getJoinedTableName() > "" ? $connection->quoteId(YANA_DATABASE_PREFIX . $join->getJoinedTableName()) . '.' : "") .
+                        ($join->getJoinedTableName() > "" ? $connection->quoteId($join->getJoinedTableName()) . '.' : "") .
                         $connection->quoteId($join->getTargetKey());
                 break;
             }
@@ -409,7 +409,7 @@ class QuerySerializer extends \Yana\Db\Queries\AbstractQuerySerializer
         if ($query->getColumn() === '*') {
             return $columnName;
         }
-        return $query->getDatabase()->quoteId(YANA_DATABASE_PREFIX . $query->getTable()) . '.' . $query->getDatabase()->quoteId($columnName);
+        return $query->getDatabase()->quoteId($query->getTable()) . '.' . $query->getDatabase()->quoteId($columnName);
     }
 
     /**
@@ -440,7 +440,7 @@ class QuerySerializer extends \Yana\Db\Queries\AbstractQuerySerializer
             if ($columnName !== "") {
                 $columnName .= ', ';
             }
-            $columnName .= $connection->quoteId(YANA_DATABASE_PREFIX . $item[0]) . '.' . $connection->quoteId($item[1]);
+            $columnName .= $connection->quoteId($item[0]) . '.' . $connection->quoteId($item[1]);
             if (is_string($alias) && $alias > "") {
                 $columnName .= " as " . $connection->quoteId($alias);
             }

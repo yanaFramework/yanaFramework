@@ -63,13 +63,7 @@ class Mdb2Worker extends \Yana\Db\Ddl\Factories\AbstractMdb2Worker
         assert(!isset($tableName), 'Cannot redeclare var $tableName');
         foreach ($connection->listTables() as $tableName)
         {
-            /*
-             * remove prefix
-             */
-            $name = preg_replace('/^' . preg_quote(YANA_DATABASE_PREFIX, '/') . '/', '', $tableName);
-            $table = $database->addTable($name); // get \Yana\Db\Ddl\Table object
-            unset($name);
-
+            $table = $database->addTable($tableName); // get \Yana\Db\Ddl\Table object
             $this->_createColumns($table, $tableName);
             $this->_createIndexes($table, $tableName);
             $this->_createConstraints($table, $tableName);

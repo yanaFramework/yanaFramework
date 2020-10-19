@@ -177,7 +177,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
         foreach ($this->structure->getTables() as $table)
         {
             assert(is_string($table) && !empty($table), 'is_string($table) && !empty($table)');
-            $stmt = "CREATE TABLE [dbo].[".YANA_DATABASE_PREFIX."{$table}] (\n";
+            $stmt = "CREATE TABLE [dbo].[{$table}] (\n";
 
             $listOfColumns = $this->structure->getColumns($table);
             $listOfIndexes = $this->structure->getIndexes($table);
@@ -312,7 +312,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
                  */
                 if ($this->structure->isUnique($table, $column) === true) {
                     assert(is_array($lastSQL), 'is_array($lastSQL)');
-                    $lastSQL[] = "ALTER TABLE [dbo].[".YANA_DATABASE_PREFIX."{$table}] " .
+                    $lastSQL[] = "ALTER TABLE [dbo].[{$table}] " .
                         "ADD CONSTRAINT {$table}_{$column}_uq UNIQUE ({$column});";
                 }
 
@@ -329,9 +329,9 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
                 if ($this->structure->isForeignKey($table, $column) === true) {
                     $ftable = $this->structure->getTableByForeignKey($table, $column);
                     assert(is_array($lastSQL), 'is_array($lastSQL)');
-                    $lastSQL[] = "ALTER TABLE [dbo].[".YANA_DATABASE_PREFIX."{$table}] " .
+                    $lastSQL[] = "ALTER TABLE [dbo].[{$table}] " .
                         "ADD CONSTRAINT {$table}_{$ftable}_fk FOREIGN KEY ({$column}) " .
-                        "REFERENCES [dbo].[".YANA_DATABASE_PREFIX."{$ftable}];";
+                        "REFERENCES [dbo].[{$ftable}];";
                 }
 
                 /*  MS-SQL:
@@ -362,7 +362,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
                 {
                     assert(is_array($SQL), 'is_array($SQL)');
                     $SQL[] = "CREATE NONCLUSTERED INDEX {$table}_{$index}_idx " .
-                        "ON [".YANA_DATABASE_PREFIX."{$table}] ([{$index}]);";
+                        "ON [{$table}] ([{$index}]);";
                 }
                 unset($index);
             }
@@ -427,20 +427,19 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
         /*
          *  Create Table
          */
-        assert(!isset($table), 'cannot redeclare variable $table');
-        foreach ($this->structure->getTables() as $table)
+        assert(!isset($tableName), 'cannot redeclare variable $table');
+        foreach ($this->structure->getTables() as $tableName)
         {
-            assert(is_string($table) && !empty($table), 'is_string($table) && !empty($table)');
-            $tableName = YANA_DATABASE_PREFIX . $table;
+            assert(is_string($tableName) && !empty($tableName), 'is_string($tableName) && !empty($tableName)');
             if (\Yana\Util\Hashtable::quickSearch($sql_keywords, $tableName) !== false) {
                 $tableName = "\"{$tableName}\"";
             }
 
             $stmt = "CREATE TABLE {$tableName}(\n";
 
-            $listOfColumns = $this->structure->getColumns($table);
-            $listOfForeignKeys = $this->structure->getForeignKeys($table);
-            $listOfIndexes = $this->structure->getIndexes($table);
+            $listOfColumns = $this->structure->getColumns($tableName);
+            $listOfForeignKeys = $this->structure->getForeignKeys($tableName);
+            $listOfIndexes = $this->structure->getIndexes($tableName);
 
             /*
              *  Create Column
@@ -456,22 +455,22 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
                     $columnName = $column;
                 }
 
-                $type = $this->structure->getType($table, $column);
-                $length = $this->structure->getLength($table, $column);
-                $precision = $this->structure->getPrecision($table, $column);
-                $default = $this->structure->getDefault($table, $column);
-                $comment = $this->structure->getDescription($table, $column);
+                $type = $this->structure->getType($tableName, $column);
+                $length = $this->structure->getLength($tableName, $column);
+                $precision = $this->structure->getPrecision($tableName, $column);
+                $default = $this->structure->getDefault($tableName, $column);
+                $comment = $this->structure->getDescription($tableName, $column);
                 $stmt .= "\t{$columnName} ";
 
                 /*  DB2:
                  *  Add Type
                  */
-                if ($this->structure->isForeignKey($table, $column)) {
-                    $foreignTable = $this->structure->getTableByForeignKey($table, $column);
-                    $foreignPrimaryKey = $this->structure->getPrimaryKey($foreignTable);
-                    $type = $this->structure->getType($foreignTable, $foreignPrimaryKey);
-                    $length = $this->structure->getLength($foreignTable, $foreignPrimaryKey);
-                    $precision = $this->structure->getPrecision($foreignTable, $foreignPrimaryKey);
+                if ($this->structure->isForeignKey($tableName, $column)) {
+                    $foreignTableName = $this->structure->getTableByForeignKey($tableName, $column);
+                    $foreignPrimaryKey = $this->structure->getPrimaryKey($foreignTableName);
+                    $type = $this->structure->getType($foreignTableName, $foreignPrimaryKey);
+                    $length = $this->structure->getLength($foreignTableName, $foreignPrimaryKey);
+                    $precision = $this->structure->getPrecision($foreignTableName, $foreignPrimaryKey);
                 }
                 switch (mb_strtolower($type))
                 {
@@ -553,15 +552,15 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
                 /*  DB2:
                  *  Decide wether this column is nullable
                  */
-                $isNullable = $this->structure->isNullable($table, $column);
-                if ($isNullable === false || $this->structure->isAutonumber($table, $column) === true) {
+                $isNullable = $this->structure->isNullable($tableName, $column);
+                if ($isNullable === false || $this->structure->isAutonumber($tableName, $column) === true) {
                     $stmt .= " NOT NULL";
                 }
                 unset ($isNullable);
                 /*  DB2:
                  *  Add Autonumber
                  */
-                if ($this->structure->isAutonumber($table, $column) === true) {
+                if ($this->structure->isAutonumber($tableName, $column) === true) {
                     $stmt .= " GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1, NO CACHE)";
 
                 /*  DB2:
@@ -578,8 +577,8 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
                 /*  DB2:
                  *  Add Primary Key
                  */
-                if ($this->structure->isPrimaryKey($table, $column) === true) {
-                    $constraintName = "{$table}_pk";
+                if ($this->structure->isPrimaryKey($tableName, $column) === true) {
+                    $constraintName = "{$tableName}_pk";
                     if (mb_strlen($constraintName) > 18) {
                         assert(!isset($constStart), 'Cannot redeclare var $constStart');
                         $constStart = mb_strlen($constraintName)-18;
@@ -594,8 +593,8 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
                 /*  DB2:
                  *  Add Primary Key
                  */
-                if ($this->structure->isUnique($table, $column) === true) {
-                    $constraintName = "{$table}_{$column}_uq";
+                if ($this->structure->isUnique($tableName, $column) === true) {
+                    $constraintName = "{$tableName}_{$column}_uq";
                     if (mb_strlen($constraintName) > 18) {
                         $constraintName = "{$column}_uq";
                     }
@@ -644,7 +643,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
                         $indexName = $index;
                     }
                     assert(is_array($SQL), 'is_array($SQL)');
-                    $SQL[] = "CREATE INDEX {$table}_{$index}_idx ON {$tableName} ({$indexName});";
+                    $SQL[] = "CREATE INDEX {$tableName}_{$index}_idx ON {$tableName} ({$indexName});";
                 } /* end foreach index */
                 unset($index);
             }
@@ -655,11 +654,10 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
             if (!empty($listOfForeignKeys)) {
                 assert(!isset($i), 'Cannot redeclare variable $i');
                 $i = 0;
-                foreach ($listOfForeignKeys as $foreignKey => $foreignTable)
+                foreach ($listOfForeignKeys as $foreignKey => $foreignTableName)
                 {
                     $foreignKey = mb_strtolower($foreignKey);
-                    $foreignPrimaryKey = $this->structure->getPrimaryKey($foreignTable);
-                    $foreignTableName = YANA_DATABASE_PREFIX . $foreignTable;
+                    $foreignPrimaryKey = $this->structure->getPrimaryKey($foreignTableName);
                     if (\Yana\Util\Hashtable::quickSearch($sql_keywords, $foreignTableName) !== false) {
                         $foreignTableName = "\"{$foreignTableName}\"";
                     } else {
@@ -671,17 +669,17 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
                         $foreignKeyName = $foreignKey;
                     }
 
-                    $constraintName = "{$table}_fk_{$i}";
+                    $constraintName = "{$tableName}_fk_{$i}";
                     assert(is_array($lastSQL), 'is_array($lastSQL)');
                     $lastSQL[] = "ALTER TABLE {$tableName} ADD CONSTRAINT {$constraintName} " .
                         "FOREIGN KEY ({$foreignKeyName}) REFERENCES {$foreignTableName};";
                     ++$i;
                 }
-                unset($i);
+                unset($i, $foreignKey, $foreignTableName);
             }
 
         } /* end foreach table */
-        unset($table);
+        unset($tableName);
 
         assert(is_array($lastSQL), 'is_array($lastSQL)');
         assert(!isset($stmt), 'cannot redeclare variable $stmt');
@@ -727,7 +725,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
         foreach ($this->structure->getTables() as $table)
         {
             assert(is_string($table) && !empty($table), 'is_string($table) && !empty($table)');
-            $stmt = "CREATE TABLE \"".YANA_DATABASE_PREFIX."{$table}\" (\n";
+            $stmt = "CREATE TABLE \"{$table}\" (\n";
 
             $listOfColumns      = $this->structure->getColumns($table);
             $listOfIndexes      = $this->structure->getIndexes($table);
@@ -863,7 +861,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
                  */
                 if ($this->structure->isUnique($table, $column) === true) {
                     assert(is_array($lastSQL), 'is_array($lastSQL)');
-                    $lastSQL[] = "ALTER TABLE \"".YANA_DATABASE_PREFIX."{$table}\" ADD CONSTRAINT " .
+                    $lastSQL[] = "ALTER TABLE \"{$table}\" ADD CONSTRAINT " .
                         "\"{$table}_{$column}_uq\" UNIQUE (\"{$column}\");";
                 }
 
@@ -872,7 +870,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
                  */
                 if (!empty($comment)) {
                     assert(is_array($lastSQL), 'is_array($lastSQL)');
-                    $lastSQL[] = "COMMENT ON COLUMN \"".YANA_DATABASE_PREFIX."{$table}\"." .
+                    $lastSQL[] = "COMMENT ON COLUMN \"{$table}\"." .
                         "\"{$column}\" IS '".addcslashes($comment, "'")."';";
                 }
 
@@ -900,8 +898,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
                 foreach ($listOfIndexes as $index)
                 {
                     assert(is_array($SQL), 'is_array($SQL)');
-                    $SQL[] = "CREATE INDEX \"{$table}_idx{$i}\" ON \"" . YANA_DATABASE_PREFIX .
-                        "{$table}\" (\"{$index}\");";
+                    $SQL[] = "CREATE INDEX \"{$table}_idx{$i}\" ON \"{$table}\" (\"{$index}\");";
                     $i++;
                 }
                 unset($i, $index);
@@ -918,9 +915,9 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
                     $foreignPrimaryKey = $this->structure->getPrimaryKey($foreignTable);
                     $constraintName = "{$table}_fk{$i}";
                     assert(is_array($lastSQL), 'is_array($lastSQL)');
-                    $lastSQL[] = "ALTER TABLE \"".YANA_DATABASE_PREFIX."{$table}\" ADD CONSTRAINT " .
+                    $lastSQL[] = "ALTER TABLE \"{$table}\" ADD CONSTRAINT " .
                         "\"$constraintName\" FOREIGN KEY (\"{$foreignKey}\") REFERENCES " .
-                        "\"".YANA_DATABASE_PREFIX."{$foreignTable}\" (\"{$foreignPrimaryKey}\");";
+                        "\"{$foreignTable}\" (\"{$foreignPrimaryKey}\");";
                     $i++;
                 }
                 unset($i, $foreignKey, $foreignTable);

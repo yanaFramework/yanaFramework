@@ -64,7 +64,7 @@ class DoctrineWorker extends \Yana\Db\Ddl\Factories\AbstractDoctrineWorker
         foreach ($connection->listTables() as $table)
         {
             assert(!isset($tableName), 'Cannot redeclare var $tableName');
-            $tableName = $this->_stripPrefixFromTableName($table->getName());
+            $tableName = $table->getName();
             $table = $database->addTable($tableName); // get \Yana\Db\Ddl\Table object
 
             $this->_createColumns($table, $tableName);
@@ -82,17 +82,6 @@ class DoctrineWorker extends \Yana\Db\Ddl\Factories\AbstractDoctrineWorker
         unset($table);
 
         return $database;
-    }
-
-    /**
-     * Removes YANA_DATABASE_PREFIX from an id.
-     *
-     * @param   string  $tableName  id to modify
-     * @return  string
-     */
-    private function _stripPrefixFromTableName(string $tableName): string
-    {
-        return preg_replace('/^' . preg_quote(YANA_DATABASE_PREFIX, '/') . '/', '', $tableName);
     }
 
     /**
