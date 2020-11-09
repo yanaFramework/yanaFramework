@@ -31,7 +31,16 @@ namespace Yana\Db\Export;
 /**
  * <<facade>> Database copier.
  *
- * Compares a source and target to find the missing entries and creates the necessary insert statements to create them.
+ * Compares a source and target to find the missing entries and generates the necessary insert statements to create them.
+ *
+ * How to use:
+ * <code>
+ * $dataFacade = new DataFacade($sourceConnection, $targetConnection);
+ * foreach ($dataFacade->compareAllTables() as $tableName => $idList)
+ * {
+ *     $dataFacade->copyTable($tableName, $idList);
+ * }
+ * </code>
  *
  * @package     yana
  * @subpackage  db
