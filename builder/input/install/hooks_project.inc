@@ -104,6 +104,12 @@ $HOOKS[HOOK_DATABASE] = function(string $dbms, string $host, string $port, strin
         print "<p>Connection to database failed.</p>";
         return;
     }
+
+    // The "db" directory is where we keep XML files that can be used to create SQL files
+    $dbDirectory = 'yana/config/db/';
+    // The "install" directory is where we keep the actual SQL files, not all are created in advance
+    $installDirectory = $dbDirectory . 'install/' . preg_replace('/[^a-zA-Z0-9_]/gs', '', $dbms) . '/';
+
     if (!$application->execute("check_login", array("user" => "administrator"))) {
         print "<p>Access denied - perhaps the password has already been set?<br>Operation aborted.</p>\n";
         return;
