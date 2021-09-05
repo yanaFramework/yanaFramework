@@ -5,6 +5,5 @@
         if (!defined('YANA_DATABASE_PORT'))     define('YANA_DATABASE_PORT', "");
         if (!defined('YANA_DATABASE_USER'))     define('YANA_DATABASE_USER', "root");
         if (!defined('YANA_DATABASE_PASSWORD')) define('YANA_DATABASE_PASSWORD', "");
-        if (!defined('YANA_DATABASE_PREFIX'))   define('YANA_DATABASE_PREFIX', "");
         if (!defined('YANA_DATABASE_NAME'))     define('YANA_DATABASE_NAME', "yana");
 ?>

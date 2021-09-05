@@ -935,10 +935,14 @@ class Image extends \Yana\Core\StdObject
             $fontfile = 'tahoma';
         }
 
-        /* set path on Win32-systems */
-        if (isset($_SERVER['windir']) && !is_file($fontfile)) {
-            $fontfile = $_SERVER['windir'] . DIRECTORY_SEPARATOR . 'Fonts' . DIRECTORY_SEPARATOR . $fontfile .
-                '.ttf';
+        /* set path on Windows-systems */
+        if (is_string($fontfile) && !is_file($fontfile)) {
+            // Note: $_SERVER global var has different contents depending on from where it was called.
+            $winDir =  isset($_SERVER['WINDIR']) ? (string) $_SERVER['WINDIR'] : // web client call
+                isset($_SERVER['windir']) ? (string) $_SERVER['windir'] : null; // command line call (i.e. unit test)
+            if (is_string($winDir)) {
+                $fontfile = $winDir . DIRECTORY_SEPARATOR . 'Fonts' . DIRECTORY_SEPARATOR . $fontfile . '.ttf';
+            }
         }
 
         return (bool) imagettftext($this->_image, $fontsize, $angle, $x, $y, $color, $fontfile, $text);

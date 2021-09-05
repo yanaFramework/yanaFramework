@@ -219,22 +219,6 @@ if (!defined('YANA_EMBTAG_ALLOW_PHP')) {
     define('YANA_EMBTAG_ALLOW_PHP', true);
 }
 
-if (!defined('YANA_CACHE_ACTIVE')) {
-    /**
-     * activate/deactivate Yana Framework's system cache
-     *
-     * This constant enables/disables the framework's internal system cache, that
-     * accelerates the startup process of the framework in productive environments.
-     *
-     * You may want to turn this feature off for debugging.
-     *
-     * Set to bool(true) to enable, or bool(false) to disable the feature.
-     * By default this setting is activated and deactivated automatically
-     * together with the debugging mode.
-     */
-    define("YANA_CACHE_ACTIVE", error_reporting() === 0);
-}
-
 if (!defined('YANA_DB_STRICT')) {
     /**
      * activate/deactivate strict database checks
