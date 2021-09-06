@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Data\Adapters;
 
@@ -103,10 +104,10 @@ class FileCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yan
      *
      * @returns  array
      */
-    protected function _readCacheDirectory()
+    protected function _readCacheDirectory(): array
     {
         $items = array();
-        $file = $this->_toFile("");
+        $file = $this->_getNewCacheIndex();
         if ($file->exists() && !$file->isEmpty()) {
             $file->read();
             $contents = $file->getContent();
@@ -166,7 +167,7 @@ class FileCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yan
      *
      * @return int
      */
-    protected function _getLifetime()
+    protected function _getLifetime(): int
     {
         return $this->_lifetime;
     }
@@ -177,9 +178,9 @@ class FileCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yan
      * @param  string  $offset  base offset
      * @return string
      */
-    private function _offsetToId($offset)
+    private function _offsetToId(string $offset): string
     {
-        return md5((string) $offset);
+        return md5($offset);
     }
 
     /**
@@ -188,10 +189,8 @@ class FileCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yan
      * @param   string  $id  file identifier
      * @return  \Yana\Files\IsTextFile
      */
-    protected function _toFile($id)
+    protected function _toFile(string $id):  \Yana\Files\IsTextFile
     {
-        assert(is_scalar($id), 'Invalid argument $id: string expected');
-
         $path = $this->_getPath() . '/' . $id . ".tmp";
         return new \Yana\Files\Text($path);
     }
@@ -210,10 +209,11 @@ class FileCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yan
      */
     public function offsetGet($offset)
     {
+        assert(is_scalar($offset), 'Invalid argument $offset: scalar expected');
         $result = null;
 
         if ($this->offsetExists($offset)) {
-            $id = $this->_offsetToId($offset);
+            $id = $this->_offsetToId((string) $offset);
             $file = $this->_toFile($id);
             if ($file->exists()) { // Note: this may give false positives, as the results are cached by PHP
                 $file->read();
@@ -246,9 +246,10 @@ class FileCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yan
             $offset = (string) \array_pop($_keys);
             unset($_keys);
         }
+        assert(is_scalar($offset), 'Invalid argument $offset: scalar expected');
 
         // store the value to a cache file
-        $id = $this->_offsetToId($offset);
+        $id = $this->_offsetToId((string) $offset);
         $file = $this->_toFile($id);
         if (!$file->exists()) {
             $file->create();
@@ -268,7 +269,9 @@ class FileCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yan
      */
     public function offsetUnset($offset)
     {
-        $id = $this->_offsetToId($offset);
+        assert(is_scalar($offset), 'Invalid argument $offset: scalar expected');
+
+        $id = $this->_offsetToId((string) $offset);
         $file = $this->_toFile($id);
         if ($file->exists()) {
             $file->delete();
@@ -284,12 +287,22 @@ class FileCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yan
     protected function _updateIndex()
     {
         $content = \serialize($this->_getItems());
-        $file = $this->_toFile("");
+        $file = $this->_getNewCacheIndex();
         if (!$file->exists()) {
             $file->create();
         }
         $file->setContent($content);
         $file->write();
+    }
+
+    /**
+     * Creates and returns a new cache index file object.
+     *
+     * @return  \Yana\Files\IsTextFile
+     */
+    private function _getNewCacheIndex():  \Yana\Files\IsTextFile
+    {
+        return $this->_toFile("cachelifetime");
     }
 
 }
