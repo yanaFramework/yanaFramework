@@ -60,7 +60,7 @@ class FileCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yan
      * @param  int                $lifetime   0 = forever, or seconds (max 30 days), or timestamp
      * @throws \Yana\Core\Exceptions\Files\NotWriteableException  when the cache directory is not writable
      */
-    public function __construct(\Yana\Files\IsDir $directory, $lifetime = 0)
+    public function __construct(\Yana\Files\IsDir $directory, int $lifetime = 0)
     {
         assert(is_int($lifetime), 'Invalid argument $lifetime: int expected');
 
@@ -108,7 +108,7 @@ class FileCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yan
     {
         $items = array();
         $file = $this->_getNewCacheIndex();
-        if ($file->exists() && !$file->isEmpty()) {
+        if ($file->exists()) {
             $file->read();
             $contents = $file->getContent();
             $items = \unserialize($contents);

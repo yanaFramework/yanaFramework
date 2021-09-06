@@ -183,11 +183,15 @@ class Container extends \Yana\Core\StdObject implements \Yana\Core\Dependencies\
     public function getCache(): \Yana\Data\Adapters\IsDataAdapter
     {
         if (!isset($this->_applicationCache)) {
+            assert(!isset($tempDir), 'Cannot redeclare var $tempDir');
             $tempDir = $this->_getPathToCacheDirectory();
             if (YANA_CACHE_ACTIVE === true && is_dir($tempDir)) {
                 // @codeCoverageIgnoreStart
+                assert(!isset($temporaryDirectory), 'Cannot redeclare var $temporaryDirectory');
                 $temporaryDirectory = new \Yana\Files\Dir($tempDir);
-                $this->_applicationCache = new \Yana\Data\Adapters\FileCacheAdapter($temporaryDirectory);
+                assert(!isset($cacheLifetime), 'Cannot redeclare var $cacheLifetime');
+                $cacheLifetime = 28800; // 8 hours
+                $this->_applicationCache = new \Yana\Data\Adapters\FileCacheAdapter($temporaryDirectory, $cacheLifetime);
                 // @codeCoverageIgnoreEnd
             } else {
                 $this->_applicationCache = new \Yana\Data\Adapters\ArrayAdapter();
