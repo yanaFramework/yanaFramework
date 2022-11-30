@@ -25,6 +25,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Data\Adapters\MemCache;
 
@@ -36,7 +37,7 @@ namespace Yana\Data\Adapters\MemCache;
  * @package     yana
  * @subpackage  data
  */
-class Server extends \Yana\Core\StdObject
+class Server extends \Yana\Core\StdObject implements \Yana\Data\Adapters\MemCache\IsServer
 {
 
     /**
@@ -67,16 +68,13 @@ class Server extends \Yana\Core\StdObject
      * @param  int     $port      port of Memcache server.
      * @param  int     $weight    controls probability of the server being selected.
      */
-    public function __construct($hostName = '127.0.0.1', $port = 11211, $weight = 1)
+    public function __construct(string $hostName = '127.0.0.1', int $port = 11211, int $weight = 1)
     {
-        assert(is_string($hostName), 'Invalid argument $hostName: string expected');
-        assert(is_int($port), 'Invalid argument $port: int expected');
-        assert(is_int($weight), 'Invalid argument $weight: int expected');
         assert($weight > 0, 'The weight for the server must be a positive integer greater than 0.');
 
-        $this->_host = (string) $hostName;
-        $this->_port = (int) $port;
-        $this->_weight = (int) $weight;
+        $this->_host = $hostName;
+        $this->_port = $port;
+        $this->_weight = $weight;
     }
 
     /**
@@ -84,7 +82,7 @@ class Server extends \Yana\Core\StdObject
      *
      * @return  string
      */
-    public function getHostName()
+    public function getHostName(): string
     {
         return $this->_host;
     }
@@ -94,7 +92,7 @@ class Server extends \Yana\Core\StdObject
      *
      * @return  int
      */
-    public function getPort()
+    public function getPort(): int
     {
         return $this->_port;
     }
@@ -104,7 +102,7 @@ class Server extends \Yana\Core\StdObject
      *
      * @return  int
      */
-    public function getWeight()
+    public function getWeight(): int
     {
         return $this->_weight;
     }

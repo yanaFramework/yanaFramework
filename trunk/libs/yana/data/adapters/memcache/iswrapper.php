@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Data\Adapters\MemCache;
 
@@ -41,12 +42,13 @@ interface IsWrapper
     /**
      * Get the matching value.
      *
-     * Returns bool(false) on failure.
+     * Returns the value associated with the key or an array of found key-value pairs when key is an array.
+     * Returns bool(false) on failure, when the key is not found, or the key is an empty array.
      *
      * @param   string  $key  identifying the item
-     * @return  string
+     * @return  string|array|bool
      */
-    public function getVar($key);
+    public function getVar(string $key);
 
     /**
      * Get array of matching values.
@@ -66,7 +68,7 @@ interface IsWrapper
      * @param   int     $expire  number of seconds it will take for the cache to expire
      * @return  bool
      */
-    public function setVar($key, $var, $expire = 0);
+    public function setVar(string $key, $var, int $expire = 0): bool;
 
     /**
      * Delete data at the server.
@@ -76,24 +78,24 @@ interface IsWrapper
      * @param   string  $key  identifying the item
      * @return  bool
      */
-    public function unsetVar($key);
+    public function unsetVar(string $key): bool;
 
     /**
      * Add a memcached server to the connection pool.
      *
      * Returns bool(true) on success or bool(false) on failure. 
      *
-     * @param   \Yana\Data\Adapters\MemCache\Server $server  server configuration
+     * @param   \Yana\Data\Adapters\MemCache\IsServer $server  server configuration
      * @return  bool
      */
-    public function addServer(\Yana\Data\Adapters\MemCache\Server $server);
+    public function addServer(\Yana\Data\Adapters\MemCache\IsServer $server);
 
     /**
      * Checks wether or not any of the Memcache servers is reachable.
      *
      * Returns bool(true) if it gets an answer from any of the listed servers.
      *
-     * @return  bool
+     * @return  array|bool
      */
     public function getStats();
 

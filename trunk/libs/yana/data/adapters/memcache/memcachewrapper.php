@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Data\Adapters\MemCache;
 
@@ -66,15 +67,14 @@ class MemcacheWrapper extends \Yana\Core\StdObject implements \Yana\Data\Adapter
     /**
      * Get the matching value.
      *
-     * Returns bool(false) on failure.
+     * Returns the value associated with the key or an array of found key-value pairs when key is an array.
+     * Returns bool(false) on failure, when the key is not found, or the key is an empty array.
      *
      * @param   string  $key  identifying the item
-     * @return  string
+     * @return  string|array|bool
      */
-    public function getVar($key)
+    public function getVar(string $key)
     {
-        assert(is_string($key), 'Invalid argument $key: string expected');
-
         return $this->_getMemCache()->get($key);
     }
 
@@ -101,12 +101,9 @@ class MemcacheWrapper extends \Yana\Core\StdObject implements \Yana\Data\Adapter
      * @param   int     $expire  number of seconds it will take for the cache to expire
      * @return  bool
      */
-    public function setVar($key, $var, $expire = 0)
+    public function setVar(string $key, $var, int $expire = 0): bool
     {
-        assert(is_string($key), 'Invalid argument $key: string expected');
-        assert(is_int($expire), 'Invalid argument $expire: int expected');
-
-        return $this->_getMemCache()->set($key, $var, 0, (int) $expire);
+        return (bool) $this->_getMemCache()->set($key, $var, 0, $expire);
     }
 
     /**
@@ -117,9 +114,9 @@ class MemcacheWrapper extends \Yana\Core\StdObject implements \Yana\Data\Adapter
      * @param   string  $key  identifying the item
      * @return  bool
      */
-    public function unsetVar($key)
+    public function unsetVar(string $key): bool
     {
-        return $this->_getMemCache()->delete($key);
+        return (bool) $this->_getMemCache()->delete($key);
     }
 
     /**
@@ -127,13 +124,13 @@ class MemcacheWrapper extends \Yana\Core\StdObject implements \Yana\Data\Adapter
      *
      * Returns bool(true) on success or bool(false) on failure. 
      *
-     * @param   \Yana\Data\Adapters\MemCache\Server $server  server configuration
+     * @param   \Yana\Data\Adapters\MemCache\IsServer $server  server configuration
      * @return  bool
      * @link    http://www.php.net/manual/en/memcache.addserver.php
      */
-    public function addServer(\Yana\Data\Adapters\MemCache\Server $server)
+    public function addServer(\Yana\Data\Adapters\MemCache\IsServer $server)
     {
-        return $this->_getMemCache()->addServer($server->getHostName(), $server->getPort(), null, $server->getWeight());
+        return $this->_getMemCache()->addServer($server->getHostName(), $server->getPort(), true, $server->getWeight());
     }
 
     /**
@@ -172,7 +169,7 @@ class MemcacheWrapper extends \Yana\Core\StdObject implements \Yana\Data\Adapter
      *
      * See PHP manual for more details.
      *
-     * @return  bool
+     * @return  array|bool
      * @link    http://www.php.net/manual/en/memcache.getextendedstats.php
      */
     public function getStats()

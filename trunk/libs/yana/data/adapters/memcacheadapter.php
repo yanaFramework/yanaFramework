@@ -24,6 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+declare(strict_types=1);
 
 namespace Yana\Data\Adapters;
 
@@ -68,14 +69,11 @@ class MemCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yana
      * @param  string                                  $prefix    id to prevent adapters from overwriting one another
      * @param  int                                     $lifetime  0 = forever, or seconds (max 30 days), or timestamp
      */
-    public function __construct(\Yana\Data\Adapters\MemCache\IsWrapper $memCache, $prefix = __CLASS__, $lifetime = 0)
+    public function __construct(\Yana\Data\Adapters\MemCache\IsWrapper $memCache, string $prefix = __CLASS__, int $lifetime = 0)
     {
-        assert(is_string($prefix), 'Invalid argument $prefix: string expected');
-        assert(is_int($lifetime), 'Invalid argument $lifetime: int expected');
-
-        $this->_prefix = (string) $prefix;
+        $this->_prefix = $prefix;
         $this->_memCache = $memCache;
-        $this->_lifetime = (int) $lifetime;
+        $this->_lifetime = $lifetime;
 
         if (!$this->_isAvailable()) {
             $message = "No Memcache server available. You may want to check your server and network settings.";
@@ -93,7 +91,7 @@ class MemCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yana
      *
      * @return string
      */
-    protected function _getPrefix()
+    protected function _getPrefix(): string
     {
         return $this->_prefix;
     }
@@ -103,7 +101,7 @@ class MemCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yana
      *
      * @return \Yana\Data\Adapters\MemCache\IsWrapper
      */
-    protected function _getMemCache()
+    protected function _getMemCache(): \Yana\Data\Adapters\MemCache\IsWrapper
     {
         return $this->_memCache;
     }
@@ -115,7 +113,7 @@ class MemCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yana
      *
      * @return  bool
      */
-    protected function _isAvailable()
+    protected function _isAvailable(): bool
     {
         $isAvailable = false;
         foreach ((array) $this->_getMemCache()->getStats() as $status)
@@ -165,7 +163,7 @@ class MemCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yana
      *
      * @return int
      */
-    protected function _getLifetime()
+    protected function _getLifetime(): int
     {
         return $this->_lifetime;
     }
@@ -173,10 +171,10 @@ class MemCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yana
     /**
      * Converts the offset to a memcache key.
      *
-     * @param   string  $offset  base offset
+     * @param   scalar  $offset  base offset
      * @return  string
      */
-    private function _toMemCacheKey($offset)
+    private function _toMemCacheKey($offset): string
     {
         assert(is_scalar($offset), 'Invalid argument $offset: string expected');
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * YANA library
  *
@@ -26,30 +27,40 @@
  */
 declare(strict_types=1);
 
-namespace Yana\Data\Adapters;
+namespace Yana\Data\Adapters\MemCache;
 
 /**
- * <<Interface>> Cacheable object.
+ * <<interface>> Memcache server setup.
  *
- * This identifies classes that may use caching.
- * Note: it is recommended to set the ArrayAdapter in the constructor as default if no other cache is provided.
+ * This is the configuration of the server to be used with the Memcache client.
  *
  * @package     yana
  * @subpackage  data
  */
-interface IsCacheable
+interface IsServer
 {
 
     /**
-     * Replace the cache adapter.
+     * Returns the hostname of Memcache server.
      *
-     * Note that this may also replace the cache contents.
-     *
-     * @param   \Yana\Data\Adapters\IsDataAdapter  $cache  new cache adapter
-     * @return  self
+     * @return  string
      */
-    public function setCache(\Yana\Data\Adapters\IsDataAdapter $cache);
+    public function getHostName(): string;
 
+    /**
+     * Returns the port of Memcache server.
+     *
+     * @return  int
+     */
+    public function getPort(): int;
+
+    /**
+     * Returns the weight of the server in the pool.
+     *
+     * @return  int
+     */
+    public function getWeight(): int;
+    
 }
 
 ?>
