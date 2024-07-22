@@ -662,7 +662,7 @@ final class Application extends \Yana\Core\StdObject implements \Yana\Report\IsR
      * @name    \Yana\Application:getReport()
      * @ignore
      */
-    public function getReport(\Yana\Report\IsReport ?$report = null)
+    public function getReport(?\Yana\Report\IsReport $report = null)
     {
         if (is_null($report)) {
             $report = \Yana\Report\Xml::createReport(__CLASS__);
