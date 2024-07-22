@@ -48,7 +48,7 @@ class Builder extends \Yana\Core\StdObject
      *
      * @param  \Yana\Http\Uploads\IsArrayMapper  $arrayMapper  converts $_FILE array into more manageable form
      */
-    public function __construct(\Yana\Http\Uploads\IsArrayMapper $arrayMapper = null)
+    public function __construct(?\Yana\Http\Uploads\IsArrayMapper $arrayMapper = null)
     {
         $this->_arrayMapper = $arrayMapper;
     }

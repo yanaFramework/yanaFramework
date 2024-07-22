@@ -105,7 +105,7 @@ class WhereClauseHelper extends \Yana\Core\StdObject
      * @return  bool
      * @throws  \Yana\Db\Queries\Exceptions\TableNotFoundException  when a table was referenced that doesn't exist
      */
-    public function __invoke(array $current, array $where, \Yana\Db\Ddl\Table $ignoreTable = null): bool
+    public function __invoke(array $current, array $where, ?\Yana\Db\Ddl\Table $ignoreTable = null): bool
     {
         if (empty($where)) {
             return true;

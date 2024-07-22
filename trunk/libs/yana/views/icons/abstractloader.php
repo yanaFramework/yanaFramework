@@ -49,7 +49,7 @@ abstract class AbstractLoader extends \Yana\Core\StdObject implements \Yana\View
      *
      * @param  \Yana\Views\Icons\IsDataAdapter  $adapter  containing configuration of icons
      */
-    public function __construct(\Yana\Views\Icons\IsDataAdapter $adapter = null)
+    public function __construct(?\Yana\Views\Icons\IsDataAdapter $adapter = null)
     {
         $this->_adapter = $adapter;
     }

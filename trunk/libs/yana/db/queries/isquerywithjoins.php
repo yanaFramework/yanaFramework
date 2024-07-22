@@ -54,7 +54,7 @@ interface IsQueryWithJoins extends \Yana\Db\Queries\IsQuery
      * @throws  \Yana\Core\Exceptions\NotFoundException  if a provided table or column is not found
      * @return  $this
      */
-    public function setInnerJoin(string $joinedTableName, string $targetKey = null, string $sourceTableName = null, string $foreignKey = null);
+    public function setInnerJoin(string $joinedTableName, ?string $targetKey = null, ?string $sourceTableName = null, ?string $foreignKey = null);
 
     /**
      * remove table  of joined tables

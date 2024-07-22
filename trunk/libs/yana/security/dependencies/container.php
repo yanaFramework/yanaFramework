@@ -78,7 +78,7 @@ class Container extends \Yana\Core\StdObject implements \Yana\Security\Dependenc
      *
      * @param  \Yana\Plugins\Facade  $facade  dependent resource
      */
-    public function __construct(\Yana\Plugins\Facade $facade = null)
+    public function __construct(?\Yana\Plugins\Facade $facade = null)
     {
         $this->_plugins = $facade;
     }

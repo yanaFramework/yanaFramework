@@ -56,7 +56,7 @@ class Result extends \Yana\Core\StdObject implements \Yana\Db\IsResult
      * @param  array   $result   resultset (set "null" for error)
      * @param  string  $message  error message
      */
-    public function __construct(array $result = null, $message = '')
+    public function __construct(?array $result = null, $message = '')
     {
         if (is_array($result)) {
             $this->_result = \Yana\Util\Hashtable::changeCase($result, CASE_LOWER);

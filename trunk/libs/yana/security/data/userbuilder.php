@@ -74,7 +74,7 @@ class UserBuilder extends \Yana\Core\StdObject implements \Yana\Security\Data\Is
      *
      * @param  \Yana\Security\Data\Users\IsDataAdapter  $userAdapter  inject a NULL-adapter for Unit-tests
      */
-    public function __construct(\Yana\Security\Data\Users\IsDataAdapter $userAdapter = null)
+    public function __construct(?\Yana\Security\Data\Users\IsDataAdapter $userAdapter = null)
     {
         $this->_userAdapter = $userAdapter;
     }
@@ -121,7 +121,7 @@ class UserBuilder extends \Yana\Core\StdObject implements \Yana\Security\Data\Is
      * @return  \Yana\Security\Data\Users\IsEntity
      * @throws  \Yana\Core\Exceptions\NotFoundException  if no such user is found in the database
      */
-    public function buildFromSession(\Yana\Security\Sessions\IsWrapper $session = null)
+    public function buildFromSession(?\Yana\Security\Sessions\IsWrapper $session = null)
     {
         if (\is_null($session)) {
             $session = new \Yana\Security\Sessions\Wrapper();

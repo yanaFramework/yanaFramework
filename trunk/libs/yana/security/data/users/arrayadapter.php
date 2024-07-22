@@ -54,7 +54,7 @@ class ArrayAdapter extends \Yana\Data\Adapters\ArrayAdapter implements \Yana\Sec
      *
      * @param  \Yana\Data\Adapters\IsEntityMapper  $mapper  simple OR-mapper to convert database entries to objects
      */
-    public function __construct(\Yana\Data\Adapters\IsEntityMapper $mapper = null)
+    public function __construct(?\Yana\Data\Adapters\IsEntityMapper $mapper = null)
     {
         $this->_entityMapper = $mapper;
     }

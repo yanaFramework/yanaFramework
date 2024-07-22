@@ -107,7 +107,7 @@ class Definition extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Dd
      * @param  string       $name    foreign key name
      * @param  \Yana\Db\Ddl\Database  $parent  parent database
      */
-    public function __construct($name, \Yana\Db\Ddl\Database $parent = null)
+    public function __construct($name, ?\Yana\Db\Ddl\Database $parent = null)
     {
         assert(is_string($name), 'Invalid argument $name: string expected');
         parent::__construct($name);

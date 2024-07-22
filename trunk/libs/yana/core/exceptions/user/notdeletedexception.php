@@ -46,7 +46,7 @@ class NotDeletedException extends \Yana\Core\Exceptions\User\UserException
      * @param  int         $code      optional error code
      * @param  \Exception  $previous  use this when you need to rethrow a catched exception
      */
-    public function __construct($message = "", $code = \Yana\Log\TypeEnumeration::ERROR, \Exception $previous = null)
+    public function __construct($message = "", $code = \Yana\Log\TypeEnumeration::ERROR, ?\Exception $previous = null)
     {
         parent::__construct($message, $code, $previous);
     }

@@ -194,7 +194,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * @param   \Yana\Db\Ddl\DDL     $parent  parent form or parent database
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the given parent is not valid
      */
-    public function __construct($name, \Yana\Db\Ddl\DDL $parent = null)
+    public function __construct($name, ?\Yana\Db\Ddl\DDL $parent = null)
     {
         parent::__construct($name);
         if (is_null($parent) || $parent instanceof \Yana\Db\Ddl\Database || $parent instanceof \Yana\Db\Ddl\Form) {

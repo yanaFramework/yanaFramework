@@ -60,7 +60,7 @@ interface IsUserBuilder
      * @return  \Yana\Security\Data\Users\IsEntity
      * @throws  \Yana\Core\Exceptions\NotFoundException  if no such user is found in the database
      */
-    public function buildFromSession(\Yana\Security\Sessions\IsWrapper $session = null);
+    public function buildFromSession(?\Yana\Security\Sessions\IsWrapper $session = null);
 
     /**
      * Build an user object based on a given name.

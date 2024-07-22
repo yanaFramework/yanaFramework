@@ -156,7 +156,7 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractUnnamedObject
      * @param  string    $name    foreign key name
      * @param  \Yana\Db\Ddl\Table  $parent  parent table
      */
-    public function __construct(string $name = "", \Yana\Db\Ddl\Table $parent = null)
+    public function __construct(string $name = "", ?\Yana\Db\Ddl\Table $parent = null)
     {
         parent::__construct($name);
         $this->parent = $parent;
@@ -595,7 +595,7 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractUnnamedObject
      * @param   \SimpleXMLElement $parentNode  parent node
      * @return  \SimpleXMLElement
      */
-    public function serializeToXDDL(\SimpleXMLElement $parentNode = null): \SimpleXMLElement
+    public function serializeToXDDL(?\SimpleXMLElement $parentNode = null): \SimpleXMLElement
     {
         switch ($this->match)
         {

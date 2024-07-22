@@ -82,7 +82,7 @@ class ChangeLog extends \Yana\Db\Ddl\DDL
      *
      * @param  \Yana\Db\Ddl\Database  $parent  parent database
      */
-    public function __construct(\Yana\Db\Ddl\Database $parent = null)
+    public function __construct(?\Yana\Db\Ddl\Database $parent = null)
     {
         $this->parent = $parent;
     }

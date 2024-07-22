@@ -49,7 +49,7 @@ class Driver extends \Yana\Core\AbstractDecorator implements \Yana\Db\IsDriver
      * @param  \Yana\Db\Ddl\Database             $schema   database schema
      * @param  \Yana\Db\Mdb2\IsExceptionFactory  $factory  use this to inject a mock factory for unit tests
      */
-    public function __construct(\MDB2_Driver_Common $driver, \Yana\Db\Mdb2\IsExceptionFactory $factory = null)
+    public function __construct(\MDB2_Driver_Common $driver, ?\Yana\Db\Mdb2\IsExceptionFactory $factory = null)
     {
         $this->_exceptionFactory = $factory;
         $this->_setDecoratedObject($driver);

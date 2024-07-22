@@ -152,7 +152,7 @@ class ConnectionFactory extends \Yana\Core\StdObject implements \Yana\Db\IsConne
      * @throws  \Yana\Db\ConnectionException                    when connection to database failed
      * @return  \Yana\Db\IsConnection
      */
-    protected function _createConnection(\Yana\Db\Ddl\Database $schema, \Yana\Db\Sources\IsEntity $connectionSettings = null, bool $ignoreFileDb = YANA_DATABASE_ACTIVE)
+    protected function _createConnection(\Yana\Db\Ddl\Database $schema, ?\Yana\Db\Sources\IsEntity $connectionSettings = null, bool $ignoreFileDb = YANA_DATABASE_ACTIVE)
     {
         $connections = $this->_getConnections();
         $schemaName = $schema->getName();
@@ -184,7 +184,7 @@ class ConnectionFactory extends \Yana\Core\StdObject implements \Yana\Db\IsConne
      * @return  \Yana\Db\Doctrine\Connection|null
      * @codeCoverageIgnore
      */
-    protected function _buildDoctrineConnection(\Yana\Db\Ddl\Database $schema, \Yana\Db\Sources\IsEntity $connectionSettings = null): ?\Yana\Db\Doctrine\Connection
+    protected function _buildDoctrineConnection(\Yana\Db\Ddl\Database $schema, ?\Yana\Db\Sources\IsEntity $connectionSettings = null): ?\Yana\Db\Doctrine\Connection
     {
         try {
             assert(!isset($dsn), 'Cannot redeclare var $dsn');
@@ -213,7 +213,7 @@ class ConnectionFactory extends \Yana\Core\StdObject implements \Yana\Db\IsConne
      * @return  \Yana\Db\Mdb2\Connection|null
      * @codeCoverageIgnore
      */
-    protected function _buildMdb2Connection(\Yana\Db\Ddl\Database $schema, \Yana\Db\Sources\IsEntity $connectionSettings = null): ?\Yana\Db\Mdb2\Connection
+    protected function _buildMdb2Connection(\Yana\Db\Ddl\Database $schema, ?\Yana\Db\Sources\IsEntity $connectionSettings = null): ?\Yana\Db\Mdb2\Connection
     {
         try {
             assert(!isset($dsn), 'Cannot redeclare var $dsn');

@@ -94,7 +94,7 @@ class Builder extends \Yana\Security\Data\UserBuilder implements \Yana\Security\
      * @return  \Yana\Security\Data\Behaviors\IsBehavior
      * @throws  \Yana\Core\Exceptions\NotFoundException  if no such user is found in the database
      */
-    public function buildFromSession(\Yana\Security\Sessions\IsWrapper $session = null)
+    public function buildFromSession(?\Yana\Security\Sessions\IsWrapper $session = null)
     {
         $entity = parent::buildFromSession($session);
         return $this($entity);

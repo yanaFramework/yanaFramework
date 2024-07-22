@@ -665,7 +665,7 @@ abstract class AbstractBuilder extends \Yana\Core\StdObject implements \Yana\For
      * @param   \Yana\Db\Ddl\Form  $form  base form definition
      * @return  $this 
      */
-    protected function _setForm(\Yana\Db\Ddl\Form $form, \Yana\Forms\Facade $parentForm = null)
+    protected function _setForm(\Yana\Db\Ddl\Form $form, ?\Yana\Forms\Facade $parentForm = null)
     {
         $this->_form = $form;
         $this->_getFacade()->setBaseForm($this->_form);

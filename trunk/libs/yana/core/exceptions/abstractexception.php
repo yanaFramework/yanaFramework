@@ -96,7 +96,7 @@ abstract class AbstractException extends \Exception implements \Yana\Core\Except
      * @param  int         $code      optional error code
      * @param  \Exception  $previous  use this when you need to rethrow a catched exception
      */
-    public function __construct($message = "", $code = \Yana\Log\TypeEnumeration::ERROR, \Exception $previous = null)
+    public function __construct($message = "", $code = \Yana\Log\TypeEnumeration::ERROR, ?\Exception $previous = null)
     {
         assert(is_string($message), 'Wrong argument type for argument 1, String expected');
         assert(is_int($code), 'Wrong argument type for argument 2, Integer expected');

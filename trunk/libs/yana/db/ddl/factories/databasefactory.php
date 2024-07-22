@@ -53,7 +53,7 @@ class DatabaseFactory extends \Yana\Core\StdObject implements \Yana\Db\Ddl\Facto
      * @return  \Yana\Db\Ddl\Factories\IsWorker
      * @throws  \Yana\Db\Ddl\Factories\NotAvailableException  When no applicable DB layer is available to connect to the database.
      */
-    public function buildWorker(array $dsn = null)
+    public function buildWorker(?array $dsn = null)
     {
         if (\Yana\Db\Doctrine\ConnectionFactory::isDoctrineAvailable()) {
             $db = new \Yana\Db\Doctrine\ConnectionFactory($dsn);

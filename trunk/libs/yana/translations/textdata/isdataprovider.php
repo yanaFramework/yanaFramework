@@ -58,7 +58,7 @@ interface IsDataProvider
      * @throws  \Yana\Core\Exceptions\Translations\LanguageFileNotFoundException  when the object for this id is not found
      * @throws  \Yana\Core\Exceptions\Translations\TranslationException           for arbitrary errors
      */
-    public function loadOject($id, \Yana\Translations\Locale $locale, \Yana\Translations\TextData\IsTextContainer $container = null);
+    public function loadOject($id, \Yana\Translations\Locale $locale, ?\Yana\Translations\TextData\IsTextContainer $container = null);
 
 }
 

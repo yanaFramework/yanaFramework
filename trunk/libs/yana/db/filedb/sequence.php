@@ -126,7 +126,7 @@ class Sequence extends \Yana\Core\StdObject
      * @param   \Yana\Db\IsConnection $db database connection
      * @ignore
      */
-    protected static function _connect(\Yana\Db\IsConnection $db = null)
+    protected static function _connect(?\Yana\Db\IsConnection $db = null)
     {
         if (is_null($db)) {
             $builder = new \Yana\ApplicationBuilder();

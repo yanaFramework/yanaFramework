@@ -62,7 +62,7 @@ class Builder extends \Yana\Core\StdObject implements \Yana\Security\Passwords\P
      * @param  \Yana\Security\Passwords\IsAlgorithm              $algorithm  inject a NULL-algorithm for Unit-tests
      * @param  \Yana\Security\Passwords\Providers\IsAdapter  $adapter    inject a NULL-adapter for Unit-tests
      */
-    public function __construct(\Yana\Security\Passwords\IsAlgorithm $algorithm, \Yana\Security\Passwords\Providers\IsAdapter $adapter = null)
+    public function __construct(\Yana\Security\Passwords\IsAlgorithm $algorithm, ?\Yana\Security\Passwords\Providers\IsAdapter $adapter = null)
     {
         $this->_passwordAlgorithm = $algorithm;
         $this->_adapter = $adapter;

@@ -48,7 +48,7 @@ interface IsReportable
      * @param   \Yana\Report\IsReport  $report  base report
      * @return  \Yana\Report\IsReport
      */
-    public function getReport(IsReport $report = null);
+    public function getReport(?IsReport $report = null);
 
 }
 

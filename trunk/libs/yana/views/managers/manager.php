@@ -190,7 +190,7 @@ class Manager extends \Yana\Views\Managers\AbstractManager implements \Yana\View
      * @param   \Smarty_Internal_Template  $parent     parent template (if any)
      * @return  \Smarty_Internal_Template
      */
-    private function _createTemplate($filename, \Smarty_Internal_Template $parent = null)
+    private function _createTemplate($filename, ?\Smarty_Internal_Template $parent = null)
     {
         $compileId = $this->_getTemplateId();
         return $this->getSmarty()->createTemplate($filename, $compileId, $compileId, $parent);

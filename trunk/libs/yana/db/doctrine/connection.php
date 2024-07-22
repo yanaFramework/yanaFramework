@@ -61,7 +61,7 @@ class Connection extends \Yana\Db\AbstractConnection
      * @param   \Yana\Db\Doctrine\IsConnectionFactory  $factory  Connection to a database server
      * @throws  \Yana\Db\ConnectionException           when connection to database failed
      */
-    public function __construct(\Yana\Db\Ddl\Database $schema, \Yana\Db\Doctrine\IsConnectionFactory $factory = null)
+    public function __construct(\Yana\Db\Ddl\Database $schema, ?\Yana\Db\Doctrine\IsConnectionFactory $factory = null)
     {
         // fall back to default connection
         if (is_null($factory)) {

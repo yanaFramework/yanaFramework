@@ -191,7 +191,7 @@ class Facade extends \Yana\Core\StdObject
      * @param   \Yana\Forms\Facade  $parentForm  configuring the contents of the parent form
      * @return  \Yana\Forms\Facade
      */
-    public function setParent(\Yana\Forms\Facade $parentForm = null)
+    public function setParent(?\Yana\Forms\Facade $parentForm = null)
     {
         $this->_parent = $parentForm;
         return $this;

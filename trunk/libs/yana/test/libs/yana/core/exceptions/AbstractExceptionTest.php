@@ -38,7 +38,7 @@ require_once __DIR__ . '/../../../../include.php';
 class ExceptionTest extends \Yana\Core\Exceptions\AbstractException
 {
 
-    public function __construct($message = "", $code = E_USER_NOTICE, \Exception $previous = null)
+    public function __construct($message = "", $code = E_USER_NOTICE, ?\Exception $previous = null)
     {
         self::$queue = array();
         parent::__construct($message, $code, $previous);

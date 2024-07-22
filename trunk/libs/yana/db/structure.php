@@ -530,7 +530,7 @@ class Structure extends \Yana\Files\SML
      * @see     DbStructure::getInit()
      * @since   2.9.7
      */
-    public function setInit($table, array $statements = null)
+    public function setInit($table, ?array $statements = null)
     {
         assert(is_string($table), 'Invalid argument $table: String expected');
         $tbl =& $this->_getTable($table);

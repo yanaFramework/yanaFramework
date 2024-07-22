@@ -169,7 +169,7 @@ class ConnectionFactory extends \Yana\Core\StdObject implements \Yana\Db\Doctrin
      * @param   array  $dsn  for a description of the $dsn parameter see the text above
      * @throws  \Yana\Db\Doctrine\DbalException  when Doctrine DBAL is not available
      */
-    public function __construct(array $dsn = null)
+    public function __construct(?array $dsn = null)
     {
         if (!self::isDoctrineAvailable()) {
             /* error handling */

@@ -66,7 +66,7 @@ class Stream extends \Yana\Core\StdObject
      * @param   int     $flags         either IS_URL_WRAPPER or IS_LOCAL_WRAPPER (default)
      * @return  bool
      */
-    public static function registerWrapper(string $protocolName, string $wrapperName = null, int $flags = self::IS_LOCAL_WRAPPER): bool
+    public static function registerWrapper(string $protocolName, ?string $wrapperName = null, int $flags = self::IS_LOCAL_WRAPPER): bool
     {
         if (empty($wrapperName)) {
             $wrapperName = $protocolName;

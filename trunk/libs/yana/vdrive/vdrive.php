@@ -637,7 +637,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
      * @name    VDrive::getReport()
      * @ignore
      */
-    public function getReport(\Yana\Report\IsReport $report = null)
+    public function getReport(?\Yana\Report\IsReport $report = null)
     {
         if (is_null($report)) {
             $report = \Yana\Report\Xml::createReport(__CLASS__);

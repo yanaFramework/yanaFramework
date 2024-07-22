@@ -60,7 +60,7 @@ class NullConnection extends \Yana\Core\StdObject implements \Yana\Db\IsConnecti
      * @param  string                                $dbms    optional DBMS
      * @param  \Yana\Db\Helpers\IsSqlKeywordChecker  $sqlKeywordChecker  a class that checks if a given string is a reserved SQL keyword
      */
-    public function __construct(\Yana\Db\Ddl\Database $schema = null, string $dbms = \Yana\Db\DriverEnumeration::GENERIC, \Yana\Db\Helpers\IsSqlKeywordChecker $sqlKeywordChecker = null)
+    public function __construct(?\Yana\Db\Ddl\Database $schema = null, string $dbms = \Yana\Db\DriverEnumeration::GENERIC, ?\Yana\Db\Helpers\IsSqlKeywordChecker $sqlKeywordChecker = null)
     {
         // @codeCoverageIgnoreStart
         if (!is_null($sqlKeywordChecker)) {

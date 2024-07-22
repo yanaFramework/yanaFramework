@@ -197,7 +197,7 @@ interface IsFacade
      * @throws  \Yana\Core\Exceptions\User\MissingMailException    when no mail address is given
      * @throws  \Yana\Core\Exceptions\User\AlreadyExistsException  if another user with the same name already exists
      */
-    public function createUserByFormData(array $formData, \Yana\Security\Data\Users\IsDataAdapter $adapter = null): \Yana\Security\Data\Behaviors\IsBehavior;
+    public function createUserByFormData(array $formData, ?\Yana\Security\Data\Users\IsDataAdapter $adapter = null): \Yana\Security\Data\Behaviors\IsBehavior;
 
     /**
      * Remove the chosen user from the database.

@@ -44,7 +44,7 @@ class SchemaFactory extends \Yana\Core\StdObject implements \Yana\Db\IsSchemaFac
      *
      * @param   \Yana\Data\Adapters\IsDataAdapter  $cache  ooptional cache adapter
      */
-    public function __construct(\Yana\Data\Adapters\IsDataAdapter $cache = null)
+    public function __construct(?\Yana\Data\Adapters\IsDataAdapter $cache = null)
     {
         if (!is_null($cache)) {
             $this->setCache($cache);

@@ -155,7 +155,7 @@ class XliffDataProvider extends \Yana\Core\StdObject implements \Yana\Translatio
      * @throws  \Yana\Core\Exceptions\Translations\LanguageFileNotFoundException  when the XLIFF file is not found
      * @throws  \Yana\Core\Exceptions\Translations\InvalidSyntaxException  when there is a problem with the file
      */
-    public function loadOject($id, \Yana\Translations\Locale $locale, \Yana\Translations\TextData\IsTextContainer $container = null)
+    public function loadOject($id, \Yana\Translations\Locale $locale, ?\Yana\Translations\TextData\IsTextContainer $container = null)
     {
         if (is_null($container)) {
             $container = new \Yana\Translations\TextData\TextContainer();

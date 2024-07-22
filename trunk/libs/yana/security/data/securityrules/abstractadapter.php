@@ -55,7 +55,7 @@ abstract class AbstractAdapter extends \Yana\Data\Adapters\AbstractDatabaseAdapt
      * @param  \Yana\Db\IsConnection                       $connection  database connection to table user
      * @param  \Yana\Security\Data\SecurityRules\IsMapper  $mapper      simple OR-mapper to convert database entries to objects
      */
-    public function __construct(\Yana\Db\IsConnection $connection, \Yana\Security\Data\SecurityRules\IsMapper $mapper = null)
+    public function __construct(\Yana\Db\IsConnection $connection, ?\Yana\Security\Data\SecurityRules\IsMapper $mapper = null)
     {
         parent::__construct($connection);
         $this->_entityMapper = $mapper;

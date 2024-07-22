@@ -92,7 +92,7 @@ class Sql extends \Yana\Db\Ddl\Logs\AbstractLog
      *
      * @param  \Yana\Db\Ddl\ChangeLog  $parent  parent database
      */
-    public function __construct(\Yana\Db\Ddl\ChangeLog $parent = null)
+    public function __construct(?\Yana\Db\Ddl\ChangeLog $parent = null)
     {
         $this->parent = $parent;
     }

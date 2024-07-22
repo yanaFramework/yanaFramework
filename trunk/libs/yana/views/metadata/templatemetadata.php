@@ -203,7 +203,7 @@ class TemplateMetaData extends \Yana\Core\StdObject implements \Yana\Views\MetaD
      * @param   \Yana\Report\IsReport  $report  base report
      * @return  \Yana\Report\IsReport
      */
-    public function getReport(\Yana\Report\IsReport $report = null)
+    public function getReport(?\Yana\Report\IsReport $report = null)
     {
         if (!$report instanceof \Yana\Report\IsReport) {
             $report = \Yana\Report\Xml::createReport(__CLASS__);

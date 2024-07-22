@@ -693,7 +693,7 @@ class Facade extends \Yana\Core\StdObject implements \Yana\Report\IsReportable, 
      * @return  \Yana\Report\IsReport
      * @ignore
      */
-    public function getReport(\Yana\Report\IsReport $report = null)
+    public function getReport(?\Yana\Report\IsReport $report = null)
     {
         if (is_null($report)) {
             $report = \Yana\Report\Xml::createReport(__CLASS__);

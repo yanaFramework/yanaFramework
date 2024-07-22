@@ -314,7 +314,7 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      * @throws  \Yana\Core\Exceptions\User\MissingMailException    when no mail address is given
      * @throws  \Yana\Core\Exceptions\User\AlreadyExistsException  if another user with the same name already exists
      */
-    public function createUserByFormData(array $formData, \Yana\Security\Data\Users\IsDataAdapter $adapter = null): \Yana\Security\Data\Behaviors\IsBehavior
+    public function createUserByFormData(array $formData, ?\Yana\Security\Data\Users\IsDataAdapter $adapter = null): \Yana\Security\Data\Behaviors\IsBehavior
     {
         assert(!isset($entity), '$entity already declared');
         $entity = $this->_getContainer()->getUserAdapter()->toEntity($formData); // May throw MissingNameException

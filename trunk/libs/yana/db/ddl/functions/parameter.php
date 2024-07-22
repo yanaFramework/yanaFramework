@@ -165,7 +165,7 @@ class Parameter extends \Yana\Db\Ddl\AbstractNamedObject
      * @param   \SimpleXMLElement $parentNode  parent node
      * @return  \SimpleXMLElement
      */
-    public function serializeToXDDL(\SimpleXMLElement $parentNode = null): \SimpleXMLElement
+    public function serializeToXDDL(?\SimpleXMLElement $parentNode = null): \SimpleXMLElement
     {
         switch ($this->mode)
         {

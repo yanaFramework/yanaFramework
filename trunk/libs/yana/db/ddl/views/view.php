@@ -181,7 +181,7 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * @param  string                 $name    foreign key name
      * @param  \Yana\Db\Ddl\Database  $parent  parent database
      */
-    public function __construct($name, \Yana\Db\Ddl\Database $parent = null)
+    public function __construct($name, ?\Yana\Db\Ddl\Database $parent = null)
     {
         parent::__construct($name);
         $this->parent = $parent;
@@ -784,7 +784,7 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * @param   \SimpleXMLElement $parentNode  parent node
      * @return  \SimpleXMLElement
      */
-    public function serializeToXDDL(\SimpleXMLElement $parentNode = null): \SimpleXMLElement
+    public function serializeToXDDL(?\SimpleXMLElement $parentNode = null): \SimpleXMLElement
     {
         if ($this->descendingOrder) {
             $this->_sorting = 'descending';

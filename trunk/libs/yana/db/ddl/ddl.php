@@ -141,7 +141,7 @@ abstract class DDL extends \Yana\Core\StdObject
      * @return  \SimpleXMLElement
      * @throws  \Yana\Db\Ddl\NoTagNameException  when no tag name was given for this node
      */
-    public function serializeToXDDL(\SimpleXMLElement $parentNode = null): \SimpleXMLElement
+    public function serializeToXDDL(?\SimpleXMLElement $parentNode = null): \SimpleXMLElement
     {
         if (empty($this->xddlTag)) {
             $message = "This node cannot be serialized to XDDL format because no tag name was given.";

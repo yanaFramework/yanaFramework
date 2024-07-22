@@ -47,7 +47,7 @@ class TextMailer extends \Yana\Mails\AbstractMailerFacade
      * @param  \Yana\Mails\Strategies\Contexts\IsContext  $context  a callable class used to send e-mails
      * @param  \Yana\Mails\Messages\IsMessage             $message  the mail's properties
      */
-    public function __construct(\Yana\Mails\Strategies\Contexts\IsContext $context = null,
+    public function __construct(?\Yana\Mails\Strategies\Contexts\IsContext $context = null,
         \Yana\Mails\Messages\IsMessage $message = null)
     {
         // @codeCoverageIgnoreStart

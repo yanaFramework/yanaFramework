@@ -63,7 +63,7 @@ class NullReader extends \Yana\Core\StdObject implements \Yana\Security\Rules\Re
      *
      * @param  \Yana\Security\Rules\Requirements\Collection  $requirement  list of requirements
      */
-    public function __construct(\Yana\Security\Rules\Requirements\IsRequirement $requirement = null)
+    public function __construct(?\Yana\Security\Rules\Requirements\IsRequirement $requirement = null)
     {
         if (!\is_null($requirement)) {
             $this->_getCollection()->offsetSet(null, $requirement);

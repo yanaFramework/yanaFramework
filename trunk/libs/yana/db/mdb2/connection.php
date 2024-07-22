@@ -62,7 +62,7 @@ class Connection extends \Yana\Db\AbstractConnection
      * @throws  \Yana\Db\Mdb2\PearDbException      when Pear MDB2 is not available
      * @throws  \Yana\Db\ConnectionException       when connection to database failed
      */
-    public function __construct(\Yana\Db\Ddl\Database $schema, \Yana\Db\Mdb2\IsConnectionFactory $server = null)
+    public function __construct(\Yana\Db\Ddl\Database $schema, ?\Yana\Db\Mdb2\IsConnectionFactory $server = null)
     {
         // fall back to default connection
         if (is_null($server)) {

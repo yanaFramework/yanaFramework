@@ -78,7 +78,7 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
      * @param  \Yana\Db\IsConnection                 $db                 a database resource
      * @param  \Yana\Db\Helpers\IsSqlKeywordChecker  $sqlKeywordChecker  a class that checks if a given string is a reserved SQL keyword
      */
-    public function __construct(\Yana\Db\IsConnection $db, \Yana\Db\Helpers\IsSqlKeywordChecker $sqlKeywordChecker = null)
+    public function __construct(\Yana\Db\IsConnection $db, ?\Yana\Db\Helpers\IsSqlKeywordChecker $sqlKeywordChecker = null)
     {
         if (!is_null($sqlKeywordChecker)) {
             $this->_nullConnection = new \Yana\Db\NullConnection($db->getSchema(), \Yana\Db\DriverEnumeration::GENERIC, $sqlKeywordChecker);

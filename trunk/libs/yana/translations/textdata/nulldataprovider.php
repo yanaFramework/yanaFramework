@@ -48,7 +48,7 @@ class NullDataProvider extends \Yana\Core\StdObject implements \Yana\Translation
      * @param   \Yana\Translations\TextData\IsTextContainer  $container  container to fill
      * @return  \Yana\Translations\TextData\IsTextContainer
      */
-    public function loadOject($id, \Yana\Translations\Locale $locale, \Yana\Translations\TextData\IsTextContainer $container = null)
+    public function loadOject($id, \Yana\Translations\Locale $locale, ?\Yana\Translations\TextData\IsTextContainer $container = null)
     {
         if (!$container instanceof \Yana\Translations\TextData\IsTextContainer) {
             $container = new \Yana\Translations\TextData\TextContainer();

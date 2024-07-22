@@ -46,7 +46,7 @@ class FileNameCache extends \Yana\Core\StdObject implements \Yana\Db\Binaries\Is
      *
      * @param  \Yana\Db\Binaries\IsConfiguration  $configuration  inject your own configuration
      */
-    public function __construct(\Yana\Db\Binaries\IsConfiguration $configuration = null)
+    public function __construct(?\Yana\Db\Binaries\IsConfiguration $configuration = null)
     {
         $this->_configuration = $configuration;
     }

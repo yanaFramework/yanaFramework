@@ -66,7 +66,7 @@ abstract class AbstractField extends \Yana\Core\StdObject implements \Yana\Forms
      * @param  \Yana\Db\Ddl\Column                        $column      base column definition
      * @param  \Yana\Db\Ddl\Field                         $field       wrapped field instance
      */
-    public function __construct(\Yana\Forms\Fields\FieldCollectionWrapper $parentForm, \Yana\Db\Ddl\Column $column, \Yana\Db\Ddl\Field $field = null)
+    public function __construct(\Yana\Forms\Fields\FieldCollectionWrapper $parentForm, \Yana\Db\Ddl\Column $column, ?\Yana\Db\Ddl\Field $field = null)
     {
         $this->_form = $parentForm;
         $this->_column = $column;

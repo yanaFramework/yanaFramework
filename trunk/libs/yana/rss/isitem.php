@@ -166,7 +166,7 @@ interface IsItem
      * @param   \SimpleXMLElement  $channel  parent XML node, for valid RSS this should be a "channel" element
      * @return  \SimpleXMLElement
      */
-    public function toSimpleXml(\SimpleXMLElement $channel = null): \SimpleXMLElement;
+    public function toSimpleXml(?\SimpleXMLElement $channel = null): \SimpleXMLElement;
 
 }
 

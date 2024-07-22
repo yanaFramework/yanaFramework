@@ -120,7 +120,7 @@ class ConnectionFactory extends \Yana\Core\StdObject implements \Yana\Db\Mdb2\Is
      * @param  array  $dsn  for a description of the $dsn parameter see the text above
      * @throws \Yana\Db\Mdb2\PearDbException  when Pear MDB2 is not available
      */
-    public function __construct(array $dsn = null)
+    public function __construct(?array $dsn = null)
     {
         // @codeCoverageIgnoreStart
         if (!self::isMdb2Available()) {

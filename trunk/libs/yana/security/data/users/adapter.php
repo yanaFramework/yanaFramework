@@ -50,7 +50,7 @@ class Adapter extends \Yana\Security\Data\Users\AbstractAdapter
      * @param  \Yana\Db\IsConnection               $connection  database connection to table user
      * @param  \Yana\Data\Adapters\IsEntityMapper  $mapper      simple OR-mapper to convert database entries to objects
      */
-    public function __construct(\Yana\Db\IsConnection $connection, \Yana\Data\Adapters\IsEntityMapper $mapper = null)
+    public function __construct(\Yana\Db\IsConnection $connection, ?\Yana\Data\Adapters\IsEntityMapper $mapper = null)
     {
         if (\is_null($mapper)) {
             $mapper = new \Yana\Security\Data\Users\Mapper();

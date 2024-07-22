@@ -3420,7 +3420,7 @@ class Image extends \Yana\Core\StdObject
      * @return  bool
      * @since   3.1.0
      */
-    public function createThumbnail(?int $width = 100, ?int $height = 100, bool $keepAspectRatio = true, array $backgroundColor = null): bool
+    public function createThumbnail(?int $width = 100, ?int $height = 100, bool $keepAspectRatio = true, ?array $backgroundColor = null): bool
     {
         /**
          * Check if the "broken" flag has been set.

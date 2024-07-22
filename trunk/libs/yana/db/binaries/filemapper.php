@@ -62,7 +62,7 @@ class FileMapper extends \Yana\Files\Readonly implements \Yana\Db\Binaries\IsFil
      *
      * @param  \Yana\Db\Binaries\IsConfiguration  $configuration  inject your own configuration
      */
-    public function __construct(\Yana\Db\Binaries\IsConfiguration $configuration = null)
+    public function __construct(?\Yana\Db\Binaries\IsConfiguration $configuration = null)
     {
         $this->_configuration = $configuration;
     }

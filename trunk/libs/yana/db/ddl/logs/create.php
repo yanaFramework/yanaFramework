@@ -87,7 +87,7 @@ class Create extends \Yana\Db\Ddl\Logs\AbstractLog
      * @param  string                  $name    name of log entry
      * @param  \Yana\Db\Ddl\ChangeLog  $parent  parent
      */
-    public function __construct($name, \Yana\Db\Ddl\ChangeLog $parent = null)
+    public function __construct($name, ?\Yana\Db\Ddl\ChangeLog $parent = null)
     {
         assert(is_string($name), 'Wrong type for argument 1. String expected');
         $this->setName($name);

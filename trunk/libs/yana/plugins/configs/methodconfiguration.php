@@ -873,7 +873,7 @@ class MethodConfiguration extends \Yana\Core\StdObject implements \Yana\Plugins\
      * @param   \Yana\Report\IsReport  $report  base report
      * @return  \Yana\Report\IsReport
      */
-    public function getReport(\Yana\Report\IsReport $report = null)
+    public function getReport(?\Yana\Report\IsReport $report = null)
     {
         if (is_null($report)) {
             $report = \Yana\Report\Xml::createReport(__CLASS__);

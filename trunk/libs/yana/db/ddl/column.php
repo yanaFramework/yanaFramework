@@ -164,7 +164,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * @param  string  $name  foreign key name
      * @param  \Yana\Db\Ddl\Table  $parent  parent table
      */
-    public function __construct($name = "", \Yana\Db\Ddl\Table $parent = null)
+    public function __construct($name = "", ?\Yana\Db\Ddl\Table $parent = null)
     {
         parent::__construct($name);
         $this->parent = $parent;
@@ -1898,7 +1898,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * @return  \SimpleXMLElement
      * @throws  \Yana\Db\Ddl\NoTagNameException  when no type was given for this node
      */
-    public function serializeToXDDL(\SimpleXMLElement $parentNode = null): \SimpleXMLElement
+    public function serializeToXDDL(?\SimpleXMLElement $parentNode = null): \SimpleXMLElement
     {
         if ($this->xddlTag === 'file' || $this->xddlTag === 'image') {
             $this->_maxsize = isset($this->size) ? $this->size : null;

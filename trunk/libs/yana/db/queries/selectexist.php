@@ -162,7 +162,7 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery implements \Yana\Db\Que
      * @throws  \Yana\Core\Exceptions\NotFoundException  if a provided table or column is not found
      * @return  $this
      */
-    public function setInnerJoin(string $joinedTableName, string $targetKey = null, string $sourceTableName = null, string $foreignKey = null)
+    public function setInnerJoin(string $joinedTableName, ?string $targetKey = null, ?string $sourceTableName = null, ?string $foreignKey = null)
     {
         parent::setJoin($joinedTableName, $targetKey, $sourceTableName, $foreignKey, false);
         return $this;

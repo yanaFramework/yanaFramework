@@ -52,7 +52,7 @@ interface IsDatabaseFactory
      * @return  \Yana\Db\Ddl\Factories\IsWorker
      * @throws  \Yana\Db\Ddl\Factories\NotAvailableException  When no applicable DB layer is available to connect to the database.
      */
-    public function buildWorker(array $dsn = null);
+    public function buildWorker(?array $dsn = null);
 
     /**
      * Build a database refactory worker based on Doctrine DBAL schema.

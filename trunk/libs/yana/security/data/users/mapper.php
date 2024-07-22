@@ -46,7 +46,7 @@ class Mapper extends \Yana\Core\StdObject implements \Yana\Data\Adapters\IsEntit
      * @return  \Yana\Security\Data\Users\IsEntity
      * @throws  \Yana\Core\Exceptions\User\MissingNameException  when given user has no name
      */
-    public function toEntity(array $databaseRow, \Yana\Security\Data\Users\IsEntity $user = null)
+    public function toEntity(array $databaseRow, ?\Yana\Security\Data\Users\IsEntity $user = null)
     {
         if (!isset($databaseRow[\Yana\Security\Data\Tables\UserEnumeration::ID])) {
             throw new \Yana\Core\Exceptions\User\MissingNameException("Given user has no name.");

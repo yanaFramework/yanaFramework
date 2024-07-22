@@ -194,7 +194,7 @@ class IndexColumn extends \Yana\Db\Ddl\AbstractNamedObject
      * @param   \SimpleXMLElement $parentNode  parent node
      * @return  \SimpleXMLElement
      */
-    public function serializeToXDDL(\SimpleXMLElement $parentNode = null): \SimpleXMLElement
+    public function serializeToXDDL(?\SimpleXMLElement $parentNode = null): \SimpleXMLElement
     {
         if ($this->isAscendingOrder()) {
             $this->sorting = 'ascending';

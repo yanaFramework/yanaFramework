@@ -133,7 +133,7 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
      * @param  string       $name    sequence name
      * @param  \Yana\Db\Ddl\Database  $parent  parent database
      */
-    public function __construct($name, \Yana\Db\Ddl\Database $parent = null)
+    public function __construct($name, ?\Yana\Db\Ddl\Database $parent = null)
     {
         parent::__construct($name);
         $this->parent = $parent;

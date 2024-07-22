@@ -54,7 +54,7 @@ abstract class AbstractAlgorithm extends \Yana\Core\StdObject implements \Yana\S
      *
      * @param  \Yana\Security\Passwords\IsAlgorithm  $fallback  another algorithm
      */
-    public function __construct(\Yana\Security\Passwords\IsAlgorithm $fallback = null)
+    public function __construct(?\Yana\Security\Passwords\IsAlgorithm $fallback = null)
     {
         $this->_fallback = $fallback;
     }

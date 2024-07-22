@@ -1273,7 +1273,7 @@ class Driver extends \Yana\Db\FileDb\AbstractDriver
      * @param   array  $desc     sorting order
      * @return  int
      */
-    private function _sort(array $a, array $b, array $columns = null, array $desc = null)
+    private function _sort(array $a, array $b, ?array $columns = null, ?array $desc = null)
     {
         if (is_null($columns)) {
             $columns = $this->_getSortColumns();
